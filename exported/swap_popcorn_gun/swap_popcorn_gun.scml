@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="swap_popcorn_gun">
+        <file id="0" name="swap_popcorn_gun/swap_popcorn_gun.png" width="152" height="80" pivot_x="0.179739" pivot_y="0.253086"/>
+    </folder>
+    <entity id="0" name="swap_popcorn_gun">
+        <animation id="0" name="BUILD" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="swap_popcorn_gun" folder="0" file="0" abs_x="3.320261" abs_y="4.246914" abs_pivot_x="0.179739" abs_pivot_y="0.253086" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="swap_popcorn_gun">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="3.320261" y="4.246914"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>
