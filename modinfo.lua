@@ -4,8 +4,8 @@ local descList =
 	"提供额外的物品合成，希望你能喜欢。",
 	"Item list:",
 	"物品列表：",
-	"Popcorn Gun",
-	"玉米枪",
+	"- Popcorn Gun",
+	"- 玉米枪",
 	"\n\n新浪微博：@二货爱吃白萝卜",
 }
 
