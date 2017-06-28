@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="incinerator">
+        <file id="0" name="incinerator/body.png" width="308" height="229" pivot_x="0.493528" pivot_y="0.497826"/>
+        <file id="1" name="incinerator/pipe.png" width="88" height="135" pivot_x="0.466292" pivot_y="0.511029"/>
+    </folder>
+    <entity id="0" name="incinerator">
+        <animation id="0" name="idle" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="pipe" folder="0" file="1" abs_x="58.033708" abs_y="202.988971" abs_pivot_x="0.466292" abs_pivot_y="0.511029" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="0"/>
+                    <object_ref id="1" name="body" folder="0" file="0" abs_x="3.006472" abs_y="71.002174" abs_pivot_x="0.493528" abs_pivot_y="0.497826" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="body">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="3.006472" y="71.002174" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="pipe">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="58.033708" y="202.988971" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="1" name="place" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="pipe" folder="0" file="1" abs_x="58.033708" abs_y="336.988971" abs_pivot_x="0.466292" abs_pivot_y="0.511029" abs_angle="0" abs_scale_x="0.736655" abs_scale_y="1.157869" abs_a="1" timeline="1" key="0" z_index="0"/>
+                    <object_ref id="1" name="body" folder="0" file="0" abs_x="3.006472" abs_y="154.002174" abs_pivot_x="0.493528" abs_pivot_y="0.497826" abs_angle="0" abs_scale_x="0.862614" abs_scale_y="1.272732" abs_a="1" timeline="0" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="125">
+                    <object_ref id="0" timeline="1" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="0" key="1" z_index="1"/>
+                </key>
+                <key id="2" time="198">
+                    <object_ref id="0" timeline="1" key="2" z_index="0"/>
+                    <object_ref id="1" timeline="0" key="2" z_index="1"/>
+                </key>
+                <key id="3" time="264">
+                    <object_ref id="0" timeline="1" key="3" z_index="0"/>
+                    <object_ref id="1" timeline="0" key="3" z_index="1"/>
+                </key>
+                <key id="4" time="874">
+                    <object_ref id="0" timeline="1" key="4" z_index="0"/>
+                    <object_ref id="1" timeline="0" key="4" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="body">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="3.006472" y="154.002174" angle="0" scale_x="0.862614" scale_y="1.272732"/>
+                </key>
+                <key id="1" time="125" spin="0">
+                    <object folder="0" file="0" x="3.006472" y="56.002174" angle="0" scale_x="1.150167" scale_y="0.85714"/>
+                </key>
+                <key id="2" time="198" spin="0">
+                    <object folder="0" file="0" x="3.006472" y="89.379679" angle="0" scale_x="0.907345" scale_y="1.078984"/>
+                </key>
+                <key id="3" time="264" spin="0">
+                    <object folder="0" file="0" x="3.006472" y="77.379679" angle="0" scale_x="0.989444" scale_y="1.020956"/>
+                </key>
+                <key id="4" time="874" spin="0">
+                    <object folder="0" file="0" x="3.006472" y="77.379679" angle="0" scale_x="0.989444" scale_y="1.020956"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="pipe">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="58.033708" y="336.988971" angle="0" scale_x="0.736655" scale_y="1.157869"/>
+                </key>
+                <key id="1" time="125" spin="0">
+                    <object folder="0" file="1" x="62.977528" y="173.003676" pivot_x="0.522472" pivot_y="0.496324" angle="0" scale_x="1.15286" scale_y="0.905105"/>
+                </key>
+                <key id="2" time="198" spin="0">
+                    <object folder="0" file="1" x="62.597658" y="226.452435" pivot_x="0.518155" pivot_y="0.497453" angle="0" scale_x="0.871802" scale_y="1.046876"/>
+                </key>
+                <key id="3" time="264" spin="0">
+                    <object folder="0" file="1" x="62.597658" y="211.452435" pivot_x="0.518155" pivot_y="0.497453" angle="0" scale_x="0.979765" scale_y="1.01213"/>
+                </key>
+                <key id="4" time="874" spin="0">
+                    <object folder="0" file="1" x="62.597658" y="211.452435" pivot_x="0.518155" pivot_y="0.497453" angle="0" scale_x="0.979765" scale_y="1.01213"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>
