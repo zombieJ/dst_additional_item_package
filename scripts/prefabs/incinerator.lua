@@ -8,11 +8,13 @@ local LANG_MAP = {
 		["NAME"] = "Incinerator",
 		["DESC"] = "Burn everything into ash!",
 		["DESCRIBE"] = "Why we do not just burn the home to make ash?",
+		["INCINERATOR_NOT_BURN"] = "Hmmm, finally find something can't burn",
 	},
 	["chinese"] = {
 		["NAME"] = "焚烧炉",
 		["DESC"] = "把一切都烧成灰！",
 		["DESCRIBE"] = "想要灰为什么不直接烧家？",
+		["INCINERATOR_NOT_BURN"] = "终于有烧不掉的东西了",
 	},
 }
 
@@ -22,6 +24,7 @@ local LANG = LANG_MAP[language]
 STRINGS.NAMES.INCINERATOR = LANG.NAME
 STRINGS.RECIPE_DESC.INCINERATOR = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.INCINERATOR = LANG.DESCRIBE
+STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.GIVE.INCINERATOR_NOT_BURN = LANG.INCINERATOR_NOT_BURN
 
 -- 配方
 local incinerator = Recipe("incinerator", {Ingredient("rocks", 5), Ingredient("twigs", 2), Ingredient("ash", 1)}, RECIPETABS.LIGHT, TECH.SCIENCE_ONE, "incinerator_placer")
@@ -43,6 +46,24 @@ local prefabs =
 	"collapse_small",
 	"ash",
 }
+
+local function AcceptTest(inst, item)
+	if item.prefab == "chester_eyebone" then
+		return false, "INCINERATOR_NOT_BURN"
+	end
+
+	return true
+end
+
+local function OnGetItemFromPlayer(inst, giver, item)
+	inst.AnimState:PlayAnimation("consume")
+	inst.AnimState:PushAnimation("idle", false)
+	inst.SoundEmitter:PlaySound("dontstarve/common/fireAddFuel")
+	inst.components.lootdropper:SpawnLootPrefab("ash")
+
+	inst.components.burnable:SetFXLevel(3)
+	-- inst.components.burnable:SetBurnTime(20)
+end
 
 local function onhammered(inst, worker)
 	inst.components.lootdropper:DropLoot()
@@ -71,6 +92,8 @@ end
 local function OnInit(inst)
 	if inst.components.burnable ~= nil then
 		inst.components.burnable:FixFX()
+		inst.components.burnable:Ignite()
+		inst.components.burnable:SetFXLevel(3)
 	end
 end
 
@@ -107,8 +130,16 @@ local function fn()
 	inst.components.burnable:AddBurnFX("campfirefire", Vector3(0, 0, 0), "firefx", true)
 	inst:ListenForEvent("onextinguish", onextinguish)
 
-	-- 被锤子
+	-- 可交易
+	inst:AddComponent("trader")
+	inst.components.trader:SetAcceptTest(AcceptTest)
+	inst.components.trader.onaccept = OnGetItemFromPlayer
+	inst.components.trader.acceptnontradable = true
+
+	-- 掉东西
 	inst:AddComponent("lootdropper")
+
+	-- 被锤子
 	inst:AddComponent("workable")
 	inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
 	inst.components.workable:SetWorkLeft(4)
