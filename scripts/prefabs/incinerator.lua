@@ -8,13 +8,35 @@ local LANG_MAP = {
 		["NAME"] = "Incinerator",
 		["DESC"] = "Burn everything into ash!",
 		["DESCRIBE"] = "Why we do not just burn the home to make ash?",
-		["INCINERATOR_NOT_BURN"] = "Hmmm, finally find something can't burn",
+		["ACTIONFAIL"] = {
+			["GENERIC"] = "Hmmm, finally find something can't burn",
+			["WAXWELL"] = "Hmmm, finally find something can't burn",
+			["WOLFGANG"] = "Hmmm, finally find something can't burn",
+			["WX78"] = "Hmmm, finally find something can't burn",
+			["WILLOW"] = "Hmmm, finally find something can't burn",
+			["WENDY"] = "Hmmm, finally find something can't burn",
+			["WOODIE"] = "Hmmm, finally find something can't burn",
+			["WICKERBOTTOM"] = "Hmmm, finally find something can't burn",
+			["WATHGRITHR"] = "Hmmm, finally find something can't burn",
+			["WEBBER"] = "Hmmm, finally find something can't burn",
+		},
 	},
 	["chinese"] = {
 		["NAME"] = "焚烧炉",
 		["DESC"] = "把一切都烧成灰！",
 		["DESCRIBE"] = "想要灰为什么不直接烧家？",
-		["INCINERATOR_NOT_BURN"] = "终于有烧不掉的东西了",
+		["ACTIONFAIL"] = {
+			["GENERIC"] = "这东西看来烧不掉",
+			["WAXWELL"] = "终于有烧不掉的东西了",
+			["WOLFGANG"] = "它吃不下它！",
+			["WX78"] = "错误的参数",
+			["WILLOW"] = "不能燃烧的东西有什么意义！",
+			["WENDY"] = "火焰也不能带走它的美丽",
+			["WOODIE"] = "看来烧不掉",
+			["WICKERBOTTOM"] = "烧不掉就赞美它",
+			["WATHGRITHR"] = "它无法变成离子态",
+			["WEBBER"] = "无法燃烧的恐惧",
+		},
 	},
 }
 
@@ -24,7 +46,17 @@ local LANG = LANG_MAP[language]
 STRINGS.NAMES.INCINERATOR = LANG.NAME
 STRINGS.RECIPE_DESC.INCINERATOR = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.INCINERATOR = LANG.DESCRIBE
-STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.GIVE.INCINERATOR_NOT_BURN = LANG.INCINERATOR_NOT_BURN
+
+STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.GIVE.INCINERATOR_NOT_BURN = LANG.ACTIONFAIL.GENERIC
+STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.GIVE.INCINERATOR_NOT_BURN = LANG.ACTIONFAIL.WAXWELL
+STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.GIVE.INCINERATOR_NOT_BURN = LANG.ACTIONFAIL.WOLFGANG
+STRINGS.CHARACTERS.WX78.ACTIONFAIL.GIVE.INCINERATOR_NOT_BURN = LANG.ACTIONFAIL.WX78
+STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.GIVE.INCINERATOR_NOT_BURN = LANG.ACTIONFAIL.WILLOW
+STRINGS.CHARACTERS.WENDY.ACTIONFAIL.GIVE.INCINERATOR_NOT_BURN = LANG.ACTIONFAIL.WENDY
+STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.GIVE.INCINERATOR_NOT_BURN = LANG.ACTIONFAIL.WOODIE
+STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.GIVE.INCINERATOR_NOT_BURN = LANG.ACTIONFAIL.WICKERBOTTOM
+STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.GIVE.INCINERATOR_NOT_BURN = LANG.ACTIONFAIL.WATHGRITHR
+STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVE.INCINERATOR_NOT_BURN = LANG.ACTIONFAIL.WEBBER
 
 -- 配方
 local incinerator = Recipe("incinerator", {Ingredient("rocks", 5), Ingredient("twigs", 2), Ingredient("ash", 1)}, RECIPETABS.LIGHT, TECH.SCIENCE_ONE, "incinerator_placer")
@@ -47,8 +79,10 @@ local prefabs =
 	"ash",
 }
 
+
+-- 交易者
 local function AcceptTest(inst, item)
-	if item.prefab == "chester_eyebone" then
+	if item.prefab == "chester_eyebone" or item.prefab == "ash" then
 		return false, "INCINERATOR_NOT_BURN"
 	end
 
@@ -61,10 +95,18 @@ local function OnGetItemFromPlayer(inst, giver, item)
 	inst.SoundEmitter:PlaySound("dontstarve/common/fireAddFuel")
 	inst.components.lootdropper:SpawnLootPrefab("ash")
 
-	inst.components.burnable:SetFXLevel(3)
-	-- inst.components.burnable:SetBurnTime(20)
+	inst.components.burnable:Extinguish()
+	inst:DoTaskInTime(0, function ()
+		inst.components.burnable:Ignite()
+		inst.components.burnable:SetFXLevel(1)
+	end)
 end
 
+-- 火焰者
+local function onextinguish(inst)
+end
+
+-- 建筑
 local function onhammered(inst, worker)
 	inst.components.lootdropper:DropLoot()
 	local x, y, z = inst.Transform:GetWorldPosition()
@@ -73,9 +115,6 @@ local function onhammered(inst, worker)
 	fx.Transform:SetPosition(x, y, z)
 	fx:SetMaterial("stone")
 	inst:Remove()
-end
-
-local function onextinguish(inst)
 end
 
 local function onhit(inst, worker)
@@ -92,8 +131,6 @@ end
 local function OnInit(inst)
 	if inst.components.burnable ~= nil then
 		inst.components.burnable:FixFX()
-		inst.components.burnable:Ignite()
-		inst.components.burnable:SetFXLevel(3)
 	end
 end
 
@@ -103,7 +140,6 @@ local function fn()
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
 	inst.entity:AddSoundEmitter()
-	-- inst.entity:AddMiniMapEntity()
 	inst.entity:AddNetwork()
 
 	-- 碰撞体积
@@ -127,12 +163,13 @@ local function fn()
 
 	-- 可燃烧
 	inst:AddComponent("burnable")
-	inst.components.burnable:AddBurnFX("campfirefire", Vector3(0, 0, 0), "firefx", true)
+	inst.components.burnable:AddBurnFX("fire", Vector3(0, 0.3, 0) )
+	inst.components.burnable:SetBurnTime(10)
 	inst:ListenForEvent("onextinguish", onextinguish)
 
 	-- 可交易
 	inst:AddComponent("trader")
-	inst.components.trader:SetAcceptTest(AcceptTest)
+	inst.components.trader:SetAbleToAcceptTest(AcceptTest)
 	inst.components.trader.onaccept = OnGetItemFromPlayer
 	inst.components.trader.acceptnontradable = true
 
