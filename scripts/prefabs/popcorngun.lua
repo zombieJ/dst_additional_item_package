@@ -62,6 +62,8 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.POPCORNGUN = LANG.DESCRIBE
 local popcorngun = Recipe("popcorngun", RECIPE_MAP[popcorn_uses], RECIPETABS.WAR, TECH.SCIENCE_TWO)
 popcorngun.atlas = "images/inventoryimages/popcorngun.xml"
 
+-----------------------------------------------------------
+
 local function onequip(inst, owner)
 	owner.AnimState:OverrideSymbol("swap_object", "swap_popcorn_gun", "swap_popcorn_gun")
 	owner.SoundEmitter:PlaySound("dontstarve/wilson/equip_item_gold")

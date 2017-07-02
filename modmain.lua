@@ -4,10 +4,12 @@ TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE = "Additional Item Package"
 Assets =
 {
 	Asset("ATLAS", "images/inventoryimages/popcorngun.xml"),
+	Asset("ATLAS", "images/inventoryimages/incinerator.xml"),
 }
 
 -- 物品列表
 PrefabFiles =
 {
-	"popcorngun"
+	"popcorngun",
+	"incinerator",
 }

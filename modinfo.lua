@@ -6,6 +6,8 @@ local descList =
 	"物品列表：",
 	"- Popcorn Gun",
 	"- 玉米枪",
+	"- incinerator",
+	"- 焚烧炉",
 	"\n\n新浪微博：@二货爱吃白萝卜",
 }
 
