@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="egg_pancake">
+        <file id="0" name="egg_pancake/egg_pancake.png" width="241" height="186" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="egg_pancake/output.png" width="121" height="93" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="additional_foods">
+        <animation id="0" name="egg_pancake" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="output" folder="0" file="1" abs_x="2.995902" abs_y="7.984043" abs_pivot_x="0.504098" abs_pivot_y="0.515957" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="output">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="2.995902" y="7.984043" pivot_x="0.504098" pivot_y="0.515957"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

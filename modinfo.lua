@@ -60,6 +60,15 @@ configuration_options =
 		},
 		default = "normal",
 	},{
+		name = "additional_food",
+		label = "Addtional Food Recipes",
+		options =
+		{
+			{description = "Open", data = "open"},
+			{description = "Close", data = "close"},
+		},
+		default = "open",
+	},{
 		name = "language",
 		label = "Language",
 		options =

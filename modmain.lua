@@ -12,4 +12,5 @@ PrefabFiles =
 {
 	"popcorngun",
 	"incinerator",
+	"foods",
 }
