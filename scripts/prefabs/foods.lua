@@ -14,11 +14,19 @@ local LANG_MAP = {
 			["NAME"] = "Egg Pancake",
 			["DESC"] = "Too many eggs!",
 		},
+		["MONSTER_SALAD"] = {
+			["NAME"] = "Monster Salad",
+			["DESC"] = "At least something I can eat",
+		},
 	},
 	["chinese"] = {
 		["EGG_PANCAKE"] = {
 			["NAME"] = "鸡蛋灌饼",
 			["DESC"] = "天呐，满满都是蛋！",
+		},
+		["MONSTER_SALAD"] = {
+			["NAME"] = "怪物沙拉",
+			["DESC"] = "至少这东西可以充饥",
 		},
 	},
 }
@@ -32,6 +40,12 @@ local prefabs =
 	"spoiled_food",
 }
 
+local HP = TUNING.HEALING_TINY -- 1 healing
+local HU = TUNING.CALORIES_HUGE / 75 -- 1 hunger
+local SAN = TUNING.SANITY_SUPERTINY -- 1 sanity
+local PER = TUNING.PERISH_ONE_DAY -- 1 day
+local CO = 1 / 20 -- 1 second
+
 -- 配方
 local food_recipes = {
 	egg_pancake = {
@@ -39,16 +53,24 @@ local food_recipes = {
 		priority = 1,
 		weight = 1,
 		foodtype = FOODTYPE.MEAT,
-		health = TUNING.HEALING_MED,
-		hunger = TUNING.CALORIES_HUGE,
-		sanity = TUNING.SANITY_SMALL,
-		perishtime = TUNING.PERISH_FAST,
-		cooktime = 2 / 20,
+		health = HP * 20,
+		hunger = HU * 80,
+		sanity = SAN * 10,
+		perishtime = PER * 5,
+		cooktime = CO * 20,
 	},
-}
 
-cookerrecipes = {
-	cookpot = food_recipes,
+	monster_salad = {
+		test = function(cooker, names, tags) return tags.monster and tags.veggie >= 3 and not tags.inedible end,
+		priority = 0,
+		weight = 1,
+		foodtype = FOODTYPE.VEGGIE,
+		health = HP * 5,
+		hunger = HU * 65,
+		sanity = SAN * 10,
+		perishtime = PER * 6,
+		cooktime = CO * 20,
+	},
 }
 
 --------------------------------------------------

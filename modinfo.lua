@@ -8,8 +8,12 @@ local descList =
 	"- 玉米枪",
 	"- incinerator",
 	"- 焚烧炉",
+
 	"\n\nFood Recipes:",
 	"食品配方：",
+	"egg pancake (egg >= 3 and not inedible)",
+	"鸡蛋灌饼",
+
 	"\n\n新浪微博：@二货爱吃白萝卜",
 }
 
