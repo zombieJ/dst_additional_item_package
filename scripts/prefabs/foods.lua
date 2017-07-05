@@ -18,6 +18,10 @@ local LANG_MAP = {
 			["NAME"] = "Monster Salad",
 			["DESC"] = "At least something I can eat",
 		},
+		["SKUNK_SMOOTHIES"] = {
+			["NAME"] = "Skunk Smoothies",
+			["DESC"] = "What Is The SMELLLL!",
+		},
 	},
 	["chinese"] = {
 		["EGG_PANCAKE"] = {
@@ -27,6 +31,10 @@ local LANG_MAP = {
 		["MONSTER_SALAD"] = {
 			["NAME"] = "怪物沙拉",
 			["DESC"] = "至少这东西可以充饥",
+		},
+		["SKUNK_SMOOTHIES"] = {
+			["NAME"] = "臭鼬果昔",
+			["DESC"] = "这到底是什么味道！",
 		},
 	},
 }
@@ -61,7 +69,7 @@ local food_recipes = {
 	},
 
 	monster_salad = {
-		test = function(cooker, names, tags) return tags.monster and tags.veggie >= 3 and not tags.inedible end,
+		test = function(cooker, names, tags) return tags.monster and tags.veggie and tags.veggie >= 3 and not tags.inedible end,
 		priority = 0,
 		weight = 1,
 		foodtype = FOODTYPE.VEGGIE,
@@ -70,6 +78,21 @@ local food_recipes = {
 		sanity = SAN * 10,
 		perishtime = PER * 6,
 		cooktime = CO * 20,
+	},
+	
+	skunk_smoothies = {
+		test = function(cooker, names, tags)
+			print(">>>"..tostring(names.durian).."-"..tostring(names.durian_cooked).."-"..tostring(tags.frozen).."-"..tostring(tags.fruit))
+			return (names.durian or names.durian_cooked) and tags.frozen and tags.fruit and tags.fruit >= 2 and not tags.inedible
+		end,
+		priority = 1,
+		weight = 1,
+		foodtype = FOODTYPE.VEGGIE,
+		health = HP * 5,
+		hunger = HU * 20,
+		sanity = SAN * 35,
+		perishtime = PER * 6,
+		cooktime = CO * 10,
 	},
 }
 
