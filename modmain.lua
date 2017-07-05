@@ -14,3 +14,5 @@ PrefabFiles =
 	"incinerator",
 	"foods",
 }
+
+modimport("scripts/recipeWrapper.lua")

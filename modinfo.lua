@@ -1,13 +1,15 @@
 local descList =
 {
-	"Provide additional items for game. Wish your enjoy.",
-	"提供额外的物品合成，希望你能喜欢。",
+	"Provide additional items for game. Enjoy your new package! (You can close part of package in options)",
+	"提供额外的物品合成，享受更加丰富的游戏内容吧！（您可以在选项中选择关闭不需要的内容）",
 	"Item list:",
 	"物品列表：",
 	"- Popcorn Gun",
 	"- 玉米枪",
 	"- incinerator",
 	"- 焚烧炉",
+	"\n\nFood Recipes:",
+	"食品配方：",
 	"\n\n新浪微博：@二货爱吃白萝卜",
 }
 

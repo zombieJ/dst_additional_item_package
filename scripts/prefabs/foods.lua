@@ -26,9 +26,6 @@ local LANG_MAP = {
 local LANG = LANG_MAP[language]
 
 -- 资源
-local assets = {
-	Asset("ANIM", "anim/additional_foods.zip"),
-}
 local prefabList = {}
 local prefabs =
 {
@@ -50,6 +47,10 @@ local food_recipes = {
 	},
 }
 
+cookerrecipes = {
+	cookpot = food_recipes,
+}
+
 --------------------------------------------------
 for name,data in pairs(food_recipes) do
 	-- 预处理
@@ -63,9 +64,15 @@ for name,data in pairs(food_recipes) do
 	STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperCase] = LANG[upperCase].DESC
 
 	-- 添加食物
-	AddCookerRecipe("cookpot", data)
+	AddModPrefabCookerRecipe("cookpot", data)
 
-	-- 创建食物实体
+	-------------------- 创建食物实体 --------------------
+	local assets = {
+		Asset("ATLAS", "images/inventoryimages/"..data.name..".xml"),
+		Asset("IMAGE", "images/inventoryimages/"..data.name..".tex"),
+		Asset("ANIM", "anim/"..data.name..".zip"),
+	}
+
 	function fn()
 		local inst = CreateEntity()
 
@@ -75,10 +82,9 @@ for name,data in pairs(food_recipes) do
 
 		MakeInventoryPhysics(inst)
 
-		inst.AnimState:SetBuild("additional_foods")
-		inst.AnimState:SetBank("additional_foods")
-		inst.AnimState:PlayAnimation(data.name, false)
-		print("Animation:"..data.name)
+		inst.AnimState:SetBuild(data.name)
+		inst.AnimState:SetBank(data.name)
+		inst.AnimState:PlayAnimation("BUILD", false)
 
 		inst:AddTag("preparedfood")
 		if data.tags then
@@ -105,7 +111,9 @@ for name,data in pairs(food_recipes) do
 		inst:AddComponent("inspectable")
 		inst.wet_prefix = data.wet_prefix
 
+		-- 物品栏
 		inst:AddComponent("inventoryitem")
+		inst.components.inventoryitem.atlasname = "images/inventoryimages/"..data.name..".xml"
 
 		inst:AddComponent("stackable")
 		inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM

@@ -2,6 +2,6 @@
 <Atlas>
 	<Texture filename="egg_pancake.tex" />
 	<Elements>
-		<Element name="egg_pancake.tex" u1="0.001" u2="0.96775" v2="0.999" v1="0.235375" variant="" />
+		<Element name="egg_pancake.tex" u1="0.001" u2="0.983375" v2="0.999" v1="0.251" variant="" />
 	</Elements>
 </Atlas>
