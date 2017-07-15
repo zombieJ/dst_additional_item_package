@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="durian_sugar">
+        <file id="0" name="durian_sugar/durian_sugar.png" width="256" height="256" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="durian_sugar/output.png" width="141" height="141" pivot_x="0.53169" pivot_y="0.461268"/>
+    </folder>
+    <entity id="0" name="durian_sugar">
+        <animation id="0" name="BUILD" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="output" folder="0" file="1" abs_x="-1.03169" abs_y="3.038732" abs_pivot_x="0.53169" abs_pivot_y="0.461268" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="output">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="-1.03169" y="3.038732"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

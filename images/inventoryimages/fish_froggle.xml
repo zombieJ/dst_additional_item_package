@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Atlas>
+	<Texture filename="fish_froggle.tex" />
+	<Elements>
+		<Element name="fish_froggle.tex" u1="0.001" u2="0.920875" v2="0.999" v1="0.235375" variant="" />
+	</Elements>
+</Atlas>

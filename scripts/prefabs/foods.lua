@@ -22,6 +22,22 @@ local LANG_MAP = {
 			["NAME"] = "Skunk Smoothies",
 			["DESC"] = "What Is The SMELLLL!",
 		},
+		["FISH_FROGGLE"] = {
+			["NAME"] = "Fish Froggle",
+			["DESC"] = "Delicious from China",
+		},
+		["BAMBOO_LIGHT"] = {
+			["NAME"] = "Bamboo Light",
+			["DESC"] = "Why are you so cute?",
+		},
+		["VEGETABALLS"] = {
+			["NAME"] = "Vegetaballs",
+			["DESC"] = "Is that healthy?",
+		},
+		["VEG_LOHAN"] = {
+			["NAME"] = "Veggie Lohan",
+			["DESC"] = "Something comes from Buddhism?",
+		},
 	},
 	["chinese"] = {
 		["EGG_PANCAKE"] = {
@@ -35,6 +51,22 @@ local LANG_MAP = {
 		["SKUNK_SMOOTHIES"] = {
 			["NAME"] = "臭鼬果昔",
 			["DESC"] = "这到底是什么味道！",
+		},
+		["FISH_FROGGLE"] = {
+			["NAME"] = "美蛙鱼头",
+			["DESC"] = "中华美食~",
+		},
+		["BAMBOO_LIGHT"] = {
+			["NAME"] = "星光特典",
+			["DESC"] = "天呐，怎么这么可爱？",
+		},
+		["VEGETABALLS"] = {
+			["NAME"] = "蔬菜丸子",
+			["DESC"] = "它吃起来够健康吗？",
+		},
+		["VEG_LOHAN"] = {
+			["NAME"] = "素罗汉",
+			["DESC"] = "一念成佛，一口吃饱",
 		},
 	},
 }
@@ -53,6 +85,11 @@ local HU = TUNING.CALORIES_HUGE / 75 -- 1 hunger
 local SAN = TUNING.SANITY_SUPERTINY -- 1 sanity
 local PER = TUNING.PERISH_ONE_DAY -- 1 day
 local CO = 1 / 20 -- 1 second
+
+-- 方法
+local function getCount(entity, name)
+	return entity[name] or 0
+end
 
 -- 配方
 local food_recipes = {
@@ -82,7 +119,6 @@ local food_recipes = {
 	
 	skunk_smoothies = {
 		test = function(cooker, names, tags)
-			print(">>>"..tostring(names.durian).."-"..tostring(names.durian_cooked).."-"..tostring(tags.frozen).."-"..tostring(tags.fruit))
 			return (names.durian or names.durian_cooked) and tags.frozen and tags.fruit and tags.fruit >= 2 and not tags.inedible
 		end,
 		priority = 1,
@@ -93,6 +129,61 @@ local food_recipes = {
 		sanity = SAN * 35,
 		perishtime = PER * 6,
 		cooktime = CO * 10,
+	},
+	fish_froggle = {
+		test = function(cooker, names, tags)
+			return (names.froglegs or names.froglegs_cooked) and tags.fish and not tags.inedible
+		end,
+		priority = 2,
+		weight = 1,
+		foodtype = FOODTYPE.MEAT,
+		health = HP * 30,
+		hunger = HU * 80,
+		sanity = SAN * 15,
+		perishtime = PER * 6,
+		cooktime = CO * 40,
+	},
+	bamboo_light = {
+		test = function(cooker, names, tags)
+			return (names.corn or names.corn_cooked) and (names.carrot or names.carrot_cooked) and (names.pumpkin or names.pumpkin_cooked)
+		end,
+		priority = 1,
+		weight = 1,
+		foodtype = FOODTYPE.VEGGIE,
+		health = HP * 100,
+		hunger = HU * 5,
+		sanity = SAN * 10,
+		perishtime = PER * 20,
+		cooktime = CO * 15,
+	},
+	vegetaballs = {
+		test = function(cooker, names, tags)
+			return tags.meat and tags.veggie and not tags.inedible and not tags.frozen and not tags.fruit
+		end,
+		priority = 0,
+		weight = 1,
+		foodtype = FOODTYPE.VEGGIE,
+		health = HP * 5,
+		hunger = HU * 60,
+		sanity = SAN * 10,
+		perishtime = PER * 10,
+		cooktime = CO * 15,
+	},
+	veg_lohan = {
+		test = function(cooker, names, tags)
+			local red = getCount(names, "red_cap") +  getCount(names, "red_cap_cooked")
+			local green = getCount(names, "green_cap") +  getCount(names, "green_cap_cooked")
+			local blue = getCount(names, "blue_cap") +  getCount(names, "blue_cap_cooked")
+			return red + green + blue > 3
+		end,
+		priority = 1,
+		weight = 1,
+		foodtype = FOODTYPE.VEGGIE,
+		health = HP * 5,
+		hunger = HU * 50,
+		sanity = SAN * 15,
+		perishtime = PER * 20,
+		cooktime = CO * 30,
 	},
 }
 
