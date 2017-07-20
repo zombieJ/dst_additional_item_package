@@ -38,6 +38,30 @@ local LANG_MAP = {
 			["NAME"] = "Veggie Lohan",
 			["DESC"] = "Something comes from Buddhism?",
 		},
+		["HONEY_DRUMSTICK"] = {
+			["NAME"] = "Honey Drumstick",
+			["DESC"] = "Let's play the honey music",
+		},
+		["MEAT_BURGER"] = {
+			["NAME"] = "Meat Burger",
+			["DESC"] = "Everything is meat",
+		},
+		["VEGGIE_SKEWERS"] = {
+			["NAME"] = "Veggie Skewers",
+			["DESC"] = "The mirror of Kabobs",
+		},
+		["STINKY_MANDARIN_FISH"] = {
+			["NAME"] = "Stinky Mandarin Fish",
+			["DESC"] = "Amazing fish cook!",
+		},
+		["WATERMELON_JUICE"] = {
+			["NAME"] = "Watermelon Juice",
+			["DESC"] = "Best drink in summer",
+		},
+		["CATERPILLAR_BREAD"] = {
+			["NAME"] = "Caterpillar Bread",
+			["DESC"] = "It is moving",
+		},
 	},
 	["chinese"] = {
 		["EGG_PANCAKE"] = {
@@ -67,6 +91,30 @@ local LANG_MAP = {
 		["VEG_LOHAN"] = {
 			["NAME"] = "素罗汉",
 			["DESC"] = "一念成佛，一口吃饱",
+		},
+		["HONEY_DRUMSTICK"] = {
+			["NAME"] = "蜜汁鸡腿",
+			["DESC"] = "卡路里的完美融合",
+		},
+		["MEAT_BURGER"] = {
+			["NAME"] = "混合肉堡",
+			["DESC"] = "全部都是肉！",
+		},
+		["VEGGIE_SKEWERS"] = {
+			["NAME"] = "素食串",
+			["DESC"] = "这是烤串的镜像",
+		},
+		["STINKY_MANDARIN_FISH"] = {
+			["NAME"] = "臭鲑鱼",
+			["DESC"] = "完美的鱼料理",
+		},
+		["WATERMELON_JUICE"] = {
+			["NAME"] = "西瓜汁",
+			["DESC"] = "夏日最佳饮品",
+		},
+		["CATERPILLAR_BREAD"] = {
+			["NAME"] = "毛毛虫",
+			["DESC"] = "它是在动吗",
 		},
 	},
 }
@@ -184,6 +232,85 @@ local food_recipes = {
 		sanity = SAN * 15,
 		perishtime = PER * 20,
 		cooktime = CO * 30,
+	},
+	honey_drumstick = {
+		test = function(cooker, names, tags)
+			return names.drumstick and tags.sweetener and tags.sweetener >= 2 and tags.meat and tags.meat < 1
+		end,
+		priority = 3,
+		weight = 1,
+		foodtype = FOODTYPE.MEAT,
+		health = HP * 20,
+		hunger = HU * 40,
+		sanity = SAN * 5,
+		perishtime = PER * 6,
+		cooktime = CO * 30,
+		tags = {"honeyed"},
+	},
+	meat_burger = {
+		test = function(cooker, names, tags)
+			return tags.meat and tags.meat > 1 and tags.egg and (names.froglegs or names.froglegs_cooked) and tags.fish
+		end,
+		priority = 3,
+		weight = 1,
+		foodtype = FOODTYPE.MEAT,
+		health = HP * 20,
+		hunger = HU * 150,
+		sanity = SAN * 5,
+		perishtime = PER * 10,
+		cooktime = CO * 15,
+	},
+	veggie_skewers = {
+		test = function(cooker, names, tags)
+			return tags.veggie and tags.inedible and tags.inedible < 2 and not tags.meat
+		end,
+		priority = -1,
+		weight = 1,
+		foodtype = FOODTYPE.VEGGIE,
+		health = HP * 5,
+		hunger = HU * 30,
+		sanity = SAN * 5,
+		perishtime = PER * 15,
+		cooktime = CO * 20,
+	},
+	stinky_mandarin_fish = {
+		test = function(cooker, names, tags)
+			return tags.fish and tags.monster and not tags.inedible
+		end,
+		priority = 0,
+		weight = 1,
+		foodtype = FOODTYPE.MEAT,
+		health = HP * 10,
+		hunger = HU * 65,
+		sanity = SAN * 5,
+		perishtime = PER * 10,
+		cooktime = CO * 30,
+	},
+	watermelon_juice = {
+		test = function(cooker, names, tags)
+			return names.watermelon and tags.fruit and tags.fruit > 1 and tags.frozen
+		end,
+		priority = 1,
+		weight = 1,
+		foodtype = FOODTYPE.VEGGIE,
+		health = HP * 5,
+		hunger = HU * 40,
+		sanity = SAN * 5,
+		perishtime = PER * 6,
+		cooktime = CO * 20,
+	},
+	caterpillar_bread = {
+		test = function(cooker, names, tags)
+			return names.butterflywings and tags.meat
+		end,
+		priority = 10,
+		weight = 1,
+		foodtype = FOODTYPE.MEAT,
+		health = HP * 15,
+		hunger = HU * 50,
+		sanity = SAN * 5,
+		perishtime = PER * 15,
+		cooktime = CO * 40,
 	},
 }
 
