@@ -62,6 +62,14 @@ local LANG_MAP = {
 			["NAME"] = "Caterpillar Bread",
 			["DESC"] = "It is moving",
 		},
+		["DURIAN_SUGAR"] = {
+			["NAME"] = "Durian Sugar",
+			["DESC"] = "Not this one",
+		},
+		["FROZEN_HEART"] = {
+			["NAME"] = "Frozen Heart",
+			["DESC"] = "Why pot can make this",
+		},
 	},
 	["chinese"] = {
 		["EGG_PANCAKE"] = {
@@ -115,6 +123,14 @@ local LANG_MAP = {
 		["CATERPILLAR_BREAD"] = {
 			["NAME"] = "毛毛虫",
 			["DESC"] = "它是在动吗",
+		},
+		["DURIAN_SUGAR"] = {
+			["NAME"] = "榴莲糖",
+			["DESC"] = "我才不想吃",
+		},
+		["FROZEN_HEART"] = {
+			["NAME"] = "冰冻之心",
+			["DESC"] = "它是怎么被烹饪出来的？",
 		},
 	},
 }
@@ -312,6 +328,36 @@ local food_recipes = {
 		perishtime = PER * 15,
 		cooktime = CO * 40,
 	},
+	durian_sugar = {
+		test = function(cooker, names, tags)
+			return (names.durian or names.durian_cooked) and tags.sweetener and tags.sweetener >= 2
+		end,
+		priority = 20,
+		weight = 1,
+		foodtype = FOODTYPE.VEGGIE,
+		health = HP * (-10),
+		hunger = HU * 20,
+		sanity = SAN * 20,
+		perishtime = PER * 15,
+		cooktime = CO * 30,
+		tags = {"honeyed"},
+	},
+	frozen_heart = {
+		test = function(cooker, names, tags)
+			return tags.frozen and tags.frozen > 3
+		end,
+		priority = -1,
+		weight = 1,
+		foodtype = FOODTYPE.VEGGIE,
+		health = HP * 0,
+		hunger = HU * 0,
+		sanity = SAN * 0,
+		perishtime = PER * 30,
+		cooktime = CO * 10,
+		temperature = TUNING.COLD_FOOD_BONUS_TEMP,
+		temperatureduration = TUNING.FOOD_TEMP_LONG,
+		goldvalue = TUNING.GOLD_VALUES.MEAT,
+	},
 }
 
 --------------------------------------------------
@@ -362,6 +408,7 @@ for name,data in pairs(food_recipes) do
 			return inst
 		end
 
+		-- 食物
 		inst:AddComponent("edible")
 		inst.components.edible.healthvalue = data.health
 		inst.components.edible.hungervalue = data.hunger
@@ -373,6 +420,12 @@ for name,data in pairs(food_recipes) do
 
 		inst:AddComponent("inspectable")
 		inst.wet_prefix = data.wet_prefix
+
+		-- 是否可以交易
+		if data.goldvalue then
+			inst:AddComponent("tradable")
+			inst.components.tradable.goldvalue = data.goldvalue
+		end
 
 		-- 物品栏
 		inst:AddComponent("inventoryitem")
