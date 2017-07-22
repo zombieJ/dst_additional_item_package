@@ -8,3 +8,5 @@ cp modicon.tex package/
 cp modicon.xml package/
 cp modinfo.lua package/
 cp modmain.lua package/
+
+sed -i 's/"(DEV MODE)"//g' package/modinfo.lua
