@@ -1,6 +1,11 @@
 local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
 
 -- 配置
+local additional_weapon = GetModConfigData("additional_weapon", foldername)
+if additional_weapon ~= "open" then
+	return nil
+end
+
 local popcorn_uses = GetModConfigData("popcorn_uses", foldername)
 local popcorn_damage = GetModConfigData("popcorn_damage", foldername)
 local language = GetModConfigData("language", foldername)

@@ -1,23 +1,36 @@
 local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
 
--- 配置
-local additional_food = GetModConfigData("additional_food", foldername)
-local language = GetModConfigData("language", foldername)
+------------------------------------ 配置 ------------------------------------
+-- 体验关闭
+local additional_experiment = GetModConfigData("additional_experiment", foldername)
+if additional_experiment ~= "open" then
+	return nil
+end
 
+-- 建筑关闭
+local additional_building = GetModConfigData("additional_building", foldername)
+if additional_building ~= "open" then
+	return nil
+end
+
+-- 食物关闭
+local additional_food = GetModConfigData("additional_food", foldername)
 if additional_food ~= "open" then
 	return nil
 end
+
+local language = GetModConfigData("language", foldername)
 
 local LANG_MAP = {
 	["english"] = {
 		["NAME"] = "Dark Observer",
 		["DESC"] = "Show the boss position",
-		["DESCRIBE"] = "Sacrifice gold gets tips",
+		["DESCRIBE"] = "No 'PAY' no gain",
 	},
 	["chinese"] = {
 		["NAME"] = "暗影观察者",
 		["DESC"] = "显示Boss的坐标",
-		["DESCRIBE"] = "献祭财富获得提示",
+		["DESCRIBE"] = "没有付出就没有提示",
 	},
 }
 

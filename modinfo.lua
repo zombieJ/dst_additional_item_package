@@ -36,10 +36,51 @@ api_version = 10
 
 configuration_options =
 {
-    {
+	{
+		name = "additional_weapon",
+		label = "Addtional Weapon Recipes",
+		options =
+		{
+			{description = "Open", data = "open"},
+			{description = "Close", data = "close"},
+		},
+		default = "open",
+	},
+	{
+		name = "additional_building",
+		label = "Addtional Building Recipes",
+		options =
+		{
+			{description = "Open", data = "open"},
+			{description = "Close", data = "close"},
+		},
+		default = "open",
+	},
+	{
+		name = "additional_food",
+		label = "Addtional Food Recipes",
+		options =
+		{
+			{description = "Open", data = "open"},
+			{description = "Close", data = "close"},
+		},
+		default = "open",
+	},
+	{
+		name = "additional_experiment",
+		label = "Experiment Recipes",
+		hover = "Experience new released items",
+		options =
+		{
+			{description = "Open", data = "open"},
+			{description = "Close", data = "close"},
+		},
+		default = "open",
+	},
+	{
 		name = "popcorn_uses",
 		label = "Popcorn Gun Usage times",
-        hover = "Increase the times will need more recipes",
+		hover = "Increase the times will need more recipes",
 		options =
 		{
 			{description = "Less", data = "less", hover = "10 times: 1 Corn + 1 Twigs + 1 Rope"},
@@ -58,16 +99,8 @@ configuration_options =
 			{description = "Large", data = "large", hover = "Damage: 60"},
 		},
 		default = "normal",
-	},{
-		name = "additional_food",
-		label = "Addtional Food Recipes",
-		options =
-		{
-			{description = "Open", data = "open"},
-			{description = "Close", data = "close"},
-		},
-		default = "open",
-	},{
+	},
+	{
 		name = "language",
 		label = "Language",
 		options =

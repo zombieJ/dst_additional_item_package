@@ -2,11 +2,11 @@ local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKA
 
 -- 配置
 local additional_food = GetModConfigData("additional_food", foldername)
-local language = GetModConfigData("language", foldername)
-
 if additional_food ~= "open" then
 	return nil
 end
+
+local language = GetModConfigData("language", foldername)
 
 local LANG_MAP = {
 	["english"] = {
