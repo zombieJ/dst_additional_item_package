@@ -1,6 +1,6 @@
 local descList =
 {
-"(DEV MODE)"
+"(DEV MODE)",
 	"Provide additional items for game. Enjoy your new package! (You can close part of package in options)",
 	"提供额外的物品合成，享受更加丰富的游戏内容吧！（您可以在选项中选择关闭不需要的内容）",
 
@@ -21,11 +21,11 @@ local function joinArray(arr, spliter)
 	return strs
 end
 
-name = "Additional Item Package"
+name = "Additional Item Package DEV"
 description = joinArray(descList, "\n")
 author = "ZombieJ"
-version = "0.0.3"
-forumthread = ""
+version = "0.1.0"
+forumthread = "http://steamcommunity.com/sharedfiles/filedetails/?id=1085586145"
 icon_atlas = "modicon.xml"
 icon = "modicon.tex"
 dst_compatible = true
