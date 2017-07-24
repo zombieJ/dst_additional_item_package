@@ -32,6 +32,7 @@ local ShadowFollower = Class(function(self, inst)
 		self.vest = SpawnPrefab("dark_observer_vest")
 		self.vest.Transform:SetPosition(x, y, z)
 		self.vest.MiniMapEntity:SetEnabled(false)
+		self.vest.__hasMaster = true
 
 		-- 地图跟随者
 		self.icon = SpawnPrefab("globalmapicon")

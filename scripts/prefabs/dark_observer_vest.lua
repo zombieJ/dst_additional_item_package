@@ -55,8 +55,14 @@ local assets =
 
 local prefabs =
 {
-	"globalmapiconunderfog",
+	--"globalmapiconunderfog",
 }
+
+local function OnInit(inst)
+	if not inst.__hasMaster then
+		inst:Remove()
+	end
+end
 
 local function fn()
 	local inst = CreateEntity()
@@ -73,18 +79,19 @@ local function fn()
 	inst.MiniMapEntity:SetDrawOverFogOfWar(true)
 	inst.MiniMapEntity:SetRestriction("player")
 	inst.MiniMapEntity:SetPriority(10)
+	-- inst.MiniMapEntity:SetEnabled(false)
 
 	-- 探知地图
-	inst:AddComponent("maprevealable")
-	inst.components.maprevealable:SetIconPrefab("globalmapiconunderfog")
-	inst.components.maprevealable:SetIcon("dark_observer_vest.tex")
+	--inst:AddComponent("maprevealable")
+	--inst.components.maprevealable:SetIconPrefab("globalmapiconunderfog")
+	--inst.components.maprevealable:SetIcon("dark_observer_vest.tex")
 
 	-- 动画
 	-- inst.AnimState:SetBank("dark_observer_vest")
 	-- inst.AnimState:SetBuild("dark_observer_vest")
 	-- inst.AnimState:PlayAnimation("idle", true)
 
-	-- inst.entity:SetPristine()
+	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
 		return inst
@@ -92,6 +99,7 @@ local function fn()
 
 	-- 可检查
 	inst:AddComponent("inspectable")
+	inst:DoTaskInTime(1, OnInit)
 
 	return inst
 end
