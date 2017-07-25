@@ -37,10 +37,15 @@ function ShadowFollowerPrefabPostInit(inst)
 end
 
 
-AddPrefabPostInit("dragonfly", function(inst) ShadowFollowerPrefabPostInit(inst) end)
-AddPrefabPostInit("deerclops", function(inst) ShadowFollowerPrefabPostInit(inst) end)
-AddPrefabPostInit("bearger", function(inst) ShadowFollowerPrefabPostInit(inst) end)
-AddPrefabPostInit("moose", function(inst) ShadowFollowerPrefabPostInit(inst) end)
+AddPrefabPostInit("dragonfly", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 龙蝇
+AddPrefabPostInit("deerclops", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 鹿角怪
+AddPrefabPostInit("bearger", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 熊獾
+AddPrefabPostInit("moose", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 麋鹿鹅
+AddPrefabPostInit("beequeen", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 蜂后
+AddPrefabPostInit("klaus", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 克劳斯
+AddPrefabPostInit("antlion", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 蚁狮
+AddPrefabPostInit("toadstool", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 蟾蜍王
+AddPrefabPostInit("toadstool_dark", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 苦难蟾蜍王
 
 -- 世界追踪
 function WorldPrefabPostInit(inst)

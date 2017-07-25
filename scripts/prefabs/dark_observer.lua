@@ -23,12 +23,12 @@ local language = GetModConfigData("language", foldername)
 
 local LANG_MAP = {
 	["english"] = {
-		["NAME"] = "Dark Observer",
+		["NAME"] = "Greedy Observer",
 		["DESC"] = "Show the boss position",
 		["DESCRIBE"] = "No 'PAY' no gain",
 	},
 	["chinese"] = {
-		["NAME"] = "暗影观察者",
+		["NAME"] = "贪婪观察者",
 		["DESC"] = "显示Boss的坐标",
 		["DESCRIBE"] = "没有付出就没有提示",
 	},
