@@ -27,6 +27,11 @@ local LANG_MAP = {
 		["DESC"] = "Show the boss position",
 		["DESCRIBE"] = "No 'PAY' no gain",
 	},
+	["spanish"] = {
+		["NAME"] = "El Observador Avariento",
+		["DESC"] = "Muestra la posición de los enemigos tipo jefe",
+		["DESCRIBE"] = "El que algo queire, algo le CUESTA",
+	},
 	["chinese"] = {
 		["NAME"] = "贪婪观察者",
 		["DESC"] = "显示Boss的坐标",
@@ -34,7 +39,7 @@ local LANG_MAP = {
 	},
 }
 
-local LANG = LANG_MAP[language]
+local LANG = LANG_MAP[language] or LANG_MAP.english
 
 -- 文字描述
 STRINGS.NAMES.DARK_OBSERVER = LANG.NAME

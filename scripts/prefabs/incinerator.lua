@@ -26,6 +26,23 @@ local LANG_MAP = {
 			["WEBBER"] = "Hmmm, finally find something can't burn",
 		},
 	},
+	["english"] = {
+		["NAME"] = "Incinerador",
+		["DESC"] = "Calcina hasta volverlo cenizas!",
+		["DESCRIBE"] = "¿Porqué no quemamos de paso la base para hacerla cenizas?",
+		["ACTIONFAIL"] = {
+			["GENERIC"] = "Vaya, finalmente he encontrado algo que no puedo incinerar",
+			["WAXWELL"] = "Vaya, finalmente he encontrado algo que no puedo incinerar",
+			["WOLFGANG"] = "Vaya, finalmente he encontrado algo que no puedo incinerar",
+			["WX78"] = "Vaya, finalmente he encontrado algo que no puedo incinerar",
+			["WILLOW"] = "Vaya, finalmente he encontrado algo que no puedo incinerar",
+			["WENDY"] = "Vaya, finalmente he encontrado algo que no puedo incinerar",
+			["WOODIE"] = "Vaya, finalmente he encontrado algo que no puedo incinerar",
+			["WICKERBOTTOM"] = "Vaya, finalmente he encontrado algo que no puedo incinerar",
+			["WATHGRITHR"] = "Vaya, finalmente he encontrado algo que no puedo incinerar",
+			["WEBBER"] = "Vaya, finalmente he encontrado algo que no puedo incinerar",
+		},
+	},
 	["chinese"] = {
 		["NAME"] = "焚烧炉",
 		["DESC"] = "把一切都烧成灰！",
@@ -45,7 +62,7 @@ local LANG_MAP = {
 	},
 }
 
-local LANG = LANG_MAP[language]
+local LANG = LANG_MAP[language] or LANG_MAP.english
 
 -- 文字描述
 STRINGS.NAMES.INCINERATOR = LANG.NAME

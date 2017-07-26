@@ -34,7 +34,7 @@ local LANG_MAP = {
 	},
 }
 
-local LANG = LANG_MAP[language]
+local LANG = LANG_MAP[language] or LANG_MAP.english
 
 -- 文字描述
 STRINGS.NAMES.DARK_OBSERVER_VEST = LANG.NAME

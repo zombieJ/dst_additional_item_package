@@ -34,6 +34,11 @@ local LANG_MAP = {
 		["DESC"] = "Don't eat it!",
 		["DESCRIBE"] = "It used to be delicious",
 	},
+	["spanish"] = {
+		["NAME"] = "Pistola de Palomitas de Maíz",
+		["DESC"] = "No te la comas!",
+		["DESCRIBE"] = "Solía ser deliciosa",
+	},
 	["chinese"] = {
 		["NAME"] = "玉米枪",
 		["DESC"] = "儿童请勿食用！",
@@ -41,7 +46,7 @@ local LANG_MAP = {
 	},
 }
 
-local LANG = LANG_MAP[language]
+local LANG = LANG_MAP[language] or LANG_MAP.english
 
 TUNING.POPCORNGUN_USES = USES_MAP[popcorn_uses]
 TUNING.POPCORNGUN_DAMAGE = DAMAGE_MAP[popcorn_damage]

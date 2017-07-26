@@ -71,6 +71,68 @@ local LANG_MAP = {
 			["DESC"] = "Why pot can make this",
 		},
 	},
+	["spanish"] = {
+		["EGG_PANCAKE"] = {
+			["NAME"] = "Pancake de huevos",
+			["DESC"] = "Demasiados huevos!",
+		},
+		["MONSTER_SALAD"] = {
+			["NAME"] = "Ensalada de Monstruo",
+			["DESC"] = "Fianlmente algo que puedo comer!",
+		},
+		["SKUNK_SMOOTHIES"] = {
+			["NAME"] = "Batido de Zorrillo",
+			["DESC"] = "¡¿Qué es ese hedor?!",
+		},
+		["FISH_FROGGLE"] = {
+			["NAME"] = "Pollo a la Anca",
+			["DESC"] = "Delicias de China",
+		},
+		["BAMBOO_LIGHT"] = {
+			["NAME"] = "Luz de Bambú",
+			["DESC"] = "¿Porqué eres tan lindo?",
+		},
+		["VEGETABALLS"] = {
+			["NAME"] = "Albondivegetales",
+			["DESC"] = "¿Son saludables?",
+		},
+		["VEG_LOHAN"] = {
+			["NAME"] = "Vegetales a la Lohan",
+			["DESC"] = "¿Algo viene del Budismo?",
+		},
+		["HONEY_DRUMSTICK"] = {
+			["NAME"] = "Perniles con Miel",
+			["DESC"] = "Toquémos música dulce",
+		},
+		["MEAT_BURGER"] = {
+			["NAME"] = "Hamburguesa de Carne",
+			["DESC"] = "Todo es carne",
+		},
+		["VEGGIE_SKEWERS"] = {
+			["NAME"] = "Brochetas Vegetales",
+			["DESC"] = "El espejo de los Kebab",
+		},
+		["STINKY_MANDARIN_FISH"] = {
+			["NAME"] = "Pescado Chino Apestoso",
+			["DESC"] = "¡Impresionante comida de mar!",
+		},
+		["WATERMELON_JUICE"] = {
+			["NAME"] = "Juego de Sandía",
+			["DESC"] = "Recomendada en el Verano",
+		},
+		["CATERPILLAR_BREAD"] = {
+			["NAME"] = "Pan de Mariposa",
+			["DESC"] = "Se está moviendo",
+		},
+		["DURIAN_SUGAR"] = {
+			["NAME"] = "Endulzante de Durian",
+			["DESC"] = "Este no",
+		},
+		["FROZEN_HEART"] = {
+			["NAME"] = "Corazón Congelado",
+			["DESC"] = "¿Porqué se puede cocinar esto?",
+		},
+	},
 	["chinese"] = {
 		["EGG_PANCAKE"] = {
 			["NAME"] = "鸡蛋灌饼",
@@ -135,7 +197,7 @@ local LANG_MAP = {
 	},
 }
 
-local LANG = LANG_MAP[language]
+local LANG = LANG_MAP[language] or LANG_MAP.english
 
 -- 资源
 local prefabList = {}
