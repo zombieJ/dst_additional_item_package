@@ -24,7 +24,7 @@ end
 name = "Additional Item Package DEV"
 description = joinArray(descList, "\n")
 author = "ZombieJ"
-version = "0.1.2"
+version = "0.1.3"
 forumthread = "http://steamcommunity.com/sharedfiles/filedetails/?id=1085586145"
 icon_atlas = "modicon.xml"
 icon = "modicon.tex"

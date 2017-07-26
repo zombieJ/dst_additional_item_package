@@ -226,7 +226,7 @@ local food_recipes = {
 		end,
 		priority = 0,
 		weight = 1,
-		foodtype = FOODTYPE.VEGGIE,
+		foodtype = FOODTYPE.MEAT,
 		health = HP * 5,
 		hunger = HU * 60,
 		sanity = SAN * 10,

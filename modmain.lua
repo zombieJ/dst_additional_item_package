@@ -49,9 +49,9 @@ AddPrefabPostInit("toadstool_dark", function(inst) ShadowFollowerPrefabPostInit(
 
 -- 世界追踪
 function WorldPrefabPostInit(inst)
-	if inst:HasTag("forest") then
+	--if inst:HasTag("forest") then
 		inst:AddComponent("world_common_store")
-	end
+	--end
 end
 
 if GLOBAL.TheNet:GetIsServer() or GLOBAL.TheNet:IsDedicated() then
