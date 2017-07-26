@@ -38,7 +38,7 @@ configuration_options =
 {
 	{
 		name = "additional_weapon",
-		label = "Addtional Weapon Recipes",
+		label = "Weapon Recipes",
 		options =
 		{
 			{description = "Open", data = "open"},
@@ -48,7 +48,17 @@ configuration_options =
 	},
 	{
 		name = "additional_building",
-		label = "Addtional Building Recipes",
+		label = "Building Recipes",
+		options =
+		{
+			{description = "Open", data = "open"},
+			{description = "Close", data = "close"},
+		},
+		default = "open",
+	},
+	{
+		name = "additional_survival",
+		label = "Survival Recipes",
 		options =
 		{
 			{description = "Open", data = "open"},
@@ -58,7 +68,7 @@ configuration_options =
 	},
 	{
 		name = "additional_food",
-		label = "Addtional Food Recipes",
+		label = "Food Recipes",
 		options =
 		{
 			{description = "Open", data = "open"},

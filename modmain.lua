@@ -16,6 +16,7 @@ PrefabFiles =
 	"foods",
 	"dark_observer",
 	"dark_observer_vest",
+	"aip_blood_package",
 }
 
 --------------------------------------- 图标 ---------------------------------------

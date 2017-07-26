@@ -87,7 +87,7 @@ local prefabs =
 
 -- 交易者
 local function AcceptTest(inst, item)
-	if item.prefab == "chester_eyebone" or item.prefab == "ash" then
+	if item.prefab == "chester_eyebone" or item.prefab == "hutch_fishbowl" or item.prefab == "ash" then
 		return false, "INCINERATOR_NOT_BURN"
 	end
 
