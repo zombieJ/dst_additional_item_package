@@ -12,9 +12,9 @@ local language = GetModConfigData("language", foldername)
 
 -- 默认参数
 local PERISH_MAP = {
-	["less"] = 5,
-	["normal"] = 9,
-	["much"] = 15,
+	["less"] = TUNING.PERISH_FAST,
+	["normal"] = TUNING.PERISH_MED,
+	["much"] = TUNING.PERISH_PRESERVED,
 }
 local DAMAGE_MAP = {
 	["less"] = TUNING.NIGHTSWORD_DAMAGE / 68 * 30,
@@ -37,14 +37,15 @@ local LANG_MAP = {
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
-TUNING.API_FISH_SWORD_PERISH = PERISH_MAP[weapon_uses]
-TUNING.API_FISH_SWORD_DAMAGE = DAMAGE_MAP[weapon_damage]
+TUNING.AIP_FISH_SWORD_PERISH = PERISH_MAP[weapon_uses]
+TUNING.AIP_FISH_SWORD_DAMAGE = DAMAGE_MAP[weapon_damage]
 
 -- 资源
 local assets =
 {
-	Asset("ANIM", "anim/api_fish_sword.zip"),
-	-- Asset("ANIM", "anim/swap_api_fish_sword.zip"),
+	Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
+	Asset("ANIM", "anim/aip_fish_sword.zip"),
+	Asset("ANIM", "anim/aip_fish_sword_swap.zip"),
 }
 
 local prefabs =
@@ -52,20 +53,20 @@ local prefabs =
 }
 
 -- 文字描述
-STRINGS.NAMES.API_FISH_SWORD = LANG.NAME
-STRINGS.RECIPE_DESC.API_FISH_SWORD = LANG.REC_DESC
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.API_FISH_SWORD = LANG.DESC
+STRINGS.NAMES.AIP_FISH_SWORD = LANG.NAME
+STRINGS.RECIPE_DESC.AIP_FISH_SWORD = LANG.REC_DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FISH_SWORD = LANG.DESC
 
 -- 配方
-local api_fish_sword = Recipe("api_fish_sword", {Ingredient("fish", 1),Ingredient("nightmarefuel", 2),Ingredient("pigskin", 1)}, RECIPETABS.WAR, TECH.SCIENCE_TWO)
-api_fish_sword.atlas = "images/inventoryimages/api_fish_sword.xml"
+local aip_fish_sword = Recipe("aip_fish_sword", {Ingredient("fish", 1),Ingredient("nightmarefuel", 2),Ingredient("rope", 1)}, RECIPETABS.WAR, TECH.SCIENCE_TWO)
+aip_fish_sword.atlas = "images/inventoryimages/aip_fish_sword.xml"
 
 -----------------------------------------------------------
 
 local function UpdateDamage(inst)
 	if inst.components.perishable and inst.components.weapon then
-		local dmg = TUNING.API_FISH_SWORD_DAMAGE * inst.components.perishable:GetPercent()
-		dmg = Remap(dmg, 0, TUNING.API_FISH_SWORD_DAMAGE, TUNING.HAMBAT_MIN_DAMAGE_MODIFIER*TUNING.API_FISH_SWORD_DAMAGE, TUNING.API_FISH_SWORD_DAMAGE)
+		local dmg = TUNING.AIP_FISH_SWORD_DAMAGE * inst.components.perishable:GetPercent()
+		dmg = Remap(dmg, 0, TUNING.AIP_FISH_SWORD_DAMAGE, TUNING.HAMBAT_MIN_DAMAGE_MODIFIER*TUNING.AIP_FISH_SWORD_DAMAGE, TUNING.AIP_FISH_SWORD_DAMAGE)
 		inst.components.weapon:SetDamage(dmg)
 	end
 end
@@ -96,8 +97,8 @@ function fn()
 	
 	MakeInventoryPhysics(inst)
 	
-	inst.AnimState:SetBank("api_fish_sword")
-	inst.AnimState:SetBuild("api_fish_sword")
+	inst.AnimState:SetBank("aip_fish_sword")
+	inst.AnimState:SetBuild("aip_fish_sword")
 	inst.AnimState:PlayAnimation("idle")
 
 	inst:AddTag("show_spoilage")
@@ -110,12 +111,12 @@ function fn()
 	end
 
 	inst:AddComponent("perishable")
-	inst.components.perishable:SetPerishTime(TUNING.API_FISH_SWORD_PERISH)
+	inst.components.perishable:SetPerishTime(TUNING.AIP_FISH_SWORD_PERISH)
 	inst.components.perishable:StartPerishing()
 	inst.components.perishable.onperishreplacement = "spoiled_food"
 
 	inst:AddComponent("weapon")
-	inst.components.weapon:SetDamage(TUNING.API_FISH_SWORD_DAMAGE)
+	inst.components.weapon:SetDamage(TUNING.AIP_FISH_SWORD_DAMAGE)
 	inst.components.weapon:SetOnAttack(UpdateDamage)
 
 	inst.OnLoad = OnLoad
@@ -123,7 +124,7 @@ function fn()
 	inst:AddComponent("inspectable")
 
 	inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem.atlasname = "images/inventoryimages/api_fish_sword.xml"
+	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_fish_sword.xml"
 
 	MakeHauntableLaunchAndPerish(inst)
 
@@ -134,4 +135,4 @@ function fn()
 	return inst
 end
 
-return Prefab( "popcorngun", fn, assets) 
+return Prefab( "aip_fish_sword", fn, assets) 
