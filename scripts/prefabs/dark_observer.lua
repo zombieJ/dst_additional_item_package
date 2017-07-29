@@ -32,6 +32,11 @@ local LANG_MAP = {
 		["DESC"] = "Muestra la posición de los enemigos tipo jefe",
 		["DESCRIBE"] = "El que algo queire, algo le CUESTA",
 	},
+	["russian"] = {
+		["NAME"] = "Жадный Наблюдатель",
+		["DESC"] = "Показывает местоположение босса",
+		["DESCRIBE"] = "Нет платы - нет помощи.",
+	},
 	["chinese"] = {
 		["NAME"] = "贪婪观察者",
 		["DESC"] = "显示Boss的坐标",

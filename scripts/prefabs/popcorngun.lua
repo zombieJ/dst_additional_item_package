@@ -6,8 +6,8 @@ if additional_weapon ~= "open" then
 	return nil
 end
 
-local popcorn_uses = GetModConfigData("popcorn_uses", foldername)
-local popcorn_damage = GetModConfigData("popcorn_damage", foldername)
+local weapon_uses = GetModConfigData("weapon_uses", foldername)
+local weapon_damage = GetModConfigData("weapon_damage", foldername)
 local language = GetModConfigData("language", foldername)
 
 -- 默认参数
@@ -17,9 +17,9 @@ local USES_MAP = {
 	["much"] = 50,
 }
 local DAMAGE_MAP = {
-	["less"] = 17,
-	["normal"] = 28,
-	["large"] = 60,
+	["less"] = TUNING.NIGHTSWORD_DAMAGE / 68 * 17,
+	["normal"] = TUNING.NIGHTSWORD_DAMAGE / 68 * 28,
+	["large"] = TUNING.NIGHTSWORD_DAMAGE / 68 * 60,
 }
 
 local RECIPE_MAP = {
@@ -39,6 +39,11 @@ local LANG_MAP = {
 		["DESC"] = "No te la comas!",
 		["DESCRIBE"] = "Solía ser deliciosa",
 	},
+	["russian"] = {
+		["NAME"] = "Кукурузная пушка",
+		["DESC"] = "Не ешь это!",
+		["DESCRIBE"] = "Накормим попкорном всех!",
+	},
 	["chinese"] = {
 		["NAME"] = "玉米枪",
 		["DESC"] = "儿童请勿食用！",
@@ -48,8 +53,8 @@ local LANG_MAP = {
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
-TUNING.POPCORNGUN_USES = USES_MAP[popcorn_uses]
-TUNING.POPCORNGUN_DAMAGE = DAMAGE_MAP[popcorn_damage]
+TUNING.POPCORNGUN_USES = USES_MAP[weapon_uses]
+TUNING.POPCORNGUN_DAMAGE = DAMAGE_MAP[weapon_damage]
 
 -- 资源
 local assets =
@@ -69,7 +74,7 @@ STRINGS.RECIPE_DESC.POPCORNGUN = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.POPCORNGUN = LANG.DESCRIBE
 
 -- 配方
-local popcorngun = Recipe("popcorngun", RECIPE_MAP[popcorn_uses], RECIPETABS.WAR, TECH.SCIENCE_TWO)
+local popcorngun = Recipe("popcorngun", RECIPE_MAP[weapon_uses], RECIPETABS.WAR, TECH.SCIENCE_TWO)
 popcorngun.atlas = "images/inventoryimages/popcorngun.xml"
 
 -----------------------------------------------------------

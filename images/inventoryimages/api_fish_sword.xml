@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Atlas>
+	<Texture filename="api_fish_sword.tex" />
+	<Elements>
+		<Element name="api_fish_sword.tex" u1="0.001" u2="0.9365" v2="0.999" v1="0.016625" variant="" />
+	</Elements>
+</Atlas>

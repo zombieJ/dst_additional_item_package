@@ -88,25 +88,24 @@ configuration_options =
 		default = "open",
 	},
 	{
-		name = "popcorn_uses",
-		label = "Popcorn Gun Usage times",
-		hover = "Increase the times will need more recipes",
+		name = "weapon_uses",
+		label = "Weapon Usage times",
 		options =
 		{
-			{description = "Less", data = "less", hover = "10 times: 1 Corn + 1 Twigs + 1 Rope"},
-			{description = "Default", data = "normal", hover = "20 times: 2 Corn + 2 Twigs + 1 Silk"},
-			{description = "Much", data = "much", hover = "50 times: 3 Corn + 2 Twigs + 3 Silk"},
+			{description = "Less", data = "less"},
+			{description = "Default", data = "normal"},
+			{description = "Much", data = "much"},
 		},
 		default = "normal",
 	},
 	{
-		name = "popcorn_damage",
-		label = "Popcorn Gun Damage",
+		name = "weapon_damage",
+		label = "Weapon Damage",
 		options =
 		{
-			{description = "Less", data = "less", hover = "Damage: 17"},
-			{description = "Default", data = "normal", hover = "Damage: 28"},
-			{description = "Large", data = "large", hover = "Damage: 60"},
+			{description = "Less", data = "less"},
+			{description = "Default", data = "normal"},
+			{description = "Large", data = "large"},
 		},
 		default = "normal",
 	},
@@ -118,6 +117,7 @@ configuration_options =
 			{description = "中文", data = "chinese"},
 			{description = "English", data = "english"},
 			{description = "Spanish", data = "spanish"},
+			{description = "Russian", data = "russian"},
 		},
 		default = "english",
 	},

@@ -17,6 +17,7 @@ PrefabFiles =
 	"dark_observer",
 	"dark_observer_vest",
 	"aip_blood_package",
+	"aip_fish_sword",
 }
 
 --------------------------------------- 图标 ---------------------------------------

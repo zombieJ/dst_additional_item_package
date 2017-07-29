@@ -26,7 +26,7 @@ local LANG_MAP = {
 			["WEBBER"] = "Hmmm, finally find something can't burn",
 		},
 	},
-	["english"] = {
+	["spanish"] = {
 		["NAME"] = "Incinerador",
 		["DESC"] = "Calcina hasta volverlo cenizas!",
 		["DESCRIBE"] = "¿Porqué no quemamos de paso la base para hacerla cenizas?",
@@ -41,6 +41,23 @@ local LANG_MAP = {
 			["WICKERBOTTOM"] = "Vaya, finalmente he encontrado algo que no puedo incinerar",
 			["WATHGRITHR"] = "Vaya, finalmente he encontrado algo que no puedo incinerar",
 			["WEBBER"] = "Vaya, finalmente he encontrado algo que no puedo incinerar",
+		},
+	},
+	["russian"] = {
+		["NAME"] = "Мусоросжигатель",
+		["DESC"] = "Преврати всё в пепел!",
+		["DESCRIBE"] = "Почему я не могу просто сжечь дом, чтобы получить пепел?",
+		["ACTIONFAIL"] = {
+			["GENERIC"] = "Хм, видимо есть то, что я не могу сжечь.",
+			["WAXWELL"] = "Хм, видимо есть то, что я не могу сжечь.",
+			["WOLFGANG"] = "Хм, видимо есть то, что я не могу сжечь.",
+			["WX78"] = "Хм, видимо есть то, что я не могу сжечь.",
+			["WILLOW"] = "Хм, видимо есть то, что я не могу сжечь.",
+			["WENDY"] = "Хм, видимо есть то, что я не могу сжечь.",
+			["WOODIE"] = "Хм, видимо есть то, что я не могу сжечь.",
+			["WICKERBOTTOM"] = "Хм, видимо есть то, что я не могу сжечь.",
+			["WATHGRITHR"] = "Хм, видимо есть то, что я не могу сжечь.",
+			["WEBBER"] = "Хм, видимо есть то, что я не могу сжечь.",
 		},
 	},
 	["chinese"] = {
@@ -104,7 +121,7 @@ local prefabs =
 
 -- 交易者
 local function AcceptTest(inst, item)
-	if item.prefab == "chester_eyebone" or item.prefab == "hutch_fishbowl" or item.prefab == "ash" then
+	if item:HasTag("irreplaceable") or item.prefab == "ash" then
 		return false, "INCINERATOR_NOT_BURN"
 	end
 
