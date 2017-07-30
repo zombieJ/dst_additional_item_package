@@ -44,6 +44,11 @@ local LANG_MAP = {
 		["DESC"] = "Не ешь это!",
 		["DESCRIBE"] = "Накормим попкорном всех!",
 	},
+	["portuguese"] = {
+		["NAME"] = "Arma de pipoca",
+		["DESC"] = "Não coma ela!",
+		["DESCRIBE"] = "Era deliciosa",
+	},
 	["chinese"] = {
 		["NAME"] = "玉米枪",
 		["DESC"] = "儿童请勿食用！",

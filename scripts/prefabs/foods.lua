@@ -205,6 +205,68 @@ local LANG_MAP = {
 			["DESC"] = "Почему я могу сделать это в казане?",
 		},
 	},
+	["portuguese"] = {
+		["EGG_PANCAKE"] = {
+			["NAME"] = "Panqueca de ovos",
+			["DESC"] = "Muitos ovos!",
+		},
+		["MONSTER_SALAD"] = {
+			["NAME"] = "Salada de monstro",
+			["DESC"] = "Pelo menos é algo que posso comer",
+		},
+		["SKUNK_SMOOTHIES"] = {
+			["NAME"] = "Batida de Cangamba",
+			["DESC"] = "Oque é esse cheiro!",
+		},
+		["FISH_FROGGLE"] = {
+			["NAME"] = "Peixe froggle",
+			["DESC"] = "Delicioso da china",
+		},
+		["BAMBOO_LIGHT"] = {
+			["NAME"] = "Luz de bambu",
+			["DESC"] = "Porque voce é tão fofa?",
+		},
+		["VEGETABALLS"] = {
+			["NAME"] = "Bolas de vegetal",
+			["DESC"] = "Isso é saudavel?",
+		},
+		["VEG_LOHAN"] = {
+			["NAME"] = "Lohan vegetal",
+			["DESC"] = "Algo que vem do budismo?",
+		},
+		["HONEY_DRUMSTICK"] = {
+			["NAME"] = "Coxinha de mel",
+			["DESC"] = "Vamos tocar a musica de mel",
+		},
+		["MEAT_BURGER"] = {
+			["NAME"] = "Hamburger de carne",
+			["DESC"] = "Tudo é de carne",
+		},
+		["VEGGIE_SKEWERS"] = {
+			["NAME"] = "Veggie Skewers",
+			["DESC"] = "The mirror of Kabobs",
+		},
+		["STINKY_MANDARIN_FISH"] = {
+			["NAME"] = "Peixe mandarim fedido",
+			["DESC"] = "Cozinha de peixe muito boa!",
+		},
+		["WATERMELON_JUICE"] = {
+			["NAME"] = "Suco de melancia",
+			["DESC"] = "Melhor suco do verão",
+		},
+		["CATERPILLAR_BREAD"] = {
+			["NAME"] = "Pão de lagarta",
+			["DESC"] = "Está se mexendo",
+		},
+		["DURIAN_SUGAR"] = {
+			["NAME"] = "Açucar Durian",
+			["DESC"] = "Não é esse",
+		},
+		["FROZEN_HEART"] = {
+			["NAME"] = "Coração congelado",
+			["DESC"] = "Porque pot pode fazer isso",
+		},
+	},
 	["chinese"] = {
 		["EGG_PANCAKE"] = {
 			["NAME"] = "鸡蛋灌饼",

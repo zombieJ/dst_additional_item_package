@@ -60,6 +60,23 @@ local LANG_MAP = {
 			["WEBBER"] = "Хм, видимо есть то, что я не могу сжечь.",
 		},
 	},
+	["portuguese"] = {
+		["NAME"] = "Incinerador",
+		["DESC"] = "Queimar tudo em cinzas!",
+		["DESCRIBE"] = "Por que não queimamos a casa para fazer cinzas?",
+		["ACTIONFAIL"] = {
+			["GENERIC"] = "Hmmm, finalmente achei algo que não queima",
+			["WAXWELL"] = "Hmmm, finalmente achei algo que não queima",
+			["WOLFGANG"] = "Hmmm, finalmente achei algo que não queima",
+			["WX78"] = "Hmmm, finalmente achei algo que não queima",
+			["WILLOW"] = "Hmmm, finalmente achei algo que não queima",
+			["WENDY"] = "Hmmm, finalmente achei algo que não queima",
+			["WOODIE"] = "Hmmm, finalmente achei algo que não queima",
+			["WICKERBOTTOM"] = "Hmmm, finalmente achei algo que não queima",
+			["WATHGRITHR"] = "Hmmm, finalmente achei algo que não queima",
+			["WEBBER"] = "Hmmm, finalmente achei algo que não queima",
+		},
+	},
 	["chinese"] = {
 		["NAME"] = "焚烧炉",
 		["DESC"] = "把一切都烧成灰！",

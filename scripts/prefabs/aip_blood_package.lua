@@ -28,6 +28,11 @@ local LANG_MAP = {
 		["DESC"] = "Мешочек для быстрого лечения",
 		["DESCRIBE"] = "Теперь я могу провести больше времени с боссом.",
 	},
+	["portuguese"] = {
+		["NAME"] = "Bolsa de sangue",
+		["DESC"] = "Um pacote de vida rapida",
+		["DESCRIBE"] = "Eu pego mais tempo com o chefe",
+	},
 	["chinese"] = {
 		["NAME"] = "血袋",
 		["DESC"] = "快速治疗包",

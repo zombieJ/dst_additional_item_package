@@ -24,7 +24,7 @@ end
 name = "Additional Item Package DEV"
 description = joinArray(descList, "\n")
 author = "ZombieJ"
-version = "0.3.1"
+version = "0.3.2"
 forumthread = "http://steamcommunity.com/sharedfiles/filedetails/?id=1085586145"
 icon_atlas = "modicon.xml"
 icon = "modicon.tex"
@@ -139,6 +139,7 @@ configuration_options =
 			{description = "中文", data = "chinese"},
 			{description = "English", data = "english"},
 			{description = "Spanish", data = "spanish"},
+			{description = "Portuguese", data = "portuguese"},
 			{description = "Russian", data = "russian"},
 		},
 		default = "english",
