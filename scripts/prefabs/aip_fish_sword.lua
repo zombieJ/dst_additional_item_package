@@ -28,6 +28,11 @@ local LANG_MAP = {
 		["REC_DESC"] = "Fish is best friend!",
 		["DESC"] = "Too hunger to eat it",
 	},
+	["russian"] = {
+		["NAME"] = "Рыбный меч",
+		["REC_DESC"] = "Рыба - лучший друг!",
+		["DESC"] = "Я еле сдерживаюсь, чтобы не съесть это!",
+	},
 	["chinese"] = {
 		["NAME"] = "鱼刀",
 		["REC_DESC"] = "鱼是最好的朋友！",

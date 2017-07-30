@@ -6,7 +6,15 @@ if additional_survival ~= "open" then
 	return nil
 end
 
+local survival_effect = GetModConfigData("survival_effect", foldername)
 local language = GetModConfigData("language", foldername)
+
+-- 默认参数
+local HEAL_MAP = {
+	["less"] = TUNING.HEALING_MEDLARGE,
+	["normal"] = TUNING.HEALING_LARGE,
+	["large"] = TUNING.HEALING_HUGE,
+}
 
 -- 语言
 local LANG_MAP = {
@@ -81,7 +89,7 @@ function fn()
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_blood_package.xml"
 
 	inst:AddComponent("healer")
-	inst.components.healer:SetHealthAmount(TUNING.HEALING_LARGE)
+	inst.components.healer:SetHealthAmount(HEAL_MAP[survival_effect])
 
 	MakeHauntableLaunch(inst)
 

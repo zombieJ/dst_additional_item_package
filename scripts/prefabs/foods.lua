@@ -6,8 +6,18 @@ if additional_food ~= "open" then
 	return nil
 end
 
+local food_effect = GetModConfigData("food_effect", foldername)
 local language = GetModConfigData("language", foldername)
 
+-- 默认参数
+local EFFECT_MAP = {
+	["less"] = 0.6,
+	["normal"] = 1,
+	["large"] = 1.5,
+}
+local effectPTG = EFFECT_MAP[food_effect]
+
+-- 语言
 local LANG_MAP = {
 	["english"] = {
 		["EGG_PANCAKE"] = {
@@ -490,6 +500,11 @@ for name,data in pairs(food_recipes) do
 	data.name = name
 	data.weight = data.weight or 1
 	data.priority = data.priority or 0
+
+	-- 食物属性
+	data.health = data.health * effectPTG
+	data.hunger = data.hunger * effectPTG
+	data.sanity = data.sanity * effectPTG
 
 	-- 添加文字
 	local upperCase = string.upper(name)
