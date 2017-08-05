@@ -77,6 +77,16 @@ configuration_options =
 		default = "open",
 	},
 	{
+		name = "additional_dress",
+		label = "Dress Recipes",
+		options =
+		{
+			{description = "Open", data = "open"},
+			{description = "Close", data = "close"},
+		},
+		default = "open",
+	},
+	{
 		name = "additional_experiment",
 		label = "Experiment Recipes",
 		hover = "Experience new released items",

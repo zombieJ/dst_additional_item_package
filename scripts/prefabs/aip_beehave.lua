@@ -35,6 +35,11 @@ local LANG_MAP = {
 		["REC_DESC"] = "Realy Have Bee!",
 		["DESC"] = "I can hear the noise",
 	},
+	["russian"] = {
+		["NAME"] = "Улей",
+		["REC_DESC"] = "Они на вашей стороне.",
+		["DESC"] = "Я слышу этот звук.",
+	},
 	["chinese"] = {
 		["NAME"] = "蜂语",
 		["REC_DESC"] = "真的有蜜蜂！",

@@ -19,6 +19,8 @@ PrefabFiles =
 	"aip_blood_package",
 	"aip_fish_sword",
 	"aip_beehave",
+
+	"aip_horse_head",
 }
 
 --------------------------------------- 图标 ---------------------------------------
