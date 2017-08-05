@@ -151,6 +151,7 @@ configuration_options =
 			{description = "Spanish", data = "spanish"},
 			{description = "Portuguese", data = "portuguese"},
 			{description = "Russian", data = "russian"},
+			{description = "Korean", data = "korean"},
 		},
 		default = "english",
 	},

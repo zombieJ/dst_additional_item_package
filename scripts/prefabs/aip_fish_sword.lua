@@ -38,6 +38,11 @@ local LANG_MAP = {
 		["REC_DESC"] = "Peixe é melhor amigo!",
 		["DESC"] = "Muita fome pra come-lo",
 	},
+	["korean"] = {
+		["NAME"] = "물고기 소드",
+		["REC_DESC"] = "물고기는 최고의 친구야!",
+		["DESC"] = "먹고싶은데 아쉬워",
+	},
 	["chinese"] = {
 		["NAME"] = "鱼刀",
 		["REC_DESC"] = "鱼是最好的朋友！",

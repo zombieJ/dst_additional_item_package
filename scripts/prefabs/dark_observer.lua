@@ -42,6 +42,11 @@ local LANG_MAP = {
 		["DESC"] = "Mostra a posição do chefão",
 		["DESCRIBE"] = "Sem comprar sem ganhar",
 	},
+	["korean"] = {
+		["NAME"] = "탐욕스런 관찰자",
+		["DESC"] = "보스 몬스터의 위치를 보여줘",
+		["DESCRIBE"] = "’대가’없이 얻을 수 있는 건 없는 법이지",
+	},
 	["chinese"] = {
 		["NAME"] = "贪婪观察者",
 		["DESC"] = "显示Boss的坐标",

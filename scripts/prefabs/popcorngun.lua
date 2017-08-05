@@ -49,6 +49,11 @@ local LANG_MAP = {
 		["DESC"] = "Não coma ela!",
 		["DESCRIBE"] = "Era deliciosa",
 	},
+	["korean"] = {
+		["NAME"] = "팝콘총",
+		["DESC"] = "먹으면 안돼!",
+		["DESCRIBE"] = "이거 예전엔 맛있었는데,,,",
+	},
 	["chinese"] = {
 		["NAME"] = "玉米枪",
 		["DESC"] = "儿童请勿食用！",

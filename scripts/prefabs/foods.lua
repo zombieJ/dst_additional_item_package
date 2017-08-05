@@ -267,6 +267,68 @@ local LANG_MAP = {
 			["DESC"] = "Porque pot pode fazer isso",
 		},
 	},
+	["korean"] = {
+		["EGG_PANCAKE"] = {
+			["NAME"] = "계란 말이 팬케이크",
+			["DESC"] = "계란이 정말 많아!",
+		},
+		["MONSTER_SALAD"] = {
+			["NAME"] = "몬스터 샐러드",
+			["DESC"] = "적어도 먹을 순 있겠어",
+		},
+		["SKUNK_SMOOTHIES"] = {
+			["NAME"] = "스컹크 스무디",
+			["DESC"] = "도대체 이게 무슨 냄새야!",
+		},
+		["FISH_FROGGLE"] = {
+			["NAME"] = "생선 개구리잡탕",
+			["DESC"] = "비린 듯 시원한 맛이야",
+		},
+		["BAMBOO_LIGHT"] = {
+			["NAME"] = "고양이 케이크",
+			["DESC"] = "어쩜 이렇게 귀엽지?",
+		},
+		["VEGETABALLS"] = {
+			["NAME"] = "채소볼",
+			["DESC"] = "이건 건강식일까?",
+		},
+		["VEG_LOHAN"] = {
+			["NAME"] = "버섯 연꽃튀김",
+			["DESC"] = "불교에거 나온 음식인가?",
+		},
+		["HONEY_DRUMSTICK"] = {
+			["NAME"] = "벌꿀 드럼스틱",
+			["DESC"] = "꿀처럼 달콤한 음암을 연주해볼까",
+		},
+		["MEAT_BURGER"] = {
+			["NAME"] = "고기 버거",
+			["DESC"] = "모든 게 고기로 만들어졌어",
+		},
+		["VEGGIE_SKEWERS"] = {
+			["NAME"] = "채소꼬치구이",
+			["DESC"] = "마치 케밥같은걸?",
+		},
+		["STINKY_MANDARIN_FISH"] = {
+			["NAME"] = "비린 중국풍 생선구이",
+			["DESC"] = "대단한 생선요리야!",
+		},
+		["WATERMELON_JUICE"] = {
+			["NAME"] = "수박주스",
+			["DESC"] = "역시 여름 최고의 주스야",
+		},
+		["CATERPILLAR_BREAD"] = {
+			["NAME"] = "애벌레빵",
+			["DESC"] = "빵이 움직여",
+		},
+		["DURIAN_SUGAR"] = {
+			["NAME"] = "두리안 사탕",
+			["DESC"] = "이건 별로야",
+		},
+		["FROZEN_HEART"] = {
+			["NAME"] = "얼음 심장",
+			["DESC"] = "왜 냄비에서 이런 게 만들어졌지?",
+		},
+	},
 	["chinese"] = {
 		["EGG_PANCAKE"] = {
 			["NAME"] = "鸡蛋灌饼",

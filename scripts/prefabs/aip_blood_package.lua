@@ -33,6 +33,11 @@ local LANG_MAP = {
 		["DESC"] = "Um pacote de vida rapida",
 		["DESCRIBE"] = "Eu pego mais tempo com o chefe",
 	},
+	["korean"] = {
+		["NAME"] = "혈액 주머니",
+		["DESC"] = "빠른 회복을 위한 팩",
+		["DESCRIBE"] = "보스들과 더 오래 싸울 수 있겠어",
+	},
 	["chinese"] = {
 		["NAME"] = "血袋",
 		["DESC"] = "快速治疗包",
