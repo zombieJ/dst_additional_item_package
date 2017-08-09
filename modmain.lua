@@ -20,7 +20,9 @@ PrefabFiles =
 	"aip_fish_sword",
 	"aip_beehave",
 
-	"aip_horse_head",
+	"aip_dress",
+	-- "aip_horse_head",
+	-- "aip_som",
 }
 
 --------------------------------------- 图标 ---------------------------------------

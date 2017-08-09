@@ -24,7 +24,7 @@ end
 name = "Additional Item Package DEV"
 description = joinArray(descList, "\n")
 author = "ZombieJ"
-version = "0.4.0"
+version = "0.5.0"
 forumthread = "http://steamcommunity.com/sharedfiles/filedetails/?id=1085586145"
 icon_atlas = "modicon.xml"
 icon = "modicon.tex"
@@ -138,6 +138,17 @@ configuration_options =
 			{description = "Less", data = "less"},
 			{description = "Default", data = "normal"},
 			{description = "Large", data = "large"},
+		},
+		default = "normal",
+	},
+	{
+		name = "dress_uses",
+		label = "Dress Usage times",
+		options =
+		{
+			{description = "Less", data = "less"},
+			{description = "Default", data = "normal"},
+			{description = "Much", data = "much"},
 		},
 		default = "normal",
 	},

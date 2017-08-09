@@ -1,25 +1,14 @@
 local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
 
 -- 配置
-local additional_dress = GetModConfigData("additional_dress", foldername)
-if additional_dress ~= "open" then
-	return nil
-end
-
-local weapon_uses = GetModConfigData("weapon_uses", foldername)
-local weapon_damage = GetModConfigData("weapon_damage", foldername)
+local dress_uses = GetModConfigData("dress_uses", foldername)
 local language = GetModConfigData("language", foldername)
 
 -- 默认参数
 local PERISH_MAP = {
-	["less"] = TUNING.PERISH_FAST,
-	["normal"] = TUNING.PERISH_MED,
-	["much"] = TUNING.PERISH_PRESERVED,
-}
-local DAMAGE_MAP = {
-	["less"] = TUNING.NIGHTSWORD_DAMAGE / 68 * 30,
-	["normal"] = TUNING.NIGHTSWORD_DAMAGE / 68 * 60,
-	["large"] = TUNING.NIGHTSWORD_DAMAGE / 68 * 90,
+	["less"] = 0.5,
+	["normal"] = 1,
+	["much"] = 2,
 }
 
 local LANG_MAP = {
@@ -27,6 +16,11 @@ local LANG_MAP = {
 		["NAME"] = "Horse Head",
 		["REC_DESC"] = "It makes you faster",
 		["DESC"] = "I have 4 legs",
+	},
+	["russian"] = {
+		["NAME"] = "Голова Лошади",
+		["REC_DESC"] = "Это сделает тебя быстрее",
+		["DESC"] = "Теперь у меня 4 ноги.",
 	},
 	["chinese"] = {
 		["NAME"] = "马头",
@@ -37,19 +31,7 @@ local LANG_MAP = {
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
-TUNING.AIP_FISH_SWORD_PERISH = PERISH_MAP[weapon_uses]
-TUNING.AIP_FISH_SWORD_DAMAGE = DAMAGE_MAP[weapon_damage]
-
--- 资源
-local assets =
-{
-	Asset("ATLAS", "images/inventoryimages/aip_horse_head.xml"),
-	Asset("ANIM", "anim/aip_horse_head.zip"),
-}
-
-local prefabs =
-{
-}
+TUNING.AIP_HORSE_HEAD_FUEL = TUNING.YELLOWAMULET_FUEL * PERISH_MAP[dress_uses]
 
 -- 文字描述
 STRINGS.NAMES.AIP_HORSE_HEAD = LANG.NAME
@@ -60,8 +42,18 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_HORSE_HEAD = LANG.DESC
 local aip_horse_head = Recipe("aip_horse_head", {Ingredient("beefalowool", 5),Ingredient("boneshard", 3),Ingredient("beardhair", 3)}, RECIPETABS.DRESS, TECH.SCIENCE_TWO)
 aip_horse_head.atlas = "images/inventoryimages/aip_horse_head.xml"
 
+local tempalte = require("prefabs/aip_dress_template")
+return tempalte("aip_horse_head", {
+	hideHead = true,
+	walkspeedmult = TUNING.CANE_SPEED_MULT,
+	fueled = {
+		level = TUNING.AIP_HORSE_HEAD_FUEL,
+	},
+	waterproofer = true,
+})
+
 -----------------------------------------------------------
-local function onequip(inst, owner)
+--[[local function onequip(inst, owner)
 	owner.AnimState:OverrideSymbol("swap_hat", "aip_horse_head", "swap_hat")
 	owner.AnimState:Show("HAT")
 	owner.AnimState:Show("HAIR_HAT")
@@ -132,7 +124,7 @@ local function fn()
 
 	inst:AddComponent("fueled")
 	inst.components.fueled.fueltype = FUELTYPE.USAGE
-	inst.components.fueled:InitializeFuelLevel(TUNING.YELLOWAMULET_FUEL)
+	inst.components.fueled:InitializeFuelLevel(TUNING.AIP_HORSE_HEAD_FUEL)
 	inst.components.fueled:SetDepletedFn(inst.Remove)
 
 	MakeHauntableLaunch(inst)
@@ -143,4 +135,4 @@ local function fn()
 	return inst
 end
 
-return Prefab("aip_horse_head", fn, assets, prefabs)
+return Prefab("aip_horse_head", fn, assets, prefabs)]]
