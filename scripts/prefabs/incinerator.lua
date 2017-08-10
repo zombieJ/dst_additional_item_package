@@ -166,7 +166,19 @@ local function OnGetItemFromPlayer(inst, giver, item)
 	inst.AnimState:PlayAnimation("consume")
 	inst.AnimState:PushAnimation("idle", false)
 	inst.SoundEmitter:PlaySound("dontstarve/common/fireAddFuel")
-	inst.components.lootdropper:SpawnLootPrefab("ash")
+
+	local lootItem = "ash"
+
+	-- 根据马头剩余耐久度概率提供谜之声帽
+	if item.prefab == "aip_horse_head" and item.components.fueled then
+		local ptg = item.components.fueled:GetPercent()
+		ptg = ptg * ptg * 0.9
+		if ptg >= math.random() then
+			lootItem = "aip_som"
+		end
+	end
+
+	inst.components.lootdropper:SpawnLootPrefab(lootItem)
 
 	inst.components.burnable:Extinguish()
 	inst:DoTaskInTime(0, function ()

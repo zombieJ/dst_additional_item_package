@@ -6,6 +6,7 @@
 			level
 		},
 		waterproofer: {},
+		dapperness: {},
 	}
 ]]
 
@@ -94,6 +95,9 @@ local function template(name, config)
 		inst.components.equippable:SetOnUnequip(onunequip)
 		if config.walkspeedmult then
 			inst.components.equippable.walkspeedmult = config.walkspeedmult
+		end
+		if config.dapperness then
+			inst.components.equippable.dapperness = config.dapperness
 		end
 
 		if config.fueled then

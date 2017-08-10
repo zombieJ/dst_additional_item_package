@@ -29,9 +29,9 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 TUNING.AIP_SOM = TUNING.YELLOWAMULET_FUEL * PERISH_MAP[dress_uses]
 
 -- 文字描述
-STRINGS.NAMES.AIP_HORSE_HEAD = LANG.NAME
-STRINGS.RECIPE_DESC.AIP_HORSE_HEAD = LANG.REC_DESC
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_HORSE_HEAD = LANG.DESC
+STRINGS.NAMES.AIP_SOM = LANG.NAME
+STRINGS.RECIPE_DESC.AIP_SOM = LANG.REC_DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SOM = LANG.DESC
 
 -- 配方
 -- local aip_horse_head = Recipe("aip_horse_head", {Ingredient("beefalowool", 5),Ingredient("boneshard", 3),Ingredient("beardhair", 3)}, RECIPETABS.DRESS, TECH.SCIENCE_TWO)
@@ -43,5 +43,5 @@ return tempalte("aip_som", {
 	fueled = {
 		level = TUNING.AIP_SOM,
 	},
-	waterproofer = true,
+	dapperness = TUNING.DAPPERNESS_LARGE,
 })
