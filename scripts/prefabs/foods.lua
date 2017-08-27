@@ -480,7 +480,7 @@ local food_recipes = {
 	},
 	vegetaballs = {
 		test = function(cooker, names, tags)
-			return tags.meat and tags.veggie and not tags.inedible and not tags.frozen and not tags.fruit
+			return tags.meat and tags.meat < 3 and tags.veggie and not tags.inedible and not tags.frozen and not tags.fruit
 		end,
 		priority = 0,
 		weight = 1,

@@ -24,7 +24,7 @@ end
 name = "Additional Item Package DEV"
 description = joinArray(descList, "\n")
 author = "ZombieJ"
-version = "0.5.0"
+version = "0.6.0"
 forumthread = "http://steamcommunity.com/sharedfiles/filedetails/?id=1085586145"
 icon_atlas = "modicon.xml"
 icon = "modicon.tex"
@@ -79,6 +79,16 @@ configuration_options =
 	{
 		name = "additional_dress",
 		label = "Dress Recipes",
+		options =
+		{
+			{description = "Open", data = "open"},
+			{description = "Close", data = "close"},
+		},
+		default = "open",
+	},
+	{
+		name = "additional_chesspieces",
+		label = "Chesspieces Recipes",
 		options =
 		{
 			{description = "Open", data = "open"},
