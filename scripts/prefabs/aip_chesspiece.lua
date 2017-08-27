@@ -70,6 +70,14 @@ local PIECES =
 		name = "aip_moon",
 		moonevent = false,
 		recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 1), Ingredient("moonrocknugget", 9), Ingredient("frozen_heart", 1, "images/inventoryimages/frozen_heart.xml")},
+		common_postinit = function(inst)
+			inst.entity:AddLight()
+			inst.Light:Enable(true)
+			inst.Light:SetRadius(2)
+			inst.Light:SetFalloff(.9)
+			inst.Light:SetIntensity(0.75)
+			inst.Light:SetColour(15 / 255, 160 / 255, 180 / 255)
+		end,
 	},
 }
 
