@@ -121,279 +121,270 @@ local function GetBuildName(pieceid, materialid)
 end
 
 local function SetMaterial(inst, materialid)
-    inst.materialid = materialid
-    -- inst.AnimState:SetBuild(GetBuildName(inst.pieceid, materialid))
+	inst.materialid = materialid
+	inst.AnimState:SetBuild(GetBuildName(inst.pieceid, materialid))
 
-    inst.components.lootdropper:SetLoot({MATERIALS[materialid].prefab})
+	inst.components.lootdropper:SetLoot({MATERIALS[materialid].prefab})
 end
 
 local function DoStruggle(inst, count)
-    if inst.forcebreak then
-        if inst.components.workable ~= nil then
-            inst.AnimState:PlayAnimation("jiggle")
-            inst.SoundEmitter:PlaySound("dontstarve/common/together/sculptures/shake")
-            inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() * 0.8, function(inst)
-                if inst and inst.components.workable then
-                    inst.components.workable:Destroy(inst)
-                end
-            end)
-        end
-    else
-        local x, y, z = inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x, y, z, MOON_EVENT_RADIUS, { "chess_moonevent" }, { "INLIMBO" })
-        inst.AnimState:PlayAnimation("jiggle")
-        inst.SoundEmitter:PlaySound("dontstarve/common/together/sculptures/shake")
-        inst._task =
-            count > 1 and
-            inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), DoStruggle, count - 1) or
-            inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() + math.random() + .6, DoStruggle, math.max(1, math.random(3) - 1))
-    end
+	if inst.forcebreak then
+		if inst.components.workable ~= nil then
+			inst.AnimState:PlayAnimation("jiggle")
+			inst.SoundEmitter:PlaySound("dontstarve/common/together/sculptures/shake")
+			inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() * 0.8, function(inst)
+				if inst and inst.components.workable then
+					inst.components.workable:Destroy(inst)
+				end
+			end)
+		end
+	else
+		local x, y, z = inst.Transform:GetWorldPosition()
+		local ents = TheSim:FindEntities(x, y, z, MOON_EVENT_RADIUS, { "chess_moonevent" }, { "INLIMBO" })
+		inst.AnimState:PlayAnimation("jiggle")
+		inst.SoundEmitter:PlaySound("dontstarve/common/together/sculptures/shake")
+		inst._task =
+			count > 1 and
+			inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), DoStruggle, count - 1) or
+			inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength() + math.random() + .6, DoStruggle, math.max(1, math.random(3) - 1))
+	end
 end
 
 local function StartStruggle(inst)
-    if inst._task == nil then
-        inst._task = inst:DoTaskInTime(math.random(), DoStruggle, 1)
-    end
+	if inst._task == nil then
+		inst._task = inst:DoTaskInTime(math.random(), DoStruggle, 1)
+	end
 end
 
 local function StopStruggle(inst)
-    if inst._task ~= nil and inst.forcebreak ~= true then
-        inst._task:Cancel()
-        inst._task = nil
-    end
+	if inst._task ~= nil and inst.forcebreak ~= true then
+		inst._task:Cancel()
+		inst._task = nil
+	end
 end
 
 local function CheckMorph(inst)
-    if PIECES[inst.pieceid].moonevent 
-        and TheWorld.state.isnewmoon and
-        not inst:IsAsleep() then
+	if PIECES[inst.pieceid].moonevent 
+		and TheWorld.state.isnewmoon and
+		not inst:IsAsleep() then
 
-        StartStruggle(inst)
-    else
-        StopStruggle(inst)
-    end
+		StartStruggle(inst)
+	else
+		StopStruggle(inst)
+	end
 end
 
 local function onequip(inst, owner)
-    owner.AnimState:OverrideSymbol("swap_body", GetBuildName(inst.pieceid, inst.materialid), "swap_body")
+	owner.AnimState:OverrideSymbol("swap_body", GetBuildName(inst.pieceid, inst.materialid), "swap_body")
 end
 
 local function onunequip(inst, owner)
-    owner.AnimState:ClearOverrideSymbol("swap_body")
+	owner.AnimState:ClearOverrideSymbol("swap_body")
 end
 
 local function onworkfinished(inst)
-    if inst._task ~= nil or inst.forcebreak then
-        inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
+	if inst._task ~= nil or inst.forcebreak then
+		inst.SoundEmitter:PlaySound("dontstarve/wilson/rock_break")
 
-        local creature = SpawnPrefab("shadow_"..PIECES[inst.pieceid].name)
-        creature.Transform:SetPosition(inst.Transform:GetWorldPosition())
-        creature.Transform:SetRotation(inst.Transform:GetRotation())
-        creature.sg:GoToState("taunt")
+		local creature = SpawnPrefab("shadow_"..PIECES[inst.pieceid].name)
+		creature.Transform:SetPosition(inst.Transform:GetWorldPosition())
+		creature.Transform:SetRotation(inst.Transform:GetRotation())
+		creature.sg:GoToState("taunt")
 
-        local player = creature:GetNearestPlayer(true)
-        if player ~= nil and creature:IsNear(player, 20) then
-            creature.components.combat:SetTarget(player)
-        end
+		local player = creature:GetNearestPlayer(true)
+		if player ~= nil and creature:IsNear(player, 20) then
+			creature.components.combat:SetTarget(player)
+		end
 
-        local x, y, z = inst.Transform:GetWorldPosition()
-        local ents = TheSim:FindEntities(x, y, z, MOON_EVENT_RADIUS, { "chess_moonevent" })
-        for i, v in ipairs(ents) do
-            v.forcebreak = true
-        end
-    end
+		local x, y, z = inst.Transform:GetWorldPosition()
+		local ents = TheSim:FindEntities(x, y, z, MOON_EVENT_RADIUS, { "chess_moonevent" })
+		for i, v in ipairs(ents) do
+			v.forcebreak = true
+		end
+	end
 
-    inst.components.lootdropper:DropLoot()
-    local fx = SpawnPrefab("collapse_small")
-    fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
-    fx:SetMaterial("stone")
-    inst:Remove()
+	inst.components.lootdropper:DropLoot()
+	local fx = SpawnPrefab("collapse_small")
+	fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+	fx:SetMaterial("stone")
+	inst:Remove()
 end
 
 local function getstatus(inst)
-    return (inst._task ~= nil and "STRUGGLE")
-        or nil
+	return (inst._task ~= nil and "STRUGGLE")
+		or nil
 end
 
 local function OnShadowChessRoar(inst, forcebreak)
-    inst.forcebreak = true
-    StartStruggle(inst)
+	inst.forcebreak = true
+	StartStruggle(inst)
 end
 
 local function onsave(inst, data)
-    data.materialid = inst.materialid
-    data.pieceid = inst.pieceid
+	data.materialid = inst.materialid
+	data.pieceid = inst.pieceid
 end
 
 local function onload(inst, data)
-    if data ~= nil then
-        inst.pieceid = data.pieceid
-        SetMaterial(inst, data.materialid or 1)
-    end
+	if data ~= nil then
+		inst.pieceid = data.pieceid
+		SetMaterial(inst, data.materialid or 1)
+	end
 end
 
 local function makepiece(pieceid, materialid)
-    local build = GetBuildName(pieceid, materialid)
+	local build = GetBuildName(pieceid, materialid)
 
-    local assets =
-    {
+	local assets =
+	{
 		Asset("ATLAS", "images/inventoryimages/chesspiece_"..PIECES[pieceid].name..".xml"),
-        -- Asset("ANIM", "anim/chesspiece.zip"),
-        Asset("INV_IMAGE", "chesspiece_"..PIECES[pieceid].name),
+		Asset("INV_IMAGE", "chesspiece_"..PIECES[pieceid].name),
+	}
 
-        -- TODO: Test. Remove this
-        Asset("ANIM", "anim/swap_chesspiece_aip_moon_marble.zip"),
-        -- Asset("ANIM", "anim/chesspiece_aip_moon_marble.zip"),
-    }
+	local prefabs = 
+	{
+		"collapse_small",
+	}
+	if materialid then
+		table.insert(prefabs, MATERIALS[materialid].prefab)
+		table.insert(assets, Asset("ANIM", "anim/"..build..".zip"))
+	else
+		for m = 1, #MATERIALS do
+			local p = "chesspiece_" .. PIECES[pieceid].name .. "_" .. MATERIALS[m].name
+			table.insert(prefabs, p)
+		end
+	end
+	if PIECES[pieceid].moonevent then
+		table.insert(prefabs, "shadow_"..PIECES[pieceid].name)
+	end
 
-    local prefabs = 
-    {
-        "collapse_small",
-    }
-    if materialid then
-        table.insert(prefabs, MATERIALS[materialid].prefab)
-        -- table.insert(assets, Asset("ANIM", "anim/"..build..".zip"))
-    else
-        for m = 1, #MATERIALS do
-            local p = "chesspiece_" .. PIECES[pieceid].name .. "_" .. MATERIALS[m].name
-            table.insert(prefabs, p)
-        end
-    end
-    if PIECES[pieceid].moonevent then
-        table.insert(prefabs, "shadow_"..PIECES[pieceid].name)
-    end
+	local function fn()
+		local inst = CreateEntity()
 
-    local function fn()
-        local inst = CreateEntity()
+		inst.entity:AddTransform()
+		inst.entity:AddAnimState()
+		inst.entity:AddSoundEmitter()
+		inst.entity:AddNetwork()
 
-        inst.entity:AddTransform()
-        inst.entity:AddAnimState()
-        inst.entity:AddSoundEmitter()
-        inst.entity:AddNetwork()
+		MakeHeavyObstaclePhysics(inst, PHYSICS_RADIUS)
 
-        MakeHeavyObstaclePhysics(inst, PHYSICS_RADIUS)
+		inst.AnimState:SetBank("chesspiece")
+		inst.AnimState:SetBuild("swap_chesspiece_"..PIECES[pieceid].name.."_marble")
+		inst.AnimState:PlayAnimation("idle")
 
-        -- inst.AnimState:SetBank("chesspiece")
-        -- inst.AnimState:SetBuild("swap_chesspiece_"..PIECES[pieceid].name.."_marble")
-        -- inst.AnimState:SetBank("chesspiece_aip_moon_marble")
-        -- inst.AnimState:SetBuild("chesspiece_aip_moon_marble")
-        inst.AnimState:SetBank("chesspiece")
-        inst.AnimState:SetBuild("swap_chesspiece_aip_moon_marble")
-        inst.AnimState:PlayAnimation("idle")
+		inst:AddTag("heavy")
+		if PIECES[pieceid].moonevent then
+			inst:AddTag("chess_moonevent")
+			inst:AddTag("event_trigger")
+		end
 
-        inst:AddTag("heavy")
-        if PIECES[pieceid].moonevent then
-            inst:AddTag("chess_moonevent")
-            inst:AddTag("event_trigger")
-        end
+		inst:SetPrefabName("chesspiece_"..PIECES[pieceid].name)
 
-        inst:SetPrefabName("chesspiece_"..PIECES[pieceid].name)
+		if PIECES[pieceid].common_postinit ~= nil then
+			PIECES[pieceid].common_postinit(inst)
+		end
 
-        if PIECES[pieceid].common_postinit ~= nil then
-            PIECES[pieceid].common_postinit(inst)
-        end
+		inst.entity:SetPristine()
 
-        inst.entity:SetPristine()
+		if not TheWorld.ismastersim then
+			return inst
+		end
 
-        if not TheWorld.ismastersim then
-            return inst
-        end
+		inst:AddComponent("heavyobstaclephysics")
+		inst.components.heavyobstaclephysics:SetRadius(PHYSICS_RADIUS)
 
-        inst:AddComponent("heavyobstaclephysics")
-        inst.components.heavyobstaclephysics:SetRadius(PHYSICS_RADIUS)
+		inst:AddComponent("inspectable")
+		inst.components.inspectable.getstatus = getstatus
 
-        inst:AddComponent("inspectable")
-        inst.components.inspectable.getstatus = getstatus
+		inst:AddComponent("lootdropper")
 
-        inst:AddComponent("lootdropper")
+		inst:AddComponent("inventoryitem")
+		inst.components.inventoryitem.cangoincontainer = false
+		inst.components.inventoryitem:ChangeImageName("chesspiece_"..PIECES[pieceid].name)
+		inst.components.inventoryitem.atlasname = "images/inventoryimages/chesspiece_"..PIECES[pieceid].name..".xml"
 
-        inst:AddComponent("inventoryitem")
-        inst.components.inventoryitem.cangoincontainer = false
-        inst.components.inventoryitem:ChangeImageName("chesspiece_"..PIECES[pieceid].name)
-        inst.components.inventoryitem.atlasname = "images/inventoryimages/chesspiece_"..PIECES[pieceid].name..".xml"
+		inst:AddComponent("equippable")
+		inst.components.equippable.equipslot = EQUIPSLOTS.BODY
+		inst.components.equippable:SetOnEquip(onequip)
+		inst.components.equippable:SetOnUnequip(onunequip)
+		inst.components.equippable.walkspeedmult = TUNING.HEAVY_SPEED_MULT
 
-        inst:AddComponent("equippable")
-        inst.components.equippable.equipslot = EQUIPSLOTS.BODY
-        inst.components.equippable:SetOnEquip(onequip)
-        inst.components.equippable:SetOnUnequip(onunequip)
-        inst.components.equippable.walkspeedmult = TUNING.HEAVY_SPEED_MULT
+		inst:AddComponent("workable")
+		inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
+		inst.components.workable:SetWorkLeft(1)
+		inst.components.workable:SetOnFinishCallback(onworkfinished)
 
-        inst:AddComponent("workable")
-        inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
-        inst.components.workable:SetWorkLeft(1)
-        inst.components.workable:SetOnFinishCallback(onworkfinished)
+		inst:AddComponent("hauntable")
+		inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 
-        inst:AddComponent("hauntable")
-        inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
+		inst.OnLoad = onload
+		inst.OnSave = onsave
 
-        inst.OnLoad = onload
-        inst.OnSave = onsave
+		if not TheWorld:HasTag("cave") then
+			if PIECES[pieceid].moonevent then
+				inst.OnEntityWake = CheckMorph
+				inst.OnEntitySleep = CheckMorph
+				inst:WatchWorldState("isnewmoon", CheckMorph)
+			end
 
-        if not TheWorld:HasTag("cave") then
-            if PIECES[pieceid].moonevent then
-                inst.OnEntityWake = CheckMorph
-                inst.OnEntitySleep = CheckMorph
-                inst:WatchWorldState("isnewmoon", CheckMorph)
-            end
+			inst:ListenForEvent("shadowchessroar", OnShadowChessRoar)
+		end
 
-            inst:ListenForEvent("shadowchessroar", OnShadowChessRoar)
-        end
+		inst.pieceid = pieceid
+		if materialid then
+			SetMaterial(inst, materialid)
+		end
 
-        inst.pieceid = pieceid
-        if materialid then
-            SetMaterial(inst, materialid)
-        end
+		if PIECES[pieceid].master_postinit ~= nil then
+			PIECES[pieceid].master_postinit(inst)
+		end
 
-        if PIECES[pieceid].master_postinit ~= nil then
-            PIECES[pieceid].master_postinit(inst)
-        end
+		return inst
+	end
 
-        return inst
-    end
-
-    local prefabname = materialid and ("chesspiece_"..PIECES[pieceid].name.."_"..MATERIALS[materialid].name) or ("chesspiece_"..PIECES[pieceid].name)
-    return Prefab(prefabname, fn, assets, prefabs)
+	local prefabname = materialid and ("chesspiece_"..PIECES[pieceid].name.."_"..MATERIALS[materialid].name) or ("chesspiece_"..PIECES[pieceid].name)
+	return Prefab(prefabname, fn, assets, prefabs)
 end
 
 --------------------------------------------------------------------------
 
 local function builderonbuilt(inst, builder)
-    local prototyper = builder.components.builder.current_prototyper
-    if prototyper ~= nil and prototyper.CreateItem ~= nil then
-        prototyper:CreateItem("chesspiece_"..PIECES[inst.pieceid].name)
-    else
-        local piece = SpawnPrefab("chesspiece_"..PIECES[inst.pieceid].name)
-        piece.Transform:SetPosition(builder.Transform:GetWorldPosition())
-    end
+	local prototyper = builder.components.builder.current_prototyper
+	if prototyper ~= nil and prototyper.CreateItem ~= nil then
+		prototyper:CreateItem("chesspiece_"..PIECES[inst.pieceid].name)
+	else
+		local piece = SpawnPrefab("chesspiece_"..PIECES[inst.pieceid].name)
+		piece.Transform:SetPosition(builder.Transform:GetWorldPosition())
+	end
 
-    inst:Remove()
+	inst:Remove()
 end
 
 local function makebuilder(pieceid)
-    local function fn()
-        local inst = CreateEntity()
+	local function fn()
+		local inst = CreateEntity()
 
-        inst.entity:AddTransform()
+		inst.entity:AddTransform()
 
-        inst:AddTag("CLASSIFIED")
+		inst:AddTag("CLASSIFIED")
 
-        --[[Non-networked entity]]
-        inst.persists = false
+		--[[Non-networked entity]]
+		inst.persists = false
 
-        --Auto-remove if not spawned by builder
-        inst:DoTaskInTime(0, inst.Remove)
+		--Auto-remove if not spawned by builder
+		inst:DoTaskInTime(0, inst.Remove)
 
-        if not TheWorld.ismastersim then
-            return inst
-        end
+		if not TheWorld.ismastersim then
+			return inst
+		end
 
-        inst.pieceid = pieceid
-        inst.OnBuiltFn = builderonbuilt
+		inst.pieceid = pieceid
+		inst.OnBuiltFn = builderonbuilt
 
-        return inst
-    end
+		return inst
+	end
 
-    return Prefab("chesspiece_"..PIECES[pieceid].name.."_builder", fn, nil, { "chesspiece_"..PIECES[pieceid].name })
+	return Prefab("chesspiece_"..PIECES[pieceid].name.."_builder", fn, nil, { "chesspiece_"..PIECES[pieceid].name })
 end
 
 --------------------------------------------------------------------------

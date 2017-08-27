@@ -2,6 +2,6 @@
 <Atlas>
 	<Texture filename="chesspiece_aip_moon.tex" />
 	<Elements>
-		<Element name="chesspiece_aip_moon.tex" u1="0.001" u2="0.71775" v2="0.999" v1="0.001" variant="" />
+		<Element name="chesspiece_aip_moon.tex" u1="0.001" u2="0.59275" v2="0.999" v1="0.001" variant="" />
 	</Elements>
 </Atlas>
