@@ -11,9 +11,12 @@ Assets =
 -- 物品列表
 PrefabFiles =
 {
+	-- Food
+	"aip_veggies",
+	"foods",
+
 	"popcorngun",
 	"incinerator",
-	"foods",
 	"dark_observer",
 	"dark_observer_vest",
 	"aip_blood_package",
