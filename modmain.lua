@@ -36,6 +36,7 @@ AddMinimapAtlas("minimap/dark_observer_vest.xml")
 
 --------------------------------------- 食谱 ---------------------------------------
 modimport("scripts/recipeWrapper.lua")
+modimport("scripts/seedsWrapper.lua")
 
 --------------------------------------- 钩子 ---------------------------------------
 -- 暗影跟随者
@@ -62,9 +63,7 @@ AddPrefabPostInit("toadstool_dark", function(inst) ShadowFollowerPrefabPostInit(
 
 -- 世界追踪
 function WorldPrefabPostInit(inst)
-	--if inst:HasTag("forest") then
-		inst:AddComponent("world_common_store")
-	--end
+	inst:AddComponent("world_common_store")
 end
 
 if GLOBAL.TheNet:GetIsServer() or GLOBAL.TheNet:IsDedicated() then

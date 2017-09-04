@@ -1,6 +1,13 @@
 local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
 
--- 配置
+------------------------------------ 配置 ------------------------------------
+-- 体验关闭
+local additional_experiment = GetModConfigData("additional_experiment", foldername)
+if additional_experiment ~= "open" then
+	return nil
+end
+
+-- 食物
 local additional_food = GetModConfigData("additional_food", foldername)
 if additional_food ~= "open" then
 	return nil
@@ -51,12 +58,27 @@ VEGGIES =
         cooked_sanity = SAN * 0,
         cooked_perishtime = PER * 5,
 	},
+    onion = {
+        seed_weight = COMMON,
+		health = HP * 5,
+        hunger = HU * 12.5,
+        sanity = SAN * 0,
+        perishtime = PER * 30,
+        cooked_health = HP * 5,
+        cooked_hunger = hunger * 25,
+        cooked_sanity = SAN * 5,
+        cooked_perishtime = PER * 5,
+	},
 }
 
---------------------------------------------------
+-- TODO: Use customize ANIM
+-- image seed.xml
+-- anim/seeds.zip
+-- anim/aip_veggie_name.zip
+-- anim/aip_veggie_name_cooked.zip
+------------------------------------ 通用 ------------------------------------
 local assets_seeds =
 {
-	-- TODO: Use customize ANIM
     Asset("ANIM", "anim/seeds.zip"),
 }
 
@@ -64,12 +86,12 @@ local function MakeVeggie(name, has_seeds)
 
     local assets =
     {
-        Asset("ANIM", "anim/"..name..".zip"),
+        Asset("ANIM", "anim/aip_veggie_"..name..".zip"),
     }
 
     local assets_cooked =
     {
-        Asset("ANIM", "anim/"..name..".zip"),
+        Asset("ANIM", "anim/aip_veggie_"..name..".zip"),
     }
     
     local prefabs =
@@ -113,6 +135,7 @@ local function MakeVeggie(name, has_seeds)
         inst:AddComponent("tradable")
         inst:AddComponent("inspectable")
         inst:AddComponent("inventoryitem")
+        inst.components.inventoryitem.atlasname = "images/inventoryimages/"..name.."_seed.xml"
 
         inst.AnimState:PlayAnimation("idle")
         inst.components.edible.healthvalue = TUNING.HEALING_TINY/2
@@ -184,6 +207,7 @@ local function MakeVeggie(name, has_seeds)
 
         inst:AddComponent("inspectable")
         inst:AddComponent("inventoryitem")
+        inst.components.inventoryitem.atlasname = "images/inventoryimages/"..name..".xml"
 
         MakeSmallBurnable(inst)
         MakeSmallPropagator(inst)
@@ -239,6 +263,7 @@ local function MakeVeggie(name, has_seeds)
 
         inst:AddComponent("inspectable")
         inst:AddComponent("inventoryitem")
+        inst.components.inventoryitem.atlasname = "images/inventoryimages/"..name.."_cooked.xml"
 
         MakeSmallBurnable(inst)
         MakeSmallPropagator(inst)
