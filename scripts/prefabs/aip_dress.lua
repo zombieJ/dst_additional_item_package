@@ -12,6 +12,7 @@ local prefabList = {}
 local dresses = {
 	aip_horse_head = {},
 	aip_som = {},
+	aip_blue_glasses = {},
 }
 
 for name,data in pairs(dresses) do

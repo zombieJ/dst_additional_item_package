@@ -26,7 +26,7 @@ local LANG_MAP = {
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
-TUNING.AIP_SOM = TUNING.YELLOWAMULET_FUEL * PERISH_MAP[dress_uses]
+TUNING.AIP_SOM_FUEL = TUNING.YELLOWAMULET_FUEL * PERISH_MAP[dress_uses]
 
 -- 文字描述
 STRINGS.NAMES.AIP_SOM = LANG.NAME
@@ -41,7 +41,7 @@ local tempalte = require("prefabs/aip_dress_template")
 return tempalte("aip_som", {
 	hideHead = true,
 	fueled = {
-		level = TUNING.AIP_SOM,
+		level = TUNING.AIP_SOM_FUEL,
 	},
 	dapperness = TUNING.DAPPERNESS_LARGE,
 })
