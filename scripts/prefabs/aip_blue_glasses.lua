@@ -39,6 +39,7 @@ aip_blue_glasses.atlas = "images/inventoryimages/aip_blue_glasses.xml"
 
 local tempalte = require("prefabs/aip_dress_template")
 return tempalte("aip_blue_glasses", {
+	keepHead = true,
 	fueled = {
 		level = TUNING.AIP_BLUE_GLASSES_FUEL,
 	},

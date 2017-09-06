@@ -1,5 +1,6 @@
 --[[
 	config: {
+		keepHead: bool, - 保留原始头部
 		hideHead: bool,
 		walkspeedmult: number - 移动速度增加,
 		fueled: {
@@ -24,12 +25,15 @@ local function template(name, config)
 
 	local function onequip(inst, owner)
 		owner.AnimState:OverrideSymbol("swap_hat", name, "swap_hat")
-		owner.AnimState:Show("HAT")
-		owner.AnimState:Show("HAIR_HAT")
-		owner.AnimState:Hide("HAIR_NOHAT")
-		owner.AnimState:Hide("HAIR")
 
-		if owner:HasTag("player") then
+		owner.AnimState:Show("HAT")
+		if not config.keepHead then
+			owner.AnimState:Show("HAIR_HAT")
+			owner.AnimState:Hide("HAIR_NOHAT")
+			owner.AnimState:Hide("HAIR")
+		end
+
+		if owner:HasTag("player") and not config.keepHead then
 			owner.AnimState:Hide("HEAD")
 			if not config.hideHead then
 				owner.AnimState:Show("HEAD_HAT")
@@ -43,12 +47,15 @@ local function template(name, config)
 
 	local function onunequip(inst, owner)
 		owner.AnimState:ClearOverrideSymbol("swap_hat")
-		owner.AnimState:Hide("HAT")
-		owner.AnimState:Hide("HAIR_HAT")
-		owner.AnimState:Show("HAIR_NOHAT")
-		owner.AnimState:Show("HAIR")
 
-		if owner:HasTag("player") then
+		owner.AnimState:Hide("HAT")
+		if not config.keepHead then
+			owner.AnimState:Hide("HAIR_HAT")
+			owner.AnimState:Show("HAIR_NOHAT")
+			owner.AnimState:Show("HAIR")
+		end
+
+		if owner:HasTag("player") and not config.keepHead then
 			owner.AnimState:Show("HEAD")
 			if not config.hideHead then
 				owner.AnimState:Hide("HEAD_HAT")
