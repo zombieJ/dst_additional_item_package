@@ -1,12 +1,12 @@
 --[[
 	config: {
-		hideHead: {},
-		walkspeedmult: {},
+		hideHead: bool,
+		walkspeedmult: number - 移动速度增加,
 		fueled: {
-			level
+			level: number - 穿戴后消耗时间
 		},
-		waterproofer: {},
-		dapperness: {},
+		waterproofer: bool,
+		dapperness: number - 恢复理智值,
 	}
 ]]
 

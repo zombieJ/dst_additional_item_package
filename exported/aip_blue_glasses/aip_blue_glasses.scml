@@ -2,8 +2,8 @@
 <spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
 	<folder id="0" name="swap_hat">
 		<file id="0" name="swap_hat/swap_hat-0.png" width="224" height="104" pivot_x="0.507029" pivot_y="0" />
-		<file id="1" name="swap_hat/swap_hat-1.png" width="184" height="124" pivot_x="0.553802" pivot_y="-0.516121" />
-		<file id="2" name="swap_hat/swap_hat-2.png" width="192" height="84" pivot_x="0.511716" pivot_y="-0.439274" />
+		<file id="1" name="swap_hat/swap_hat-1.png" width="184" height="124" pivot_x="0.5" pivot_y="0" />
+		<file id="2" name="swap_hat/swap_hat-2.png" width="1" height="1" pivot_x="0" pivot_y="0" />
 		<file id="3" name="swap_hat/swap_hat-3.png" width="296" height="128" pivot_x="0.520606" pivot_y="0.462895" />
 	</folder>
 	<entity id="0" name="aip_blue_glasses">

@@ -12,7 +12,7 @@ Assets =
 PrefabFiles =
 {
 	-- Food
-	"aip_veggies",
+	-- "aip_veggies",
 	"foods",
 
 	"popcorngun",
@@ -36,7 +36,7 @@ AddMinimapAtlas("minimap/dark_observer_vest.xml")
 
 --------------------------------------- 食谱 ---------------------------------------
 modimport("scripts/recipeWrapper.lua")
-modimport("scripts/seedsWrapper.lua")
+-- modimport("scripts/seedsWrapper.lua")
 
 --------------------------------------- 钩子 ---------------------------------------
 -- 暗影跟随者

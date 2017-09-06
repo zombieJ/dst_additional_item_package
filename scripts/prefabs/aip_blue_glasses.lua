@@ -34,7 +34,7 @@ STRINGS.RECIPE_DESC.AIP_BLUE_GLASSES = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_BLUE_GLASSES = LANG.DESC
 
 -- 配方
-local aip_blue_glasses = Recipe("aip_blue_glasses", {Ingredient("steelwool", 1)}, RECIPETABS.DRESS, TECH.SCIENCE_TWO)
+local aip_blue_glasses = Recipe("aip_blue_glasses", {Ingredient("steelwool", 1), Ingredient("ice", 2)}, RECIPETABS.DRESS, TECH.SCIENCE_TWO)
 aip_blue_glasses.atlas = "images/inventoryimages/aip_blue_glasses.xml"
 
 local tempalte = require("prefabs/aip_dress_template")
