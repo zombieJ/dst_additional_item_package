@@ -6,6 +6,11 @@
 		fueled: {
 			level: number - 穿戴后消耗时间
 		},
+		armor: {
+			amount: number - 护甲值
+			absorb_percent: number - 吸收伤害百分比
+			tag: string - 指定免疫的单位类型
+		},
 		waterproofer: bool,
 		dapperness: number - 恢复理智值,
 	}
@@ -107,6 +112,7 @@ local function template(name, config)
 			inst.components.equippable.dapperness = config.dapperness
 		end
 
+		-- 消耗品
 		if config.fueled then
 			inst:AddComponent("fueled")
 			inst.components.fueled.fueltype = FUELTYPE.USAGE
@@ -116,9 +122,20 @@ local function template(name, config)
 
 		MakeHauntableLaunch(inst)
 
+		-- 防水
 		if config.waterproofer then
 			inst:AddComponent("waterproofer")
 			inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL)
+		end
+
+		-- 护甲
+		if config.armor then
+			inst:AddComponent("armor")
+			inst.components.armor:InitCondition(config.armor.amount, config.armor.absorb_percent * (TUNING.ARMORWOOD_ABSORPTION / .8))
+
+			if config.armor.tag then
+				inst.components.armor:SetTags({ config.armor.tag })
+			end
 		end
 
 		return inst

@@ -26,8 +26,6 @@ local LANG_MAP = {
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
-TUNING.AIP_BLUE_GLASSES_FUEL = TUNING.YELLOWAMULET_FUEL * 2 * PERISH_MAP[dress_uses]
-
 -- 文字描述
 STRINGS.NAMES.AIP_BLUE_GLASSES = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_BLUE_GLASSES = LANG.REC_DESC
@@ -40,8 +38,9 @@ aip_blue_glasses.atlas = "images/inventoryimages/aip_blue_glasses.xml"
 local tempalte = require("prefabs/aip_dress_template")
 return tempalte("aip_blue_glasses", {
 	keepHead = true,
-	fueled = {
-		level = TUNING.AIP_BLUE_GLASSES_FUEL,
+	armor = {
+		amount = 500 * PERISH_MAP[dress_uses],
+		absorb_percent = 1,
+		tag = "shadowcreature",
 	},
-	dapperness = TUNING.DAPPERNESS_LARGE,
 })
