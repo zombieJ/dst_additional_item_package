@@ -20,6 +20,7 @@
     "registry": "http://registry.npmjs.org/"
   },
   "dependencies": {
+    "fs-extra": "^4.0.1",
     "jimp": "^0.2.28"
   }
 }
