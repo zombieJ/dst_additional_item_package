@@ -1,0 +1,25 @@
+{
+  "name": "dst_additional_item_package",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zombieJ/dst_additional_item_package.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zombieJ/dst_additional_item_package/issues"
+  },
+  "homepage": "https://github.com/zombieJ/dst_additional_item_package#readme",
+  "config": {
+    "registry": "http://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "jimp": "^0.2.28"
+  }
+}
