@@ -13,14 +13,12 @@ if additional_food ~= "open" then
 	return nil
 end
 
+local ORI_VEGGIES = require("prefabs/aip_veggies_list")
+
 local food_effect = GetModConfigData("food_effect", foldername)
 local language = GetModConfigData("language", foldername)
 
 -- 默认参数
-local COMMON = 3
-local UNCOMMON = 1
-local RARE = .5
-
 local HP = TUNING.HEALING_TINY -- 1 healing
 local HU = TUNING.CALORIES_HUGE / 75 -- 1 hunger
 local SAN = TUNING.SANITY_SUPERTINY -- 1 sanity
@@ -35,41 +33,32 @@ local EFFECT_MAP = {
 local effectPTG = EFFECT_MAP[food_effect]
 
 -- 语言
-local LANG_MAP = {
-	["english"] = {
-	},
-	["chinese"] = {
-	},
-}
-
+local LANG_MAP = require("prefabs/aip_veggies_lang")
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
 -- 资源
-VEGGIES =
-{
-	wheat = {
-		seed_weight = COMMON,
-		health = HP * 1,
-		hunger = HU * 12.5,
-		sanity = SAN * 0,
-		perishtime = PER * 30,
-		cooked_health = HP * 5,
-		cooked_hunger = hunger * 25,
-		cooked_sanity = SAN * 0,
-		cooked_perishtime = PER * 5,
-	},
-	--[[onion = {
-		seed_weight = COMMON,
-		health = HP * 5,
-		hunger = HU * 12.5,
-		sanity = SAN * 0,
-		perishtime = PER * 30,
-		cooked_health = HP * 5,
-		cooked_hunger = hunger * 25,
-		cooked_sanity = SAN * 5,
-		cooked_perishtime = PER * 5,
-	},]]
-}
+local VEGGIES = {}
+for veggiename, veggiedata in pairs(ORI_VEGGIES) do
+	local wrapName = "aip_veggie_"..veggiename
+
+	-- 属性
+	VEGGIES[wrapName] = {
+		health = HP * veggiedata.health,
+		hunger = HU * veggiedata.hunger,
+		sanity = SAN * veggiedata.sanity,
+		perishtime = PER * veggiedata.perishtime,
+
+		cooked_health = HP * veggiedata.cooked_health,
+		cooked_hunger = HU * veggiedata.cooked_hunger,
+		cooked_sanity = SAN * veggiedata.cooked_sanity,
+		cooked_perishtime = PER * veggiedata.cooked_perishtime,
+	}
+
+	-- 文字描述
+	local upperCase = string.upper(wrapName)
+	STRINGS.NAMES[upperCase] = LANG[veggiename].NAME
+	STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperCase] = LANG[veggiename].DESC
+end
 
 -- TODO: Use customize ANIM
 -- image seed.xml
@@ -86,12 +75,14 @@ local function MakeVeggie(name, has_seeds)
 
 	local assets =
 	{
-		Asset("ANIM", "anim/aip_veggie_"..name..".zip"),
+		Asset("ATLAS", "images/inventoryimages/"..name..".xml"),
+		Asset("ANIM", "anim/"..name..".zip"),
 	}
 
 	local assets_cooked =
 	{
-		Asset("ANIM", "anim/aip_veggie_"..name..".zip"),
+		Asset("ATLAS", "images/inventoryimages/"..name.."_cooked.xml"),
+		Asset("ANIM", "anim/"..name..".zip"),
 	}
 	
 	local prefabs =
@@ -184,7 +175,7 @@ local function MakeVeggie(name, has_seeds)
 		inst:AddComponent("edible")
 		inst.components.edible.healthvalue = VEGGIES[name].health
 		inst.components.edible.hungervalue = VEGGIES[name].hunger
-		inst.components.edible.sanityvalue = VEGGIES[name].sanity or 0	  
+		inst.components.edible.sanityvalue = VEGGIES[name].sanity or 0
 		inst.components.edible.foodtype = FOODTYPE.VEGGIE
 
 		inst:AddComponent("perishable")
@@ -211,7 +202,7 @@ local function MakeVeggie(name, has_seeds)
 
 		MakeSmallBurnable(inst)
 		MakeSmallPropagator(inst)
-		---------------------		
+		---------------------
 
 		inst:AddComponent("bait")
 
@@ -267,7 +258,7 @@ local function MakeVeggie(name, has_seeds)
 
 		MakeSmallBurnable(inst)
 		MakeSmallPropagator(inst)
-		---------------------		
+		---------------------
 
 		inst:AddComponent("bait")
 
@@ -288,7 +279,7 @@ end
 
 local prefs = {}
 for veggiename,veggiedata in pairs(VEGGIES) do
-	local veg, cooked, seeds = MakeVeggie(veggiename, veggiename ~= "berries" and veggiename ~= "cave_banana" and veggiename ~= "cactus_meat" and veggiename ~= "berries_juicy")
+	local veg, cooked, seeds = MakeVeggie(veggiename, true)
 	table.insert(prefs, veg)
 	table.insert(prefs, cooked)
 	if seeds then

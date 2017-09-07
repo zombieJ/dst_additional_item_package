@@ -2,7 +2,7 @@
 -- TODO: 把mod优先级调低
 local PROBABILITY = 1
 
-require('prefabs/aip_veggies.lua')
+local VEGGIES = GLOBAL.require('prefabs/aip_veggies_list')
 
 -- 添加其他种子概率
 function mergePickProduct(oriFunc, probability)
@@ -10,15 +10,15 @@ function mergePickProduct(oriFunc, probability)
 		-- 产生自定义的新物品
 		if math.random() < probability then
 			local total_w = 0
-			for k,v in pairs(VEGGIES) do
+			for veggiename,v in pairs(VEGGIES) do
 				total_w = total_w + (v.seed_weight or 1)
 			end
 
 			local rnd = math.random()*total_w
-			for k,v in pairs(VEGGIES) do
+			for veggiename,v in pairs(VEGGIES) do
 				rnd = rnd - (v.seed_weight or 1)
 				if rnd <= 0 then
-					return k
+					return "aip_veggie_"..veggiename
 				end
 			end
 		end

@@ -28,6 +28,7 @@ version = "0.7.0"
 forumthread = "http://steamcommunity.com/sharedfiles/filedetails/?id=1085586145"
 icon_atlas = "modicon.xml"
 icon = "modicon.tex"
+priority = -9999
 dst_compatible = true
 client_only_mod = false
 all_clients_require_mod = true
