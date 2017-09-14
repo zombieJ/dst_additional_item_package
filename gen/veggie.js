@@ -1,10 +1,30 @@
-(async function() {
-	const args = process.argv;
+const FS = require('fs');
+const FSE = require('fs-extra');
+const PATH = require('path');
+const JIMP = require("jimp");
 
-	const FS = require('fs');
-	const FSE = require('fs-extra');
-	const PATH = require('path');
-	const JIMP = require("jimp");
+function removeSync(path) {
+	if(FS.existsSync(path)) {
+		// Delete if is file
+		if(FS.lstatSync(path).isFile()) {
+			FS.unlinkSync(path);
+			return;
+		}
+
+		FS.readdirSync(path).forEach(function (file, index) {
+		var curPath = path + "/" + file;
+		if(FS.lstatSync(curPath).isDirectory()) { // recurse
+			removeSync(curPath);
+		} else { // delete file
+			FS.unlinkSync(curPath);
+		}
+		});
+		FS.rmdirSync(path);
+	}
+}
+
+async function run() {
+	const args = process.argv;
 
 	// Get file path
 	const path = PATH.normalize(__dirname);
@@ -38,10 +58,11 @@
 
 	// Create veggie export
 	const veggieName = `aip_veggie_${veggie}`;
+	const veggieName01 = `${veggieName}01`;
 	const exportFolderPath = PATH.join(path, '..', 'exported', veggieName);
 
-	console.log('Remove old dir...');
-	FSE.removeSync(exportFolderPath);
+	// console.log('Remove old dir...');
+	// removeSync(exportFolderPath);
 
 	console.log('Create dir...');
 	FS.mkdirSync(exportFolderPath);
@@ -54,10 +75,10 @@
 
 	// Copy resource
 	console.log('Copy resource...');
-	const exportResFolderPath = PATH.join(exportFolderPath, veggieName);
+	const exportResFolderPath = PATH.join(exportFolderPath, veggieName01);
 	FS.mkdirSync(exportResFolderPath);
-	FSE.copySync(originPath, PATH.join(exportResFolderPath, 'origin.png'));
-	FSE.copySync(cookedPath, PATH.join(exportResFolderPath, 'cooked.png'));
+	FSE.copySync(originPath, PATH.join(exportResFolderPath, `${veggieName01}-0.png`));
+	FSE.copySync(cookedPath, PATH.join(exportResFolderPath, `${veggieName01}-1.png`));
 
 	// Save inventory images
 	console.log('Save inventory images...')
@@ -73,5 +94,9 @@
 
 	// Remove anim
 	console.log('Remove anim.zip...')
-	FSE.removeSync(PATH.join(path, '..', 'anim', `${veggieName}.zip`));
-})();
+	removeSync(PATH.join(path, '..', 'anim', `${veggieName}.zip`));
+}
+
+run().catch((err) => {
+	console.error('\n\nFailed!', err);
+});

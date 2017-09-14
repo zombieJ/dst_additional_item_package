@@ -15,6 +15,10 @@ local VEGGIES =
 		cooked_hunger = 25,
 		cooked_sanity = 0,
 		cooked_perishtime = 5,
+
+		tags = { starch = 1, veggie=.5 },
+		cancook = true,
+		candry = false,
 	},
 	--[[onion = {
 		seed_weight = COMMON,

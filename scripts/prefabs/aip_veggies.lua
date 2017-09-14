@@ -56,8 +56,13 @@ for veggiename, veggiedata in pairs(ORI_VEGGIES) do
 
 	-- 文字描述
 	local upperCase = string.upper(wrapName)
+	local upperCase_cooked = upperCase.."_COOKED"
+
 	STRINGS.NAMES[upperCase] = LANG[veggiename].NAME
 	STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperCase] = LANG[veggiename].DESC
+
+	STRINGS.NAMES[upperCase_cooked] = LANG[veggiename.."_cooked"].NAME
+	STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperCase_cooked] = LANG[veggiename.."_cooked"].DESC
 end
 
 -- TODO: Use customize ANIM

@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
-	<folder id="0" name="aip_veggie_wheat">
-		<file id="0" name="aip_veggie_wheat/origin.png" width="192" height="196" pivot_x="0.487107" pivot_y="0.252298" />
-		<file id="1" name="aip_veggie_wheat/cooked.png" width="192" height="172" pivot_x="0.487107" pivot_y="0.292154" />
+	<folder id="0" name="aip_veggie_wheat01">
+		<file id="0" name="aip_veggie_wheat01/aip_veggie_wheat01-0.png" width="192" height="196" pivot_x="0.487107" pivot_y="0.252298" />
+		<file id="1" name="aip_veggie_wheat01/aip_veggie_wheat01-1.png" width="192" height="172" pivot_x="0.487107" pivot_y="0.292154" />
 	</folder>
 	<entity id="0" name="aip_veggie_wheat">
 		<animation id="0" name="cooked" length="134">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="aip_veggie_wheat" abs_x="0" abs_y="0" abs_pivot_x="0.487107" abs_pivot_y="0.292154" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="aip_veggie_wheat01" abs_x="0" abs_y="0" abs_pivot_x="0.487107" abs_pivot_y="0.292154" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="aip_veggie_wheat" abs_x="0" abs_y="0" abs_pivot_x="0.487107" abs_pivot_y="0.292154" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="aip_veggie_wheat01" abs_x="0" abs_y="0" abs_pivot_x="0.487107" abs_pivot_y="0.292154" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 				<key id="2" time="67">
-					<object_ref id="0" name="aip_veggie_wheat" abs_x="0" abs_y="0" abs_pivot_x="0.487107" abs_pivot_y="0.292154" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
+					<object_ref id="0" name="aip_veggie_wheat01" abs_x="0" abs_y="0" abs_pivot_x="0.487107" abs_pivot_y="0.292154" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
 				</key>
 				<key id="3" time="100">
-					<object_ref id="0" name="aip_veggie_wheat" abs_x="0" abs_y="0" abs_pivot_x="0.487107" abs_pivot_y="0.292154" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
+					<object_ref id="0" name="aip_veggie_wheat01" abs_x="0" abs_y="0" abs_pivot_x="0.487107" abs_pivot_y="0.292154" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
 				</key>
 				<key id="4" time="134">
-					<object_ref id="0" name="aip_veggie_wheat" abs_x="0" abs_y="0" abs_pivot_x="0.487107" abs_pivot_y="0.292154" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
+					<object_ref id="0" name="aip_veggie_wheat01" abs_x="0" abs_y="0" abs_pivot_x="0.487107" abs_pivot_y="0.292154" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
 				</key>
 			</mainline>
-			<timeline id="0" name="aip_veggie_wheat">
+			<timeline id="0" name="aip_veggie_wheat01">
 				<key id="0" time="0" spin="1">
 					<object folder="0" file="1" x="0" y="0.299" scale_x="1" scale_y="1" angle="0" />
 				</key>
@@ -44,22 +44,22 @@
 		<animation id="1" name="idle" length="134">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="aip_veggie_wheat" abs_x="0" abs_y="0" abs_pivot_x="0.487107" abs_pivot_y="0.252298" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="aip_veggie_wheat01" abs_x="0" abs_y="0" abs_pivot_x="0.487107" abs_pivot_y="0.252298" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="aip_veggie_wheat" abs_x="0" abs_y="0" abs_pivot_x="0.487107" abs_pivot_y="0.252298" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="aip_veggie_wheat01" abs_x="0" abs_y="0" abs_pivot_x="0.487107" abs_pivot_y="0.252298" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 				<key id="2" time="67">
-					<object_ref id="0" name="aip_veggie_wheat" abs_x="0" abs_y="0" abs_pivot_x="0.487107" abs_pivot_y="0.252298" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
+					<object_ref id="0" name="aip_veggie_wheat01" abs_x="0" abs_y="0" abs_pivot_x="0.487107" abs_pivot_y="0.252298" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
 				</key>
 				<key id="3" time="100">
-					<object_ref id="0" name="aip_veggie_wheat" abs_x="0" abs_y="0" abs_pivot_x="0.487107" abs_pivot_y="0.252298" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
+					<object_ref id="0" name="aip_veggie_wheat01" abs_x="0" abs_y="0" abs_pivot_x="0.487107" abs_pivot_y="0.252298" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
 				</key>
 				<key id="4" time="134">
-					<object_ref id="0" name="aip_veggie_wheat" abs_x="0" abs_y="0" abs_pivot_x="0.487107" abs_pivot_y="0.252298" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
+					<object_ref id="0" name="aip_veggie_wheat01" abs_x="0" abs_y="0" abs_pivot_x="0.487107" abs_pivot_y="0.252298" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
 				</key>
 			</mainline>
-			<timeline id="0" name="aip_veggie_wheat">
+			<timeline id="0" name="aip_veggie_wheat01">
 				<key id="0" time="0" spin="1">
 					<object folder="0" file="0" x="0" y="0.299" scale_x="1" scale_y="1" angle="0" />
 				</key>

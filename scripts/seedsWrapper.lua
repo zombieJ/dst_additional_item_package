@@ -40,3 +40,8 @@ AddPrefabPostInit("seeds", function(inst)
 		inst.components.plantable.product = mergePickProduct(originPickProduct, PROBABILITY)
 	end
 end)
+
+-- 给蔬菜赋值
+for name, data in pairs(VEGGIES) do
+	env.AddIngredientValues({name}, data.tags or {}, data.cancook or false, data.candry or false)
+end
