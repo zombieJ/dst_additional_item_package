@@ -23,6 +23,12 @@ function removeSync(path) {
 	}
 }
 
+function makeDir(path) {
+	if (!FS.existsSync(path)) {
+		FS.mkdirSync(path);
+	}
+}
+
 async function run() {
 	const args = process.argv;
 
@@ -48,7 +54,7 @@ async function run() {
 	// Check material
 	const originPath = PATH.join(veggiePath, 'origin.png');
 	const cookedPath = PATH.join(veggiePath, 'cooked.png');
-	const seedPath = PATH.join(veggiePath, 'seed.png');
+	const seedTmplPath = PATH.join(path, 'seed.png');
 
 	if (!FS.lstatSync(originPath).isFile()) {
 		console.error('"origin.png" not found');
@@ -61,11 +67,8 @@ async function run() {
 	const veggieName01 = `${veggieName}01`;
 	const exportFolderPath = PATH.join(path, '..', 'exported', veggieName);
 
-	// console.log('Remove old dir...');
-	// removeSync(exportFolderPath);
-
 	console.log('Create dir...');
-	FS.mkdirSync(exportFolderPath);
+	makeDir(exportFolderPath);
 
 	// Generate .scml file
 	console.log('Create .scml...');
@@ -76,23 +79,43 @@ async function run() {
 	// Copy resource
 	console.log('Copy resource...');
 	const exportResFolderPath = PATH.join(exportFolderPath, veggieName01);
-	FS.mkdirSync(exportResFolderPath);
+	makeDir(exportResFolderPath);
 	FSE.copySync(originPath, PATH.join(exportResFolderPath, `${veggieName01}-0.png`));
 	FSE.copySync(cookedPath, PATH.join(exportResFolderPath, `${veggieName01}-1.png`));
 
-	// Save inventory images
+	// ===============================================================================
+	// =                            Save inventory images                            =
+	// ===============================================================================
 	console.log('Save inventory images...')
+
+	// Origin
 	const originImg = await JIMP.read(originPath);
 	originImg
 		.resize(64, 64)
 		.write(PATH.join(path, '..', 'images', 'inventoryimages', `${veggieName}.png`));
 
+	// Cooked
 	const cookedImg = await JIMP.read(cookedPath);
 	cookedImg
 		.resize(64, 64)
 		.write(PATH.join(path, '..', 'images', 'inventoryimages', `${veggieName}_cooked.png`));
 
-	// Remove anim
+	// Seed
+	const scaleOriginImg = originImg.clone().resize(50,50);
+	const seedTmplImg = await JIMP.read(seedTmplPath);
+	const seedBacImg = seedTmplImg.clone().opacity(0);
+	// seedTmplImg.blit( scaleOriginImg, x, y[, srcx, srcy, srcw, srch] );
+	/* seedTmplImg
+		.composite(scaleOriginImg, 0, 0)
+		.write(PATH.join(path, '..', 'images', 'inventoryimages', `${veggieName}_seed.png`)); */
+	seedBacImg
+		.composite(scaleOriginImg, 10, 0)
+		.composite(seedTmplImg, 0, 0)
+		.write(PATH.join(path, '..', 'images', 'inventoryimages', `${veggieName}_seeds.png`));
+
+	// ===============================================================================
+	// =                                  Clean Up                                   =
+	// ===============================================================================
 	console.log('Remove anim.zip...')
 	removeSync(PATH.join(path, '..', 'anim', `${veggieName}.zip`));
 }

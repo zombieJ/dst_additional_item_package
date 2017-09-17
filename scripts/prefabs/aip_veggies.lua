@@ -57,24 +57,23 @@ for veggiename, veggiedata in pairs(ORI_VEGGIES) do
 	-- 文字描述
 	local upperCase = string.upper(wrapName)
 	local upperCase_cooked = upperCase.."_COOKED"
+	local upperCase_seeds = upperCase.."_SEEDS"
 
 	STRINGS.NAMES[upperCase] = LANG[veggiename].NAME
 	STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperCase] = LANG[veggiename].DESC
 
 	STRINGS.NAMES[upperCase_cooked] = LANG[veggiename.."_cooked"].NAME
 	STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperCase_cooked] = LANG[veggiename.."_cooked"].DESC
+
+	STRINGS.NAMES[upperCase_seeds] = LANG[veggiename.."_seeds"].NAME
+	STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperCase_seeds] = LANG[veggiename.."_seeds"].DESC
 end
 
--- TODO: Use customize ANIM
 -- image seed.xml
 -- anim/seeds.zip
 -- anim/aip_veggie_name.zip
 -- anim/aip_veggie_name_cooked.zip
 ------------------------------------ 通用 ------------------------------------
-local assets_seeds =
-{
-	Asset("ANIM", "anim/seeds.zip"),
-}
 
 local function MakeVeggie(name, has_seeds)
 
@@ -89,7 +88,13 @@ local function MakeVeggie(name, has_seeds)
 		Asset("ATLAS", "images/inventoryimages/"..name.."_cooked.xml"),
 		Asset("ANIM", "anim/"..name..".zip"),
 	}
-	
+
+	local assets_seeds =
+	{
+		Asset("ANIM", "anim/seeds.zip"),
+		Asset("ATLAS", "images/inventoryimages/"..name.."_seeds.xml"),
+	}
+
 	local prefabs =
 	{
 		name.."_cooked",
@@ -131,7 +136,7 @@ local function MakeVeggie(name, has_seeds)
 		inst:AddComponent("tradable")
 		inst:AddComponent("inspectable")
 		inst:AddComponent("inventoryitem")
-		inst.components.inventoryitem.atlasname = "images/inventoryimages/"..name.."_seed.xml"
+		inst.components.inventoryitem.atlasname = "images/inventoryimages/"..name.."_seeds.xml"
 
 		inst.AnimState:PlayAnimation("idle")
 		inst.components.edible.healthvalue = TUNING.HEALING_TINY/2
