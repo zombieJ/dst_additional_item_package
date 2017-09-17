@@ -1,6 +1,21 @@
--- TODO: Change back when prod
--- TODO: 把mod优先级调低
-local PROBABILITY = 1
+-- 体验关闭
+local additional_experiment = GetModConfigData("additional_experiment", foldername)
+if additional_experiment ~= "open" then
+	return nil
+end
+
+-- 食物
+local additional_food = GetModConfigData("additional_food", foldername)
+if additional_food ~= "open" then
+	return nil
+end
+
+-- 开发模式
+local dev_mode = GetModConfigData("dev_mode", foldername) == "enabled"
+
+
+-- 概率
+local PROBABILITY = dev_mode ? 1 : 0.1
 
 local VEGGIES = GLOBAL.require('prefabs/aip_veggies_list')
 
@@ -43,5 +58,5 @@ end)
 
 -- 给蔬菜赋值
 for name, data in pairs(VEGGIES) do
-	env.AddIngredientValues({name}, data.tags or {}, data.cancook or false, data.candry or false)
+	env.AddIngredientValues({"aip_veggie_"..name}, data.tags or {}, data.cancook or false, data.candry or false)
 end

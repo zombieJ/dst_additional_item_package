@@ -177,4 +177,15 @@ configuration_options =
 		},
 		default = "english",
 	},
+	{
+		name = "dev_mode",
+		label = "Dev Mod(DONT OPEN!)",
+		hover = "This is only for dev and fail track. Please never enable it.",
+		options =
+		{
+			{description = "Enabled", data = "enabled"},
+			{description = "Disabled", data = "disabled"},
+		},
+		default = "disabled",
+	},
 }

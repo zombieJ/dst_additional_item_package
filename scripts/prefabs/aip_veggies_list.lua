@@ -16,7 +16,7 @@ local VEGGIES =
 		cooked_sanity = 0,
 		cooked_perishtime = 5,
 
-		tags = { starch = 1, veggie=.5 },
+		tags = { starch = 1, veggie=.1 },
 		cancook = true,
 		candry = false,
 	},
