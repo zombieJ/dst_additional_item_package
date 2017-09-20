@@ -27,6 +27,18 @@ local LANG_MAP = {
 			["DESC"] = "充满能量的种子",
 		},
 	},
+	["english"] = {
+		wheat = {
+			["NAME"] = "Пшеница",
+			["DESC"] = "Сложно съесть!",
+		},
+		wheat_cooked = {
+			["NAME"] = "Запечёное тесто",
+			["DESC"] = "Оно мягкое.",
+		},
+		wheat_seeds = {
+			["NAME"] = "Семена пшеницы",
+			["DESC"] = "Энергитические семена!",
 }
 
 return LANG_MAP
