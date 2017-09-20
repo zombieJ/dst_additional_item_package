@@ -187,6 +187,10 @@ local LANG_MAP = {
 		["FROZEN_HEART"] = {
 			["NAME"] = "Ледяное Сердце",
 			["DESC"] = "Почему я могу сделать это в казане?",
+		},	
+		["AIP_FOOD_EGG_FRIED_RICE"] = {
+			["NAME"] = "Рис с жаренным яйцом",
+			["DESC"] = "Пахнет вкусно!",
 		},
 	},
 	["portuguese"] = {
