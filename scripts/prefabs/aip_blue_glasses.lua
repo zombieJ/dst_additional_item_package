@@ -25,7 +25,8 @@ local LANG_MAP = {
 	["russian"] = {
 		["NAME"] = Очки
 		["REC_DESC"] = "Простые и прекрасные.",
-		["DESC"] = "Я чувствую знания!",	
+		["DESC"] = "Я чувствую знания!",
+	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
