@@ -191,6 +191,7 @@ local LANG_MAP = {
 		["AIP_FOOD_EGG_FRIED_RICE"] = {
 			["NAME"] = "Рис с жаренным яйцом",
 			["DESC"] = "В моём воображении это выглядело немного иначе.",
+		},
 	},
 	["portuguese"] = {
 		["EGG_PANCAKE"] = {
