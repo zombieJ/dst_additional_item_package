@@ -1,12 +1,6 @@
 local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
 
 ------------------------------------ 配置 ------------------------------------
--- 体验关闭
-local additional_experiment = GetModConfigData("additional_experiment", foldername)
-if additional_experiment ~= "open" then
-	return nil
-end
-
 -- 食物关闭
 local additional_food = GetModConfigData("additional_food", foldername)
 if additional_food ~= "open" then

@@ -3,12 +3,6 @@ local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKA
 local Empty = Class(function()
 end)
 
--- 体验关闭
-local additional_experiment = GetModConfigData("additional_experiment", foldername)
-if additional_experiment ~= "open" then
-	return Empty
-end
-
 -- 建筑关闭
 local additional_building = GetModConfigData("additional_building", foldername)
 if additional_building ~= "open" then
