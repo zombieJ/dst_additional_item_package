@@ -43,6 +43,7 @@ local LANG_MAP = {
 			["REC_DESC"] = "Излучает слабый свет.",
 			["DESC"] = "Это современное искусство?",
 		},
+	},	
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
