@@ -39,6 +39,7 @@ local LANG_MAP = {
 		wheat_seeds = {
 			["NAME"] = "Семена пшеницы",
 			["DESC"] = "Энергитические семена!",
+		},
 }
 
 return LANG_MAP
