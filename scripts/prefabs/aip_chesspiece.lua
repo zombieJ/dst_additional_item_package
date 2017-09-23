@@ -31,6 +31,13 @@ local LANG_MAP = {
 			["DESC"] = "这是当代艺术吗？",
 		},
 	},
+	["russian"] = {
+		["aip_moon"] = {
+			["NAME"] = "Лунный Пепел",
+			["REC_DESC"] = "Излучает слабый свет.",
+			["DESC"] = "Это современное искусство?",
+		},
+	},	
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
