@@ -64,6 +64,10 @@ local LANG_MAP = {
 			["NAME"] = "Egg Rried Rice",
 			["DESC"] = "Not like what I thought",
 		},
+		["AIP_FOOD_PLOV"] = {
+			["NAME"] = "Plov",
+			["DESC"] = "Yummy yummy~",
+		},
 	},
 	["spanish"] = {
 		["EGG_PANCAKE"] = {
@@ -381,6 +385,10 @@ local LANG_MAP = {
 		["AIP_FOOD_EGG_FRIED_RICE"] = {
 			["NAME"] = "蛋炒饭",
 			["DESC"] = "和我见过的不太像",
+		},
+		["AIP_FOOD_PLOV"] = {
+			["NAME"] = "抓饭",
+			["DESC"] = "真的要用手吗？",
 		},
 	},
 }

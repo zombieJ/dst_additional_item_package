@@ -256,6 +256,19 @@ local food_recipes = {
 		perishtime = PER * 15,
 		cooktime = CO * 10,
 	},
+	aip_food_plov = {
+		test = function(cooker, names, tags)
+			return tags.starch and tags.meat and (names.carrot or names.carrot_cooked)
+		end,
+		priority = 6,
+		weight = 1,
+		foodtype = FOODTYPE.VEGGIE,
+		health = HP * 25,
+		hunger = HU * 75,
+		sanity = SAN * 5,
+		perishtime = PER * 20,
+		cooktime = CO * 40,
+	},
 }
 
 --------------------------------------------------
