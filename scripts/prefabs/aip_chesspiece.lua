@@ -41,7 +41,7 @@ local PIECES =
 	{
 		name = "aip_moon",
 		moonevent = false,
-		recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 1), Ingredient("moonrocknugget", 9), Ingredient("frozen_heart", 1, "images/inventoryimages/frozen_heart.xml")},
+		recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("moonrocknugget", 9), Ingredient("frozen_heart", 1, "images/inventoryimages/frozen_heart.xml")},
 		common_postinit = function(inst)
 			inst.entity:AddLight()
 			inst.Light:Enable(true)
