@@ -35,6 +35,7 @@ local effectPTG = EFFECT_MAP[food_effect]
 -- 语言
 local LANG_MAP = require("prefabs/aip_veggies_lang")
 local LANG = LANG_MAP[language] or LANG_MAP.english
+local LANG_ENG = LANG_MAP.english
 
 -- 资源
 local VEGGIES = {}
@@ -59,14 +60,14 @@ for veggiename, veggiedata in pairs(ORI_VEGGIES) do
 	local upperCase_cooked = upperCase.."_COOKED"
 	local upperCase_seeds = upperCase.."_SEEDS"
 
-	STRINGS.NAMES[upperCase] = LANG[veggiename].NAME
-	STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperCase] = LANG[veggiename].DESC
+	STRINGS.NAMES[upperCase] = LANG[veggiename].NAME or LANG_ENG[veggiename].NAME
+	STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperCase] = LANG[veggiename].DESC or LANG_ENG[veggiename].DESC
 
-	STRINGS.NAMES[upperCase_cooked] = LANG[veggiename.."_cooked"].NAME
-	STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperCase_cooked] = LANG[veggiename.."_cooked"].DESC
+	STRINGS.NAMES[upperCase_cooked] = LANG[veggiename.."_cooked"].NAME or LANG_ENG[veggiename.."_cooked"].NAME
+	STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperCase_cooked] = LANG[veggiename.."_cooked"].DESC or LANG_ENG[veggiename.."_cooked"].DESC
 
-	STRINGS.NAMES[upperCase_seeds] = LANG[veggiename.."_seeds"].NAME
-	STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperCase_seeds] = LANG[veggiename.."_seeds"].DESC
+	STRINGS.NAMES[upperCase_seeds] = LANG[veggiename.."_seeds"].NAME or LANG_ENG[veggiename.."_seeds"].NAME
+	STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperCase_seeds] = LANG[veggiename.."_seeds"].DESC or LANG_ENG[veggiename.."_seeds"].DESC
 end
 
 -- image seed.xml

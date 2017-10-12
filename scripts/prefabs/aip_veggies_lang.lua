@@ -12,6 +12,18 @@ local LANG_MAP = {
 			["NAME"] = "Wheat Seeds",
 			["DESC"] = "Seeds for energy",
 		},
+		sunflower = {
+			["NAME"] = "Sunflower",
+			["DESC"] = "Always see the sun",
+		},
+		sunflower_cooked = {
+			["NAME"] = "Roasted Sunflower Seeds",
+			["DESC"] = "The essence of sun",
+		},
+		sunflower_seeds = {
+			["NAME"] = "Sunflower Seed",
+			["DESC"] = "Maybe I should plant it",
+		},
 	},
 	["chinese"] = {
 		wheat = {
@@ -25,6 +37,18 @@ local LANG_MAP = {
 		wheat_seeds = {
 			["NAME"] = "小麦种子",
 			["DESC"] = "充满能量的种子",
+		},
+		sunflower = {
+			["NAME"] = "向日葵",
+			["DESC"] = "总是抬着头的样子",
+		},
+		sunflower_cooked = {
+			["NAME"] = "瓜子",
+			["DESC"] = "阳光的精华",
+		},
+		sunflower_seeds = {
+			["NAME"] = "向日葵种子",
+			["DESC"] = "或许应该种种看",
 		},
 	},
 	["russian"] = {
