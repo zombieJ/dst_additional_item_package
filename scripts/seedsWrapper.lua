@@ -15,7 +15,7 @@ local dev_mode = GetModConfigData("dev_mode", foldername) == "enabled"
 
 
 -- 概率
-local PROBABILITY = dev_mode and 1 or 0.1
+local PROBABILITY = dev_mode and 1 or 0.15
 
 local VEGGIES = GLOBAL.require('prefabs/aip_veggies_list')
 

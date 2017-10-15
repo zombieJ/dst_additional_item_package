@@ -68,6 +68,10 @@ local LANG_MAP = {
 			["NAME"] = "Plov",
 			["DESC"] = "Yummy yummy~",
 		},
+		["AIP_FOOD_KOZINAKI"] = {
+			["NAME"] = "Kozinaki",
+			["DESC"] = "I can keep it longer",
+		},
 	},
 	["spanish"] = {
 		["EGG_PANCAKE"] = {
@@ -397,6 +401,10 @@ local LANG_MAP = {
 		["AIP_FOOD_PLOV"] = {
 			["NAME"] = "抓饭",
 			["DESC"] = "真的要用手吗？",
+		},
+		["AIP_FOOD_KOZINAKI"] = {
+			["NAME"] = "米饼",
+			["DESC"] = "行军专用干粮",
 		},
 	},
 }

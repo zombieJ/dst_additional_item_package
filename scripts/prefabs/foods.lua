@@ -269,6 +269,19 @@ local food_recipes = {
 		perishtime = PER * 20,
 		cooktime = CO * 40,
 	},
+	aip_food_kozinaki = {
+		test = function(cooker, names, tags)
+			return tags.starch and tags.starch >= 2 and tags.sweetener
+		end,
+		priority = 6,
+		weight = 1,
+		foodtype = FOODTYPE.VEGGIE,
+		health = HP * 15,
+		hunger = HU * 150,
+		sanity = SAN * 15,
+		perishtime = PER * 60,
+		cooktime = CO * 20,
+	},
 }
 
 --------------------------------------------------
