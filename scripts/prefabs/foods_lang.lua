@@ -208,6 +208,10 @@ local LANG_MAP = {
 			["NAME"] = "Плов",
 			["DESC"] = "Вкуснятина!",
 		},
+		["AIP_FOOD_KOZINAKI"] = {
+			["NAME"] = "Козинаки",
+			["DESC"] = "Думаю, они ещё не скоро испортятся.",
+		},
 	},
 	["portuguese"] = {
 		["EGG_PANCAKE"] = {
