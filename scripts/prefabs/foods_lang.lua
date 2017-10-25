@@ -72,6 +72,10 @@ local LANG_MAP = {
 			["NAME"] = "Kozinaki",
 			["DESC"] = "I can keep it longer",
 		},
+		["AIP_FOOD_CHERRY_MEAT"] = {
+			["NAME"] = "Cherry Meat",
+			["DESC"] = "It's meat but sweet",
+		},
 	},
 	["spanish"] = {
 		["EGG_PANCAKE"] = {
@@ -409,6 +413,10 @@ local LANG_MAP = {
 		["AIP_FOOD_KOZINAKI"] = {
 			["NAME"] = "米饼",
 			["DESC"] = "行军专用干粮",
+		},
+		["AIP_FOOD_CHERRY_MEAT"] = {
+			["NAME"] = "樱桃肉",
+			["DESC"] = "看起来就很甜的肉",
 		},
 	},
 }

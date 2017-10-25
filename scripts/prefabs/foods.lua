@@ -282,6 +282,19 @@ local food_recipes = {
 		perishtime = PER * 60,
 		cooktime = CO * 20,
 	},
+	aip_food_cherry_meat = {
+		test = function(cooker, names, tags)
+			return tags.meat and (names.berries or names.berries_cooked or names.berries_juicy or names.berries_juicy_cooked)
+		end,
+		priority = 1,
+		weight = 1,
+		foodtype = FOODTYPE.MEAT,
+		health = HP * 15,
+		hunger = HU * 50,
+		sanity = SAN * 15,
+		perishtime = PER * 10,
+		cooktime = CO * 15,
+	},
 }
 
 --------------------------------------------------
