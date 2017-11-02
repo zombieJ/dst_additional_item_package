@@ -23,12 +23,22 @@ local LANG_MAP = {
 			["REC_DESC"] = "Provide weak light",
 			["DESC"] = "Is that Contemporary Art?",
 		},
+		["aip_doujiang"] = {
+			["NAME"] = "Dou Jiang",
+			["REC_DESC"] = "Happy is life target",
+			["DESC"] = "Looks like turn into stone",
+		},
 	},
 	["chinese"] = {
 		["aip_moon"] = {
 			["NAME"] = "月光星尘",
 			["REC_DESC"] = "可以提供微弱的光芒",
 			["DESC"] = "这是当代艺术吗？",
+		},
+		["aip_doujiang"] = {
+			["NAME"] = "豆酱",
+			["REC_DESC"] = "无忧无虑的生活最是向往",
+			["DESC"] = "看起来就像是被石化了",
 		},
 	},
 	["russian"] = {
@@ -41,6 +51,7 @@ local LANG_MAP = {
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
+local LANG_ENG = LANG_MAP.english
 
 ---------------------------------- 物品列表 -----------------------------------
 local PIECES =
@@ -71,12 +82,14 @@ for pieceid = 1,#PIECES do
 		recipe.atlas = "images/inventoryimages/chesspiece_"..name..".xml"
 
 		local upperCase = string.upper(name)
-		STRINGS.NAMES["CHESSPIECE_"..upperCase] = LANG[name].NAME
-		STRINGS.RECIPE_DESC["CHESSPIECE_"..upperCase] = LANG[name].REC_DESC
-		STRINGS.CHARACTERS.GENERIC.DESCRIBE["CHESSPIECE_"..upperCase] = LANG[name].DESC
-		STRINGS.NAMES["CHESSPIECE_"..upperCase.."_BUILDER"] = LANG[name].NAME
-		STRINGS.RECIPE_DESC["CHESSPIECE_"..upperCase.."_BUILDER"] = LANG[name].REC_DESC
-		STRINGS.CHARACTERS.GENERIC.DESCRIBE["CHESSPIECE_"..upperCase.."_BUILDER"] = LANG[name].DESC
+		local lang = LANG[name] or LANG_ENG[name]
+
+		STRINGS.NAMES["CHESSPIECE_"..upperCase] = lang.NAME
+		STRINGS.RECIPE_DESC["CHESSPIECE_"..upperCase] = lang.REC_DESC
+		STRINGS.CHARACTERS.GENERIC.DESCRIBE["CHESSPIECE_"..upperCase] = lang.DESC
+		STRINGS.NAMES["CHESSPIECE_"..upperCase.."_BUILDER"] = lang.NAME
+		STRINGS.RECIPE_DESC["CHESSPIECE_"..upperCase.."_BUILDER"] = lang.REC_DESC
+		STRINGS.CHARACTERS.GENERIC.DESCRIBE["CHESSPIECE_"..upperCase.."_BUILDER"] = lang.DESC
 	end
 end
 
