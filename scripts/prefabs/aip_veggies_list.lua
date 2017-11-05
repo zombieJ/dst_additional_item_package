@@ -36,6 +36,23 @@ local VEGGIES =
 		cancook = true,
 		candry = false,
 	},
+	grape = {
+		seed_weight = COMMON,
+
+		health = 5,
+		hunger = 10,
+		sanity = 0,
+		perishtime = TUNING.PERISH_FAST,
+		cooked_health = 10,
+		cooked_hunger = 15,
+		cooked_sanity = 0,
+		cooked_perishtime = TUNING.PERISH_FAST,
+
+		tags = { fruit = 1 },
+		cancook = true,
+		candry = false,
+	},
+
 	--[[onion = {
 		seed_weight = COMMON,
 		health = HP * 5,

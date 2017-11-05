@@ -69,6 +69,11 @@ local PIECES =
 			inst.Light:SetColour(15 / 255, 160 / 255, 180 / 255)
 		end,
 	},
+	{
+		name = "aip_doujiang",
+		moonevent = false,
+		recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("plantmeat_cooked", 1), Ingredient("pinecone", 1)},
+	},
 }
 
 --------------------------------- 遍历创建者 ----------------------------------

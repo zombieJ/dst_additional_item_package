@@ -24,6 +24,18 @@ local LANG_MAP = {
 			["NAME"] = "Sunflower Seed",
 			["DESC"] = "Maybe I should plant it",
 		},
+		grape = {
+			["NAME"] = "Grape",
+			["DESC"] = "Small power ball",
+		},
+		grape_cooked = {
+			["NAME"] = "Roasted Grape",
+			["DESC"] = "It seems sticky",
+		},
+		grape_seeds = {
+			["NAME"] = "Grape Seed",
+			["DESC"] = "Some people belive it makes beautiful",
+		},
 	},
 	["chinese"] = {
 		wheat = {
@@ -49,6 +61,18 @@ local LANG_MAP = {
 		sunflower_seeds = {
 			["NAME"] = "向日葵种子",
 			["DESC"] = "或许应该种种看",
+		},
+		grape = {
+			["NAME"] = "葡萄",
+			["DESC"] = "小型能量球",
+		},
+		grape_cooked = {
+			["NAME"] = "葡萄酱",
+			["DESC"] = "看起来黏糊糊的",
+		},
+		grape_seeds = {
+			["NAME"] = "葡萄种子",
+			["DESC"] = "某个世界的人相信它能美容",
 		},
 	},
 	["russian"] = {

@@ -284,7 +284,10 @@ local food_recipes = {
 	},
 	aip_food_cherry_meat = {
 		test = function(cooker, names, tags)
-			return tags.meat and (names.berries or names.berries_cooked or names.berries_juicy or names.berries_juicy_cooked)
+			return tags.meat and tags.meat >= 1.5 and (
+				names.berries or names.berries_cooked or names.berries_juicy or names.berries_juicy_cooked or
+				names.aip_veggie_grape or names.aip_veggie_grape_cooked
+			)
 		end,
 		priority = 1,
 		weight = 1,
