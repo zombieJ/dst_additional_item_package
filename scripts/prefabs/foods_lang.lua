@@ -76,6 +76,14 @@ local LANG_MAP = {
 			["NAME"] = "Cherry Meat",
 			["DESC"] = "It's meat but sweet",
 		},
+		["AIP_FOOD_EGG_TART"] = {
+			["NAME"] = "Egg Tart",
+			["DESC"] = "This is egg bread",
+		},
+		["AIP_FOOD_GRAPE_SUGER"] = {
+			["NAME"] = "Grape Suger",
+			["DESC"] = "Bad for health",
+		},
 	},
 	["spanish"] = {
 		["EGG_PANCAKE"] = {
@@ -421,6 +429,14 @@ local LANG_MAP = {
 		["AIP_FOOD_CHERRY_MEAT"] = {
 			["NAME"] = "樱桃肉",
 			["DESC"] = "看起来就很甜的肉",
+		},
+		["AIP_FOOD_EGG_TART"] = {
+			["NAME"] = "蛋挞",
+			["DESC"] = "这是鸡蛋面包",
+		},
+		["AIP_FOOD_GRAPE_SUGER"] = {
+			["NAME"] = "葡萄棍",
+			["DESC"] = "这可会蛀牙",
 		},
 	},
 }

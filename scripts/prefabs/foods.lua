@@ -245,7 +245,7 @@ local food_recipes = {
 	},
 	aip_food_egg_fried_rice = {
 		test = function(cooker, names, tags)
-			return tags.starch and tags.egg
+			return tags.starch and tags.egg and not tags.fruit
 		end,
 		priority = 6,
 		weight = 1,
@@ -296,6 +296,32 @@ local food_recipes = {
 		hunger = HU * 50,
 		sanity = SAN * 15,
 		perishtime = PER * 10,
+		cooktime = CO * 15,
+	},
+	aip_food_egg_tart = {
+		test = function(cooker, names, tags)
+			return tags.starch and tags.egg and not tags.meat and not tags.inedible
+		end,
+		priority = 6,
+		weight = 1,
+		foodtype = FOODTYPE.MEAT,
+		health = HP * 10,
+		hunger = HU * 30,
+		sanity = SAN * 15,
+		perishtime = PER * 10,
+		cooktime = CO * 15,
+	},
+	aip_food_grape_suger = {
+		test = function(cooker, names, tags)
+			return tags.sweetener and tags.inedible and tags.inedible <= 1 and names.aip_veggie_grape
+		end,
+		priority = 10,
+		weight = 1,
+		foodtype = FOODTYPE.VEGGIE,
+		health = -HP * 5,
+		hunger = HU * 15,
+		sanity = SAN * 15,
+		perishtime = PER * 30,
 		cooktime = CO * 15,
 	},
 }
