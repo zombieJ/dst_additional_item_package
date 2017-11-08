@@ -28,6 +28,11 @@ local LANG_MAP = {
 			["REC_DESC"] = "Happy is life target",
 			["DESC"] = "Looks like turn into stone",
 		},
+		["aip_deer"] = {
+			["NAME"] = "Watcher",
+			["REC_DESC"] = "Looks like alive",
+			["DESC"] = "What's it waiting for?",
+		},
 	},
 	["chinese"] = {
 		["aip_moon"] = {
@@ -39,6 +44,11 @@ local LANG_MAP = {
 			["NAME"] = "豆酱",
 			["REC_DESC"] = "无忧无虑的生活最是向往",
 			["DESC"] = "看起来就像是被石化了",
+		},
+		["aip_deer"] = {
+			["NAME"] = "守望者",
+			["REC_DESC"] = "凡灵皆有生命",
+			["DESC"] = "它似乎在等着什么",
 		},
 	},
 	["russian"] = {
@@ -78,6 +88,11 @@ local PIECES =
 		name = "aip_doujiang",
 		moonevent = false,
 		recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("plantmeat_cooked", 1), Ingredient("pinecone", 1)},
+	},
+	{
+		name = "aip_deer",
+		moonevent = false,
+		recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("boneshard", 2), Ingredient("beardhair", 1)},
 	},
 }
 
