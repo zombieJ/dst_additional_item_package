@@ -313,7 +313,7 @@ local food_recipes = {
 	},
 	aip_food_grape_suger = {
 		test = function(cooker, names, tags)
-			return tags.sweetener and tags.inedible and tags.inedible <= 1 and names.aip_veggie_grape
+			return tags.sweetener and tags.inedible and tags.inedible == 1 and names.aip_veggie_grape
 		end,
 		priority = 10,
 		weight = 1,
