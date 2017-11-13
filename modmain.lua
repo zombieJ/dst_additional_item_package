@@ -23,6 +23,9 @@ PrefabFiles =
 	"aip_fish_sword",
 	"aip_beehave",
 
+	-- Orbit
+	"aip_orbit",
+
 	-- Dress
 	"aip_dress",
 

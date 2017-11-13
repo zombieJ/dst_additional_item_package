@@ -98,6 +98,17 @@ configuration_options =
 		default = "open",
 	},
 	{
+		name = "additional_orbit",
+		label = "Orbit Recipes",
+		hover = "Support Orbit. WOW!~",
+		options =
+		{
+			{description = "Open", data = "open"},
+			{description = "Close", data = "close"},
+		},
+		default = "open",
+	},
+	{
 		name = "additional_experiment",
 		label = "Experiment Recipes",
 		hover = "Experience new released items",
