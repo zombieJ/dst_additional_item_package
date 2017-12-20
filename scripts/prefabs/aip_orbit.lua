@@ -103,7 +103,9 @@ local function onhammered(inst, worker)
 	if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
 		inst.components.burnable:Extinguish()
 	end
-	inst.components.lootdropper:DropLoot()
+	-- inst.components.lootdropper:DropLoot()
+	inst.components.lootdropper:SpawnLootPrefab('log')
+
 	local fx = SpawnPrefab("collapse_small")
 	fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
 	fx:SetMaterial("wood")
@@ -126,9 +128,11 @@ local function fn()
 	inst.entity:AddNetwork()
 
 	inst.Transform:SetEightFaced()
+	-- inst.Transform:SetScale(0.5, 0.5, 0.5)
 
 	MakeObstaclePhysics(inst, .5)
 	inst.Physics:SetDontRemoveOnSleep(true)
+	inst.Physics:SetCollides(false)
 
 	inst:AddTag("wall")
 	inst:AddTag("noauradamage")
