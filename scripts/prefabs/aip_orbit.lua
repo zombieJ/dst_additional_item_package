@@ -47,17 +47,34 @@ local aip_orbit_item = Recipe("aip_orbit_item", {Ingredient("boards", 1)}, RECIP
 aip_orbit_item.atlas = "images/inventoryimages/aip_orbit_item.xml"
 
 --------------------------- 轨道物品 ---------------------------
-local function ondeploywall(inst, pt, deployer)
-	local wall = SpawnPrefab("aip_orbit")
-	if wall ~= nil then 
+local function onDeployOrbit(inst, pt, deployer)
+	local orbit = SpawnPrefab("aip_orbit")
+	if orbit ~= nil then 
 		local x = math.floor(pt.x) + .5
+		local y = 0
 		local z = math.floor(pt.z) + .5
-		wall.Physics:SetCollides(false)
-		wall.Physics:Teleport(x, 0, z)
+		orbit.Physics:SetCollides(false)
+		orbit.Physics:Teleport(x, y, z)
 		-- wall.Physics:SetCollides(true)
 		inst.components.stackable:Get():Remove()
+
+		-- 轨道重排
+		print(">>> Origin:"..tostring(x).."/"..tostring(y).."/"..tostring(z))
+		local orbits = TheSim:FindEntities(x, y, z, 1.2, { "orbit" })
+		for i, target in ipairs(orbits) do
+			print(">>> "..tostring(i))
+			if target ~= orbit then
+				local e_x, e_y, e_z = target.Transform:GetWorldPosition()
+				print(">>> Taget:"..tostring(e_x).."/"..tostring(e_y).."/"..tostring(e_z))
+
+				if e_z ~= z then
+					orbit.Transform:SetRotation(90)
+					target.Transform:SetRotation(90)
+				end
+			end
+		end
 		
-		wall.SoundEmitter:PlaySound("dontstarve/common/place_structure_wood")
+		orbit.SoundEmitter:PlaySound("dontstarve/common/place_structure_wood")
 	end
 end
 
@@ -70,7 +87,7 @@ local function itemfn()
 
 	MakeInventoryPhysics(inst)
 
-	inst:AddTag("wallbuilder")
+	inst:AddTag("orbitbuilder")
 
 	inst.AnimState:SetBank("aip_orbit")
 	inst.AnimState:SetBuild("aip_orbit")
@@ -90,7 +107,7 @@ local function itemfn()
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_orbit_item.xml"
 
 	inst:AddComponent("deployable")
-	inst.components.deployable.ondeploy = ondeploywall
+	inst.components.deployable.ondeploy = onDeployOrbit
 	inst.components.deployable:SetDeployMode(DEPLOYMODE.WALL)
 
 	MakeHauntableLaunch(inst)
@@ -129,12 +146,15 @@ local function fn()
 
 	inst.Transform:SetEightFaced()
 	-- inst.Transform:SetScale(0.5, 0.5, 0.5)
+	-- inst.AnimState:GetCurrentFacing()
+	-- https://forums.kleientertainment.com/topic/71094-modding-help/
+	-- https://forums.kleientertainment.com/topic/72978-is-it-possible-to-access-variables-from-behaviors/
 
 	MakeObstaclePhysics(inst, .5)
 	inst.Physics:SetDontRemoveOnSleep(true)
 	inst.Physics:SetCollides(false)
 
-	inst:AddTag("wall")
+	inst:AddTag("orbit")
 	inst:AddTag("noauradamage")
 	inst:AddTag("nointerpolate")
 	inst:AddTag("wood")
@@ -149,6 +169,8 @@ local function fn()
 		return inst
 	end
 
+	inst:AddComponent("savedrotation")
+
 	inst:AddComponent("inspectable")
 	inst:AddComponent("lootdropper")
 
@@ -159,6 +181,13 @@ local function fn()
 	inst.components.workable:SetOnWorkCallback(onhit)
 
 	MakeHauntableWork(inst)
+
+	--[[ inst:DoPeriodicTask(1, function()
+		local x, y, z = inst.Transform:GetWorldPosition()
+		print(">>> Facing:"..tostring(inst.AnimState:GetCurrentFacing()))
+		print(">>> Rotation:"..tostring(inst.Transform:GetRotation()))
+		print(">>> Position:"..tostring(x).."/"..tostring(y).."/"..tostring(z))
+	end) ]]
 
 	return inst
 end
