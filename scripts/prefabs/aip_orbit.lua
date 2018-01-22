@@ -27,7 +27,7 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 -- 资源
 local assets =
 {
-	Asset("ATLAS", "images/inventoryimages/aip_orbit.xml"),
+	-- 不知道为什么aip_orbit.xml不work，看起来是因为和配方相关？
 	Asset("ATLAS", "images/inventoryimages/aip_orbit_item.xml"),
 	Asset("ANIM", "anim/aip_orbit.zip"),
 	Asset("ANIM", "anim/aip_orbit_x.zip"),
