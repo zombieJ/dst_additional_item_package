@@ -30,6 +30,7 @@ local assets =
 	Asset("ATLAS", "images/inventoryimages/aip_orbit.xml"),
 	Asset("ATLAS", "images/inventoryimages/aip_orbit_item.xml"),
 	Asset("ANIM", "anim/aip_orbit.zip"),
+	Asset("ANIM", "anim/aip_orbit_x.zip"),
 }
 
 local prefabs =
@@ -47,6 +48,54 @@ local aip_orbit_item = Recipe("aip_orbit_item", {Ingredient("boards", 1)}, RECIP
 aip_orbit_item.atlas = "images/inventoryimages/aip_orbit_item.xml"
 
 --------------------------- 轨道物品 ---------------------------
+-- 重置轨道角度
+local function updateOrbitRotation(inst, vertical, horizontal)
+	if vertical and horizontal then
+		inst.AnimState:SetBank("aip_orbit_x")
+		inst.AnimState:SetBuild("aip_orbit_x")
+
+		inst.Transform:SetRotation(180)
+	else
+		inst.AnimState:SetBank("aip_orbit")
+		inst.AnimState:SetBuild("aip_orbit")
+		
+		if vertical then
+			inst.Transform:SetRotation(90)
+		else
+			inst.Transform:SetRotation(180)
+		end
+	end
+
+	inst.AnimState:PlayAnimation("idle")
+end
+
+-- 遍历轨道
+local function adjustOrbit(inst, conductive)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local orbits = TheSim:FindEntities(x, y, z, 1.2, { "orbit" })
+
+	local vertical = false
+	local horizontal = false
+
+	for i, target in ipairs(orbits) do
+		if target ~= inst then
+			local e_x, e_y, e_z = target.Transform:GetWorldPosition()
+
+			if e_z ~= z then
+				vertical = true
+			elseif e_x ~= x then
+				horizontal = true
+			end
+
+			if conductive then
+				adjustOrbit(target, false)
+			end
+		end
+	end
+
+	updateOrbitRotation(inst, vertical, horizontal)
+end
+
 local function onDeployOrbit(inst, pt, deployer)
 	local orbit = SpawnPrefab("aip_orbit")
 	if orbit ~= nil then 
@@ -59,21 +108,8 @@ local function onDeployOrbit(inst, pt, deployer)
 		inst.components.stackable:Get():Remove()
 
 		-- 轨道重排
-		print(">>> Origin:"..tostring(x).."/"..tostring(y).."/"..tostring(z))
-		local orbits = TheSim:FindEntities(x, y, z, 1.2, { "orbit" })
-		for i, target in ipairs(orbits) do
-			print(">>> "..tostring(i))
-			if target ~= orbit then
-				local e_x, e_y, e_z = target.Transform:GetWorldPosition()
-				print(">>> Taget:"..tostring(e_x).."/"..tostring(e_y).."/"..tostring(e_z))
+		adjustOrbit(orbit, true)
 
-				if e_z ~= z then
-					orbit.Transform:SetRotation(90)
-					target.Transform:SetRotation(90)
-				end
-			end
-		end
-		
 		orbit.SoundEmitter:PlaySound("dontstarve/common/place_structure_wood")
 	end
 end
