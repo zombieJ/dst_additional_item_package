@@ -218,6 +218,10 @@ local function fn()
 
 	MakeHauntableWork(inst)
 
+	inst:DoTaskInTime(0.5, function()
+		adjustOrbit(inst, false)
+	end)
+
 	--[[ inst:DoPeriodicTask(1, function()
 		local x, y, z = inst.Transform:GetWorldPosition()
 		print(">>> Facing:"..tostring(inst.AnimState:GetCurrentFacing()))
