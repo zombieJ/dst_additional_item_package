@@ -88,7 +88,10 @@ local function adjustOrbit(inst, conductive)
 			end
 
 			if conductive then
-				adjustOrbit(target, false)
+				-- 延迟0秒以等待其他Orbit更新完毕
+				target:DoTaskInTime(0, function()
+					adjustOrbit(target, false)
+				end)
 			end
 		end
 	end
@@ -156,8 +159,13 @@ local function onhammered(inst, worker)
 	if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
 		inst.components.burnable:Extinguish()
 	end
+
+	-- 物品掉落
 	-- inst.components.lootdropper:DropLoot()
 	inst.components.lootdropper:SpawnLootPrefab('log')
+
+	-- 重置其他轨道角度
+	adjustOrbit(inst, true)
 
 	local fx = SpawnPrefab("collapse_small")
 	fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
@@ -218,6 +226,7 @@ local function fn()
 
 	MakeHauntableWork(inst)
 
+	-- 重置一下角度
 	inst:DoTaskInTime(0.5, function()
 		adjustOrbit(inst, false)
 	end)
