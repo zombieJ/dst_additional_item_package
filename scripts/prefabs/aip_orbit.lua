@@ -158,7 +158,13 @@ local function acceptMineCarTest(inst, item)
 end
 
 local function onAcceptMineCar(inst, giver, item)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local mineCar = SpawnPrefab(item.prefab)
+	mineCar.Transform:SetPosition(x, y, z)
 
+	if mineCar.components.inventoryitem then
+		mineCar.components.inventoryitem.canbepickedup = false
+	end
 end
 
 --------------------------- 轨道物品 ---------------------------
