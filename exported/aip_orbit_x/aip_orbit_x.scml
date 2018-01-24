@@ -27,6 +27,7 @@
     </folder>
     <folder id="5" name="aip_orbit_x">
         <file id="0" name="aip_orbit_x/horizontal.png" width="300" height="300" pivot_x="0.5" pivot_y="0.5"/>
+        <file id="1" name="aip_orbit_x/sideup.png" width="300" height="300" pivot_x="0.5" pivot_y="0.5"/>
     </folder>
     <entity id="0" name="aip_orbit_x">
         <animation id="0" name="break" length="534">
@@ -506,60 +507,60 @@
         <animation id="8" name="idle_down" length="67">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="horizontal" folder="5" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="90" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="0" name="horizontal" folder="5" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
             </mainline>
             <timeline id="0" name="horizontal">
                 <key id="0" spin="0">
-                    <object folder="5" file="0" angle="90"/>
+                    <object folder="5" file="0" />
                 </key>
             </timeline>
         </animation>
         <animation id="9" name="idle_downside" length="67">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="horizontal" folder="5" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="-45" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="0" name="horizontal" folder="5" file="1" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
             </mainline>
             <timeline id="0" name="horizontal">
                 <key id="0" spin="0">
-                    <object folder="5" file="0" angle="-45"/>
+                    <object folder="5" file="1" />
                 </key>
             </timeline>
         </animation>
         <animation id="10" name="idle_side" length="67">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="horizontal" folder="5" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="0" name="horizontal" folder="5" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
             </mainline>
             <timeline id="0" name="horizontal">
                 <key id="0" spin="0">
-                    <object folder="5" file="0" angle="0"/>
+                    <object folder="5" file="0" />
                 </key>
             </timeline>
         </animation>
         <animation id="11" name="idle_up" length="67">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="horizontal" folder="5" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="90" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="0" name="horizontal" folder="5" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
             </mainline>
             <timeline id="0" name="horizontal">
                 <key id="0" spin="0">
-                    <object folder="5" file="0" angle="90"/>
+                    <object folder="5" file="0"/>
                 </key>
             </timeline>
         </animation>
         <animation id="12" name="idle_upside" length="67">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="horizontal" folder="5" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="45" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="0" name="horizontal" folder="5" file="1" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
             </mainline>
             <timeline id="0" name="horizontal">
                 <key id="0" spin="0">
-                    <object folder="5" file="0" angle="45"/>
+                    <object folder="5" file="1"/>
                 </key>
             </timeline>
         </animation>

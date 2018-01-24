@@ -25,6 +25,7 @@ PrefabFiles =
 
 	-- Orbit
 	"aip_orbit",
+	"aip_mine_car",
 
 	-- Dress
 	"aip_dress",
