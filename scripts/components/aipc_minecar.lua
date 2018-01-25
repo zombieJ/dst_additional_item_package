@@ -219,11 +219,13 @@ end
 ------------------------------------------ 轨道 ------------------------------------------
 function MineCar:FindNextOrbit()
 	local prevOrbit = self.orbit
-	local curOrbit = self.nextOrbitorbit
+	local curOrbit = self.nextOrbit
 	local nextOrbit = nil
 
-	local x, y, z = self.inst.Transform:GetWorldPosition()
-	local orbits = TheSim:FindEntities(x, 0, z, SEARCH_RANGE, { "aip_orbit" })
+	local x, y, z = curOrbit.Transform:GetWorldPosition()
+	local orbits = TheSim:FindEntities(x, y, z, SEARCH_RANGE, { "aip_orbit" })
+
+	print(">>> Do Find:"..tostring(prevOrbit.GUID).."/"..tostring(curOrbit.GUID))
 
 	for i, target in ipairs(orbits) do
 		if target ~= prevOrbit and target ~= curOrbit then
@@ -231,11 +233,15 @@ function MineCar:FindNextOrbit()
 			if nextOrbit == nil then
 				nextOrbit = target
 			else
+				print(">>> Find Next: 2 Way:")
+				print(">>> 1:"..tostring(nextOrbit.GUID))
+				print(">>> 2:"..tostring(target.GUID))
 				return nil
 			end
 		end
 	end
 
+	print(">>> Find Next:"..tostring(nextOrbit and nextOrbit.GUID or nil))
 	return nextOrbit
 end
 
@@ -246,21 +252,27 @@ end
 
 function MineCar:StartMove(nextOrbit)
 	local carSpeed = self:GetSpeed()
+	local x, y, z = self.inst.Transform:GetWorldPosition()
 
 	if nextOrbit then
 		self.nextOrbit = nextOrbit
 	else
 		local tmpOrbit = self.nextOrbit
 		self.nextOrbit = self:FindNextOrbit()
-		self.orbit = self.tmpOrbit
+		self.orbit = tmpOrbit
 	end
 
 	if not self.nextOrbit then
+		print(">>> No Next Orbit!"..tostring(self.orbit and self.orbit.GUID or nil))
+		if self.orbit then
+			print(">>> Move to orbit!")
+			local cx, cy, cz = self.orbit.Transform:GetWorldPosition()
+			self.inst.Transform:SetPosition(cx, y, cz)
+		end
 		self:StopMove()
 		return
 	end
 
-	local x, y, z = self.inst.Transform:GetWorldPosition()
 	local ox, oy, oz = self.nextOrbit.Transform:GetWorldPosition()
 	local angle = self.inst:GetAngleToPoint(ox, y, oz)
 
@@ -346,7 +358,7 @@ function MineCar:OnUpdate(dt)
 	end
 	self.lastDistance = dsq
 
-	print("Reach >>>"..tostring(reached_dest).." >>> "..tostring(dt))
+	print("Reach >>>"..tostring(reached_dest).." >>> "..tostring(dt).." - "..tostring(self.nextOrbit.GUID))
 
 	if reached_dest then
 		self.lastDistance = 1000
