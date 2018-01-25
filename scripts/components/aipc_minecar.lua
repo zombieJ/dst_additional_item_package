@@ -31,25 +31,8 @@ end
 
 ------------------------------------------------------------------------------------------
 local SEARCH_RANGE = 1.2
-local REFRESH_INTERVAL = 0.5
-local ENABLE_BIND = false
-
--- 绑定矿车位置
-local function UpdateDrive(inst)
-	if not ENABLE_BIND then
-		return
-	end
-
-	local self = inst.components.aipc_minecar
-	if self and self.driver then
-		--[[if self.driver.components.locomotor then
-			self.driver.components.locomotor:Stop()
-		end]]
-
-		local x, y, z = inst.Transform:GetWorldPosition()
-		self.driver.Transform:SetPosition(x, 0, z)
-	end
-end
+local MIN_READJUST_RANGE = .5 -- 如果玩家和车太远将被重置坐标
+local MIN_READJUST_RANGE_Q = MIN_READJUST_RANGE * MIN_READJUST_RANGE
 
 local MineCar = Class(function(self, inst)
 	self.inst = inst
@@ -87,34 +70,6 @@ function MineCar:MoveToClosestOrbit()
 	end
 end
 
-function MineCar:AddDriver(inst)
-	if self.driver ~= nil or inst:HasTag("aip_minecar_driver") then
-		return
-	end
-
-	self.inst.Physics:SetCollides(false)
-	self.driver = inst
-	self.driver:AddTag("aip_minecar_driver")
-
-	-- 速度加成
-	if self.driver.components.locomotor then
-		self.driver.components.locomotor:SetExternalSpeedMultiplier(self.inst, "aipc_minecar_speed", 0)
-	end
-end
-
--- TODO: Support multi driver later
-function MineCar:RemoveDriver(inst)
-	self.inst.Physics:SetCollides(true)
-	self.driver:RemoveTag("aip_minecar_driver")
-
-	-- 速度减成
-	if self.driver.components.locomotor then
-		self.driver.components.locomotor:RemoveExternalSpeedMultiplier(self.inst, "aipc_minecar_speed")
-	end
-
-	self.driver = nil
-end
-
 ------------------------------------------ 轨道 ------------------------------------------
 function MineCar:FindNextOrbit()
 	local prevOrbit = self.orbit
@@ -124,23 +79,17 @@ function MineCar:FindNextOrbit()
 	local x, y, z = curOrbit.Transform:GetWorldPosition()
 	local orbits = TheSim:FindEntities(x, y, z, SEARCH_RANGE, { "aip_orbit" })
 
-	aipPrint(">>> Do Find:", prevOrbit.GUID, "/", curOrbit.GUID)
-
 	for i, target in ipairs(orbits) do
 		if target ~= prevOrbit and target ~= curOrbit then
 			-- 只允许存在一条可以的走的路
 			if nextOrbit == nil then
 				nextOrbit = target
 			else
-				aipPrint(">>> Find Next: 2 Way:")
-				aipPrint(">>> 1:",nextOrbit.GUID)
-				aipPrint(">>> 2:",target.GUID)
 				return nil
 			end
 		end
 	end
 
-	print(">>> Find Next:"..tostring(nextOrbit and nextOrbit.GUID or nil))
 	return nextOrbit
 end
 
@@ -162,12 +111,13 @@ function MineCar:StartMove(nextOrbit)
 	end
 
 	if not self.nextOrbit then
-		aipPrint(">>> No Next Orbit!", self.orbit and self.orbit.GUID or nil)
+		-- 重置 矿车 和 驾驶员 位置
 		if self.orbit then
-			aipPrint(">>> Move to orbit!")
 			local cx, cy, cz = self.orbit.Transform:GetWorldPosition()
 			self.inst.Transform:SetPosition(cx, y, cz)
+			self.driver.Transform:SetPosition(cx, cy, cz)
 		end
+
 		self:StopMove()
 		return
 	end
@@ -183,6 +133,9 @@ end
 
 function MineCar:StopMove()
 	self.inst.Physics:Stop()
+	if self.driver then
+		self.driver.Physics:Stop()
+	end
 	self:StopUpdatingInternal()
 end
 
@@ -227,8 +180,71 @@ function MineCar:GoDirect(direct)
 		end
 	end
 
+	self:SyncDriver()
+
 	if orbit then
 		self:StartMove(orbit)
+	end
+end
+
+----------------------------------------- 驾驶员 -----------------------------------------
+function MineCar:AddDriver(inst)
+	if self.driver ~= nil or inst:HasTag("aip_minecar_driver") then
+		return
+	end
+
+	self.inst.Physics:SetCollides(false)
+	self.driver = inst
+	self.driver:AddTag("aip_minecar_driver")
+
+	-- 速度加成
+	if self.driver.components.locomotor then
+		self.driver.components.locomotor:SetExternalSpeedMultiplier(self.inst, "aipc_minecar_speed", 0)
+	end
+
+	-- 同步位置
+	local dx, dy, dz = self.driver.Transform:GetWorldPosition()
+	local tx, ty, tz = self.inst.Transform:GetWorldPosition()
+	self.driver.Transform:SetPosition(tx, dy, tz)
+end
+
+-- TODO: Support multi driver later
+function MineCar:RemoveDriver(inst)
+	self.inst.Physics:SetCollides(true)
+	self.driver:RemoveTag("aip_minecar_driver")
+
+	-- 速度减成
+	if self.driver.components.locomotor then
+		self.driver.components.locomotor:RemoveExternalSpeedMultiplier(self.inst, "aipc_minecar_speed")
+	end
+
+	self.driver = nil
+end
+
+function MineCar:SyncDriver()
+	if not self.driver then
+		return
+	end
+
+	local carSpeed = self:GetSpeed()
+	local dx, dy, dz = self.driver.Transform:GetWorldPosition()
+	local tx, ty, tz = self.inst.Transform:GetWorldPosition()
+	local dRotation = self.driver.Transform:GetRotation()
+	local tRotation = self.inst.Transform:GetRotation()
+
+	local dsq = distsq(dx, dz, tx, tz)
+	if dRotation ~= tRotation or dsq > MIN_READJUST_RANGE_Q then
+		-- 停止移动
+		if self.driver.components.locomotor then
+			self.driver.components.locomotor:StopMoving()
+		end
+
+		-- 同步坐标
+		self.driver.Transform:SetPosition(tx, dy, tz)
+
+		-- 同步位移
+		self.driver.Transform:SetRotation(self.inst.Transform:GetRotation())
+		self.driver.Physics:SetMotorVel(carSpeed, 0, 0)
 	end
 end
 
@@ -246,6 +262,7 @@ function MineCar:OnUpdate(dt)
 	local x, y, z = self.inst.Transform:GetWorldPosition()
 	local ox, oy, oz = self.nextOrbit.Transform:GetWorldPosition()
 
+	-- 检查是否到达目标轨道
 	local reached_dest = false
 	local dsq = distsq(x, z, ox, oz)
 
@@ -257,11 +274,11 @@ function MineCar:OnUpdate(dt)
 	end
 	self.lastDistance = dsq
 
-	aipPrint("Reach >>>", reached_dest, " >>> ", dt, " - ", self.nextOrbit.GUID)
+	-- 位移驾驶员
+	self:SyncDriver()
 
 	if reached_dest then
 		self.lastDistance = 1000
-		-- self:StopMove()
 		self:StartMove()
 	end
 end
