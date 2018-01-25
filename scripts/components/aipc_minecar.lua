@@ -100,8 +100,6 @@ function MineCar:AddDriver(inst)
 	if self.driver.components.locomotor then
 		self.driver.components.locomotor:SetExternalSpeedMultiplier(self.inst, "aipc_minecar_speed", 0)
 	end
-
-	-- self:StartDrive()
 end
 
 -- TODO: Support multi driver later
@@ -115,106 +113,7 @@ function MineCar:RemoveDriver(inst)
 	end
 
 	self.driver = nil
-	-- self:StopDrive()
 end
-
---[[function MineCar:StartDrive()
-	if self.updatetask ~= nil then
-		self.updatetask:Cancel()
-		self.updatetask = nil
-	end
-
-	self.updatetask = self.inst:DoPeriodicTask(REFRESH_INTERVAL, UpdateDrive)
-	UpdateDrive(self.inst)
-end
-
-function MineCar:StopDrive()
-	if self.updatetask ~= nil then
-		self.updatetask:Cancel()
-		self.updatetask = nil
-	end
-end
-
-function MineCar:GoDirect123(direct)
-	if TheCamera == nil or not self.driver then
-		return
-	end
-
-	-- 重置矿车
-	self:MoveToClosestOrbit()
-	if not self.orbit then
-		return
-	end
-
-	-- 计算角度
-	local screenRotation = TheCamera:GetHeading() -- 指向屏幕左侧
-	local rotation = -(screenRotation - 45) + 45
-
-	print("-> Go Dir:"..tostring(rotation))
-
-	if direct == "left" then
-		rotation = rotation
-	elseif direct == "down" then
-		rotation = rotation - 90
-	elseif direct == "right" then
-		rotation = rotation + 180
-	elseif direct == "up" then
-		rotation = rotation + 90
-	end
-
-	-- 寻找轨道
-	local orbit = nil
-	local x, y, z = self.inst.Transform:GetWorldPosition()
-	local orbits = TheSim:FindEntities(x, 0, z, 1.2, { "aip_orbit" })
-	for i, target in ipairs(orbits) do
-		if target ~= self.orbit then
-			local tx, ty, tz = target.Transform:GetWorldPosition()
-			local angle = self.inst:GetAngleToPoint(tx, y, tz)
-
-			if inRange(angle, rotation, 70) then
-				orbit = target
-				break
-			end
-		end
-	end
-
-	if orbit then
-		self:GoToOrbit(orbit)
-		-- orbit.AnimState:SetMultColour(math.random(), math.random(), math.random(), 1)
-	end
-
-	-- 同步玩家坐标
-	-- UpdateDrive(self.inst)
-
-	local driverSpeed = self.driver.components.locomotor and self.driver.components.locomotor:GetRunSpeed() or 0
-	local carSpeed = self.inst.components.locomotor and self.inst.components.locomotor:GetRunSpeed() or 0
-
-	-- 移动矿车
-	if self.inst.components.locomotor then
-		--self.inst.components.locomotor.runspeed = driverSpeed
-		self.inst.components.locomotor:RunInDirection(rotation)
-		self.inst.components.locomotor:RunForward()
-		--speed = self.inst.components.locomotor:GetRunSpeed()
-	end
-
-	-- 移动驾驶员
-	if self.driver ~= nil and self.driver.components.locomotor then
-		--self.driver.Physics:SetActive(false)
-		
-		--self.driver.components.locomotor:RunInDirection(rotation)
-		--self.driver.components.locomotor:RunForward()
-		
-		--self.driver.components.locomotor:RunInDirection(rotation)
-		--self.driver.components.locomotor:RunForward()
-
-		--self.driver.Physics:SetMotorVel(speed, 0, 0)
-		--self.driver.components.locomotor:StartUpdatingInternal()
-
-		self.driver.Transform:SetRotation(rotation)
-		self.driver.Physics:SetMotorVel(carSpeed, 0, 0)
-	end
-end
-]]
 
 ------------------------------------------ 轨道 ------------------------------------------
 function MineCar:FindNextOrbit()
@@ -225,7 +124,7 @@ function MineCar:FindNextOrbit()
 	local x, y, z = curOrbit.Transform:GetWorldPosition()
 	local orbits = TheSim:FindEntities(x, y, z, SEARCH_RANGE, { "aip_orbit" })
 
-	print(">>> Do Find:"..tostring(prevOrbit.GUID).."/"..tostring(curOrbit.GUID))
+	aipPrint(">>> Do Find:", prevOrbit.GUID, "/", curOrbit.GUID)
 
 	for i, target in ipairs(orbits) do
 		if target ~= prevOrbit and target ~= curOrbit then
@@ -233,9 +132,9 @@ function MineCar:FindNextOrbit()
 			if nextOrbit == nil then
 				nextOrbit = target
 			else
-				print(">>> Find Next: 2 Way:")
-				print(">>> 1:"..tostring(nextOrbit.GUID))
-				print(">>> 2:"..tostring(target.GUID))
+				aipPrint(">>> Find Next: 2 Way:")
+				aipPrint(">>> 1:",nextOrbit.GUID)
+				aipPrint(">>> 2:",target.GUID)
 				return nil
 			end
 		end
@@ -263,9 +162,9 @@ function MineCar:StartMove(nextOrbit)
 	end
 
 	if not self.nextOrbit then
-		print(">>> No Next Orbit!"..tostring(self.orbit and self.orbit.GUID or nil))
+		aipPrint(">>> No Next Orbit!", self.orbit and self.orbit.GUID or nil)
 		if self.orbit then
-			print(">>> Move to orbit!")
+			aipPrint(">>> Move to orbit!")
 			local cx, cy, cz = self.orbit.Transform:GetWorldPosition()
 			self.inst.Transform:SetPosition(cx, y, cz)
 		end
@@ -358,7 +257,7 @@ function MineCar:OnUpdate(dt)
 	end
 	self.lastDistance = dsq
 
-	print("Reach >>>"..tostring(reached_dest).." >>> "..tostring(dt).." - "..tostring(self.nextOrbit.GUID))
+	aipPrint("Reach >>>", reached_dest, " >>> ", dt, " - ", self.nextOrbit.GUID)
 
 	if reached_dest then
 		self.lastDistance = 1000

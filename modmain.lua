@@ -35,6 +35,9 @@ PrefabFiles =
 	-- "aip_chesspiece_moon",
 }
 
+--------------------------------------- 工具 ---------------------------------------
+modimport("scripts/aipUtils.lua")
+
 --------------------------------------- 图标 ---------------------------------------
 AddMinimapAtlas("minimap/dark_observer_vest.xml")
 
