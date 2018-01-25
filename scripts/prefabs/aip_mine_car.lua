@@ -49,12 +49,12 @@ aip_mine_car.atlas = "images/inventoryimages/aip_mine_car.xml"
 
 -------------------------------------- 实体 --------------------------------------
 -- 矿车重置高度
-local function resetHeight(inst)
+local function resetCarPosition(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()
 	inst.Transform:SetPosition(x, 0.9, z)
 end
 
--- 位移到最近的轨道上
+--[[ 位移到最近的轨道上
 local function moveToOrbit(inst, distance)
 	local x, y, z = inst.Transform:GetWorldPosition()
 	local instPoint = Point(inst.Transform:GetWorldPosition())
@@ -80,15 +80,7 @@ local function moveToOrbit(inst, distance)
 
 	return #orbits
 end
-
--- 丢弃矿车
-local function OnDropped(inst)
-	local hasOrbit = moveToOrbit(inst, 2) > 0
-
-	if hasOrbit then
-		inst.components.inventoryitem.canbepickedup = false
-	end
-end
+]]
 
 -- 保存
 local function onsave(inst, data)
@@ -102,17 +94,20 @@ local function onload(inst, data)
 	if data ~= nil and data.status == "placed" and inst.components.inventoryitem then
 		inst.components.inventoryitem.canbepickedup = false
 
-		resetHeight(inst)
+		resetCarPosition(inst)
 	end
 end
 
 -- 初始化
 local function onInit(inst)
 	if inst.components.inventoryitem and inst.components.inventoryitem.canbepickedup == false then
-		resetHeight(inst)
+		resetCarPosition(inst)
 	end
 end
 
+-- 注：
+-- 默认的乘坐逻辑需要装上鞍，装备完毕后的移动动画是骑牛的动画（并且会显示鞍）。
+-- 感觉在之上改造太过麻烦，干脆直接自己模拟好了。
 function fn()
 	local inst = CreateEntity()
 
@@ -152,21 +147,6 @@ function fn()
 	inst.components.locomotor:SetTriggersCreep(false)
 	inst.components.locomotor.walkspeed = TUNING.WILSON_WALK_SPEED * speedMulti
 	inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED * speedMulti
-
-	--[[ 乘坐
-	注： 默认的乘坐逻辑需要装上鞍，装备完毕后的移动动画是骑牛的动画（并且会显示鞍）。
-		感觉在之上改造太过麻烦，干脆直接自己模拟好了。
-	inst:AddComponent("locomotor")
-	--inst:AddComponent("saddler")
-	--inst.components.saddler:SetBonusDamage(data.bonusdamage)
-	--inst.components.saddler:SetBonusSpeedMult(data.speedmult)
-	--inst.components.saddler:SetSwaps(name, "swap_saddle")
-	--inst.components.saddler:SetDiscardedCallback(ondiscarded)
-	inst:AddComponent("rideable")
-	inst.components.rideable:SetSaddleable(true)
-	--inst.components.rideable:SetRequiredObedience(TUNING.BEEFALO_MIN_BUCK_OBEDIENCE)
-	--inst:ListenForEvent("saddlechanged", OnSaddleChanged)
-	--inst:ListenForEvent("refusedrider", OnRefuseRider)]]
 
 	inst.OnLoad = onload
 	inst.OnSave = onsave

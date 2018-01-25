@@ -93,10 +93,7 @@ local function moveMineCar(player, keyCode)
 	end
 
 	if mineCar.components.aipc_minecar then
-		-- 延迟一段时间以免玩家按键阻止位移
-		mineCar:DoTaskInTime(0.5, function()
-			mineCar.components.aipc_minecar:GoDirect(direct)
-		end)
+		mineCar.components.aipc_minecar:GoDirect(direct)
 	end
 end
 
@@ -107,7 +104,7 @@ env.AddModRPCHandler(env.modname, "aipRunMineCar", function(player, keyCode)
 end)
 
 local function bindKey(keyCode)
-	GLOBAL.TheInput:AddKeyUpHandler(keyCode, function()
+	GLOBAL.TheInput:AddKeyDownHandler(keyCode, function()
 		local player = GLOBAL.ThePlayer
 
 		-- print(">>> Dir:"..tostring(keyCode))
