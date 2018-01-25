@@ -7,6 +7,8 @@ if additional_orbit ~= "open" then
 	return nil
 end
 
+local speedMulti = 1
+
 local language = GetModConfigData("language", foldername)
 
 local LANG_MAP = {
@@ -49,7 +51,7 @@ aip_mine_car.atlas = "images/inventoryimages/aip_mine_car.xml"
 -- 矿车重置高度
 local function resetHeight(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()
-	inst.Transform:SetPosition(x, 0.1, z)
+	inst.Transform:SetPosition(x, 0.9, z)
 end
 
 -- 位移到最近的轨道上
@@ -121,7 +123,7 @@ function fn()
 	
 	-- MakeInventoryPhysics(inst)
 	MakeGhostPhysics(inst, 0, 0.3)
-	inst.Transform:SetScale(1.5, 1.5, 1.5)
+	inst.Transform:SetScale(1.3, 1.3, 1.3)
 	
 	inst.AnimState:SetBank("aip_mine_car")
 	inst.AnimState:SetBuild("aip_mine_car")
@@ -141,6 +143,15 @@ function fn()
 	inst.components.inventoryitem.nobounce = true
 
 	inst:AddComponent("inspectable")
+
+	-- 矿车组件
+	inst:AddComponent("aipc_minecar")
+
+	-- 移动者
+	inst:AddComponent("locomotor")
+	inst.components.locomotor:SetTriggersCreep(false)
+	inst.components.locomotor.walkspeed = TUNING.WILSON_WALK_SPEED * speedMulti
+	inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED * speedMulti
 
 	--[[ 乘坐
 	注： 默认的乘坐逻辑需要装上鞍，装备完毕后的移动动画是骑牛的动画（并且会显示鞍）。
