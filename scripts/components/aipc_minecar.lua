@@ -10,15 +10,20 @@ if additional_orbit ~= "open" then
 end
 
 ------------------------------------------------------------------------------------------
-local REFRESH_INTERVAL = 0.1
+local REFRESH_INTERVAL = 0.5
+local ENABLE_BIND = false
 
 -- 绑定矿车位置
 local function UpdateDrive(inst)
+	if not ENABLE_BIND then
+		return
+	end
+
 	local self = inst.components.aipc_minecar
 	if self and self.driver then
-		if self.driver.components.locomotor then
+		--[[if self.driver.components.locomotor then
 			self.driver.components.locomotor:Stop()
-		end
+		end]]
 
 		local x, y, z = inst.Transform:GetWorldPosition()
 		self.driver.Transform:SetPosition(x, 0, z)
@@ -118,13 +123,18 @@ function MineCar:GoDirect(direct)
 	-- 移动驾驶员
 	if self.driver ~= nil and self.driver.components.locomotor then
 		--self.driver.Physics:SetActive(false)
+		
 		--self.driver.components.locomotor:RunInDirection(rotation)
 		--self.driver.components.locomotor:RunForward()
+		
 		--[[self.driver.components.locomotor:RunInDirection(rotation)
 		self.driver.components.locomotor:RunForward()
 
 		self.driver.Physics:SetMotorVel(speed, 0, 0)
 		self.driver.components.locomotor:StartUpdatingInternal()]]
+
+		self.driver.Transform:SetRotation(rotation)
+		self.driver.Physics:SetMotorVel(driverSpeed, 0, 0)
 	end
 end
 
