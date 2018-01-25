@@ -14,9 +14,6 @@ local function inRange(current, target, range)
 	local mCurrent = math.mod(current + 720, 360)
 	local mTarget = math.mod(target + 720, 360)
 
-	print("current:"..tostring(mCurrent))
-	print("target:"..tostring(mTarget))
-
 	local min = mTarget - range
 	local max = mTarget + range
 
@@ -57,8 +54,8 @@ local MineCar = Class(function(self, inst)
 	self.inst = inst
 	self.driver = nil
 	self.updatetask = nil
-	self.speedMuli = 1
 	self.orbit = nil
+	self.nextOrbit = nil
 end)
 
 function MineCar:MoveToClosestOrbit()
@@ -99,11 +96,10 @@ function MineCar:AddDriver(inst)
 
 	-- 速度加成
 	if self.driver.components.locomotor then
-		-- self.driver.components.locomotor:SetExternalSpeedMultiplier(self.inst, "aipc_minecar_speed", self.speedMuli)
 		self.driver.components.locomotor:SetExternalSpeedMultiplier(self.inst, "aipc_minecar_speed", 0)
 	end
 
-	self:StartDrive()
+	-- self:StartDrive()
 end
 
 -- TODO: Support multi driver later
@@ -117,10 +113,10 @@ function MineCar:RemoveDriver(inst)
 	end
 
 	self.driver = nil
-	self:StopDrive()
+	-- self:StopDrive()
 end
 
-function MineCar:StartDrive()
+--[[function MineCar:StartDrive()
 	if self.updatetask ~= nil then
 		self.updatetask:Cancel()
 		self.updatetask = nil
@@ -137,7 +133,7 @@ function MineCar:StopDrive()
 	end
 end
 
-function MineCar:GoDirect(direct)
+function MineCar:GoDirect123(direct)
 	if TheCamera == nil or not self.driver then
 		return
 	end
@@ -152,7 +148,6 @@ function MineCar:GoDirect(direct)
 	local screenRotation = TheCamera:GetHeading() -- 指向屏幕左侧
 	local rotation = -(screenRotation - 45) + 45
 
-	--print(">>> Go Dir:"..tostring(direct))
 	print("-> Go Dir:"..tostring(rotation))
 
 	if direct == "left" then
@@ -173,13 +168,7 @@ function MineCar:GoDirect(direct)
 		if target ~= self.orbit then
 			local tx, ty, tz = target.Transform:GetWorldPosition()
 			local angle = self.inst:GetAngleToPoint(tx, y, tz)
-			print(tostring(i).." > "..tostring(angle))
 
-			-- local relativeAngle = rotation + angle - 45
-			-- local relativeAngle = rotation + angle - 45
-			-- print(tostring(i).." > "..tostring(relativeAngle))
-
-			-- if inRange(relativeAngle, rotation, 70) then
 			if inRange(angle, rotation, 70) then
 				orbit = target
 				break
@@ -188,13 +177,13 @@ function MineCar:GoDirect(direct)
 	end
 
 	if orbit then
-		orbit.AnimState:SetMultColour(math.random(), math.random(), math.random(), 1)
+		self:GoToOrbit(orbit)
+		-- orbit.AnimState:SetMultColour(math.random(), math.random(), math.random(), 1)
 	end
 
 	-- 同步玩家坐标
-	UpdateDrive(self.inst)
+	-- UpdateDrive(self.inst)
 
-	--[[
 	local driverSpeed = self.driver.components.locomotor and self.driver.components.locomotor:GetRunSpeed() or 0
 	local carSpeed = self.inst.components.locomotor and self.inst.components.locomotor:GetRunSpeed() or 0
 
@@ -222,9 +211,97 @@ function MineCar:GoDirect(direct)
 		self.driver.Transform:SetRotation(rotation)
 		self.driver.Physics:SetMotorVel(carSpeed, 0, 0)
 	end
-	]]
+end
+]]
+
+------------------------------------------ 轨道 ------------------------------------------
+function MineCar:FindNextOrbit(current)
+	return nil
 end
 
+---------------------------------------- 移动管理 ----------------------------------------
+function MineCar:StartMove(nextOrbit)
+	self.nextOrbit = nextOrbit
+	local carSpeed = self.inst.components.locomotor and self.inst.components.locomotor:GetRunSpeed() or 0
+
+	local x, y, z = self.inst.Transform:GetWorldPosition()
+	local ox, oy, oz = self.nextOrbit.Transform:GetWorldPosition()
+	local angle = self.inst:GetAngleToPoint(ox, y, oz)
+
+	self.inst.Transform:SetRotation(angle)
+	self.inst.Physics:SetMotorVel(carSpeed, 0, 0)
+
+	self:StartUpdatingInternal()
+end
+
+function MineCar:GoDirect(direct)
+	if TheCamera == nil or not self.driver then
+		return
+	end
+
+	-- 重置矿车
+	self:MoveToClosestOrbit()
+	if not self.orbit then
+		return
+	end
+
+	-- 计算角度
+	local screenRotation = TheCamera:GetHeading() -- 指向屏幕左侧
+	local rotation = -(screenRotation - 45) + 45
+
+	if direct == "left" then
+		rotation = rotation
+	elseif direct == "down" then
+		rotation = rotation - 90
+	elseif direct == "right" then
+		rotation = rotation + 180
+	elseif direct == "up" then
+		rotation = rotation + 90
+	end
+
+	-- 寻找轨道（第一次寻找需要根据页面角度来）
+	local orbit = nil
+	local x, y, z = self.inst.Transform:GetWorldPosition()
+	local orbits = TheSim:FindEntities(x, 0, z, 1.2, { "aip_orbit" })
+	for i, target in ipairs(orbits) do
+		if target ~= self.orbit then
+			local tx, ty, tz = target.Transform:GetWorldPosition()
+			local angle = self.inst:GetAngleToPoint(tx, y, tz)
+
+			if inRange(angle, rotation, 70) then
+				orbit = target
+				break
+			end
+		end
+	end
+
+	if orbit then
+		self:StartMove(orbit)
+	end
+end
+
+---------------------------------------- 更新检查 ----------------------------------------
+function MineCar:StartUpdatingInternal()
+	self.inst:StartUpdatingComponent(self)
+end
+
+function MineCar:StopUpdatingInternal()
+	self.inst:StopUpdatingComponent(self)
+end
+
+function MineCar:OnUpdate(dt)
+	local carSpeed = self.inst.components.locomotor and self.inst.components.locomotor:GetRunSpeed() or 0
+	local x, y, z = self.inst.Transform:GetWorldPosition()
+	local ox, oy, oz = self.orbit.Transform:GetWorldPosition()
+
+	local dsq = distsq(x, z, ox, oz)
+	local run_dist = carSpeed * dt * .5
+	local reached_dest = dsq <= math.max(run_dist * run_dist, .15 * .15)
+
+	print(">>> Arrive:"..tostring(reached_dest))
+end
+
+---------------------------------------- 存储逻辑 ----------------------------------------
 function MineCar:OnSave()
 	local data = {}
 	if self.driver ~= nil then
