@@ -54,34 +54,6 @@ local function resetCarPosition(inst)
 	inst.Transform:SetPosition(x, 0.9, z)
 end
 
---[[ 位移到最近的轨道上
-local function moveToOrbit(inst, distance)
-	local x, y, z = inst.Transform:GetWorldPosition()
-	local instPoint = Point(inst.Transform:GetWorldPosition())
-	local orbits = TheSim:FindEntities(x, y, z, distance or 2, { "orbit" })
-
-	-- Find closest one
-	local closestDist = 100
-	local closest = nil
-	for i, target in ipairs(orbits) do
-		local targetPoint = Point(target.Transform:GetWorldPosition())
-		local dsq = distsq(instPoint, targetPoint)
-
-		if closestDist > dsq then
-			closestDist = dsq
-			closest = target
-		end
-	end
-
-	if closest ~= nil then
-		local tx, ty, tz = closest.Transform:GetWorldPosition()
-		inst.Transform:SetPosition(tx, ty, tz)
-	end
-
-	return #orbits
-end
-]]
-
 -- 保存
 local function onsave(inst, data)
 	if inst.components.inventoryitem and not inst.components.inventoryitem.canbepickedup then

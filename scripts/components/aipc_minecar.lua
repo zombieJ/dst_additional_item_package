@@ -226,14 +226,19 @@ function MineCar:SyncDriver()
 		return
 	end
 
+	aipPrint("Driver Speed:", self.driver.Physics:GetMotorSpeed())
+	aipPrint("Car Speed:", self.inst.Physics:GetMotorSpeed())
+
 	local carSpeed = self:GetSpeed()
 	local dx, dy, dz = self.driver.Transform:GetWorldPosition()
 	local tx, ty, tz = self.inst.Transform:GetWorldPosition()
 	local dRotation = self.driver.Transform:GetRotation()
 	local tRotation = self.inst.Transform:GetRotation()
+	local dSpeed = self.driver.Physics:GetMotorSpeed()
+	local tSpeed = self.inst.Physics:GetMotorSpeed()
 
 	local dsq = distsq(dx, dz, tx, tz)
-	if dRotation ~= tRotation or dsq > MIN_READJUST_RANGE_Q then
+	if dRotation ~= tRotation or dsq > MIN_READJUST_RANGE_Q or dSpeed ~= tSpeed then
 		-- 停止移动
 		if self.driver.components.locomotor then
 			self.driver.components.locomotor:StopMoving()
