@@ -157,6 +157,7 @@ local function acceptMineCarTest(inst, item)
 	return false, "ITEM_NOT_MINE_CAR"
 end
 
+-- 放置矿车
 local function onAcceptMineCar(inst, giver, item)
 	local x, y, z = inst.Transform:GetWorldPosition()
 	local mineCar = SpawnPrefab(item.prefab)
@@ -164,6 +165,10 @@ local function onAcceptMineCar(inst, giver, item)
 
 	if mineCar.components.inventoryitem then
 		mineCar.components.inventoryitem.canbepickedup = false
+	end
+	
+	if mineCar.components.aipc_minecar then
+		mineCar.components.aipc_minecar:Placed()
 	end
 end
 
@@ -287,13 +292,6 @@ local function fn()
 	inst.components.trader:SetAbleToAcceptTest(acceptMineCarTest)
 	inst.components.trader.onaccept = onAcceptMineCar
 	inst.components.trader.acceptnontradable = true
-
-	--[[ inst:DoPeriodicTask(1, function()
-		local x, y, z = inst.Transform:GetWorldPosition()
-		print(">>> Facing:"..tostring(inst.AnimState:GetCurrentFacing()))
-		print(">>> Rotation:"..tostring(inst.Transform:GetRotation()))
-		print(">>> Position:"..tostring(x).."/"..tostring(y).."/"..tostring(z))
-	end) ]]
 
 	return inst
 end

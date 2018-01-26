@@ -77,6 +77,20 @@ local function onInit(inst)
 	end
 end
 
+local function onPlaced(inst)
+	inst.AnimState:PlayAnimation("place")
+	inst.AnimState:PushAnimation("idle", false)
+	inst.SoundEmitter:PlaySound("dontstarve/common/place_structure_wood")
+end
+
+local function OnStartDrive(inst)
+	inst.AnimState:PlayAnimation("running", true)
+end
+
+local function OnStopDrive(inst)
+	inst.AnimState:PlayAnimation("idle", false)
+end
+
 -- 注：
 -- 默认的乘坐逻辑需要装上鞍，装备完毕后的移动动画是骑牛的动画（并且会显示鞍）。
 -- 感觉在之上改造太过麻烦，干脆直接自己模拟好了。
@@ -88,7 +102,6 @@ function fn()
 	inst.entity:AddSoundEmitter()
 	inst.entity:AddNetwork()
 	
-	-- MakeInventoryPhysics(inst)
 	MakeGhostPhysics(inst, 0, 0.3)
 	inst.Transform:SetScale(1.3, 1.3, 1.3)
 	
@@ -113,6 +126,9 @@ function fn()
 
 	-- 矿车组件
 	inst:AddComponent("aipc_minecar")
+	inst.components.aipc_minecar.onPlaced = onPlaced
+	inst.components.aipc_minecar.onStartDrive = OnStartDrive
+	inst.components.aipc_minecar.onStopDrive = OnStopDrive
 
 	-- 移动者
 	inst:AddComponent("locomotor")
@@ -122,6 +138,9 @@ function fn()
 
 	inst.OnLoad = onload
 	inst.OnSave = onsave
+
+	-- 禁止碰撞
+	inst.Physics:SetCollides(false)
 
 	inst:DoTaskInTime(0, onInit)
 

@@ -30,17 +30,21 @@ local function inRange(current, target, range)
 end
 
 ------------------------------------------------------------------------------------------
+local PLAYER_SPEED_MULTI = 1.05 -- 玩家速度慢于矿车，所以需要一个速度加成
 local SEARCH_RANGE = 1.2
-local MIN_READJUST_RANGE = .5 -- 如果玩家和车太远将被重置坐标
+local MIN_READJUST_RANGE = 1 -- 如果玩家和车太远将被重置坐标
 local MIN_READJUST_RANGE_Q = MIN_READJUST_RANGE * MIN_READJUST_RANGE
 
 local MineCar = Class(function(self, inst)
 	self.inst = inst
 	self.driver = nil
-	self.updatetask = nil
 	self.orbit = nil
 	self.nextOrbit = nil
 	self.lastDistance = 1000
+
+	self.onPlaced = nil
+	self.onStartDrive = nil
+	self.onStopDrive = nil
 end)
 
 function MineCar:MoveToClosestOrbit()
@@ -93,6 +97,12 @@ function MineCar:FindNextOrbit()
 	return nextOrbit
 end
 
+function MineCar:Placed()
+	if self.onPlaced then
+		self.onPlaced(self.inst)
+	end
+end
+
 ---------------------------------------- 移动管理 ----------------------------------------
 function MineCar:GetSpeed()
 	return self.inst.components.locomotor and self.inst.components.locomotor:GetRunSpeed() or 0
@@ -118,6 +128,10 @@ function MineCar:StartMove(nextOrbit)
 			self.driver.Transform:SetPosition(cx, cy, cz)
 		end
 
+		if self.onStopDrive then
+			self.onStopDrive(self.inst)
+		end
+
 		self:StopMove()
 		return
 	end
@@ -127,6 +141,9 @@ function MineCar:StartMove(nextOrbit)
 
 	self.inst.Transform:SetRotation(angle)
 	self.inst.Physics:SetMotorVel(carSpeed, 0, 0)
+
+	-- 同步驾驶员
+	self:SyncDriver()
 
 	self:StartUpdatingInternal()
 end
@@ -180,10 +197,12 @@ function MineCar:GoDirect(direct)
 		end
 	end
 
-	self:SyncDriver()
-
 	if orbit then
 		self:StartMove(orbit)
+
+		if self.onStartDrive then
+			self.onStartDrive(self.inst)
+		end
 	end
 end
 
@@ -193,9 +212,11 @@ function MineCar:AddDriver(inst)
 		return
 	end
 
-	self.inst.Physics:SetCollides(false)
 	self.driver = inst
 	self.driver:AddTag("aip_minecar_driver")
+
+	-- self.inst.Physics:SetCollides(false)
+	-- self.driver.Physics:SetCollides(false)
 
 	-- 速度加成
 	if self.driver.components.locomotor then
@@ -210,8 +231,10 @@ end
 
 -- TODO: Support multi driver later
 function MineCar:RemoveDriver(inst)
-	self.inst.Physics:SetCollides(true)
 	self.driver:RemoveTag("aip_minecar_driver")
+
+	-- self.inst.Physics:SetCollides(true)
+	-- self.driver.Physics:SetCollides(true)
 
 	-- 速度减成
 	if self.driver.components.locomotor then
@@ -236,12 +259,14 @@ function MineCar:SyncDriver()
 	local tRotation = self.inst.Transform:GetRotation()
 	local dSpeed = self.driver.Physics:GetMotorSpeed()
 	local tSpeed = self.inst.Physics:GetMotorSpeed()
+	local dRunning = self.driver.components.locomotor and self.driver.components.locomotor.isrunning or false
 
 	local dsq = distsq(dx, dz, tx, tz)
-	if dRotation ~= tRotation or dsq > MIN_READJUST_RANGE_Q or dSpeed ~= tSpeed then
+	if dRotation ~= tRotation or dsq > MIN_READJUST_RANGE_Q or dSpeed ~= tSpeed or dRunning then
 		-- 停止移动
 		if self.driver.components.locomotor then
 			self.driver.components.locomotor:StopMoving()
+			self.driver.components.locomotor:Clear()
 		end
 
 		-- 同步坐标
@@ -249,7 +274,7 @@ function MineCar:SyncDriver()
 
 		-- 同步位移
 		self.driver.Transform:SetRotation(self.inst.Transform:GetRotation())
-		self.driver.Physics:SetMotorVel(carSpeed, 0, 0)
+		self.driver.Physics:SetMotorVel(carSpeed * PLAYER_SPEED_MULTI, 0, 0)
 	end
 end
 

@@ -8,24 +8,142 @@
         <animation id="0" name="idle" length="1000">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="wheel_left" folder="0" file="1" abs_x="-46.970297" abs_y="-80.980198" abs_pivot_x="0.470297" abs_pivot_y="0.480198" abs_angle="0" abs_scale_x="0.597908" abs_scale_y="0.597908" abs_a="1" timeline="1" key="0" z_index="0"/>
-                    <object_ref id="1" name="wheel_right" folder="0" file="1" abs_x="61.029703" abs_y="-77.980198" abs_pivot_x="0.470297" abs_pivot_y="0.480198" abs_angle="0" abs_scale_x="0.597908" abs_scale_y="0.597908" abs_a="1" timeline="2" key="0" z_index="1"/>
-                    <object_ref id="2" name="body" folder="0" file="0" abs_x="6.023256" abs_y="-12.880399" abs_pivot_x="0.476744" abs_pivot_y="0.380399" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="2"/>
+                    <object_ref id="0" name="wheel_left" folder="0" file="1" abs_x="-46.970297" abs_y="-85.980198" abs_pivot_x="0.470297" abs_pivot_y="0.480198" abs_angle="0" abs_scale_x="0.597908" abs_scale_y="0.597908" abs_a="1" timeline="1" key="0" z_index="0"/>
+                    <object_ref id="1" name="wheel_right" folder="0" file="1" abs_x="61.029703" abs_y="-82.980198" abs_pivot_x="0.470297" abs_pivot_y="0.480198" abs_angle="0" abs_scale_x="0.597908" abs_scale_y="0.597908" abs_a="1" timeline="2" key="0" z_index="1"/>
+                    <object_ref id="2" name="body" folder="0" file="0" abs_x="6.023256" abs_y="-17.880399" abs_pivot_x="0.476744" abs_pivot_y="0.380399" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="2"/>
                 </key>
             </mainline>
             <timeline id="0" name="body">
                 <key id="0" spin="0">
-                    <object folder="0" file="0" x="6.023256" y="-12.880399" angle="0"/>
+                    <object folder="0" file="0" x="6.023256" y="-17.880399" angle="0"/>
                 </key>
             </timeline>
             <timeline id="1" name="wheel_left">
                 <key id="0" spin="0">
-                    <object folder="0" file="1" x="-46.970297" y="-80.980198" angle="0" scale_x="0.597908" scale_y="0.597908"/>
+                    <object folder="0" file="1" x="-46.970297" y="-85.980198" angle="0" scale_x="0.597908" scale_y="0.597908"/>
                 </key>
             </timeline>
             <timeline id="2" name="wheel_right">
                 <key id="0" spin="0">
-                    <object folder="0" file="1" x="61.029703" y="-77.980198" angle="0" scale_x="0.597908" scale_y="0.597908"/>
+                    <object folder="0" file="1" x="61.029703" y="-82.980198" angle="0" scale_x="0.597908" scale_y="0.597908"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="1" name="place" length="500">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="wheel_left" folder="0" file="1" abs_x="-46.970297" abs_y="-32.980198" abs_pivot_x="0.470297" abs_pivot_y="0.480198" abs_angle="0" abs_scale_x="0.42959" abs_scale_y="0.597908" abs_a="1" timeline="1" key="0" z_index="0"/>
+                    <object_ref id="1" name="wheel_right" folder="0" file="1" abs_x="61.029703" abs_y="-59.980198" abs_pivot_x="0.470297" abs_pivot_y="0.480198" abs_angle="0" abs_scale_x="0.373484" abs_scale_y="0.597908" abs_a="1" timeline="2" key="0" z_index="1"/>
+                    <object_ref id="2" name="body" folder="0" file="0" abs_x="6.023256" abs_y="82.119601" abs_pivot_x="0.476744" abs_pivot_y="0.380399" abs_angle="0" abs_scale_x="0.80632" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="2"/>
+                </key>
+                <key id="1" time="240">
+                    <object_ref id="0" timeline="1" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="2" key="1" z_index="1"/>
+                    <object_ref id="2" timeline="0" key="1" z_index="2"/>
+                </key>
+                <key id="2" time="360">
+                    <object_ref id="0" timeline="1" key="2" z_index="0"/>
+                    <object_ref id="1" timeline="2" key="2" z_index="1"/>
+                    <object_ref id="2" timeline="0" key="2" z_index="2"/>
+                </key>
+                <key id="3" time="499">
+                    <object_ref id="0" timeline="1" key="3" z_index="0"/>
+                    <object_ref id="1" timeline="2" key="3" z_index="1"/>
+                    <object_ref id="2" timeline="0" key="3" z_index="2"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="body">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="6.023256" y="82.119601" angle="0" scale_x="0.80632"/>
+                </key>
+                <key id="1" time="240" spin="0">
+                    <object folder="0" file="0" x="6.023256" y="-17.880399" angle="0"/>
+                </key>
+                <key id="2" time="360" spin="0">
+                    <object folder="0" file="0" x="6.023256" y="-24.880399" angle="0" scale_x="1.104777" scale_y="0.906106"/>
+                </key>
+                <key id="3" time="499" spin="0">
+                    <object folder="0" file="0" x="6.023256" y="-17.880399" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="wheel_left">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="-46.970297" y="-32.980198" angle="0" scale_x="0.42959" scale_y="0.597908"/>
+                </key>
+                <key id="1" time="240" spin="0">
+                    <object folder="0" file="1" x="-46.970297" y="-85.980198" angle="0" scale_x="0.597908" scale_y="0.597908"/>
+                </key>
+                <key id="2" time="360" spin="0">
+                    <object folder="0" file="1" x="-46.970297" y="-90.980198" angle="0" scale_x="0.766225" scale_y="0.453831"/>
+                </key>
+                <key id="3" time="499" spin="0">
+                    <object folder="0" file="1" x="-46.970297" y="-85.980198" angle="0" scale_x="0.597908" scale_y="0.597908"/>
+                </key>
+            </timeline>
+            <timeline id="2" name="wheel_right">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="61.029703" y="-59.980198" angle="0" scale_x="0.373484" scale_y="0.597908"/>
+                </key>
+                <key id="1" time="240" spin="0">
+                    <object folder="0" file="1" x="61.029703" y="-82.980198" angle="0" scale_x="0.597908" scale_y="0.597908"/>
+                </key>
+                <key id="2" time="360" spin="0">
+                    <object folder="0" file="1" x="61.029703" y="-87.980198" angle="0" scale_x="0.728821" scale_y="0.453831"/>
+                </key>
+                <key id="3" time="499" spin="0">
+                    <object folder="0" file="1" x="61.029703" y="-82.980198" angle="0" scale_x="0.597908" scale_y="0.597908"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="running" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="wheel_left" folder="0" file="1" abs_x="-46.970297" abs_y="-85.980198" abs_pivot_x="0.470297" abs_pivot_y="0.480198" abs_angle="0" abs_scale_x="0.597908" abs_scale_y="0.597908" abs_a="1" timeline="1" key="0" z_index="0"/>
+                    <object_ref id="1" name="wheel_right" folder="0" file="1" abs_x="61.029703" abs_y="-82.980198" abs_pivot_x="0.470297" abs_pivot_y="0.480198" abs_angle="0" abs_scale_x="0.597908" abs_scale_y="0.597908" abs_a="1" timeline="2" key="0" z_index="1"/>
+                    <object_ref id="2" name="body" folder="0" file="0" abs_x="6.023256" abs_y="-17.880399" abs_pivot_x="0.476744" abs_pivot_y="0.380399" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="2"/>
+                </key>
+                <key id="1" time="150">
+                    <object_ref id="0" timeline="1" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="2" key="1" z_index="1"/>
+                    <object_ref id="2" timeline="0" key="1" z_index="2"/>
+                </key>
+                <key id="2" time="299">
+                    <object_ref id="0" timeline="1" key="2" z_index="0"/>
+                    <object_ref id="1" timeline="2" key="2" z_index="1"/>
+                    <object_ref id="2" timeline="0" key="2" z_index="2"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="body">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="6.023256" y="-17.880399" angle="0"/>
+                </key>
+                <key id="1" time="150" spin="0">
+                    <object folder="0" file="0" x="6.023256" y="-19.880399" angle="0" scale_x="0.984124" scale_y="1.104625"/>
+                </key>
+                <key id="2" time="299" spin="0">
+                    <object folder="0" file="0" x="6.023256" y="-17.880399" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="wheel_left">
+                <key id="0">
+                    <object folder="0" file="1" x="-46.970297" y="-85.980198" angle="0" scale_x="0.597908" scale_y="0.597908"/>
+                </key>
+                <key id="1" time="150" spin="-1">
+                    <object folder="0" file="1" x="-46.970297" y="-85.980198" angle="96.958855" scale_x="0.597908" scale_y="0.597908"/>
+                </key>
+                <key id="2" time="299" spin="0">
+                    <object folder="0" file="1" x="-46.970297" y="-85.980198" angle="0" scale_x="0.597908" scale_y="0.597908"/>
+                </key>
+            </timeline>
+            <timeline id="2" name="wheel_right">
+                <key id="0">
+                    <object folder="0" file="1" x="61.029703" y="-82.980198" angle="0" scale_x="0.597908" scale_y="0.597908"/>
+                </key>
+                <key id="1" time="150" spin="-1">
+                    <object folder="0" file="1" x="61.029703" y="-82.980198" angle="110.138887" scale_x="0.597908" scale_y="0.597908"/>
+                </key>
+                <key id="2" time="299" spin="0">
+                    <object folder="0" file="1" x="61.029703" y="-82.980198" angle="0" scale_x="0.597908" scale_y="0.597908"/>
                 </key>
             </timeline>
         </animation>
