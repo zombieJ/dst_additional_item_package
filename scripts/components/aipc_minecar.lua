@@ -316,17 +316,17 @@ end
 ---------------------------------------- 存储逻辑 ----------------------------------------
 function MineCar:OnSave()
 	local data = {}
-	if self.driver ~= nil then
+	--[[if self.driver ~= nil then
 		data.driver = self.driver:GetSaveRecord() or nil
-	end
+	end]]
 	return data
 end
 
 function MineCar:OnLoad(data)
-	if data and data.driver ~= nil then
+	--[[if data and data.driver ~= nil then
 		local driver = SpawnSaveRecord(data.driver)
 		self:AddDriver(driver)
-	end
+	end]]
 
 	self.inst:DoTaskInTime(0, function()
 		self:MoveToClosestOrbit()

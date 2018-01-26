@@ -48,6 +48,21 @@ env.AddComponentAction("SCENE", "aipc_minecar", function(inst, doer, actions, ri
 	end
 end)
 
+-------------------------------------- 工具方法 --------------------------------------
+local function findMineCar(player)
+	local x, y, z = player.Transform:GetWorldPosition()
+	local mineCars = TheSim:FindEntities(x, y, z, 1.5, { "aip_minecar" })
+	local mineCar = nil
+
+	for i, target in ipairs(mineCars) do
+		if target.components.aipc_minecar and target.components.aipc_minecar.driver == player then
+			mineCar = target
+		end
+	end
+
+	return mineCar
+end
+
 -------------------------------------- 键盘移动 --------------------------------------
 -- local KEY_UP = 38
 -- local KEY_RIGHT = 39
@@ -65,15 +80,7 @@ local function moveMineCar(player, keyCode)
 		return
 	end
 
-	local x, y, z = player.Transform:GetWorldPosition()
-	local mineCars = TheSim:FindEntities(x, y, z, 1.5, { "aip_minecar" })
-	local mineCar = nil
-
-	for i, target in ipairs(mineCars) do
-		if target.components.aipc_minecar and target.components.aipc_minecar.driver == player then
-			mineCar = target
-		end
-	end
+	local mineCar = findMineCar(player)
 
 	-- 如果附近没有车就跳过
 	if not mineCar then
@@ -114,7 +121,7 @@ local function bindKey(keyCode)
 			return
 		end
 
-		if player.HUD:IsConsoleScreenOpen() or player.HUD:IsChatInputScreenOpen() then
+		if player.HUD:IsConsoleScreenOpen() or player.HUD:IsChatInputScreenOpen() or not player.components.health then
 			return
 		end
 
@@ -137,3 +144,27 @@ bindKey(KEY_UP)
 bindKey(KEY_RIGHT)
 bindKey(KEY_DOWN)
 bindKey(KEY_LEFT)
+
+-------------------------------------- 玩家绑定 --------------------------------------
+-- 绑定 Despawn 事件，以防止矿车被锁定
+local function MineCarPlayerPrefabPostInit(inst)
+	if not GLOBAL.TheWorld.ismastersim then
+		return
+	end
+
+	local onDespawn = inst.OnDespawn
+	inst.OnDespawn = function(player)
+		-- 调用原生卸载事件
+		if onDespawn then
+			onDespawn(player)
+		end
+
+		-- 处理矿车难题
+		local mineCar = findMineCar(player)
+		if mineCar.components.aipc_minecar then
+			mineCar.components.aipc_minecarRemoveDriver(player)
+		end
+	end
+end
+
+AddPrefabPostInit("player_common", MineCarPlayerPrefabPostInit)

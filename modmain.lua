@@ -50,7 +50,7 @@ if GetModConfigData("additional_orbit") == "open" then
 	modimport("scripts/mineCarAction.lua")
 end
 
---------------------------------------- 钩子 ---------------------------------------
+------------------------------------ 贪婪观察者 ------------------------------------
 -- 暗影跟随者
 function ShadowFollowerPrefabPostInit(inst)
 	if not GLOBAL.TheWorld.ismastersim then
