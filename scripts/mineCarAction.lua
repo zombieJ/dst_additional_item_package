@@ -29,22 +29,20 @@ AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIP_UNDRIVE, "doshorta
 AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIP_UNDRIVE, "doshortaction"))
 
 ------------------------------------ 绑定矿车行为 ------------------------------------
---env.AddComponentAction("SCENE", "aipc_minecar", function(inst, doer, actions, right)
-env.AddComponentAction("SCENE", "aipc_minecar", function(inst, doer, actions, right)
-	print(">>>>>> "..tostring(inst.replica.aipc_minecar and "Has Replica" or "Miss Replica"))
+env.AddComponentAction("SCENE", "aipc_minecar_client", function(inst, doer, actions, right)
 	-- 检查是否是驾驶设备
-	if not inst.replica.aipc_minecar then
+	if not inst.components.aipc_minecar_client then
 		return
 	end
 
 	-- 检查是否可驾驶
-	if inst.replica.aipc_minecar:CanDrive() and not doer:HasTag("aip_minecar_driver") then
+	if inst.components.aipc_minecar_client:CanDrive() and not doer:HasTag("aip_minecar_driver") then
 		table.insert(actions, GLOBAL.ACTIONS.AIP_DRIVE)
 		return
 	end
 
 	-- 检查是否可停止驾驶
-	if inst.replica.aipc_minecar:HasDriver(doer) then
+	if inst.components.aipc_minecar_client:HasDriver(doer) then
 		table.insert(actions, GLOBAL.ACTIONS.AIP_UNDRIVE)
 		return
 	end
@@ -115,8 +113,8 @@ env.AddModRPCHandler(env.modname, "aipRunMineCar", function(player, keyCode)
 end)
 
 local function bindKey(keyCode)
-	-- GLOBAL.TheInput:AddKeyDownHandler(keyCode, function()
-	GLOBAL.TheInput:AddKeyUpHandler(keyCode, function()
+	GLOBAL.TheInput:AddKeyDownHandler(keyCode, function()
+	-- GLOBAL.TheInput:AddKeyUpHandler(keyCode, function()
 		local player = GLOBAL.ThePlayer
 
 		if not player then

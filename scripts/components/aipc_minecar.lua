@@ -226,7 +226,9 @@ function MineCar:AddDriver(inst)
 	self.driver.Transform:SetPosition(tx, dy, tz)
 
 	-- 网络同步驾驶员ID
-	self.inst.replica.aipc_minecar:SetDriver(self.driver)
+	if self.inst.components.aipc_minecar_client then
+		self.inst.components.aipc_minecar_client:SetDriver(self.driver)
+	end
 end
 
 -- TODO: Support multi driver later
@@ -241,7 +243,9 @@ function MineCar:RemoveDriver(inst)
 	self.driver = nil
 
 	-- 网络同步驾驶员ID
-	self.inst.replica.aipc_minecar:SetDriver()
+	if self.inst.components.aipc_minecar_client then
+		self.inst.components.aipc_minecar_client:SetDriver()
+	end
 end
 
 function MineCar:SyncDriver()
