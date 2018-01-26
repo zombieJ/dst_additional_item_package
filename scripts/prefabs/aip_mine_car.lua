@@ -48,6 +48,21 @@ local aip_mine_car = Recipe("aip_mine_car", {Ingredient("boards", 5)}, RECIPETAB
 aip_mine_car.atlas = "images/inventoryimages/aip_mine_car.xml"
 
 -------------------------------------- 实体 --------------------------------------
+-- 锤子
+local function onhammered(inst, worker)
+	inst.components.lootdropper:DropLoot()
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local fx = SpawnPrefab("collapse_small")
+	fx.Transform:SetPosition(x, y, z)
+	fx:SetMaterial("wood")
+	inst:Remove()
+end
+
+local function onhit(inst, worker)
+	inst.AnimState:PlayAnimation("hit")
+	inst.AnimState:PushAnimation("idle")
+end
+
 -- 矿车重置高度
 local function resetCarPosition(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()
@@ -136,13 +151,23 @@ function fn()
 	inst.components.locomotor.walkspeed = TUNING.WILSON_WALK_SPEED * speedMulti
 	inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED * speedMulti
 
-	inst.OnLoad = onload
-	inst.OnSave = onsave
+	-- 掉东西
+	inst:AddComponent("lootdropper")
+
+	-- 被锤子
+	inst:AddComponent("workable")
+	inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
+	inst.components.workable:SetWorkLeft(4)
+	inst.components.workable:SetOnFinishCallback(onhammered)
+	inst.components.workable:SetOnWorkCallback(onhit)
 
 	-- 禁止碰撞
 	inst.Physics:SetCollides(false)
 
 	inst:DoTaskInTime(0, onInit)
+
+	inst.OnLoad = onload
+	inst.OnSave = onsave
 
 	return inst
 end
