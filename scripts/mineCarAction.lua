@@ -112,9 +112,14 @@ env.AddModRPCHandler(env.modname, "aipRunMineCar", function(player, keyCode)
 	moveMineCar(player, keyCode)
 end)
 
+local isKeyDown = false
 local function bindKey(keyCode)
 	GLOBAL.TheInput:AddKeyDownHandler(keyCode, function()
-	-- GLOBAL.TheInput:AddKeyUpHandler(keyCode, function()
+		if isKeyDown then
+			return
+		end
+		isKeyDown = true
+
 		local player = GLOBAL.ThePlayer
 
 		if not player then
@@ -137,6 +142,10 @@ local function bindKey(keyCode)
 		else
 			SendModRPCToServer(MOD_RPC[modname]["aipRunMineCar"], keyCode)
 		end
+	end)
+	
+	GLOBAL.TheInput:AddKeyUpHandler(keyCode, function()
+		isKeyDown = false
 	end)
 end
 
