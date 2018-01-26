@@ -125,9 +125,11 @@ function fn()
 	inst.AnimState:PlayAnimation("idle")
 
 	inst:AddTag("aip_minecar")
-	inst:AddTag("saddleable")
 
 	inst.entity:SetPristine()
+
+	-- 矿车客户端组件
+	inst:AddComponent("aipc_minecar_client")
 
 	if not TheWorld.ismastersim then
 		return inst

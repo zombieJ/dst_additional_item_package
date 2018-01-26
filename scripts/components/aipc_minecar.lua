@@ -215,9 +215,6 @@ function MineCar:AddDriver(inst)
 	self.driver = inst
 	self.driver:AddTag("aip_minecar_driver")
 
-	-- self.inst.Physics:SetCollides(false)
-	-- self.driver.Physics:SetCollides(false)
-
 	-- 速度加成
 	if self.driver.components.locomotor then
 		self.driver.components.locomotor:SetExternalSpeedMultiplier(self.inst, "aipc_minecar_speed", 0)
@@ -227,14 +224,14 @@ function MineCar:AddDriver(inst)
 	local dx, dy, dz = self.driver.Transform:GetWorldPosition()
 	local tx, ty, tz = self.inst.Transform:GetWorldPosition()
 	self.driver.Transform:SetPosition(tx, dy, tz)
+
+	-- 网络同步驾驶员ID
+	self.inst.replica.aipc_minecar:SetDriver(self.driver)
 end
 
 -- TODO: Support multi driver later
 function MineCar:RemoveDriver(inst)
 	self.driver:RemoveTag("aip_minecar_driver")
-
-	-- self.inst.Physics:SetCollides(true)
-	-- self.driver.Physics:SetCollides(true)
 
 	-- 速度减成
 	if self.driver.components.locomotor then
@@ -242,15 +239,15 @@ function MineCar:RemoveDriver(inst)
 	end
 
 	self.driver = nil
+
+	-- 网络同步驾驶员ID
+	self.inst.replica.aipc_minecar:SetDriver()
 end
 
 function MineCar:SyncDriver()
 	if not self.driver then
 		return
 	end
-
-	aipPrint("Driver Speed:", self.driver.Physics:GetMotorSpeed())
-	aipPrint("Car Speed:", self.inst.Physics:GetMotorSpeed())
 
 	local carSpeed = self:GetSpeed()
 	local dx, dy, dz = self.driver.Transform:GetWorldPosition()

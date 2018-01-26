@@ -424,9 +424,6 @@ for name,data in pairs(food_recipes) do
 
 		inst:AddComponent("bait")
 
-		------------------------------------------------
-		inst:AddComponent("tradable")
-
 		------------------------------------------------  
 
 		return inst

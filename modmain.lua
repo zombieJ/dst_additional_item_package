@@ -47,6 +47,7 @@ modimport("scripts/seedsWrapper.lua")
 
 --------------------------------------- 矿车 ---------------------------------------
 if GetModConfigData("additional_orbit") == "open" then
+	-- AddReplicableComponent("aipc_minecar") 对于AddComponentAction不work
 	modimport("scripts/mineCarAction.lua")
 end
 

@@ -29,20 +29,22 @@ AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIP_UNDRIVE, "doshorta
 AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIP_UNDRIVE, "doshortaction"))
 
 ------------------------------------ 绑定矿车行为 ------------------------------------
+--env.AddComponentAction("SCENE", "aipc_minecar", function(inst, doer, actions, right)
 env.AddComponentAction("SCENE", "aipc_minecar", function(inst, doer, actions, right)
+	print(">>>>>> "..tostring(inst.replica.aipc_minecar and "Has Replica" or "Miss Replica"))
 	-- 检查是否是驾驶设备
-	if inst.components.aipc_minecar == nil then
+	if not inst.replica.aipc_minecar then
 		return
 	end
 
 	-- 检查是否可驾驶
-	if inst.components.aipc_minecar.driver == nil and not doer:HasTag("aip_minecar_driver") then
+	if inst.replica.aipc_minecar:CanDrive() and not doer:HasTag("aip_minecar_driver") then
 		table.insert(actions, GLOBAL.ACTIONS.AIP_DRIVE)
 		return
 	end
 
 	-- 检查是否可停止驾驶
-	if inst.components.aipc_minecar.driver == doer then
+	if inst.replica.aipc_minecar:HasDriver(doer) then
 		table.insert(actions, GLOBAL.ACTIONS.AIP_UNDRIVE)
 		return
 	end
