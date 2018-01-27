@@ -223,7 +223,7 @@ function MineCar:AddDriver(inst)
 	-- 同步位置
 	local dx, dy, dz = self.driver.Transform:GetWorldPosition()
 	local tx, ty, tz = self.inst.Transform:GetWorldPosition()
-	self.driver.Transform:SetPosition(tx, dy, tz)
+	self.driver.Physics:Teleport(tx, dy, tz)
 
 	-- 网络同步驾驶员ID
 	if self.inst.components.aipc_minecar_client then

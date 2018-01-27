@@ -1,5 +1,6 @@
 ---------------------------------------- 驾驶 ----------------------------------------
 local AIP_DRIVE = env.AddAction("AIP_DRIVE", "Drive", function(act)
+	-- Client Only Code
 	local doer = act.doer
 	local target = act.target
 
@@ -15,6 +16,7 @@ AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIP_DRIVE, "dos
 
 -------------------------------------- 停止驾驶 --------------------------------------
 local AIP_UNDRIVE = env.AddAction("AIP_UNDRIVE", "Stop Drive", function(act)
+	-- Client Only Code
 	local doer = act.doer
 	local target = act.target
 
@@ -133,10 +135,6 @@ local function bindKey(keyCode)
 		if not player:HasTag("aip_minecar_driver") then
 			return
 		end
-
-		--[[if player.components.health:IsDead() or not player:HasTag("aip_minecar_driver") then
-			return
-		end]]
 
 		-- Server-side
 		if GLOBAL.TheNet:GetIsServer() then

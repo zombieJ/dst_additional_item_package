@@ -19,12 +19,16 @@ local function OnDriverChange(inst)
 	local prevDriver = mineCarComponent.driver
 	local currentDriver = mineCarComponent:CurrentDriver()
 
+	aipPrint("Driver Change >>>", currentDriver and currentDriver.GUID or "None!", mineCarComponent.net_driver_guid:value())
+
+	-- 同步 Tag
 	if prevDriver then
 		prevDriver:RemoveTag("aip_minecar_driver")
 	end
 	if currentDriver then
 		currentDriver:AddTag("aip_minecar_driver")
 	end
+
 	mineCarComponent.driver = currentDriver
 end
 
