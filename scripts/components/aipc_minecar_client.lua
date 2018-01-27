@@ -19,8 +19,6 @@ local function OnDriverChange(inst)
 	local prevDriver = mineCarComponent.driver
 	local currentDriver = mineCarComponent:CurrentDriver()
 
-	aipPrint("Driver Change >>>", currentDriver and currentDriver.GUID or "None!", mineCarComponent.net_driver_guid:value())
-
 	-- 同步 Tag
 	if prevDriver then
 		prevDriver:RemoveTag("aip_minecar_driver")
@@ -35,14 +33,21 @@ end
 local MineCar = Class(function(self, inst)
 	self.inst = inst
 	self.driver = nil
-	self.net_driver_guid = net_uint(inst.GUID, "aipc_minecar.driver_guid", "driverChange")
+	self.net_driver_userid = net_string(inst.GUID, "aipc_minecar.driver_userid", "driverChange")
 	self.inst:ListenForEvent("driverChange", OnDriverChange)
 end)
 
+------------------------------------------------------------------------------------------
 function MineCar:SetDriver(driver)
 	-- 设置 驾驶员
-	local GUID = driver and driver.GUID or 0
-	self.net_driver_guid:set(GUID)
+	local userid = driver and driver.userid or ""
+	self.net_driver_userid:set(userid)
+end
+
+function MineCar:ClearDrivers()
+	if self.driver then
+		self.driver:RemoveTag("aip_minecar_driver")
+	end
 end
 
 function MineCar:HasDriver(driver)
@@ -50,25 +55,34 @@ function MineCar:HasDriver(driver)
 		return false
 	end
 
-	local GUID = self.net_driver_guid:value()
+	local userid = self.net_driver_userid:value()
 
-	return driver.GUID == GUID
+	return driver.userid == userid
 end
 
 function MineCar:CurrentDriver()
-	local GUID = self.net_driver_guid:value()
+	local userid = self.net_driver_userid:value()
 
-	if GUID == 0 then
+	if userid == "" or not userid then
 		return nil
-	else
-		return c_inst(GUID)
 	end
+
+	local driver = nil
+	for i, player in pairs(AllPlayers) do
+		if player.userid == userid then
+			driver = player
+		end
+	end
+
+	return driver
 end
 
 function MineCar:CanDrive()
-	local GUID = self.net_driver_guid:value()
+	local userid = self.net_driver_userid:value()
 
-	return GUID == 0
+	return userid == "" or not userid
 end
+
+MineCar.OnRemoveEntity = MineCar.ClearDrivers
 
 return MineCar

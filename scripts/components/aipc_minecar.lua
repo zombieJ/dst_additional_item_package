@@ -207,13 +207,12 @@ function MineCar:GoDirect(direct)
 end
 
 ----------------------------------------- 驾驶员 -----------------------------------------
-function MineCar:AddDriver(inst)
-	if self.driver ~= nil or inst:HasTag("aip_minecar_driver") then
+function MineCar:AddDriver(driver)
+	if self.driver ~= nil or driver:HasTag("aip_minecar_driver") then
 		return
 	end
 
-	self.driver = inst
-	-- self.driver:AddTag("aip_minecar_driver")
+	self.driver = driver
 
 	-- 速度加成
 	if self.driver.components.locomotor then
@@ -232,12 +231,9 @@ function MineCar:AddDriver(inst)
 end
 
 -- TODO: Support multi driver later
--- TODO: 如果车被砸了，应该也执行去除管理员
-function MineCar:RemoveDriver(inst)
-	-- self.driver:RemoveTag("aip_minecar_driver")
-
+function MineCar:RemoveDriver(driver)
 	-- 速度减成
-	if self.driver.components.locomotor then
+	if self.driver and self.driver.components.locomotor then
 		self.driver.components.locomotor:RemoveExternalSpeedMultiplier(self.inst, "aipc_minecar_speed")
 	end
 
