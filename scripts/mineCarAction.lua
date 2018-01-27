@@ -155,27 +155,3 @@ bindKey(KEY_UP)
 bindKey(KEY_RIGHT)
 bindKey(KEY_DOWN)
 bindKey(KEY_LEFT)
-
--------------------------------------- 玩家绑定 --------------------------------------
--- 绑定 Despawn 事件，以防止矿车被锁定
-local function MineCarPlayerPrefabPostInit(inst)
-	if not GLOBAL.TheWorld.ismastersim then
-		return
-	end
-
-	local onDespawn = inst.OnDespawn
-	inst.OnDespawn = function(player)
-		-- 调用原生卸载事件
-		if onDespawn then
-			onDespawn(player)
-		end
-
-		-- 处理矿车难题
-		local mineCar = findMineCar(player)
-		if mineCar.components.aipc_minecar then
-			mineCar.components.aipc_minecarRemoveDriver(player)
-		end
-	end
-end
-
-AddPrefabPostInit("player_common", MineCarPlayerPrefabPostInit)

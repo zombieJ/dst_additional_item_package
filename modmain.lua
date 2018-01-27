@@ -81,3 +81,12 @@ end
 if GLOBAL.TheNet:GetIsServer() or GLOBAL.TheNet:IsDedicated() then
 	AddPrefabPostInit("world", WorldPrefabPostInit)
 end
+
+------------------------------------- 玩家钩子 -------------------------------------
+function PlayerPrefabPostInit(inst)
+	if not inst.components.aipc_player_client then
+		inst:AddComponent("aipc_player_client")
+	end
+end
+
+AddPrefabPostInit("player_common", PlayerPrefabPostInit)
