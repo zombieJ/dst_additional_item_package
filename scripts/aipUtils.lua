@@ -1,5 +1,5 @@
 function GLOBAL.aipPrint(...)
-	local str = ""
+	local str = "[AIP] "
 	for i,v in ipairs(arg) do
 		str = str .. tostring(v) .. " "
 	end

@@ -69,13 +69,6 @@ local function resetCarPosition(inst)
 	inst.Transform:SetPosition(x, 0.9, z)
 end
 
--- 移除矿车
-local function onremove(inst)
-	if inst.components.aipc_minecar then
-		inst.components.aipc_minecar:RemoveDriver()
-	end
-end
-
 -- 保存
 local function onsave(inst, data)
 	if inst.components.inventoryitem and not inst.components.inventoryitem.canbepickedup then
@@ -175,7 +168,6 @@ function fn()
 
 	inst:DoTaskInTime(0, onInit)
 
-	inst.OnRemoveEntity = onremove
 	inst.OnLoad = onload
 	inst.OnSave = onsave
 
