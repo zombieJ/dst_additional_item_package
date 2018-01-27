@@ -213,7 +213,7 @@ function MineCar:AddDriver(inst)
 	end
 
 	self.driver = inst
-	self.driver:AddTag("aip_minecar_driver")
+	-- self.driver:AddTag("aip_minecar_driver")
 
 	-- 速度加成
 	if self.driver.components.locomotor then
@@ -232,8 +232,9 @@ function MineCar:AddDriver(inst)
 end
 
 -- TODO: Support multi driver later
+-- TODO: 如果车被砸了，应该也执行去除管理员
 function MineCar:RemoveDriver(inst)
-	self.driver:RemoveTag("aip_minecar_driver")
+	-- self.driver:RemoveTag("aip_minecar_driver")
 
 	-- 速度减成
 	if self.driver.components.locomotor then

@@ -126,13 +126,17 @@ local function bindKey(keyCode)
 			return
 		end
 
-		if player.HUD:IsConsoleScreenOpen() or player.HUD:IsChatInputScreenOpen() or not player.components.health then
+		if player.HUD:IsConsoleScreenOpen() or player.HUD:IsChatInputScreenOpen() then
 			return
 		end
 
-		if player.components.health:IsDead() or not player:HasTag("aip_minecar_driver") then
+		if not player:HasTag("aip_minecar_driver") then
 			return
 		end
+
+		--[[if player.components.health:IsDead() or not player:HasTag("aip_minecar_driver") then
+			return
+		end]]
 
 		-- Server-side
 		if GLOBAL.TheNet:GetIsServer() then
