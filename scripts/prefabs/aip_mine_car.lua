@@ -44,7 +44,7 @@ STRINGS.RECIPE_DESC.AIP_MINE_CAR = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_MINE_CAR = LANG.DESC
 
 -- 配方
-local aip_mine_car = Recipe("aip_mine_car", {Ingredient("boards", 5)}, RECIPETABS.TOWN, TECH.SCIENCE_ONE)
+local aip_mine_car = Recipe("aip_mine_car", {Ingredient("boards", 5)}, RECIPETABS.FARM, TECH.SCIENCE_ONE)
 aip_mine_car.atlas = "images/inventoryimages/aip_mine_car.xml"
 
 -------------------------------------- 实体 --------------------------------------
@@ -100,28 +100,36 @@ end
 
 local function OnStartDrive(inst)
 	inst.AnimState:PlayAnimation("running", true)
-end
-
-local function OnStopDrive(inst)
-	inst.AnimState:PlayAnimation("idle", false)
 
 	if inst.components.finiteuses ~= nil then
 		inst.components.finiteuses:Use()
+
+		if inst.components.finiteuses:GetUses() <= 0 then
+			inst.persists = false
+
+			if inst.components.aipc_minecar then
+				inst.components.aipc_minecar.drivable = false
+			end
+		end
 	end
 end
 
-local function onfinished(inst)
+local function onUsageFinished(inst)
 	inst.AnimState:PlayAnimation("destroy")
 	inst:ListenForEvent("animover", inst.Remove)
-	inst.persists = false
-	if inst.components.aipc_minecar then
-		inst.components.aipc_minecar.drivable = false
-	end
 
 	local x, y, z = inst.Transform:GetWorldPosition()
 	local fx = SpawnPrefab("collapse_small")
 	fx.Transform:SetPosition(x, y, z)
 	fx:SetMaterial("wood")
+end
+
+local function OnStopDrive(inst)
+	inst.AnimState:PlayAnimation("idle", false)
+
+	if inst.components.finiteuses and inst.components.finiteuses:GetUses() <= 0 then
+		onUsageFinished(inst)
+	end
 end
 
 -- 注：
@@ -184,8 +192,6 @@ function fn()
 	inst:AddComponent("finiteuses")
 	inst.components.finiteuses:SetMaxUses(TUNING.SADDLE_BASIC_USES * 2)
 	inst.components.finiteuses:SetUses(TUNING.SADDLE_BASIC_USES * 2)
-	--inst.components.finiteuses:SetOnFinished(inst.Remove)
-	inst.components.finiteuses:SetOnFinished(onfinished)
 
 	-- 禁止碰撞
 	inst.Physics:SetCollides(false)
