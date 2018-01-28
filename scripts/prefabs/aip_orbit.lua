@@ -16,7 +16,17 @@ local LANG_MAP = {
 		["DESC"] = "That's old style",
 
 		["ACTIONFAIL"] = {
-			["GENERIC"] = "It's not a mine car!",
+			["GENERIC"] = "May be simply follow it's direction?",
+			["WAXWELL"] = "Somehow, in my head all sorts of poems about the road...",
+			["WOLFGANG"] = "I hope this thing will lead me to where there is food.",
+			["WX78"] = "SOME KIND OF ROAD.",
+			["WILLOW"] = "Meh, can't burn it.",
+			["WENDY"] = "I recently read a book about one poor woman...",
+			["WOODIE"] = "Sometimes I had to carry the cart with the tree.",
+			["WICKERBOTTOM"] = "Outdated design.",
+			["WATHGRITHR"] = "What's it? Footprint of an animal?",
+			["WEBBER"] = "Looks like some kind of way.",
+			["WINONA"] = "Going for a ride sometime on the train...",
 		},
 	},
 	["chinese"] = {
@@ -38,6 +48,26 @@ local LANG_MAP = {
 			["WINONA"] = "我该做一辆矿车",
 		},
 	},
+	["russian"] = {
+		["NAME"] = "Рельсы",
+		["REC_DESC"] = "Проложи свой железнодорожный путь!",
+		["DESC"] = "Пора проложить свой путь!",
+
+		["ACTIONFAIL"] = {
+			["GENERIC"] = "Может просто последовать ее направлению?",
+			["WAXWELL"] = "И невозможное возможно, дорога долгая легка...",	--From the poem of A.A.Blok "Russia" (only for Rus lang)
+			["WOLFGANG"] = "Надеюсь эта штука приведёт меня туда, где есть еда.", 
+			["WX78"] = "ПОДОБИЕ КАКОЙ-ТО ДОРОГИ.",
+			["WILLOW"] = "Чёрт, я не могу поджечь это!",
+			["WENDY"] = "Я недавно читала про Анну Кренину...",
+			["WOODIE"] = "Иногда мне приходилось таскать вагонетку с деревом.",
+			["WICKERBOTTOM"] = "Устаревшая конструкция.",
+			["WATHGRITHR"] = "Что это? След животного?",
+			["WEBBER"] = "Похоже на какую-то дорогу.",
+			["WINONA"] = "Прокатится бы как-нибудь на поезде...",
+		},
+	},
+			
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
