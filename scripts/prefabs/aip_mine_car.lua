@@ -13,13 +13,13 @@ local language = GetModConfigData("language", foldername)
 
 local LANG_MAP = {
 	["english"] = {
-		["NAME"] = "Mine Car",
-		["REC_DESC"] = "Let's drive it!",
+		["NAME"] = "Minecart",
+		["REC_DESC"] = "Can drive on orbit with usage limit",
 		["DESC"] = "Where will we go?",
 	},
 	["chinese"] = {
 		["NAME"] = "矿车",
-		["REC_DESC"] = "让我们兜风吧！",
+		["REC_DESC"] = "有限次数的轨道矿车",
 		["DESC"] = "登船靠岸停稳！~",
 	},
 }
