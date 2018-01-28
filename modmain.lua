@@ -89,4 +89,4 @@ function PlayerPrefabPostInit(inst)
 	end
 end
 
-AddPrefabPostInit("player_common", PlayerPrefabPostInit)
+AddPlayerPostInit(PlayerPrefabPostInit)

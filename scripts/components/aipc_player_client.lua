@@ -1,6 +1,8 @@
 -- 这个组件用于清除 side effect
 local Player = Class(function(self, inst)
 	self.inst = inst
+
+	aipPrint("Player enter:", player.name, "(", player.userid, ")")
 end)
 
 function Player:Destroy()
@@ -20,18 +22,15 @@ function Player:Destroy()
 		local x, y, z = player.Transform:GetWorldPosition()
 		local mineCars = TheSim:FindEntities(x, y, z, 10, { "aip_minecar" })
 
-		aipPrint(">>> Search Driving Mine Car count:", #mineCars)
-
 		for i, mineCar in ipairs(mineCars) do
 			local aipc_minecar = mineCar.components.aipc_minecar
 			if aipc_minecar and aipc_minecar.driver == player then
-				aipPrint(">>> Remove Driver")
 				aipc_minecar:RemoveDriver(player)
 			end
 		end
 	end
 end
 
-Player.OnRemoveEntity = MineCar.Destroy
+Player.OnRemoveEntity = Player.Destroy
 
 return Player
