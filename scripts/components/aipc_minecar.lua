@@ -38,6 +38,7 @@ local MIN_READJUST_RANGE_Q = MIN_READJUST_RANGE * MIN_READJUST_RANGE
 local MineCar = Class(function(self, inst)
 	self.inst = inst
 	self.driver = nil
+	self.drivable = true
 	self.orbit = nil
 	self.nextOrbit = nil
 	self.lastDistance = 1000
@@ -69,7 +70,7 @@ function MineCar:MoveToClosestOrbit()
 
 	if closest ~= nil then
 		local tx, ty, tz = closest.Transform:GetWorldPosition()
-		inst.Transform:SetPosition(tx, y, tz)
+		inst.Physics:Teleport(tx, y, tz)
 		self.orbit = closest
 	end
 end
@@ -124,8 +125,8 @@ function MineCar:StartMove(nextOrbit)
 		-- 重置 矿车 和 驾驶员 位置
 		if self.orbit then
 			local cx, cy, cz = self.orbit.Transform:GetWorldPosition()
-			self.inst.Transform:SetPosition(cx, y, cz)
-			self.driver.Transform:SetPosition(cx, cy, cz)
+			self.inst.Physics:Teleport(cx, y, cz)
+			self.driver.Physics:Teleport(cx, cy, cz)
 		end
 
 		if self.onStopDrive then
@@ -157,7 +158,7 @@ function MineCar:StopMove()
 end
 
 function MineCar:GoDirect(direct)
-	if TheCamera == nil or not self.driver then
+	if TheCamera == nil or not self.driver or not self.drivable then
 		return
 	end
 
@@ -268,7 +269,7 @@ function MineCar:SyncDriver()
 		end
 
 		-- 同步坐标
-		self.driver.Transform:SetPosition(tx, dy, tz)
+		self.driver.Physics:Teleport(tx, dy, tz)
 
 		-- 同步位移
 		self.driver.Transform:SetRotation(self.inst.Transform:GetRotation())

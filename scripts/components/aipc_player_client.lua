@@ -1,8 +1,6 @@
 -- 这个组件用于清除 side effect
 local Player = Class(function(self, inst)
 	self.inst = inst
-
-	aipPrint("Player enter:", player.name, "(", player.userid, ")")
 end)
 
 function Player:Destroy()

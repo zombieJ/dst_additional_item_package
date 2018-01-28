@@ -104,6 +104,24 @@ end
 
 local function OnStopDrive(inst)
 	inst.AnimState:PlayAnimation("idle", false)
+
+	if inst.components.finiteuses ~= nil then
+		inst.components.finiteuses:Use()
+	end
+end
+
+local function onfinished(inst)
+	inst.AnimState:PlayAnimation("destroy")
+	inst:ListenForEvent("animover", inst.Remove)
+	inst.persists = false
+	if inst.components.aipc_minecar then
+		inst.components.aipc_minecar.drivable = false
+	end
+
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local fx = SpawnPrefab("collapse_small")
+	fx.Transform:SetPosition(x, y, z)
+	fx:SetMaterial("wood")
 end
 
 -- 注：
@@ -159,9 +177,15 @@ function fn()
 	-- 被锤子
 	inst:AddComponent("workable")
 	inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
-	inst.components.workable:SetWorkLeft(4)
+	inst.components.workable:SetWorkLeft(3)
 	inst.components.workable:SetOnFinishCallback(onhammered)
 	inst.components.workable:SetOnWorkCallback(onhit)
+
+	inst:AddComponent("finiteuses")
+	inst.components.finiteuses:SetMaxUses(TUNING.SADDLE_BASIC_USES * 2)
+	inst.components.finiteuses:SetUses(TUNING.SADDLE_BASIC_USES * 2)
+	--inst.components.finiteuses:SetOnFinished(inst.Remove)
+	inst.components.finiteuses:SetOnFinished(onfinished)
 
 	-- 禁止碰撞
 	inst.Physics:SetCollides(false)
