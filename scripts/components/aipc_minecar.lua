@@ -268,8 +268,9 @@ function MineCar:SyncDriver()
 			self.driver.components.locomotor:Clear()
 		end
 
-		-- 同步坐标
-		self.driver.Physics:Teleport(tx, dy, tz)
+		-- 同步坐标 (使用SetPosition会比Teleport有更平滑的位移效果)
+		-- self.driver.Physics:Teleport(tx, dy, tz)
+		self.driver.Transform:SetPosition(tx, dy, tz)
 
 		-- 同步位移
 		self.driver.Transform:SetRotation(self.inst.Transform:GetRotation())
