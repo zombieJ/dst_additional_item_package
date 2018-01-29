@@ -12,22 +12,24 @@
 
 			textarea,
 			#preview {
-				width: 50%;
 				height: 100%;
 				resize:none;
-				display: inline-block;
 				box-sizing: border-box;
+			}
+
+			textarea {
+				flex-grow: 1;
 			}
 
 			#preview {
 				background-color: rgb(27, 40, 56);
 				overflow-y: auto;
+				width: 700px;
 			}
 
 			#content {
 				width: 630px;
 				margin: 0 auto;
-				height: 100%;
 				color: #acb2b8;
 				word-wrap: break-word;
 				line-height: 20px;
