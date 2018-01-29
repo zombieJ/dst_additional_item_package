@@ -1,0 +1,100 @@
+<html>
+	<head>
+		<style>
+			html, body {
+				padding: 0;
+				margin: 0;
+			}
+
+			body {
+				display: flex;
+			}
+
+			textarea,
+			#preview {
+				width: 50%;
+				height: 100%;
+				resize:none;
+				display: inline-block;
+				box-sizing: border-box;
+			}
+
+			#preview {
+				background-color: rgb(27, 40, 56);
+				overflow-y: auto;
+			}
+
+			#content {
+				width: 630px;
+				margin: 0 auto;
+				height: 100%;
+				color: #acb2b8;
+				word-wrap: break-word;
+				line-height: 20px;
+				font-size: 14px;
+				padding: 20px 0;
+				white-space: pre-wrap;
+				font-family: Arial, Helvetica, Verdana, sans-serif;
+			}
+
+			#content img {
+				max-width: 100%;
+			}
+
+			#content a {
+				color: #FFF;
+				text-decoration: none;
+			}
+			#content a:hover {
+				color: #5aa9d6;
+			}
+
+			#content h1 {
+				color: #5aa9d6;
+				font-size: inherit;
+				font-weight: normal;
+				margin: 0;
+				padding: 0;
+			}
+
+			#content .spoiler {
+				background: #000;
+				color: rgba(0, 0, 0, 0);
+				display: inline-block;
+				padding: 0 8px;
+			}
+			#content .spoiler:hover {
+				color: #FFF;
+			}
+		</style>
+	</head>
+	<body>
+		<textarea onkeyup="onTextChange(this.value)"></textarea>
+		<div id="preview">
+			<pre id="content"></pre>
+		</div>
+
+		<script>
+			let id = 0;
+			const $content = document.getElementById('content');
+
+			function onTextChange(text) {
+				clearTimeout(id);
+				id = setTimeout(() => {
+					let parsed = text
+					.replace(/\[img]([^[]*)\[\/img]/g, '<img src="$1" />')
+					.replace(/\[url=([^\]]*)]([^[]*)\[\/url]/g, '<a href="$1">$2</a>')
+					.replace(/\[h1]([^[]*)\[\/h1]/g, '<h1>$1</h1>')
+					.replace(/\[spoiler]([^[]*)\[\/spoiler]/g, '<span class="spoiler">$1</span>')
+					.replace(/(\/h1>)(\r\n|\n)/g, "$1")
+					//.replace(/\r\n/g, '<br />')
+					//.replace(/\n/g, '<br />');
+
+					console.log('->', parsed);
+
+					$content.innerHTML = parsed;
+				}, 500);
+			}
+		</script>
+	</body>
+</html>
