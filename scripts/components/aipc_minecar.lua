@@ -157,7 +157,7 @@ function MineCar:StopMove()
 	self:StopUpdatingInternal()
 end
 
-function MineCar:GoDirect(direct)
+function MineCar:GoDirect(rotation)
 	if TheCamera == nil or not self.driver or not self.drivable then
 		return
 	end
@@ -168,19 +168,7 @@ function MineCar:GoDirect(direct)
 		return
 	end
 
-	-- 计算角度
-	local screenRotation = TheCamera:GetHeading() -- 指向屏幕左侧
-	local rotation = -(screenRotation - 45) + 45
-
-	if direct == "left" then
-		rotation = rotation
-	elseif direct == "down" then
-		rotation = rotation - 90
-	elseif direct == "right" then
-		rotation = rotation + 180
-	elseif direct == "up" then
-		rotation = rotation + 90
-	end
+	rotation = tonumber(rotation)
 
 	-- 寻找轨道（第一次寻找需要根据页面角度来）
 	local orbit = nil

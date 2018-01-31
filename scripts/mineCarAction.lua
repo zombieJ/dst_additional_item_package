@@ -76,7 +76,7 @@ local KEY_RIGHT = 100
 local KEY_DOWN = 115
 local KEY_LEFT = 97
 
-local function moveMineCar(player, keyCode)
+local function moveMineCar(player, rotation)
 	-- 如果 死了 或者 没有车 就不做操作
 	if player.components.health:IsDead() or not player:HasTag("aip_minecar_driver") then
 		return
@@ -89,21 +89,9 @@ local function moveMineCar(player, keyCode)
 		return
 	end
 
-	-- Key to Direct
-	local direct = nil
-	if keyCode == KEY_UP then
-		direct = "up"
-	elseif keyCode == KEY_RIGHT then
-		direct = "right"
-	elseif keyCode == KEY_DOWN then
-		direct = "down"
-	elseif keyCode == KEY_LEFT then
-		direct = "left"
-	end
-
 	if mineCar.components.aipc_minecar then
 		mineCar:DoTaskInTime(0, function()
-			mineCar.components.aipc_minecar:GoDirect(direct)
+			mineCar.components.aipc_minecar:GoDirect(rotation)
 		end)
 	end
 end
@@ -136,13 +124,27 @@ local function bindKey(keyCode)
 			return
 		end
 
+		-- 计算角度
+		local screenRotation = GLOBAL.TheCamera:GetHeading() -- 指向屏幕左侧
+		local rotation = -(screenRotation - 45) + 45
+
+		if keyCode == KEY_LEFT then
+			rotation = rotation
+		elseif keyCode == KEY_DOWN then
+			rotation = rotation - 90
+		elseif keyCode == KEY_RIGHT then
+			rotation = rotation + 180
+		elseif keyCode == KEY_UP then
+			rotation = rotation + 90
+		end
+
 		-- Server-side
 		if GLOBAL.TheNet:GetIsServer() then
-			moveMineCar(player, keyCode)
+			moveMineCar(player, rotation)
 	
 		-- Client-side
 		else
-			SendModRPCToServer(MOD_RPC[modname]["aipRunMineCar"], keyCode)
+			SendModRPCToServer(MOD_RPC[modname]["aipRunMineCar"], rotation)
 		end
 	end)
 	
