@@ -52,7 +52,7 @@ STRINGS.RECIPE_DESC.AIP_MINE_CAR = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_MINE_CAR = LANG.DESC
 
 -- 配方
-local aip_mine_car = Recipe("aip_mine_car", {Ingredient("boards", 5)}, RECIPETABS.FARM, TECH.SCIENCE_ONE)
+local aip_mine_car = Recipe("aip_mine_car", {Ingredient("boards", 5)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_ONE)
 aip_mine_car.atlas = "images/inventoryimages/aip_mine_car.xml"
 
 -------------------------------------- 实体 --------------------------------------
