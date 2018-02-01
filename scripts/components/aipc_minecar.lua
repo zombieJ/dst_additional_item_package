@@ -43,6 +43,9 @@ local MineCar = Class(function(self, inst)
 	self.nextOrbit = nil
 	self.lastDistance = 1000
 
+	self.mineCarY = 0
+	self.driverMass = 0
+
 	self.onPlaced = nil
 	self.onStartDrive = nil
 	self.onStopDrive = nil
@@ -203,6 +206,10 @@ function MineCar:AddDriver(driver)
 
 	self.driver = driver
 
+	if not self.driver then
+		return
+	end
+
 	-- 速度加成
 	if self.driver.components.locomotor then
 		self.driver.components.locomotor:SetExternalSpeedMultiplier(self.inst, "aipc_minecar_speed", 0)
@@ -212,6 +219,15 @@ function MineCar:AddDriver(driver)
 	local dx, dy, dz = self.driver.Transform:GetWorldPosition()
 	local tx, ty, tz = self.inst.Transform:GetWorldPosition()
 	self.driver.Physics:Teleport(tx, dy, tz)
+
+	-- 碰撞移除
+	self.driverMass = self.driver.Physics:GetMass()
+	self.driver.Physics:SetCollides(false)
+	self.driver.Physics:SetMass(0)
+
+	-- 矿车高度加一以防止下不去
+	-- self.mineCarY = ty
+	-- self.inst.Physics:Teleport(tx, ty + .1, tz)
 
 	-- 网络同步驾驶员ID
 	if self.inst.components.aipc_minecar_client then
@@ -224,6 +240,15 @@ function MineCar:RemoveDriver(driver)
 	-- 速度减成
 	if self.driver and self.driver.components.locomotor then
 		self.driver.components.locomotor:RemoveExternalSpeedMultiplier(self.inst, "aipc_minecar_speed")
+	end
+
+	-- 碰撞回归
+	if self.driver then
+		-- 玩家如果死了，就不用管了
+		if not self.inst.components.health or not self.inst.components.health:IsDead() then
+			self.driver.Physics:SetCollides(true)
+			self.driver.Physics:SetMass(self.driverMass)
+		end
 	end
 
 	self.driver = nil
@@ -320,5 +345,8 @@ function MineCar:OnLoad(data)
 		self:MoveToClosestOrbit()
 	end)
 end
+
+MineCar.OnRemoveFromEntity = MineCar.RemoveDriver
+MineCar.OnRemoveEntity = MineCar.RemoveDriver
 
 return MineCar
