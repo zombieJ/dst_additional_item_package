@@ -226,8 +226,8 @@ function MineCar:AddDriver(driver)
 	self.driver.Physics:SetMass(0)
 
 	-- 矿车高度加一以防止下不去
-	-- self.mineCarY = ty
-	-- self.inst.Physics:Teleport(tx, ty + .1, tz)
+	self.mineCarY = ty
+	self.inst.Physics:Teleport(tx, ty + .02, tz)
 
 	-- 网络同步驾驶员ID
 	if self.inst.components.aipc_minecar_client then
@@ -252,6 +252,10 @@ function MineCar:RemoveDriver(driver)
 	end
 
 	self.driver = nil
+
+	-- 矿车高度回归
+	local tx, ty, tz = self.inst.Transform:GetWorldPosition()
+	self.inst.Physics:Teleport(tx, self.mineCarY, tz)
 
 	-- 网络同步驾驶员ID
 	if self.inst.components.aipc_minecar_client then
