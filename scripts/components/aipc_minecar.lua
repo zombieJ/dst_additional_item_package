@@ -168,6 +168,8 @@ function MineCar:StopMove()
 	end
 
 	self.isDriving = false
+	self.orbit = nil
+	self.nextOrbit = nil
 end
 
 function MineCar:GoDirect(rotation)

@@ -11,8 +11,8 @@ local AIP_DRIVE = env.AddAction("AIP_DRIVE", "Drive", function(act)
 	end
 	return false, "INUSE"
 end)
-AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIP_DRIVE, "doshortaction"))
-AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIP_DRIVE, "doshortaction"))
+AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIP_DRIVE, "dolongaction"))
+AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIP_DRIVE, "dolongaction"))
 
 -------------------------------------- 停止驾驶 --------------------------------------
 local AIP_UNDRIVE = env.AddAction("AIP_UNDRIVE", "Stop Drive", function(act)
