@@ -81,8 +81,12 @@ local LANG_MAP = {
 			["DESC"] = "This is egg bread",
 		},
 		["AIP_FOOD_GRAPE_SUGER"] = {
-			["NAME"] = "Grape Suger",
+			["NAME"] = "Grape Sugar",
 			["DESC"] = "Bad for health",
+		},
+		["AIP_FOOD_CUBE_SUGAR"] = {
+			["NAME"] = "Cube Sugar",
+			["DESC"] = "The best part of sugar",
 		},
 	},
 	["spanish"] = {
@@ -445,6 +449,10 @@ local LANG_MAP = {
 		["AIP_FOOD_GRAPE_SUGER"] = {
 			["NAME"] = "葡萄棍",
 			["DESC"] = "这可会蛀牙",
+		},
+		["AIP_FOOD_CUBE_SUGAR"] = {
+			["NAME"] = "方糖",
+			["DESC"] = "你不知道里面到底能搞多少事儿~",
 		},
 	},
 }

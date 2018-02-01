@@ -323,6 +323,21 @@ local food_recipes = {
 		sanity = SAN * 15,
 		perishtime = PER * 30,
 		cooktime = CO * 15,
+		tags = {"honeyed"},
+	},
+	aip_food_cube_sugar = {
+		test = function(cooker, names, tags)
+			return tags.sweetener and tags.sweetener >= 3 and names.watermelon and not tags.inedible
+		end,
+		priority = 11,
+		weight = 1,
+		foodtype = FOODTYPE.VEGGIE,
+		health = HP * 0,
+		hunger = HU * 25,
+		sanity = SAN * 15,
+		perishtime = PER * 15,
+		cooktime = CO * 40,
+		tags = {"honeyed"},
 	},
 }
 
