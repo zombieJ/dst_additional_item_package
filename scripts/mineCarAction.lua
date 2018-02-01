@@ -75,8 +75,9 @@ local KEY_UP = 119
 local KEY_RIGHT = 100
 local KEY_DOWN = 115
 local KEY_LEFT = 97
+local KEY_EXIT = 120
 
-local function moveMineCar(player, rotation)
+local function moveMineCar(player, rotation, exit)
 	-- 如果 死了 或者 没有车 就不做操作
 	if player.components.health:IsDead() or not player:HasTag("aip_minecar_driver") then
 		return
@@ -91,15 +92,19 @@ local function moveMineCar(player, rotation)
 
 	if mineCar.components.aipc_minecar then
 		mineCar:DoTaskInTime(0, function()
-			mineCar.components.aipc_minecar:GoDirect(rotation)
+			if exit then
+				mineCar.components.aipc_minecar:RemoveDriver(player)
+			else
+				mineCar.components.aipc_minecar:GoDirect(rotation)
+			end
 		end)
 	end
 end
 
 -------------------------------------- 按键绑定 --------------------------------------
 --- Movement must in server-side, so listen for a RPC.
-env.AddModRPCHandler(env.modname, "aipRunMineCar", function(player, keyCode)
-	moveMineCar(player, keyCode)
+env.AddModRPCHandler(env.modname, "aipRunMineCar", function(player, keyCode, exit)
+	moveMineCar(player, keyCode, exit)
 end)
 
 local isKeyDown = false
@@ -140,11 +145,11 @@ local function bindKey(keyCode)
 
 		-- Server-side
 		if GLOBAL.TheNet:GetIsServer() then
-			moveMineCar(player, rotation)
+			moveMineCar(player, rotation, keyCode == KEY_EXIT)
 	
 		-- Client-side
 		else
-			SendModRPCToServer(MOD_RPC[modname]["aipRunMineCar"], rotation)
+			SendModRPCToServer(MOD_RPC[modname]["aipRunMineCar"], rotation, keyCode == KEY_EXIT)
 		end
 	end)
 	
@@ -157,3 +162,4 @@ bindKey(KEY_UP)
 bindKey(KEY_RIGHT)
 bindKey(KEY_DOWN)
 bindKey(KEY_LEFT)
+bindKey(KEY_EXIT)

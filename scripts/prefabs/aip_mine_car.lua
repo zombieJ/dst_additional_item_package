@@ -7,8 +7,6 @@ if additional_orbit ~= "open" then
 	return nil
 end
 
-local speedMulti = 1
-
 local language = GetModConfigData("language", foldername)
 
 local LANG_MAP = {
@@ -46,10 +44,17 @@ local prefabs =
 {
 }
 
+-- 开发模式
+local dev_mode = GetModConfigData("dev_mode", foldername) == "enabled"
+
 -- 文字描述
 STRINGS.NAMES.AIP_MINE_CAR = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_MINE_CAR = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_MINE_CAR = LANG.DESC
+
+-- 使用次数
+TUNING.AIP_MINE_CAR_USAGE = dev_mode and 3 or 8
+local speedMulti = dev_mode and 0.1 or 1 
 
 -- 配方
 local aip_mine_car = Recipe("aip_mine_car", {Ingredient("boards", 5)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_ONE)
@@ -106,22 +111,6 @@ local function onPlaced(inst)
 	inst.SoundEmitter:PlaySound("dontstarve/common/place_structure_wood")
 end
 
-local function OnStartDrive(inst)
-	inst.AnimState:PlayAnimation("running", true)
-
-	if inst.components.finiteuses ~= nil then
-		inst.components.finiteuses:Use()
-
-		if inst.components.finiteuses:GetUses() <= 0 then
-			inst.persists = false
-
-			if inst.components.aipc_minecar then
-				inst.components.aipc_minecar.drivable = false
-			end
-		end
-	end
-end
-
 local function onUsageFinished(inst)
 	inst.AnimState:PlayAnimation("destroy")
 	inst:ListenForEvent("animover", inst.Remove)
@@ -132,11 +121,39 @@ local function onUsageFinished(inst)
 	fx:SetMaterial("wood")
 end
 
-local function OnStopDrive(inst)
-	inst.AnimState:PlayAnimation("idle", false)
+local function OnStartDrive(inst)
+	inst.AnimState:PlayAnimation("running", true)
 
-	if inst.components.finiteuses and inst.components.finiteuses:GetUses() <= 0 then
-		onUsageFinished(inst)
+	--[[if inst.components.finiteuses ~= nil then
+		inst.components.finiteuses:Use()
+
+		if inst.components.finiteuses:GetUses() <= 0 then
+			inst.persists = false
+
+			if inst.components.aipc_minecar then
+				inst.components.aipc_minecar.drivable = false
+			end
+		end
+	end]]
+end
+
+local function OnStopDrive(inst)
+	if inst.persists then
+		inst.AnimState:PlayAnimation("idle", false)
+	end
+end
+
+local function OnAddDriver(inst)
+end
+
+local function OnRemoveDriver(inst)
+	if inst.components.finiteuses ~= nil then
+		inst.components.finiteuses:Use()
+
+		if inst.components.finiteuses:GetUses() <= 0 then
+			inst.persists = false
+			onUsageFinished(inst)
+		end
 	end
 end
 
@@ -180,6 +197,8 @@ function fn()
 	inst.components.aipc_minecar.onPlaced = onPlaced
 	inst.components.aipc_minecar.onStartDrive = OnStartDrive
 	inst.components.aipc_minecar.onStopDrive = OnStopDrive
+	inst.components.aipc_minecar.onAddDriver = OnAddDriver
+	inst.components.aipc_minecar.onRemoveDriver = OnRemoveDriver
 
 	-- 移动者
 	inst:AddComponent("locomotor")
@@ -197,9 +216,10 @@ function fn()
 	inst.components.workable:SetOnFinishCallback(onhammered)
 	inst.components.workable:SetOnWorkCallback(onhit)
 
+	-- 使用次数
 	inst:AddComponent("finiteuses")
-	inst.components.finiteuses:SetMaxUses(TUNING.SADDLE_BASIC_USES * 2)
-	inst.components.finiteuses:SetUses(TUNING.SADDLE_BASIC_USES * 2)
+	inst.components.finiteuses:SetMaxUses(TUNING.AIP_MINE_CAR_USAGE)
+	inst.components.finiteuses:SetUses(TUNING.AIP_MINE_CAR_USAGE)
 
 	-- 禁止碰撞
 	inst.Physics:SetCollides(false)

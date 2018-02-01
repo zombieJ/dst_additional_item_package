@@ -43,12 +43,16 @@ local MineCar = Class(function(self, inst)
 	self.nextOrbit = nil
 	self.lastDistance = 1000
 
+	self.isDriving = false
+
 	self.mineCarY = 0
 	self.driverMass = 0
 
 	self.onPlaced = nil
 	self.onStartDrive = nil
 	self.onStopDrive = nil
+	self.onAddDriver = nil
+	self.onRemoveDriver = nil
 end)
 
 function MineCar:MoveToClosestOrbit()
@@ -124,21 +128,21 @@ function MineCar:StartMove(nextOrbit)
 		self.orbit = tmpOrbit
 	end
 
-	if not self.nextOrbit then
+	if not self.nextOrbit or not self.driver then
 		-- 重置 矿车 和 驾驶员 位置
 		if self.orbit then
 			local cx, cy, cz = self.orbit.Transform:GetWorldPosition()
 			self.inst.Physics:Teleport(cx, y, cz)
-			self.driver.Physics:Teleport(cx, cy, cz)
-		end
-
-		if self.onStopDrive then
-			self.onStopDrive(self.inst)
+			if self.driver and self.driver.Physics then
+				self.driver.Physics:Teleport(cx, cy, cz)
+			end
 		end
 
 		self:StopMove()
 		return
 	end
+
+	self.isDriving = true
 
 	local ox, oy, oz = self.nextOrbit.Transform:GetWorldPosition()
 	local angle = self.inst:GetAngleToPoint(ox, y, oz)
@@ -158,6 +162,12 @@ function MineCar:StopMove()
 		self.driver.Physics:Stop()
 	end
 	self:StopUpdatingInternal()
+
+	if self.isDriving and self.onStopDrive then
+		self.onStopDrive(self.inst)
+	end
+
+	self.isDriving = false
 end
 
 function MineCar:GoDirect(rotation)
@@ -195,6 +205,8 @@ function MineCar:GoDirect(rotation)
 		if self.onStartDrive then
 			self.onStartDrive(self.inst)
 		end
+	else
+		self:StopMove()
 	end
 end
 
@@ -229,6 +241,11 @@ function MineCar:AddDriver(driver)
 	self.mineCarY = ty
 	self.inst.Physics:Teleport(tx, ty + .02, tz)
 
+	-- 驾驶员事件
+	if self.onAddDriver then
+		self.onAddDriver(self.inst, self.driver)
+	end
+
 	-- 网络同步驾驶员ID
 	if self.inst.components.aipc_minecar_client then
 		self.inst.components.aipc_minecar_client:SetDriver(self.driver)
@@ -242,6 +259,9 @@ function MineCar:RemoveDriver(driver)
 		self.driver.components.locomotor:RemoveExternalSpeedMultiplier(self.inst, "aipc_minecar_speed")
 	end
 
+	-- 没有司机就不开车了
+	self:StopMove()
+
 	-- 碰撞回归
 	if self.driver then
 		-- 玩家如果死了，就不用管了
@@ -249,6 +269,11 @@ function MineCar:RemoveDriver(driver)
 			self.driver.Physics:SetCollides(true)
 			self.driver.Physics:SetMass(self.driverMass)
 		end
+	end
+
+	-- 驾驶员事件
+	if self.onRemoveDriver and self.driver then
+		self.onRemoveDriver(self.inst, self.driver)
 	end
 
 	self.driver = nil
@@ -305,9 +330,21 @@ function MineCar:StopUpdatingInternal()
 end
 
 function MineCar:OnUpdate(dt)
+	-- 如果都没有
+	if not self.inst or not self.driver or not self.nextOrbit then
+		self:StopMove()
+		return
+	end
+
 	local carSpeed = self:GetSpeed()
 	local x, y, z = self.inst.Transform:GetWorldPosition()
 	local ox, oy, oz = self.nextOrbit.Transform:GetWorldPosition()
+
+	-- 坐标都没有就别开了
+	if x == nil or z == nil or ox == nil or oz == nil then
+		self:StopMove()
+		return
+	end
 
 	-- 检查是否到达目标轨道
 	local reached_dest = false
