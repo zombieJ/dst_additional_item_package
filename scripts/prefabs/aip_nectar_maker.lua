@@ -14,29 +14,58 @@ local LANG_MAP = {
 		["NAME"] = "Nectar Maker",
 		["DESC"] = "Make your own nectar",
 		["DESCRIBE"] = "Making with fruits",
-		["INUSE"] = "Air can not make nectar",
 	},
 	["chinese"] = {
 		["NAME"] = "花蜜酿造桶",
 		["DESC"] = "制造你自己的独特饮品",
 		["DESCRIBE"] = "用水果填充它吧",
-		["INUSE"] = "空气可不能酿花蜜",
 	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
+-- 开发模式
+local dev_mode = GetModConfigData("dev_mode", foldername) == "enabled"
+
 -- 文字描述
 STRINGS.NAMES.AIP_NECTAR_MAKER = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_NECTAR_MAKER = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_NECTAR_MAKER = LANG.DESCRIBE
-STRINGS.AIP.AIP_NECTAR_MAKER_INUSE = LANG.INUSE
+
+TUNING.AIP_NECTAR_COOKTIME = dev_mode and 3 or 60
 
 -- 配方
 local aip_nectar_maker = Recipe("aip_nectar_maker", {Ingredient("boards", 4), Ingredient("goldnugget", 3), Ingredient("rope", 2)}, RECIPETABS.FARM, TECH.SCIENCE_TWO, "aip_nectar_maker_placer")
 aip_nectar_maker.atlas = "images/inventoryimages/aip_nectar_maker.xml"
 
 ------------------------------------ 配方 ------------------------------------
+local cooking = require("cooking")
+local function getItemValue(item)
+	local tagVals = {}
+	if not item then
+		return tagVals
+	end
+
+	local ingredient = cooking.ingredients[item.prefab]
+
+	if ingredient and ingredient.tags then
+		-- 原料
+		tagVals = ingredient.tags
+	elseif item:HasTag("aip_nectar") then
+		-- 标签
+		if item:HasTag("frozen") then
+			tagVals["frozen"] = 1
+		end
+		if item:HasTag("honeyed") then
+			tagVals["sweetener"] = 3
+		end
+		if item:HasTag("aip_exquisite") then
+			tagVals["exquisite"] = 1
+		end
+	end
+
+	return tagVals
+end
 
 --------------------------------- 花蜜酿造机 ---------------------------------
 require "prefabutil"
@@ -53,19 +82,45 @@ local prefabs =
 	"collapse_small",
 }
 
+-- 动画+延时
+local function startCook(inst, tagVals)
+	inst.AnimState:PlayAnimation("cooking", true)
+
+	if inst.task ~= nil then
+		inst.task:Cancel()
+	end
+	inst.task = inst:DoTaskInTime(TUNING.AIP_NECTAR_COOKTIME, function()
+		inst.AnimState:PlayAnimation("idle", false)
+		if inst.components.container then
+			inst.components.container.canbeopened = true
+		end
+	end)
+end
+
+-- 制造花蜜
 local function onMakeNectar(inst, doer)
+	local tagVals = {}
+
 	-- 空物品栏就不干事
 	if inst.components.container:NumItems() == 0 then
-		if doer.components.talker then
-			doer.components.talker:Say(STRINGS.AIP.AIP_NECTAR_MAKER_INUSE)
-		end
-
 		return
 	end
 
+	-- 价值分析
+	for k, item in pairs (inst.components.container.slots) do
+		local itemTagVals = getItemValue(item)
+
+		for tag, tagVal in pairs (itemTagVals) do
+			tagVals[tag] = (tagVals[tag] or 0) + tagVal
+		end
+	end
+
+	-- 清空容器
 	inst.components.container.canbeopened = false
 	inst.components.container:Close()
 	inst.components.container:DestroyContents()
+
+	startCook(inst, tagVals)
 end
 
 -- 建筑
@@ -125,6 +180,7 @@ local function fn()
 
 	-----------------------------------------------------
 	inst.making = false
+	inst.task = nil
 	-----------------------------------------------------
 
 	-- 容器

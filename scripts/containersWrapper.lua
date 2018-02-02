@@ -95,12 +95,12 @@ end
 function params.nectar_maker.itemtestfn(container, item, slot)
 	ingredient = cooking.ingredients[item.prefab]
 	if ingredient and ingredient.tags then
-		if ingredient.tags.fruit or ingredient.tags.sweetener then
+		if ingredient.tags.fruit or ingredient.tags.sweetener or ingredient.tags.frozen then
 			return true
 		end
 	end
 
-	if item:HasTag("nectar") then
+	if item:HasTag("aip_nectar") then
 		return true
 	end
 	
