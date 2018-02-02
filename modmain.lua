@@ -1,5 +1,7 @@
 TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE = "Additional Item Package DEV"
 
+GLOBAL.STRINGS.AIP = {}
+
 -- 资源
 Assets =
 {
@@ -22,6 +24,7 @@ PrefabFiles =
 	"aip_blood_package",
 	"aip_fish_sword",
 	"aip_beehave",
+	"aip_nectar_maker",
 
 	-- Orbit
 	"aip_orbit",

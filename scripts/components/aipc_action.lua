@@ -4,9 +4,9 @@ local Action = Class(function(self, inst)
 	self.onDoAction = nil
 end)
 
-function Action:DoAction()
+function Action:DoAction(doer)
 	if self.onDoAction then
-		self.onDoAction(self.inst)
+		self.onDoAction(self.inst, doer)
 	end
 end
 

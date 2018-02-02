@@ -18,8 +18,10 @@ AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIP_ACTION, "doshortac
 AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIP_ACTION, "doshortaction"))
 
 ---------------------------------------- 配置 ----------------------------------------
+local cooking = GLOBAL.require("cooking")
 local params = {}
 
+----------------- 焚烧炉 -----------------
 params.incinerator =
 {
 	widget =
@@ -63,6 +65,58 @@ end
 
 function params.incinerator.widget.buttoninfo.validfn(inst)
 	return inst.replica.container ~= nil
+end
+
+--------------- 花蜜酿造机 ---------------
+params.nectar_maker =
+{
+	widget =
+	{
+		slotpos = {},
+		animbank = "ui_icepack_2x3",
+		animbuild = "ui_icepack_2x3",
+		pos = Vector3(200, 0, 0),
+
+		buttoninfo =
+		{
+			text = STRINGS.ACTIONS.COOK,
+			position = Vector3(-125, -130, 0),
+		}
+	},
+	acceptsstacks = false,
+	type = "pack",
+}
+
+for y = 0, 2 do
+	table.insert(params.nectar_maker.widget.slotpos, Vector3(-162, -75 * y + 75, 0))
+	table.insert(params.nectar_maker.widget.slotpos, Vector3(-162 + 75, -75 * y + 75, 0))
+end
+
+function params.nectar_maker.itemtestfn(container, item, slot)
+	ingredient = cooking.ingredients[item.prefab]
+	if ingredient and ingredient.tags then
+		if ingredient.tags.fruit or ingredient.tags.sweetener then
+			return true
+		end
+	end
+
+	if item:HasTag("nectar") then
+		return true
+	end
+	
+	return false
+end
+
+function params.nectar_maker.widget.buttoninfo.fn(inst)
+	if inst.components.container ~= nil then
+		GLOBAL.BufferedAction(inst.components.container.opener, inst, AIP_ACTION):Do()
+	elseif inst.replica.container ~= nil and not inst.replica.container:IsBusy() then
+		GLOBAL.SendRPCToServer(GLOBAL.RPC.DoWidgetButtonAction, AIP_ACTION.code, inst, AIP_ACTION.mod_name)
+	end
+end
+
+function params.nectar_maker.widget.buttoninfo.validfn(inst)
+	return inst.replica.container ~= nil and not inst.replica.container:IsEmpty()
 end
 
 ----------------------------------------------------------------------------------------------

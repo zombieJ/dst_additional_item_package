@@ -337,7 +337,7 @@ local food_recipes = {
 		sanity = SAN * 15,
 		perishtime = PER * 15,
 		cooktime = CO * 40,
-		tags = {"honeyed"},
+		tags = {"honeyed", "nectar"},
 	},
 }
 
