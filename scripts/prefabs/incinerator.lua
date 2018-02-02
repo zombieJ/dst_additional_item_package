@@ -137,7 +137,7 @@ STRINGS.CHARACTERS.WINONA.ACTIONFAIL.GIVE.INCINERATOR_NOT_BURN = LANG.ACTIONFAIL
 local incinerator = Recipe("incinerator", {Ingredient("rocks", 5), Ingredient("twigs", 2), Ingredient("ash", 1)}, RECIPETABS.LIGHT, TECH.SCIENCE_ONE, "incinerator_placer")
 incinerator.atlas = "images/inventoryimages/incinerator.xml"
 
------------------------------------------------------------
+-----------------------------------------------------------------------
 require "prefabutil"
 
 local assets =
@@ -155,7 +155,7 @@ local prefabs =
 }
 
 
--- 交易者
+--[[ 交易者
 local function AcceptTest(inst, item)
 	if item:HasTag("irreplaceable") or item.prefab == "ash" then
 		return false, "INCINERATOR_NOT_BURN"
@@ -187,6 +187,71 @@ local function OnGetItemFromPlayer(inst, giver, item)
 		inst.components.burnable:Ignite()
 		inst.components.burnable:SetFXLevel(1)
 	end)
+end]]
+
+local function onBurnItems(inst)
+	local hasItems = false
+	local returnItems = {}
+
+	-- 计算生产的物料
+	if inst.components.aipc_action and inst.components.container then
+		local ings = {}
+		for k, item in pairs(inst.components.container.slots) do
+			local stackSize = item.components.stackable and item.components.stackable:StackSize() or 1
+			local lootItem = "ash"
+
+			-- 根据马头剩余耐久度概率提供谜之声帽
+			if item.prefab == "aip_horse_head" and item.components.fueled then
+				local ptg = item.components.fueled:GetPercent()
+				ptg = ptg * ptg * 0.9
+				if ptg >= math.random() then
+					lootItem = "aip_som"
+				end
+			end
+
+			returnItems[lootItem] = (returnItems[lootItem] or 0) + stackSize
+			hasItems = true
+		end
+	end
+
+	-- 掉东西咯
+	if hasItems then
+		inst.AnimState:PlayAnimation("consume")
+		inst.AnimState:PushAnimation("idle", false)
+		inst.SoundEmitter:PlaySound("dontstarve/common/fireAddFuel")
+
+		for prefab, prefabCount in pairs(returnItems) do
+			local currentCount = prefabCount
+			local loot = inst.components.lootdropper:SpawnLootPrefab(prefab)
+			local lootMaxSize = 1
+
+			if loot.components.stackable then
+				lootMaxSize = loot.components.stackable.maxsize
+			end
+			loot:Remove()
+
+			-- 批量掉落
+			while(currentCount > 0)
+			do
+				local dropCount = math.min(currentCount, lootMaxSize)
+				local dropLootItem = inst.components.lootdropper:SpawnLootPrefab(prefab)
+				if dropLootItem.components.stackable then
+					dropLootItem.components.stackable:SetStackSize(dropCount)
+				end
+
+				currentCount = currentCount - dropCount
+			end
+		end
+
+		inst.components.container:Close()
+		inst.components.container:DestroyContents()
+
+		inst.components.burnable:Extinguish()
+		inst:DoTaskInTime(0, function ()
+			inst.components.burnable:Ignite()
+			inst.components.burnable:SetFXLevel(1)
+		end)
+	end
 end
 
 -- 火焰者
@@ -254,11 +319,20 @@ local function fn()
 	inst.components.burnable:SetBurnTime(10)
 	inst:ListenForEvent("onextinguish", onextinguish)
 
-	-- 可交易
+	--[[ 可交易
 	inst:AddComponent("trader")
 	inst.components.trader:SetAbleToAcceptTest(AcceptTest)
 	inst.components.trader.onaccept = OnGetItemFromPlayer
-	inst.components.trader.acceptnontradable = true
+	inst.components.trader.acceptnontradable = true]]
+
+	-- 容器
+	inst:AddComponent("container")
+	inst.components.container:WidgetSetup("incinerator")
+
+	-- 烹饪
+	inst:AddComponent("aipc_action")
+	inst.components.aipc_action.onDoAction = onBurnItems
+
 
 	-- 掉东西
 	inst:AddComponent("lootdropper")

@@ -41,9 +41,10 @@ modimport("scripts/aipUtils.lua")
 --------------------------------------- 图标 ---------------------------------------
 AddMinimapAtlas("minimap/dark_observer_vest.xml")
 
---------------------------------------- 食谱 ---------------------------------------
+--------------------------------------- 封装 ---------------------------------------
 modimport("scripts/recipeWrapper.lua")
 modimport("scripts/seedsWrapper.lua")
+modimport("scripts/containersWrapper.lua")
 
 --------------------------------------- 矿车 ---------------------------------------
 if GetModConfigData("additional_orbit") == "open" then
