@@ -54,13 +54,16 @@ local function getItemValue(item)
 	elseif item:HasTag("aip_nectar_material") then
 		-- 标签
 		if item:HasTag("frozen") then
-			tagVals["frozen"] = 3
+			tagVals["frozen"] = 2
 		end
 		if item:HasTag("honeyed") then
-			tagVals["sweetener"] = 3
+			tagVals["sweetener"] = 2
 		end
 		if item:HasTag("aip_exquisite") then
 			tagVals["exquisite"] = 1
+		end
+		if item:HasTag("aip_nectar") then
+			tagVals["nectar"] = 1
 		end
 	end
 
