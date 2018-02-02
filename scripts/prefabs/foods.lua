@@ -242,7 +242,7 @@ local food_recipes = {
 		temperature = TUNING.COLD_FOOD_BONUS_TEMP,
 		temperatureduration = TUNING.FOOD_TEMP_LONG,
 		goldvalue = TUNING.GOLD_VALUES.MEAT,
-		tags = {"frozen", "aip_nectar"},
+		tags = {"frozen", "aip_nectar_material"},
 	},
 	aip_food_egg_fried_rice = {
 		test = function(cooker, names, tags)
@@ -338,7 +338,7 @@ local food_recipes = {
 		sanity = SAN * 15,
 		perishtime = PER * 15,
 		cooktime = CO * 40,
-		tags = {"honeyed", "aip_nectar", "aip_exquisite"},
+		tags = {"honeyed", "aip_nectar_material", "aip_exquisite"},
 	},
 }
 

@@ -16,6 +16,8 @@ PrefabFiles =
 	-- Food
 	"aip_veggies",
 	"foods",
+	"aip_nectar_maker",
+	"aip_nectar",
 
 	"popcorngun",
 	"incinerator",
@@ -24,7 +26,6 @@ PrefabFiles =
 	"aip_blood_package",
 	"aip_fish_sword",
 	"aip_beehave",
-	"aip_nectar_maker",
 
 	-- Orbit
 	"aip_orbit",

@@ -51,10 +51,10 @@ local function getItemValue(item)
 	if ingredient and ingredient.tags then
 		-- 原料
 		tagVals = ingredient.tags
-	elseif item:HasTag("aip_nectar") then
+	elseif item:HasTag("aip_nectar_material") then
 		-- 标签
 		if item:HasTag("frozen") then
-			tagVals["frozen"] = 1
+			tagVals["frozen"] = 3
 		end
 		if item:HasTag("honeyed") then
 			tagVals["sweetener"] = 3
@@ -80,6 +80,7 @@ local assets =
 local prefabs =
 {
 	"collapse_small",
+	"aip_nectar",
 }
 
 -- 动画+延时
@@ -89,10 +90,13 @@ local function startCook(inst, tagVals)
 	if inst.task ~= nil then
 		inst.task:Cancel()
 	end
+
+	inst.making = true
 	inst.task = inst:DoTaskInTime(TUNING.AIP_NECTAR_COOKTIME, function()
 		inst.AnimState:PlayAnimation("idle", false)
 		if inst.components.container then
 			inst.components.container.canbeopened = true
+			inst.making = false
 		end
 	end)
 end
@@ -102,7 +106,7 @@ local function onMakeNectar(inst, doer)
 	local tagVals = {}
 
 	-- 空物品栏就不干事
-	if inst.components.container:NumItems() == 0 then
+	if inst.components.container:NumItems() == 0 or inst.making then
 		return
 	end
 
@@ -119,6 +123,12 @@ local function onMakeNectar(inst, doer)
 	inst.components.container.canbeopened = false
 	inst.components.container:Close()
 	inst.components.container:DestroyContents()
+
+	-- 创造花蜜
+	local nectar = SpawnPrefab("aip_nectar")
+	nectar.nectarValues = tagVals
+	nectar.refreshName()
+	inst.components.container:GiveItem(nectar)
 
 	startCook(inst, tagVals)
 end
@@ -142,13 +152,6 @@ local function onbuilt(inst)
 	inst.AnimState:PlayAnimation("place")
 	inst.AnimState:PushAnimation("idle", false)
 	inst.SoundEmitter:PlaySound("dontstarve/common/chest_craft")
-end
-
--- 存储
-local function onSave(inst, data)
-end
-
-local function onLoad(inst, data)
 end
 
 local function fn()
@@ -211,9 +214,6 @@ local function fn()
 	inst:ListenForEvent("onbuilt", onbuilt)
 
 	MakeMediumBurnable(inst)
-
-	inst.OnSave = onSave 
-	inst.OnLoad = onLoad
 
 	return inst
 end

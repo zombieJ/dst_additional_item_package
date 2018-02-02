@@ -60,10 +60,10 @@
                     <object folder="0" file="0" x="0.002494" y="90.069825" angle="0"/>
                 </key>
                 <key id="1" time="60">
-                    <object folder="0" file="0" x="12.164656" y="102.231987" angle="344.941349" scale_x="1"/>
+                    <object folder="0" file="0" x="5.164656" y="89.231987" angle="354.02142" scale_y="1"/>
                 </key>
                 <key id="2" time="180" spin="-1">
-                    <object folder="0" file="0" x="-29.727236" y="98.177933" angle="9.825978" scale_x="1"/>
+                    <object folder="0" file="0" x="-0.727236" y="88.177933" angle="2.542398" scale_x="1" scale_y="1"/>
                 </key>
                 <key id="3" time="240" spin="0">
                     <object folder="0" file="0" x="0.002494" y="90.069825" angle="0"/>

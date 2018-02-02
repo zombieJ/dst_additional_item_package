@@ -100,7 +100,7 @@ function params.nectar_maker.itemtestfn(container, item, slot)
 		end
 	end
 
-	if item:HasTag("aip_nectar") then
+	if item:HasTag("aip_nectar_material") then
 		return true
 	end
 	
