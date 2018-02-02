@@ -42,6 +42,7 @@ aip_nectar_maker.atlas = "images/inventoryimages/aip_nectar_maker.xml"
 local cooking = require("cooking")
 local function getItemValue(item)
 	local tagVals = {}
+
 	if not item then
 		return tagVals
 	end
@@ -50,7 +51,9 @@ local function getItemValue(item)
 
 	if ingredient and ingredient.tags then
 		-- 原料
-		tagVals = ingredient.tags
+		for ingredientTag, ingredientTagVal in pairs (ingredient.tags) do
+			tagVals[ingredientTag] = ingredientTagVal
+		end
 	elseif item:HasTag("aip_nectar_material") then
 		-- 标签
 		if item:HasTag("frozen") then
@@ -64,8 +67,24 @@ local function getItemValue(item)
 		end
 		if item:HasTag("aip_nectar") then
 			tagVals["nectar"] = 1
+
+			-- 花蜜属性可以继承
+			for nectarTag, nectarTagVal in pairs (item.nectarValues or {}) do
+				local cloneTagVal = nectarTagVal
+
+				if nectarTag == "exquisite" then
+					-- 精酿无法继承
+					cloneTagVal = 0
+
+				elseif nectarTag == "frozen" then
+					-- 冰镇效果递减
+					cloneTagVal = math.ceil(nectarTagVal / 2)
+				end
+				tagVals[nectarTag] = (tagVals[nectarTag] or 0) + cloneTagVal
+			end
 		end
 	end
+
 
 	return tagVals
 end
@@ -106,7 +125,9 @@ end
 
 -- 制造花蜜
 local function onMakeNectar(inst, doer)
-	local tagVals = {}
+	local tagVals = {
+		["generation"] = 0,
+	}
 
 	-- 空物品栏就不干事
 	if inst.components.container:NumItems() == 0 or inst.making then
@@ -118,9 +139,14 @@ local function onMakeNectar(inst, doer)
 		local itemTagVals = getItemValue(item)
 
 		for tag, tagVal in pairs (itemTagVals) do
-			tagVals[tag] = (tagVals[tag] or 0) + tagVal
+			if tag == "generation" then
+				tagVals.generation = math.max(tagVals.generation, tagVal)
+			else
+				tagVals[tag] = (tagVals[tag] or 0) + tagVal
+			end
 		end
 	end
+	tagVals.generation = tagVals.generation + 1
 
 	-- 清空容器
 	inst.components.container.canbeopened = false

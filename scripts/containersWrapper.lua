@@ -44,7 +44,7 @@ params.incinerator =
 		}
 	},
 	acceptsstacks = true,
-	type = "pack",
+	type = "chest",
 }
 
 function params.incinerator.itemtestfn(container, item, slot)
@@ -84,7 +84,7 @@ params.nectar_maker =
 		}
 	},
 	acceptsstacks = false,
-	type = "pack",
+	type = "chest",
 }
 
 for y = 0, 2 do

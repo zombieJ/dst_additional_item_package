@@ -32,6 +32,7 @@ local LANG_VALUE_MAP = {
 		["nectar"] = "Mixed",
 		["balance"] = "Balance",
 		["absolute"] = "absolute",
+		["generation"] = "L",
 	},
 	["chinese"] = {
 		["tasteless"] = "平淡",
@@ -42,6 +43,7 @@ local LANG_VALUE_MAP = {
 		["nectar"] = "混合",
 		["balance"] = "平衡",
 		["absolute"] = "纯酿",
+		["generation"] = "代",
 	},
 }
 
@@ -54,7 +56,13 @@ STRINGS.RECIPE_DESC.AIP_NECTAR = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_NECTAR = LANG.DESCRIBE
 
 -----------------------------------------------------------
+local HP = TUNING.HEALING_TINY -- 1 healing
+local HU = TUNING.CALORIES_HUGE / 75 -- 1 hunger
+local SAN = TUNING.SANITY_SUPERTINY -- 1 sanity
+local PER = TUNING.PERISH_ONE_DAY -- 1 day
+
 local BASE_COLOR = .25
+
 local COLOR_WEIGHT = {
 	["tasteless"] =		{1.0, 1.0, 1.0, 1.0},
 	["fruit"] =			{1.0, 0.1, 0.1, 1.0},
@@ -92,7 +100,7 @@ local function onRefreshName(inst)
 	local tagBalance = false
 
 	for tag, tagVal in pairs (nectarValues) do
-		if tag ~= "exquisite" then
+		if tag ~= "exquisite" and tag ~= "generation" then
 			totalTagVal = totalTagVal + tagVal
 
 			-- 选取最高位
@@ -134,6 +142,11 @@ local function onRefreshName(inst)
 	-- 平衡
 	if tagBalance then
 		name = LANG_VALUE.balance..name
+	end
+
+	-- 世代
+	if nectarValues.generation > 1 then
+		name = name..tostring(nectarValues.generation)..LANG_VALUE.generation
 	end
 
 	inst.components.named:SetName(name)
@@ -187,6 +200,16 @@ function fn()
 
 	inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_nectar.xml"
+
+	-- 食物
+	inst:AddComponent("edible")
+	inst.components.edible.foodtype = FOODTYPE.MEAT -- 女武神也可以喝
+	-- inst.components.edible.healthvalue = data.health
+	-- inst.components.edible.hungervalue = data.hunger
+	-- inst.components.edible.sanityvalue = data.sanity or 0
+	-- inst.components.edible.temperaturedelta = data.temperature or 0
+	-- inst.components.edible.temperatureduration = data.temperatureduration or 0
+	-- inst.components.edible:SetOnEatenFn(data.oneatenfn)
 
 	MakeHauntableLaunch(inst)
 
