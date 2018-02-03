@@ -14,33 +14,53 @@ local LANG_MAP = {
 		["NAME"] = "Nectar",
 		["DESC"] = "Made by nectar maker",
 		["DESCRIBE"] = "Smell wonderful",
+
+		["contains"] = "Contains",
+		["littleOf"] = "Little of",
+		["lotsOf"] = "Lots of",
+		["fullOf"] = "Full of",
+		
+		["health"] = "Health",
+		["hunger"] = "Hunger",
+		["sanity"] = "Sanity",
 	},
 	["chinese"] = {
 		["NAME"] = "花蜜饮",
 		["DESC"] = "由花蜜制造机制作",
 		["DESCRIBE"] = "有种独特的香气",
+
+		["contains"] = "含有",
+		["littleOf"] = "少量的",
+		["lotsOf"] = "富含",
+		["fullOf"] = "充满了",
+
+		["health"] = "生命力",
+		["hunger"] = "饱腹欲",
+		["sanity"] = "理智",
 	},
 }
 
 local LANG_VALUE_MAP = {
 	["english"] = {
-		["tasteless"] = "Tasteless",
 		["fruit"] = "Fruit",
 		["sweetener"] = "Honey",
 		["frozen"] = "Frozen",
 		["Exquisite"] = "Exquisite",
 		["nectar"] = "Mixed",
+
+		["tasteless"] = "Tasteless",
 		["balance"] = "Balance",
 		["absolute"] = "absolute",
 		["generation"] = "L",
 	},
 	["chinese"] = {
-		["tasteless"] = "平淡",
 		["fruit"] = "果香",
 		["sweetener"] = "香甜",
 		["frozen"] = "冰镇",
 		["exquisite"] = "精酿",
 		["nectar"] = "混合",
+
+		["tasteless"] = "平淡",
 		["balance"] = "平衡",
 		["absolute"] = "纯酿",
 		["generation"] = "代",
@@ -60,16 +80,52 @@ local HP = TUNING.HEALING_TINY -- 1 healing
 local HU = TUNING.CALORIES_HUGE / 75 -- 1 hunger
 local SAN = TUNING.SANITY_SUPERTINY -- 1 sanity
 local PER = TUNING.PERISH_ONE_DAY -- 1 day
+local TT = TUNING.FOOD_TEMP_AVERAGE / 10 -- 1 second
 
 local BASE_COLOR = .25
+local GENERATION_AFFECT = .95
 
-local COLOR_WEIGHT = {
-	["tasteless"] =		{1.0, 1.0, 1.0, 1.0},
+local VALUE_WEIGHT = {
 	["fruit"] =			{1.0, 0.1, 0.1, 1.0},
 	["sweetener"] =		{0.1, 1.0, 1.0, 1.0},
 	["frozen"] =		{1.0, 1.0, 1.0, 0.0},
 	["exquisite"] =		{1.0, 1.0, 1.0, 1.0},
 	["nectar"] =		{0.1, 0.1, 0.1, 1.0},
+	
+	["tasteless"] =		{1.0, 1.0, 1.0, 1.0},
+	["balance"] =		{1.0, 1.0, 1.0, 1.0},
+	["absolute"] =		{1.0, 1.0, 1.0, 1.0},
+	["generation"] =	{1.0, 1.0, 1.0, 1.0},
+}
+
+local VALUE_EAT_BONUS = {
+	["fruit"] = {
+		health = HP * 5,
+		hunger = HU * 5,
+		sanity = SAN * 5,
+	},
+	["sweetener"] = {
+		health = HP * 10,
+		hunger = HU * 2,
+		sanity = SAN * 0,
+	},
+	["frozen"] = {
+		health = HP * 0,
+		hunger = HU * 0,
+		sanity = SAN * 5,
+		temperature = TUNING.COLD_FOOD_BONUS_TEMP,
+		temperatureduration = TT * 2,
+	},
+	["exquisite"] = {
+		health = HP * 0,
+		hunger = HU * 0,
+		sanity = SAN * 10,
+	},
+	["nectar"] = {
+		health = HP * 0,
+		hunger = HU * 5,
+		sanity = SAN * 0,
+	},
 }
 
 -----------------------------------------------------------
@@ -89,11 +145,20 @@ local function onRefreshName(inst)
 	local name = LANG.NAME
 	local nectarValues = inst.nectarValues or {}
 
+	-- 颜色
 	local nectarR = 0
 	local nectarG = 0
 	local nectarB = 0
 	local nectarA = 0
 
+	-- 食物
+	local health = 0
+	local hunger = 0
+	local sanity = 0
+	local temperature = 0
+	local temperatureduration = 0
+
+	--------------- 配比统计 ---------------
 	local topTag = "tasteless"
 	local topTagVal = 0
 	local totalTagVal = 0
@@ -113,11 +178,22 @@ local function onRefreshName(inst)
 			end
 
 			-- 颜色统计
-			local color = COLOR_WEIGHT[tag]
+			local color = VALUE_WEIGHT[tag] or {1,1,1,1}
 			nectarR = nectarR + color[1] * tagVal
 			nectarG = nectarG + color[2] * tagVal
 			nectarB = nectarB + color[3] * tagVal
 			nectarA = nectarA + color[4] * tagVal
+
+			-- 食物统计
+			local eatBonus = VALUE_EAT_BONUS[tag] or {}
+			health = health + (eatBonus.health or 0) * tagVal
+			hunger = hunger + (eatBonus.hunger or 0) * tagVal
+			sanity = sanity + (eatBonus.sanity or 0) * tagVal
+			temperatureduration = temperatureduration + (eatBonus.temperatureduration or 0)
+
+			if eatBonus.temperature then
+				temperature = eatBonus.temperature
+			end
 		end
 	end
 
@@ -150,6 +226,52 @@ local function onRefreshName(inst)
 	end
 
 	inst.components.named:SetName(name)
+
+	--------------- 食用价值 ---------------
+	health = health * math.floor(math.pow(GENERATION_AFFECT, (nectarValues.generation or 1) - 1))
+	hunger = hunger * math.floor(math.pow(GENERATION_AFFECT, (nectarValues.generation or 1) - 1))
+	sanity = sanity * math.floor(math.pow(GENERATION_AFFECT, (nectarValues.generation or 1) - 1))
+
+	if inst.components.edible then
+		inst.components.edible.healthvalue = health
+		inst.components.edible.hungervalue = hunger
+		inst.components.edible.sanityvalue = sanity
+		inst.components.edible.temperaturedelta = temperature
+		inst.components.edible.temperatureduration = temperatureduration
+		-- inst.components.edible:SetOnEatenFn(data.oneatenfn)
+	end
+
+	----------------- 检查 -----------------
+	local topEatName = "health"
+	local topEatValue = health
+	local eatData = {
+		["health"] = health,
+		["hunger"] = hunger,
+		["sanity"] = sanity,
+	}
+	for eatName, eatValue in pairs(eatData) do
+		if eatValue > topEatValue then
+			topEatName = eatName
+			topEatValue = eatValue
+		end
+	end
+
+	local checkStatus = ""
+	if topEatValue <= 10 then
+		checkStatus = LANG.littleOf
+	elseif topEatValue <= 30 then
+		checkStatus = LANG.contains
+	elseif topEatValue <= 60 then
+		checkStatus = LANG.lotsOf
+	else
+		checkStatus = LANG.fullOf
+	end
+
+
+	inst.components.inspectable:SetDescription(
+		STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_NECTAR.."\n"..
+		checkStatus.." "..LANG[topEatName]
+	)
 end
 
 -- 存储
@@ -204,12 +326,9 @@ function fn()
 	-- 食物
 	inst:AddComponent("edible")
 	inst.components.edible.foodtype = FOODTYPE.MEAT -- 女武神也可以喝
-	-- inst.components.edible.healthvalue = data.health
-	-- inst.components.edible.hungervalue = data.hunger
-	-- inst.components.edible.sanityvalue = data.sanity or 0
-	-- inst.components.edible.temperaturedelta = data.temperature or 0
-	-- inst.components.edible.temperatureduration = data.temperatureduration or 0
-	-- inst.components.edible:SetOnEatenFn(data.oneatenfn)
+	inst.components.edible.healthvalue = 0
+	inst.components.edible.hungervalue = 0
+	inst.components.edible.sanityvalue = 0
 
 	MakeHauntableLaunch(inst)
 

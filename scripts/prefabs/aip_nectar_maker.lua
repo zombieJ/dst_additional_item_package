@@ -14,11 +14,13 @@ local LANG_MAP = {
 		["NAME"] = "Nectar Maker",
 		["DESC"] = "Make your own nectar",
 		["DESCRIBE"] = "Making with fruits",
+		["ONLY_ONE"] = "Only one item can't make it",
 	},
 	["chinese"] = {
 		["NAME"] = "花蜜酿造桶",
 		["DESC"] = "制造你自己的独特饮品",
 		["DESCRIBE"] = "用水果填充它吧",
+		["ONLY_ONE"] = "光一样物品能做啥？",
 	},
 }
 
@@ -31,6 +33,7 @@ local dev_mode = GetModConfigData("dev_mode", foldername) == "enabled"
 STRINGS.NAMES.AIP_NECTAR_MAKER = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_NECTAR_MAKER = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_NECTAR_MAKER = LANG.DESCRIBE
+STRINGS.AIP.AIP_NECTAR_ONLY_ONE = LANG.ONLY_ONE
 
 TUNING.AIP_NECTAR_COOKTIME = dev_mode and 3 or 60
 
@@ -130,7 +133,11 @@ local function onMakeNectar(inst, doer)
 	}
 
 	-- 空物品栏就不干事
-	if inst.components.container:NumItems() == 0 or inst.making then
+	if inst.components.container:NumItems() <= 1 or inst.making then
+		if inst.components.container:NumItems() == 1 and doer.components.talker then
+			doer.components.talker:Say(STRINGS.AIP.AIP_NECTAR_ONLY_ONE)
+		end
+
 		return
 	end
 

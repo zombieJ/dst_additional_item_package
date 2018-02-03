@@ -21,8 +21,11 @@ local function template(name, config)
 	local assets =
 	{
 		Asset("ATLAS", "images/inventoryimages/"..name..".xml"),
+		Asset("IMAGE", "images/inventoryimages/"..name..".tex"),
 		Asset("ANIM", "anim/"..name..".zip"),
 	}
+
+	aipPrint(">>>>>>>>>>>>>>", "images/inventoryimages/"..name..".tex")
 
 	local prefabs =
 	{
