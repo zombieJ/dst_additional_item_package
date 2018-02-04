@@ -1,21 +1,15 @@
+-- 体验关闭
+local additional_experiment = GetModConfigData("tooltip_enhance", foldername)
+if additional_experiment ~= "open" then
+	return nil
+end
 
+------------------------------------------------------------------
+local aipPrint = GLOBAL.aipPrint
+local AIP_SlotInfo = GLOBAL.require("widgets/aipInfo")
 
+local function AddItemHook(slot)
+	slot.aipSlotInfo = AIP_SlotInfo(slot)
+end
 
---[[local ItemTile = GLOBAL.require("widgets/itemtile")
-
-local originUpdateTooltip = ItemTile.UpdateTooltip
-
-
-function ItemTile:UpdateTooltip()
-	originUpdateTooltip(self)
-
-	self:SetTooltipColour(GLOBAL.unpack(GLOBAL.PLAYERCOLOURS.GREEN))
-
-	local str = self:GetDescriptionString()
-	self:SetTooltip(str)
-	if self.item:GetIsWet() then
-		self:SetTooltipColour(unpack(WET_TEXT_COLOUR))
-	else
-		self:SetTooltipColour(unpack(NORMAL_TEXT_COLOUR))
-	end
-end]]
+AddClassPostConstruct("widgets/invslot", AddItemHook)

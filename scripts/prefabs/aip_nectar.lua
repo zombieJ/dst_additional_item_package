@@ -9,6 +9,19 @@ end
 
 local language = GetModConfigData("language", foldername)
 
+local function RGB(r, g, b, a)
+	return { r / 255, g / 255, b / 255, (a or 255) / 255 }
+end
+
+local QUALITY_COLORS = {
+	quality_0 = RGB(165,  42,  42),
+	quality_1 = nil,
+	quality_2 = RGB( 59, 222,  99),
+	quality_3 = RGB( 80, 143, 244),
+	quality_4 = RGB(128,   0, 128),
+	quality_5 = RGB(208, 120,  86),
+}
+
 local LANG_MAP = {
 	["english"] = {
 		["NAME"] = "Nectar",
@@ -50,8 +63,16 @@ local LANG_VALUE_MAP = {
 
 		["tasteless"] = "Tasteless",
 		["balance"] = "Balance",
-		["absolute"] = "absolute",
+		["absolute"] = "Absolute",
+		["impurity"] = "Impurity",
 		["generation"] = "L",
+
+		quality_0 = "Bad Quality",
+		quality_1 = "Normal Quality",
+		quality_2 = "Nice Quality",
+		quality_3 = "Great Quality",
+		quality_4 = "Outstanding Quality",
+		quality_5 = "Perfect Quality",
 	},
 	["chinese"] = {
 		["fruit"] = "果香",
@@ -62,8 +83,16 @@ local LANG_VALUE_MAP = {
 
 		["tasteless"] = "平淡",
 		["balance"] = "平衡",
-		["absolute"] = "纯酿",
+		["absolute"] = "极纯",
+		["impurity"] = "混杂",
 		["generation"] = "代",
+
+		quality_0 = "糟糕品质",
+		quality_1 = "普通品质",
+		quality_2 = "良好品质",
+		quality_3 = "优秀品质",
+		quality_4 = "杰出品质",
+		quality_5 = "完美品质",
 	},
 }
 
@@ -209,10 +238,6 @@ local function onRefreshName(inst)
 	-- 精酿
 	if nectarValues.exquisite then
 		name = LANG_VALUE.exquisite..name
-	elseif topTagVal == totalTagVal then
-		name = LANG_VALUE.absolute..name
-	else
-		name = tostring(math.ceil(topTagVal / totalTagVal * 100)).."%"..name
 	end
 
 	-- 平衡
@@ -226,6 +251,66 @@ local function onRefreshName(inst)
 	end
 
 	inst.components.named:SetName(name)
+
+	-------------- 浮动提示框 --------------
+	-- 纯度
+	local aipInfo = ""
+	local purePTG = topTagVal / totalTagVal
+	if topTagVal == totalTagVal then
+		aipInfo = aipInfo..LANG_VALUE.absolute
+	elseif purePTG < 0.5 then
+		aipInfo = aipInfo..LANG_VALUE.impurity
+	else
+		aipInfo = tostring(math.ceil(purePTG * 100)).."%"
+	end
+
+	-- 品质范围
+	local currentQuality = 1.5
+	local minQuality = 1
+	local maxQuality = 1
+
+	--> 随着世代增加，最高品质也会增加
+	if nectarValues.generation <= 1 then
+		minQuality = 1
+		maxQuality = 2
+	elseif nectarValues.generation <= 2 then
+		minQuality = 0
+		maxQuality = 3
+	elseif nectarValues.generation <= 3 then
+		minQuality = 0
+		maxQuality = 4
+	elseif nectarValues.generation <= 4 then
+		minQuality = 0
+		maxQuality = 5
+	end
+
+	-- 品质计算
+	--> 纯度
+	if purePTG <= 0.3 then
+		currentQuality = currentQuality - 0.3
+	elseif purePTG <= 0.4 then
+		currentQuality = currentQuality - 0.2
+	elseif purePTG <= 0.5 then
+		currentQuality = currentQuality - 0.1
+	elseif purePTG > 0.8 then
+		currentQuality = currentQuality + 0.3
+	end
+
+	--> 精酿
+	if nectarValues.exquisite then
+		currentQuality  = currentQuality + 1
+	end
+
+	--> 世代
+	currentQuality  = currentQuality + (nectarValues.generation or 1) * 0.2
+
+	currentQuality = math.min(maxQuality, currentQuality)
+	currentQuality = math.max(minQuality, currentQuality)
+	currentQuality = math.floor(currentQuality)
+	local qualityName = "quality_"..tostring(currentQuality)
+	
+	inst._aip_info = "["..aipInfo.." - "..LANG_VALUE[qualityName].."]"
+	inst._aip_info_color = QUALITY_COLORS[qualityName]
 
 	--------------- 食用价值 ---------------
 	health = health * math.floor(math.pow(GENERATION_AFFECT, (nectarValues.generation or 1) - 1))

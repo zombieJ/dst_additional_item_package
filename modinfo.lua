@@ -175,6 +175,17 @@ configuration_options =
 		default = "normal",
 	},
 	{
+		name = "tooltip_enhance",
+		label = "Tooltip info enhance",
+		hover = "Let some item in slot support additional tooltip",
+		options =
+		{
+			{description = "Open", data = "open"},
+			{description = "Close", data = "close"},
+		},
+		default = "open",
+	},
+	{
 		name = "language",
 		label = "Language",
 		options =

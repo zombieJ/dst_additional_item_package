@@ -25,8 +25,6 @@ local function template(name, config)
 		Asset("ANIM", "anim/"..name..".zip"),
 	}
 
-	aipPrint(">>>>>>>>>>>>>>", "images/inventoryimages/"..name..".tex")
-
 	local prefabs =
 	{
 	}
