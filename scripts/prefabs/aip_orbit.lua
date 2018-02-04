@@ -274,12 +274,6 @@ local function fn()
 	inst.entity:AddSoundEmitter()
 	inst.entity:AddNetwork()
 
-	inst.Transform:SetEightFaced()
-	-- inst.Transform:SetScale(0.5, 0.5, 0.5)
-	-- inst.AnimState:GetCurrentFacing()
-	-- https://forums.kleientertainment.com/topic/71094-modding-help/
-	-- https://forums.kleientertainment.com/topic/72978-is-it-possible-to-access-variables-from-behaviors/
-
 	MakeObstaclePhysics(inst, .5)
 	inst.Physics:SetDontRemoveOnSleep(true)
 	inst.Physics:SetCollides(false)
@@ -292,6 +286,17 @@ local function fn()
 	inst.AnimState:SetBank("aip_orbit")
 	inst.AnimState:SetBuild("aip_orbit")
 	inst.AnimState:PlayAnimation("idle")
+
+	inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+	inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
+	inst.AnimState:SetSortOrder(2)
+
+	-- Just not work on SetOrientation
+	-- inst.Transform:SetEightFaced()
+	-- inst.Transform:SetScale(0.5, 0.5, 0.5)
+	-- inst.AnimState:GetCurrentFacing()
+	-- https://forums.kleientertainment.com/topic/71094-modding-help/
+	-- https://forums.kleientertainment.com/topic/72978-is-it-possible-to-access-variables-from-behaviors/
 
 	inst.entity:SetPristine()
 
