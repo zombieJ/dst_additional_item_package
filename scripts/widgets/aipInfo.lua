@@ -13,7 +13,7 @@ local AIP_UniqueSlotInfo = Class(Widget, function(self)
 
 	self.currentSlot = nil
 
-	self.text = self:AddChild(Text(UIFONT, 30))
+	self.text = self:AddChild(Text(UIFONT, 25))
 	self.text:SetPosition(Vector3(0, 0, 0))
 
 	self:Hide()
@@ -21,12 +21,10 @@ local AIP_UniqueSlotInfo = Class(Widget, function(self)
 end)
 
 function AIP_UniqueSlotInfo:UpdateTip(slot)
-	aipPrint("Do Update!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 	if self.currentSlot ~= slot then
 		return
 	end
-	
-	aipPrint("Yes Update!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
 	self:ShowTip(slot)
 end
 
@@ -43,7 +41,6 @@ function AIP_UniqueSlotInfo:ShowTip(slot)
 	-- 设置文字内容
 	self.text:SetString(inst._aip_info)
 	self.text:SetColour(unpack(inst._aip_info_color or NORMAL_TEXT_COLOUR))
-	self:FollowMouse()
 	
 	-- 偏移坐标
 	widgetInst:DoTaskInTime(0.1, function()
@@ -61,7 +58,7 @@ function AIP_UniqueSlotInfo:ShowTip(slot)
 
 			local text1Pos = text1:GetPosition()
 			local textY = text1Pos.y
-			local myY = textY + (text1Height / 2) + (myHeight / 2) + 5
+			local myY = textY + (text1Height / 2) + (myHeight / 2) + 10
 			self.text:SetPosition(Vector3(0, myY, 0))
 		end
 	end)
@@ -70,15 +67,35 @@ end
 function AIP_UniqueSlotInfo:HideTip(slot)
 	if self.currentSlot == slot then
 		self:Hide()
-		self:StopFollowMouse()
 		self.currentSlot = nil
 	end
+end
+
+function AIP_UniqueSlotInfo:OnUpdate()
+	local hoverer = ThePlayer.HUD.controls.hover
+
+	if not self.currentSlot or not hoverer then
+		return
+	end
+
+	local hoverPos = hoverer:GetPosition()
+	local myPos = self:GetPosition()
+	self:SetPosition(hoverPos)
 end
 
 local function registerGlobal()
 	if ThePlayer and not uniqueInstance then
 		uniqueInstance = AIP_UniqueSlotInfo()
 		ThePlayer.HUD.controls:AddChild(uniqueInstance)
+
+		local hoverer = ThePlayer.HUD.controls.hover
+		if hoverer then
+			local _OnUpdate = hoverer.OnUpdate
+			hoverer.OnUpdate = function(instance, ...)
+				uniqueInstance:OnUpdate()
+				_OnUpdate(instance, ...)
+			end
+		end
 	end
 end
 
@@ -106,11 +123,9 @@ local AIP_SlotInfo = Class(function(self, slot)
 		return self:OnGainFocus(instance, ...)
 	end
 	slot.OnLoseFocus = function(instance, ...)
-		aipPrint("Lose Focus!")
 		return self:OnLoseFocus(instance, ...)
 	end
 	slot.Kill = function(instance, ...)
-		aipPrint("Kill It!")
 		self:OnLoseFocus(instance, ...)
 		return self._Kill(instance, ...)
 	end

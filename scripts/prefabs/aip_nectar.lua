@@ -89,8 +89,8 @@ local LANG_VALUE_MAP = {
 
 		quality_0 = "糟糕品质",
 		quality_1 = "普通品质",
-		quality_2 = "良好品质",
-		quality_3 = "优秀品质",
+		quality_2 = "优秀品质",
+		quality_3 = "精良品质",
 		quality_4 = "杰出品质",
 		quality_5 = "完美品质",
 	},
@@ -191,11 +191,13 @@ local function onRefreshName(inst)
 	local topTag = "tasteless"
 	local topTagVal = 0
 	local totalTagVal = 0
+	local totalTagCount = 0
 	local tagBalance = false
 
 	for tag, tagVal in pairs (nectarValues) do
 		if tag ~= "exquisite" and tag ~= "generation" then
 			totalTagVal = totalTagVal + tagVal
+			totalTagCount = totalTagCount + 1
 
 			-- 选取最高位
 			if topTagVal == tagVal then
@@ -265,7 +267,7 @@ local function onRefreshName(inst)
 	end
 
 	-- 品质范围
-	local currentQuality = 1.5
+	local currentQuality = 1
 	local minQuality = 1
 	local maxQuality = 1
 
@@ -295,21 +297,36 @@ local function onRefreshName(inst)
 	elseif purePTG > 0.8 then
 		currentQuality = currentQuality + 0.3
 	end
+	
+	--> 种类
+	currentQuality = currentQuality + math.min(1, totalTagCount * 0.2)
 
 	--> 精酿
 	if nectarValues.exquisite then
-		currentQuality  = currentQuality + 1
+		currentQuality = currentQuality + 1
 	end
-
+	
+	--> 属性加成
+	currentQuality = currentQuality + math.min(1, totalTagVal * 0.03)
+	
 	--> 世代
-	currentQuality  = currentQuality + (nectarValues.generation or 1) * 0.2
+	currentQuality  = currentQuality + math.min(1.5, (nectarValues.generation or 1) * 0.15)
+	
+	--> 花蜜
+	if nectarValues.nectar then
+		if nectarValues.nectar <= 5 then
+			currentQuality = currentQuality + nectarValues.nectar * 0.1
+		else
+			currentQuality = currentQuality - math.min(1, (nectarValues.nectar or 0) * 0.1)
+		end
+	end
 
 	currentQuality = math.min(maxQuality, currentQuality)
 	currentQuality = math.max(minQuality, currentQuality)
 	currentQuality = math.floor(currentQuality)
 	local qualityName = "quality_"..tostring(currentQuality)
 	
-	inst._aip_info = "["..aipInfo.." - "..LANG_VALUE[qualityName].."]"
+	inst._aip_info = aipInfo.."-"..LANG_VALUE[qualityName]
 	inst._aip_info_color = QUALITY_COLORS[qualityName]
 
 	--------------- 食用价值 ---------------
@@ -410,7 +427,7 @@ function fn()
 
 	-- 食物
 	inst:AddComponent("edible")
-	inst.components.edible.foodtype = FOODTYPE.MEAT -- 女武神也可以喝
+	inst.components.edible.foodtype = FOODTYPE.GOODIES -- 女武神也可以喝
 	inst.components.edible.healthvalue = 0
 	inst.components.edible.hungervalue = 0
 	inst.components.edible.sanityvalue = 0
