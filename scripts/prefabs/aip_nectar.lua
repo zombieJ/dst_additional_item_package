@@ -23,49 +23,53 @@ local QUALITY_COLORS = {
 }
 
 local LANG_MAP = {
-	["english"] = {
-		["NAME"] = "Nectar",
-		["DESC"] = "Made by nectar maker",
-		["DESCRIBE"] = "Smell wonderful",
+	english = {
+		NAME = "Nectar",
+		DESC = "Made by nectar maker",
 
-		["contains"] = "Contains",
-		["littleOf"] = "Little of",
-		["lotsOf"] = "Lots of",
-		["fullOf"] = "Full of",
+		contains = "Contains",
+		littleOf = "Little of",
+		lotsOf = "Lots of",
+		fullOf = "Full of",
 		
-		["health"] = "Health",
-		["hunger"] = "Hunger",
-		["sanity"] = "Sanity",
+		health = "Health",
+		hunger = "Hunger",
+		sanity = "Sanity",
+
+		frozen = "It's a bit cold",
+		continueRecover = "Can continuely recover",
 	},
-	["chinese"] = {
-		["NAME"] = "花蜜饮",
-		["DESC"] = "由花蜜制造机制作",
-		["DESCRIBE"] = "有种独特的香气",
-
-		["contains"] = "含有",
-		["littleOf"] = "少量的",
-		["lotsOf"] = "富含",
-		["fullOf"] = "充满了",
-
-		["health"] = "生命力",
-		["hunger"] = "饱腹欲",
-		["sanity"] = "理智",
+	chinese = {
+		NAME = "花蜜饮",
+		DESC = "由花蜜制造机制作",
+		
+		contains = "含有",
+		littleOf = "少量的",
+		lotsOf = "富含",
+		fullOf = "充满了",
+		
+		health = "生命力",
+		hunger = "饱腹欲",
+		sanity = "理智",
+		
+		frozen = "冰冰凉",
+		continueRecover = "能够持续恢复",
 	},
 }
 
 local LANG_VALUE_MAP = {
-	["english"] = {
-		["fruit"] = "Fruit",
-		["sweetener"] = "Honey",
-		["frozen"] = "Frozen",
-		["Exquisite"] = "Exquisite",
-		["nectar"] = "Mixed",
+	english = {
+		fruit = "Fruit",
+		sweetener = "Honey",
+		frozen = "Frozen",
+		Exquisite = "Exquisite",
+		nectar = "Mixed",
 
-		["tasteless"] = "Tasteless",
-		["balance"] = "Balance",
-		["absolute"] = "Absolute",
-		["impurity"] = "Impurity",
-		["generation"] = "L",
+		tasteless = "Tasteless",
+		balance = "Balance",
+		absolute = "Absolute",
+		impurity = "Impurity",
+		generation = "L",
 
 		quality_0 = "Bad Quality",
 		quality_1 = "Normal Quality",
@@ -74,18 +78,18 @@ local LANG_VALUE_MAP = {
 		quality_4 = "Outstanding Quality",
 		quality_5 = "Perfect Quality",
 	},
-	["chinese"] = {
-		["fruit"] = "果香",
-		["sweetener"] = "香甜",
-		["frozen"] = "冰镇",
-		["exquisite"] = "精酿",
-		["nectar"] = "混合",
+	chinese = {
+		fruit = "果香",
+		sweetener = "香甜",
+		frozen = "冰镇",
+		exquisite = "精酿",
+		nectar = "混合",
 
-		["tasteless"] = "平淡",
-		["balance"] = "平衡",
-		["absolute"] = "极纯",
-		["impurity"] = "混杂",
-		["generation"] = "代",
+		tasteless = "平淡",
+		balance = "平衡",
+		absolute = "极纯",
+		impurity = "混杂",
+		generation = "代",
 
 		quality_0 = "糟糕品质",
 		quality_1 = "普通品质",
@@ -102,7 +106,6 @@ local LANG_VALUE = LANG_VALUE_MAP[language] or LANG_VALUE_MAP.english
 -- 文字描述
 STRINGS.NAMES.AIP_NECTAR = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_NECTAR = LANG.DESC
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_NECTAR = LANG.DESCRIBE
 
 -----------------------------------------------------------
 local HP = TUNING.HEALING_TINY -- 1 healing
@@ -110,6 +113,9 @@ local HU = TUNING.CALORIES_HUGE / 75 -- 1 hunger
 local SAN = TUNING.SANITY_SUPERTINY -- 1 sanity
 local PER = TUNING.PERISH_ONE_DAY -- 1 day
 local TT = TUNING.FOOD_TEMP_AVERAGE / 10 -- 1 second
+
+local STEP_HP = 5
+local STEP_SAN = 3
 
 local BASE_COLOR = .25
 local GENERATION_AFFECT = .95
@@ -129,19 +135,19 @@ local VALUE_WEIGHT = {
 
 local VALUE_EAT_BONUS = {
 	["fruit"] = {
-		health = HP * 5,
-		hunger = HU * 5,
-		sanity = SAN * 5,
+		health = HP * 4,
+		hunger = HU * 4,
+		sanity = SAN * 1,
 	},
 	["sweetener"] = {
-		health = HP * 10,
-		hunger = HU * 2,
-		sanity = SAN * 0,
+		health = HP * 8,
+		hunger = HU * 1,
+		sanity = SAN * 1,
 	},
 	["frozen"] = {
 		health = HP * 0,
 		hunger = HU * 0,
-		sanity = SAN * 5,
+		sanity = SAN * 3,
 		temperature = TUNING.COLD_FOOD_BONUS_TEMP,
 		temperatureduration = TT * 2,
 	},
@@ -151,9 +157,9 @@ local VALUE_EAT_BONUS = {
 		sanity = SAN * 10,
 	},
 	["nectar"] = {
-		health = HP * 0,
-		hunger = HU * 5,
-		sanity = SAN * 0,
+		health = HP * 5,
+		hunger = HU * 0,
+		sanity = SAN * 5,
 	},
 }
 
@@ -168,6 +174,40 @@ local assets =
 
 local prefabs = {}
 
+------------------------- 持续恢复 -------------------------
+local function onEaten(inst, eater)
+	local health = inst.nectarContinueValues.health or 0
+	local sanity = inst.nectarContinueValues.sanity or 0
+
+	if eater.components.aipc_timer then
+		eater.components.aipc_timer:Interval(1, function()
+
+			if not eater.components.health or eater.components.health:IsDead() then
+				return false
+			end
+
+			local recoverHealth = math.min(health, STEP_HP)
+			local recoverSanity = math.min(sanity, STEP_SAN)
+
+			health = health - recoverHealth
+			sanity = sanity - recoverSanity
+
+			if health == 0 and sanity == 0 then
+				return false
+			end
+
+			-- 每秒回血
+			eater.components.health:DoDelta(recoverHealth)
+
+			-- 每秒理智
+			if eater.components.sanity then
+				eater.components.sanity:DoDelta(recoverSanity)
+			end
+		end)
+	end
+end
+
+------------------------- 刷新名字 -------------------------
 local function onRefreshName(inst)
 	local changeColor = 1 - BASE_COLOR
 
@@ -235,6 +275,7 @@ local function onRefreshName(inst)
 		BASE_COLOR + nectarA / totalTagVal * changeColor
 	)
 
+	--------------- 花蜜名字 ---------------
 	name = LANG_VALUE[topTag]..name
 
 	-- 精酿
@@ -330,9 +371,27 @@ local function onRefreshName(inst)
 	inst._aip_info_color = QUALITY_COLORS[qualityName]
 
 	--------------- 食用价值 ---------------
-	health = health * math.floor(math.pow(GENERATION_AFFECT, (nectarValues.generation or 1) - 1))
-	hunger = hunger * math.floor(math.pow(GENERATION_AFFECT, (nectarValues.generation or 1) - 1))
-	sanity = sanity * math.floor(math.pow(GENERATION_AFFECT, (nectarValues.generation or 1) - 1))
+	local continueRecover = currentQuality >= 3
+
+	aipPrint("1 >>>>>>>>>>>", health, sanity)
+	
+	health = health * math.pow(GENERATION_AFFECT, (nectarValues.generation or 1) - 1)
+	hunger = hunger * math.pow(GENERATION_AFFECT, (nectarValues.generation or 1) - 1)
+	sanity = sanity * math.pow(GENERATION_AFFECT, (nectarValues.generation or 1) - 1)
+	
+	aipPrint("2 >>>>>>>>>>>", health, sanity)
+
+	if continueRecover then
+		health = health / 2
+		sanity = sanity / 2
+
+		inst.nectarContinueValues = {
+			health = health,
+			sanity = sanity,
+		}
+	end
+
+	aipPrint("3 >>>>>>>>>>>", health, sanity)
 
 	if inst.components.edible then
 		inst.components.edible.healthvalue = health
@@ -340,7 +399,7 @@ local function onRefreshName(inst)
 		inst.components.edible.sanityvalue = sanity
 		inst.components.edible.temperaturedelta = temperature
 		inst.components.edible.temperatureduration = temperatureduration
-		-- inst.components.edible:SetOnEatenFn(data.oneatenfn)
+		inst.components.edible:SetOnEatenFn(onEaten)
 	end
 
 	----------------- 检查 -----------------
@@ -369,14 +428,20 @@ local function onRefreshName(inst)
 		checkStatus = LANG.fullOf
 	end
 
+	local statusStr = checkStatus.." "..LANG[topEatName]
+	if nectarValues.frozen then
+		statusStr = statusStr.."\n"..LANG.frozen
+	end
 
-	inst.components.inspectable:SetDescription(
-		STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_NECTAR.."\n"..
-		checkStatus.." "..LANG[topEatName]
-	)
+	-- TODO: Update this
+	if true then
+		statusStr = statusStr.."\n"..LANG.continueRecover
+	end
+
+	inst.components.inspectable:SetDescription(statusStr)
 end
 
--- 存储
+---------------------------- 存储 ----------------------------
 local function onSave(inst, data)
 	data.nectarValues = inst.nectarValues
 end
@@ -431,6 +496,12 @@ function fn()
 	inst.components.edible.healthvalue = 0
 	inst.components.edible.hungervalue = 0
 	inst.components.edible.sanityvalue = 0
+
+	-- 腐烂
+	-- inst:AddComponent("perishable")
+	-- inst.components.perishable:SetPerishTime(TUNING.PERISH_ONE_DAY / 10)
+	-- inst.components.perishable:StartPerishing()
+	-- inst.components.perishable:SetOnPerishFn(onperish)
 
 	MakeHauntableLaunch(inst)
 

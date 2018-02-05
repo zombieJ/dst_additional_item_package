@@ -93,6 +93,15 @@ function PlayerPrefabPostInit(inst)
 	if not inst.components.aipc_player_client then
 		inst:AddComponent("aipc_player_client")
 	end
+
+	if not GLOBAL.TheWorld.ismastersim then
+		return
+	end
+	
+	if not inst.components.aipc_timer then
+		print(">>>>>>>>>>>>>>>>> Add Timer")
+		inst:AddComponent("aipc_timer")
+	end
 end
 
 AddPlayerPostInit(PlayerPrefabPostInit)
