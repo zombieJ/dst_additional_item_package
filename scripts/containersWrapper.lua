@@ -18,7 +18,7 @@ AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIP_ACTION, "doshortac
 AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIP_ACTION, "doshortaction"))
 
 ---------------------------------------- 配置 ----------------------------------------
-local cooking = GLOBAL.require("cooking")
+local getNectarValues = GLOBAL.require("utils/aip_nectar_util")
 local params = {}
 
 ----------------- 焚烧炉 -----------------
@@ -93,18 +93,8 @@ for y = 0, 2 do
 end
 
 function params.nectar_maker.itemtestfn(container, item, slot)
-	ingredient = cooking.ingredients[item.prefab]
-	if ingredient and ingredient.tags then
-		if ingredient.tags.fruit or ingredient.tags.sweetener or ingredient.tags.frozen then
-			return true
-		end
-	end
-
-	if item:HasTag("aip_nectar_material") then
-		return true
-	end
-	
-	return false
+	local values = getNectarValues(item)
+	return GLOBAL.next(values) ~= nil
 end
 
 function params.nectar_maker.widget.buttoninfo.fn(inst)

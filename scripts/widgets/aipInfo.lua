@@ -32,6 +32,7 @@ function AIP_UniqueSlotInfo:ShowTip(slot)
 	self.currentSlot = slot
 	
 	if not slot or not slot.tile or not slot.tile.item or not slot.tile.item._aip_info then
+		self.text:SetString("")
 		self:Hide()
 		return
 	end

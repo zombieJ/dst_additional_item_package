@@ -42,55 +42,7 @@ local aip_nectar_maker = Recipe("aip_nectar_maker", {Ingredient("boards", 4), In
 aip_nectar_maker.atlas = "images/inventoryimages/aip_nectar_maker.xml"
 
 ------------------------------------ 配方 ------------------------------------
-local cooking = require("cooking")
-local function getItemValue(item)
-	local tagVals = {}
-
-	if not item then
-		return tagVals
-	end
-
-	local ingredient = cooking.ingredients[item.prefab]
-
-	if ingredient and ingredient.tags then
-		-- 原料
-		for ingredientTag, ingredientTagVal in pairs (ingredient.tags) do
-			tagVals[ingredientTag] = ingredientTagVal
-		end
-	elseif item:HasTag("aip_nectar_material") then
-		-- 标签
-		if item:HasTag("frozen") then
-			tagVals["frozen"] = 2
-		end
-		if item:HasTag("honeyed") then
-			tagVals["sweetener"] = 2
-		end
-		if item:HasTag("aip_exquisite") then
-			tagVals["exquisite"] = 1
-		end
-		if item:HasTag("aip_nectar") then
-			tagVals["nectar"] = 1
-
-			-- 花蜜属性可以继承
-			for nectarTag, nectarTagVal in pairs (item.nectarValues or {}) do
-				local cloneTagVal = nectarTagVal
-
-				if nectarTag == "exquisite" then
-					-- 精酿无法继承
-					cloneTagVal = 0
-
-				elseif nectarTag == "frozen" then
-					-- 冰镇效果递减
-					cloneTagVal = math.ceil(nectarTagVal / 2)
-				end
-				tagVals[nectarTag] = (tagVals[nectarTag] or 0) + cloneTagVal
-			end
-		end
-	end
-
-
-	return tagVals
-end
+local getNectarValues = require("utils/aip_nectar_util")
 
 --------------------------------- 花蜜酿造机 ---------------------------------
 require "prefabutil"
@@ -143,7 +95,7 @@ local function onMakeNectar(inst, doer)
 
 	-- 价值分析
 	for k, item in pairs (inst.components.container.slots) do
-		local itemTagVals = getItemValue(item)
+		local itemTagVals = getNectarValues(item) or {}
 
 		for tag, tagVal in pairs (itemTagVals) do
 			if tag == "generation" then

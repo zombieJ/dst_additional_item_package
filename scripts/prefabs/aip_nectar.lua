@@ -9,96 +9,13 @@ end
 
 local language = GetModConfigData("language", foldername)
 
-local function RGB(r, g, b, a)
-	return { r / 255, g / 255, b / 255, (a or 255) / 255 }
-end
+local aip_nectar_config = require("prefabs/aip_nectar_config")
 
-local QUALITY_COLORS = {
-	quality_0 = RGB(165,  42,  42),
-	quality_1 = nil,
-	quality_2 = RGB( 59, 222,  99),
-	quality_3 = RGB( 80, 143, 244),
-	quality_4 = RGB(128,   0, 128),
-	quality_5 = RGB(208, 120,  86),
-}
-
-local LANG_MAP = {
-	english = {
-		NAME = "Nectar",
-		DESC = "Made by nectar maker",
-
-		contains = "Contains",
-		littleOf = "Little of",
-		lotsOf = "Lots of",
-		fullOf = "Full of",
-		
-		health = "Health",
-		hunger = "Hunger",
-		sanity = "Sanity",
-
-		frozen = "It's a bit cold",
-		continueRecover = "Can continuely recover",
-	},
-	chinese = {
-		NAME = "花蜜饮",
-		DESC = "由花蜜制造机制作",
-		
-		contains = "含有",
-		littleOf = "少量的",
-		lotsOf = "富含",
-		fullOf = "充满了",
-		
-		health = "生命力",
-		hunger = "饱腹欲",
-		sanity = "理智",
-		
-		frozen = "冰冰凉",
-		continueRecover = "能够持续恢复",
-	},
-}
-
-local LANG_VALUE_MAP = {
-	english = {
-		fruit = "Fruit",
-		sweetener = "Honey",
-		frozen = "Frozen",
-		Exquisite = "Exquisite",
-		nectar = "Mixed",
-
-		tasteless = "Tasteless",
-		balance = "Balance",
-		absolute = "Absolute",
-		impurity = "Impurity",
-		generation = "L",
-
-		quality_0 = "Bad Quality",
-		quality_1 = "Normal Quality",
-		quality_2 = "Nice Quality",
-		quality_3 = "Great Quality",
-		quality_4 = "Outstanding Quality",
-		quality_5 = "Perfect Quality",
-	},
-	chinese = {
-		fruit = "果香",
-		sweetener = "香甜",
-		frozen = "冰镇",
-		exquisite = "精酿",
-		nectar = "混合",
-
-		tasteless = "平淡",
-		balance = "平衡",
-		absolute = "极纯",
-		impurity = "混杂",
-		generation = "代",
-
-		quality_0 = "糟糕品质",
-		quality_1 = "普通品质",
-		quality_2 = "优秀品质",
-		quality_3 = "精良品质",
-		quality_4 = "杰出品质",
-		quality_5 = "完美品质",
-	},
-}
+local QUALITY_COLORS = aip_nectar_config.QUALITY_COLORS
+local LANG_MAP = aip_nectar_config.LANG_MAP
+local LANG_VALUE_MAP = aip_nectar_config.LANG_VALUE_MAP
+local VALUE_WEIGHT = aip_nectar_config.VALUE_WEIGHT
+local VALUE_EAT_BONUS = aip_nectar_config.VALUE_EAT_BONUS
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
 local LANG_VALUE = LANG_VALUE_MAP[language] or LANG_VALUE_MAP.english
@@ -108,63 +25,15 @@ STRINGS.NAMES.AIP_NECTAR = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_NECTAR = LANG.DESC
 
 -----------------------------------------------------------
-local HP = TUNING.HEALING_TINY -- 1 healing
-local HU = TUNING.CALORIES_HUGE / 75 -- 1 hunger
-local SAN = TUNING.SANITY_SUPERTINY -- 1 sanity
-local PER = TUNING.PERISH_ONE_DAY -- 1 day
-local TT = TUNING.FOOD_TEMP_AVERAGE / 10 -- 1 second
-
 local STEP_HP = 5
 local STEP_SAN = 3
+local STEP_BLOOD = 5
+local STEP_DAMAGE = 5
 
 local BASE_COLOR = .25
 local GENERATION_AFFECT = .95
 
-local VALUE_WEIGHT = {
-	["fruit"] =			{1.0, 0.1, 0.1, 1.0},
-	["sweetener"] =		{0.1, 1.0, 1.0, 1.0},
-	["frozen"] =		{1.0, 1.0, 1.0, 0.0},
-	["exquisite"] =		{1.0, 1.0, 1.0, 1.0},
-	["nectar"] =		{0.1, 0.1, 0.1, 1.0},
-	
-	["tasteless"] =		{1.0, 1.0, 1.0, 1.0},
-	["balance"] =		{1.0, 1.0, 1.0, 1.0},
-	["absolute"] =		{1.0, 1.0, 1.0, 1.0},
-	["generation"] =	{1.0, 1.0, 1.0, 1.0},
-}
-
-local VALUE_EAT_BONUS = {
-	["fruit"] = {
-		health = HP * 4,
-		hunger = HU * 4,
-		sanity = SAN * 1,
-	},
-	["sweetener"] = {
-		health = HP * 8,
-		hunger = HU * 1,
-		sanity = SAN * 1,
-	},
-	["frozen"] = {
-		health = HP * 0,
-		hunger = HU * 0,
-		sanity = SAN * 3,
-		temperature = TUNING.COLD_FOOD_BONUS_TEMP,
-		temperatureduration = TT * 2,
-	},
-	["exquisite"] = {
-		health = HP * 0,
-		hunger = HU * 0,
-		sanity = SAN * 10,
-	},
-	["nectar"] = {
-		health = HP * 5,
-		hunger = HU * 0,
-		sanity = SAN * 5,
-	},
-}
-
 -----------------------------------------------------------
-
 local assets =
 {
 	Asset("ANIM", "anim/aip_nectar.zip"),
@@ -174,14 +43,36 @@ local assets =
 
 local prefabs = {}
 
+-----------------------------------------------------------
+local function onVampireAttackOther(inst, data)
+	local target = data.target
+	if target ~= nil and inst.components.health then
+		inst.components.health:DoDelta(STEP_BLOOD)
+	end
+end
+
+local function onDamageAttackOther(inst, data)
+	local target = data.target
+	if target ~= nil and target.components.health then
+		target.components.health:DoDelta(-STEP_DAMAGE, true, "nectar")
+	end
+end
+
 ------------------------- 持续恢复 -------------------------
 local function onEaten(inst, eater)
+	if not inst.nectarContinueValues or not eater.components.aipc_timer then
+		return
+	end
+
 	local health = inst.nectarContinueValues.health or 0
 	local sanity = inst.nectarContinueValues.sanity or 0
+	local speedTime = inst.nectarContinueValues.speedTime or 0
+	local vampireTime = inst.nectarContinueValues.vampireTime or 0
+	local damageTime = inst.nectarContinueValues.damageTime or 0
 
-	if eater.components.aipc_timer then
+	-- 回血灰理智
+	if health and sanity then
 		eater.components.aipc_timer:Interval(1, function()
-
 			if not eater.components.health or eater.components.health:IsDead() then
 				return false
 			end
@@ -203,6 +94,33 @@ local function onEaten(inst, eater)
 			if eater.components.sanity then
 				eater.components.sanity:DoDelta(recoverSanity)
 			end
+		end)
+	end
+
+	-- 提升移动速度
+	if eater.components.locomotor and speedTime then
+		eater.components.locomotor:SetExternalSpeedMultiplier(eater, "aip_nectar", TUNING.NECTAR_SPEED_MULT)
+
+		eater.components.aipc_timer:Timeout(speedTime, function()
+			eater.components.locomotor:RemoveExternalSpeedMultiplier(eater, "aip_nectar")
+		end)
+	end
+
+	-- 吸血鬼
+	if vampireTime then
+		eater:ListenForEvent("onattackother", onVampireAttackOther)
+
+		eater.components.aipc_timer:Timeout(vampireTime, function()
+			eater:RemoveEventCallback("onattackother", onVampireAttackOther)
+		end)
+	end
+
+	-- 额外伤害
+	if damageTime then
+		eater:ListenForEvent("onattackother", onDamageAttackOther)
+
+		eater.components.aipc_timer:Timeout(damageTime, function()
+			eater:RemoveEventCallback("onattackother", onDamageAttackOther)
 		end)
 	end
 end
@@ -314,7 +232,7 @@ local function onRefreshName(inst)
 
 	--> 随着世代增加，最高品质也会增加
 	if nectarValues.generation <= 1 then
-		minQuality = 1
+		minQuality = 0
 		maxQuality = 2
 	elseif nectarValues.generation <= 2 then
 		minQuality = 0
@@ -351,7 +269,7 @@ local function onRefreshName(inst)
 	currentQuality = currentQuality + math.min(1, totalTagVal * 0.03)
 	
 	--> 世代
-	currentQuality  = currentQuality + math.min(1.5, (nectarValues.generation or 1) * 0.15)
+	currentQuality = currentQuality + math.min(1.5, (nectarValues.generation or 1) * 0.15)
 	
 	--> 花蜜
 	if nectarValues.nectar then
@@ -361,6 +279,9 @@ local function onRefreshName(inst)
 			currentQuality = currentQuality - math.min(1, (nectarValues.nectar or 0) * 0.1)
 		end
 	end
+
+	--> 可怕
+	currentQuality = currentQuality - (nectarValues.terrible or 0)
 
 	currentQuality = math.min(maxQuality, currentQuality)
 	currentQuality = math.max(minQuality, currentQuality)
@@ -372,26 +293,43 @@ local function onRefreshName(inst)
 
 	--------------- 食用价值 ---------------
 	local continueRecover = currentQuality >= 3
-
-	aipPrint("1 >>>>>>>>>>>", health, sanity)
 	
 	health = health * math.pow(GENERATION_AFFECT, (nectarValues.generation or 1) - 1)
 	hunger = hunger * math.pow(GENERATION_AFFECT, (nectarValues.generation or 1) - 1)
 	sanity = sanity * math.pow(GENERATION_AFFECT, (nectarValues.generation or 1) - 1)
-	
-	aipPrint("2 >>>>>>>>>>>", health, sanity)
 
+	-- 糟糕品质会损害理智哦
+	if currentQuality == 0 then
+		sanity = -20
+	end
+
+	-- 持续恢复
 	if continueRecover then
+		inst.nectarContinueValues = inst.nectarContinueValues or {}
 		health = health / 2
 		sanity = sanity / 2
 
-		inst.nectarContinueValues = {
-			health = health,
-			sanity = sanity,
-		}
+		inst.nectarContinueValues.health = health
+		inst.nectarContinueValues.sanity = sanity
 	end
 
-	aipPrint("3 >>>>>>>>>>>", health, sanity)
+	-- 移动速度
+	if nectarValues.light then
+		inst.nectarContinueValues = inst.nectarContinueValues or {}
+		inst.nectarContinueValues.speedTime = math.min(4 + nectarValues.light * 1, 30) -- 最多加速30秒
+	end
+
+	-- 吸血鬼
+	if nectarValues.vampire then
+		inst.nectarContinueValues = inst.nectarContinueValues or {}
+		inst.nectarContinueValues.vampireTime = math.min(6 + nectarValues.vampire * 1, 30) -- 最多吸血30秒
+	end
+	
+	-- 伤害增加
+	if nectarValues.damage then
+		inst.nectarContinueValues = inst.nectarContinueValues or {}
+		inst.nectarContinueValues.damageTime = math.min(4 + nectarValues.damage * 1, 30) -- 最多吸血30秒
+	end
 
 	if inst.components.edible then
 		inst.components.edible.healthvalue = health
@@ -433,12 +371,34 @@ local function onRefreshName(inst)
 		statusStr = statusStr.."\n"..LANG.frozen
 	end
 
-	-- TODO: Update this
-	if true then
+	if continueRecover then
 		statusStr = statusStr.."\n"..LANG.continueRecover
 	end
 
+	if nectarValues.light then
+		statusStr = statusStr.."\n"..LANG.speedMulti
+	end
+
+	if nectarValues.vampire then
+		statusStr = statusStr.."\n"..LANG.suckBlook
+	end
+
+	if nectarValues.damage then
+		statusStr = statusStr.."\n"..LANG.damageMulti
+	end
+
 	inst.components.inspectable:SetDescription(statusStr)
+
+	----------------- 发光 -----------------
+	if nectarValues.light then
+		inst.Light:Enable(true)
+		inst.Light:SetRadius(0.3)
+		inst.Light:SetIntensity(0.7)
+		inst.Light:SetFalloff(0.7)
+		inst.Light:SetColour(169/255, 231/255, 245/255)
+	else
+		inst.Light:Enable(false)
+	end
 end
 
 ---------------------------- 存储 ----------------------------
@@ -460,6 +420,9 @@ function fn()
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
 	inst.entity:AddNetwork()
+	inst.entity:AddLight()
+	inst.Light:Enable(false)
+	inst.Light:EnableClientModulation(true) -- 好像是用于网络优化的？
 
 	MakeInventoryPhysics(inst)
 
@@ -498,11 +461,14 @@ function fn()
 	inst.components.edible.sanityvalue = 0
 
 	-- 腐烂
-	-- inst:AddComponent("perishable")
-	-- inst.components.perishable:SetPerishTime(TUNING.PERISH_ONE_DAY / 10)
-	-- inst.components.perishable:StartPerishing()
-	-- inst.components.perishable:SetOnPerishFn(onperish)
+	inst:AddComponent("perishable")
+	inst.components.perishable:SetPerishTime(TUNING.PERISH_PRESERVED)
+	inst.components.perishable:StartPerishing()
+	inst.components.perishable.onperishreplacement = "spoiled_food"
 
+	-- 火焰传播者
+	MakeSmallBurnable(inst)
+	MakeSmallPropagator(inst)
 	MakeHauntableLaunch(inst)
 
 	inst.OnSave = onSave 

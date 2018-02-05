@@ -99,7 +99,6 @@ function PlayerPrefabPostInit(inst)
 	end
 	
 	if not inst.components.aipc_timer then
-		print(">>>>>>>>>>>>>>>>> Add Timer")
 		inst:AddComponent("aipc_timer")
 	end
 end
