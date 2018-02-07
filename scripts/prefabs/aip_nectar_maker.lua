@@ -20,7 +20,7 @@ local LANG_MAP = {
 		["NAME"] = "Nectar Maker",
 		["DESC"] = "Make your own nectar",
 		["DESCRIBE"] = "Making with fruits",
-		["ONLY_ONE"] = "Only one item can't make it",
+		["ONLY_ONE"] = "Only one item left, I can't make it",
 	},
 	["chinese"] = {
 		["NAME"] = "花蜜酿造桶",
@@ -28,6 +28,12 @@ local LANG_MAP = {
 		["DESCRIBE"] = "用水果填充它吧",
 		["ONLY_ONE"] = "光一样物品能做啥？",
 	},
+	["russian"] = {
+		["NAME"] = "Экстрактор нектара",
+		["DESC"] = "Делайте собственный нектар",
+		["DESCRIBE"] = "Делается из фруктов.",
+		["ONLY_ONE"] = "Остался только один предмет, я не могу это сделать.",
+	},	
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
