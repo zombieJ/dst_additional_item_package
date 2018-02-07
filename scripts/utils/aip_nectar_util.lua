@@ -48,37 +48,43 @@ local function getNectarValues(item)
 	end
 
 	----------------------------- 特殊物品 -----------------------------
+	local prefab = item.prefab
+
 	-- 荧光珠
-	if item.prefab == "lightbulb" then
+	if prefab == "lightbulb" then
 		values.light = 1
 
 	-- 光莓
-	elseif item.prefab == "wormlight" then
+	elseif prefab == "wormlight" then
 		values.light = 2
 
 	-- 较弱的光莓
-	elseif item.prefab == "wormlight_lesser" then
+	elseif prefab == "wormlight_lesser" then
 		values.light = 1
 
 	-- 大便
-	elseif item.prefab == "poop" or item.prefab == "guano" then
+	elseif prefab == "poop" or prefab == "guano" then
 		values.terrible = 2
 
 	-- 腐烂物
-	elseif item.prefab == "spoiled_food" then
+	elseif prefab == "spoiled_food" or prefab == "ash" or prefab == "beardhair" then
 		values.terrible = 1
 
 	-- 食人花种子
-	elseif item.prefab == "lureplantbulb" then
+	elseif prefab == "lureplantbulb" then
 		values.vampire = 1
 
 	-- 蜂刺
-	elseif item.prefab == "stinger" then
+	elseif prefab == "stinger" then
 		values.damage = 1
+
+	-- 蜘蛛卵
+	elseif prefab == "spidereggsack" or prefab == "walrus_tusk" then
+		values.damage = 2
 	end
 
 	----------------------------- 素材价值 -----------------------------
-	local ingredient = cooking.ingredients[item.prefab]
+	local ingredient = cooking.ingredients[prefab]
 	if ingredient and ingredient.tags then
 		-- 素材价值
 		if ingredient.tags.fruit or ingredient.tags.sweetener or ingredient.tags.frozen then

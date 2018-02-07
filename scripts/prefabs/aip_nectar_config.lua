@@ -1,16 +1,16 @@
 TUNING.NECTAR_SPEED_MULT = 2
 
-local function RGB(r, g, b, a)
+--[[local function RGB(r, g, b, a)
 	return { r / 255, g / 255, b / 255, (a or 255) / 255 }
-end
+end]]
 
 local QUALITY_COLORS = {
-	quality_0 = RGB(165,  42,  42),
+	quality_0 = {165,  42,  42},
 	quality_1 = nil,
-	quality_2 = RGB( 59, 222,  99),
-	quality_3 = RGB( 80, 143, 244),
-	quality_4 = RGB(128,   0, 128),
-	quality_5 = RGB(208, 120,  86),
+	quality_2 = { 59, 222,  99},
+	quality_3 = { 80, 143, 244},
+	quality_4 = {128,   0, 128},
+	quality_5 = {208, 120,  86},
 }
 
 local LANG_MAP = {

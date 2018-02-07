@@ -1,6 +1,12 @@
 local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
 
 ------------------------------------ 配置 ------------------------------------
+-- 体验关闭
+local additional_experiment = GetModConfigData("additional_experiment", foldername)
+if additional_experiment ~= "open" then
+	return nil
+end
+
 -- 建筑关闭
 local additional_building = GetModConfigData("additional_building", foldername)
 if additional_building ~= "open" then
@@ -24,11 +30,14 @@ local LANG_VALUE = LANG_VALUE_MAP[language] or LANG_VALUE_MAP.english
 STRINGS.NAMES.AIP_NECTAR = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_NECTAR = LANG.DESC
 
+-- 开发模式
+local dev_mode = GetModConfigData("dev_mode", foldername) == "enabled"
+
 -----------------------------------------------------------
 local STEP_HP = 5
 local STEP_SAN = 3
-local STEP_BLOOD = 5
-local STEP_DAMAGE = 5
+local STEP_BLOOD = dev_mode and 100 or 5
+local STEP_DAMAGE = dev_mode and 50 or 5
 
 local BASE_COLOR = .25
 local GENERATION_AFFECT = .95
@@ -211,7 +220,9 @@ local function onRefreshName(inst)
 		name = name..tostring(nectarValues.generation)..LANG_VALUE.generation
 	end
 
-	inst.components.named:SetName(name)
+	if inst.components.aipc_info_client then
+		inst.components.aipc_info_client:SetString("named", name)
+	end
 
 	-------------- 浮动提示框 --------------
 	-- 纯度
@@ -287,9 +298,11 @@ local function onRefreshName(inst)
 	currentQuality = math.max(minQuality, currentQuality)
 	currentQuality = math.floor(currentQuality)
 	local qualityName = "quality_"..tostring(currentQuality)
-	
-	inst._aip_info = aipInfo.."-"..LANG_VALUE[qualityName]
-	inst._aip_info_color = QUALITY_COLORS[qualityName]
+
+	if inst.components.aipc_info_client then
+		inst.components.aipc_info_client:SetString("aip_info", aipInfo.."-"..LANG_VALUE[qualityName])
+		inst.components.aipc_info_client:SetByteArray("aip_info_color", QUALITY_COLORS[qualityName])
+	end
 
 	--------------- 食用价值 ---------------
 	local continueRecover = currentQuality >= 3
@@ -435,6 +448,19 @@ function fn()
 
 	inst.entity:SetPristine()
 
+	-- 额外信息
+	inst:AddComponent("aipc_info_client")
+
+	--> 初始化
+	inst.components.aipc_info_client:SetString("named", nil, true)
+	inst.components.aipc_info_client:SetString("aip_info", nil, true)
+	inst.components.aipc_info_client:SetByteArray("aip_info_color", nil, true)
+
+	-- 更新名字（named component not work, use customize update）
+	inst.components.aipc_info_client:ListenForEvent("named", function(inst, newName)
+		inst.name = newName
+	end)
+
 	if not TheWorld.ismastersim then
 		return inst
 	end
@@ -445,9 +471,6 @@ function fn()
 		onRefreshName(inst)
 	end
 	-----------------------------------------------------
-
-	inst:AddComponent("named")
-
 	inst:AddComponent("inspectable")
 
 	inst:AddComponent("inventoryitem")

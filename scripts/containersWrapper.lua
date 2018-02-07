@@ -1,13 +1,13 @@
 local Vector3 = GLOBAL.Vector3
 local STRINGS = GLOBAL.STRINGS
 
----------------------------------------- 驾驶 ----------------------------------------
+---------------------------------------- 操作 ----------------------------------------
 local AIP_ACTION = env.AddAction("AIP_ACTION", "Operate", function(act)
 	-- Client Only Code
 	local doer = act.doer
 	local target = act.target
 
-	-- 驾驶吧
+	-- 操作
 	if target.components.aipc_action ~= nil then
 		target.components.aipc_action:DoAction(doer)
 		return true
@@ -68,7 +68,7 @@ function params.incinerator.widget.buttoninfo.validfn(inst)
 end
 
 --------------- 花蜜酿造机 ---------------
-params.nectar_maker =
+params.aip_nectar_maker =
 {
 	widget =
 	{
@@ -88,16 +88,16 @@ params.nectar_maker =
 }
 
 for y = 0, 2 do
-	table.insert(params.nectar_maker.widget.slotpos, Vector3(-162, -75 * y + 75, 0))
-	table.insert(params.nectar_maker.widget.slotpos, Vector3(-162 + 75, -75 * y + 75, 0))
+	table.insert(params.aip_nectar_maker.widget.slotpos, Vector3(-162, -75 * y + 75, 0))
+	table.insert(params.aip_nectar_maker.widget.slotpos, Vector3(-162 + 75, -75 * y + 75, 0))
 end
 
-function params.nectar_maker.itemtestfn(container, item, slot)
+function params.aip_nectar_maker.itemtestfn(container, item, slot)
 	local values = getNectarValues(item)
 	return GLOBAL.next(values) ~= nil
 end
 
-function params.nectar_maker.widget.buttoninfo.fn(inst)
+function params.aip_nectar_maker.widget.buttoninfo.fn(inst)
 	if inst.components.container ~= nil then
 		GLOBAL.BufferedAction(inst.components.container.opener, inst, AIP_ACTION):Do()
 	elseif inst.replica.container ~= nil and not inst.replica.container:IsBusy() then
@@ -105,7 +105,7 @@ function params.nectar_maker.widget.buttoninfo.fn(inst)
 	end
 end
 
-function params.nectar_maker.widget.buttoninfo.validfn(inst)
+function params.aip_nectar_maker.widget.buttoninfo.validfn(inst)
 	return inst.replica.container ~= nil and not inst.replica.container:IsEmpty()
 end
 

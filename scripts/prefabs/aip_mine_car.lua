@@ -10,27 +10,27 @@ end
 local language = GetModConfigData("language", foldername)
 
 local LANG_MAP = {
-	["english"] = {
-		["NAME"] = "Minecart",
-		["REC_DESC"] = "Can drive on orbit with usage limit",
-		["DESC"] = "Where will we go?",
+	english = {
+		NAME = "Minecart",
+		REC_DESC = "Can drive on orbit with usage limit",
+		DESC = "Where will we go?",
+		leaveTips = "press 'X' to leave minecart",
 	},
-	["chinese"] = {
-		["NAME"] = "矿车",
-		["REC_DESC"] = "有限次数的轨道矿车",
-		["DESC"] = "登船靠岸停稳！~",
+	chinese = {
+		NAME = "矿车",
+		REC_DESC = "有限次数的轨道矿车",
+		DESC = "登船靠岸停稳！~",
+		leaveTips = "按'X'键离开矿车",
 	},
-	["russian"] = {
-		["NAME"] = "Вагонетка",
-		["REC_DESC"] = "Персональный мини-вагончик",
-		["DESC"] = {
-			["GENERIC"] = "Куда мы поедем?",
-			["WINONA"] = "Эх, сюда бы паровой движок!",
-		},
+	russian = {
+		NAME = "Вагонетка",
+		REC_DESC = "Персональный мини-вагончик",
+		DESC = "Куда мы поедем?",
 	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
+local LANG_ENG = LANG_MAP.english
 
 -- 资源
 local assets =
@@ -51,6 +51,7 @@ local dev_mode = GetModConfigData("dev_mode", foldername) == "enabled"
 STRINGS.NAMES.AIP_MINE_CAR = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_MINE_CAR = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_MINE_CAR = LANG.DESC
+STRINGS.AIP.AIP_MINECART_LEAVE = LANG.leaveTips or LANG_ENG.leaveTips
 
 -- 使用次数
 TUNING.AIP_MINE_CAR_USAGE = dev_mode and 3 or 8
@@ -143,7 +144,10 @@ local function OnStopDrive(inst)
 	end
 end
 
-local function OnAddDriver(inst)
+local function OnAddDriver(inst, driver)
+	if driver and driver.components.talker then
+		driver.components.talker:Say(STRINGS.AIP.AIP_MINECART_LEAVE)
+	end
 end
 
 local function OnRemoveDriver(inst)

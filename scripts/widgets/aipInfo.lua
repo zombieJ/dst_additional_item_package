@@ -28,23 +28,49 @@ function AIP_UniqueSlotInfo:UpdateTip(slot)
 	self:ShowTip(slot)
 end
 
+function AIP_UniqueSlotInfo:EmptyAndHide()
+	self.text:SetString("")
+	self:Hide()
+end
+
 function AIP_UniqueSlotInfo:ShowTip(slot)
 	self.currentSlot = slot
-	
-	if not slot or not slot.tile or not slot.tile.item or not slot.tile.item._aip_info then
-		self.text:SetString("")
-		self:Hide()
-		return
+
+	-- 检查是否有物品
+	if not slot or not slot.tile or not slot.tile.item then
+		return self:EmptyAndHide()
 	end
 
 	local inst = slot.tile.item
-	
+
+	-- 检查是否有消息组件
+	if not inst.components or not inst.components.aipc_info_client then
+		return self:EmptyAndHide()
+	end
+
+	local aip_info = inst.components.aipc_info_client:Get("aip_info") or ""
+	local aip_info_color = inst.components.aipc_info_client:Get("aip_info_color")
+
+	if aip_info == "" then
+		return self:EmptyAndHide()
+	end
+
+	if aip_info_color then
+		aip_info_color = { aip_info_color[1] / 255, aip_info_color[2] / 255, aip_info_color[3] / 255, (aip_info_color[4] or 255) / 255 }
+	else
+		aip_info_color = NORMAL_TEXT_COLOUR
+	end
+
 	-- 设置文字内容
-	self.text:SetString(inst._aip_info)
-	self.text:SetColour(unpack(inst._aip_info_color or NORMAL_TEXT_COLOUR))
+	self.text:SetString(aip_info)
+	self.text:SetColour(unpack(aip_info_color))
 	
 	-- 偏移坐标
 	widgetInst:DoTaskInTime(0.1, function()
+		if self.currentSlot ~= slot then
+			return
+		end
+
 		self:Show()
 
 		local hoverer = ThePlayer.HUD.controls.hover

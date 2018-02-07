@@ -1,6 +1,12 @@
 local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
 
 ------------------------------------ 配置 ------------------------------------
+-- 体验关闭
+local additional_experiment = GetModConfigData("additional_experiment", foldername)
+if additional_experiment ~= "open" then
+	return nil
+end
+
 -- 建筑关闭
 local additional_building = GetModConfigData("additional_building", foldername)
 if additional_building ~= "open" then
@@ -176,7 +182,7 @@ local function fn()
 
 	-- 容器
 	inst:AddComponent("container")
-	inst.components.container:WidgetSetup("nectar_maker")
+	inst.components.container:WidgetSetup("aip_nectar_maker")
 
 	-- 操作
 	inst:AddComponent("aipc_action")
