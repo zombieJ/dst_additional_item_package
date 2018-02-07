@@ -1,6 +1,11 @@
 -- 体验关闭
-local additional_experiment = GetModConfigData("tooltip_enhance", foldername)
+local additional_experiment = GetModConfigData("additional_experiment", foldername)
 if additional_experiment ~= "open" then
+	return nil
+end
+
+local tooltip_enhance = GetModConfigData("tooltip_enhance", foldername)
+if tooltip_enhance ~= "open" then
 	return nil
 end
 

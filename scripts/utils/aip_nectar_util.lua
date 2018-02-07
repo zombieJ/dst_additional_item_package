@@ -1,7 +1,7 @@
 local cooking = require("cooking")
 
 local function extends(origin, target)
-	for k, v in pair(target) do
+	for k, v in pairs(target) do
 		origin[k] = v
 	end
 

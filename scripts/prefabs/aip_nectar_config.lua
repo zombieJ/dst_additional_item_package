@@ -1,4 +1,4 @@
-TUNING.NECTAR_SPEED_MULT = 2
+TUNING.NECTAR_SPEED_MULT = 1.75
 
 --[[local function RGB(r, g, b, a)
 	return { r / 255, g / 255, b / 255, (a or 255) / 255 }
@@ -59,7 +59,7 @@ local LANG_VALUE_MAP = {
 		fruit = "Fruit",
 		sweetener = "Honey",
 		frozen = "Frozen",
-		Exquisite = "Exquisite",
+		exquisite = "Exquisite",
 		nectar = "Mixed",
 		light = "Shining",
 		terrible = "Terrible",
