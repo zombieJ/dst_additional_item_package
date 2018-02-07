@@ -61,9 +61,9 @@ local LANG_MAP = {
 		lotsOf = "Много",
 		fullOf = "Полон",
 		
-		health = "Здоровья",
-		hunger = "Голода",
-		sanity = "Рассудка",
+		health = "Здоровье",
+		hunger = "Голод",
+		sanity = "Рассудок",
 
 		frozen = "Немного охлаждён",
 		continueRecover = "Может восстанавливать здоровье",
