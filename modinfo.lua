@@ -198,7 +198,26 @@ configuration_options =
 			{description = "Korean", data = "korean"},
 		},
 		default = "english",
+	
 	},
+	
+	--Minecart exit key option--
+	{
+		local KEY_A = 65
+		local keyslist = {}
+		local string = ""
+		for i = 1, 26 do
+		local ch = string.char(KEY_A + i - 1)
+		keyslist[i] = {description = ch, data = ch}
+		end
+ 	 {
+    	 	name = "KEYBOARDTOGGLEKEY",
+      		label = "Hotkey for exit from minecart",
+    		hover = "The key hotkey for exit from minecart.",
+      		options = keyslist,
+      		default = "X",
+  	},
+
 	{
 		name = "dev_mode",
 		label = "Dev Mod(DONT OPEN!)",
