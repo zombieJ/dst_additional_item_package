@@ -52,6 +52,25 @@ local LANG_MAP = {
 		suckBlook = "成为吸血鬼",
 		damageMulti = "造成更多伤害",
 	},
+	russian = {
+		NAME = "Нектар",
+		DESC = "Сделан при помощи экстрактора",
+
+		contains = "Содержит",
+		littleOf = "Немного",
+		lotsOf = "Много",
+		fullOf = "Полон",
+		
+		health = "Здоровье",
+		hunger = "Голод",
+		sanity = "Рассудок",
+
+		frozen = "Немного охлаждён",
+		continueRecover = "Может восстанавливать здоровье",
+		speedMulti = "Увеличение скорости передвижения",
+		suckBlook = "Вампиризм",
+		damageMulti = "Увеличение урона",
+	},
 }
 
 local LANG_VALUE_MAP = {
@@ -103,6 +122,30 @@ local LANG_VALUE_MAP = {
 		quality_4 = "杰出品质",
 		quality_5 = "完美品质",
 	},
+	russian = {
+		fruit = "Фрукт",
+		sweetener = "Мёд",
+		frozen = "Заморожен",
+		Exquisite = "Изысканный",
+		nectar = "Смешанный",
+		light = "Светящийся",
+		terrible = "Ужасный",
+		vampire = "Кровожадность",
+		damage = "Песнь войны",
+
+		tasteless = "Безвкусный",
+		balance = "Сбалансированный",
+		absolute = "Абсолютный",
+		impurity = "С примесями",
+		generation = "Ур. ",
+
+		quality_0 = "Плохое качество",
+		quality_1 = "Нормальное качество",
+		quality_2 = "Хорошее качество",
+		quality_3 = "Отличное качество",
+		quality_4 = "Выдающееся качество",
+		quality_5 = "Идеальное качество",
+	},	
 }
 
 ----------------------------------------------------------------------------
