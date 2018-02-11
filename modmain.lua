@@ -50,6 +50,7 @@ modimport("scripts/recipeWrapper.lua")
 modimport("scripts/seedsWrapper.lua")
 modimport("scripts/containersWrapper.lua")
 modimport("scripts/itemTileWrapper.lua")
+modimport("scripts/hudWrapper.lua")
 
 --------------------------------------- 矿车 ---------------------------------------
 if GetModConfigData("additional_orbit") == "open" then
