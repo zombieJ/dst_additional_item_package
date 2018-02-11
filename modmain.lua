@@ -89,22 +89,6 @@ if GLOBAL.TheNet:GetIsServer() or GLOBAL.TheNet:IsDedicated() then
 end
 
 ------------------------------------- 玩家钩子 -------------------------------------
-AddComponentPostInit("workable", function(self, inst)
-	local originWorkedBy = self.WorkedBy
-
-	component.WorkedBy = function(self, ...)
-		-- 阻止work
-		if self.aipCanBeWorkBy then
-			local workable = self.aipCanBeWorkBy(inst, ...)
-			if workable == false then
-				return
-			end
-		end
-		return originWorkedBy(self, ...)
-	end
-end)
-
-------------------------------------- 玩家钩子 -------------------------------------
 function PlayerPrefabPostInit(inst)
 	if not inst.components.aipc_player_client then
 		inst:AddComponent("aipc_player_client")

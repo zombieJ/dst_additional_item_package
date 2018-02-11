@@ -50,6 +50,34 @@ env.AddComponentAction("SCENE", "aipc_minecar_client", function(inst, doer, acti
 	end
 end)
 
+-------------------------------------------------------------------------------------
+---------------------------------------- 修理 ----------------------------------------
+local AIP_PATCH = env.AddAction("AIP_PATCH", "Patch", function(act)
+	local doer = act.doer
+	local item = act.invobject
+	local target = act.target
+
+	-- 由于还没有其他的地方需要用到修理，这里简单判断一下就行了
+	if item ~= nil and target.components.finiteuses ~= nil and target.components.finiteuses:GetPercent() < 1 then
+		target.components.finiteuses:Use(item.prefab == "boards" and 5 or 1)
+		return true
+	end
+	return false, "INUSE"
+end)
+AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIP_PATCH, "dolongaction"))
+AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIP_PATCH, "dolongaction"))
+
+------------------------------------ 修理矿车行为 ------------------------------------
+env.AddComponentAction("USEITEM", "aipc_minecar_client", function(inst, target, actions, right)
+	if not inst or not target then
+		return
+	end
+
+	if inst.prefab == "log" or inst.prefab == "boards" then
+		table.insert(actions, GLOBAL.ACTIONS.AIP_PATCH)
+	end
+end)
+
 -------------------------------------- 工具方法 --------------------------------------
 local function findMineCar(player)
 	local x, y, z = player.Transform:GetWorldPosition()
@@ -64,6 +92,22 @@ local function findMineCar(player)
 
 	return mineCar
 end
+
+-------------------------------------- 破坏测试 --------------------------------------
+env.AddComponentPostInit("workable", function(self, inst)
+	local originWorkedBy = self.WorkedBy
+
+	self.WorkedBy = function(self, ...)
+		-- 阻止work
+		if self.aipCanBeWorkBy then
+			local workable = self.aipCanBeWorkBy(inst, ...)
+			if workable == false then
+				return
+			end
+		end
+		return originWorkedBy(self, ...)
+	end
+end)
 
 -------------------------------------- 键盘移动 --------------------------------------
 -- local KEY_UP = 38
