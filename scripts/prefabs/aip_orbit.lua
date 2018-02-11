@@ -241,13 +241,18 @@ local function itemfn()
 end
 
 ----------------------------- 轨道 -----------------------------
+local function canBeWorkBy(inst, worker)
+	if worker.prefab == "shadowmeteor" then
+		return false
+	end
+end
+
 local function onhammered(inst, worker)
 	if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
 		inst.components.burnable:Extinguish()
 	end
 
 	-- 物品掉落
-	-- inst.components.lootdropper:DropLoot()
 	inst.components.lootdropper:SpawnLootPrefab('log')
 
 	-- 重置其他轨道角度
@@ -314,6 +319,7 @@ local function fn()
 	inst.components.workable:SetWorkLeft(3)
 	inst.components.workable:SetOnFinishCallback(onhammered)
 	inst.components.workable:SetOnWorkCallback(onhit)
+	inst.components.workable.aipCanBeWorkBy = canBeWorkBy
 
 	MakeHauntableWork(inst)
 
