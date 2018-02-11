@@ -109,6 +109,26 @@ function params.aip_nectar_maker.widget.buttoninfo.validfn(inst)
 	return inst.replica.container ~= nil and not inst.replica.container:IsEmpty()
 end
 
+
+---------------- 暗影包裹 ----------------
+--[[params.aip_shadow_package =
+{
+	widget =
+	{
+		slotpos =
+		{
+			Vector3(-37.5, 32 + 4, 0), 
+		},
+		animbank = "ui_bundle_2x2",
+		animbuild = "ui_bundle_2x2",
+	},
+	type = "cooker",
+}
+
+function params.aip_shadow_package.itemtestfn(container, item, slot)
+	return true
+end]]
+
 ----------------------------------------------------------------------------------------------
 local containers = GLOBAL.require "containers"
 local old_widgetsetup = containers.widgetsetup

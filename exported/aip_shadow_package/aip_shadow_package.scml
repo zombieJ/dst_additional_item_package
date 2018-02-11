@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="aip_shadow_package">
+        <file id="0" name="aip_shadow_package/packaged.png" width="200" height="200" pivot_x="0.495025" pivot_y="0.5"/>
+        <file id="1" name="aip_shadow_package/packaged_down.png" width="179" height="95" pivot_x="0.848259" pivot_y="0.726923"/>
+        <file id="2" name="aip_shadow_package/packaged_up.png" width="160" height="85" pivot_x="0.918848" pivot_y="0.476852"/>
+        <file id="3" name="aip_shadow_package/paper.png" width="200" height="200" pivot_x="0.49005" pivot_y="0.5"/>
+    </folder>
+    <entity id="0" name="aip_shadow_package">
+        <animation id="0" name="paper" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="paper" folder="0" file="3" abs_x="-0.99005" abs_y="0" abs_pivot_x="0.49005" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.670084" abs_scale_y="0.670084" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="paper">
+                <key id="0" spin="0">
+                    <object folder="0" file="3" x="-0.99005" angle="0" scale_x="0.670084" scale_y="0.670084"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="1" name="default" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="packaged" folder="0" file="0" abs_x="0.004975" abs_y="0" abs_pivot_x="0.495025" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="packaged">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="0.004975" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="idle" length="1500">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="packaged_down" folder="0" file="1" abs_x="68" abs_y="-9" abs_pivot_x="0.848259" abs_pivot_y="0.726923" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="packaged_up" folder="0" file="2" abs_x="69.178571" abs_y="19.517857" abs_pivot_x="0.918848" abs_pivot_y="0.476852" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="743">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+                <key id="2" time="1496">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="2" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="packaged_down">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="68" y="-9"/>
+                </key>
+                <key id="1" time="743" spin="0">
+                    <object folder="0" file="1" x="65" y="-9" scale_x="0.979309"/>
+                </key>
+                <key id="2" time="1496" spin="0">
+                    <object folder="0" file="1" x="68" y="-9"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="packaged_up">
+                <key id="0" spin="-1">
+                    <object folder="0" file="2" x="69.178571" y="19.517857"/>
+                </key>
+                <key id="1" time="743">
+                    <object folder="0" file="2" x="69.178571" y="19.517857" angle="354.066868"/>
+                </key>
+                <key id="2" time="1496" spin="0">
+                    <object folder="0" file="2" x="69.178571" y="19.517857"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

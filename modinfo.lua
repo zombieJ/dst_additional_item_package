@@ -24,7 +24,7 @@ end
 name = "Additional Item Package DEV"
 description = joinArray(descList, "\n")
 author = "ZombieJ"
-version = "1.4.1"
+version = "1.5.0"
 forumthread = "http://steamcommunity.com/sharedfiles/filedetails/?id=1085586145"
 icon_atlas = "modicon.xml"
 icon = "modicon.tex"
@@ -101,6 +101,16 @@ configuration_options =
 		name = "additional_orbit",
 		label = "Orbit Recipes",
 		hover = "Support Orbit. WOW!~",
+		options =
+		{
+			{description = "Open", data = "open"},
+			{description = "Close", data = "close"},
+		},
+		default = "open",
+	},
+	{
+		name = "additional_magic",
+		label = "Magic Recipes",
 		options =
 		{
 			{description = "Open", data = "open"},

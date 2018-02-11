@@ -151,7 +151,7 @@ function fn()
 	inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_beehave.xml"
 
-	MakeHauntableLaunchAndPerish(inst)
+	MakeHauntableLaunch(inst)
 
 	inst:AddComponent("equippable")
 	inst.components.equippable:SetOnEquip(onequip)

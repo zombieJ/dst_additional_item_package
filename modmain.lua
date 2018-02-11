@@ -21,8 +21,6 @@ PrefabFiles =
 
 	"popcorngun",
 	"incinerator",
-	"dark_observer",
-	"dark_observer_vest",
 	"aip_blood_package",
 	"aip_fish_sword",
 	"aip_beehave",
@@ -36,7 +34,11 @@ PrefabFiles =
 
 	-- Chesspiece
 	"aip_chesspiece",
-	-- "aip_chesspiece_moon",
+
+	-- Magic
+	"dark_observer",
+	"dark_observer_vest",
+	"aip_shadow_package",
 }
 
 --------------------------------------- 工具 ---------------------------------------
@@ -51,6 +53,7 @@ modimport("scripts/seedsWrapper.lua")
 modimport("scripts/containersWrapper.lua")
 modimport("scripts/itemTileWrapper.lua")
 modimport("scripts/hudWrapper.lua")
+modimport("scripts/shadowPackageAction.lua")
 
 --------------------------------------- 矿车 ---------------------------------------
 if GetModConfigData("additional_orbit") == "open" then
