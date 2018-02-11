@@ -59,7 +59,7 @@ local AIP_PATCH = env.AddAction("AIP_PATCH", "Patch", function(act)
 
 	-- 由于还没有其他的地方需要用到修理，这里简单判断一下就行了
 	if item ~= nil and target.components.finiteuses ~= nil and target.components.finiteuses:GetPercent() < 1 then
-		target.components.finiteuses:Use(item.prefab == "boards" and 5 or 1)
+		target.components.finiteuses:Use(item.prefab == "boards" and -5 or -1)
 		return true
 	end
 	return false, "INUSE"
@@ -68,7 +68,7 @@ AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIP_PATCH, "dolongacti
 AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIP_PATCH, "dolongaction"))
 
 ------------------------------------ 修理矿车行为 ------------------------------------
-env.AddComponentAction("USEITEM", "aipc_minecar_client", function(inst, target, actions, right)
+env.AddComponentAction("USEITEM", "fuel", function(inst, doer, target, actions, right)
 	if not inst or not target then
 		return
 	end
