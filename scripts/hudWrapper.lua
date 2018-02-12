@@ -1,29 +1,29 @@
 local dev_mode = GetModConfigData("dev_mode", foldername) == "enabled"
 
 if not dev_mode then
-    return
+	return
 end
 
 -----------------------------------------------------------------------
 local PlayerHud = GLOBAL.require("screens/playerhud")
 
 function PlayerHud:ShowAIPAutoConfigWidget(inst, config)
-    if writeable == nil then
-        return
-    else
-        self.writeablescreen = WriteableWidget(self.owner, inst, config)
-        self:OpenScreenUnderPause(self.writeablescreen)
-        if TheFrontEnd:GetActiveScreen() == self.writeablescreen then
-            -- Have to set editing AFTER pushscreen finishes.
-            self.writeablescreen.edit_text:SetEditing(true)
-        end
-        return self.writeablescreen
-    end
+	if writeable == nil then
+		return
+	else
+		self.writeablescreen = WriteableWidget(self.owner, inst, config)
+		self:OpenScreenUnderPause(self.writeablescreen)
+		if TheFrontEnd:GetActiveScreen() == self.writeablescreen then
+			-- Have to set editing AFTER pushscreen finishes.
+			self.writeablescreen.edit_text:SetEditing(true)
+		end
+		return self.writeablescreen
+	end
 end
 
 function PlayerHud:CloseAIPAutoConfigWidget()
-    if self.writeablescreen then
-        self.writeablescreen:Close()
-        self.writeablescreen = nil
-    end
+	if self.writeablescreen then
+		self.writeablescreen:Close()
+		self.writeablescreen = nil
+	end
 end
