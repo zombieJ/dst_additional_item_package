@@ -165,4 +165,4 @@ local function MakeChest(name, custom_postinit, prefabs)
 end
 
 return MakeChest("aip_shadow_chest", nil, { "collapse_small" }),
-		MakePlacer("aip_shadow_chest_placer", "chest", "aip_shadow_chest", "closed"),
+		MakePlacer("aip_shadow_chest_placer", "chest", "aip_shadow_chest", "closed")
