@@ -59,7 +59,10 @@ local AIP_PATCH = env.AddAction("AIP_PATCH", "Patch", function(act)
 
 	-- 由于还没有其他的地方需要用到修理，这里简单判断一下就行了
 	if item ~= nil and target.components.finiteuses ~= nil and target.components.finiteuses:GetPercent() < 1 then
-		target.components.finiteuses:Use(item.prefab == "boards" and -5 or -1)
+		local currentUses = target.components.finiteuses:GetUses()
+		local totalUses = target.components.finiteuses.total
+		currentUses = math.min(totalUses, currentUses + (item.prefab == "boards" and 5 or 1))
+		target.components.finiteuses:SetUses(currentUses)
 		return true
 	end
 	return false, "INUSE"
