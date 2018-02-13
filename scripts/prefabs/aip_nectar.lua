@@ -2,18 +2,18 @@ local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKA
 
 ------------------------------------ 配置 ------------------------------------
 -- 体验关闭
-local additional_experiment = GetModConfigData("additional_experiment", foldername)
+local additional_experiment = aipGetModConfig("additional_experiment")
 if additional_experiment ~= "open" then
 	return nil
 end
 
 -- 建筑关闭
-local additional_building = GetModConfigData("additional_building", foldername)
+local additional_building = aipGetModConfig("additional_building")
 if additional_building ~= "open" then
 	return nil
 end
 
-local language = GetModConfigData("language", foldername)
+local language = aipGetModConfig("language")
 
 local aip_nectar_config = require("prefabs/aip_nectar_config")
 
@@ -31,7 +31,7 @@ STRINGS.NAMES.AIP_NECTAR = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_NECTAR = LANG.DESC
 
 -- 开发模式
-local dev_mode = GetModConfigData("dev_mode", foldername) == "enabled"
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 -----------------------------------------------------------
 local STEP_HP = 5

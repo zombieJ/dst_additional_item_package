@@ -1,11 +1,11 @@
 -- 食物
-local additional_food = GetModConfigData("additional_food", foldername)
+local additional_food = GLOBAL.aipGetModConfig("additional_food")
 if additional_food ~= "open" then
 	return nil
 end
 
 -- 开发模式
-local dev_mode = GetModConfigData("dev_mode", foldername) == "enabled"
+local dev_mode = GLOBAL.aipGetModConfig("dev_mode") == "enabled"
 
 
 -- 概率

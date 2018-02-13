@@ -4,7 +4,7 @@ local Empty = Class(function()
 end)
 
 -- 提示框提升
-local tooltip_enhance = GetModConfigData("tooltip_enhance", foldername)
+local tooltip_enhance = aipGetModConfig("tooltip_enhance")
 if tooltip_enhance ~= "open" then
 	return Empty
 end

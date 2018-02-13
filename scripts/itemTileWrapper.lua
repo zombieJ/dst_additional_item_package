@@ -1,10 +1,10 @@
 -- 体验关闭
-local additional_experiment = GetModConfigData("additional_experiment", foldername)
+local additional_experiment = GLOBAL.aipGetModConfig("additional_experiment")
 if additional_experiment ~= "open" then
 	return nil
 end
 
-local tooltip_enhance = GetModConfigData("tooltip_enhance", foldername)
+local tooltip_enhance = GLOBAL.aipGetModConfig("tooltip_enhance")
 if tooltip_enhance ~= "open" then
 	return nil
 end

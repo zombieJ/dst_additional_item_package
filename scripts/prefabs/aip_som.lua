@@ -1,8 +1,8 @@
 local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
 
 -- 配置
-local dress_uses = GetModConfigData("dress_uses", foldername)
-local language = GetModConfigData("language", foldername)
+local dress_uses = aipGetModConfig("dress_uses")
+local language = aipGetModConfig("language")
 
 -- 默认参数
 local PERISH_MAP = {

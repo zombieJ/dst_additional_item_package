@@ -2,12 +2,12 @@ local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKA
 
 ------------------------------------ 配置 ------------------------------------
 -- 轨道关闭
-local additional_orbit = GetModConfigData("additional_orbit", foldername)
+local additional_orbit = aipGetModConfig("additional_orbit")
 if additional_orbit ~= "open" then
 	return nil
 end
 
-local language = GetModConfigData("language", foldername)
+local language = aipGetModConfig("language")
 
 local LANG_MAP = {
 	["english"] = {

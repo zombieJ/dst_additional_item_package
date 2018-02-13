@@ -1,7 +1,7 @@
 local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
 
 -- 配置
-local additional_dress = GetModConfigData("additional_dress", foldername)
+local additional_dress = aipGetModConfig("additional_dress")
 if additional_dress ~= "open" then
 	return nil
 end

@@ -70,6 +70,7 @@ local AIP_PATCH = env.AddAction("AIP_PATCH", "Patch", function(act)
 
 		currentUses = math.min(totalUses, currentUses + repairValue)
 		target.components.finiteuses:SetUses(currentUses)
+		target.SoundEmitter:PlaySound("dontstarve/common/place_structure_wood")
 		return true
 	end
 	return false, "INUSE"

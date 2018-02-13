@@ -56,3 +56,5 @@ end
 function GLOBAL.aipTypePrint(...)
 	return GLOBAL.aipCommonPrint(true, " ", ...)
 end
+
+GLOBAL.aipGetModConfig = GetModConfigData

@@ -1,14 +1,14 @@
 local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
 
 -- 配置
-local additional_weapon = GetModConfigData("additional_weapon", foldername)
+local additional_weapon = aipGetModConfig("additional_weapon")
 if additional_weapon ~= "open" then
 	return nil
 end
 
-local weapon_uses = GetModConfigData("weapon_uses", foldername)
-local weapon_damage = GetModConfigData("weapon_damage", foldername)
-local language = GetModConfigData("language", foldername)
+local weapon_uses = aipGetModConfig("weapon_uses")
+local weapon_damage = aipGetModConfig("weapon_damage")
+local language = aipGetModConfig("language")
 
 -- 默认参数
 local PERISH_MAP = {

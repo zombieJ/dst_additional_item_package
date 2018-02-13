@@ -1,13 +1,11 @@
-local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
-
 ------------------------------------ 配置 ------------------------------------
 -- 矿车关闭
-local additional_orbit = GetModConfigData("additional_orbit", foldername)
+local additional_orbit = aipGetModConfig("additional_orbit")
 if additional_orbit ~= "open" then
 	return nil
 end
 
-local language = GetModConfigData("language", foldername)
+local language = aipGetModConfig("language")
 
 local LANG_MAP = {
 	english = {
@@ -45,7 +43,7 @@ local prefabs =
 }
 
 -- 开发模式
-local dev_mode = GetModConfigData("dev_mode", foldername) == "enabled"
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 -- 文字描述
 STRINGS.NAMES.AIP_MINE_CAR = LANG.NAME

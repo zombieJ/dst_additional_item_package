@@ -1,13 +1,13 @@
 local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
 
 -- 配置
-local additional_food = GetModConfigData("additional_food", foldername)
+local additional_food = aipGetModConfig("additional_food")
 if additional_food ~= "open" then
 	return nil
 end
 
-local food_effect = GetModConfigData("food_effect", foldername)
-local language = GetModConfigData("language", foldername)
+local food_effect = aipGetModConfig("food_effect")
+local language = aipGetModConfig("language")
 
 -- 默认参数
 local EFFECT_MAP = {

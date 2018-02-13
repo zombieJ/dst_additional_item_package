@@ -1,13 +1,13 @@
 local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
 
 -- 配置
-local additional_survival = GetModConfigData("additional_survival", foldername)
+local additional_survival = aipGetModConfig("additional_survival")
 if additional_survival ~= "open" then
 	return nil
 end
 
-local survival_effect = GetModConfigData("survival_effect", foldername)
-local language = GetModConfigData("language", foldername)
+local survival_effect = aipGetModConfig("survival_effect")
+local language = aipGetModConfig("language")
 
 -- 默认参数
 local HEAL_MAP = {

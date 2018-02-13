@@ -1,5 +1,3 @@
-TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE = "Additional Item Package DEV"
-
 GLOBAL.STRINGS.AIP = {}
 
 -- 资源

@@ -1,4 +1,4 @@
-local dev_mode = GetModConfigData("dev_mode", foldername) == "enabled"
+local dev_mode = GLOBAL.aipGetModConfig("dev_mode") == "enabled"
 
 if not dev_mode then
 	return

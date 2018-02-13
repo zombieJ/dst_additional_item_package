@@ -2,18 +2,18 @@ local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKA
 
 ------------------------------------ 配置 ------------------------------------
 -- 食物关闭
-local additional_food = GetModConfigData("additional_food", foldername)
+local additional_food = aipGetModConfig("additional_food")
 if additional_food ~= "open" then
 	return nil
 end
 
 -- 雕塑关闭
-local additional_chesspieces = GetModConfigData("additional_chesspieces", foldername)
+local additional_chesspieces = aipGetModConfig("additional_chesspieces")
 if additional_chesspieces ~= "open" then
 	return nil
 end
 
-local language = GetModConfigData("language", foldername)
+local language = aipGetModConfig("language")
 
 -- 语言
 local LANG_MAP = {

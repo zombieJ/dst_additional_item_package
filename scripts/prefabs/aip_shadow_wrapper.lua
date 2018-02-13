@@ -2,12 +2,12 @@ local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKA
 
 ------------------------------------ 配置 ------------------------------------
 -- 魔法关闭
-local additional_magic = GetModConfigData("additional_magic", foldername)
+local additional_magic = aipGetModConfig("additional_magic")
 if additional_magic ~= "open" then
 	return nil
 end
 
-local language = GetModConfigData("language", foldername)
+local language = aipGetModConfig("language")
 
 local LANG_MAP = {
 	english = {
@@ -61,7 +61,7 @@ function fn()
 				inst.OnFinished(inst)
 			end
 		end)
-	end)
+	end
 
 	return inst
 end

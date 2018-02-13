@@ -2,12 +2,12 @@ local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKA
 
 ------------------------------------ 配置 ------------------------------------
 -- 魔法关闭
-local additional_magic = GetModConfigData("additional_magic", foldername)
+local additional_magic = aipGetModConfig("additional_magic")
 if additional_magic ~= "open" then
 	return nil
 end
 
-local language = GetModConfigData("language", foldername)
+local language = aipGetModConfig("language")
 
 local LANG_MAP = {
 	english = {
@@ -166,7 +166,7 @@ local function checkPackaged(inst)
 	end)
 end
 
-local function onSave(inst, data)
+local function onPackageSave(inst, data)
 	if inst.packageTarget then
 		data.targetGUID = inst.packageTarget.GUID
 	end
@@ -200,6 +200,8 @@ local function onDeploy(inst, pt, deployer)
 end
 
 function fnPackage()
+	for k,v in pairs(getmetatable(ThePlayer.AnimState).__index) do aipPrint(">>>>>>",k,v) end
+
 	return fn_common("aip_shadow_package", function(inst)
 		-- Pre Func
 		inst.AnimState:PlayAnimation("idle", true)

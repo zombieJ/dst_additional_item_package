@@ -2,18 +2,18 @@ local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKA
 
 ------------------------------------ 配置 ------------------------------------
 -- 建筑关闭
-local additional_building = GetModConfigData("additional_building", foldername)
+local additional_building = aipGetModConfig("additional_building")
 if additional_building ~= "open" then
 	return nil
 end
 
 -- 食物关闭
-local additional_food = GetModConfigData("additional_food", foldername)
+local additional_food = aipGetModConfig("additional_food")
 if additional_food ~= "open" then
 	return nil
 end
 
-local language = GetModConfigData("language", foldername)
+local language = aipGetModConfig("language")
 
 local LANG_MAP = {
 	["english"] = {

@@ -8,7 +8,7 @@ local ImageButton = require "widgets/imagebutton"
 
 ------------------------------------ 配置 ------------------------------------
 local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
-local language = GetModConfigData("language", foldername)
+local language = aipGetModConfig("language")
 
 local LANG_MAP = {
 	english = {

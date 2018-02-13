@@ -4,13 +4,13 @@ local Empty = Class(function()
 end)
 
 -- 建筑关闭
-local additional_building = GetModConfigData("additional_building", foldername)
+local additional_building = aipGetModConfig("additional_building")
 if additional_building ~= "open" then
 	return Empty
 end
 
 -- 食物关闭
-local additional_food = GetModConfigData("additional_food", foldername)
+local additional_food = aipGetModConfig("additional_food")
 if additional_food ~= "open" then
 	return Empty
 end

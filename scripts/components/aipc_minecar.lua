@@ -4,7 +4,7 @@ local Empty = Class(function()
 end)
 
 -- 矿车关闭
-local additional_orbit = GetModConfigData("additional_orbit", foldername)
+local additional_orbit = aipGetModConfig("additional_orbit")
 if additional_orbit ~= "open" then
 	return Empty
 end
