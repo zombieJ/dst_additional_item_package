@@ -124,18 +124,7 @@ end
 
 local function OnStartDrive(inst)
 	inst.AnimState:PlayAnimation("running", true)
-
-	--[[if inst.components.finiteuses ~= nil then
-		inst.components.finiteuses:Use()
-
-		if inst.components.finiteuses:GetUses() <= 0 then
-			inst.persists = false
-
-			if inst.components.aipc_minecar then
-				inst.components.aipc_minecar.drivable = false
-			end
-		end
-	end]]
+	inst._drived = true
 end
 
 local function OnStopDrive(inst)
@@ -145,13 +134,15 @@ local function OnStopDrive(inst)
 end
 
 local function OnAddDriver(inst, driver)
+	inst._drived = false
+
 	if driver and driver.components.talker then
 		driver.components.talker:Say(STRINGS.AIP.AIP_MINECART_LEAVE)
 	end
 end
 
 local function OnRemoveDriver(inst)
-	if inst.components.finiteuses ~= nil then
+	if inst.components.finiteuses ~= nil and inst._drived then
 		inst.components.finiteuses:Use()
 
 		if inst.components.finiteuses:GetUses() <= 0 then
