@@ -494,7 +494,7 @@ function fn()
 	MakeSmallPropagator(inst)
 	MakeHauntableLaunch(inst)
 
-	inst.OnSave = onSave 
+	inst.OnSave = onSave
 	inst.OnLoad = onLoad
 
 	return inst

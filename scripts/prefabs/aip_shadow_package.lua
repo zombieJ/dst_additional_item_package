@@ -97,6 +97,16 @@ function fn_common(name, preFunc, postFunc)
 	return inst
 end
 
+local function removeFromScene(inst)
+	if not inst then
+		return
+	end
+
+	inst:RemoveFromScene()
+
+	return inst
+end
+
 ----------------------------- 包装纸 -----------------------------
 local function doPackage(inst, doer, target)
 	if not inst or not doer or not target then
@@ -117,8 +127,8 @@ local function doPackage(inst, doer, target)
 
 	inst:Remove()
 
-	-- 添加物品到包裹里 (TODO:需要测试重启游戏是否出现)
-	target:RemoveFromScene()
+	-- 移除物品
+	removeFromScene(target)
 end
 
 function fnPaper()
@@ -142,6 +152,21 @@ local function checkPackaged(inst)
 	inst:DoTaskInTime(0, function()
 		inst.components.perishable:Perish()
 	end)
+end
+
+local function onSave(inst, data)
+	if inst.packageTarget then
+		data.targetGUID = inst.packageTarget.GUID
+	end
+end
+
+local function onPackagePostLoad(inst, ents, data)
+	local targetGUID = (data or {}).GUID
+
+	if targetGUID then
+		local target = ents[targetGUID]
+		inst.packageTarget = removeFromScene(target)
+	end
 end
 
 local function onDeploy(inst, pt, deployer)
@@ -171,6 +196,9 @@ function fnPackage()
 		inst:AddComponent("deployable")
 		inst.components.deployable.ondeploy = onDeploy
 		inst.components.deployable:SetDeployMode(DEPLOYMODE.WALL)
+
+		inst.OnSave = onPackageSave
+		inst.OnLoadPostPass = onPackagePostLoad
 
 		inst:DoTaskInTime(0, checkPackaged)
 	end)
