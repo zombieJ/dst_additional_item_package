@@ -53,6 +53,7 @@ local assets =
 
 local prefabs =
 {
+	"aip_shadow_wrapper",
 }
 
 function fn_common(name, preFunc, postFunc)
@@ -113,21 +114,32 @@ local function doPackage(inst, doer, target)
 		return
 	end
 
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local tx, ty, tz = target.Transform:GetWorldPosition()
+	inst:Remove()
+
 	-- New package
 	local item = SpawnPrefab("aip_shadow_package")
 	item.packageTarget = target
-
 	local holder = doer ~= nil and (doer.components.inventory or doer.components.container) or nil
-	if holder ~= nil then
-		holder:GiveItem(item)
-	else
-		local x, y, z = inst.Transform:GetWorldPosition()
-		item.Transform:SetPosition(x, y, z)
+
+	-- Create shadow wrapper
+	local shadowWrapper =  SpawnPrefab("aip_shadow_wrapper")
+	shadowWrapper:SetPosition(tx, ty + 0.1, tz)
+	shadowWrapper.OnFinish = function()
+		if holder ~= nil then
+			holder:GiveItem(item)
+		else
+			item.Transform:SetPosition(x, y, z)
+		end
+	end
+	shadowWrapper.OnFinished = function(shadowInst)
+		shadowInst:Remove()
 	end
 
-	inst:Remove()
+	shadowWrapper.DoHide()
 
-	-- 移除物品
+	-- Hide target
 	removeFromScene(target)
 end
 

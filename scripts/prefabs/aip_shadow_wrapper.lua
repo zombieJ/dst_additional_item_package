@@ -47,11 +47,20 @@ function fn()
 		return inst
 	end
 
-	inst.SoundEmitter:PlaySound("dontstarve/common/together/skin_change")
-	inst:DoTaskInTime(44 * FRAMES, function()
-		if inst.OnFinish then
-			inst.OnFinish(inst)
-		end
+	-- Play hide
+	inst.DoHide = function()
+		inst.SoundEmitter:PlaySound("dontstarve/common/together/skin_change")
+		inst:DoTaskInTime(44 * FRAMES, function()
+			if inst.OnFinish then
+				inst.OnFinish(inst)
+			end
+		end)
+
+		inst:DoTaskInTime(60 * FRAMES, function()
+			if inst.OnFinished then
+				inst.OnFinished(inst)
+			end
+		end)
 	end)
 
 	return inst
