@@ -40,6 +40,7 @@ PrefabFiles =
 	"dark_observer_vest",
 	"aip_shadow_package",
 	"aip_shadow_chest",
+	"aip_shadow_wrapper",
 }
 
 --------------------------------------- 工具 ---------------------------------------
