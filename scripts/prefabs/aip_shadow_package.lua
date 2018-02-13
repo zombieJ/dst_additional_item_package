@@ -144,20 +144,45 @@ local function checkPackaged(inst)
 	end)
 end
 
+local function onDeploy(inst, pt, deployer)
+	if not inst.packageTarget then
+		return
+	end
+
+	local target = inst.packageTarget
+	target:ReturnToScene()
+	if target.Physics then
+		target.Physics:Teleport(pt.x, pt.y, pt.z)
+	else
+		target.Transform:SetPosition(pt.x, pt.y, pt.z)
+	end
+
+	-- Clean up
+	inst.packageTarget = nil
+	checkPackaged(inst)
+end
+
 function fnPackage()
 	return fn_common("aip_shadow_package", function(inst)
 		-- Pre Func
 		inst.AnimState:PlayAnimation("idle", true)
 	end, function(inst)
 		-- Post Func
-
-		-- 容器
-		-- inst:AddComponent("container")
-		-- inst.components.container:WidgetSetup("aip_shadow_package")
-		-- inst.components.container.canbeopened = false
+		inst:AddComponent("deployable")
+		inst.components.deployable.ondeploy = onDeploy
+		inst.components.deployable:SetDeployMode(DEPLOYMODE.WALL)
 
 		inst:DoTaskInTime(0, checkPackaged)
 	end)
+end
+
+------------------------------ 建筑 ------------------------------
+local function updateAnim(inst, source)
+	-- Get anim debug info
+	-- https://forums.kleientertainment.com/topic/66347-animstate/
+
+	-- Get AnimState functions
+	-- https://forums.kleientertainment.com/topic/85133-animstate/
 end
 
 return Prefab("aip_shadow_paper_package", fnPaper, assets, prefabs),

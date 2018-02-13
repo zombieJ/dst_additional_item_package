@@ -61,7 +61,14 @@ local AIP_PATCH = env.AddAction("AIP_PATCH", "Patch", function(act)
 	if item ~= nil and target.components.finiteuses ~= nil and target.components.finiteuses:GetPercent() < 1 then
 		local currentUses = target.components.finiteuses:GetUses()
 		local totalUses = target.components.finiteuses.total
-		currentUses = math.min(totalUses, currentUses + (item.prefab == "boards" and 5 or 1))
+		local repairValue = item.prefab == "boards" and 5 or 1
+
+		-- 薇诺娜 可以修复的更好
+		if doer.prefab ~= "winona" then
+			repairValue = math.floor(repairValue / 2)
+		end
+
+		currentUses = math.min(totalUses, currentUses + repairValue)
 		target.components.finiteuses:SetUses(currentUses)
 		return true
 	end
@@ -76,7 +83,7 @@ env.AddComponentAction("USEITEM", "fuel", function(inst, doer, target, actions, 
 		return
 	end
 
-	if inst.prefab == "log" or inst.prefab == "boards" then
+	if (doer.prefab == "winona" and inst.prefab == "log") or inst.prefab == "boards" then
 		table.insert(actions, GLOBAL.ACTIONS.AIP_PATCH)
 	end
 end)
