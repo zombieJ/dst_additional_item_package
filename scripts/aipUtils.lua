@@ -58,3 +58,24 @@ function GLOBAL.aipTypePrint(...)
 end
 
 GLOBAL.aipGetModConfig = GetModConfigData
+
+function GLOBAL.aipGetAnimState(inst)
+	local match = false
+	local data = {}
+
+	if inst then
+		local str = inst.GetDebugString and inst:GetDebugString()
+		if str then
+			local bank, build, anim = string.match(str, "AnimState: bank: (.*) build: (.*) anim: (.*) anim")
+			data.bank = string.split(bank or "", " ")[1]
+			data.build = string.split(build or "", " ")[1]
+			data.anim = string.split(anim or "", " ")[1]
+
+			if data.bank and data.build and data.anim then
+				match = true
+			end
+		end
+	end
+
+	return match and data or nil
+end

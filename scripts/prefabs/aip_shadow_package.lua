@@ -1,3 +1,5 @@
+require "prefabutil"
+
 local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
 
 ------------------------------------ 配置 ------------------------------------
@@ -125,7 +127,7 @@ local function doPackage(inst, doer, target)
 
 	-- Create shadow wrapper
 	local shadowWrapper =  SpawnPrefab("aip_shadow_wrapper")
-	shadowWrapper:SetPosition(tx, ty + 0.1, tz)
+	shadowWrapper.Transform:SetPosition(tx, ty + 0.1, tz)
 	shadowWrapper.OnFinish = function()
 		if holder ~= nil then
 			holder:GiveItem(item)
@@ -147,6 +149,7 @@ function fnPaper()
 	return fn_common("aip_shadow_paper_package", function(inst)
 		-- Pre Func
 		inst.AnimState:PlayAnimation("paper", true)
+		inst:AddTag("aip_proxy_action")
 	end, function(inst)
 		-- Post Func
 		inst.components.aipc_action.onDoTargetAction = doPackage
@@ -197,11 +200,18 @@ local function onDeploy(inst, pt, deployer)
 	-- Clean up
 	inst.packageTarget = nil
 	checkPackaged(inst)
+
+	-- Give Paper
+	local paper = SpawnPrefab("aip_shadow_paper_package")
+	local holder = deployer ~= nil and (deployer.components.inventory or deployer.components.container) or nil
+	if holder ~= nil then
+		holder:GiveItem(paper)
+	else
+		paper.Transform:SetPosition(pt.x, pt.y, pt.z)
+	end
 end
 
 function fnPackage()
-	for k,v in pairs(getmetatable(ThePlayer.AnimState).__index) do aipPrint(">>>>>>",k,v) end
-
 	return fn_common("aip_shadow_package", function(inst)
 		-- Pre Func
 		inst.AnimState:PlayAnimation("idle", true)
@@ -219,13 +229,99 @@ function fnPackage()
 end
 
 ------------------------------ 建筑 ------------------------------
-local function updateAnim(inst, source)
-	-- Get anim debug info
-	-- https://forums.kleientertainment.com/topic/66347-animstate/
+local function postPlacer(inst)
+	inst:DoTaskInTime(0, function()
+		if inst.components.placer and inst.components.placer.invobject then
+			local package = inst.components.placer.invobject
+			local animState = aipGetAnimState(package.packageTarget)
 
-	-- Get AnimState functions
-	-- https://forums.kleientertainment.com/topic/85133-animstate/
+			if animState then
+				inst.AnimState:SetBank(animState.bank)
+				inst.AnimState:SetBuild(animState.build)
+				inst.AnimState:PlayAnimation(animState.anim)
+			end
+		end
+	end)
 end
 
 return Prefab("aip_shadow_paper_package", fnPaper, assets, prefabs),
-		Prefab("aip_shadow_package", fnPackage, assets, prefabs)
+		Prefab("aip_shadow_package", fnPackage, assets, prefabs),
+		MakePlacer("aip_shadow_package_placer", "aip_shadow_package", "aip_shadow_package", "idle", nil, nil, nil, nil, nil, nil, postPlacer)
+
+-- Get anim debug info
+-- https://forums.kleientertainment.com/topic/66347-animstate/
+
+-- Get AnimState functions
+-- https://forums.kleientertainment.com/topic/85133-animstate/
+
+--[[
+	for k,v in pairs(getmetatable(ThePlayer.AnimState).__index) do aipPrint(">>>>>>",k,v) end
+
+	AnimState Function:
+
+	SetAddColour
+	SetBank
+	SetBloomEffectHandle
+	SetBuild
+	SetClientsideBuildOverride
+	SetClientSideBuildOverrideFlag
+	SetDeltaTimeMultiplier
+	SetDepthBias
+	SetDepthTestEnabled
+	SetDepthWriteEnabled
+	SetErosionParams
+	SetFinalOffset
+	SetHaunted
+	SetHighlightColour
+	SetLayer
+	SetLightOverride
+	SetManualBB
+	SetMultColour
+	SetMultiSymbolExchange
+	SetOrientation
+	SetPercent
+	SetRayTestOnBB
+	SetScale
+	SetSkin
+	SetSortOrder
+	SetSortWorldOffset
+	SetSymbolExchange
+	SetTime
+
+	GetAddColour
+	GetCurrentAnimationTime
+	GetCurrentAnimationLength
+	GetCurrentFacing
+	GetMultColour
+	GetSymbolPosition
+
+	ClearAllOverrideSymbols
+	ClearBloomEffectHandle
+	ClearSymbolExchanges
+	ClearOverrideBuild
+	ClearOverrideSymbol
+
+	IsCurrentAnimation
+
+	Show
+	Hide
+	Pause
+	Resume
+	BuildHasSymbol
+	AnimDone
+	AddOverrideBuild
+	PlayAnimation
+	OverrideItemSkinSymbol
+	FastForward
+	ShowSymbol
+	OverrideSymbol
+	OverrideMultColour
+	OverrideShade
+	OverrideSkinSymbol
+	AssignItemSkins
+	HideSymbol
+	PushAnimation
+
+
+	-- GetBuildForItem
+]]

@@ -39,9 +39,9 @@ function fn()
 	inst.entity:AddNetwork()
 
 	-- TODO: Fix this
-	inst.AnimState:SetBank("shadow_skinchangefx")
-	inst.AnimState:SetBuild("shadow_skinchangefx")
-	inst.AnimState:PlayAnimation("idle")
+	--inst.AnimState:SetBank("shadow_skinchangefx")
+	--inst.AnimState:SetBuild("shadow_skinchangefx")
+	--inst.AnimState:PlayAnimation("idle")
 
 	if not TheWorld.ismastersim then
 		return inst
