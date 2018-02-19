@@ -32,54 +32,37 @@ STRINGS.NAMES.AIP_SHADOW_CHEST = LANG.NAME or LANG_ENG.NAME
 STRINGS.RECIPE_DESC.AIP_SHADOW_CHEST = LANG.DESC or LANG_ENG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SHADOW_CHEST = LANG.DESCRIBE or LANG_ENG.DESCRIBE
 
--- 配方
-local aip_shadow_chest = Recipe("aip_shadow_chest", {Ingredient("boards", 3), Ingredient("aip_shadow_paper_package", 1, "images/inventoryimages/frozen_heart.xml")}, RECIPETABS.MAGIC, TECH.MAGIC_TWO)
-aip_shadow_chest.atlas = "images/inventoryimages/aip_shadow_chest.xml"
+-- 配方 TODO
+local aip_shadow_chest = Recipe("aip_shadow_chest", {Ingredient("waxpaper", 1), Ingredient("nightmarefuel", 5), Ingredient("featherpencil", 1)}, RECIPETABS.MAGIC, TECH.MAGIC_TWO)
+aip_shadow_chest.atlas = "images/inventoryimages/aip_shadow_package.xml"
 
------------------------------------------------------------
+------------------------------------ 实例 ------------------------------------
+local assets =
+{
+	Asset("ANIM", "anim/treasure_chest.zip"),
+	Asset("ANIM", "anim/ui_chest_3x2.zip"),
+}
+
+local prefabs = { "collapse_small" }
+
+local function onbuilt(inst)
+	inst.AnimState:PlayAnimation("place")
+	inst.AnimState:PushAnimation("closed", false)
+	inst.SoundEmitter:PlaySound("dontstarve/common/chest_craft")
+end
+
 local function onopen(inst)
 	if not inst:HasTag("burnt") then
 		inst.AnimState:PlayAnimation("open")
 		inst.SoundEmitter:PlaySound("dontstarve/wilson/chest_open")
 	end
-end
+end 
 
 local function onclose(inst)
 	if not inst:HasTag("burnt") then
 		inst.AnimState:PlayAnimation("close")
 		inst.SoundEmitter:PlaySound("dontstarve/wilson/chest_close")
 	end
-end
-
-local function onhammered(inst, worker)
-	if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
-		inst.components.burnable:Extinguish()
-	end
-	inst.components.lootdropper:DropLoot()
-	if inst.components.container ~= nil then
-		inst.components.container:DropEverything()
-	end
-	local fx = SpawnPrefab("collapse_small")
-	fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
-	fx:SetMaterial("wood")
-	inst:Remove()
-end
-
-local function onhit(inst, worker)
-	if not inst:HasTag("burnt") then
-		inst.AnimState:PlayAnimation("hit")
-		inst.AnimState:PushAnimation("closed", false)
-		if inst.components.container ~= nil then
-			inst.components.container:DropEverything()
-			inst.components.container:Close()
-		end
-	end
-end
-
-local function onbuilt(inst)
-	inst.AnimState:PlayAnimation("place")
-	inst.AnimState:PushAnimation("closed", false)
-	inst.SoundEmitter:PlaySound("dontstarve/common/chest_craft")
 end
 
 local function onsave(inst, data)
@@ -94,75 +77,63 @@ local function onload(inst, data)
 	end
 end
 
-local function MakeChest(name, custom_postinit, prefabs)
-	local assets =
-	{
-		Asset("ATLAS", "images/inventoryimages/"..name..".xml"),
-		Asset("ANIM", "anim/"..name..".zip"),
-		Asset("ANIM", "anim/ui_chest_3x2.zip"),
-	}
+local function fn()
+	local inst = CreateEntity()
 
-	local function fn()
-		local inst = CreateEntity()
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddSoundEmitter()
+	inst.entity:AddMiniMapEntity()
+	inst.entity:AddNetwork()
 
-		inst.entity:AddTransform()
-		inst.entity:AddAnimState()
-		inst.entity:AddSoundEmitter()
-		inst.entity:AddMiniMapEntity()
-		inst.entity:AddNetwork()
+	inst.MiniMapEntity:SetIcon("treasurechest.png")
 
-		-- TODO: Draw a map icon
-		inst.MiniMapEntity:SetIcon(name..".png")
+	inst:AddTag("structure")
+	inst:AddTag("chest")
 
-		inst:AddTag("structure")
-		inst:AddTag("chest")
+	inst.AnimState:SetBank("chest")
+	inst.AnimState:SetBuild("treasure_chest")
+	inst.AnimState:PlayAnimation("closed")
 
-		inst.AnimState:SetBank(name)
-		inst.AnimState:SetBuild(name)
-		inst.AnimState:PlayAnimation("closed")
+	MakeSnowCoveredPristine(inst)
 
-		MakeSnowCoveredPristine(inst)
+	inst.entity:SetPristine()
 
-		inst.entity:SetPristine()
+	inst.AnimState:SetMultColour(0, 0, 0, 0.8)
 
-		if not TheWorld.ismastersim then
-			return inst
-		end
+	if not TheWorld.ismastersim then
+		return inst
+	end
 
-		inst:AddComponent("inspectable")
-		inst:AddComponent("container")
-		inst.components.container:WidgetSetup("treasurechest")
-		inst.components.container.onopenfn = onopen
-		inst.components.container.onclosefn = onclose
+	inst:AddComponent("inspectable")
+	inst:AddComponent("container")
+	inst.components.container:WidgetSetup("treasurechest")
+	inst.components.container.onopenfn = onopen
+	inst.components.container.onclosefn = onclose
 
+	--[[if not indestructible then
 		inst:AddComponent("lootdropper")
 		inst:AddComponent("workable")
 		inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
-		inst.components.workable:SetWorkLeft(3)
+		inst.components.workable:SetWorkLeft(2)
 		inst.components.workable:SetOnFinishCallback(onhammered)
 		inst.components.workable:SetOnWorkCallback(onhit)
 
 		MakeSmallBurnable(inst, nil, nil, true)
 		MakeMediumPropagator(inst)
+	end]]
 
-		inst:AddComponent("hauntable")
-		inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
+	inst:AddComponent("hauntable")
+	inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 
-		inst:ListenForEvent("onbuilt", onbuilt)
-		MakeSnowCovered(inst)
+	inst:ListenForEvent("onbuilt", onbuilt)
+	MakeSnowCovered(inst)
 
-		inst.OnSave = onsave 
-		inst.OnLoad = onload
+	inst.OnSave = onsave
+	inst.OnLoad = onload
 
-		if custom_postinit ~= nil then
-			custom_postinit(inst)
-		end
-
-		return inst
-	end
-
-	return Prefab(name, fn, assets, prefabs)
+	return inst
 end
 
-return MakeChest("aip_shadow_chest", nil, { "collapse_small" }),
+return Prefab("aip_shadow_chest", fn, assets, prefabs),
 		MakePlacer("aip_shadow_chest_placer", "chest", "aip_shadow_chest", "closed")

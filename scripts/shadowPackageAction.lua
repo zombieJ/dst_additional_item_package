@@ -50,8 +50,10 @@ GLOBAL.ACTIONS.HAMMER.fn = function(act, ...)
 end
 
 ---------------------------------------- 搬运者 ----------------------------------------
---[[local AIP_PACKAGER = env.AddAction("AIP_PACKAGER", "Package", function(act)
-	-- Client Only Code
+--rmb=true
+local AIP_PACKAGER = env.AddAction("AIP_PACKAGER", "Package", function(act, ...)
+	return GLOBAL.ACTIONS.HAMMER.fn(act, ...)
+	--[[-- Client Only Code
 	local doer = act.doer
 	local target = act.target
 	local item = act.invobject
@@ -66,10 +68,13 @@ end
 		return true
 	end
 
-	return false, "INUSE"
+	return false, "INUSE"]]
 end)
+AIP_PACKAGER.rmb = true
+AIP_PACKAGER.priority = 10
+
 AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIP_PACKAGER, "doshortaction"))
-AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIP_PACKAGER, "doshortaction"))]]
+AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIP_PACKAGER, "doshortaction"))
 
 --------------------------------------- 绑定搬运 ---------------------------------------
 env.AddComponentAction("USEITEM", "aipc_info_client", function(inst, doer, target, actions, right)
@@ -78,6 +83,5 @@ env.AddComponentAction("USEITEM", "aipc_info_client", function(inst, doer, targe
 		return
 	end
 
-	-- 检查是否可驾驶
-	table.insert(actions, GLOBAL.ACTIONS.HAMMER)
+	table.insert(actions, GLOBAL.ACTIONS.AIP_PACKAGER)
 end)
