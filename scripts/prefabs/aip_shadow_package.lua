@@ -162,31 +162,70 @@ function fnPaper()
 end
 
 ------------------------------ 包裹 ------------------------------
-local function checkPackaged(inst)
-	if inst.packageTarget then
+local function stopChechPackaged(inst)
+	if inst and inst._delayCheck then
+		inst._delayCheck:Cancel()
+		inst._delayCheck = nil
+	end
+end
+
+local function delayCheckPackaged(inst, delay)
+	if not inst then
 		return
 	end
 
-	inst:AddComponent("perishable")
-	inst.components.perishable.onperishreplacement = "aip_shadow_paper_package"
-	inst:DoTaskInTime(0, function()
-		inst.components.perishable:Perish()
+	stopChechPackaged(inst)
+
+	inst._delayCheck = inst:DoTaskInTime(delay or 0, function()
+		if inst.packageTarget then
+			return
+		end
+	
+		inst:AddComponent("perishable")
+		inst.components.perishable.onperishreplacement = "aip_shadow_paper_package"
+		inst:DoTaskInTime(0, function()
+			inst.components.perishable:Perish()
+		end)
 	end)
 end
 
 local function onPackageSave(inst, data)
 	if inst.packageTarget then
-		data.targetGUID = inst.packageTarget.GUID
+		local tx, ty, tz = inst.packageTarget.Transform:GetWorldPosition()
+		local prefab = inst.packageTarget.prefab
+
+		data.targetX = tx
+		data.targetY = ty
+		data.targetZ = tz
+		data.prefab = prefab
+	else
+		data.prefab = nil
 	end
 end
 
-local function onPackagePostLoad(inst, ents, data)
-	local targetGUID = (data or {}).GUID
+local function onPackageLoad(inst, data)
+	stopChechPackaged(inst)
 
-	if targetGUID then
-		local target = ents[targetGUID]
+	local prefab = data.prefab
+	local tx = data.targetX or 0
+	local ty = data.targetY or 0
+	local tz = data.targetZ or 0
+
+	local entities = TheSim:FindEntities(tx, ty, tz, 0.1, { "structure" })
+
+	local target = nil
+	for k, v in pairs(entities) do
+		if v.prefab == prefab then
+			target = v
+			break
+		end
+	end
+
+	if target then
 		inst.packageTarget = removeFromScene(target)
 	end
+
+	delayCheckPackaged(inst)
 end
 
 local function onDeploy(inst, pt, deployer)
@@ -204,7 +243,7 @@ local function onDeploy(inst, pt, deployer)
 
 	-- Clean up
 	inst.packageTarget = nil
-	checkPackaged(inst)
+	delayCheckPackaged(inst)
 
 	-- Give Paper
 	local paper = SpawnPrefab("aip_shadow_paper_package")
@@ -232,9 +271,9 @@ function fnPackage()
 		inst.components.deployable:SetDeployMode(DEPLOYMODE.WALL)
 
 		inst.OnSave = onPackageSave
-		inst.OnLoadPostPass = onPackagePostLoad
+		inst.OnLoad = onPackageLoad
 
-		inst:DoTaskInTime(0, checkPackaged)
+		delayCheckPackaged(inst)
 	end)
 end
 
