@@ -125,6 +125,11 @@ local function doPackage(inst, doer, target)
 	item.packageTarget = target
 	local holder = doer ~= nil and (doer.components.inventory or doer.components.container) or nil
 
+	-- Damage Sanity
+	if doer.components.sanity then
+		doer.components.sanity:DoDelta(-TUNING.SANITY_MED)
+	end
+
 	-- Create shadow wrapper
 	local shadowWrapper =  SpawnPrefab("aip_shadow_wrapper")
 	shadowWrapper.Transform:SetPosition(tx, ty + 0.1, tz)
@@ -208,6 +213,11 @@ local function onDeploy(inst, pt, deployer)
 		holder:GiveItem(paper)
 	else
 		paper.Transform:SetPosition(pt.x, pt.y, pt.z)
+	end
+
+	-- Damage Sanity
+	if deployer.components.sanity then
+		deployer.components.sanity:DoDelta(-TUNING.SANITY_MED)
 	end
 end
 

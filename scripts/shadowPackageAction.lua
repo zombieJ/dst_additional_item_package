@@ -42,7 +42,11 @@ GLOBAL.ACTIONS.HAMMER.fn = function(act, ...)
 		return false, "INUSE"
 	end
 
-	return old_HAMMER(act, ...)
+	if old_HAMMER then
+		return old_HAMMER(act, ...)
+	end
+
+	return false, "INUSE"
 end
 
 ---------------------------------------- 搬运者 ----------------------------------------
