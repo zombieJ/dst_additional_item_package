@@ -72,6 +72,7 @@ local AIP_PACKAGER = env.AddAction("AIP_PACKAGER", "Package", function(act, ...)
 end)
 AIP_PACKAGER.rmb = true
 AIP_PACKAGER.priority = 10
+AIP_PACKAGER.mount_valid = true
 
 AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIP_PACKAGER, "doshortaction"))
 AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIP_PACKAGER, "doshortaction"))

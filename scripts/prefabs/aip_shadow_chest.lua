@@ -14,12 +14,12 @@ local language = aipGetModConfig("language")
 local LANG_MAP = {
 	english = {
 		NAME = "Shadow Chest",
-		DESC = "Pick item on the group or other shadow chest",
+		DESC = "Greed collect items",
 		DESCRIBE = "It's magic for automation",
 	},
 	chinese = {
 		NAME = "暗影宝箱",
-		DESC = "可以获取地上和其他暗影宝箱内的物品",
+		DESC = "贪婪地收集物品",
 		DESCRIBE = "这个魔法正适合自动化",
 	},
 }
@@ -32,9 +32,9 @@ STRINGS.NAMES.AIP_SHADOW_CHEST = LANG.NAME or LANG_ENG.NAME
 STRINGS.RECIPE_DESC.AIP_SHADOW_CHEST = LANG.DESC or LANG_ENG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SHADOW_CHEST = LANG.DESCRIBE or LANG_ENG.DESCRIBE
 
--- 配方 TODO
-local aip_shadow_chest = Recipe("aip_shadow_chest", {Ingredient("waxpaper", 1), Ingredient("nightmarefuel", 5), Ingredient("featherpencil", 1)}, RECIPETABS.MAGIC, TECH.MAGIC_TWO)
-aip_shadow_chest.atlas = "images/inventoryimages/aip_shadow_package.xml"
+-- 配方
+local aip_shadow_chest = Recipe("aip_shadow_chest", {Ingredient("aip_shadow_paper_package", 1, "images/inventoryimages/aip_shadow_paper_package.xml"), Ingredient("boards", 3)}, RECIPETABS.MAGIC, TECH.MAGIC_TWO, "aip_shadow_chest_placer")
+aip_shadow_chest.atlas = "images/inventoryimages/aip_shadow_package.xml" -- TODO 修改图标
 
 ------------------------------------ 实例 ------------------------------------
 local assets =
@@ -86,6 +86,8 @@ local function fn()
 	inst.entity:AddMiniMapEntity()
 	inst.entity:AddNetwork()
 
+	-- MakeObstaclePhysics(inst, .1) 不用碰撞
+
 	inst.MiniMapEntity:SetIcon("treasurechest.png")
 
 	inst:AddTag("structure")
@@ -136,4 +138,4 @@ local function fn()
 end
 
 return Prefab("aip_shadow_chest", fn, assets, prefabs),
-		MakePlacer("aip_shadow_chest_placer", "chest", "aip_shadow_chest", "closed")
+		MakePlacer("aip_shadow_chest_placer", "chest", "treasure_chest", "closed")
