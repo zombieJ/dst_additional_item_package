@@ -2,7 +2,6 @@ GLOBAL.require("recipe")
 
 local PlayerHud = GLOBAL.require("screens/playerhud")
 local ConfigWidget = GLOBAL.require("widgets/aipConfigWidget")
-local WriteableWidget = GLOBAL.require("widgets/writeablewidget")
 
 local function canPackage(inst)
 	if not inst then
@@ -25,7 +24,6 @@ end
 ----------------------------------------- 注入 -----------------------------------------
 function PlayerHud:ShowAIPAutoConfigWidget(inst, config)
 	self.aipAutoConfigScreen = ConfigWidget(self.owner, inst, config)
-	--self.aipAutoConfigScreen = TestWidget(self.owner, false, config)
 	self:OpenScreenUnderPause(self.aipAutoConfigScreen)
 	return self.aipAutoConfigScreen
 	--[[if writeable == nil then
