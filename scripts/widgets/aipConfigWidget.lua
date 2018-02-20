@@ -10,6 +10,8 @@ local Menu = require "widgets/menu"
 local UIAnim = require "widgets/uianim"
 local ImageButton = require "widgets/imagebutton"
 
+local TEMPLATES = require "widgets/templates"
+
 local function onaccept(inst, doer, widget)
 	if not widget.isopen then
 		return
@@ -98,6 +100,14 @@ local AutoConfigWidget = Class(Screen, function(self, owner, writeable, config)
 
 	self.bganim = self.root:AddChild(UIAnim())
 	self.bganim:SetScale(1, 1, 1)
+
+	-- 黑框
+	self.shield = self.root:AddChild(TEMPLATES.CurlyWindow(40, 365, 1, 1, 67, -41))
+	-- 白底
+	self.shield.fill = self.root:AddChild(Image("images/fepanel_fills.xml", "panel_fill_tall.tex"))
+	self.shield.fill:SetScale(.64, -.57)
+	self.shield.fill:SetPosition(8, 12)
+	self.shield:SetPosition(0,0,0)
 
 	--[[self.edit_text = self.root:AddChild(TextEdit(BUTTONFONT, 50, ""))
 	self.edit_text:SetColour(0, 0, 0, 1)

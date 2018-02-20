@@ -146,6 +146,19 @@ local tmpConfig = {
 	cancelbtn = { text = "Cancel", cb = nil, control = CONTROL_CANCEL },
 	middlebtn = { text = "Random", cb = nil, control = CONTROL_MENU_MISC_2 },
 	acceptbtn = { text = "Write it!", cb = nil, control = CONTROL_ACCEPT },
+
+	config = {
+		{
+			name = "autoCollect",
+			label = "Auto Collect Item",
+			options =
+			{
+				{description = "True", data = "true"},
+				{description = "False", data = "false"},
+			},
+			default = "false",
+		},
+	},
 }
 
 function params.aip_shadow_chest.widget.buttoninfo.fn(inst)
