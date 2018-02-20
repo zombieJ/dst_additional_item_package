@@ -111,23 +111,50 @@ end
 
 
 ---------------- 暗影包裹 ----------------
---[[params.aip_shadow_package =
+params.aip_shadow_chest =
 {
 	widget =
 	{
-		slotpos =
+		slotpos = {},
+		animbank = "ui_chest_3x3",
+		animbuild = "ui_chest_3x3",
+		pos = Vector3(0, 200, 0),
+		side_align_tip = 160,
+		
+		buttoninfo =
 		{
-			Vector3(-37.5, 32 + 4, 0), 
-		},
-		animbank = "ui_bundle_2x2",
-		animbuild = "ui_bundle_2x2",
+			text = STRINGS.UI.HELP.CONFIGURE,
+			position = Vector3(0, -140, 0),
+		}
 	},
-	type = "cooker",
+	acceptsstacks = true,
+	type = "chest",
 }
 
-function params.aip_shadow_package.itemtestfn(container, item, slot)
-	return true
-end]]
+for y = 2, 0, -1 do
+	for x = 0, 2 do
+		table.insert(params.aip_shadow_chest.widget.slotpos, Vector3(80 * x - 80 * 2 + 80, 80 * y - 80 * 2 + 80, 0))
+	end
+end
+
+local tmpConfig = {
+	prompt = "Write on the sign",
+	animbank = "ui_board_5x3",
+	animbuild = "ui_board_5x3",
+	menuoffset = Vector3(6, -70, 0),
+
+	cancelbtn = { text = "Cancel", cb = nil, control = CONTROL_CANCEL },
+	middlebtn = { text = "Random", cb = nil, control = CONTROL_MENU_MISC_2 },
+	acceptbtn = { text = "Write it!", cb = nil, control = CONTROL_ACCEPT },
+}
+
+function params.aip_shadow_chest.widget.buttoninfo.fn(inst)
+	local player = GLOBAL.ThePlayer
+
+	if player and player.HUD then
+		return player.HUD:ShowAIPAutoConfigWidget(inst, tmpConfig)
+	end
+end
 
 ----------------------------------------------------------------------------------------------
 local containers = GLOBAL.require "containers"

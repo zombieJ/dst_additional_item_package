@@ -1,5 +1,9 @@
 GLOBAL.require("recipe")
 
+local PlayerHud = GLOBAL.require("screens/playerhud")
+local ConfigWidget = GLOBAL.require("widgets/aipConfigWidget")
+local WriteableWidget = GLOBAL.require("widgets/writeablewidget")
+
 local function canPackage(inst)
 	if not inst then
 		return false
@@ -16,6 +20,32 @@ local function canPackage(inst)
 	end
 
 	return true
+end
+
+----------------------------------------- 注入 -----------------------------------------
+function PlayerHud:ShowAIPAutoConfigWidget(inst, config)
+	self.aipAutoConfigScreen = ConfigWidget(self.owner, inst, config)
+	--self.aipAutoConfigScreen = TestWidget(self.owner, false, config)
+	self:OpenScreenUnderPause(self.aipAutoConfigScreen)
+	return self.aipAutoConfigScreen
+	--[[if writeable == nil then
+		return
+	else
+		self.writeablescreen = WriteableWidget(self.owner, writeable, config)
+		self:OpenScreenUnderPause(self.writeablescreen)
+		if TheFrontEnd:GetActiveScreen() == self.writeablescreen then
+			-- Have to set editing AFTER pushscreen finishes.
+			self.writeablescreen.edit_text:SetEditing(true)
+		end
+		return self.writeablescreen
+	end]]
+end
+
+function PlayerHud:CloseAIPAutoConfigWidget()
+	if self.aipAutoConfigScreen then
+		self.aipAutoConfigScreen:Close()
+		self.aipAutoConfigScreen = nil
+	end
 end
 
 ---------------------------------------- 搬运者 ----------------------------------------

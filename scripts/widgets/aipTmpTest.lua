@@ -14,6 +14,7 @@ local function onaccept(inst, doer, widget)
     if not widget.isopen then
         return
     end
+    -- print("OnAccept",inst,doer,widget)
 
     --strip leading/trailing whitespace
     local msg = widget:GetText()
@@ -33,13 +34,24 @@ local function onaccept(inst, doer, widget)
         widget.config.acceptbtn.cb(inst, doer, widget)
     end
 
-    doer.HUD:CloseAIPAutoConfigWidget()
+    doer.HUD:CloseWriteableWidget()
+end
+
+local function onmiddle(inst, doer, widget)
+    if not widget.isopen then
+        return
+    end
+    --print("OnMiddle",inst,doer,widget)
+
+    widget.config.middlebtn.cb(inst, doer, widget)
+    widget.edit_text:SetEditing(true)
 end
 
 local function oncancel(inst, doer, widget)
     if not widget.isopen then
         return
     end
+    --print("OnCancel",inst,doer,widget)
 
     local writeable = inst.replica.writeable
     if writeable ~= nil then
@@ -50,11 +62,11 @@ local function oncancel(inst, doer, widget)
         widget.config.cancelbtn.cb(inst, doer, widget)
     end
 
-    doer.HUD:CloseAIPAutoConfigWidget()
+    doer.HUD:CloseWriteableWidget()
 end
 
-local AutoConfigWidget = Class(Screen, function(self, owner, writeable, config)
-    Screen._ctor(self, "AIP_AutoConfig")
+local WriteableWidget = Class(Screen, function(self, owner, writeable, config)
+    Screen._ctor(self, "SignWriter")
 
     self.owner = owner
     self.writeable = writeable
@@ -126,6 +138,9 @@ local AutoConfigWidget = Class(Screen, function(self, owner, writeable, config)
 
     self.buttons = {}
     table.insert(self.buttons, { text = config.cancelbtn.text, cb = function() oncancel(self.writeable, self.owner, self) end, control = config.cancelbtn.control })
+    if config.middlebtn ~= nil then
+        table.insert(self.buttons, { text = config.middlebtn.text, cb = function() onmiddle(self.writeable, self.owner, self) end, control = config.middlebtn.control })
+    end
     table.insert(self.buttons, { text = config.acceptbtn.text, cb = function() onaccept(self.writeable, self.owner, self) end, control = config.acceptbtn.control })
 
     for i, v in ipairs(self.buttons) do
@@ -199,13 +214,13 @@ local AutoConfigWidget = Class(Screen, function(self, owner, writeable, config)
     end
 end)
 
-function AutoConfigWidget:OnBecomeActive()
+function WriteableWidget:OnBecomeActive()
     self._base.OnBecomeActive(self)
     self.edit_text:SetFocus()
     self.edit_text:SetEditing(true)
 end
 
-function AutoConfigWidget:Close()
+function WriteableWidget:Close()
     if self.isopen then
         --if self.container ~= nil then
             --if self.owner ~= nil and self.owner.components.playeractionpicker ~= nil then
@@ -234,21 +249,21 @@ function AutoConfigWidget:Close()
     end
 end
 
-function AutoConfigWidget:OverrideText(text)
+function WriteableWidget:OverrideText(text)
     self.edit_text:SetString(text)
     self.edit_text:SetFocus()
 end
 
-function AutoConfigWidget:GetText()
+function WriteableWidget:GetText()
     return self.edit_text:GetString()
 end
 
-function AutoConfigWidget:SetValidChars(chars)
+function WriteableWidget:SetValidChars(chars)
     self.edit_text:SetCharacterFilter(chars)
 end
 
-function AutoConfigWidget:OnControl(control, down)
-    if AutoConfigWidget._base.OnControl(self,control, down) then return true end
+function WriteableWidget:OnControl(control, down)
+    if WriteableWidget._base.OnControl(self,control, down) then return true end
 
     -- gjans: This makes it so that if the text box loses focus and you click
     -- on the bg, it presses accept. Kind of weird behaviour. I'm guessing
@@ -273,4 +288,4 @@ function AutoConfigWidget:OnControl(control, down)
     end
 end
 
-return AutoConfigWidget
+return WriteableWidget

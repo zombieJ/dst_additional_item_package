@@ -103,13 +103,15 @@ local function fn()
 
 	inst.AnimState:SetMultColour(0, 0, 0, 0.8)
 
+	inst:AddComponent("aipc_info_client")
+
 	if not TheWorld.ismastersim then
 		return inst
 	end
 
 	inst:AddComponent("inspectable")
 	inst:AddComponent("container")
-	inst.components.container:WidgetSetup("treasurechest")
+	inst.components.container:WidgetSetup("aip_shadow_chest")
 	inst.components.container.onopenfn = onopen
 	inst.components.container.onclosefn = onclose
 
