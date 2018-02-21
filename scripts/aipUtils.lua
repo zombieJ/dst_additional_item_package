@@ -66,7 +66,13 @@ function GLOBAL.aipGetAnimState(inst)
 	if inst then
 		local str = inst.GetDebugString and inst:GetDebugString()
 		if str then
-			local bank, build, anim = string.match(str, "AnimState: bank: (.*) build: (.*) anim: (.*) anim")
+			local bank, build, anim
+
+			bank, build, anim = string.match(str, "AnimState: bank: (.*) build: (.*) anim: (.*) anim")
+			if not anim then
+				bank, build, anim = string.match(str, "AnimState: bank: (.*) build: (.*) anim: (.*) ..")
+			end
+
 			data.bank = string.split(bank or "", " ")[1]
 			data.build = string.split(build or "", " ")[1]
 			data.anim = string.split(anim or "", " ")[1]

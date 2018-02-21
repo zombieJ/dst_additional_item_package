@@ -25,7 +25,7 @@ local LANG_ENG = LANG_MAP.english
 
 -----------------------------------------------------------
 local assets = {
-	Asset("ANIM", "anim/shadow_skinchangefx.zip"),
+	Asset("ANIM", "anim/aip_shadow_wrapper.zip"),
 }
 
 local prefabs = {}
@@ -39,9 +39,9 @@ function fn()
 	inst.entity:AddNetwork()
 
 	-- TODO: Fix this
-	--inst.AnimState:SetBank("shadow_skinchangefx")
-	--inst.AnimState:SetBuild("shadow_skinchangefx")
-	--inst.AnimState:PlayAnimation("idle")
+	inst.AnimState:SetBank("aip_shadow_wrapper")
+	inst.AnimState:SetBuild("aip_shadow_wrapper")
+	inst.AnimState:PlayAnimation("wrap")
 
 	if not TheWorld.ismastersim then
 		return inst
@@ -50,13 +50,24 @@ function fn()
 	-- Play hide
 	inst.DoHide = function()
 		inst.SoundEmitter:PlaySound("dontstarve/common/together/skin_change")
-		inst:DoTaskInTime(44 * FRAMES, function()
+		inst:DoTaskInTime(24 * FRAMES, function()
 			if inst.OnFinish then
 				inst.OnFinish(inst)
 			end
 		end)
 
-		inst:DoTaskInTime(60 * FRAMES, function()
+		inst:DoTaskInTime(45 * FRAMES, function()
+			if inst.OnFinished then
+				inst.OnFinished(inst)
+			end
+		end)
+	end
+
+	-- Play show
+	inst.DoShow = function()
+		inst.AnimState:PlayAnimation("end")
+
+		inst:DoTaskInTime(10 * FRAMES, function()
 			if inst.OnFinished then
 				inst.OnFinished(inst)
 			end
