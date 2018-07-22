@@ -110,7 +110,7 @@ function params.aip_nectar_maker.widget.buttoninfo.validfn(inst)
 end
 
 
----------------- 暗影包裹 ----------------
+---------------- 暗影宝箱 ----------------
 params.aip_shadow_chest =
 {
 	widget =
@@ -138,16 +138,16 @@ for y = 2, 0, -1 do
 end
 
 local tmpConfig = {
-	prompt = "Write on the sign",
+	--[[prompt = "Write on the sign",
 	animbank = "ui_board_5x3",
 	animbuild = "ui_board_5x3",
-	menuoffset = Vector3(6, -70, 0),
+	menuoffset = Vector3(6, -70, 0),]]
 
 	cancelbtn = { text = "Cancel", cb = nil, control = CONTROL_CANCEL },
-	middlebtn = { text = "Random", cb = nil, control = CONTROL_MENU_MISC_2 },
-	acceptbtn = { text = "Write it!", cb = nil, control = CONTROL_ACCEPT },
+	-- middlebtn = { text = "Random", cb = nil, control = CONTROL_MENU_MISC_2 },
+	acceptbtn = { text = "Confirm", cb = nil, control = CONTROL_ACCEPT },
 
-	config = {
+	--[[config = {
 		{
 			name = "autoCollect",
 			label = "Auto Collect Item",
@@ -158,7 +158,7 @@ local tmpConfig = {
 			},
 			default = "false",
 		},
-	},
+	},]]
 }
 
 function params.aip_shadow_chest.widget.buttoninfo.fn(inst)

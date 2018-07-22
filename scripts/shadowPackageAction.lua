@@ -1,7 +1,7 @@
 GLOBAL.require("recipe")
 
-local PlayerHud = GLOBAL.require("screens/playerhud")
-local ConfigWidget = GLOBAL.require("widgets/aipConfigWidget")
+--local PlayerHud = GLOBAL.require("screens/playerhud")
+--local ConfigWidget = GLOBAL.require("widgets/aipConfigWidget")
 
 local function canPackage(inst)
 	if not inst then
@@ -22,11 +22,12 @@ local function canPackage(inst)
 end
 
 ----------------------------------------- 注入 -----------------------------------------
-function PlayerHud:ShowAIPAutoConfigWidget(inst, config)
+-- 2018-07-22 不知道这段代码干什么用的了，先全部注释了
+--[[function PlayerHud:ShowAIPAutoConfigWidget(inst, config)
 	self.aipAutoConfigScreen = ConfigWidget(self.owner, inst, config)
 	self:OpenScreenUnderPause(self.aipAutoConfigScreen)
 	return self.aipAutoConfigScreen
-	--[[if writeable == nil then
+	[if writeable == nil then
 		return
 	else
 		self.writeablescreen = WriteableWidget(self.owner, writeable, config)
@@ -36,7 +37,7 @@ function PlayerHud:ShowAIPAutoConfigWidget(inst, config)
 			self.writeablescreen.edit_text:SetEditing(true)
 		end
 		return self.writeablescreen
-	end]]
+	end]
 end
 
 function PlayerHud:CloseAIPAutoConfigWidget()
@@ -44,7 +45,7 @@ function PlayerHud:CloseAIPAutoConfigWidget()
 		self.aipAutoConfigScreen:Close()
 		self.aipAutoConfigScreen = nil
 	end
-end
+end]]
 
 ---------------------------------------- 搬运者 ----------------------------------------
 local old_HAMMER = GLOBAL.ACTIONS.HAMMER.fn

@@ -6,24 +6,18 @@ end
 
 -----------------------------------------------------------------------
 local PlayerHud = GLOBAL.require("screens/playerhud")
+local ConfigWidget = GLOBAL.require("widgets/aipAutoConfigWidget")
 
+-- 显示自动化配置窗口
 function PlayerHud:ShowAIPAutoConfigWidget(inst, config)
-	if writeable == nil then
-		return
-	else
-		self.writeablescreen = WriteableWidget(self.owner, inst, config)
-		self:OpenScreenUnderPause(self.writeablescreen)
-		if TheFrontEnd:GetActiveScreen() == self.writeablescreen then
-			-- Have to set editing AFTER pushscreen finishes.
-			self.writeablescreen.edit_text:SetEditing(true)
-		end
-		return self.writeablescreen
-	end
+	self.aipAutoConfigScreen = ConfigWidget(self.owner, inst, config)
+	self:OpenScreenUnderPause(self.aipAutoConfigScreen)
+	return self.aipAutoConfigScreen
 end
 
 function PlayerHud:CloseAIPAutoConfigWidget()
-	if self.writeablescreen then
-		self.writeablescreen:Close()
-		self.writeablescreen = nil
+	if self.aipAutoConfigScreen then
+		self.aipAutoConfigScreen:Close()
+		self.aipAutoConfigScreen = nil
 	end
 end
