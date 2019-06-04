@@ -23,6 +23,11 @@ local LANG_MAP = {
 		["DESC"] = "A quick heal package",
 		["DESCRIBE"] = "I get more time with Boss",
 	},
+	["spanish"] = {
+		["NAME"] = "Paquete de sangre",
+		["DESC"] = "Para una curación rápida",
+		["DESCRIBE"] = "Duraré más con el jefe...",
+	},
 	["russian"] = {
 		["NAME"] = "Мешочек с кровью",
 		["DESC"] = "Мешочек для быстрого лечения",
