@@ -14,8 +14,13 @@ local PERISH_MAP = {
 local LANG_MAP = {
 	["english"] = {
 		["NAME"] = "Blue Glasses",
-		["REC_DESC"] = "Simple and beauti",
+		["REC_DESC"] = "Simple and beautyful",
 		["DESC"] = "I feel knowledge",
+	},
+	["english"] = {
+		["NAME"] = "Vasos azules",
+		["REC_DESC"] = "Simples y bellos.",
+		["DESC"] = "Siento la sabiduría recorrer mi cuerpo...",
 	},
 	["chinese"] = {
 		["NAME"] = "岚色眼镜",
