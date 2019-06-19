@@ -1,3 +1,7 @@
+/**
+ * 生成食品配方合成公式图片：
+ * - node .\gen\foodPreview.js
+ */
 const FS = require('fs');
 const FSE = require('fs-extra');
 const PATH = require('path');
@@ -12,6 +16,18 @@ const MARK_HEIGHT = 30;
 const imgDes = (IMAGE_HEIGHT - MARK_HEIGHT) / 2;
 
 let id = 0;
+
+const path = PATH.normalize(__dirname);
+const rootPath = PATH.join(path, '..');
+
+// 获取图片文件路径
+function getImagePath(name) {
+	const modItemPath = PATH.join(rootPath, 'images', 'inventoryimages', `${name}.png`);
+	if (FSE.existsSync(modItemPath)) {
+		return modItemPath;
+	}
+	return  PATH.join(rootPath, 'images_done', `${name}.png`);
+}
 
 async function asyncMap(list, func) {
 	const promiseList = [];
@@ -62,9 +78,6 @@ function parseItem(itemStr, recipes) {
 
 async function run() {
 	// Get file path
-	const path = PATH.normalize(__dirname);
-
-	const rootPath = PATH.join(path, '..');
 	const foodPrefabsPath = PATH.join(rootPath, 'scripts', 'prefabs', 'foods.lua');
 	const fileText = FS.readFileSync(foodPrefabsPath, 'utf8').toString();
 
@@ -229,7 +242,7 @@ async function run() {
 		let startOffset = 0;
 
 		// Draw food
-		const foodImagePath = PATH.join(rootPath, 'images', 'inventoryimages', `${name}.png`);
+		const foodImagePath = getImagePath(name);
 		const foodImg = await JIMP.read(foodImagePath);
 		descImg.composite(foodImg, startOffset, LINE_HEIGHT * index + (IMAGE_HEIGHT - foodImg.bitmap.height) / 2);
 		startOffset += IMAGE_HEIGHT;
@@ -263,7 +276,7 @@ async function run() {
 				let itemImg;
 				if (recipe.name.startsWith('names.')) {
 					const recipeName = recipe.name.match(/names.(.*)/)[1];
-					const modItemPath = PATH.join(rootPath, 'images', 'inventoryimages', `${recipeName}.png`);
+					const modItemPath = getImagePath(recipeName);
 					if (FS.existsSync(modItemPath)) {
 						itemImg = await JIMP.read(modItemPath);
 					}

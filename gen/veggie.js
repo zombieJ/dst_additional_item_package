@@ -1,3 +1,8 @@
+/**
+ * 生成农作物图片：
+ * - node .\gen\veggie.js .\veggies\wheat
+ */
+
 const FS = require('fs');
 const FSE = require('fs-extra');
 const PATH = require('path');
