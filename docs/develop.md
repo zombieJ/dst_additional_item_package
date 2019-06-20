@@ -6,6 +6,7 @@
 | ----------------------------- | ------------------------------ |
 | modmain.lua                   | 配置预加载资源与物品           |
 | modinfo.lua                   | 描述信息，配置 mod 预览页面    |
+| exported                      | 导出的文件                     |
 | scripts                       |                                |
 | scripts/prefabs               | 物品文件夹                     |
 | scripts/components            | 组件，物品的功能是由组件提供的 |
@@ -19,7 +20,6 @@
 
 | 文件名          | 描述                                                       |
 | --------------- | ---------------------------------------------------------- |
-| exported        | 导出的文件                                                 |
 | exported_done   | 已经导出的文件                                             |
 | gen             | 生成工具集                                                 |
 | gen.cutTextXml  |                                                            |
@@ -27,6 +27,10 @@
 | gen.seed        | 种子文件                                                   |
 | gen.veggie      | 生成种子文件模板                                           |
 | images_done     | 生成完成的图片，因为放在 images 下会被编译拖慢饥荒打开速度 |
+
+# 开发 MOD
+
+- [物品制作](./item.md)
 
 # apiUtils
 
