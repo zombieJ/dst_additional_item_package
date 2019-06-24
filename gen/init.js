@@ -5,9 +5,52 @@ const path = require('path');
 const fs = require('fs-extra');
 const { spawnSync } = require('child_process');
 
+const argv = require('yargs').argv;
+const prjPath = process.cwd();
+const tmpPath = path.relative(prjPath, 'tmp');
+
+const compileOnly = argv.compile;
+
+function backupFiles() {
+  console.log(chalk.cyan('Backup files...'));
+
+  fs.removeSync(tmpPath);
+  fs.ensureDirSync(tmpPath);
+
+  fs.copySync(
+    path.resolve(prjPath, 'exported'),
+    path.resolve(tmpPath, 'exported')
+  );
+  fs.copySync(
+    path.resolve(prjPath, 'exported_done'),
+    path.resolve(tmpPath, 'exported_done')
+  );
+}
+
+function copyDoneFiles() {
+  console.log(chalk.cyan('Copy `exported_done` to `exported`...'));
+
+  const fileList = fs.readdirSync(path.resolve(prjPath, 'exported_done'));
+  fileList.forEach(fileName => {
+    fs.copySync(
+      path.resolve(prjPath, 'exported_done', fileName),
+      path.resolve(prjPath, 'exported', fileName)
+    );
+  });
+}
+
+function restoreFiles() {
+  console.log(chalk.cyan('Restore files...'));
+
+  fs.removeSync(path.resolve(prjPath, 'exported'));
+  fs.moveSync(
+    path.resolve(tmpPath, 'exported'),
+    path.resolve(prjPath, 'exported')
+  );
+}
+
 function run() {
   // ========================== Get Tool Path ==========================
-  const prjPath = process.cwd();
   console.log(chalk.cyan('Prepare project enviroment...'));
 
   const toolPath = path.resolve(
@@ -27,30 +70,14 @@ function run() {
   }
 
   // ======================== Cache All Exports ========================
-  const tmpPath = path.relative(prjPath, 'tmp');
-  fs.removeSync(tmpPath);
-  fs.ensureDirSync(tmpPath);
-
-  fs.copySync(
-    path.resolve(prjPath, 'exported'),
-    path.resolve(tmpPath, 'exported')
-  );
-  fs.copySync(
-    path.resolve(prjPath, 'exported_done'),
-    path.resolve(tmpPath, 'exported_done')
-  );
+  if (!compileOnly) backupFiles();
 
   try {
     // =============== Move all exists files to exported ===============
-    const fileList = fs.readdirSync(path.resolve(prjPath, 'exported_done'));
-    fileList.forEach(fileName => {
-      fs.copySync(
-        path.resolve(prjPath, 'exported_done', fileName),
-        path.resolve(prjPath, 'exported', fileName)
-      );
-    });
+    if (!compileOnly) copyDoneFiles();
 
     // ========================= Execute Tools =========================
+    console.log(chalk.gray('Compiling...'));
     spawnSync(toolPath, {
       stdio: [null, process.stdout, process.stderr]
     });
@@ -58,12 +85,7 @@ function run() {
   } catch (err) {
     console.error(err);
   } finally {
-    console.log(chalk.cyan('Restore files'));
-    fs.removeSync(path.resolve(prjPath, 'exported'));
-    fs.moveSync(
-      path.resolve(tmpPath, 'exported'),
-      path.resolve(prjPath, 'exported')
-    );
+    if (!compileOnly) restoreFiles();
   }
 }
 
