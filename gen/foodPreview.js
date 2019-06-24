@@ -355,9 +355,12 @@ async function run() {
 	await Promise.all(promiseList);
 
 	console.log('================= Save ================');
+	const destPath = PATH.join(descPath, 'food.png');
 	descImg
 		.crop(0, 0, maxWidth, descImg.bitmap.height)
-		.write(PATH.join(descPath, 'food.png'));
+		.write(destPath);
+
+	console.log('output file:', destPath);
 }
 
 run().catch((err) => {
