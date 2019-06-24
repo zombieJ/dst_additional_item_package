@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "gen:preview": "node gen/foodPreview",
-    "gen:seed": "node gen/veggie"
+    "gen:seed": "node gen/veggie",
+    "init": "node gen/init"
   },
   "repository": {
     "type": "git",
