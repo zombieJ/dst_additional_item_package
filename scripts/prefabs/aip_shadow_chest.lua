@@ -9,6 +9,12 @@ if additional_magic ~= "open" then
 	return nil
 end
 
+-- 仅限开发模式
+local dev_mode = aipGetModConfig("dev_mode")
+if dev_mode ~= "enabled" then
+	return nil
+end
+
 local language = aipGetModConfig("language")
 
 local LANG_MAP = {

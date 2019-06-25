@@ -55,6 +55,11 @@ modimport("scripts/itemTileWrapper.lua")
 modimport("scripts/hudWrapper.lua")
 modimport("scripts/shadowPackageAction.lua")
 
+------------------------------------- 测试专用 -------------------------------------
+if GetModConfigData("dev_mode") == "enabled" then
+	modimport("scripts/dev.lua")
+end
+
 --------------------------------------- 矿车 ---------------------------------------
 if GetModConfigData("additional_orbit") == "open" then
 	modimport("scripts/mineCarAction.lua")

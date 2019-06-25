@@ -75,11 +75,11 @@ local AutoConfigWidget = Class(Screen, function(self, owner, inst, config)
 	self.menu:SetPosition(menuoffset.x - .5 * spacing * (#self.buttons - 1), menuoffset.y - 260, menuoffset.z)
 
 	-- 文字
-	self.checkbox_parent:AddChild(Text(CHATFONT, 30, STRINGS.UI.SERVERLISTINGSCREEN.SHOW_MOD_WARNING))
+	--self.checkbox_parent:AddChild(Text(CHATFONT, 30, STRINGS.UI.SERVERLISTINGSCREEN.SHOW_MOD_WARNING))
 
 	-- 收尾
-	self.isopen = true
-	self:Show()
+	--self.isopen = true
+	--self:Show()
 end)
 
 function AutoConfigWidget:Close()

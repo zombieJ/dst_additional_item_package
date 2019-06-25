@@ -169,6 +169,7 @@ local function stopChechPackaged(inst)
 	end
 end
 
+-- 检查是否存在目标建筑，没有就通过腐烂组件将其变成包装纸
 local function delayCheckPackaged(inst, delay)
 	if not inst then
 		return
@@ -189,6 +190,7 @@ local function delayCheckPackaged(inst, delay)
 	end)
 end
 
+-- 保存包裹，将目标建筑放入 data 中
 local function onPackageSave(inst, data)
 	if inst.packageTarget then
 		local tx, ty, tz = inst.packageTarget.Transform:GetWorldPosition()
@@ -203,6 +205,7 @@ local function onPackageSave(inst, data)
 	end
 end
 
+-- 在记录的地点寻找保存的建筑，并且添加延迟检测是否需要还原成包装纸
 local function onPackageLoad(inst, data)
 	stopChechPackaged(inst)
 
@@ -282,6 +285,7 @@ function fnPackage()
 		inst.OnSave = onPackageSave
 		inst.OnLoad = onPackageLoad
 
+		-- 物品创建完需要检查一下是否需要还原成包装纸，在 onLoad 中会先取消再重新检查
 		delayCheckPackaged(inst)
 	end)
 end
