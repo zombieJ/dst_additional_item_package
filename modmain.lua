@@ -19,6 +19,7 @@ PrefabFiles =
 
 	"popcorngun",
 	"incinerator",
+	"aip_log_temple",
 	"aip_blood_package",
 	"aip_fish_sword",
 	"aip_beehave",
