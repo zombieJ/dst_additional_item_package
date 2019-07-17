@@ -6,3 +6,4 @@ __STEAM__
 exported/*/*.zip
 *.tmp
 tmp/
+.DS_Store
