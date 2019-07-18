@@ -109,6 +109,36 @@ function params.aip_nectar_maker.widget.buttoninfo.validfn(inst)
 	return inst.replica.container ~= nil and not inst.replica.container:IsEmpty()
 end
 
+---------------- 木之图腾 ----------------
+params.aip_woodener =
+{
+	widget =
+	{
+		slotpos = {},
+		animbank = "ui_chest_3x3",
+		animbuild = "ui_chest_3x3",
+		pos = Vector3(0, 200, 0),
+		side_align_tip = 160,
+		
+		buttoninfo = {}
+	},
+	acceptsstacks = true,
+	type = "chest",
+}
+
+for y = 2, 0, -1 do
+	for x = 0, 2 do
+		table.insert(params.aip_shadow_chest.widget.slotpos, Vector3(80 * x - 80 * 2 + 80, 80 * y - 80 * 2 + 80, 0))
+	end
+end
+
+function params.aip_woodener.itemtestfn(container, item, slot)
+	if item.prefab ~= "log" and item.prefab ~= "livinglog" then
+		return false, "AIP_WOODENER_LOG_ONLY"
+	end
+
+	return true
+end
 
 ---------------- 暗影宝箱 ----------------
 params.aip_shadow_chest =

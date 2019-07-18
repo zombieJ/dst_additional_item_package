@@ -18,119 +18,75 @@ local LANG_MAP = {
 		["NAME"] = "Woodener",
 		["DESC"] = "a shy totem pole",
 		["DESCRIBE"] = "You can give, but not ask for.",
+		["ACTIONFAIL"] = {
+			["GENERIC"] = "He only accept log.",
+		},
 	},
 	["chinese"] = {
 		["NAME"] = "木图腾",
 		["DESC"] = "一根害羞的图腾柱",
 		["DESCRIBE"] = "你可以给予，却不该索取。",
+		["ACTIONFAIL"] = {
+			["GENERIC"] = "他只接受木头",
+			["WAXWELL"] = "它只要木头这种廉价货",
+			["WOLFGANG"] = "除了木头，它什么都塞不下！",
+			["WX78"] = "参数 = 木头",
+			["WILLOW"] = "用木头喂他或者烧了它！",
+			["WENDY"] = "塞木头或许会有用",
+			["WOODIE"] = "它也想要木头",
+			["WICKERBOTTOM"] = "它的食谱是木头",
+			["WATHGRITHR"] = "我吃肉，你吃木头！",
+			["WEBBER"] = "它需要更多的木头",
+			["WINONA"] = "木头建筑吃木头",
+		},
 	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
 -- 文字描述
-STRINGS.NAMES.INCINERATOR = LANG.NAME
-STRINGS.RECIPE_DESC.INCINERATOR = LANG.DESC
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.INCINERATOR = LANG.DESCRIBE
+STRINGS.NAMES.AIP_WOODENER = LANG.NAME
+STRINGS.RECIPE_DESC.AIP_WOODENER = LANG.DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_WOODENER = LANG.DESCRIBE
+
+STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.GIVE.AIP_WOODENER_LOG_ONLY = LANG.ACTIONFAIL.GENERIC
+STRINGS.CHARACTERS.WAXWELL.ACTIONFAIL.GIVE.AIP_WOODENER_LOG_ONLY = LANG.ACTIONFAIL.WAXWELL or LANG.ACTIONFAIL.GENERIC
+STRINGS.CHARACTERS.WOLFGANG.ACTIONFAIL.GIVE.AIP_WOODENER_LOG_ONLY = LANG.ACTIONFAIL.WOLFGANG or LANG.ACTIONFAIL.GENERIC
+STRINGS.CHARACTERS.WX78.ACTIONFAIL.GIVE.AIP_WOODENER_LOG_ONLY = LANG.ACTIONFAIL.WX78 or LANG.ACTIONFAIL.GENERIC
+STRINGS.CHARACTERS.WILLOW.ACTIONFAIL.GIVE.AIP_WOODENER_LOG_ONLY = LANG.ACTIONFAIL.WILLOW or LANG.ACTIONFAIL.GENERIC
+STRINGS.CHARACTERS.WENDY.ACTIONFAIL.GIVE.AIP_WOODENER_LOG_ONLY = LANG.ACTIONFAIL.WENDY or LANG.ACTIONFAIL.GENERIC
+STRINGS.CHARACTERS.WOODIE.ACTIONFAIL.GIVE.AIP_WOODENER_LOG_ONLY = LANG.ACTIONFAIL.WOODIE or LANG.ACTIONFAIL.GENERIC
+STRINGS.CHARACTERS.WICKERBOTTOM.ACTIONFAIL.GIVE.AIP_WOODENER_LOG_ONLY = LANG.ACTIONFAIL.WICKERBOTTOM or LANG.ACTIONFAIL.GENERIC
+STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.GIVE.AIP_WOODENER_LOG_ONLY = LANG.ACTIONFAIL.WATHGRITHR or LANG.ACTIONFAIL.GENERIC
+STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVE.AIP_WOODENER_LOG_ONLY = LANG.ACTIONFAIL.WEBBER or LANG.ACTIONFAIL.GENERIC
+STRINGS.CHARACTERS.WINONA.ACTIONFAIL.GIVE.AIP_WOODENER_LOG_ONLY = LANG.ACTIONFAIL.WINONA or LANG.ACTIONFAIL.GENERIC
 
 -- 配方
-local incinerator = Recipe("aip_woodener", {Ingredient("rocks", 5), Ingredient("twigs", 2), Ingredient("ash", 1)}, RECIPETABS.LIGHT, TECH.SCIENCE_ONE, "aip_woodener_placer")
-incinerator.atlas = "images/inventoryimages/incinerator.xml"
+local aip_woodener = Recipe("aip_woodener", {Ingredient("goldnugget", 5), Ingredient("livinglog", 2), Ingredient("boards", 3)}, RECIPETABS.MAGIC, TECH.MAGIC_TWO, "aip_woodener_placer")
+aip_woodener.atlas = "images/inventoryimages/aip_woodener.xml"
 
 -----------------------------------------------------------------------
 require "prefabutil"
 
 local assets =
 {
-	Asset("ANIM", "anim/incinerator.zip"),
-	Asset("ATLAS", "images/inventoryimages/incinerator.xml"),
-	Asset("IMAGE", "images/inventoryimages/incinerator.tex"),
+	Asset("ANIM", "anim/aip_woodener.zip"),
+	Asset("ATLAS", "images/inventoryimages/aip_woodener.xml"),
+	Asset("IMAGE", "images/inventoryimages/aip_woodener.tex"),
 }
 
 local prefabs =
 {
-	"campfirefire",
 	"collapse_small",
-	"ash",
 }
-
-local function onBurnItems(inst)
-	local hasItems = false
-	local returnItems = {}
-
-	-- 计算生产的物料
-	if inst.components.aipc_action and inst.components.container then
-		local ings = {}
-		for k, item in pairs(inst.components.container.slots) do
-			local stackSize = item.components.stackable and item.components.stackable:StackSize() or 1
-			local lootItem = "ash"
-
-			-- 根据马头剩余耐久度概率提供谜之声帽
-			if item.prefab == "aip_horse_head" and item.components.fueled then
-				local ptg = item.components.fueled:GetPercent()
-				ptg = ptg * ptg * 0.9
-				if ptg >= math.random() then
-					lootItem = "aip_som"
-				end
-			end
-
-			returnItems[lootItem] = (returnItems[lootItem] or 0) + stackSize
-			hasItems = true
-		end
-	end
-
-	-- 掉东西咯
-	if hasItems then
-		inst.AnimState:PlayAnimation("consume")
-		inst.AnimState:PushAnimation("idle", false)
-		inst.SoundEmitter:PlaySound("dontstarve/common/fireAddFuel")
-
-		for prefab, prefabCount in pairs(returnItems) do
-			local currentCount = prefabCount
-			local loot = inst.components.lootdropper:SpawnLootPrefab(prefab)
-			local lootMaxSize = 1
-
-			if loot.components.stackable then
-				lootMaxSize = loot.components.stackable.maxsize
-			end
-			loot:Remove()
-
-			-- 批量掉落
-			while(currentCount > 0)
-			do
-				local dropCount = math.min(currentCount, lootMaxSize)
-				local dropLootItem = inst.components.lootdropper:SpawnLootPrefab(prefab)
-				if dropLootItem.components.stackable then
-					dropLootItem.components.stackable:SetStackSize(dropCount)
-				end
-
-				currentCount = currentCount - dropCount
-			end
-		end
-
-		inst.components.container:Close()
-		inst.components.container:DestroyContents()
-
-		inst.components.burnable:Extinguish()
-		inst:DoTaskInTime(0, function ()
-			inst.components.burnable:Ignite()
-			inst.components.burnable:SetFXLevel(1)
-		end)
-	end
-end
-
--- 火焰者
-local function onextinguish(inst)
-end
 
 -- 建筑
 local function onhammered(inst, worker)
 	inst.components.lootdropper:DropLoot()
 	local x, y, z = inst.Transform:GetWorldPosition()
-	SpawnPrefab("ash").Transform:SetPosition(x, y, z)
 	local fx = SpawnPrefab("collapse_small")
 	fx.Transform:SetPosition(x, y, z)
-	fx:SetMaterial("stone")
+	fx:SetMaterial("wood")
 	inst:Remove()
 end
 
@@ -142,7 +98,7 @@ end
 local function onbuilt(inst)
 	inst.AnimState:PlayAnimation("place")
 	inst.AnimState:PushAnimation("idle", false)
-	inst.SoundEmitter:PlaySound("dontstarve/common/fireAddFuel")
+	inst.SoundEmitter:PlaySound("dontstarve/common/chest_craft")
 end
 
 local function OnInit(inst)
@@ -163,8 +119,8 @@ local function fn()
 	MakeObstaclePhysics(inst, .3)
 
 	-- 动画
-	inst.AnimState:SetBank("incinerator")
-	inst.AnimState:SetBuild("incinerator")
+	inst.AnimState:SetBank("aip_woodener")
+	inst.AnimState:SetBuild("aip_woodener")
 	inst.AnimState:PlayAnimation("idle", false)
 
 	-- 标签
@@ -178,20 +134,9 @@ local function fn()
 		return inst
 	end
 
-	-- 可燃烧
-	inst:AddComponent("burnable")
-	inst.components.burnable:AddBurnFX("fire", Vector3(0, 0.3, 0) )
-	inst.components.burnable:SetBurnTime(10)
-	inst:ListenForEvent("onextinguish", onextinguish)
-
 	-- 容器
 	inst:AddComponent("container")
-	inst.components.container:WidgetSetup("incinerator")
-
-	-- 烹饪
-	inst:AddComponent("aipc_action")
-	inst.components.aipc_action.onDoAction = onBurnItems
-
+	inst.components.container:WidgetSetup("aip_woodener")
 
 	-- 掉东西
 	inst:AddComponent("lootdropper")
@@ -203,18 +148,19 @@ local function fn()
 	inst.components.workable:SetOnFinishCallback(onhammered)
 	inst.components.workable:SetOnWorkCallback(onhit)
 
-	-- 可伤害
+	-- 可作祟
 	inst:AddComponent("hauntable")
 	inst.components.hauntable.cooldown = TUNING.HAUNT_COOLDOWN_HUGE
 
 	-- 可检查
 	inst:AddComponent("inspectable")
-
 	inst:ListenForEvent("onbuilt", onbuilt)
-	inst:DoTaskInTime(0, OnInit)
+
+	-- 可燃烧
+	MakeMediumBurnable(inst)
 
 	return inst
 end
 
-return Prefab("incinerator", fn, assets, prefabs),
-	MakePlacer("incinerator_placer", "incinerator", "incinerator", "idle")
+return Prefab("aip_woodener", fn, assets, prefabs),
+	MakePlacer("aip_woodener_placer", "aip_woodener", "aip_woodener", "idle")
