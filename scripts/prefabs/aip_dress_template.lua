@@ -135,7 +135,7 @@ local function template(name, config)
 			inst.components.armor:InitCondition(config.armor.amount, config.armor.absorb_percent * (TUNING.ARMORWOOD_ABSORPTION / .8))
 
 			if config.armor.tag then
-				inst.components.armor:SetTags({ config.armor.tag })
+				inst.components.armor:SetTags(config.armor.tag)
 			end
 		end
 

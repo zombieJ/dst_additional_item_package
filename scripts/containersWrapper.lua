@@ -119,8 +119,6 @@ params.aip_woodener =
 		animbuild = "ui_chest_3x3",
 		pos = Vector3(0, 200, 0),
 		side_align_tip = 160,
-		
-		buttoninfo = {}
 	},
 	acceptsstacks = true,
 	type = "chest",
@@ -128,7 +126,7 @@ params.aip_woodener =
 
 for y = 2, 0, -1 do
 	for x = 0, 2 do
-		table.insert(params.aip_shadow_chest.widget.slotpos, Vector3(80 * x - 80 * 2 + 80, 80 * y - 80 * 2 + 80, 0))
+		table.insert(params.aip_woodener.widget.slotpos, Vector3(80 * x - 80 * 2 + 80, 80 * y - 80 * 2 + 80, 0))
 	end
 end
 
