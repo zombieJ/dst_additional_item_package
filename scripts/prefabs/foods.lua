@@ -40,6 +40,38 @@ local function getCount(entity, name)
 	return entity[name] or 0
 end
 
+-- 香料
+local function oneaten_garlic(inst, eater)
+    if eater.components.debuffable ~= nil and eater.components.debuffable:IsEnabled() and
+        not (eater.components.health ~= nil and eater.components.health:IsDead()) and
+        not eater:HasTag("playerghost") then
+        eater.components.debuffable:AddDebuff("buff_playerabsorption", "buff_playerabsorption")
+    end
+end
+
+local function oneaten_sugar(inst, eater)
+    if eater.components.debuffable ~= nil and eater.components.debuffable:IsEnabled() and
+        not (eater.components.health ~= nil and eater.components.health:IsDead()) and
+        not eater:HasTag("playerghost") then
+        eater.components.debuffable:AddDebuff("buff_workeffectiveness", "buff_workeffectiveness")
+    end
+end
+
+local function oneaten_chili(inst, eater)
+    if eater.components.debuffable ~= nil and eater.components.debuffable:IsEnabled() and
+        not (eater.components.health ~= nil and eater.components.health:IsDead()) and
+        not eater:HasTag("playerghost") then
+        eater.components.debuffable:AddDebuff("buff_attack", "buff_attack")
+    end
+end
+
+local SPICES =
+{
+    SPICE_GARLIC = { oneatenfn = oneaten_garlic, prefabs = { "buff_playerabsorption" } },
+    SPICE_SUGAR  = { oneatenfn = oneaten_sugar, prefabs = { "buff_workeffectiveness" } },
+    SPICE_CHILI  = { oneatenfn = oneaten_chili, prefabs = { "buff_attack" } },
+}
+
 -- 配方
 local food_recipes = {
 	egg_pancake = {
@@ -363,6 +395,57 @@ for name,data in pairs(food_recipes) do
 
 	-- 添加食物
 	AddModPrefabCookerRecipe("cookpot", data)
+
+	-------------------- 添加香料支持 --------------------
+	for spicenameupper, spicedata in pairs(SPICES) do
+		local newdata = shallowcopy(data)
+		local spicename = string.lower(spicenameupper)
+
+		newdata.test = function(cooker, names, tags) return names[name] and names[spicename] end
+		newdata.priority = 100
+
+		newdata.cooktime = .12
+		newdata.stacksize = nil
+		newdata.spice = spicenameupper
+		newdata.basename = name
+		newdata.name = name.."_"..spicename
+		newdata.floater = {"med", nil, {0.85, 0.7, 0.85}}
+		-- spicedfoods[newdata.name] = newdata
+
+		AddModPrefabCookerRecipe("portablespicer", newdata)
+
+		if spicename == "spice_chili" then
+			if newdata.temperature == nil then
+				--Add permanent "heat" to regular food
+				newdata.temperature = TUNING.HOT_FOOD_BONUS_TEMP
+				newdata.temperatureduration = TUNING.FOOD_TEMP_LONG
+				newdata.nochill = true
+			elseif newdata.temperature > 0 then
+				--Upgarde "hot" food to permanent heat
+				newdata.temperatureduration = math.max(newdata.temperatureduration, TUNING.FOOD_TEMP_LONG)
+				newdata.nochill = true
+			end
+		end
+
+		if spicedata.prefabs ~= nil then
+			--make a copy (via ArrayUnion) if there are dependencies from the original food
+			newdata.prefabs = newdata.prefabs ~= nil and ArrayUnion(newdata.prefabs, spicedata.prefabs) or spicedata.prefabs
+		end
+
+		if spicedata.oneatenfn ~= nil then
+			if newdata.oneatenfn ~= nil then
+				local oneatenfn_old = newdata.oneatenfn
+				newdata.oneatenfn = function(inst, eater)
+					spicedata.oneatenfn(inst, eater)
+					oneatenfn_old(inst, eater)
+				end
+			else
+				newdata.oneatenfn = spicedata.oneatenfn
+			end
+		end
+	end
+
+	-- TODO: 把食物添加到列表中
 
 	-------------------- 创建食物实体 --------------------
 	local assets = {
