@@ -461,4 +461,34 @@ local LANG_MAP = {
 	},
 }
 
+-------------------------------------- 香料填充 --------------------------------------
+local SPICES =
+{
+    SPICE_GARLIC = { chinese = "蒜香", default = "(Garlic) " },
+    SPICE_SUGAR  = { chinese = "甜蜜", default = "(Sugar) " },
+    SPICE_CHILI  = { chinese = "麻辣", default = "(Chili) " },
+}
+
+for langName, foodLang in pairs(LANG_MAP) do
+	-- 收集现有的食物数据
+	local foodNames = {}
+	for foodName in pairs(foodLang) do
+		table.insert(foodNames, foodName)
+	end
+
+	for i = 1, #foodNames do
+		local foodName = foodNames[i]
+		local foodPkg = foodLang[foodName]
+
+		for spiceName, spiceLang in pairs(SPICES) do
+			local prefix = spiceLang[langName] or spiceLang.default
+
+			foodLang[foodName.."_"..spiceName] = {
+				["NAME"] = prefix..foodPkg.NAME,
+				["DESC"] = foodPkg.DESC,
+			}
+		end
+	end
+end
+
 return LANG_MAP

@@ -67,9 +67,9 @@ end
 
 local SPICES =
 {
-    SPICE_GARLIC = { oneatenfn = oneaten_garlic, prefabs = { "buff_playerabsorption" } },
-    SPICE_SUGAR  = { oneatenfn = oneaten_sugar, prefabs = { "buff_workeffectiveness" } },
-    SPICE_CHILI  = { oneatenfn = oneaten_chili, prefabs = { "buff_attack" } },
+    SPICE_GARLIC = { rgba = { 0.6, 0.6, 1.0, 0.9 }, oneatenfn = oneaten_garlic, prefabs = { "buff_playerabsorption" } },
+    SPICE_SUGAR  = { rgba = { 1.0, 1.0, 0.3, 1.0 }, oneatenfn = oneaten_sugar, prefabs = { "buff_workeffectiveness" } },
+    SPICE_CHILI  = { rgba = { 1.0, 0.5, 0.5, 1.0 }, oneatenfn = oneaten_chili, prefabs = { "buff_attack" } },
 }
 
 -- 配方
@@ -396,10 +396,106 @@ for name,data in pairs(food_recipes) do
 	-- 添加食物
 	AddModPrefabCookerRecipe("cookpot", data)
 
+	-------------------- 创建食物实体 --------------------
+	local assets = {
+		Asset("ATLAS", "images/inventoryimages/"..data.name..".xml"),
+		Asset("IMAGE", "images/inventoryimages/"..data.name..".tex"),
+		Asset("ANIM", "anim/"..data.name..".zip"),
+	}
+
+	function getFn(r, g, b, a)
+		return function()
+			local inst = CreateEntity()
+
+			inst.entity:AddTransform()
+			inst.entity:AddAnimState()
+			inst.entity:AddNetwork()
+
+			MakeInventoryPhysics(inst)
+
+			inst.AnimState:SetBuild(data.name)
+			inst.AnimState:SetBank(data.name)
+			inst.AnimState:PlayAnimation("BUILD", false)
+
+			inst.AnimState:SetMultColour(r, g, b, a)
+
+			inst:AddTag("preparedfood")
+			if data.tags then
+				for i,v in pairs(data.tags) do
+					inst:AddTag(v)
+				end
+			end
+
+			if data.floater ~= nil then
+				MakeInventoryFloatable(inst, data.floater[1], data.floater[2], data.floater[3])
+			else
+				MakeInventoryFloatable(inst)
+			end
+
+			inst.entity:SetPristine()
+
+			if not TheWorld.ismastersim then
+				return inst
+			end
+
+			-- 食物
+			inst:AddComponent("edible")
+			inst.components.edible.healthvalue = data.health
+			inst.components.edible.hungervalue = data.hunger
+			inst.components.edible.foodtype = data.foodtype or FOODTYPE.GENERIC
+			inst.components.edible.sanityvalue = data.sanity or 0
+			inst.components.edible.temperaturedelta = data.temperature or 0
+			inst.components.edible.temperatureduration = data.temperatureduration or 0
+			inst.components.edible:SetOnEatenFn(data.oneatenfn)
+
+			inst:AddComponent("inspectable")
+			inst.wet_prefix = data.wet_prefix
+
+			-- 是否可以交易
+			if data.goldvalue then
+				inst:AddComponent("tradable")
+				inst.components.tradable.goldvalue = data.goldvalue
+			end
+
+			-- 物品栏
+			inst:AddComponent("inventoryitem")
+			inst.components.inventoryitem.atlasname = "images/inventoryimages/"..data.name..".xml"
+			inst.components.inventoryitem.imagename = data.name
+
+			inst:AddComponent("stackable")
+			inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
+
+			if data.perishtime ~= nil and data.perishtime > 0 then
+				inst:AddComponent("perishable")
+				inst.components.perishable:SetPerishTime(data.perishtime)
+				inst.components.perishable:StartPerishing()
+				inst.components.perishable.onperishreplacement = "spoiled_food"
+			end
+
+			MakeSmallBurnable(inst)
+			MakeSmallPropagator(inst)
+			MakeHauntableLaunchAndPerish(inst)
+			AddHauntableCustomReaction(inst, function(inst, haunter)
+				return false
+			end, true, false, true)
+			---------------------
+
+			inst:AddComponent("bait")
+
+			------------------------------------------------
+
+			return inst
+		end
+	end
+
+	local prefab = Prefab(name, getFn(1,1,1,1), assets, prefabs)
+	table.insert(prefabList, prefab)
+
 	-------------------- 添加香料支持 --------------------
 	for spicenameupper, spicedata in pairs(SPICES) do
 		local newdata = shallowcopy(data)
 		local spicename = string.lower(spicenameupper)
+		local newFoodName = name.."_"..spicename
 
 		newdata.test = function(cooker, names, tags) return names[name] and names[spicename] end
 		newdata.priority = 100
@@ -408,7 +504,7 @@ for name,data in pairs(food_recipes) do
 		newdata.stacksize = nil
 		newdata.spice = spicenameupper
 		newdata.basename = name
-		newdata.name = name.."_"..spicename
+		newdata.name = newFoodName
 		newdata.floater = {"med", nil, {0.85, 0.7, 0.85}}
 		-- spicedfoods[newdata.name] = newdata
 
@@ -443,93 +539,19 @@ for name,data in pairs(food_recipes) do
 				newdata.oneatenfn = spicedata.oneatenfn
 			end
 		end
-	end
 
-	-- TODO: 把食物添加到列表中
-
-	-------------------- 创建食物实体 --------------------
-	local assets = {
-		Asset("ATLAS", "images/inventoryimages/"..data.name..".xml"),
-		Asset("IMAGE", "images/inventoryimages/"..data.name..".tex"),
-		Asset("ANIM", "anim/"..data.name..".zip"),
-	}
-
-	function fn()
-		local inst = CreateEntity()
-
-		inst.entity:AddTransform()
-		inst.entity:AddAnimState()
-		inst.entity:AddNetwork()
-
-		MakeInventoryPhysics(inst)
-
-		inst.AnimState:SetBuild(data.name)
-		inst.AnimState:SetBank(data.name)
-		inst.AnimState:PlayAnimation("BUILD", false)
-
-		inst:AddTag("preparedfood")
-		if data.tags then
-			for i,v in pairs(data.tags) do
-				inst:AddTag(v)
-			end
-		end
-
-		inst.entity:SetPristine()
-
-		if not TheWorld.ismastersim then
-			return inst
-		end
-
-		-- 食物
-		inst:AddComponent("edible")
-		inst.components.edible.healthvalue = data.health
-		inst.components.edible.hungervalue = data.hunger
-		inst.components.edible.foodtype = data.foodtype or FOODTYPE.GENERIC
-		inst.components.edible.sanityvalue = data.sanity or 0
-		inst.components.edible.temperaturedelta = data.temperature or 0
-		inst.components.edible.temperatureduration = data.temperatureduration or 0
-		inst.components.edible:SetOnEatenFn(data.oneatenfn)
-
-		inst:AddComponent("inspectable")
-		inst.wet_prefix = data.wet_prefix
-
-		-- 是否可以交易
-		if data.goldvalue then
-			inst:AddComponent("tradable")
-			inst.components.tradable.goldvalue = data.goldvalue
-		end
-
-		-- 物品栏
-		inst:AddComponent("inventoryitem")
-		inst.components.inventoryitem.atlasname = "images/inventoryimages/"..data.name..".xml"
-
-		inst:AddComponent("stackable")
-		inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
-
-		if data.perishtime ~= nil and data.perishtime > 0 then
-			inst:AddComponent("perishable")
-			inst.components.perishable:SetPerishTime(data.perishtime)
-			inst.components.perishable:StartPerishing()
-			inst.components.perishable.onperishreplacement = "spoiled_food"
-		end
+		-- 添加文字
+		local newUpperCase = string.upper(newFoodName)
+		local FOOD_LANG = LANG[newUpperCase] or LANG_ENG[newUpperCase]
 		
-		MakeSmallBurnable(inst)
-		MakeSmallPropagator(inst)
-		MakeHauntableLaunchAndPerish(inst)
-		AddHauntableCustomReaction(inst, function(inst, haunter)
-			return false
-		end, true, false, true)
-		---------------------        
+		STRINGS.NAMES[newUpperCase] = FOOD_LANG.NAME
+		STRINGS.CHARACTERS.GENERIC.DESCRIBE[newUpperCase] = FOOD_LANG.DESC
 
-		inst:AddComponent("bait")
-
-		------------------------------------------------  
-
-		return inst
+		----------- 添加香料 -----------
+		local rgba = spicedata.rgba
+		local spicePrefab = Prefab(newFoodName, getFn(rgba[1], rgba[2], rgba[3], rgba[4]), assets, prefabs)
+		table.insert(prefabList, spicePrefab)
 	end
-
-	local prefab = Prefab(name, fn, assets, prefabs)
-	table.insert(prefabList, prefab)
 end
 
 
