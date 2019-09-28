@@ -17,10 +17,12 @@ PrefabFiles =
 	"aip_nectar_maker",
 	"aip_nectar",
 
+	-- Weapon
 	"popcorngun",
 	"aip_blood_package",
 	"aip_fish_sword",
 	"aip_beehave",
+	"aip_woodead",
 
 	-- Building
 	"incinerator",
