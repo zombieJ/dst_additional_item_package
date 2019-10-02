@@ -7,6 +7,9 @@ end
 local weapon_damage = aipGetModConfig("weapon_damage")
 local language = aipGetModConfig("language")
 
+aipPrint(weapon_damage)
+aipPrint(language)
+
 -- 默认参数
 local DAMAGE_MAP = {
 	["less"] = 0.5,
@@ -15,6 +18,8 @@ local DAMAGE_MAP = {
 }
 
 local basicDamage = TUNING.NIGHTSWORD_DAMAGE / 68
+
+aipPrint(weapon_damage)
 
 TUNING.AIP_WOODEAD_DAMANGE_MIN = basicDamage * 8 * DAMAGE_MAP[weapon_damage]
 TUNING.AIP_WOODEAD_DAMANGE_MAX = basicDamage * 128 * DAMAGE_MAP[weapon_damage]
@@ -40,7 +45,7 @@ local assets =
 {
 	Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
 	Asset("ANIM", "anim/aip_fish_sword.zip"),
-	Asset("ANIM", "anim/aip_fish_sword_swap.zip"),
+	Asset("ANIM", "anim/aip_woodead_swap.zip"),
 }
 
 local prefabs =
@@ -72,7 +77,7 @@ local function OnAttack(inst, owner, target)
 end
 
 local function onequip(inst, owner)
-	owner.AnimState:OverrideSymbol("swap_object", "aip_fish_sword_swap", "aip_fish_sword_swap")
+	owner.AnimState:OverrideSymbol("swap_object", "aip_woodead_swap", "aip_woodead_swap")
 	owner.SoundEmitter:PlaySound("dontstarve/wilson/equip_item_gold")
 	owner.AnimState:Show("ARM_carry")
 	owner.AnimState:Hide("ARM_normal")
