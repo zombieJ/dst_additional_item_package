@@ -43,7 +43,7 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 -- 资源
 local assets =
 {
-	Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_woodead.xml"),
 	Asset("ANIM", "anim/aip_fish_sword.zip"),
 	Asset("ANIM", "anim/aip_woodead_swap.zip"),
 }
@@ -60,20 +60,18 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_WOODEAD = LANG.DESC
 -----------------------------------------------------------
 
 local function OnAttack(inst, owner, target)
-	if target.components.combat ~= nil and inst._aip_target_times > 0 then
-		local dmg = math.min(inst._aip_target_times * TUNING.AIP_WOODEAD_DAMANGE_STEP, TUNING.AIP_WOODEAD_DAMANGE_MAX - TUNING.AIP_WOODEAD_DAMANGE_MIN)
-		target.components.combat:GetAttacked(owner, dmg, inst)
-	end
-
-	-- 重置计数器
+	-- 计数器更新
 	if target ~= inst._aip_target then
-		inst._aip_target_times = 1
+		inst._aip_target_times = 0
+		inst._aip_target = target
 	else
 		inst._aip_target_times = inst._aip_target_times + 1
 	end
 
-	-- 设置目标
-	inst._aip_target = target
+	if target.components.combat ~= nil and inst._aip_target_times > 0 then
+		local dmg = math.min(inst._aip_target_times * TUNING.AIP_WOODEAD_DAMANGE_STEP, TUNING.AIP_WOODEAD_DAMANGE_MAX - TUNING.AIP_WOODEAD_DAMANGE_MIN)
+		target.components.combat:GetAttacked(owner, dmg, inst)
+	end
 end
 
 local function onequip(inst, owner)
@@ -121,8 +119,9 @@ function fn()
 	inst:AddComponent("inspectable")
 
 	inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_fish_sword.xml"
-	inst.components.inventoryitem.imagename = "aip_fish_sword"
+	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_woodead.xml"
+	--inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_fish_sword.xml"
+	--inst.components.inventoryitem.imagename = "aip_fish_sword"
 
 	MakeHauntableLaunchAndPerish(inst)
 

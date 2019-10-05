@@ -50,3 +50,14 @@
 # 对应的脚本
 
 在 `modmain.lua` 中的 `PrefabFiles` 添加 `my_item`。并创建对应的 `scripts/prefebs/my_item.lua` 文件。然后照着一个文件写起来吧~
+
+## 修改图标
+
+默认的图标是跟随物品名称来的，但是你也可以通过修改 `imagename` 强制改掉对应图片：
+
+```lua
+inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_fish_sword.xml" -- atlasname 必须要有
+inst.components.inventoryitem.imagename = "aip_fish_sword"
+```
+
+无论是否修改图片，都需要把资源加到 `assets` 里让游戏载入！
