@@ -11,6 +11,11 @@ aipPrint(weapon_damage)
 aipPrint(language)
 
 -- 默认参数
+local USES_MAP = {
+	["less"] = 0.5,
+	["normal"] = 2,
+	["much"] = 5,
+}
 local DAMAGE_MAP = {
 	["less"] = 0.5,
 	["normal"] = 1,
@@ -20,6 +25,8 @@ local DAMAGE_MAP = {
 local basicDamage = TUNING.NIGHTSWORD_DAMAGE / 68
 
 aipPrint(weapon_damage)
+
+TUNING.AIP_WOODEAD_USES = TUNING.NIGHTSWORD_USES * USES_MAP[weapon_damage]
 
 TUNING.AIP_WOODEAD_DAMANGE_MIN = basicDamage * 8 * DAMAGE_MAP[weapon_damage]
 TUNING.AIP_WOODEAD_DAMANGE_MAX = basicDamage * 128 * DAMAGE_MAP[weapon_damage]
@@ -44,7 +51,7 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 local assets =
 {
 	Asset("ATLAS", "images/inventoryimages/aip_woodead.xml"),
-	Asset("ANIM", "anim/aip_fish_sword.zip"),
+	Asset("ANIM", "anim/aip_woodead.zip"),
 	Asset("ANIM", "anim/aip_woodead_swap.zip"),
 }
 
@@ -96,8 +103,8 @@ function fn()
 	
 	MakeInventoryPhysics(inst)
 	
-	inst.AnimState:SetBank("aip_fish_sword")
-	inst.AnimState:SetBuild("aip_fish_sword")
+	inst.AnimState:SetBank("aip_woodead")
+	inst.AnimState:SetBuild("aip_woodead")
 	inst.AnimState:PlayAnimation("idle")
 
 	inst:AddTag("weapon")
@@ -116,12 +123,15 @@ function fn()
 	inst._aip_target = nil
 	inst._aip_target_times = 0
 
+	inst:AddComponent("finiteuses")
+    inst.components.finiteuses:SetMaxUses(TUNING.AIP_WOODEAD_USES)
+    inst.components.finiteuses:SetUses(TUNING.AIP_WOODEAD_USES)
+    inst.components.finiteuses:SetOnFinished(inst.Remove)
+
 	inst:AddComponent("inspectable")
 
 	inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_woodead.xml"
-	--inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_fish_sword.xml"
-	--inst.components.inventoryitem.imagename = "aip_fish_sword"
 
 	MakeHauntableLaunchAndPerish(inst)
 
