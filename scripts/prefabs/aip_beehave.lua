@@ -29,6 +29,11 @@ local LANG_MAP = {
 		["REC_DESC"] = "Realy Have Bee!",
 		["DESC"] = "I can hear the noise",
 	},
+	["spanish"] = {
+		["NAME"] = "Garrote con abejas",
+		["REC_DESC"] = "En serio, ¡tiene abejas!",
+		["DESC"] = "Escucho el zumbido...",
+	},
 	["russian"] = {
 		["NAME"] = "Улей",
 		["REC_DESC"] = "Они на вашей стороне.",
