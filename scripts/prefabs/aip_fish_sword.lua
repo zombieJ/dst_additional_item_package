@@ -73,7 +73,7 @@ STRINGS.RECIPE_DESC.AIP_FISH_SWORD = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FISH_SWORD = LANG.DESC
 
 -- 配方
-local aip_fish_sword = Recipe("aip_fish_sword", {Ingredient("fish", 1),Ingredient("nightmarefuel", 2),Ingredient("rope", 1)}, RECIPETABS.WAR, TECH.SCIENCE_TWO)
+local aip_fish_sword = Recipe("aip_fish_sword", {Ingredient("pondfish", 1),Ingredient("nightmarefuel", 2),Ingredient("rope", 1)}, RECIPETABS.WAR, TECH.SCIENCE_TWO)
 aip_fish_sword.atlas = "images/inventoryimages/aip_fish_sword.xml"
 
 -----------------------------------------------------------

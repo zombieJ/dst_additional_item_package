@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dist": "node ./dist.js",
+    "dist-test": "node ./dist.js --target='../aip_output'",
     "gen:preview": "node gen/foodPreview",
     "gen:seed": "node gen/veggie",
     "init": "node gen/init",
@@ -29,6 +31,6 @@
   },
   "devDependencies": {
     "chalk": "^2.4.2",
-    "yargs": "^13.2.4"
+    "yargs": "^13.3.2"
   }
 }
