@@ -34,6 +34,23 @@ local LANG_MAP = {
 			["DESC"] = "What's it waiting for?",
 		},
 	},
+	["spanish"] = {
+		["aip_moon"] = {
+			["NAME"] = "Ceniza lunar",
+			["REC_DESC"] = "Proporciona una luz tenue",
+			["DESC"] = "Eso es arte contemporaneo?",
+		},
+		["aip_doujiang"] = {
+			["NAME"] = "Dou Jiang",
+			["REC_DESC"] = "La felicidad es el objetivo de la vida",
+			["DESC"] = "Parece que se hubiese vuelto piedra",
+		},
+		["aip_deer"] = {
+			["NAME"] = "Observador",
+			["REC_DESC"] = "Parece algo vivo",
+			["DESC"] = "¿A qué está esperando?",
+		},
+	},
 	["chinese"] = {
 		["aip_moon"] = {
 			["NAME"] = "月光星尘",
