@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dist": "node ./dist.js",
     "gen:preview": "node gen/foodPreview",
     "gen:seed": "node gen/veggie",
     "init": "node gen/init",

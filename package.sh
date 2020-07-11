@@ -1,3 +1,5 @@
+## Legacy. Use `npm run dist` instead
+
 echo "Clean up..."
 rm -rf package/
 
