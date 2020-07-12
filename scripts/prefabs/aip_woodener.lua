@@ -107,6 +107,37 @@ local function OnInit(inst)
 	end
 end
 
+local function onCreateWoodead(inst)
+	local usageTimes = 0
+
+	-- 计算生产的物料
+	if inst.components.aipc_action and inst.components.container then
+		local ings = {}
+		for k, item in pairs(inst.components.container.slots) do
+			local stackSize = item.components.stackable and item.components.stackable:StackSize() or 1
+
+			if item.prefab == "livinglog" then
+				usageTimes = usageTimes + stackSize * 5
+			elseif item.prefab == "driftwood_log" then
+				usageTimes = usageTimes + stackSize * 2
+			else
+				usageTimes = usageTimes + stackSize
+			end
+		end
+	end
+
+	if usageTimes > 0 then
+		inst.AnimState:PlayAnimation("consume")
+		inst.AnimState:PushAnimation("idle", false)
+		inst.SoundEmitter:PlaySound("dontstarve/common/sign_craft")
+
+		local dropLootItem = inst.components.lootdropper:SpawnLootPrefab("aip_oar_woodead")
+
+		inst.components.container:Close()
+		inst.components.container:DestroyContents()
+	end
+end
+
 local function fn()
 	local inst = CreateEntity()
 	
@@ -137,6 +168,10 @@ local function fn()
 	-- 容器
 	inst:AddComponent("container")
 	inst.components.container:WidgetSetup("aip_woodener")
+
+	-- 烹饪
+	inst:AddComponent("aipc_action")
+	inst.components.aipc_action.onDoAction = onCreateWoodead
 
 	-- 掉东西
 	inst:AddComponent("lootdropper")

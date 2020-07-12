@@ -166,6 +166,6 @@ end
 
 return Prefab(
     "aip_woodead",
-    makeOar(woodead_info, "malbatross_beak", "swap_malbatross_beak", TUNING.MED_FUEL, true),
+    makeOar(woodead_info, "malbatross_beak", "swap_malbatross_beak", TUNING.MED_LARGE_FUEL, true),
     assets
 )
