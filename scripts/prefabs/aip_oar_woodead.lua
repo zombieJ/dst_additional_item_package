@@ -32,7 +32,7 @@ local woodead_info = {
 local assets = {
     Asset("ANIM", "anim/malbatross_beak.zip"),
     Asset("ANIM", "anim/swap_malbatross_beak.zip"),
-},
+}
 
 -- 文字描述
 local LANG_MAP = {
@@ -46,13 +46,13 @@ local LANG_MAP = {
         ["REC_DESC"] = "更擅长战斗",
         ["DESC"] = "打人要专注，效果会更好",
     },
-},
+}
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
-STRINGS.NAMES.AIP_WOODEAD = LANG.NAME
-STRINGS.RECIPE_DESC.AIP_WOODEAD = LANG.REC_DESC
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_WOODEAD = LANG.DESC
+STRINGS.NAMES.AIP_OAR_WOODEAD = LANG.NAME
+STRINGS.RECIPE_DESC.AIP_OAR_WOODEAD = LANG.REC_DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OAR_WOODEAD = LANG.DESC
 
 -- 代码区域
 local function damage_calculation(inst, attacker, target, damage, damage_step, damage_max)
@@ -164,8 +164,12 @@ local function makeOar(data, build, swap_build, fuel_value, is_wooden)
     return inst
 end
 
+local function aip_oar_woodead()
+    return makeOar(woodead_info, "malbatross_beak", "swap_malbatross_beak", TUNING.MED_LARGE_FUEL, true)
+end
+
 return Prefab(
-    "aip_woodead",
-    makeOar(woodead_info, "malbatross_beak", "swap_malbatross_beak", TUNING.MED_LARGE_FUEL, true),
+    "aip_oar_woodead",
+    aip_oar_woodead,
     assets
 )

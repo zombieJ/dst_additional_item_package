@@ -123,7 +123,7 @@ params.aip_woodener =
 		buttoninfo =
 		{
 			text = STRINGS.ACTIONS.CRAFT,
-			position = Vector3(-125, -130, 0),
+			position = Vector3(0, -140, 0),
 		}
 	},
 	acceptsstacks = true,
