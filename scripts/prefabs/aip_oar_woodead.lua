@@ -24,8 +24,8 @@ local woodead_info = {
     DAMAGE = TUNING.NIGHTSWORD_DAMAGE / 68 * 3 * damageTimes,
     DAMAGE_STEP = TUNING.NIGHTSWORD_DAMAGE / 68 * 3 * damageTimes, -- 每次递增的伤害量
     DAMAGE_MAX = TUNING.NIGHTSWORD_DAMAGE / 68 * 100 * damageTimes, -- 最大造成伤害量
-    ROW_FAIL_WEAR = 27,
-    ATTACKWEAR = 27,
+    ROW_FAIL_WEAR = 27 / usageTimes,
+    ATTACKWEAR = 27 / usageTimes,
     USES = 1,
 }
 
@@ -89,6 +89,18 @@ local function onfiniteusesfinished(inst)
     end
 
     inst:Remove()
+end
+
+local function onsave(inst, data)
+    data.finiteusesTotal = inst.components.finiteuses.total
+    data.finiteusesCurrent = inst.components.finiteuses:GetUses()
+end
+
+local function onload(inst, data)
+    if data ~= nil then
+        inst.components.finiteuses:SetMaxUses(data.finiteusesTotal)
+        inst.components.finiteuses:SetUses(data.finiteusesCurrent)
+    end
 end
 
 local function makeOar(data, build, swap_build, fuel_value, is_wooden)
@@ -160,6 +172,10 @@ local function makeOar(data, build, swap_build, fuel_value, is_wooden)
     inst.components.finiteuses:SetConsumption(ACTIONS.ROW_FAIL, data.ROW_FAIL_WEAR)
 
     MakeHauntableLaunch(inst)
+
+    -- 载入保存
+    inst.OnLoad = onload
+    inst.OnSave = onsave
 
     return inst
 end

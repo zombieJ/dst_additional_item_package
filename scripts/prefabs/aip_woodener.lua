@@ -112,7 +112,6 @@ local function onCreateWoodead(inst)
 
 	-- 计算生产的物料
 	if inst.components.aipc_action and inst.components.container then
-		local ings = {}
 		for k, item in pairs(inst.components.container.slots) do
 			local stackSize = item.components.stackable and item.components.stackable:StackSize() or 1
 
@@ -129,9 +128,14 @@ local function onCreateWoodead(inst)
 	if usageTimes > 0 then
 		inst.AnimState:PlayAnimation("consume")
 		inst.AnimState:PushAnimation("idle", false)
-		inst.SoundEmitter:PlaySound("dontstarve/common/sign_craft")
 
-		local dropLootItem = inst.components.lootdropper:SpawnLootPrefab("aip_oar_woodead")
+		inst:DoTaskInTime(0.3, function ()
+			inst.SoundEmitter:PlaySound("dontstarve/common/sign_craft")
+			local dropLootItem = inst.components.lootdropper:SpawnLootPrefab("aip_oar_woodead")
+			local usage = usageTimes * 27
+			dropLootItem.components.finiteuses:SetMaxUses(usage)
+			dropLootItem.components.finiteuses:SetUses(usage)
+		end)
 
 		inst.components.container:Close()
 		inst.components.container:DestroyContents()
