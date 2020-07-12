@@ -58,12 +58,10 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OAR_WOODEAD = LANG.DESC
 local function damage_calculation(inst, attacker, target, damage, damage_step, damage_max)
     if target ~= inst._aip_target then
         inst._aip_target_times = 0
-        GLOBAL.aipPrint("初始伤害", damage)
         return damage
     end
 
     local dmg = math.min(damage + inst._aip_target_times * damage_step, damage_max)
-    GLOBAL.aipPrint("进阶伤害", dmg, inst._aip_target_times)
     return dmg
 end
 local function OnAttack(inst, owner, target)
@@ -142,11 +140,11 @@ local function makeOar(data, build, swap_build, fuel_value, is_wooden)
 
     if additional_weapon == "open" then
         inst:AddComponent("weapon")
-        inst.components.weapon:SetDamage(data.DAMAGE)
-        inst.components.weapon.attackwear = data.ATTACKWEAR
-        inst.components.weapon:SetOnAttack(function(inst, owner, target)
-            OnAttack(inst, owner, target, data.DAMAGE, data.DAMAGE_STEP, data.DAMAGE_MAX)
+        inst.components.weapon:SetDamage(function(inst, attacker, target)
+            return damage_calculation(inst, attacker, target, data.DAMAGE, data.DAMAGE_STEP, data.DAMAGE_MAX)
         end)
+        inst.components.weapon.attackwear = data.ATTACKWEAR
+        inst.components.weapon:SetOnAttack(OnAttack)
         inst._aip_target = nil
         inst._aip_target_times = 0
     end
