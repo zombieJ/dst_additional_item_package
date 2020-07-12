@@ -50,3 +50,9 @@
 # 对应的脚本
 
 在 `modmain.lua` 中的 `PrefabFiles` 添加 `my_item`。并创建对应的 `scripts/prefebs/my_item.lua` 文件。然后照着一个文件写起来吧~
+
+# components 用途快查
+
+| 组件名 | 描述 |
+| --- | --- |
+| waterproofer | 物品防水 |
