@@ -32,6 +32,7 @@ PrefabFiles =
 
 	-- Dress
 	"aip_dress",
+	"aip_armor_grambler",
 
 	-- Chesspiece
 	"aip_chesspiece",
