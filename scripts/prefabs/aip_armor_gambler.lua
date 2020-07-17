@@ -1,5 +1,34 @@
+local survival_effect = aipGetModConfig("survival_effect")
+local language = aipGetModConfig("language")
+
+local gamblerChance = .6
+if survival_effect == "less" then
+  gamblerChance = .4
+elseif survival_effect == "large" then
+  gamblerChance = .9
+end
+
 local ARMOR = TUNING.ARMORWOOD / 450 * 400;
 local ARMO_ABSORPTION = TUNING.ARMORWOOD_ABSORPTION / .8 * .7;
+
+local LANG_MAP = {
+	["english"] = {
+		["NAME"] = "Gambler Armor",
+		["REC_DESC"] = "There exist 60% chance to survive",
+		["DESC"] = "Death and immortality are a matter of probability",
+	},
+	["chinese"] = {
+		["NAME"] = "赌徒护甲",
+		["REC_DESC"] = "有 60% 概率免疫致死伤害",
+		["DESC"] = "是我心理作祟还是它真的金刚不坏？",
+	},
+}
+
+local LANG = LANG_MAP[language] or LANG_MAP.english
+
+local prefabs = {
+  "shadow_shield2"
+}
 
 local assets =
 {
@@ -7,6 +36,23 @@ local assets =
   Asset("ANIM", "anim/armor_wood.zip"),
   Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
 }
+
+-- 文字描述
+STRINGS.NAMES.AIP_ARMOR_GAMBLER = LANG.NAME
+STRINGS.RECIPE_DESC.AIP_ARMOR_GAMBLER = LANG.REC_DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_ARMOR_GAMBLER = LANG.DESC
+
+-- 配方
+local aip_armor_gambler = Recipe("aip_armor_gambler", {
+    Ingredient("papyrus", 3),
+    Ingredient("nightmarefuel", 1),
+    Ingredient("rope", 1)
+  },
+  RECIPETABS.WAR,
+  TECH.SCIENCE_TWO
+)
+
+-----------------------------------------------------------
 
 local function OnBlocked(owner)
   owner.SoundEmitter:PlaySound("dontstarve/wilson/hit_armour")
@@ -23,8 +69,18 @@ local function onequip(inst, owner)
     local originHealthDoDelta = owner.components.health.DoDelta
     inst._originHealthDoDelta = originHealthDoDelta
 
-    owner.components.health.DoDelta = function(self, damage, ...)
-      return originHealthDoDelta(self, damage, unpack(arg))
+    owner.components.health.DoDelta = function(self, delta, ...)
+      local newDelta = delta
+      local hp = owner.components.health.currenthealth
+      if hp + newDelta <= 0 and math.random() <= gamblerChance then
+        newDelta = 1 - hp
+        owner.SoundEmitter:PlaySound("dontstarve/common/staff_blink")
+
+        local fx = SpawnPrefab("shadow_shield2")
+        fx.entity:SetParent(owner.entity)
+      end
+
+      return originHealthDoDelta(self, newDelta, unpack(arg))
     end
   end
 end
@@ -94,4 +150,4 @@ local function fn()
     return inst
 end
 
-return Prefab("aip_armor_grambler", fn, assets)
+return Prefab("aip_armor_gambler", fn, assets, prefabs)
