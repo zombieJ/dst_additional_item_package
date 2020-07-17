@@ -5,30 +5,38 @@ local assets =
 {
   -- Asset("ANIM", "anim/aip_armor_gambler.zip"),
   Asset("ANIM", "anim/armor_wood.zip"),
+  Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
 }
 
 local function OnBlocked(owner)
   owner.SoundEmitter:PlaySound("dontstarve/wilson/hit_armour")
 end
 
-local function onAttacked(owner, data)
-  inst.components.armor:SetAbsorption(TUNING.FULL_ABSORPTION)
-  inst._task = inst:DoTaskInTime(0.1, function()
-    inst.components.armor:SetAbsorption(ARMO_ABSORPTION)
-  end)
-end
-
 local function onequip(inst, owner)
   -- owner.AnimState:OverrideSymbol("swap_body", "aip_armor_gambler", "swap_body")
   owner.AnimState:OverrideSymbol("swap_body", "armor_wood", "swap_body")
   inst:ListenForEvent("blocked", OnBlocked, owner)
-  inst:ListenForEvent("attacked", onAttacked, owner)
+
+  -- 注入生命变更
+  inst._originHealthDoDelta = nil
+  if owner.components.health ~= nil then
+    local originHealthDoDelta = owner.components.health.DoDelta
+    inst._originHealthDoDelta = originHealthDoDelta
+
+    owner.components.health.DoDelta = function(self, damage, ...)
+      return originHealthDoDelta(self, damage, unpack(arg))
+    end
+  end
 end
 
 local function onunequip(inst, owner)
   owner.AnimState:ClearOverrideSymbol("swap_body")
   inst:RemoveEventCallback("blocked", OnBlocked, owner)
-  inst:RemoveEventCallback("attacked", onAttacked, owner)
+
+  -- 恢复原本的生命变更
+  if inst._originHealthDoDelta then
+    owner.components.health.DoDelta = inst._originHealthDoDelta
+  end
 end
 
 local function fn()
@@ -62,6 +70,8 @@ local function fn()
     inst:AddComponent("inspectable")
 
     inst:AddComponent("inventoryitem")
+    inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_fish_sword.xml"
+    inst.components.inventoryitem.imagename = "aip_fish_sword"
 
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL
