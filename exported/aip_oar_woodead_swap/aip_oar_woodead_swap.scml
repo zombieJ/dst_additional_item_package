@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="aip_oar_woodead_swap">
+        <file id="0" name="aip_oar_woodead_swap/swap_oar_driftwood-0.png" width="88" height="264" pivot_x="0.456534" pivot_y="0.241383"/>
+        <file id="1" name="aip_oar_woodead_swap/swap_oar_driftwood-2.png" width="96" height="264" pivot_x="0.599219" pivot_y="0.241383"/>
+        <file id="2" name="aip_oar_woodead_swap/swap_oar_driftwood-3.png" width="216" height="240" pivot_x="0.854745" pivot_y="0.361354"/>
+        <file id="3" name="aip_oar_woodead_swap/swap_oar_driftwood-5.png" width="92" height="268" pivot_x="0.437228" pivot_y="0.2375"/>
+        <file id="4" name="aip_oar_woodead_swap/swap_oar_driftwood-6.png" width="92" height="280" pivot_x="0.437228" pivot_y="0.242232"/>
+        <file id="5" name="aip_oar_woodead_swap/swap_oar_driftwood-7.png" width="92" height="272" pivot_x="0.444837" pivot_y="0.237408"/>
+        <file id="6" name="aip_oar_woodead_swap/swap_oar_driftwood-10.png" width="92" height="272" pivot_x="0.449457" pivot_y="0.564798"/>
+        <file id="7" name="aip_oar_woodead_swap/swap_oar_driftwood-12.png" width="84" height="240" pivot_x="0.444345" pivot_y="0.544062"/>
+        <file id="8" name="aip_oar_woodead_swap/swap_oar_driftwood-13.png" width="92" height="252" pivot_x="0.449457" pivot_y="0.566865"/>
+        <file id="9" name="aip_oar_woodead_swap/swap_oar_driftwood-15.png" width="80" height="212" pivot_x="0.440938" pivot_y="0.491038"/>
+        <file id="10" name="aip_oar_woodead_swap/swap_oar_driftwood-17.png" width="72" height="260" pivot_x="0.455208" pivot_y="0.576154"/>
+        <file id="11" name="aip_oar_woodead_swap/swap_oar_driftwood-19.png" width="96" height="176" pivot_x="0.475781" pivot_y="0.379545"/>
+        <file id="12" name="aip_oar_woodead_swap/swap_oar_driftwood-20.png" width="84" height="192" pivot_x="0.472321" pivot_y="0.42487"/>
+        <file id="13" name="aip_oar_woodead_swap/swap_oar_driftwood-21.png" width="60" height="136" pivot_x="0.5225" pivot_y="0.185662"/>
+    </folder>
+    <entity id="0" name="aip_oar_woodead_swap">
+        <animation id="0" name="BUILD" length="134">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="swap_oar_driftwood-0" folder="0" file="0" abs_x="-3" abs_y="3" abs_pivot_x="0.456534" abs_pivot_y="0.241383" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="34"/>
+                <key id="2" time="67"/>
+                <key id="3" time="100"/>
+                <key id="4" time="134"/>
+            </mainline>
+            <timeline id="0" name="swap_oar_driftwood-0">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-3" y="3"/>
+                </key>
+                <key id="1" time="34" spin="0">
+                    <object folder="0" file="0" x="-3" y="3"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

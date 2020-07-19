@@ -30,8 +30,8 @@ local woodead_info = {
 }
 
 local assets = {
-    Asset("ANIM", "anim/malbatross_beak.zip"),
-    Asset("ANIM", "anim/swap_malbatross_beak.zip"),
+    Asset("ANIM", "anim/aip_oar_woodead.zip"),
+    Asset("ANIM", "anim/aip_oar_woodead_swap.zip"),
 }
 
 -- 文字描述
@@ -179,7 +179,7 @@ local function makeOar(data, build, swap_build, fuel_value, is_wooden)
 end
 
 local function aip_oar_woodead()
-    return makeOar(woodead_info, "malbatross_beak", "swap_malbatross_beak", TUNING.MED_LARGE_FUEL, true)
+    return makeOar(woodead_info, "aip_oar_woodead", "aip_oar_woodead_swap", TUNING.MED_LARGE_FUEL, true)
 end
 
 return Prefab(
