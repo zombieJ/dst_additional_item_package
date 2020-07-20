@@ -132,7 +132,7 @@ local function onCreateWoodead(inst)
 		inst:DoTaskInTime(0.3, function ()
 			inst.SoundEmitter:PlaySound("dontstarve/common/sign_craft")
 			local dropLootItem = inst.components.lootdropper:SpawnLootPrefab("aip_oar_woodead")
-			local usage = usageTimes * 27
+			local usage = usageTimes * 57
 			dropLootItem.components.finiteuses:SetMaxUses(usage)
 			dropLootItem.components.finiteuses:SetUses(usage)
 		end)

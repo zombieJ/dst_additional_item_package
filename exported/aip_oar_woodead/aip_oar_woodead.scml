@@ -3,7 +3,7 @@
 	<folder id="0" name="aip_oar_woodead">
 		<file id="0" name="aip_oar_woodead/aip_oar_woodead.png" width="264" height="184" pivot_x="0.522254" pivot_y="0.536685" />
 	</folder>
-	<entity id="0" name="oar_driftwood">
+	<entity id="0" name="aip_oar_woodead">
 		<animation id="0" name="idle" length="134">
 			<mainline>
 				<key id="0" time="0">

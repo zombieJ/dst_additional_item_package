@@ -24,8 +24,8 @@ local woodead_info = {
     DAMAGE = TUNING.NIGHTSWORD_DAMAGE / 68 * 3 * damageTimes,
     DAMAGE_STEP = TUNING.NIGHTSWORD_DAMAGE / 68 * 3 * damageTimes, -- 每次递增的伤害量
     DAMAGE_MAX = TUNING.NIGHTSWORD_DAMAGE / 68 * 100 * damageTimes, -- 最大造成伤害量
-    ROW_FAIL_WEAR = 27 / usageTimes,
-    ATTACKWEAR = 27 / usageTimes,
+    ROW_FAIL_WEAR = 6 / usageTimes,
+    ATTACKWEAR = 57 / usageTimes,
     USES = 1,
 }
 
