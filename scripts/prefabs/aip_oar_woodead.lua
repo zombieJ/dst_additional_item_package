@@ -30,6 +30,7 @@ local woodead_info = {
 }
 
 local assets = {
+    Asset("ATLAS", "images/inventoryimages/aip_oar_woodead.xml"),
     Asset("ANIM", "anim/aip_oar_woodead.zip"),
     Asset("ANIM", "anim/aip_oar_woodead_swap.zip"),
 }
@@ -134,6 +135,8 @@ local function makeOar(data, build, swap_build, fuel_value, is_wooden)
 	end
 
     inst:AddComponent("inventoryitem")
+    inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_oar_woodead.xml"
+
     inst:AddComponent("oar")
     inst.components.oar.force = data.FORCE
     inst:AddComponent("inspectable")
