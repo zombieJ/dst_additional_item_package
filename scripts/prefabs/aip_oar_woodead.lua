@@ -116,7 +116,7 @@ local function makeOar(data, build, swap_build, fuel_value, is_wooden)
 
     inst.AnimState:SetBank(build)
     inst.AnimState:SetBuild(build)
-    inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:PlayAnimation("idle", true)
 
     MakeInventoryFloatable(inst, "small", nil, 0.68)
 

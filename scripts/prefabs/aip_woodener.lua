@@ -156,7 +156,7 @@ local function fn()
 	-- 动画
 	inst.AnimState:SetBank("aip_woodener")
 	inst.AnimState:SetBuild("aip_woodener")
-	inst.AnimState:PlayAnimation("idle", false)
+	inst.AnimState:PlayAnimation("idle", true)
 
 	-- 标签
 	inst:AddTag("structure")

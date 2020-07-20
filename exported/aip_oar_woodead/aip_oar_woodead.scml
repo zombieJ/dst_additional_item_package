@@ -1,44 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
-	<folder id="0" name="aip_oar_woodead">
-		<file id="0" name="aip_oar_woodead/aip_oar_woodead.png" width="264" height="184" pivot_x="0.522254" pivot_y="0.536685" />
-	</folder>
-	<entity id="0" name="aip_oar_woodead">
-		<animation id="0" name="idle" length="134">
-			<mainline>
-				<key id="0" time="0">
-					<object_ref id="0" name="aip_oar_woodead" abs_x="0" abs_y="0" abs_pivot_x="0.522254" abs_pivot_y="0.536685" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
-				</key>
-				<key id="1" time="34">
-					<object_ref id="0" name="aip_oar_woodead" abs_x="0" abs_y="0" abs_pivot_x="0.522254" abs_pivot_y="0.536685" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
-				</key>
-				<key id="2" time="67">
-					<object_ref id="0" name="aip_oar_woodead" abs_x="0" abs_y="0" abs_pivot_x="0.522254" abs_pivot_y="0.536685" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
-				</key>
-				<key id="3" time="100">
-					<object_ref id="0" name="aip_oar_woodead" abs_x="0" abs_y="0" abs_pivot_x="0.522254" abs_pivot_y="0.536685" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
-				</key>
-				<key id="4" time="134">
-					<object_ref id="0" name="aip_oar_woodead" abs_x="0" abs_y="0" abs_pivot_x="0.522254" abs_pivot_y="0.536685" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
-				</key>
-			</mainline>
-			<timeline id="0" name="aip_oar_woodead">
-				<key id="0" time="0" spin="1">
-					<object folder="0" file="0" x="-0.3" y="-0" scale_x="1" scale_y="1" angle="0" />
-				</key>
-				<key id="1" time="34" spin="1">
-					<object folder="0" file="0" x="-0.3" y="-0" scale_x="1" scale_y="1" angle="0" />
-				</key>
-				<key id="2" time="67" spin="1">
-					<object folder="0" file="0" x="-0.3" y="-0" scale_x="1" scale_y="1" angle="0" />
-				</key>
-				<key id="3" time="100" spin="1">
-					<object folder="0" file="0" x="-0.3" y="-0" scale_x="1" scale_y="1" angle="0" />
-				</key>
-				<key id="4" time="134" spin="1">
-					<object folder="0" file="0" x="-0.3" y="-0" scale_x="1" scale_y="1" angle="0" />
-				</key>
-			</timeline>
-		</animation>
-	</entity>
+    <folder id="0" name="aip_oar_woodead">
+        <file id="0" name="aip_oar_woodead/aip_oar_woodead.png" width="264" height="184" pivot_x="0.522254" pivot_y="0.536685"/>
+        <file id="1" name="aip_oar_woodead/body.png" width="230" height="320" pivot_x="0" pivot_y="1"/>
+        <file id="2" name="aip_oar_woodead/eye.png" width="150" height="100" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_oar_woodead">
+        <animation id="0" name="idle" length="2000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="body" folder="0" file="1" abs_x="-18.272391" abs_y="-31.732753" abs_pivot_x="0.325789" abs_pivot_y="0.193918" abs_angle="0" abs_scale_x="0.716573" abs_scale_y="0.716573" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="eye" folder="0" file="2" abs_x="34.978782" abs_y="95.140824" abs_pivot_x="0.472674" abs_pivot_y="0.504806" abs_angle="329.476558" abs_scale_x="0.554956" abs_scale_y="0.554956" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="160">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+                <key id="2" time="256">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="2" z_index="1"/>
+                </key>
+                <key id="3" time="361">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="3" z_index="1"/>
+                </key>
+                <key id="4" time="479">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="4" z_index="1"/>
+                </key>
+                <key id="5" time="615">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="5" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="body">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="-18.272391" y="-31.732753" pivot_x="0.325789" pivot_y="0.193918" angle="0" scale_x="0.716573" scale_y="0.716573"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="eye">
+                <key id="0" spin="0">
+                    <object folder="0" file="2" x="34.978782" y="95.140824" pivot_x="0.472674" pivot_y="0.504806" angle="329.476558" scale_x="0.554956" scale_y="0.554956"/>
+                </key>
+                <key id="1" time="160" spin="0">
+                    <object folder="0" file="2" x="34.978782" y="95.140824" pivot_x="0.472674" pivot_y="0.504806" angle="329.476558" scale_x="0.554956" scale_y="0.554956"/>
+                </key>
+                <key id="2" time="256" spin="0">
+                    <object folder="0" file="2" x="34.978782" y="95.140824" pivot_x="0.472674" pivot_y="0.504806" angle="329.476558" scale_x="0.554956" scale_y="0.049406"/>
+                </key>
+                <key id="3" time="361" spin="0">
+                    <object folder="0" file="2" x="34.978782" y="95.140824" pivot_x="0.472674" pivot_y="0.504806" angle="329.476558" scale_x="0.554956" scale_y="0.554956"/>
+                </key>
+                <key id="4" time="479" spin="0">
+                    <object folder="0" file="2" x="34.978782" y="95.140824" pivot_x="0.472674" pivot_y="0.504806" angle="329.476558" scale_x="0.554956" scale_y="0.059078"/>
+                </key>
+                <key id="5" time="615" spin="0">
+                    <object folder="0" file="2" x="34.978782" y="95.140824" pivot_x="0.472674" pivot_y="0.504806" angle="329.476558" scale_x="0.554956" scale_y="0.554956"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
 </spriter_data>
