@@ -41,11 +41,13 @@ local LANG_MAP = {
         ["NAME"] = "Woodead Oar",
         ["REC_DESC"] = "Good at fight",
         ["DESC"] = "Will harm more with same target",
+        ["ATTACH_SPEECH"] = "A new enemy!",
     },
     ["chinese"] = {
         ["NAME"] = "树精木浆",
         ["REC_DESC"] = "更擅长战斗",
         ["DESC"] = "打人要专注，效果会更好",
+        ["ATTACH_SPEECH"] = "一个新的敌人！",
     },
 }
 
@@ -66,6 +68,11 @@ local function damage_calculation(inst, attacker, target, damage, damage_step, d
     return dmg
 end
 local function OnAttack(inst, owner, target)
+    -- 重置时语音播报
+    if owner.components.talker ~= nil and inst._aip_target_times == 0 then
+        owner.components.talker:Say(LANG.ATTACH_SPEECH)
+    end
+
     -- 计数器更新
     inst._aip_target = target
     inst._aip_target_times = inst._aip_target_times + 1
