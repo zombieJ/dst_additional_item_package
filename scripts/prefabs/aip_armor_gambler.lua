@@ -1,7 +1,7 @@
 local survival_effect = aipGetModConfig("survival_effect")
 local language = aipGetModConfig("language")
 
-local gamblerChance = .6
+local gamblerChance = .66
 if survival_effect == "less" then
   gamblerChance = .4
 elseif survival_effect == "large" then
@@ -19,7 +19,7 @@ local LANG_MAP = {
 	},
 	["chinese"] = {
 		["NAME"] = "赌徒护甲",
-		["REC_DESC"] = "有 60% 概率免疫致死伤害",
+		["REC_DESC"] = "有 66% 概率免疫致死伤害",
 		["DESC"] = "是我心理作祟还是它真的金刚不坏？",
 	},
 }
@@ -63,36 +63,25 @@ local function onequip(inst, owner)
   owner.AnimState:OverrideSymbol("swap_body", "armor_wood", "swap_body")
   inst:ListenForEvent("blocked", OnBlocked, owner)
 
-  -- 注入生命变更
-  inst._originHealthDoDelta = nil
-  if owner.components.health ~= nil then
-    local originHealthDoDelta = owner.components.health.DoDelta
-    inst._originHealthDoDelta = originHealthDoDelta
+  inst._aip_healthdelta_fn = function(owner, data)
+    local newDelta = data.amount
+    local hp = owner.components.health.currenthealth
+    if hp + newDelta <= 0 and math.random() <= gamblerChance then
+      data.amount = 1 - hp
+      owner.SoundEmitter:PlaySound("dontstarve/common/staff_blink")
 
-    owner.components.health.DoDelta = function(self, delta, ...)
-      local newDelta = delta
-      local hp = owner.components.health.currenthealth
-      if hp + newDelta <= 0 and math.random() <= gamblerChance then
-        newDelta = 1 - hp
-        owner.SoundEmitter:PlaySound("dontstarve/common/staff_blink")
-
-        local fx = SpawnPrefab("shadow_shield2")
-        fx.entity:SetParent(owner.entity)
-      end
-
-      return originHealthDoDelta(self, newDelta, unpack(arg))
+      local fx = SpawnPrefab("shadow_shield2")
+      fx.entity:SetParent(owner.entity)
     end
   end
+  owner:ListenForEvent("aip_healthdelta", inst._aip_healthdelta_fn)
 end
 
 local function onunequip(inst, owner)
   owner.AnimState:ClearOverrideSymbol("swap_body")
   inst:RemoveEventCallback("blocked", OnBlocked, owner)
 
-  -- 恢复原本的生命变更
-  if inst._originHealthDoDelta then
-    owner.components.health.DoDelta = inst._originHealthDoDelta
-  end
+  owner:RemoveEventCallback("aip_healthdelta", inst._aip_healthdelta_fn)
 end
 
 local function fn()
