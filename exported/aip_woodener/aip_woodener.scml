@@ -7,19 +7,49 @@
         <animation id="0" name="idle" length="1000">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="woodener" folder="0" file="0" abs_x="2.003421" abs_y="1.230941" abs_pivot_x="0.494001" abs_pivot_y="0.095038" abs_angle="360" abs_scale_x="0.570278" abs_scale_y="0.570278" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="0" name="woodener" folder="0" file="0" abs_x="2.003421" abs_y="1.230941" abs_pivot_x="0.494001" abs_pivot_y="0.095038" abs_angle="0" abs_scale_x="0.570278" abs_scale_y="0.570278" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
             </mainline>
             <timeline id="0" name="woodener">
                 <key id="0" spin="0">
-                    <object folder="0" file="0" x="2.003421" y="1.230941" scale_x="0.570278" scale_y="0.570278"/>
+                    <object folder="0" file="0" x="2.003421" y="1.230941" angle="0" scale_x="0.570278" scale_y="0.570278"/>
                 </key>
             </timeline>
         </animation>
-        <animation id="1" name="hit" length="300">
+        <animation id="1" name="consume" length="500">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="woodener" folder="0" file="0" abs_x="2.003421" abs_y="1.230941" abs_pivot_x="0.494001" abs_pivot_y="0.095038" abs_angle="360" abs_scale_x="0.570278" abs_scale_y="0.570278" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="0" name="woodener" folder="0" file="0" abs_x="2.003421" abs_y="1.230941" abs_pivot_x="0.494001" abs_pivot_y="0.095038" abs_angle="0" abs_scale_x="0.570278" abs_scale_y="0.570278" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="146">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+                <key id="2" time="311">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                </key>
+                <key id="3" time="494">
+                    <object_ref id="0" timeline="0" key="3" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="woodener">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="2.003421" y="1.230941" angle="0" scale_x="0.570278" scale_y="0.570278"/>
+                </key>
+                <key id="1" time="146" spin="0">
+                    <object folder="0" file="0" x="2.003421" y="-10.851712" angle="0" scale_x="0.683114" scale_y="0.443809"/>
+                </key>
+                <key id="2" time="311" spin="0">
+                    <object folder="0" file="0" x="2.003421" y="85.004656" angle="0" scale_x="0.576345" scale_y="0.67258"/>
+                </key>
+                <key id="3" time="494" spin="0">
+                    <object folder="0" file="0" x="2.003421" y="1.230941" angle="0" scale_x="0.570278" scale_y="0.570278"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="hit" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="woodener" folder="0" file="0" abs_x="2.003421" abs_y="1.230941" abs_pivot_x="0.494001" abs_pivot_y="0.095038" abs_angle="0" abs_scale_x="0.570278" abs_scale_y="0.570278" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
                 <key id="1" time="115">
                     <object_ref id="0" timeline="0" key="1" z_index="0"/>
@@ -33,7 +63,7 @@
             </mainline>
             <timeline id="0" name="woodener">
                 <key id="0" spin="-1">
-                    <object folder="0" file="0" x="2.003421" y="1.230941" scale_x="0.570278" scale_y="0.570278"/>
+                    <object folder="0" file="0" x="2.003421" y="1.230941" angle="0" scale_x="0.570278" scale_y="0.570278"/>
                 </key>
                 <key id="1" time="115">
                     <object folder="0" file="0" x="2.003421" y="1.230941" angle="354.681482" scale_x="0.570278" scale_y="0.570278"/>
@@ -42,14 +72,14 @@
                     <object folder="0" file="0" x="2.003421" y="1.230941" angle="4.736686" scale_x="0.570278" scale_y="0.570278"/>
                 </key>
                 <key id="3" time="298" spin="0">
-                    <object folder="0" file="0" x="2.003421" y="1.230941" scale_x="0.570278" scale_y="0.570278"/>
+                    <object folder="0" file="0" x="2.003421" y="1.230941" angle="0" scale_x="0.570278" scale_y="0.570278"/>
                 </key>
             </timeline>
         </animation>
-        <animation id="2" name="place" length="400">
+        <animation id="3" name="place" length="400">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="woodener" folder="0" file="0" abs_x="2.003421" abs_y="-16.673737" abs_pivot_x="0.494001" abs_pivot_y="0.095038" abs_angle="360" abs_scale_x="0.570278" abs_scale_y="0.38287" abs_a="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="0" name="woodener" folder="0" file="0" abs_x="2.003421" abs_y="-16.673737" abs_pivot_x="0.494001" abs_pivot_y="0.095038" abs_angle="0" abs_scale_x="0.570278" abs_scale_y="0.38287" abs_a="0" timeline="0" key="0" z_index="0"/>
                 </key>
                 <key id="1" time="157">
                     <object_ref id="0" timeline="0" key="1" z_index="0"/>
@@ -63,16 +93,16 @@
             </mainline>
             <timeline id="0" name="woodener">
                 <key id="0" spin="0">
-                    <object folder="0" file="0" x="2.003421" y="-16.673737" scale_x="0.570278" scale_y="0.38287" a="0"/>
+                    <object folder="0" file="0" x="2.003421" y="-16.673737" angle="0" scale_x="0.570278" scale_y="0.38287" a="0"/>
                 </key>
                 <key id="1" time="157" spin="0">
-                    <object folder="0" file="0" x="2.003421" y="4.51454" scale_x="0.570278" scale_y="0.604648"/>
+                    <object folder="0" file="0" x="2.003421" y="4.51454" angle="0" scale_x="0.570278" scale_y="0.604648"/>
                 </key>
                 <key id="2" time="244" spin="0">
-                    <object folder="0" file="0" x="2.003421" y="-3.502646" scale_x="0.647577" scale_y="0.520732"/>
+                    <object folder="0" file="0" x="2.003421" y="-3.502646" angle="0" scale_x="0.647577" scale_y="0.520732"/>
                 </key>
                 <key id="3" time="394" spin="0">
-                    <object folder="0" file="0" x="2.003421" y="1.230941" scale_x="0.570278" scale_y="0.570278"/>
+                    <object folder="0" file="0" x="2.003421" y="1.230941" angle="0" scale_x="0.570278" scale_y="0.570278"/>
                 </key>
             </timeline>
         </animation>

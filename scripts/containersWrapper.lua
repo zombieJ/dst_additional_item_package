@@ -119,6 +119,12 @@ params.aip_woodener =
 		animbuild = "ui_chest_3x3",
 		pos = Vector3(0, 200, 0),
 		side_align_tip = 160,
+
+		buttoninfo =
+		{
+			text = STRINGS.ACTIONS.CRAFT,
+			position = Vector3(0, -140, 0),
+		}
 	},
 	acceptsstacks = true,
 	type = "chest",
@@ -131,11 +137,25 @@ for y = 2, 0, -1 do
 end
 
 function params.aip_woodener.itemtestfn(container, item, slot)
-	if item.prefab ~= "log" and item.prefab ~= "livinglog" then
+	if item.prefab ~= "log" and item.prefab ~= "livinglog" and item.prefab ~= "driftwood_log" then
 		return false, "AIP_WOODENER_LOG_ONLY"
 	end
 
 	return true
+end
+
+-- 操作按钮
+function params.aip_woodener.widget.buttoninfo.fn(inst)
+	if inst.components.container ~= nil then
+		GLOBAL.BufferedAction(inst.components.container.opener, inst, AIP_ACTION):Do()
+	elseif inst.replica.container ~= nil and not inst.replica.container:IsBusy() then
+		GLOBAL.SendRPCToServer(GLOBAL.RPC.DoWidgetButtonAction, AIP_ACTION.code, inst, AIP_ACTION.mod_name)
+	end
+end
+
+-- 校验是否可以按下
+function params.aip_woodener.widget.buttoninfo.validfn(inst)
+	return inst.replica.container ~= nil and not inst.replica.container:IsEmpty()
 end
 
 ---------------- 暗影宝箱 ----------------
