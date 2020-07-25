@@ -1,11 +1,11 @@
 local survival_effect = aipGetModConfig("survival_effect")
 local language = aipGetModConfig("language")
 
-local gamblerChance = .66
+local gamblerChance = .88
 if survival_effect == "less" then
-  gamblerChance = .4
+  gamblerChance = .66
 elseif survival_effect == "large" then
-  gamblerChance = .9
+  gamblerChance = .99
 end
 
 local ARMOR = TUNING.ARMORWOOD / 450 * 400;
@@ -14,12 +14,12 @@ local ARMO_ABSORPTION = TUNING.ARMORWOOD_ABSORPTION / .8 * .7;
 local LANG_MAP = {
 	["english"] = {
 		["NAME"] = "Gambler Armor",
-		["REC_DESC"] = "There exist 60% chance to survive",
+		["REC_DESC"] = "There exist 88% chance to survive",
 		["DESC"] = "Death and immortality are a matter of probability",
 	},
 	["chinese"] = {
 		["NAME"] = "赌徒护甲",
-		["REC_DESC"] = "有 66% 概率免疫致死伤害",
+		["REC_DESC"] = "有 88% 概率免疫致死伤害",
 		["DESC"] = "是我心理作祟还是它真的金刚不坏？",
 	},
 }
@@ -32,9 +32,8 @@ local prefabs = {
 
 local assets =
 {
-  -- Asset("ANIM", "anim/aip_armor_gambler.zip"),
-  Asset("ANIM", "anim/armor_wood.zip"),
-  Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
+  Asset("ANIM", "anim/aip_armor_gambler.zip"),
+  Asset("ATLAS", "images/inventoryimages/aip_armor_gambler.xml"),
 }
 
 -- 文字描述
@@ -51,6 +50,7 @@ local aip_armor_gambler = Recipe("aip_armor_gambler", {
   RECIPETABS.WAR,
   TECH.SCIENCE_TWO
 )
+aip_armor_gambler.atlas = "images/inventoryimages/aip_armor_gambler.xml"
 
 -----------------------------------------------------------
 
@@ -59,8 +59,7 @@ local function OnBlocked(owner)
 end
 
 local function onequip(inst, owner)
-  -- owner.AnimState:OverrideSymbol("swap_body", "aip_armor_gambler", "swap_body")
-  owner.AnimState:OverrideSymbol("swap_body", "armor_wood", "swap_body")
+  owner.AnimState:OverrideSymbol("swap_body", "aip_armor_gambler", "swap_body")
   inst:ListenForEvent("blocked", OnBlocked, owner)
 
   inst._aip_healthdelta_fn = function(owner, data)
@@ -93,10 +92,8 @@ local function fn()
 
     MakeInventoryPhysics(inst)
 
-    -- inst.AnimState:SetBank("aip_armor_gambler")
-    -- inst.AnimState:SetBuild("aip_armor_gambler")
-    inst.AnimState:SetBank("armor_wood")
-    inst.AnimState:SetBuild("armor_wood")
+    inst.AnimState:SetBank("aip_armor_gambler")
+    inst.AnimState:SetBuild("aip_armor_gambler")
     inst.AnimState:PlayAnimation("anim")
 
     inst:AddTag("grass")
@@ -115,8 +112,8 @@ local function fn()
     inst:AddComponent("inspectable")
 
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_fish_sword.xml"
-    inst.components.inventoryitem.imagename = "aip_fish_sword"
+    inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_armor_gambler.xml"
+    inst.components.inventoryitem.imagename = "aip_armor_gambler"
 
     inst:AddComponent("fuel")
     inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL
