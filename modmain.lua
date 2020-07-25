@@ -34,6 +34,7 @@ PrefabFiles =
 
 	-- Dress
 	"aip_dress",
+	"aip_armor_gambler",
 
 	-- Chesspiece
 	"aip_chesspiece",
@@ -48,6 +49,9 @@ PrefabFiles =
 
 --------------------------------------- 工具 ---------------------------------------
 modimport("scripts/aipUtils.lua")
+
+------------------------------------- 组件钩子 -------------------------------------
+modimport("scripts/componentsHooker.lua")
 
 --------------------------------------- 图标 ---------------------------------------
 AddMinimapAtlas("minimap/dark_observer_vest.xml")
