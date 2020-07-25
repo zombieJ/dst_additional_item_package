@@ -53,7 +53,7 @@ STRINGS.AIP.AIP_MINECART_LEAVE = LANG.leaveTips or LANG_ENG.leaveTips
 
 -- 使用次数
 TUNING.AIP_MINE_CAR_USAGE = dev_mode and 3 or 8
-local speedMulti = dev_mode and 0.1 or 1 
+local speedMulti = dev_mode and 0.1 or 2
 
 -- 配方
 local aip_mine_car = Recipe("aip_mine_car", {Ingredient("boards", 5)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_ONE)
