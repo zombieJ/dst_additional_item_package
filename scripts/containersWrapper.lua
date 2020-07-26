@@ -217,6 +217,46 @@ function params.aip_shadow_chest.widget.buttoninfo.fn(inst)
 	end
 end
 
+---------------- 豆酱权杖 ----------------
+function fillDouScepter(slotCount)
+	local name = "aip_dou_scepter"..tostring(slotCount)
+	local loopIndex = slotCount - 1
+
+	params[name] = {
+		widget = {
+			slotpos = {},
+			slotbg = {
+				{ image = "slingshot_ammo_slot.tex" },
+			},
+			animbank = "ui_cookpot_1x4",
+			animbuild = "ui_cookpot_1x4",
+			pos = Vector3(0, -30 + loopIndex * 45, 0),
+		},
+		acceptsstacks = false,
+		usespecificslotsforitems = true,
+		type = "hand_inv",
+	}
+
+	for y = 0, loopIndex do
+		table.insert(params[name].widget.slotpos, Vector3(0, 108 - 72 * y, 0))
+	end
+
+	params[name].itemtestfn = function(container, item, slot)
+		return true
+	end
+end
+
+fillDouScepter(1)
+fillDouScepter(2)
+fillDouScepter(3)
+fillDouScepter(4)
+
+-- function params.aip_dou_scepter.itemtestfn(container, item, slot)
+-- 	return (slot == nil and (item:HasTag("oceanfishing_bobber") or item:HasTag("oceanfishing_lure")))
+-- 		or (slot == 1 and item:HasTag("oceanfishing_bobber"))
+-- 		or (slot == 2 and item:HasTag("oceanfishing_lure"))
+-- end
+
 ----------------------------------------------------------------------------------------------
 local containers = GLOBAL.require "containers"
 local old_widgetsetup = containers.widgetsetup

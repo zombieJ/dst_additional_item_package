@@ -23,6 +23,7 @@ PrefabFiles =
 	"aip_fish_sword",
 	"aip_beehave",
 	"aip_oar_woodead",
+	"aip_dou_scepter",
 
 	-- Building
 	"incinerator",
