@@ -22,6 +22,11 @@ local LANG_MAP = {
 		["REC_DESC"] = "有 88% 概率免疫致死伤害",
 		["DESC"] = "是我心理作祟还是它真的金刚不坏？",
 	},
+	["russian"] = {
+		["NAME"] = "Броня Мошенника",
+		["REC_DESC"] = "Есть 88% шанс что вы не откинете коньки",
+		["DESC"] = "Смерть и бессмертие - это вопрос вероятности",
+	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
