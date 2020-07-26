@@ -32,6 +32,34 @@ local assets = {
     Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
 }
 
+--------------------------------- 配方 ---------------------------------
+
+-- -- STRINGS.TABS.AIP_DOU_SCEPTER = "测试"
+
+-- local sort_key = 25
+-- local fancy_tab = AddRecipeTab("Fancy Stuff", sort_key, "images/hud/fancy.xml", "fancy.tex" )
+-- local Ingredient = GLOBAL.IngredientAddRecipe("fancy_item", {Ingredient("goldnugget", 1)}, fancy_tab, GLOBAL.TECH.NONE )
+
+-- local aip_dou_scepter = Recipe("aip_dou_scepter", {Ingredient("pondfish", 1),Ingredient("nightmarefuel", 2),Ingredient("rope", 1)}, RECIPETABS.WAR, TECH.SCIENCE_TWO)
+local aip_dou_scepter = Recipe("aip_dou_scepter", {Ingredient("pondfish", 1)}, RECIPETABS.AIP_DOU_SCEPTER, TECH.AIP_DOU_SCEPTER_ONE, nil, nil, true)
+aip_dou_scepter.atlas = "images/inventoryimages/aip_fish_sword.xml"
+
+STRINGS.UI.CRAFTING.AIP_DOU_SCEPTER_ONE = "You need a <custom structure name> to make it."
+
+local function onsave(inst, data)
+	data.magicSlot = inst._magicSlot
+end
+
+local function onload(inst, data)
+	if data ~= nil then
+        inst._magicSlot = data.magicSlot
+
+        if inst.components.container ~= nil then
+            inst.components.container:WidgetSetup("aip_dou_scepter"..tostring(inst._magicSlot))
+        end
+	end
+end
+
 local function onequip(inst, owner)
     owner.AnimState:OverrideSymbol("swap_object", "swap_cane", "swap_cane")
 
@@ -43,7 +71,6 @@ local function onequip(inst, owner)
     end
 end
 
-local slotIndex = 0
 local function onunequip(inst, owner)
     owner.AnimState:Hide("ARM_carry")
     owner.AnimState:Show("ARM_normal")
@@ -51,11 +78,6 @@ local function onunequip(inst, owner)
     if inst.components.container ~= nil then
         inst.components.container:Close()
     end
-
-    slotIndex = (slotIndex + 1) % 4
-    local slotCount = slotIndex + 1
-    aipPrint("==>", slotIndex, slotCount, "aip_dou_scepter"..tostring(slotCount))
-    inst.components.container:WidgetSetup("aip_dou_scepter"..tostring(slotCount))
 end
 
 local function onItemLoaded(inst, data)
@@ -113,6 +135,13 @@ local function fn()
 
     inst:AddComponent("inspectable")
 
+    -- 本身也是一个合成台
+    inst:AddComponent("prototyper")
+    -- inst.components.prototyper.onturnon = onturnon
+    -- inst.components.prototyper.onturnoff = onturnoff
+    -- inst.components.prototyper.onactivate = onactivate
+    inst.components.prototyper.trees = TUNING.PROTOTYPER_TREES.AIP_DOU_SCEPTER_ONE
+
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_fish_sword.xml"
     inst.components.inventoryitem.imagename = "aip_fish_sword"
@@ -124,6 +153,11 @@ local function fn()
     inst.components.equippable.walkspeedmult = TUNING.CANE_SPEED_MULT
 
     MakeHauntableLaunch(inst)
+
+    inst._magicSlot = 1
+
+    inst.OnLoad = onload
+    inst.OnSave = onsave
 
     return inst
 end

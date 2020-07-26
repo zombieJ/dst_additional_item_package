@@ -6,6 +6,7 @@ Assets =
 	Asset("ATLAS", "images/inventoryimages/popcorngun.xml"),
 	Asset("ATLAS", "images/inventoryimages/incinerator.xml"),
 	Asset("ATLAS", "images/inventoryimages/dark_observer.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
 }
 
 -- 物品列表
@@ -48,8 +49,22 @@ PrefabFiles =
 	"aip_shadow_wrapper",
 }
 
+
 --------------------------------------- 工具 ---------------------------------------
 modimport("scripts/aipUtils.lua")
+
+--------------------------------------- 科技 ---------------------------------------
+modimport("scripts/custom_tech_tree.lua")
+
+GLOBAL.RECIPETABS.AIP_DOU_SCEPTER = {
+    str = "SCEPTER",
+    sort = 100,
+    icon_atlas = "images/inventoryimages/aip_fish_sword.xml",
+    icon = "aip_fish_sword.tex",
+    crafting_station = true
+}
+
+AddNewTechTree("AIP_DOU_SCEPTER")
 
 ------------------------------------- 组件钩子 -------------------------------------
 modimport("scripts/componentsHooker.lua")
