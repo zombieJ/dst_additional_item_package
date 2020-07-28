@@ -395,6 +395,7 @@ for name,data in pairs(food_recipes) do
 
 	-- 添加食物
 	AddModPrefabCookerRecipe("cookpot", data)
+	AddModPrefabCookerRecipe("portablecookpot", data)
 
 	-------------------- 创建食物实体 --------------------
 	local assets = {
