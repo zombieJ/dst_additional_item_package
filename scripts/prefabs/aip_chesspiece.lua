@@ -98,6 +98,7 @@ local PIECES =
 		moonevent = false,
 		recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("moonrocknugget", 9), Ingredient("frozen_heart", 1, "images/inventoryimages/frozen_heart.xml")},
 		common_postinit = function(inst)
+			-- 月光星尘会发光
 			inst.entity:AddLight()
 			inst.Light:Enable(true)
 			inst.Light:SetRadius(2)
@@ -110,6 +111,15 @@ local PIECES =
 		name = "aip_doujiang",
 		moonevent = false,
 		recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("plantmeat_cooked", 1), Ingredient("pinecone", 1)},
+		common_postinit = function(inst, material)
+			-- if material ~= "moonglass" then
+			-- 	return
+			-- end
+
+			-- 添加箱子能力
+			inst:AddComponent("container")
+			inst.components.container:WidgetSetup("aip_doujiang_chesspiece")
+		end,
 	},
 	{
 		name = "aip_deer",
@@ -329,7 +339,7 @@ local function makepiece(pieceid, materialid)
 		inst:SetPrefabName("chesspiece_"..PIECES[pieceid].name)
 
 		if PIECES[pieceid].common_postinit ~= nil then
-			PIECES[pieceid].common_postinit(inst)
+			PIECES[pieceid].common_postinit(inst, materialid and MATERIALS[materialid].name)
 		end
 
 		inst.entity:SetPristine()

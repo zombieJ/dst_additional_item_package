@@ -7,6 +7,7 @@ Assets =
 	Asset("ATLAS", "images/inventoryimages/incinerator.xml"),
 	Asset("ATLAS", "images/inventoryimages/dark_observer.xml"),
 	Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
+	Asset("ANIM", "anim/aip_ui_doujiang_chest.zip"),
 }
 
 -- 物品列表
