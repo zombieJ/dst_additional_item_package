@@ -227,7 +227,24 @@ params.aip_doujiang_chesspiece =
 		pos = Vector3(0, 100, 0),
 		side_align_tip = 160,
 
-		slotpos = {},
+		slotpos = {
+			Vector3(0, -170, 0),
+			Vector3(0, 170, 0),
+			Vector3(156, 90, 0),
+			Vector3(156, -90, 0),
+			Vector3(-156, 90, 0),
+			Vector3(-156, -90, 0),
+		},
+
+		slotbg =
+        {
+            {
+				-- atlas = "images/hud.xml",
+				-- image = "slingshot_ammo_slot.tex",
+				atlas = "images/inventoryimages/aip_fish_sword.xml",
+				image = "aip_fish_sword.tex",
+			},
+        },
 
 		buttoninfo =
 		{
