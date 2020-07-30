@@ -289,6 +289,20 @@ function params.aip_doujiang_chesspiece.itemtestfn(container, item, slot)
 	return ret
 end
 
+-- 操作按钮
+function params.aip_doujiang_chesspiece.widget.buttoninfo.fn(inst)
+	if inst.components.container ~= nil then
+		GLOBAL.BufferedAction(inst.components.container.opener, inst, AIP_ACTION):Do()
+	elseif inst.replica.container ~= nil and not inst.replica.container:IsBusy() then
+		GLOBAL.SendRPCToServer(GLOBAL.RPC.DoWidgetButtonAction, AIP_ACTION.code, inst, AIP_ACTION.mod_name)
+	end
+end
+
+-- 校验是否可以按下
+function params.aip_doujiang_chesspiece.widget.buttoninfo.validfn(inst)
+	return inst.replica.container ~= nil and inst.replica.container:IsFull()
+end
+
 ---------------- 豆酱权杖 ----------------
 function fillDouScepter(slotCount)
 	local name = "aip_dou_scepter"..tostring(slotCount)
