@@ -224,7 +224,7 @@ params.aip_doujiang_chesspiece =
 	{
 		animbank = "aip_ui_doujiang_chest",
 		animbuild = "aip_ui_doujiang_chest",
-		pos = Vector3(0, 100, 0),
+		pos = Vector3(300, 100, 0),
 		side_align_tip = 160,
 
 		slotpos = {
@@ -236,15 +236,7 @@ params.aip_doujiang_chesspiece =
 			Vector3(-156, -90, 0),
 		},
 
-		slotbg =
-        {
-            {
-				-- atlas = "images/hud.xml",
-				-- image = "slingshot_ammo_slot.tex",
-				atlas = "images/inventoryimages/aip_fish_sword.xml",
-				image = "aip_fish_sword.tex",
-			},
-        },
+		slotbg = {},
 
 		buttoninfo =
 		{
@@ -255,6 +247,45 @@ params.aip_doujiang_chesspiece =
 	acceptsstacks = false,
 	type = "chest",
 }
+
+local aip_doujiang_slot_bgs = {
+	{ name="ash",prefab="",fail="AIP_ASH_ONLY" },
+	{ name="electricity",prefab="",fail="AIP_ELECTRICITY_ONLY" },
+	{ name="fire",prefab="",fail="AIP_FIRE_ONLY" },
+	{ name="plant",prefab="",fail="AIP_PLANT_ONLY" },
+	{ name="water",prefab="",fail="AIP_WATER_ONLY" },
+	{ name="wind",prefab="",fail="AIP_WIND_ONLY" },
+}
+
+for i, v in ipairs(aip_doujiang_slot_bgs) do
+	local name = v.name
+	table.insert(
+		params.aip_doujiang_chesspiece.widget.slotbg,
+		{
+			atlas = "images/inventoryimages/aip_doujiang_slot_"..name.."_bg.xml",
+			image = "aip_doujiang_slot_"..name.."_bg.tex",
+		}
+	)
+end
+
+function params.aip_doujiang_chesspiece.itemtestfn(container, item, slot)
+	local ret = true
+	local fail = nil
+
+	if slot == nil or aip_doujiang_slot_bgs[slot] == nil then
+		ret = false
+		fail = "AIP_WOODENER_LOG_ONLY"
+	elseif aip_doujiang_slot_bgs[slot].prefab ~= item.prefab then
+		ret = false
+		fail = aip_doujiang_slot_bgs[slot].fail
+	end
+
+	if container.inst ~= nil and container.inst.components.talker ~= nil then
+		container.inst.components.talker:Say("2333333")
+	end
+
+	return ret
+end
 
 ---------------- 豆酱权杖 ----------------
 function fillDouScepter(slotCount)

@@ -27,6 +27,13 @@ local LANG_MAP = {
 			["NAME"] = "Dou Jiang",
 			["REC_DESC"] = "Happy is life target",
 			["DESC"] = "Looks like turn into stone",
+
+			["AIP_WIND_ONLY"] = "There should be something more representative of wind than it",
+			["AIP_FIRE_ONLY"] = "There should be something more representative of fire than it",
+			["AIP_WATER_ONLY"] = "There should be something more representative of water than it",
+			["AIP_ASH_ONLY"] = "There should be something more representative of earth than it",
+			["AIP_ELECTRICITY_ONLY"] = "There should be something more representative of electricity than it",
+			["AIP_PLANT_ONLY"] = "There should be something more representative of plant than it",
 		},
 		["aip_deer"] = {
 			["NAME"] = "Watcher",
@@ -61,6 +68,13 @@ local LANG_MAP = {
 			["NAME"] = "豆酱",
 			["REC_DESC"] = "无忧无虑的生活最是向往",
 			["DESC"] = "看起来就像是被石化了",
+
+			-- ["AIP_WIND_ONLY"] = "应该有比它更能代表风的物品",
+			-- ["AIP_FIRE_ONLY"] = "应该有比它更能代表火的物品",
+			-- ["AIP_WATER_ONLY"] = "应该有比它更能代表水的物品",
+			-- ["AIP_ASH_ONLY"] = "应该有比它更能代表土的物品",
+			-- ["AIP_ELECTRICITY_ONLY"] = "应该有比它更能代表电的物品",
+			-- ["AIP_PLANT_ONLY"] = "应该有比它更能代表木的物品",
 		},
 		["aip_deer"] = {
 			["NAME"] = "守望者",
@@ -87,8 +101,20 @@ local LANG_MAP = {
 	},	
 }
 
+
+
+
 local LANG = LANG_MAP[language] or LANG_MAP.english
 local LANG_ENG = LANG_MAP.english
+
+-- 拒绝豆酱的物品
+local LangDouJiang = LANG.aip_doujiang or LANG_ENG.aip_doujiang
+STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.GIVE.AIP_WIND_ONLY = LangDouJiang.AIP_WIND_ONLY or LANG_ENG.aip_doujiang.AIP_WIND_ONLY
+STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.GIVE.AIP_FIRE_ONLY = LangDouJiang.AIP_FIRE_ONLY or LANG_ENG.aip_doujiang.AIP_FIRE_ONLY
+STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.GIVE.AIP_WATER_ONLY = LangDouJiang.AIP_WATER_ONLY or LANG_ENG.aip_doujiang.AIP_WATER_ONLY
+STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.GIVE.AIP_ASH_ONLY = LangDouJiang.AIP_ASH_ONLY or LANG_ENG.aip_doujiang.AIP_ASH_ONLY
+STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.GIVE.AIP_ELECTRICITY_ONLY = LangDouJiang.AIP_ELECTRICITY_ONLY or LANG_ENG.aip_doujiang.AIP_ELECTRICITY_ONLY
+STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.GIVE.AIP_PLANT_ONLY = LangDouJiang.AIP_PLANT_ONLY or LANG_ENG.aip_doujiang.AIP_PLANT_ONLY
 
 ---------------------------------- 物品列表 -----------------------------------
 local PIECES =
@@ -119,6 +145,13 @@ local PIECES =
 			-- 添加箱子能力
 			inst:AddComponent("container")
 			inst.components.container:WidgetSetup("aip_doujiang_chesspiece")
+
+			-- 拒绝要说话
+			inst:AddComponent("talker")
+			inst.components.talker.fontsize = 28
+			inst.components.talker.font = TALKINGFONT
+			inst.components.talker.colour = Vector3(.9, .4, .4)
+			inst.components.talker.offset = Vector3(0, 0, 0)
 		end,
 	},
 	{

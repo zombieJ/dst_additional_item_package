@@ -7,7 +7,16 @@ Assets =
 	Asset("ATLAS", "images/inventoryimages/incinerator.xml"),
 	Asset("ATLAS", "images/inventoryimages/dark_observer.xml"),
 	Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
+
+	-- 豆酱雕塑需要提前加载
 	Asset("ANIM", "anim/aip_ui_doujiang_chest.zip"),
+	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_bg.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_ash_bg.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_electricity_bg.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_fire_bg.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_plant_bg.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_water_bg.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_wind_bg.xml"),
 }
 
 -- 物品列表
