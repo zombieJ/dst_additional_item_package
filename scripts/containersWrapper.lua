@@ -249,12 +249,12 @@ params.aip_doujiang_chesspiece =
 }
 
 local aip_doujiang_slot_bgs = {
-	{ name="ash",prefab="",fail="AIP_ASH_ONLY" },
-	{ name="electricity",prefab="",fail="AIP_ELECTRICITY_ONLY" },
+	{ name="ash",prefab="fertilizer",fail="AIP_ASH_ONLY" },
+	{ name="electricity",prefab="nightstick",fail="AIP_ELECTRICITY_ONLY" },
 	{ name="fire",prefab="",fail="AIP_FIRE_ONLY" },
-	{ name="plant",prefab="",fail="AIP_PLANT_ONLY" },
-	{ name="water",prefab="",fail="AIP_WATER_ONLY" },
-	{ name="wind",prefab="",fail="AIP_WIND_ONLY" },
+	{ name="plant",prefab="boards",fail="AIP_PLANT_ONLY" },
+	{ name="water",prefab="waterballoon",fail="AIP_WATER_ONLY" },
+	{ name="wind",prefab="featherfan",fail="AIP_WIND_ONLY" },
 }
 
 for i, v in ipairs(aip_doujiang_slot_bgs) do

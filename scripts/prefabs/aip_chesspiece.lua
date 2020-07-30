@@ -70,12 +70,12 @@ local LANG_MAP = {
 			["REC_DESC"] = "无忧无虑的生活最是向往",
 			["DESC"] = "看起来就像是被石化了",
 
-			-- ["AIP_WIND_ONLY"] = "应该有比它更能代表风的物品",
-			-- ["AIP_FIRE_ONLY"] = "应该有比它更能代表火的物品",
-			-- ["AIP_WATER_ONLY"] = "应该有比它更能代表水的物品",
-			-- ["AIP_ASH_ONLY"] = "应该有比它更能代表土的物品",
-			-- ["AIP_ELECTRICITY_ONLY"] = "应该有比它更能代表电的物品",
-			-- ["AIP_PLANT_ONLY"] = "应该有比它更能代表木的物品",
+			["AIP_WIND_ONLY"] = "应该有更能代表风的物品",
+			["AIP_FIRE_ONLY"] = "应该有更能代表火的物品",
+			["AIP_WATER_ONLY"] = "应该有更能代表水的物品",
+			["AIP_ASH_ONLY"] = "应该有更能代表土的物品",
+			["AIP_ELECTRICITY_ONLY"] = "应该有更能代表电的物品",
+			["AIP_PLANT_ONLY"] = "应该有更能代表木的物品",
 			["AIP_SLOT_ONLY"] = "需要放到对应的插槽中",
 		},
 		["aip_deer"] = {
