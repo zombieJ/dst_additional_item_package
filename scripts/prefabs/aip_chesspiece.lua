@@ -28,12 +28,13 @@ local LANG_MAP = {
 			["REC_DESC"] = "Happy is life target",
 			["DESC"] = "Looks like turn into stone",
 
-			["AIP_WIND_ONLY"] = "There should be something more representative of wind than it",
-			["AIP_FIRE_ONLY"] = "There should be something more representative of fire than it",
-			["AIP_WATER_ONLY"] = "There should be something more representative of water than it",
-			["AIP_ASH_ONLY"] = "There should be something more representative of earth than it",
-			["AIP_ELECTRICITY_ONLY"] = "There should be something more representative of electricity than it",
-			["AIP_PLANT_ONLY"] = "There should be something more representative of plant than it",
+			["AIP_WIND_ONLY"] = "Something can more represent of wind",
+			["AIP_FIRE_ONLY"] = "Something can more represent of fire",
+			["AIP_WATER_ONLY"] = "Something can more represent of water",
+			["AIP_ASH_ONLY"] = "Something can more represent of earth",
+			["AIP_ELECTRICITY_ONLY"] = "Something can more represent of electricity",
+			["AIP_PLANT_ONLY"] = "Something can more represent of plant",
+			["AIP_SLOT_ONLY"] = "Need put in slot instead",
 		},
 		["aip_deer"] = {
 			["NAME"] = "Watcher",
@@ -75,6 +76,7 @@ local LANG_MAP = {
 			-- ["AIP_ASH_ONLY"] = "应该有比它更能代表土的物品",
 			-- ["AIP_ELECTRICITY_ONLY"] = "应该有比它更能代表电的物品",
 			-- ["AIP_PLANT_ONLY"] = "应该有比它更能代表木的物品",
+			["AIP_SLOT_ONLY"] = "需要放到对应的插槽中",
 		},
 		["aip_deer"] = {
 			["NAME"] = "守望者",
@@ -148,10 +150,10 @@ local PIECES =
 
 			-- 拒绝要说话
 			inst:AddComponent("talker")
-			inst.components.talker.fontsize = 28
+			inst.components.talker.fontsize = 30
 			inst.components.talker.font = TALKINGFONT
-			inst.components.talker.colour = Vector3(.9, .4, .4)
-			inst.components.talker.offset = Vector3(0, 0, 0)
+			inst.components.talker.colour = Vector3(.9, 1, .9)
+			inst.components.talker.offset = Vector3(0, -400, 0)
 		end,
 	},
 	{

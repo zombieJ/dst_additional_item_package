@@ -274,14 +274,16 @@ function params.aip_doujiang_chesspiece.itemtestfn(container, item, slot)
 
 	if slot == nil or aip_doujiang_slot_bgs[slot] == nil then
 		ret = false
-		fail = "AIP_WOODENER_LOG_ONLY"
+		fail = "AIP_SLOT_ONLY"
 	elseif aip_doujiang_slot_bgs[slot].prefab ~= item.prefab then
 		ret = false
 		fail = aip_doujiang_slot_bgs[slot].fail
 	end
 
 	if container.inst ~= nil and container.inst.components.talker ~= nil then
-		container.inst.components.talker:Say("2333333")
+		container.inst.components.talker:Say(
+			STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.GIVE[fail]
+		)
 	end
 
 	return ret
