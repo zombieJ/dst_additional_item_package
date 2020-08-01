@@ -118,6 +118,19 @@ STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.GIVE.AIP_ASH_ONLY = LangDouJiang.AIP_ASH_O
 STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.GIVE.AIP_ELECTRICITY_ONLY = LangDouJiang.AIP_ELECTRICITY_ONLY or LANG_ENG.aip_doujiang.AIP_ELECTRICITY_ONLY
 STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.GIVE.AIP_PLANT_ONLY = LangDouJiang.AIP_PLANT_ONLY or LANG_ENG.aip_doujiang.AIP_PLANT_ONLY
 
+------------------------------------ 常量 -------------------------------------
+local MOON_EVENT_RADIUS = 12
+local MOON_EVENT_MINPIECES = 3
+
+local MATERIALS =
+{
+	{name="marble",		prefab="marble"},
+	{name="stone",		prefab="cutstone"},
+	{name="moonglass",	prefab="moonglass"},
+}
+
+local PHYSICS_RADIUS = .45
+
 ---------------------------------- 物品列表 -----------------------------------
 local PIECES =
 {
@@ -139,14 +152,17 @@ local PIECES =
 		name = "aip_doujiang",
 		moonevent = false,
 		recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("plantmeat_cooked", 1), Ingredient("pinecone", 1)},
-		common_postinit = function(inst, material)
-			-- if material ~= "moonglass" then
-			-- 	return
-			-- end
-
+		master_postinit = function(inst)
 			-- 添加箱子能力
 			inst:AddComponent("container")
 			inst.components.container:WidgetSetup("aip_doujiang_chesspiece")
+
+			-- 操作
+			inst:AddComponent("aipc_action")
+			inst.components.aipc_action.onDoAction = function(doer)
+				local pos = doer:GetPosition()
+				TheWorld:PushEvent("ms_sendlightningstrike", pos)
+			end
 
 			-- 拒绝要说话
 			inst:AddComponent("talker")
@@ -154,6 +170,16 @@ local PIECES =
 			inst.components.talker.font = TALKINGFONT
 			inst.components.talker.colour = Vector3(.9, 1, .9)
 			inst.components.talker.offset = Vector3(0, -400, 0)
+
+			-- 延迟获得材质，移除材质不匹配的组件能力
+			inst:DoTaskInTime(0.5, function(inst)
+				if MATERIALS[inst.materialid].name ~= "moonglass" then
+					inst:RemoveComponent("container")
+					inst:RemoveComponent("aipc_action")
+					inst:RemoveComponent("talker")
+					return
+				end
+			end)
 		end,
 	},
 	{
@@ -186,18 +212,6 @@ for pieceid = 1,#PIECES do
 end
 
 ------------------------------------ 模板 ------------------------------------
-local MOON_EVENT_RADIUS = 12
-local MOON_EVENT_MINPIECES = 3
-
-local MATERIALS =
-{
-	{name="marble",		prefab="marble"},
-	{name="stone",		prefab="cutstone"},
-	{name="moonglass",	prefab="moonglass"},
-}
-
-local PHYSICS_RADIUS = .45
-
 local function GetBuildName(pieceid, materialid)
 	local piece = PIECES[pieceid]
 	if not piece or not piece.name then
