@@ -25,7 +25,7 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 -- 资源
 local assets =
 {
-	Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_dou_opal.xml"),
 	Asset("ANIM", "anim/aip_dou_opal.zip"),
 }
 
@@ -63,7 +63,7 @@ function fn()
 	
 	inst.AnimState:SetBank("aip_dou_opal")
 	inst.AnimState:SetBuild("aip_dou_opal")
-	inst.AnimState:PlayAnimation("idle")
+	inst.AnimState:PlayAnimation("idle", true)
 
 	MakeInventoryFloatable(inst, "med", 0.1, 0.75)
 
@@ -81,7 +81,7 @@ function fn()
 	inst:AddComponent("lootdropper")
 
 	inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_fish_sword.xml"
+	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_dou_opal.xml"
 
 	MakeSmallBurnable(inst, TUNING.LARGE_BURNTIME)
 	MakeSmallPropagator(inst)
@@ -91,4 +91,4 @@ function fn()
 	return inst
 end
 
-return Prefab( "aip_dou_opal", fn, assets) 
+return Prefab("aip_dou_opal", fn, assets)

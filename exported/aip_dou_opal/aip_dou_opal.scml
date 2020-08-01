@@ -1,25 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
-    <folder id="0" name="/aip_dou_opal">
-        <file id="0" name="/aip_dou_opal/eye.png" width="128" height="128" pivot_x="0.53876" pivot_y="0.46124"/>
-        <file id="1" name="/aip_dou_opal/eye_line.png" width="20" height="60" pivot_x="0.547619" pivot_y="0.467213"/>
+    <folder id="0" name="aip_dou_opal">
+        <file id="0" name="aip_dou_opal/eye.png" width="128" height="128" pivot_x="0.53876" pivot_y="0.46124"/>
+        <file id="1" name="aip_dou_opal/eye_line.png" width="20" height="60" pivot_x="0.547619" pivot_y="0.467213"/>
     </folder>
     <entity id="0" name="aip_dou_opal">
-        <animation id="0" name="idle" length="1000">
+        <animation id="0" name="idle" length="10000">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="eye" folder="0" file="0" abs_x="-0.03876" abs_y="12.03876" abs_pivot_x="0.53876" abs_pivot_y="0.46124" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
-                    <object_ref id="1" name="eye_line" folder="0" file="1" abs_x="6.952381" abs_y="18.032787" abs_pivot_x="0.547619" abs_pivot_y="0.467213" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="0" name="eye" folder="0" file="0" abs_x="-0.03876" abs_y="12.03876" abs_pivot_x="0.53876" abs_pivot_y="0.46124" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="eye_line" folder="0" file="1" abs_x="6.952381" abs_y="18.032787" abs_pivot_x="0.547619" abs_pivot_y="0.467213" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="1003">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+                <key id="2" time="1347">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="2" z_index="1"/>
+                </key>
+                <key id="3" time="2781">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="3" z_index="1"/>
+                </key>
+                <key id="4" time="3217">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="4" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="eye">
                 <key id="0" spin="0">
-                    <object folder="0" file="0" x="-0.03876" y="12.03876"/>
+                    <object folder="0" file="0" x="-0.03876" y="12.03876" angle="0"/>
                 </key>
             </timeline>
             <timeline id="1" name="eye_line">
-                <key id="0" spin="0">
-                    <object folder="0" file="1" x="6.952381" y="18.032787"/>
+                <key id="0">
+                    <object folder="0" file="1" x="6.952381" y="18.032787" angle="0"/>
+                </key>
+                <key id="1" time="1003" spin="-1">
+                    <object folder="0" file="1" x="7.165449" y="18.146423" angle="0.170607" scale_y="0.996456"/>
+                </key>
+                <key id="2" time="1347">
+                    <object folder="0" file="1" x="22.952381" y="15.032787" angle="353.358817" scale_x="1.553768" scale_y="0.750528"/>
+                </key>
+                <key id="3" time="2781" spin="-1">
+                    <object folder="0" file="1" x="21.793456" y="25.948027" angle="11.88351" scale_x="1.469973" scale_y="0.753171"/>
+                </key>
+                <key id="4" time="3217" spin="0">
+                    <object folder="0" file="1" x="6.952381" y="18.032787" angle="0"/>
                 </key>
             </timeline>
         </animation>
