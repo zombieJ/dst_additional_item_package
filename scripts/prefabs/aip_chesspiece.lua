@@ -173,8 +173,10 @@ local PIECES =
 				inst:Remove()
 
 				-- 延迟创造一条闪电点燃该物品
-				opal:DoTaskInTime(0.5, function()
+				opal:DoTaskInTime(0.1, function()
 					TheWorld:PushEvent("ms_sendlightningstrike", opal:GetPosition())
+
+					opal.components.burnable:Extinguish()
 				end)
 			end
 

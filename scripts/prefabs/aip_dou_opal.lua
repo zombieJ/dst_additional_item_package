@@ -32,6 +32,7 @@ local assets =
 
 local prefabs =
 {
+	"houndfire",
 }
 
 -- 文字描述
@@ -40,6 +41,12 @@ STRINGS.RECIPE_DESC.AIP_DOU_OPAL = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_OPAL = LANG.DESC
 
 -----------------------------------------------------------
+local function onLightning(inst)
+	-- 掉落火焰
+	for i = 1, 3 do
+		inst.components.lootdropper:SpawnLootPrefab('houndfire')
+	end
+end
 
 function fn()
 	local inst = CreateEntity()
@@ -50,7 +57,7 @@ function fn()
 	
 	MakeInventoryPhysics(inst)
 
-	inst:AddTag("lightningtarget")
+	inst:AddTag("lightningrod")
 	
 	inst.AnimState:SetBank("aip_fish_sword")
 	inst.AnimState:SetBuild("aip_fish_sword")
@@ -64,12 +71,17 @@ function fn()
 		return inst
 	end
 
+	-- 如果被雷击
+	inst:ListenForEvent("lightningstrike", onLightning)
+
 	inst:AddComponent("inspectable")
+
+	inst:AddComponent("lootdropper")
 
 	inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_fish_sword.xml"
 
-	MakeSmallBurnable(inst, TUNING.MED_BURNTIME)
+	MakeSmallBurnable(inst, TUNING.LARGE_BURNTIME)
 	MakeSmallPropagator(inst)
 
 	MakeHauntableLaunchAndIgnite(inst)
