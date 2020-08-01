@@ -162,14 +162,20 @@ local PIECES =
 			inst.components.aipc_action.onDoAction = function(inst, doer)
 				local pos = inst:GetPosition()
 
+				-- 掉落猫眼石
+				local opal = SpawnPrefab("aip_dou_opal")
+				opal.Transform:SetPosition(inst.Transform:GetWorldPosition())
+
 				-- 损毁该物品
 				local fx = SpawnPrefab("collapse_big")
-				fx.Transform:SetPosition(pos.x, pos.y, pos.z)
+				fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
 				fx:SetMaterial("metal")
 				inst:Remove()
 
 				-- 延迟创造一条闪电点燃该物品
-				TheWorld:PushEvent("ms_sendlightningstrike", pos)
+				opal:DoTaskInTime(0.5, function()
+					TheWorld:PushEvent("ms_sendlightningstrike", opal:GetPosition())
+				end)
 			end
 
 			-- 拒绝要说话
