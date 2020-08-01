@@ -159,8 +159,16 @@ local PIECES =
 
 			-- 操作
 			inst:AddComponent("aipc_action")
-			inst.components.aipc_action.onDoAction = function(doer)
-				local pos = doer:GetPosition()
+			inst.components.aipc_action.onDoAction = function(inst, doer)
+				local pos = inst:GetPosition()
+
+				-- 损毁该物品
+				local fx = SpawnPrefab("collapse_big")
+				fx.Transform:SetPosition(pos.x, pos.y, pos.z)
+				fx:SetMaterial("metal")
+				inst:Remove()
+
+				-- 延迟创造一条闪电点燃该物品
 				TheWorld:PushEvent("ms_sendlightningstrike", pos)
 			end
 
@@ -351,6 +359,7 @@ local function makepiece(pieceid, materialid)
 	local prefabs = 
 	{
 		"collapse_small",
+		"collapse_big",
 	}
 	if materialid then
 		table.insert(prefabs, MATERIALS[materialid].prefab)
