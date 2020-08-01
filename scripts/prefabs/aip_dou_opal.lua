@@ -26,8 +26,7 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 local assets =
 {
 	Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
-	Asset("ANIM", "anim/aip_fish_sword.zip"),
-	Asset("ANIM", "anim/aip_fish_sword_swap.zip"),
+	Asset("ANIM", "anim/aip_dou_opal.zip"),
 }
 
 local prefabs =
@@ -62,8 +61,8 @@ function fn()
 
 	inst:AddTag("lightningrod")
 	
-	inst.AnimState:SetBank("aip_fish_sword")
-	inst.AnimState:SetBuild("aip_fish_sword")
+	inst.AnimState:SetBank("aip_dou_opal")
+	inst.AnimState:SetBuild("aip_dou_opal")
 	inst.AnimState:PlayAnimation("idle")
 
 	MakeInventoryFloatable(inst, "med", 0.1, 0.75)

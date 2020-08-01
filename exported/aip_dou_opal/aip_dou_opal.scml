@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="/aip_dou_opal">
+        <file id="0" name="/aip_dou_opal/eye.png" width="128" height="128" pivot_x="0.53876" pivot_y="0.46124"/>
+        <file id="1" name="/aip_dou_opal/eye_line.png" width="20" height="60" pivot_x="0.547619" pivot_y="0.467213"/>
+    </folder>
+    <entity id="0" name="aip_dou_opal">
+        <animation id="0" name="idle" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="eye" folder="0" file="0" abs_x="-0.03876" abs_y="12.03876" abs_pivot_x="0.53876" abs_pivot_y="0.46124" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="eye_line" folder="0" file="1" abs_x="6.952381" abs_y="18.032787" abs_pivot_x="0.547619" abs_pivot_y="0.467213" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="eye">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-0.03876" y="12.03876"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="eye_line">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="6.952381" y="18.032787"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>
