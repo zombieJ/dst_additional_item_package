@@ -124,9 +124,9 @@ local MOON_EVENT_MINPIECES = 3
 
 local MATERIALS =
 {
-	{name="marble",		prefab="marble"},
-	{name="stone",		prefab="cutstone"},
-	{name="moonglass",	prefab="moonglass"},
+	{name="marble",		prefab="marble",	inv_suffix=""},
+	{name="stone",		prefab="cutstone",	inv_suffix="_stone"},
+	{name="moonglass",	prefab="moonglass",	inv_suffix="_moonglass"},
 }
 
 local PHYSICS_RADIUS = .45
@@ -249,6 +249,10 @@ local function SetMaterial(inst, materialid)
 	inst.AnimState:SetBuild(GetBuildName(inst.pieceid, materialid))
 
 	inst.components.lootdropper:SetLoot({MATERIALS[materialid].prefab})
+
+	local inv_image_suffix = (materialid ~= nil and MATERIALS[materialid].inv_suffix) or ""
+	inst.components.inventoryitem:ChangeImageName("chesspiece_"..PIECES[inst.pieceid].name..inv_image_suffix)
+	inst.components.inventoryitem.atlasname = "images/inventoryimages/chesspiece_"..PIECES[inst.pieceid].name..inv_image_suffix..".xml"
 end
 
 local function DoStruggle(inst, count)
@@ -373,6 +377,8 @@ local function makepiece(pieceid, materialid)
 	if materialid then
 		table.insert(prefabs, MATERIALS[materialid].prefab)
 		table.insert(assets, Asset("ANIM", "anim/"..build..".zip"))
+		table.insert(assets, Asset("ATLAS", "images/inventoryimages/chesspiece_"..PIECES[pieceid].name..MATERIALS[materialid].inv_suffix..".xml"))
+		-- table.insert(assets, Asset("INV_IMAGE", "chesspiece_"..PIECES[pieceid].name..MATERIALS[materialid].inv_suffix))
 	else
 		for m = 1, #MATERIALS do
 			local p = "chesspiece_" .. PIECES[pieceid].name .. "_" .. MATERIALS[m].name
