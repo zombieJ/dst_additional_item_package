@@ -32,7 +32,7 @@ local assets =
 
 local prefabs =
 {
-	"houndfire",
+	"livinglog",
 }
 
 -- 文字描述
@@ -42,9 +42,12 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_OPAL = LANG.DESC
 
 -----------------------------------------------------------
 local function onLightning(inst)
-	-- 掉落火焰
+	-- 点燃掉落物
 	for i = 1, 3 do
-		inst.components.lootdropper:SpawnLootPrefab('houndfire')
+		local item = inst.components.lootdropper:SpawnLootPrefab('livinglog')
+		if item.components.burnable ~= nil then
+			item.components.burnable:Ignite()
+		end
 	end
 end
 

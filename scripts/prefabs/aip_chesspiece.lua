@@ -177,6 +177,7 @@ local PIECES =
 					TheWorld:PushEvent("ms_sendlightningstrike", opal:GetPosition())
 
 					opal.components.burnable:Extinguish()
+					opal.components.burnable:StartWildfire()
 				end)
 			end
 
