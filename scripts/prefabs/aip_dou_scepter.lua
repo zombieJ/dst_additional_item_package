@@ -37,13 +37,6 @@ local assets = {
 local prefabs = {}
 
 --------------------------------- 配方 ---------------------------------
-
--- local aip_dou_scepter = Recipe("aip_dou_scepter", {Ingredient("pondfish", 1)}, RECIPETABS.AIP_DOU_SCEPTER, TECH.AIP_DOU_SCEPTER_ONE, nil, nil, true)
--- aip_dou_scepter.atlas = "images/inventoryimages/aip_fish_sword.xml"
-
--- local aip_dou_opal = Recipe("aip_dou_opal", {Ingredient("log", 1)}, RECIPETABS.AIP_DOU_SCEPTER, TECH.AIP_DOU_SCEPTER_ONE, nil, nil, true)
--- aip_dou_opal.atlas = "images/inventoryimages/aip_dou_opal.xml"
-
 local function onsave(inst, data)
 	data.magicSlot = inst._magicSlot
 end
@@ -73,7 +66,7 @@ local function onturnoff(inst)
     end
 end
 
--- 装备效果
+-- 装备
 local function onequip(inst, owner)
     owner.AnimState:OverrideSymbol("swap_object", "aip_dou_scepter_swap", "aip_dou_scepter_swap")
 
@@ -94,6 +87,7 @@ local function onunequip(inst, owner)
     end
 end
 
+-- 添加元素
 local function onItemLoaded(inst, data)
 	-- if inst.components.weapon ~= nil then
 	-- 	if data ~= nil and data.item ~= nil then
@@ -110,6 +104,43 @@ local function onItemUnloaded(inst, data)
 	-- 		data.prev_item:PushEvent("ammounloaded", {slingshot = inst})
 	-- 	end
 	-- end
+end
+
+-- 范围武器
+local function ReticuleTargetFn()
+    return Vector3(ThePlayer.entity:LocalToWorldSpace(6.5, 0, 0))
+end
+
+local function ReticuleMouseTargetFn(inst, mousepos)
+    if mousepos ~= nil then
+        local x, y, z = inst.Transform:GetWorldPosition()
+        local dx = mousepos.x - x
+        local dz = mousepos.z - z
+        local l = dx * dx + dz * dz
+        if l <= 0 then
+            return inst.components.reticule.targetpos
+        end
+        l = 6.5 / math.sqrt(l)
+        return Vector3(x + dx * l, 0, z + dz * l)
+    end
+end
+
+STRINGS.ACTIONS.CASTSPELL.GENERIC = "十年啊"
+
+ACTIONS.CASTSPELL.fn = function()
+    aipPrint("?????")
+end
+
+local function ReticuleUpdatePositionFn(inst, pos, reticule, ease, smoothing, dt)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    reticule.Transform:SetPosition(x, 0, z)
+    local rot = -math.atan2(pos.z - z, pos.x - x) / DEGREES
+    if ease and dt ~= nil then
+        local rot0 = reticule.Transform:GetRotation()
+        local drot = rot - rot0
+        rot = Lerp((drot > 180 and rot0 + 360) or (drot < -180 and rot0 - 360) or rot0, rot, dt * smoothing)
+    end
+    reticule.Transform:SetRotation(rot)
 end
 
 local function fn()
@@ -129,16 +160,58 @@ local function fn()
     -- weapon (from weapon component) added to pristine state for optimization
     inst:AddTag("weapon")
     inst:AddTag("prototyper")
+    inst:AddTag("throw_line")
 
     MakeInventoryFloatable(inst, "med", 0.1, 0.75)
 
     inst.entity:SetPristine()
 
+    -- 客户端也需要的 AOE 效果
+    inst:AddComponent("aoetargeting")
+    inst.components.aoetargeting:SetAlwaysValid(true)
+    inst.components.aoetargeting.reticule.reticuleprefab = "reticulelong"
+    inst.components.aoetargeting.reticule.pingprefab = "reticulelongping"
+    inst.components.aoetargeting.reticule.targetfn = ReticuleTargetFn
+    inst.components.aoetargeting.reticule.mousetargetfn = ReticuleMouseTargetFn
+    inst.components.aoetargeting.reticule.updatepositionfn = ReticuleUpdatePositionFn
+    inst.components.aoetargeting.reticule.validcolour = { 1, .75, 0, 1 }
+    inst.components.aoetargeting.reticule.invalidcolour = { .5, 0, 0, 1 }
+    inst.components.aoetargeting.reticule.ease = true
+    inst.components.aoetargeting.reticule.mouseenabled = true
+
     if not TheWorld.ismastersim then return inst end
 
-    inst:AddComponent("weapon")
-    inst.components.weapon:SetDamage(TUNING.CANE_DAMAGE)
+    -- 测试一个节点
+    inst:AddComponent("aipc_action")
+    inst.components.aipc_action.canActOn = function()
+        return true
+    end
+	-- inst.components.aipc_action.onDoTargetAction = onDoTargetAction
 
+    -- 施法动作
+    inst:AddComponent("spellcaster")
+    inst.components.spellcaster.CanCast = (function (inst, target, pos)
+        aipPrint("CanCast:", inst, target, pos)
+        return true
+    end)
+    inst.components.spellcaster:SetSpellFn((function (inst, target, pos)
+        aipPrint("SPELL!!!!")
+        local caster = inst.components.inventoryitem.owner
+
+        if pos ~= nil then --the point on map that has been targeted to cast spell there
+            aipPrint("do cast!!!!")
+        end
+    end))
+    inst.components.spellcaster.canuseontargets = true --retains the default functionality of ice staff
+    inst.components.spellcaster.canuseonpoint = true  --adds aoe spell
+
+    -- 武器伤害
+    inst:AddComponent("weapon")
+    inst.components.weapon:SetDamage(0)
+    inst.components.weapon:SetRange(8, 10)
+    inst.components.weapon:SetProjectile("fire_projectile")
+
+    -- 接受元素提炼
     inst:AddComponent("container")
     inst.components.container:WidgetSetup("aip_dou_scepter4")
     inst.components.container.canbeopened = false
