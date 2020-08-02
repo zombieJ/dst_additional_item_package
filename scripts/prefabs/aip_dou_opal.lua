@@ -117,4 +117,4 @@ function fn()
 	return inst
 end
 
-return Prefab("aip_dou_opal", fn, assets)
+return Prefab("aip_dou_opal", fn, assets, prefabs)

@@ -9,6 +9,7 @@ Assets =
 	Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
 
 	-- 豆酱雕塑需要提前加载
+	Asset("ATLAS", "images/inventoryimages/aip_dou_tech.xml"),
 	Asset("ANIM", "anim/aip_ui_doujiang_chest.zip"),
 	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_bg.xml"),
 	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_ash_bg.xml"),
@@ -67,15 +68,17 @@ modimport("scripts/aipUtils.lua")
 --------------------------------------- 科技 ---------------------------------------
 modimport("scripts/custom_tech_tree.lua")
 
+-- 添加一个 Tab
 GLOBAL.RECIPETABS.AIP_DOU_SCEPTER = {
-    str = "SCEPTER",
+    str = "AIP_DOU_SCEPTER",
     sort = 100,
-    icon_atlas = "images/inventoryimages/aip_fish_sword.xml",
-    icon = "aip_fish_sword.tex",
+    icon_atlas = "images/inventoryimages/aip_dou_tech.xml",
+    icon = "aip_dou_tech.tex",
     crafting_station = true
 }
+GLOBAL.STRINGS.TABS.AIP_DOU_SCEPTER = "神秘魔法"
 
-AddNewTechTree("AIP_DOU_SCEPTER")
+GLOBAL.aipAddNewTechTree("AIP_DOU_SCEPTER")
 
 ------------------------------------- 组件钩子 -------------------------------------
 modimport("scripts/componentsHooker.lua")

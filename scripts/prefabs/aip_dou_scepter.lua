@@ -33,12 +33,19 @@ local assets = {
     Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
 }
 
+
+local prefabs =
+{
+	"aip_fish_sword",
+}
+
 --------------------------------- 配方 ---------------------------------
 
-local aip_dou_scepter = Recipe("aip_dou_scepter", {Ingredient("pondfish", 1)}, RECIPETABS.AIP_DOU_SCEPTER, TECH.AIP_DOU_SCEPTER_ONE, nil, nil, true)
-aip_dou_scepter.atlas = "images/inventoryimages/aip_fish_sword.xml"
+-- local aip_dou_scepter = Recipe("aip_dou_scepter", {Ingredient("pondfish", 1)}, RECIPETABS.AIP_DOU_SCEPTER, TECH.AIP_DOU_SCEPTER_ONE, nil, nil, true)
+-- aip_dou_scepter.atlas = "images/inventoryimages/aip_fish_sword.xml"
 
-STRINGS.UI.CRAFTING.AIP_DOU_SCEPTER_ONE = "You need a <custom structure name> to make it."
+-- local aip_dou_opal = Recipe("aip_dou_opal", {Ingredient("log", 1)}, RECIPETABS.AIP_DOU_SCEPTER, TECH.AIP_DOU_SCEPTER_ONE, nil, nil, true)
+-- aip_dou_opal.atlas = "images/inventoryimages/aip_dou_opal.xml"
 
 local function onsave(inst, data)
 	data.magicSlot = inst._magicSlot
@@ -124,6 +131,7 @@ local function fn()
 
     -- weapon (from weapon component) added to pristine state for optimization
     inst:AddTag("weapon")
+    inst:AddTag("prototyper")
 
     MakeInventoryFloatable(inst, "med", 0.1, 0.75)
 
@@ -169,4 +177,4 @@ local function fn()
     return inst
 end
 
-return Prefab("aip_dou_scepter", fn, assets)
+return Prefab("aip_dou_scepter", fn, assets, prefabs)
