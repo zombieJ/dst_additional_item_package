@@ -9,12 +9,12 @@ local language = aipGetModConfig("language")
 -- 文字描述
 local LANG_MAP = {
 	["english"] = {
-        ["NAME"] = "Dou Scepter",
+        ["NAME"] = "Mystic Scepter",
         ["REC_DESC"] = "Customize your magic!",
 		["DESC"] = "Customize your magic!",
 	},
 	["chinese"] = {
-        ["NAME"] = "豆酱权杖",
+        ["NAME"] = "神秘权杖",
         ["REC_DESC"] = "自定义你的魔法！",
 		["DESC"] = "自定义你的魔法！",
 	},
@@ -27,7 +27,7 @@ STRINGS.RECIPE_DESC.AIP_DOU_SCEPTER = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_SCEPTER = LANG.DESC
 
 local assets = {
-    Asset("ANIM", "anim/cane.zip"),
+    Asset("ANIM", "anim/aip_dou_scepter.zip"),
     Asset("ANIM", "anim/aip_dou_scepter_swap.zip"),
     Asset("ANIM", "anim/floating_items.zip"),
     Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
@@ -35,13 +35,6 @@ local assets = {
 
 --------------------------------- 配方 ---------------------------------
 
--- -- STRINGS.TABS.AIP_DOU_SCEPTER = "测试"
-
--- local sort_key = 25
--- local fancy_tab = AddRecipeTab("Fancy Stuff", sort_key, "images/hud/fancy.xml", "fancy.tex" )
--- local Ingredient = GLOBAL.IngredientAddRecipe("fancy_item", {Ingredient("goldnugget", 1)}, fancy_tab, GLOBAL.TECH.NONE )
-
--- local aip_dou_scepter = Recipe("aip_dou_scepter", {Ingredient("pondfish", 1),Ingredient("nightmarefuel", 2),Ingredient("rope", 1)}, RECIPETABS.WAR, TECH.SCIENCE_TWO)
 local aip_dou_scepter = Recipe("aip_dou_scepter", {Ingredient("pondfish", 1)}, RECIPETABS.AIP_DOU_SCEPTER, TECH.AIP_DOU_SCEPTER_ONE, nil, nil, true)
 aip_dou_scepter.atlas = "images/inventoryimages/aip_fish_sword.xml"
 
@@ -109,14 +102,14 @@ local function fn()
 
     MakeInventoryPhysics(inst)
 
-    inst.AnimState:SetBank("cane")
-    inst.AnimState:SetBuild("swap_cane")
+    inst.AnimState:SetBank("aip_dou_scepter")
+    inst.AnimState:SetBuild("aip_dou_scepter")
     inst.AnimState:PlayAnimation("idle")
 
     -- weapon (from weapon component) added to pristine state for optimization
     inst:AddTag("weapon")
 
-    MakeInventoryFloatable(inst, "med", 0.05, {0.85, 0.45, 0.85}, true, 1)
+    MakeInventoryFloatable(inst, "med", 0.1, 0.75)
 
     inst.entity:SetPristine()
 

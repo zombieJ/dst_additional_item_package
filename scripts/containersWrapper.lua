@@ -332,8 +332,6 @@ function fillDouScepter(slotCount)
 	end
 end
 
-fillDouScepter(1)
-fillDouScepter(2)
 fillDouScepter(3)
 fillDouScepter(4)
 

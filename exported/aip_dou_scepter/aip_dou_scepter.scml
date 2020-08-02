@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="/aip_dou_scepter">
+        <file id="0" name="/aip_dou_scepter/output.png" width="144" height="300" pivot_x="0.486207" pivot_y="0.207641"/>
+        <file id="1" name="/aip_dou_scepter/grass.png" width="68" height="52" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_dou_scepter">
+        <animation id="0" name="idle" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="output" folder="0" file="0" abs_x="-6.986207" abs_y="-4.707641" abs_pivot_x="0.486207" abs_pivot_y="0.207641" abs_angle="331.859158" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="grass" folder="0" file="1" abs_x="-55" abs_y="-7" abs_pivot_x="0" abs_pivot_y="1" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="output">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-6.986207" y="-4.707641" angle="331.859158" scale_x="1"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="grass">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="-55" y="-7"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>
