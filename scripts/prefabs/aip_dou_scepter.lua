@@ -54,6 +54,22 @@ local function onload(inst, data)
 	end
 end
 
+-- 合成科技
+local function onturnon(inst)
+    inst.AnimState:PlayAnimation("proximity_pre")
+    inst.AnimState:PushAnimation("proximity_loop", true)
+end
+
+local function onturnoff(inst)
+    if not inst.components.inventoryitem:IsHeld() then
+        inst.AnimState:PlayAnimation("proximity_pst")
+        inst.AnimState:PushAnimation("idle", false)
+    else
+        inst.AnimState:PlayAnimation("idle")
+    end
+end
+
+-- 装备效果
 local function onequip(inst, owner)
     owner.AnimState:OverrideSymbol("swap_object", "aip_dou_scepter_swap", "aip_dou_scepter_swap")
 
@@ -128,8 +144,8 @@ local function fn()
 
     -- 本身也是一个合成台
     inst:AddComponent("prototyper")
-    -- inst.components.prototyper.onturnon = onturnon
-    -- inst.components.prototyper.onturnoff = onturnoff
+    inst.components.prototyper.onturnon = onturnon
+    inst.components.prototyper.onturnoff = onturnoff
     -- inst.components.prototyper.onactivate = onactivate
     inst.components.prototyper.trees = TUNING.PROTOTYPER_TREES.AIP_DOU_SCEPTER_ONE
 
