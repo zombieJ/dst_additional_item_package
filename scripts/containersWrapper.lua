@@ -332,7 +332,6 @@ function fillDouScepter(slotCount)
 	end
 end
 
-fillDouScepter(3)
 fillDouScepter(4)
 
 -- function params.aip_dou_scepter.itemtestfn(container, item, slot)

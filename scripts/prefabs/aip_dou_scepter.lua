@@ -119,7 +119,7 @@ local function fn()
     inst.components.weapon:SetDamage(TUNING.CANE_DAMAGE)
 
     inst:AddComponent("container")
-    inst.components.container:WidgetSetup("aip_dou_scepter1")
+    inst.components.container:WidgetSetup("aip_dou_scepter4")
     inst.components.container.canbeopened = false
     inst:ListenForEvent("itemget", onItemLoaded)
     inst:ListenForEvent("itemlose", onItemUnloaded)
