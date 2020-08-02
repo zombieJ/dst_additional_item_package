@@ -30,14 +30,11 @@ local assets = {
     Asset("ANIM", "anim/aip_dou_scepter.zip"),
     Asset("ANIM", "anim/aip_dou_scepter_swap.zip"),
     Asset("ANIM", "anim/floating_items.zip"),
-    Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
+    Asset("ATLAS", "images/inventoryimages/aip_dou_scepter.xml"),
 }
 
 
-local prefabs =
-{
-	"aip_fish_sword",
-}
+local prefabs = {}
 
 --------------------------------- 配方 ---------------------------------
 
@@ -158,8 +155,8 @@ local function fn()
     inst.components.prototyper.trees = TUNING.PROTOTYPER_TREES.AIP_DOU_SCEPTER_ONE
 
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_fish_sword.xml"
-    inst.components.inventoryitem.imagename = "aip_fish_sword"
+    inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_dou_scepter.xml"
+    inst.components.inventoryitem.imagename = "aip_dou_scepter"
 
     inst:AddComponent("equippable")
 
