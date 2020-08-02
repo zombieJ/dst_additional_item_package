@@ -27,7 +27,8 @@ STRINGS.RECIPE_DESC.AIP_DOU_SCEPTER = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_SCEPTER = LANG.DESC
 
 local assets = {
-    Asset("ANIM", "anim/cane.zip"), Asset("ANIM", "anim/swap_cane.zip"),
+    Asset("ANIM", "anim/cane.zip"),
+    Asset("ANIM", "anim/aip_dou_scepter_swap.zip"),
     Asset("ANIM", "anim/floating_items.zip"),
     Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
 }
@@ -61,7 +62,7 @@ local function onload(inst, data)
 end
 
 local function onequip(inst, owner)
-    owner.AnimState:OverrideSymbol("swap_object", "swap_cane", "swap_cane")
+    owner.AnimState:OverrideSymbol("swap_object", "aip_dou_scepter_swap", "aip_dou_scepter_swap")
 
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
@@ -115,9 +116,7 @@ local function fn()
     -- weapon (from weapon component) added to pristine state for optimization
     inst:AddTag("weapon")
 
-    local swap_data = {sym_build = "swap_cane"}
-    MakeInventoryFloatable(inst, "med", 0.05, {0.85, 0.45, 0.85}, true, 1,
-                           swap_data)
+    MakeInventoryFloatable(inst, "med", 0.05, {0.85, 0.45, 0.85}, true, 1)
 
     inst.entity:SetPristine()
 
@@ -128,7 +127,6 @@ local function fn()
 
     inst:AddComponent("container")
     inst.components.container:WidgetSetup("aip_dou_scepter1")
-    -- inst.components.container:WidgetSetup("slingshot")
     inst.components.container.canbeopened = false
     inst:ListenForEvent("itemget", onItemLoaded)
     inst:ListenForEvent("itemlose", onItemUnloaded)
