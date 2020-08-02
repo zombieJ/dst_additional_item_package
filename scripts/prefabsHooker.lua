@@ -1,23 +1,37 @@
+local language = GLOBAL.aipGetModConfig("language")
+
 ----------------------------------- 通用组件行为 -----------------------------------
--- -- 注册一个 action
--- local AIP_COMPONENT_ACTION = env.AddAction("AIPC_ACTION", "Patch", function(act)
--- 	local doer = act.doer
--- 	local item = act.invobject
--- 	local target = act.target
--- 	-- return false, "INUSE"
--- 	return true
--- end)
--- AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIPC_ACTION, "dolongaction"))
--- AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIPC_ACTION, "dolongaction"))
+local LANG_MAP = {
+	english = {
+		GIVE = "Give",
+	},
+	chinese = {
+		GIVE = "给予",
+	},
+}
+local LANG = LANG_MAP[language] or LANG_MAP.english
 
--- -- 为组件绑定 action
--- env.AddComponentAction("USEITEM", "aipc_action", function(inst, doer, target, actions, right)
--- 	if not inst or not target then
--- 		return
--- 	end
+-- 注册一个 action
+local AIPC_ACTION = env.AddAction("AIPC_ACTION", LANG.GIVE, function(act)
+	local doer = act.doer
+	local item = act.invobject
+	local target = act.target
+	-- return false, "INUSE"
+	return true
+end)
+AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIPC_ACTION, "dolongaction"))
+AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIPC_ACTION, "dolongaction"))
 
--- 	table.insert(actions, GLOBAL.ACTIONS.AIPC_ACTION)
--- end)
+-- 为组件绑定 action
+env.AddComponentAction("USEITEM", "aipc_action", function(inst, doer, target, actions, right)
+	if not inst or not target then
+		return
+	end
+
+	if inst.components.aipc_action:CanActOn(target, doer) then
+		table.insert(actions, GLOBAL.ACTIONS.AIPC_ACTION)
+	end
+end)
 
 ------------------------------------ 贪婪观察者 ------------------------------------
 -- 暗影跟随者
@@ -42,14 +56,14 @@ AddPrefabPostInit("antlion", function(inst) ShadowFollowerPrefabPostInit(inst) e
 AddPrefabPostInit("toadstool", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 蟾蜍王
 AddPrefabPostInit("toadstool_dark", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 苦难蟾蜍王
 
-------------------------------------- 豆酱权杖 -------------------------------------
-GLOBAL.LOCKTYPE.AIP_DOU_OPAL = "aip_dou_opal"
+-- ------------------------------------- 豆酱权杖 -------------------------------------
+-- GLOBAL.LOCKTYPE.AIP_DOU_OPAL = "aip_dou_opal"
 
-AddPrefabPostInit("cane", function(inst)
-	if not GLOBAL.TheWorld.ismastersim then
-		return
-	end
+-- AddPrefabPostInit("cane", function(inst)
+-- 	if not GLOBAL.TheWorld.ismastersim then
+-- 		return
+-- 	end
 
-	-- 添加额外的组件
-	inst:AddComponent("aipc_action")
-end)
+-- 	-- 添加额外的组件
+-- 	inst:AddComponent("aipc_action")
+-- end)

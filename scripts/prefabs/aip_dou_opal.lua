@@ -50,6 +50,10 @@ local function onLightning(inst)
 	end
 end
 
+local function canActOn(inst, target, doer)
+	return target.prefab == "cane"
+end
+
 function fn()
 	local inst = CreateEntity()
 
@@ -82,6 +86,9 @@ function fn()
 
 	inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_dou_opal.xml"
+
+	inst:AddComponent("aipc_action")
+	inst.components.aipc_action.canActOn = canActOn
 
 	MakeSmallBurnable(inst, TUNING.LARGE_BURNTIME)
 	MakeSmallPropagator(inst)
