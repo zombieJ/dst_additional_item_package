@@ -311,9 +311,6 @@ function fillDouScepter(slotCount)
 	params[name] = {
 		widget = {
 			slotpos = {},
-			slotbg = {
-				{ image = "slingshot_ammo_slot.tex" },
-			},
 			animbank = "ui_cookpot_1x4",
 			animbuild = "ui_cookpot_1x4",
 			pos = Vector3(0, -30 + loopIndex * 45, 0),
