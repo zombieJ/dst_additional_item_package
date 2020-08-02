@@ -16,8 +16,13 @@ local AIPC_ACTION = env.AddAction("AIPC_ACTION", LANG.GIVE, function(act)
 	local doer = act.doer
 	local item = act.invobject
 	local target = act.target
-	-- return false, "INUSE"
-	return true
+
+	if item.components.aipc_action ~= nil then
+		item.components.aipc_action:DoTargetAction(doer, target)
+		return true
+	end
+
+	return false, "INUSE"
 end)
 AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIPC_ACTION, "dolongaction"))
 AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIPC_ACTION, "dolongaction"))

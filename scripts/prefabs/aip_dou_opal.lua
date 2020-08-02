@@ -32,6 +32,7 @@ local assets =
 local prefabs =
 {
 	"livinglog",
+	"aip_dou_scepter",
 }
 
 -- 文字描述
@@ -52,6 +53,23 @@ end
 
 local function canActOn(inst, target, doer)
 	return target.prefab == "cane"
+end
+
+local function onDoTargetAction(inst, doer, target)
+	local cepter = SpawnPrefab("aip_dou_scepter")
+
+	local owner = target.components.inventoryitem ~= nil and target.components.inventoryitem.owner or nil
+	local holder = owner ~= nil and (owner.components.inventory or owner.components.container) or nil
+	if holder ~= nil then
+		local slot = holder:GetItemSlot(target)
+		target:Remove()
+		holder:GiveItem(cepter, slot)
+	else
+		cepter.Transform:SetPosition(target.Transform:GetWorldPosition())
+		target:Remove()
+	end
+
+	inst:Remove()
 end
 
 function fn()
@@ -89,6 +107,7 @@ function fn()
 
 	inst:AddComponent("aipc_action")
 	inst.components.aipc_action.canActOn = canActOn
+	inst.components.aipc_action.onDoTargetAction = onDoTargetAction
 
 	MakeSmallBurnable(inst, TUNING.LARGE_BURNTIME)
 	MakeSmallPropagator(inst)
