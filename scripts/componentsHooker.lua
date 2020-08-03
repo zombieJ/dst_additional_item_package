@@ -54,7 +54,7 @@ env.AddComponentAction("USEITEM", "aipc_action_client", function(inst, doer, tar
 		return
 	end
 
-	if inst.components.aipc_action_client:CanActOn(target, doer) then
+	if inst.components.aipc_action_client:CanActOn(doer, target) then
 		table.insert(actions, GLOBAL.ACTIONS.AIPC_ACTION)
 	end
 end)

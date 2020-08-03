@@ -7,11 +7,12 @@ local Action = Class(function(self, inst)
 	-- 判断是否可以作用到物品上
 	self.canActOn = nil
 	self.canActOnPoint = nil
+	self.canActOnTarget = nil
 end)
 
-function Action:CanActOn(target, doer)
+function Action:CanActOn(doer, target)
 	if self.canActOn then
-		return self.canActOn(self.inst, target, doer)
+		return self.canActOn(self.inst, doer, target)
 	end
 	return false
 end

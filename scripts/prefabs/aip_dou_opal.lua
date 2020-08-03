@@ -51,7 +51,7 @@ local function onLightning(inst)
 	end
 end
 
-local function canActOn(inst, target, doer)
+local function canActOn(inst, doer, target)
 	return target.prefab == "cane"
 end
 
