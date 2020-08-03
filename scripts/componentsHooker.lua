@@ -1,6 +1,21 @@
 local language = GLOBAL.aipGetModConfig("language")
 
 ----------------------------------- 通用组件行为 -----------------------------------
+local function triggerComponentAction(player, item, target, targetPoint)
+	if item.components.aipc_action ~= nil then
+		-- trigger action
+		if target ~= nil then
+			item.components.aipc_action:DoTargetAction(doer, target)
+		elseif targetPoint ~= nil then
+			item.components.aipc_action:DoPointAction(doer, pos)
+		end
+	end
+end
+
+env.AddModRPCHandler(env.modname, "aipComponentAction", function(player, item, target, targetPoint)
+	triggerComponentAction(player, item, target, targetPoint)
+end)
+
 -------------------- 组合行为
 local LANG_MAP = {
 	english = {
@@ -20,23 +35,26 @@ local AIPC_ACTION = env.AddAction("AIPC_ACTION", LANG.GIVE, function(act)
 	local item = act.invobject
 	local target = act.target
 
-	if item.components.aipc_action ~= nil then
-		item.components.aipc_action:DoTargetAction(doer, target)
-		return true
+	if GLOBAL.TheNet:GetIsServer() then
+		-- server
+		triggerComponentAction(doer, item, target, nil)
+	else
+		-- client
+		SendModRPCToServer(MOD_RPC[env.modname]["aipComponentAction"], doer, item, target, nil)
 	end
 
-	return false, "INUSE"
+	return true
 end)
 AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIPC_ACTION, "dolongaction"))
 AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIPC_ACTION, "dolongaction"))
 
 -- 为组件绑定 action
-env.AddComponentAction("USEITEM", "aipc_action", function(inst, doer, target, actions, right)
+env.AddComponentAction("USEITEM", "aipc_action_client", function(inst, doer, target, actions, right)
 	if not inst or not target then
 		return
 	end
 
-	if inst.components.aipc_action:CanActOn(target, doer) then
+	if inst.components.aipc_action_client:CanActOn(target, doer) then
 		table.insert(actions, GLOBAL.ACTIONS.AIPC_ACTION)
 	end
 end)
@@ -48,12 +66,15 @@ local AIPC_POINT_ACTION = env.AddAction("AIPC_POINT_ACTION", LANG.CAST, function
 	local item = act.invobject
 	local pos = act.pos
 
-	if item.components.aipc_action ~= nil then
-		item.components.aipc_action:DoPointAction(doer, pos)
-		return true
+	if GLOBAL.TheNet:GetIsServer() then
+		-- server
+		triggerComponentAction(doer, item, nil, pos)
+	else
+		-- client
+		SendModRPCToServer(MOD_RPC[env.modname]["aipComponentAction"], doer, item, nil, pos)
 	end
 
-	return false, "INUSE"
+	return true
 end)
 
 -- 右键
@@ -63,12 +84,12 @@ AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIPC_POINT_ACTION, "th
 AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIPC_POINT_ACTION, "throw"))
 
 -- 为组件绑定 action
-env.AddComponentAction("POINT", "aipc_action", function(inst, doer, pos, actions, right)
+env.AddComponentAction("POINT", "aipc_action_client", function(inst, doer, pos, actions, right)
 	if not inst or not target then
 		return
 	end
 
-	if inst.components.aipc_action:CanActOnPoint(doer, pos) then
+	if inst.components.aipc_action_client:CanActOnPoint(doer, pos) then
 		table.insert(actions, GLOBAL.ACTIONS.AIPC_POINT_ACTION)
 	end
 end)

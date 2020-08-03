@@ -3,9 +3,7 @@ local Action = Class(function(self, inst)
 
 	self.onDoAction = nil
 	self.onDoTargetAction = nil
-
-	-- 判断是否可以作用到物品上
-	self.canActOn = nil
+	self.onDoPointAction = nil
 end)
 
 function Action:DoAction(doer)
@@ -20,18 +18,10 @@ function Action:DoTargetAction(doer, target)
 	end
 end
 
-function Action:CanActOn(target, doer)
-	if self.canActOn then
-		return self.canActOn(self.inst, target, doer)
+function Action:DoPointAction(doer, point)
+	if self.onDoPointAction then
+		self.onDoPointAction(self.inst, doer, point)
 	end
-	return false
-end
-
-function Action:CanActOnPoint(doer, pos)
-	if self.canActOnPoint then
-		return self.canActOnPoint(self.inst, doer, pos)
-	end
-	return false
 end
 
 return Action
