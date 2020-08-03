@@ -183,16 +183,15 @@ local function fn()
     -- inst.components.aoetargeting.reticule.ease = true
     -- inst.components.aoetargeting.reticule.mouseenabled = true
 
+    inst:AddComponent("aipc_action")
+    inst.components.aipc_action.canActOnPoint = function()
+        return true
+    end
+
     if not TheWorld.ismastersim then
         return inst
     end
 
-    -- 测试一个节点
-    inst:AddComponent("aipc_action")
-    inst.components.aipc_action.canActOn = function()
-        return true
-    end
-	-- inst.components.aipc_action.onDoTargetAction = onDoTargetAction
 
     -- -- 施法动作
     -- inst:AddComponent("spellcaster")

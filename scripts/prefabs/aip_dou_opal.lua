@@ -56,6 +56,11 @@ local function canActOn(inst, target, doer)
 end
 
 local function onDoTargetAction(inst, doer, target)
+	-- server only
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
 	local cepter = SpawnPrefab("aip_dou_scepter")
 
 	local owner = target.components.inventoryitem ~= nil and target.components.inventoryitem.owner or nil
@@ -91,6 +96,10 @@ function fn()
 
 	inst.entity:SetPristine()
 
+	inst:AddComponent("aipc_action")
+	inst.components.aipc_action.canActOn = canActOn
+	inst.components.aipc_action.onDoTargetAction = onDoTargetAction
+
 	if not TheWorld.ismastersim then
 		return inst
 	end
@@ -104,10 +113,6 @@ function fn()
 
 	inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_dou_opal.xml"
-
-	inst:AddComponent("aipc_action")
-	inst.components.aipc_action.canActOn = canActOn
-	inst.components.aipc_action.onDoTargetAction = onDoTargetAction
 
 	MakeSmallBurnable(inst, TUNING.LARGE_BURNTIME)
 	MakeSmallPropagator(inst)

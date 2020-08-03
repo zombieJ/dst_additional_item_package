@@ -46,22 +46,29 @@ end)
 local AIPC_POINT_ACTION = env.AddAction("AIPC_POINT_ACTION", LANG.CAST, function(act)
 	local doer = act.doer
 	local item = act.invobject
-	local target = act.target
+	local pos = act.pos
 
-	GLOBAL.aipPrint("No No No!!!")
+	if item.components.aipc_action ~= nil then
+		item.components.aipc_action:DoPointAction(doer, pos)
+		return true
+	end
 
 	return false, "INUSE"
 end)
+
+-- 右键
+AIPC_POINT_ACTION.rmb = true
+
 AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIPC_POINT_ACTION, "throw"))
 AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIPC_POINT_ACTION, "throw"))
 
 -- 为组件绑定 action
-env.AddComponentAction("POINT", "aipc_action", function(inst, doer, target, actions, right)
+env.AddComponentAction("POINT", "aipc_action", function(inst, doer, pos, actions, right)
 	if not inst or not target then
 		return
 	end
 
-	if inst.components.aipc_action:CanActOn(target, doer) then
+	if inst.components.aipc_action:CanActOnPoint(doer, pos) then
 		table.insert(actions, GLOBAL.ACTIONS.AIPC_POINT_ACTION)
 	end
 end)
@@ -79,20 +86,3 @@ AddComponentPostInit("health", function(self)
 		origiDoDelta(self, data.amount, GLOBAL.unpack(arg))
 	end
 end)
-
--- -- 监听AOE 事件
--- AddComponentPostInit("aoetargeting", function(self)
--- 	local origiStartTargeting = self.StartTargeting
-
--- 	function self:StartTargeting(...)
--- 		GLOBAL.aipPrint("start targeting")
--- 		return origiStartTargeting(self, GLOBAL.unpack(arg))
--- 	end
-
--- 	local origiStopTargeting = self.StopTargeting
-
--- 	function self:StopTargeting(...)
--- 		GLOBAL.aipPrint("stop targeting")
--- 		return origiStopTargeting(self, GLOBAL.unpack(arg))
--- 	end
--- end)

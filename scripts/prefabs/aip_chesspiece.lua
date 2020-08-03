@@ -172,13 +172,13 @@ local PIECES =
 				fx:SetMaterial("metal")
 				inst:Remove()
 
-				-- 延迟创造一条闪电点燃该物品
-				opal:DoTaskInTime(0.1, function()
-					TheWorld:PushEvent("ms_sendlightningstrike", opal:GetPosition())
+				-- 延迟创造一条闪电点燃该物品 -- 豆酱：不掉落了，免得玩家懵逼了
+				-- opal:DoTaskInTime(0.1, function()
+				-- 	TheWorld:PushEvent("ms_sendlightningstrike", opal:GetPosition())
 
-					opal.components.burnable:Extinguish()
-					opal.components.burnable:StartWildfire()
-				end)
+				-- 	opal.components.burnable:Extinguish()
+				-- 	opal.components.burnable:StartWildfire()
+				-- end)
 			end
 
 			-- 拒绝要说话

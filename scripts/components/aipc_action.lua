@@ -27,4 +27,11 @@ function Action:CanActOn(target, doer)
 	return false
 end
 
+function Action:CanActOnPoint(doer, pos)
+	if self.canActOnPoint then
+		return self.canActOnPoint(self.inst, doer, pos)
+	end
+	return false
+end
+
 return Action
