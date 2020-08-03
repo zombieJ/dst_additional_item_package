@@ -166,20 +166,26 @@ local function fn()
 
     inst.entity:SetPristine()
 
-    -- 客户端也需要的 AOE 效果
-    inst:AddComponent("aoetargeting")
-    inst.components.aoetargeting:SetAlwaysValid(true)
-    inst.components.aoetargeting.reticule.reticuleprefab = "reticulelong"
-    inst.components.aoetargeting.reticule.pingprefab = "reticulelongping"
-    inst.components.aoetargeting.reticule.targetfn = ReticuleTargetFn
-    inst.components.aoetargeting.reticule.mousetargetfn = ReticuleMouseTargetFn
-    inst.components.aoetargeting.reticule.updatepositionfn = ReticuleUpdatePositionFn
-    inst.components.aoetargeting.reticule.validcolour = { 1, .75, 0, 1 }
-    inst.components.aoetargeting.reticule.invalidcolour = { .5, 0, 0, 1 }
-    inst.components.aoetargeting.reticule.ease = true
-    inst.components.aoetargeting.reticule.mouseenabled = true
+    -- 添加施法者
+    inst:AddComponent("aipc_caster")
+    inst.components.aipc_caster:SetUp("line")
 
-    if not TheWorld.ismastersim then return inst end
+    -- 客户端也需要的 AOE 效果
+    -- inst:AddComponent("aoetargeting")
+    -- inst.components.aoetargeting:SetAlwaysValid(true)
+    -- inst.components.aoetargeting.reticule.reticuleprefab = "reticulelong"
+    -- inst.components.aoetargeting.reticule.pingprefab = "reticulelongping"
+    -- inst.components.aoetargeting.reticule.targetfn = ReticuleTargetFn
+    -- inst.components.aoetargeting.reticule.mousetargetfn = ReticuleMouseTargetFn
+    -- inst.components.aoetargeting.reticule.updatepositionfn = ReticuleUpdatePositionFn
+    -- inst.components.aoetargeting.reticule.validcolour = { 1, .75, 0, 1 }
+    -- inst.components.aoetargeting.reticule.invalidcolour = { .5, 0, 0, 1 }
+    -- inst.components.aoetargeting.reticule.ease = true
+    -- inst.components.aoetargeting.reticule.mouseenabled = true
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
 
     -- 测试一个节点
     inst:AddComponent("aipc_action")
@@ -188,28 +194,28 @@ local function fn()
     end
 	-- inst.components.aipc_action.onDoTargetAction = onDoTargetAction
 
-    -- 施法动作
-    inst:AddComponent("spellcaster")
-    inst.components.spellcaster.CanCast = (function (inst, target, pos)
-        aipPrint("CanCast:", inst, target, pos)
-        return true
-    end)
-    inst.components.spellcaster:SetSpellFn((function (inst, target, pos)
-        aipPrint("SPELL!!!!")
-        local caster = inst.components.inventoryitem.owner
+    -- -- 施法动作
+    -- inst:AddComponent("spellcaster")
+    -- inst.components.spellcaster.CanCast = (function (inst, target, pos)
+    --     aipPrint("CanCast:", inst, target, pos)
+    --     return true
+    -- end)
+    -- inst.components.spellcaster:SetSpellFn((function (inst, target, pos)
+    --     aipPrint("SPELL!!!!")
+    --     local caster = inst.components.inventoryitem.owner
 
-        if pos ~= nil then --the point on map that has been targeted to cast spell there
-            aipPrint("do cast!!!!")
-        end
-    end))
-    inst.components.spellcaster.canuseontargets = true --retains the default functionality of ice staff
-    inst.components.spellcaster.canuseonpoint = true  --adds aoe spell
+    --     if pos ~= nil then --the point on map that has been targeted to cast spell there
+    --         aipPrint("do cast!!!!")
+    --     end
+    -- end))
+    -- inst.components.spellcaster.canuseontargets = true --retains the default functionality of ice staff
+    -- inst.components.spellcaster.canuseonpoint = true  --adds aoe spell
 
-    -- 武器伤害
-    inst:AddComponent("weapon")
-    inst.components.weapon:SetDamage(0)
-    inst.components.weapon:SetRange(8, 10)
-    inst.components.weapon:SetProjectile("fire_projectile")
+    -- -- 武器伤害
+    -- inst:AddComponent("weapon")
+    -- inst.components.weapon:SetDamage(0)
+    -- inst.components.weapon:SetRange(8, 10)
+    -- inst.components.weapon:SetProjectile("fire_projectile")
 
     -- 接受元素提炼
     inst:AddComponent("container")
@@ -232,7 +238,6 @@ local function fn()
     inst.components.inventoryitem.imagename = "aip_dou_scepter"
 
     inst:AddComponent("equippable")
-
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
     inst.components.equippable.walkspeedmult = TUNING.CANE_SPEED_MULT
