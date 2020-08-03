@@ -109,16 +109,18 @@ function Caster:SetUp(type)
 end
 
 -- Active when on equip
-function Caster:OnUpdate(dt)
-    if self.inst.replica.equippable ~= nil then
-        if not self.active and self.inst.replica.equippable:IsEquipped() then
-            self.active = true
-            self:StartTargeting()
-        elseif self.active and not self.inst.replica.equippable:IsEquipped() then
-            self.active = false
-            self:StopTargeting()
-        end
-    end
+function Caster:OnEquip()
+  if not self.active then
+    self.active = true
+    self:StartTargeting()
+  end
+end
+
+function Caster:OnUnequip()
+  if self.active then
+    self.active = false
+    self:StopTargeting()
+  end
 end
 
 function Caster:StartTargeting()
