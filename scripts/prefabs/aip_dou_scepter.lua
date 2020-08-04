@@ -27,10 +27,10 @@ STRINGS.RECIPE_DESC.AIP_DOU_SCEPTER = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_SCEPTER = LANG.DESC
 
 local assets = {
-    Asset("ANIM", "anim/aip_dou_scepter.zip"),
-    Asset("ANIM", "anim/aip_dou_scepter_swap.zip"),
-    Asset("ANIM", "anim/floating_items.zip"),
-    Asset("ATLAS", "images/inventoryimages/aip_dou_scepter.xml"),
+    -- Asset("ANIM", "anim/aip_dou_scepter.zip"),
+    -- Asset("ANIM", "anim/aip_dou_scepter_swap.zip"),
+    -- Asset("ANIM", "anim/floating_items.zip"),
+    -- Asset("ATLAS", "images/inventoryimages/aip_dou_scepter.xml"),
 }
 
 
@@ -184,6 +184,9 @@ local function fn()
     -- inst.components.aoetargeting.reticule.mouseenabled = true
 
     inst:AddComponent("aipc_action")
+    inst.components.aipc_action.canActOn = function(inst, doer, target)
+        
+    end
     inst.components.aipc_action.canActOnPoint = function()
         return true
     end
