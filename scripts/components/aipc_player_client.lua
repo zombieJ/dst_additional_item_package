@@ -1,17 +1,27 @@
 -- 这个组件用于清除 side effect
 -------------------------------------------------------------------------------
 local function OnEquip(inst, data)
+	local self = inst.components.aipc_player_client
+	if self.inst ~= ThePlayer then
+		return
+	end
+
 	if data.eslot == EQUIPSLOTS.HANDS then
 		if data.item.components.aipc_caster ~= nil then
-			inst.components.aipc_caster:OnEquip()
+			data.item.components.aipc_caster:OnEquip()
 		end
 	end
 end
 
 local function OnUnequip(inst, data)
+	local self = inst.components.aipc_player_client
+	if self.inst ~= ThePlayer then
+		return
+	end
+
 	if data.eslot == EQUIPSLOTS.HANDS then
 		if data.item.components.aipc_caster ~= nil then
-			inst.components.aipc_caster:OnUnequip()
+			data.item.components.aipc_caster:OnUnequip()
 		end
 	end
 end
@@ -24,11 +34,9 @@ local Player = Class(function(self, inst)
 		self:Death()
 	end)
 
-	-- Client only
-	if self.inst == ThePlayer then
+	-- We can not get ThePlayer in AddPlayerPostInit. So need additonal check in follow events
 		self.inst:ListenForEvent("equip", OnEquip)
 		self.inst:ListenForEvent("unequip", OnUnequip)
-	end
 end)
 
 function Player:OffMineCar()

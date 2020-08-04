@@ -104,8 +104,6 @@ function Caster:SetUp(type)
     elseif type == "target" then
       
     end
-
-    inst:StartUpdatingComponent(self)
 end
 
 -- Active when on equip

@@ -96,13 +96,15 @@ function fn()
 
 	inst.entity:SetPristine()
 
-	inst:AddComponent("aipc_action")
+	inst:AddComponent("aipc_action_client")
 	inst.components.aipc_action.canActOn = canActOn
-	inst.components.aipc_action.onDoTargetAction = onDoTargetAction
 
 	if not TheWorld.ismastersim then
 		return inst
 	end
+
+	inst:AddComponent("aipc_action")
+	inst.components.aipc_action.onDoTargetAction = onDoTargetAction
 
 	-- 如果被雷击
 	inst:ListenForEvent("lightningstrike", onLightning)
