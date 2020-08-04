@@ -85,8 +85,7 @@ AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIPC_POINT_ACTI
 
 -- 为组件绑定 action
 env.AddComponentAction("POINT", "aipc_action_client", function(inst, doer, pos, actions, right)
-	GLOBAL.aipPrint(">>>", not inst, not pos)
-	if not inst or not pos then
+	if not inst or not pos or not right then
 		return
 	end
 
