@@ -97,7 +97,7 @@ function fn()
 	inst.entity:SetPristine()
 
 	inst:AddComponent("aipc_action_client")
-	inst.components.aipc_action.canActOn = canActOn
+	inst.components.aipc_action_client.canActOn = canActOn
 
 	if not TheWorld.ismastersim then
 		return inst

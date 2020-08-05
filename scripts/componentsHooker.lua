@@ -79,8 +79,8 @@ end)
 
 AIPC_POINT_ACTION.distance = math.huge
 
-AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIPC_POINT_ACTION, "throw"))
-AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIPC_POINT_ACTION, "throw"))
+AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIPC_POINT_ACTION, "quicktele"))
+AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIPC_POINT_ACTION, "quicktele"))
 
 -- 为组件绑定 action
 env.AddComponentAction("POINT", "aipc_action_client", function(inst, doer, pos, actions, right)
