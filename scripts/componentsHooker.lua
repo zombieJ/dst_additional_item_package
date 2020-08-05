@@ -79,6 +79,8 @@ local AIPC_POINT_ACTION = env.AddAction("AIPC_POINT_ACTION", LANG.CAST, function
 	return true
 end)
 
+AIPC_POINT_ACTION.distance = math.huge
+
 AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIPC_POINT_ACTION, "throw"))
 AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIPC_POINT_ACTION, "throw"))
 
@@ -107,75 +109,223 @@ AddComponentPostInit("health", function(self)
 	end
 end)
 
-AddComponentPostInit("playercontroller", function(self)
-	local origiOnRightClick = self.OnRightClick
-
-	-- PlayerController:DoAction(buffaction)
-
-	function self:OnRightClick(down)
-		GLOBAL.aipPrint("DO RIGHT!!!", down)
-
-		if not self:UsingMouse() then
-			return
-		elseif not down then
-				if self:IsEnabled() then
-					GLOBAL.aipPrint("1111")
-						self:RemoteStopControl(CONTROL_SECONDARY)
-				end
+AddComponentPostInit("locomotor", function(self)
+	function self:PushAction(bufferedaction, run, try_instant)
+		GLOBAL.aipPrint(111)
+		if bufferedaction == nil then
 				return
 		end
 
-		self.startdragtime = nil
-
-		if self.placer_recipe ~= nil then
-			GLOBAL.aipPrint("22222")
-				self:CancelPlacement()
-				return
-		elseif self:IsAOETargeting() then
-			GLOBAL.aipPrint("33333")
-				self:CancelAOETargeting()
-				return
-		elseif not self:IsEnabled() or GLOBAL.TheInput:GetHUDEntityUnderMouse() ~= nil then
-			GLOBAL.aipPrint("4444")
+		GLOBAL.aipPrint(222)
+		self.throttle = 1
+		local success, reason = bufferedaction:TestForStart()
+		if not success then
+			GLOBAL.aipPrint(333)
+				self.inst:PushEvent("actionfailed", { action = bufferedaction, reason = reason })
 				return
 		end
 
-		local act = self:GetRightMouseAction()
-		if act == nil then
-			GLOBAL.aipPrint("55555")
-				self.inst.replica.inventory:ReturnActiveItem()
-				self:TryAOETargeting()
-		else
-			GLOBAL.aipPrint("66666")
-				if self.reticule ~= nil and self.reticule.reticule ~= nil then
-					GLOBAL.aipPrint("77777")
-						self.reticule:PingReticuleAt(act:GetActionPoint())
+		GLOBAL.aipPrint(4444)
+		self:Clear()
+		local action_pos = bufferedaction:GetActionPoint()
+		if bufferedaction.action == GLOBAL.ACTIONS.WALKTO then
+				if bufferedaction.target ~= nil then
+						self:GoToEntity(bufferedaction.target, bufferedaction, run)
+				elseif action_pos then
+						self:GoToPoint(nil, bufferedaction, run)
+				else
+						return
 				end
-				if self.deployplacer ~= nil and act.action == ACTIONS.DEPLOY then
-					GLOBAL.aipPrint("7888888")
-						act.rotation = self.deployplacer.Transform:GetRotation()
+		elseif bufferedaction.action == GLOBAL.ACTIONS.LOOKAT and
+				self.inst.components.playercontroller ~= nil then
+				local pos = self.inst.components.playercontroller:GetRemotePredictPosition()
+				if pos ~= nil and not self.inst.components.playercontroller.directwalking then
+						self:GoToPoint(pos, bufferedaction, run)
+				else
+						self.inst:PushBufferedAction(bufferedaction)
 				end
-				if not self.ismastersim then
-					GLOBAL.aipPrint("999999")
-						local position = GLOBAL.TheInput:GetWorldPosition()
-						local mouseover = GLOBAL.TheInput:GetWorldEntityUnderMouse()
-						local controlmods = self:EncodeControlMods()
-						local platform, pos_x, pos_z = self:GetPlatformRelativePosition(position.x, position.z)
-						if self.locomotor == nil then
-							GLOBAL.aipPrint("1010101")
-								self.remote_controls[CONTROL_SECONDARY] = 0
-								SendRPCToServer(RPC.RightClick, act.action.code, pos_x, pos_z, mouseover, act.rotation ~= 0 and act.rotation or nil, nil, controlmods, act.action.canforce, act.action.mod_name, platform, platform ~= nil)
-						elseif act.action ~= ACTIONS.WALKTO and self:CanLocomote() then
-							GLOBAL.aipPrint("aaaaaa")
-								act.preview_cb = function()
-									GLOBAL.aipPrint("ccccc")
-										self.remote_controls[CONTROL_SECONDARY] = 0
-										local isreleased = not GLOBAL.TheInput:IsControlPressed(CONTROL_SECONDARY)
-										SendRPCToServer(RPC.RightClick, act.action.code, pos_x, pos_z, mouseover, act.rotation ~= 0 and act.rotation or nil, isreleased, controlmods, nil, act.action.mod_name, platform, platform ~= nil)
-								end
+		elseif bufferedaction.forced then
+				GLOBAL.aipPrint(555)
+				if bufferedaction.action.rangecheckfn ~= nil and
+						not bufferedaction.action.rangecheckfn(bufferedaction.doer, bufferedaction.target) then
+							GLOBAL.aipPrint(666)
+						bufferedaction.target = nil
+						bufferedaction.initialtargetowner = nil
+				end
+				if action_pos ~= nil then
+					GLOBAL.aipPrint(777)
+						self:GoToPoint(nil, bufferedaction, run, bufferedaction.overridedest)
+				end
+		elseif bufferedaction.action.instant or bufferedaction.action.do_not_locomote then
+			GLOBAL.aipPrint(888)
+				self.inst:PushBufferedAction(bufferedaction)
+		elseif bufferedaction.target ~= nil then
+			GLOBAL.aipPrint(999)
+				if bufferedaction.distance ~= nil and bufferedaction.distance >= math.huge then
+						--essentially instant
+						self.inst:FacePoint(bufferedaction.target.Transform:GetWorldPosition())
+						self.inst:PushBufferedAction(bufferedaction)
+				else
+						self:GoToEntity(bufferedaction.target, bufferedaction, run)
+				end
+		elseif action_pos == nil then
+			GLOBAL.aipPrint("aaa")
+				self.inst:PushBufferedAction(bufferedaction)
+		elseif bufferedaction.action == GLOBAL.ACTIONS.CASTAOE then
+			GLOBAL.aipPrint("bbb")
+				if self.inst:GetDistanceSqToPoint(action_pos) <= bufferedaction.distance * bufferedaction.distance then
+						self.inst:FacePoint(action_pos:Get())
+						self.inst:PushBufferedAction(bufferedaction)
+				else
+						self:GoToPoint(nil, bufferedaction, run)
+						if self.bufferedaction == bufferedaction then
+								self.inst:PushEvent("bufferedcastaoe", bufferedaction)
 						end
 				end
-				self:DoAction(act)
+		elseif bufferedaction.distance ~= nil and bufferedaction.distance >= math.huge then
+			GLOBAL.aipPrint("ccc")
+				--essentially instant
+				self.inst:FacePoint(action_pos:Get())
+				self.inst:PushBufferedAction(bufferedaction)
+		else
+			GLOBAL.aipPrint("ddd")
+				self:GoToPoint(nil, bufferedaction, run)
+		end
+
+		if self.inst.components.playercontroller ~= nil then
+			GLOBAL.aipPrint("zzz")
+				self.inst.components.playercontroller:OnRemoteBufferedAction()
 		end
 	end
 end)
+
+-- AddComponentPostInit("playercontroller", function(self)
+-- 	local origiOnRightClick = self.OnRightClick
+
+-- 	function self:OnRightClick(down)
+-- 		GLOBAL.aipPrint("DO RIGHT!!!", down)
+
+-- 		if not self:UsingMouse() then
+-- 			return
+-- 		elseif not down then
+-- 				if self:IsEnabled() then
+-- 					GLOBAL.aipPrint("1111")
+-- 						self:RemoteStopControl(CONTROL_SECONDARY)
+-- 				end
+-- 				return
+-- 		end
+
+-- 		self.startdragtime = nil
+
+-- 		if self.placer_recipe ~= nil then
+-- 			GLOBAL.aipPrint("22222")
+-- 				self:CancelPlacement()
+-- 				return
+-- 		elseif self:IsAOETargeting() then
+-- 			GLOBAL.aipPrint("33333")
+-- 				self:CancelAOETargeting()
+-- 				return
+-- 		elseif not self:IsEnabled() or GLOBAL.TheInput:GetHUDEntityUnderMouse() ~= nil then
+-- 			GLOBAL.aipPrint("4444")
+-- 				return
+-- 		end
+
+-- 		local act = self:GetRightMouseAction()
+-- 		if act == nil then
+-- 			GLOBAL.aipPrint("55555")
+-- 				self.inst.replica.inventory:ReturnActiveItem()
+-- 				self:TryAOETargeting()
+-- 		else
+-- 			GLOBAL.aipPrint("66666")
+-- 				if self.reticule ~= nil and self.reticule.reticule ~= nil then
+-- 					GLOBAL.aipPrint("77777")
+-- 						self.reticule:PingReticuleAt(act:GetActionPoint())
+-- 				end
+-- 				if self.deployplacer ~= nil and act.action == ACTIONS.DEPLOY then
+-- 					GLOBAL.aipPrint("7888888")
+-- 						act.rotation = self.deployplacer.Transform:GetRotation()
+-- 				end
+-- 				if not self.ismastersim then
+-- 					GLOBAL.aipPrint("999999")
+-- 						local position = GLOBAL.TheInput:GetWorldPosition()
+-- 						local mouseover = GLOBAL.TheInput:GetWorldEntityUnderMouse()
+-- 						local controlmods = self:EncodeControlMods()
+-- 						local platform, pos_x, pos_z = self:GetPlatformRelativePosition(position.x, position.z)
+-- 						if self.locomotor == nil then
+-- 							GLOBAL.aipPrint("1010101")
+-- 								self.remote_controls[CONTROL_SECONDARY] = 0
+-- 								SendRPCToServer(RPC.RightClick, act.action.code, pos_x, pos_z, mouseover, act.rotation ~= 0 and act.rotation or nil, nil, controlmods, act.action.canforce, act.action.mod_name, platform, platform ~= nil)
+-- 						elseif act.action ~= ACTIONS.WALKTO and self:CanLocomote() then
+-- 							GLOBAL.aipPrint("aaaaaa")
+-- 								act.preview_cb = function()
+-- 									GLOBAL.aipPrint("ccccc")
+-- 										self.remote_controls[CONTROL_SECONDARY] = 0
+-- 										local isreleased = not GLOBAL.TheInput:IsControlPressed(CONTROL_SECONDARY)
+-- 										SendRPCToServer(RPC.RightClick, act.action.code, pos_x, pos_z, mouseover, act.rotation ~= 0 and act.rotation or nil, isreleased, controlmods, nil, act.action.mod_name, platform, platform ~= nil)
+-- 								end
+-- 						end
+-- 				end
+-- 				GLOBAL.aipPrint("dddddd")
+-- 				self:DoAction(act)
+-- 		end
+-- 	end
+
+-- 	function self:DoAction(buffaction)
+-- 		--Check if the action is actually valid.
+--     --Cached LMB/RMB actions can become invalid.
+--     --Also check if we're busy.
+
+-- 		GLOBAL.aipPrint("eeeeeee")
+--     if buffaction == nil or
+--         (buffaction.invobject ~= nil and not buffaction.invobject:IsValid()) or
+--         (buffaction.target ~= nil and not buffaction.target:IsValid()) or
+--         (buffaction.doer ~= nil and not buffaction.doer:IsValid()) or
+--         self:IsBusy() then
+--         return
+--     end
+
+-- 		GLOBAL.aipPrint("fffffff")
+--     --Check for duplicate actions
+--     local currentbuffaction = self.inst:GetBufferedAction()
+--     if currentbuffaction ~= nil and
+--         currentbuffaction.action == buffaction.action and
+--         currentbuffaction.target == buffaction.target and
+--         (   (currentbuffaction.pos == nil and buffaction.pos == nil) or
+--             (currentbuffaction.pos == buffaction.pos) -- Note: see overloaded DynamicPosition:__eq function
+--         ) and
+--         not (currentbuffaction.ispreviewing and
+--             self.inst:HasTag("idle") and
+--             self.inst.sg:HasStateTag("idle")) then
+--         --The "not" bit is in case we are stuck waiting for server
+-- 				--to act but it never does
+-- 				GLOBAL.aipPrint("gggggg")
+--         return
+--     end
+
+-- 		GLOBAL.aipPrint("hhhhhh")
+-- 		if self.handler ~= nil and buffaction.target ~= nil then
+-- 			GLOBAL.aipPrint("iiiiii")
+--         local highlight_guy = buffaction.target.highlightforward or buffaction.target
+-- 				if highlight_guy.components.highlight == nil then
+-- 					GLOBAL.aipPrint("jjjjjj")
+--             highlight_guy:AddComponent("highlight")
+-- 				end
+-- 				GLOBAL.aipPrint("kkkkkk")
+--         highlight_guy.components.highlight:Flash(.2, .125, .1)
+--     end
+
+--     --Clear any buffered attacks since we're starting a new action
+--     self.attack_buffer = nil
+
+-- 		GLOBAL.aipPrint("llllll")
+--     self:DoActionAutoEquip(buffaction)
+
+-- 		if self.ismastersim then
+-- 			GLOBAL.aipPrint("mmmmm")
+--         self.locomotor:PushAction(buffaction, true)
+-- 		elseif self:CanLocomote() then
+-- 			GLOBAL.aipPrint("nnnnnn")
+--         self.locomotor:PreviewAction(buffaction, true)
+--     end
+-- 	end
+-- end)
