@@ -27,10 +27,10 @@ STRINGS.RECIPE_DESC.AIP_DOU_SCEPTER = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_SCEPTER = LANG.DESC
 
 local assets = {
-    -- Asset("ANIM", "anim/aip_dou_scepter.zip"),
-    -- Asset("ANIM", "anim/aip_dou_scepter_swap.zip"),
-    -- Asset("ANIM", "anim/floating_items.zip"),
-    -- Asset("ATLAS", "images/inventoryimages/aip_dou_scepter.xml"),
+    Asset("ANIM", "anim/aip_dou_scepter.zip"),
+    Asset("ANIM", "anim/aip_dou_scepter_swap.zip"),
+    Asset("ANIM", "anim/floating_items.zip"),
+    Asset("ATLAS", "images/inventoryimages/aip_dou_scepter.xml"),
 }
 
 
@@ -185,7 +185,7 @@ local function fn()
 
     inst:AddComponent("aipc_action_client")
     inst.components.aipc_action_client.canActOn = function(inst, doer, target)
-        
+        return true
     end
     inst.components.aipc_action_client.canActOnPoint = function()
         return true

@@ -25,8 +25,8 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 -- 资源
 local assets =
 {
-	-- Asset("ATLAS", "images/inventoryimages/aip_dou_opal.xml"),
-	-- Asset("ANIM", "anim/aip_dou_opal.zip"),
+	Asset("ATLAS", "images/inventoryimages/aip_dou_opal.xml"),
+	Asset("ANIM", "anim/aip_dou_opal.zip"),
 }
 
 local prefabs =
