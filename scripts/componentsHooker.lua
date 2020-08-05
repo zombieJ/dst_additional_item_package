@@ -5,9 +5,9 @@ local function triggerComponentAction(player, item, target, targetPoint)
 	if item.components.aipc_action ~= nil then
 		-- trigger action
 		if target ~= nil then
-			item.components.aipc_action:DoTargetAction(doer, target)
+			item.components.aipc_action:DoTargetAction(player, target)
 		elseif targetPoint ~= nil then
-			item.components.aipc_action:DoPointAction(doer, pos)
+			item.components.aipc_action:DoPointAction(player, pos)
 		end
 	end
 end
