@@ -77,7 +77,7 @@ local AIPC_POINT_ACTION = env.AddAction("AIPC_POINT_ACTION", LANG.CAST, function
 	return true
 end)
 
-AIPC_POINT_ACTION.distance = math.huge
+AIPC_POINT_ACTION.distance = 8
 
 AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIPC_POINT_ACTION, "quicktele"))
 AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIPC_POINT_ACTION, "quicktele"))
