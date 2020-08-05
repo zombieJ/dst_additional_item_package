@@ -66,6 +66,8 @@ local AIPC_POINT_ACTION = env.AddAction("AIPC_POINT_ACTION", LANG.CAST, function
 	local item = act.invobject
 	local pos = act.pos
 
+	GLOBAL.aipPrint("DO ACTION!!!")
+
 	if GLOBAL.TheNet:GetIsServer() then
 		-- server
 		triggerComponentAction(doer, item, nil, pos)
@@ -76,9 +78,6 @@ local AIPC_POINT_ACTION = env.AddAction("AIPC_POINT_ACTION", LANG.CAST, function
 
 	return true
 end)
-
--- 右键
-AIPC_POINT_ACTION.rmb = true
 
 AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIPC_POINT_ACTION, "throw"))
 AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIPC_POINT_ACTION, "throw"))
@@ -105,5 +104,78 @@ AddComponentPostInit("health", function(self)
 		self.inst:PushEvent("aip_healthdelta", data)
 
 		origiDoDelta(self, data.amount, GLOBAL.unpack(arg))
+	end
+end)
+
+AddComponentPostInit("playercontroller", function(self)
+	local origiOnRightClick = self.OnRightClick
+
+	-- PlayerController:DoAction(buffaction)
+
+	function self:OnRightClick(down)
+		GLOBAL.aipPrint("DO RIGHT!!!", down)
+
+		if not self:UsingMouse() then
+			return
+		elseif not down then
+				if self:IsEnabled() then
+					GLOBAL.aipPrint("1111")
+						self:RemoteStopControl(CONTROL_SECONDARY)
+				end
+				return
+		end
+
+		self.startdragtime = nil
+
+		if self.placer_recipe ~= nil then
+			GLOBAL.aipPrint("22222")
+				self:CancelPlacement()
+				return
+		elseif self:IsAOETargeting() then
+			GLOBAL.aipPrint("33333")
+				self:CancelAOETargeting()
+				return
+		elseif not self:IsEnabled() or GLOBAL.TheInput:GetHUDEntityUnderMouse() ~= nil then
+			GLOBAL.aipPrint("4444")
+				return
+		end
+
+		local act = self:GetRightMouseAction()
+		if act == nil then
+			GLOBAL.aipPrint("55555")
+				self.inst.replica.inventory:ReturnActiveItem()
+				self:TryAOETargeting()
+		else
+			GLOBAL.aipPrint("66666")
+				if self.reticule ~= nil and self.reticule.reticule ~= nil then
+					GLOBAL.aipPrint("77777")
+						self.reticule:PingReticuleAt(act:GetActionPoint())
+				end
+				if self.deployplacer ~= nil and act.action == ACTIONS.DEPLOY then
+					GLOBAL.aipPrint("7888888")
+						act.rotation = self.deployplacer.Transform:GetRotation()
+				end
+				if not self.ismastersim then
+					GLOBAL.aipPrint("999999")
+						local position = GLOBAL.TheInput:GetWorldPosition()
+						local mouseover = GLOBAL.TheInput:GetWorldEntityUnderMouse()
+						local controlmods = self:EncodeControlMods()
+						local platform, pos_x, pos_z = self:GetPlatformRelativePosition(position.x, position.z)
+						if self.locomotor == nil then
+							GLOBAL.aipPrint("1010101")
+								self.remote_controls[CONTROL_SECONDARY] = 0
+								SendRPCToServer(RPC.RightClick, act.action.code, pos_x, pos_z, mouseover, act.rotation ~= 0 and act.rotation or nil, nil, controlmods, act.action.canforce, act.action.mod_name, platform, platform ~= nil)
+						elseif act.action ~= ACTIONS.WALKTO and self:CanLocomote() then
+							GLOBAL.aipPrint("aaaaaa")
+								act.preview_cb = function()
+									GLOBAL.aipPrint("ccccc")
+										self.remote_controls[CONTROL_SECONDARY] = 0
+										local isreleased = not GLOBAL.TheInput:IsControlPressed(CONTROL_SECONDARY)
+										SendRPCToServer(RPC.RightClick, act.action.code, pos_x, pos_z, mouseover, act.rotation ~= 0 and act.rotation or nil, isreleased, controlmods, nil, act.action.mod_name, platform, platform ~= nil)
+								end
+						end
+				end
+				self:DoAction(act)
+		end
 	end
 end)
