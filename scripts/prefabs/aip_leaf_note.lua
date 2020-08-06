@@ -77,7 +77,10 @@ function fn()
 	inst.entity:AddAnimState()
 	inst.entity:AddNetwork()
 	
-	MakeInventoryPhysics(inst)
+  MakeInventoryPhysics(inst)
+
+  -- Show spoiled age
+  inst:AddTag("edible_"..FOODTYPE.GENERIC)
 
 	inst.AnimState:SetBank("aip_leaf_note")
 	inst.AnimState:SetBuild("aip_leaf_note")
@@ -90,6 +93,9 @@ function fn()
 	if not TheWorld.ismastersim then
 		return inst
   end
+
+  -- inst:AddComponent("edible")
+  -- inst.components.edible.healthvalue = 1
 
   inst:AddComponent("perishable")
   inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
