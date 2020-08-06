@@ -38,6 +38,7 @@ PrefabFiles =
 	"aip_oar_woodead",
 	"aip_dou_opal",
 	"aip_dou_scepter",
+	"aip_dou_scepter_projectile",
 	"aip_dou_inscription",
 
 	-- Building

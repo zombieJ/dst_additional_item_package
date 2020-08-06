@@ -149,7 +149,11 @@ local function fn()
 
     inst:AddComponent("aipc_action")
     inst.components.aipc_action.onDoPointAction = function(inst, doer, point)
-        doer.components.health:Kill()
+        local projectile = SpawnPrefab("aip_dou_scepter_projectile")
+        aipPrint(projectile)
+        aipPrint(projectile.components)
+        aipPrint(projectile.components.aipc_projectile)
+        projectile.components.aipc_projectile:StartBy(doer, {})
     end
 
     -- 接受元素提炼

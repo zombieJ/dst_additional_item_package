@@ -102,8 +102,8 @@ function fn()
 		return inst
   end
 
-  -- inst:AddComponent("edible")
-  -- inst.components.edible.healthvalue = 1
+  inst:AddComponent("fuel")
+  inst.components.fuel.fuelvalue = TUNING.TINY_FUEL
 
   inst:AddComponent("perishable")
   inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
