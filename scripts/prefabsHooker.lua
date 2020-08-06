@@ -28,16 +28,24 @@ local birds = { "crow", "robin", "robin_winter", "canary", "quagmire_pigeon", "p
 for i, name in ipairs(birds) do
 	AddPrefabPostInit(name, function(inst)
 		if inst.components.periodicspawner ~= nil then
+			-- 因为我们占用了一点概率，因而稍微加快一点生成间隔
+			inst.components.periodicspawner.randtime = inst.components.periodicspawner.randtime * 0.9
+
 			local originPrefab = inst.components.periodicspawner.prefab
-			if type(originPrefab) == "function" then
-				originPrefab = originPrefab(inst)
-			end
 
-			if originPrefab ~= nil and math.random() < .3 then
-				return "aip_leaf_note"
-			end
+			-- 鸟儿掉落物如果是种子则有 30% 概率改成树叶笔记
+			inst.components.periodicspawner.prefab = function(inst)
+				local prefab = originPrefab
+				if type(originPrefab) == "function" then
+					prefab = originPrefab(inst)
+				end
 
-			return originPrefab
+				if prefab == "seeds" and math.random() < .3 then
+					return "aip_leaf_note"
+				end
+
+				return prefab
+			end
 		end
 	end)
 end

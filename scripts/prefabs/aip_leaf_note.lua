@@ -35,7 +35,8 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 -- 资源
 local assets = {
-  Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
+  Asset("ANIM", "anim/aip_leaf_note.zip"),
+  Asset("ATLAS", "images/inventoryimages/aip_leaf_note.xml"),
 }
 
 local prefabs = {}
@@ -105,8 +106,7 @@ function fn()
   inst:AddComponent("inspectable")
 
 	inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_fish_sword.xml"
-  inst.components.inventoryitem.imagename = "aip_fish_sword"
+	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_leaf_note.xml"
 
 	MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
 	MakeSmallPropagator(inst)
