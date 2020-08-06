@@ -1,9 +1,5 @@
 local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
 
-if true then
-	return nil
-end
-
 ------------------------------------ 配置 ------------------------------------
 -- 食物关闭
 local additional_food = aipGetModConfig("additional_food")

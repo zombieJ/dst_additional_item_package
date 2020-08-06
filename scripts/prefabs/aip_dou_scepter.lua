@@ -27,14 +27,16 @@ STRINGS.RECIPE_DESC.AIP_DOU_SCEPTER = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_SCEPTER = LANG.DESC
 
 local assets = {
-    -- Asset("ANIM", "anim/aip_dou_scepter.zip"),
-    -- Asset("ANIM", "anim/aip_dou_scepter_swap.zip"),
-    -- Asset("ANIM", "anim/floating_items.zip"),
-    -- Asset("ATLAS", "images/inventoryimages/aip_dou_scepter.xml"),
+    Asset("ANIM", "anim/aip_dou_scepter.zip"),
+    Asset("ANIM", "anim/aip_dou_scepter_swap.zip"),
+    Asset("ANIM", "anim/floating_items.zip"),
+    Asset("ATLAS", "images/inventoryimages/aip_dou_scepter.xml"),
 }
 
 
-local prefabs = {}
+local prefabs = {
+    "aip_dou_scepter_projectile",
+}
 
 --------------------------------- 配方 ---------------------------------
 local function onsave(inst, data)
@@ -106,43 +108,6 @@ local function onItemUnloaded(inst, data)
 	-- end
 end
 
--- 范围武器
-local function ReticuleTargetFn()
-    return Vector3(ThePlayer.entity:LocalToWorldSpace(6.5, 0, 0))
-end
-
-local function ReticuleMouseTargetFn(inst, mousepos)
-    if mousepos ~= nil then
-        local x, y, z = inst.Transform:GetWorldPosition()
-        local dx = mousepos.x - x
-        local dz = mousepos.z - z
-        local l = dx * dx + dz * dz
-        if l <= 0 then
-            return inst.components.reticule.targetpos
-        end
-        l = 6.5 / math.sqrt(l)
-        return Vector3(x + dx * l, 0, z + dz * l)
-    end
-end
-
-STRINGS.ACTIONS.CASTSPELL.GENERIC = "十年啊"
-
-ACTIONS.CASTSPELL.fn = function()
-    aipPrint("?????")
-end
-
-local function ReticuleUpdatePositionFn(inst, pos, reticule, ease, smoothing, dt)
-    local x, y, z = inst.Transform:GetWorldPosition()
-    reticule.Transform:SetPosition(x, 0, z)
-    local rot = -math.atan2(pos.z - z, pos.x - x) / DEGREES
-    if ease and dt ~= nil then
-        local rot0 = reticule.Transform:GetRotation()
-        local drot = rot - rot0
-        rot = Lerp((drot > 180 and rot0 + 360) or (drot < -180 and rot0 - 360) or rot0, rot, dt * smoothing)
-    end
-    reticule.Transform:SetRotation(rot)
-end
-
 local function fn()
     local inst = CreateEntity()
 
@@ -170,22 +135,9 @@ local function fn()
     inst:AddComponent("aipc_caster")
     inst.components.aipc_caster:SetUp("line")
 
-    -- 客户端也需要的 AOE 效果
-    -- inst:AddComponent("aoetargeting")
-    -- inst.components.aoetargeting:SetAlwaysValid(true)
-    -- inst.components.aoetargeting.reticule.reticuleprefab = "reticulelong"
-    -- inst.components.aoetargeting.reticule.pingprefab = "reticulelongping"
-    -- inst.components.aoetargeting.reticule.targetfn = ReticuleTargetFn
-    -- inst.components.aoetargeting.reticule.mousetargetfn = ReticuleMouseTargetFn
-    -- inst.components.aoetargeting.reticule.updatepositionfn = ReticuleUpdatePositionFn
-    -- inst.components.aoetargeting.reticule.validcolour = { 1, .75, 0, 1 }
-    -- inst.components.aoetargeting.reticule.invalidcolour = { .5, 0, 0, 1 }
-    -- inst.components.aoetargeting.reticule.ease = true
-    -- inst.components.aoetargeting.reticule.mouseenabled = true
-
     inst:AddComponent("aipc_action_client")
     inst.components.aipc_action_client.canActOn = function(inst, doer, target)
-        
+        return true
     end
     inst.components.aipc_action_client.canActOnPoint = function()
         return true
@@ -196,30 +148,9 @@ local function fn()
     end
 
     inst:AddComponent("aipc_action")
-
-
-    -- -- 施法动作
-    -- inst:AddComponent("spellcaster")
-    -- inst.components.spellcaster.CanCast = (function (inst, target, pos)
-    --     aipPrint("CanCast:", inst, target, pos)
-    --     return true
-    -- end)
-    -- inst.components.spellcaster:SetSpellFn((function (inst, target, pos)
-    --     aipPrint("SPELL!!!!")
-    --     local caster = inst.components.inventoryitem.owner
-
-    --     if pos ~= nil then --the point on map that has been targeted to cast spell there
-    --         aipPrint("do cast!!!!")
-    --     end
-    -- end))
-    -- inst.components.spellcaster.canuseontargets = true --retains the default functionality of ice staff
-    -- inst.components.spellcaster.canuseonpoint = true  --adds aoe spell
-
-    -- -- 武器伤害
-    -- inst:AddComponent("weapon")
-    -- inst.components.weapon:SetDamage(0)
-    -- inst.components.weapon:SetRange(8, 10)
-    -- inst.components.weapon:SetProjectile("fire_projectile")
+    inst.components.aipc_action.onDoPointAction = function(inst, doer, point)
+        doer.components.health:Kill()
+    end
 
     -- 接受元素提炼
     inst:AddComponent("container")

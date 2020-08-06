@@ -25,8 +25,8 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 -- 资源
 local assets =
 {
-	-- Asset("ATLAS", "images/inventoryimages/aip_dou_opal.xml"),
-	-- Asset("ANIM", "anim/aip_dou_opal.zip"),
+	Asset("ATLAS", "images/inventoryimages/aip_dou_opal.xml"),
+	Asset("ANIM", "anim/aip_dou_opal.zip"),
 }
 
 local prefabs =
@@ -97,7 +97,7 @@ function fn()
 	inst.entity:SetPristine()
 
 	inst:AddComponent("aipc_action_client")
-	inst.components.aipc_action.canActOn = canActOn
+	inst.components.aipc_action_client.canActOn = canActOn
 
 	if not TheWorld.ismastersim then
 		return inst

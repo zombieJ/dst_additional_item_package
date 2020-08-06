@@ -5,9 +5,9 @@ local function triggerComponentAction(player, item, target, targetPoint)
 	if item.components.aipc_action ~= nil then
 		-- trigger action
 		if target ~= nil then
-			item.components.aipc_action:DoTargetAction(doer, target)
+			item.components.aipc_action:DoTargetAction(player, target)
 		elseif targetPoint ~= nil then
-			item.components.aipc_action:DoPointAction(doer, pos)
+			item.components.aipc_action:DoPointAction(player, pos)
 		end
 	end
 end
@@ -77,10 +77,10 @@ local AIPC_POINT_ACTION = env.AddAction("AIPC_POINT_ACTION", LANG.CAST, function
 	return true
 end)
 
-AIPC_POINT_ACTION.distance = math.huge
+AIPC_POINT_ACTION.distance = 8
 
-AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIPC_POINT_ACTION, "throw"))
-AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIPC_POINT_ACTION, "throw"))
+AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIPC_POINT_ACTION, "quicktele"))
+AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIPC_POINT_ACTION, "quicktele"))
 
 -- 为组件绑定 action
 env.AddComponentAction("POINT", "aipc_action_client", function(inst, doer, pos, actions, right)
