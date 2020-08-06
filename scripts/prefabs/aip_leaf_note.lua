@@ -12,6 +12,13 @@ local LANG_MAP = {
     NAME = "Leaf Note",
     NOTES = {
       "...moon...doujiang chesspiece...",
+      "customize...magic with opal...",
+      "fire...firestaff...",
+      "water...ball...water",
+      "...nightstick...elec...",
+      "...luxury Fan bring the wind...",
+      "fertilizer...on..earth",
+      "...board is made by plant",
     },
 	},
 	chinese = {
