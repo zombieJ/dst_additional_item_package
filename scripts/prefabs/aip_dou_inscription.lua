@@ -37,9 +37,11 @@ local LANG_MAP = {
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
 ------------------------------------ 元素 ------------------------------------
+local IngredientLeafNote = Ingredient("aip_leaf_note", 1, "images/inventoryimages/aip_leaf_note.xml")
+
 local INSCRIPTIONS = {
-	aip_dou_fire_inscription = { recipes = {Ingredient("log", 1)} },
-	aip_dou_ice_inscription = { recipes = {Ingredient("log", 1)} },
+	aip_dou_fire_inscription = { recipes = { IngredientLeafNote, } },
+	aip_dou_ice_inscription = { recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 }
 
 ------------------------------------ 功能 ------------------------------------
