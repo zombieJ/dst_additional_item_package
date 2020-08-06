@@ -28,6 +28,7 @@ PrefabFiles =
 	"foods",
 	"aip_nectar_maker",
 	"aip_nectar",
+	"aip_leaf_note",
 
 	-- Weapon
 	"popcorngun",

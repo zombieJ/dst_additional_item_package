@@ -24,11 +24,21 @@ AddPrefabPostInit("toadstool_dark", function(inst) ShadowFollowerPrefabPostInit(
 -- ------------------------------------- 豆酱权杖 -------------------------------------
 -- GLOBAL.LOCKTYPE.AIP_DOU_OPAL = "aip_dou_opal"
 
--- AddPrefabPostInit("cane", function(inst)
--- 	if not GLOBAL.TheWorld.ismastersim then
--- 		return
--- 	end
+local birds = { "crow", "robin", "robin_winter", "canary", "quagmire_pigeon", "puffin" }
+for i, name in ipairs(birds) do
+	AddPrefabPostInit(name, function(inst)
+		if inst.components.periodicspawner ~= nil then
+			local originPrefab = inst.components.periodicspawner.prefab
+			if type(originPrefab) == "function" then
+				originPrefab = originPrefab(inst)
+			end
 
--- 	-- 添加额外的组件
--- 	inst:AddComponent("aipc_action")
--- end)
+			if originPrefab ~= nil and math.random() < .3 then
+				return "aip_leaf_note"
+			end
+
+			return originPrefab
+		end
+	end)
+end
+
