@@ -4,6 +4,8 @@ if additional_weapon ~= "open" then
 	return nil
 end
 
+local calculateProjectile = require("utils/aip_scepter_util")
+
 local language = aipGetModConfig("language")
 
 -- 文字描述
@@ -150,10 +152,9 @@ local function fn()
     inst:AddComponent("aipc_action")
     inst.components.aipc_action.onDoPointAction = function(inst, doer, point)
         local projectile = SpawnPrefab("aip_dou_scepter_projectile")
-        aipPrint(projectile)
-        aipPrint(projectile.components)
-        aipPrint(projectile.components.aipc_projectile)
-        projectile.components.aipc_projectile:StartBy(doer, {})
+
+        local queue = calculateProjectile()
+        projectile.components.aipc_projectile:StartBy(doer, queue)
     end
 
     -- 接受元素提炼

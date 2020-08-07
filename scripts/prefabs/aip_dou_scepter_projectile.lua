@@ -5,7 +5,7 @@ if additional_weapon ~= "open" then
 end
 
 local assets = {
-    Asset("ANIM", "anim/staff_projectile.zip"),
+    Asset("ANIM", "anim/aip_dou_scepter_projectile.zip"),
 }
 
 local prefabs = {}
@@ -23,10 +23,10 @@ local function fn()
     MakeInventoryPhysics(inst)
     RemovePhysicsColliders(inst)
 
-    inst.AnimState:SetBank("projectile")
-    inst.AnimState:SetBuild("staff_projectile")
-    inst.AnimState:PlayAnimation("fire_spin_loop", true)
-    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+    inst.AnimState:SetBank("aip_dou_scepter_projectile")
+    inst.AnimState:SetBuild("aip_dou_scepter_projectile")
+    inst.AnimState:PlayAnimation("idle", true)
+    -- inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
 
     --projectile (from projectile component) added to pristine state for optimization
     inst:AddTag("projectile")

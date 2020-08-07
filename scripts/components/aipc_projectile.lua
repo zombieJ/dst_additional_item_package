@@ -8,6 +8,7 @@ end)
 
 function Projectile:StartBy(doer, queue)
 	self.inst.Transform:SetPosition(doer.Transform:GetWorldPosition())
+	self.queue = queue
 end
 
 
