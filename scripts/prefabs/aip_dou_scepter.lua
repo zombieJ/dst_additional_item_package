@@ -153,14 +153,15 @@ local function fn()
     inst.components.aipc_caster.onEquip = onCasterEquip
     inst.components.aipc_caster.onUnequip = onCasterUnequip
 
+    -- 鼠标类型判断
     inst:AddComponent("aipc_action_client")
     inst.components.aipc_action_client.canActOn = function(inst, doer, target)
         refreshScepter(inst)
-        return inst._projectileInfo.action == "follow"
+        return inst._projectileInfo.action == "FOLLOW"
     end
     inst.components.aipc_action_client.canActOnPoint = function()
         refreshScepter(inst)
-        return inst._projectileInfo.action ~= "follow"
+        return inst._projectileInfo.action ~= "FOLLOW"
     end
 
     if not TheWorld.ismastersim then

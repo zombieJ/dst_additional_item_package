@@ -42,9 +42,10 @@ function calculateProjectile(items)
 			if typeInfo.type == "element" then
 				-- 元素类型
 				group.element = typeInfo.name
+
 			elseif typeInfo.type == "action" then
 				-- 施法动作
-				group.action = typeInfo.action
+				group.action = typeInfo.name
 				table.insert(projectileInfo.queue, group)
 				group = nil
 			end
@@ -58,6 +59,8 @@ function calculateProjectile(items)
 
 	-- 填充默认类型
 	projectileInfo.action = projectileInfo.queue[1].action or "line"
+
+	aipTypePrint("GroupAAA", projectileInfo.queue[1])
 
 	return projectileInfo
 end
