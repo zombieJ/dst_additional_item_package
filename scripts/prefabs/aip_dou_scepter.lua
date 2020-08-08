@@ -54,7 +54,7 @@ local function refreshScepter(inst)
 
     if inst.components.aipc_caster ~= nil then
         inst.components.aipc_caster:SetUp(
-            projectileInfo.queue[1].action or "line"
+            projectileInfo.action
         )
     end
 
@@ -153,7 +153,7 @@ local function fn()
     inst.components.aipc_caster.onEquip = onCasterEquip
     inst.components.aipc_caster.onUnequip = onCasterUnequip
 
-    -- 鼠标类型判断
+    -- 鼠标类型判断，在判断的时候会刷新一下指针类型，这样利用了 POINT 就实现了动态刷新的效果。学到了就给我的 mod 点个赞吧
     inst:AddComponent("aipc_action_client")
     inst.components.aipc_action_client.canActOn = function(inst, doer, target)
         refreshScepter(inst)

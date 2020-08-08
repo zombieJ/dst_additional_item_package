@@ -83,34 +83,52 @@ local function RefreshReticule(inst)
 end
 
 function Caster:SetUp(type)
-    self.type = type
+  -- 如果类型变了就重置一下
+  local needRefresh = self.type ~= type and self.active
+  if needRefresh then
+    self:StopTargeting()
+  end
 
-    if type == "line" then
-        self.reticule.reticuleprefab = "reticulelong"
-        self.reticule.pingprefab = "reticulelongping"
-        self.reticule.targetfn = ReticuleTargetFn
-        self.reticule.mousetargetfn = ReticuleMouseTargetFn
-        self.reticule.updatepositionfn = ReticuleUpdatePositionFn
-        self.reticule.validcolour = {1, .75, 0, 1}
-        self.reticule.invalidcolour = {.5, 0, 0, 1}
-        self.reticule.ease = true
-        self.reticule.mouseenabled = true
-    elseif type == "area" then
-      self.reticule.reticuleprefab = "reticuleaoesmall"
-      self.reticule.pingprefab = "reticuleaoesmallping"
-      self.reticule.targetfn = AreaReticuleTargetFn
-      self.reticule.mousetargetfn = nil
-      self.reticule.updatepositionfn = nil
-      self.reticule.validcolour = { 1, .75, 0, 1 }
-      self.reticule.invalidcolour = { .5, 0, 0, 1 }
-      self.reticule.ease = true
-      self.reticule.mouseenabled = true
-    elseif type == "target" then
-      
-    end
+  if type == "LINE" then
+    self.reticule.reticuleprefab = "reticulelong"
+    self.reticule.pingprefab = "reticulelongping"
+    self.reticule.targetfn = ReticuleTargetFn
+    self.reticule.mousetargetfn = ReticuleMouseTargetFn
+    self.reticule.updatepositionfn = ReticuleUpdatePositionFn
+    self.reticule.validcolour = {1, .75, 0, 1}
+    self.reticule.invalidcolour = {.5, 0, 0, 1}
+    self.reticule.ease = true
+    self.reticule.mouseenabled = true
+  elseif type == "AREA" then
+    self.reticule.reticuleprefab = "reticuleaoesmall"
+    self.reticule.pingprefab = "reticuleaoesmallping"
+    self.reticule.targetfn = AreaReticuleTargetFn
+    self.reticule.mousetargetfn = nil
+    self.reticule.updatepositionfn = nil
+    self.reticule.validcolour = { 1, .75, 0, 1 }
+    self.reticule.invalidcolour = { .5, 0, 0, 1 }
+    self.reticule.ease = true
+    self.reticule.mouseenabled = true
+  elseif type == "FOLLOW" then
+    self.reticule.reticuleprefab = nil
+    self.reticule.pingprefab = nil
+    self.reticule.targetfn = nil
+    self.reticule.mousetargetfn = nil
+    self.reticule.updatepositionfn = nil
+    self.reticule.validcolour = nil
+    self.reticule.invalidcolour = nil
+    self.reticule.ease = false
+    self.reticule.mouseenabled = false
+  end
+
+  if needRefresh then
+    self:StartTargeting()
+  end
+
+    self.type = type
 end
 
--- Active when on equip
+-- Active when on equip. Client trigger
 function Caster:OnEquip()
   if self.onEquip ~= nil then
     self.onEquip(self.inst)
@@ -134,6 +152,7 @@ function Caster:OnUnequip()
 end
 
 function Caster:StartTargeting()
+  aipPrint("START!!!")
     if self.inst.components.reticule == nil then
         self.inst:AddComponent("reticule")
         for k, v in pairs(self.reticule) do
@@ -144,6 +163,7 @@ function Caster:StartTargeting()
 end
 
 function Caster:StopTargeting()
+  aipPrint("STOP???")
     if self.inst.components.reticule ~= nil then
         self.inst:RemoveComponent("reticule")
         RefreshReticule(self.inst)
