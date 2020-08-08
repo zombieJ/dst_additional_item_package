@@ -155,10 +155,12 @@ local function fn()
 
     inst:AddComponent("aipc_action_client")
     inst.components.aipc_action_client.canActOn = function(inst, doer, target)
-        return true
+        refreshScepter(inst)
+        return inst._projectileInfo.action == "follow"
     end
     inst.components.aipc_action_client.canActOnPoint = function()
-        return true
+        refreshScepter(inst)
+        return inst._projectileInfo.action ~= "follow"
     end
 
     if not TheWorld.ismastersim then

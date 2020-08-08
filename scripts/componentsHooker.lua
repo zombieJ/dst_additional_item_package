@@ -77,10 +77,7 @@ local AIPC_CASTER_ACTION = env.AddAction("AIPC_CASTER_ACTION", LANG.CAST, functi
 	-- local item = act.invobject
 	local pos = act.pos
 	local target = act.target
-
 	local item = getActionableItem(doer)
-
-	GLOBAL.aipTypePrint(act)
 
 	if GLOBAL.TheNet:GetIsServer() then
 		-- server
@@ -117,7 +114,7 @@ env.AddComponentAction("SCENE", "health", function(inst, doer, actions, right)
 
 	local item = getActionableItem(doer)
 
-	if item.components.aipc_action_client:CanActOn(doer, inst) then
+	if item ~= nil and item.components.aipc_action_client:CanActOn(doer, inst) then
 		table.insert(actions, GLOBAL.ACTIONS.AIPC_CASTER_ACTION)
 	end
 end)

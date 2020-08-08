@@ -19,6 +19,7 @@ end
 
 function calculateProjectile(items)
 	local projectileInfo = {
+		action = nil,
 		queue = {},
 	}
 
@@ -29,32 +30,34 @@ function calculateProjectile(items)
 
 	if #items == 0 then
 		projectileInfo.queue = { createGroup() }
-		return projectileInfo
-	end
+	else
+		local group = nil
 
-	local group = nil
+		for i, item in pairs(items) do
+			if group == nil then
+				group = createGroup()
+			end
 
-	for i, item in pairs(items) do
-		if group == nil then
-			group = createGroup()
+			local typeInfo = getType(item)
+			if typeInfo.type == "element" then
+				-- 元素类型
+				group.element = typeInfo.name
+			elseif typeInfo.type == "action" then
+				-- 施法动作
+				group.action = typeInfo.action
+				table.insert(projectileInfo.queue, group)
+				group = nil
+			end
 		end
 
-		local typeInfo = getType(item)
-		if typeInfo.type == "element" then
-			-- 元素类型
-			group.element = typeInfo.name
-		elseif typeInfo.type == "action" then
-			-- 施法动作
-			group.action = typeInfo.action
+		-- 如果有剩余，添加进去
+		if group ~= nil then
 			table.insert(projectileInfo.queue, group)
-			group = nil
 		end
 	end
 
-	-- 如果有剩余，添加进去
-	if group ~= nil then
-		table.insert(projectileInfo.queue, group)
-	end
+	-- 填充默认类型
+	projectileInfo.action = projectileInfo.queue[1].action or "line"
 
 	return projectileInfo
 end
