@@ -44,21 +44,21 @@ local prefabs = {
 local function refreshScepter(inst)
     local projectileInfo = { queue = {} }
 
-    if inst.replica.container ~= nil then
+    if inst.components.container ~= nil then
+        projectileInfo = calculateProjectile(inst.components.container:GetAllItems())
+    elseif inst.replica.container ~= nil then
         projectileInfo = calculateProjectile(inst.replica.container:GetItems())
     end
 
     inst._projectileInfo = projectileInfo
 
-    aipTypePrint("Refresh:", inst.replica.container ~= nil, projectileInfo.queue)
-    aipTypePrint("Refresh2333:", projectileInfo.queue[0])
-    aipTypePrint("Refresh2333:", projectileInfo.queue[1])
-    aipTypePrint("Refresh2333:", projectileInfo.queue.damage)
     if inst.components.aipc_caster ~= nil then
         inst.components.aipc_caster:SetUp(
             projectileInfo.queue[1].action or "line"
         )
     end
+
+    return projectileInfo
 end
 
 local function onsave(inst, data)
@@ -168,8 +168,9 @@ local function fn()
     inst:AddComponent("aipc_action")
     inst.components.aipc_action.onDoPointAction = function(inst, doer, point)
         local projectile = SpawnPrefab("aip_dou_scepter_projectile")
+        local projectileInfo = refreshScepter(inst)
 
-        projectile.components.aipc_projectile:StartBy(doer, queue)
+        projectile.components.aipc_projectile:StartBy(doer, projectileInfo.queue)
     end
 
     -- 接受元素提炼
