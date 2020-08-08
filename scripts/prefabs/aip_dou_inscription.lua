@@ -40,8 +40,8 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 local IngredientLeafNote = Ingredient("aip_leaf_note", 1, "images/inventoryimages/aip_leaf_note.xml")
 
 local INSCRIPTIONS = {
-	aip_dou_fire_inscription = { recipes = { IngredientLeafNote, } },
-	aip_dou_ice_inscription = { recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_fire_inscription =		{ tag = "FIRE",		recipes = { IngredientLeafNote, } },
+	aip_dou_ice_inscription =		{ tag = "ICE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 }
 
 ------------------------------------ 功能 ------------------------------------
@@ -76,6 +76,7 @@ local function makeInscription(name, info)
 		MakeInventoryPhysics(inst)
 
 		inst:AddTag("aip_dou_inscription")
+		inst._douTag = info.tag
 
 		inst.AnimState:SetBank("aip_dou_opal")
 		inst.AnimState:SetBuild("aip_dou_opal")

@@ -41,6 +41,18 @@ local prefabs = {
 }
 
 --------------------------------- 配方 ---------------------------------
+local function refreshScepter(inst)
+    local projectileInfo = { queue = {} }
+
+    if inst.components.container ~= nil then
+        projectileInfo = calculateProjectile(inst.components.container:GetAllItems())
+    end
+
+    inst._projectileInfo = projectileInfo
+
+    inst.components.aipc_caster:SetUp(projectileInfo.queue[0].action or "line")
+end
+
 local function onsave(inst, data)
 	data.magicSlot = inst._magicSlot
 end
@@ -79,6 +91,8 @@ local function onequip(inst, owner)
 
     if inst.components.container ~= nil then
         inst.components.container:Open(owner)
+
+        refreshScepter(inst)
     end
 end
 
@@ -93,21 +107,11 @@ end
 
 -- 添加元素
 local function onItemLoaded(inst, data)
-	-- if inst.components.weapon ~= nil then
-	-- 	if data ~= nil and data.item ~= nil then
-	-- 		inst.components.weapon:SetProjectile(data.item.prefab.."_proj")
-	-- 		data.item:PushEvent("ammoloaded", {slingshot = inst})
-	-- 	end
-	-- end
+    refreshScepter(inst)
 end
 
 local function onItemUnloaded(inst, data)
-	-- if inst.components.weapon ~= nil then
-	-- 	inst.components.weapon:SetProjectile(nil)
-	-- 	if data ~= nil and data.prev_item ~= nil then
-	-- 		data.prev_item:PushEvent("ammounloaded", {slingshot = inst})
-	-- 	end
-	-- end
+    refreshScepter(inst)
 end
 
 local function fn()
@@ -135,7 +139,6 @@ local function fn()
 
     -- 添加施法者
     inst:AddComponent("aipc_caster")
-    inst.components.aipc_caster:SetUp("line")
 
     inst:AddComponent("aipc_action_client")
     inst.components.aipc_action_client.canActOn = function(inst, doer, target)
@@ -153,7 +156,6 @@ local function fn()
     inst.components.aipc_action.onDoPointAction = function(inst, doer, point)
         local projectile = SpawnPrefab("aip_dou_scepter_projectile")
 
-        local queue = calculateProjectile()
         projectile.components.aipc_projectile:StartBy(doer, queue)
     end
 

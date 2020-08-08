@@ -324,18 +324,13 @@ function fillDouScepter(slotCount)
 		table.insert(params[name].widget.slotpos, Vector3(0, 108 - 72 * y, 0))
 	end
 
+	-- 只接受魔法元素
 	params[name].itemtestfn = function(container, item, slot)
-		return true
+		return item:HasTag("aip_dou_inscription")
 	end
 end
 
 fillDouScepter(4)
-
--- function params.aip_dou_scepter.itemtestfn(container, item, slot)
--- 	return (slot == nil and (item:HasTag("oceanfishing_bobber") or item:HasTag("oceanfishing_lure")))
--- 		or (slot == 1 and item:HasTag("oceanfishing_bobber"))
--- 		or (slot == 2 and item:HasTag("oceanfishing_lure"))
--- end
 
 ----------------------------------------------------------------------------------------------
 local containers = GLOBAL.require "containers"
