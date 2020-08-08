@@ -3,6 +3,7 @@ local categories = {
 	ICE = "element",
 	FOLLOW = "action",
 	THROUGH = "action",
+	THROW = "action",
 }
 
 local function getType(item)
@@ -26,7 +27,7 @@ function calculateProjectile(items)
 
 	--[[
 		规则：一个施法动作为一组，遍历时直到遇到一个施法动作为止。
-		施法动作：line(default) - 直线, area - 抛物区域, trough - 直线穿透, follow - 追踪
+		施法动作：line(default) - 直线, throw - 抛物区域, trough - 直线穿透, follow - 追踪
 	]]
 
 	if #items == 0 then

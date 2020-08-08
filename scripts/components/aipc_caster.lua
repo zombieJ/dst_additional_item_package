@@ -99,7 +99,7 @@ function Caster:SetUp(type)
     self.reticule.invalidcolour = {.5, 0, 0, 1}
     self.reticule.ease = true
     self.reticule.mouseenabled = true
-  elseif type == "AREA" then
+  elseif type == "THROW" then
     self.reticule.reticuleprefab = "reticuleaoesmall"
     self.reticule.pingprefab = "reticuleaoesmallping"
     self.reticule.targetfn = AreaReticuleTargetFn
