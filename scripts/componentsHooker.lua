@@ -60,36 +60,65 @@ env.AddComponentAction("USEITEM", "aipc_action_client", function(inst, doer, tar
 end)
 
 -------------------- 施法行为 https://www.zybuluo.com/longfei/note/600841
+local function getActionableItem(doer)
+	local inventory = doer.replica.inventory
+	if inventory ~= nil then
+		local item = inventory:GetEquippedItem(GLOBAL.EQUIPSLOTS.HANDS)
+		if item ~= nil and item.components.aipc_action_client ~= nil then
+			return item
+		end
+	end
+	return nil
+end
+
 -- 注册一个 action
-local AIPC_POINT_ACTION = env.AddAction("AIPC_POINT_ACTION", LANG.CAST, function(act)
+local AIPC_CASTER_ACTION = env.AddAction("AIPC_CASTER_ACTION", LANG.CAST, function(act)
 	local doer = act.doer
-	local item = act.invobject
+	-- local item = act.invobject
 	local pos = act.pos
+	local target = act.target
+
+	local item = getActionableItem(doer)
+
+	GLOBAL.aipTypePrint(act)
 
 	if GLOBAL.TheNet:GetIsServer() then
 		-- server
-		triggerComponentAction(doer, item, nil, pos)
+		triggerComponentAction(doer, item, target, pos)
 	else
 		-- client
-		SendModRPCToServer(MOD_RPC[env.modname]["aipComponentAction"], doer, item, nil, pos)
+		SendModRPCToServer(MOD_RPC[env.modname]["aipComponentAction"], doer, item, target, pos)
 	end
 
 	return true
 end)
 
-AIPC_POINT_ACTION.distance = 8
+AIPC_CASTER_ACTION.distance = 10
 
-AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIPC_POINT_ACTION, "quicktele"))
-AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIPC_POINT_ACTION, "quicktele"))
+AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIPC_CASTER_ACTION, "quicktele"))
+AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIPC_CASTER_ACTION, "quicktele"))
 
--- 为组件绑定 action
+-- aipc_action_client 对 点 操作
 env.AddComponentAction("POINT", "aipc_action_client", function(inst, doer, pos, actions, right)
 	if not inst or not pos or not right then
 		return
 	end
 
 	if inst.components.aipc_action_client:CanActOnPoint(doer, pos) then
-		table.insert(actions, GLOBAL.ACTIONS.AIPC_POINT_ACTION)
+		table.insert(actions, GLOBAL.ACTIONS.AIPC_CASTER_ACTION)
+	end
+end)
+
+-- 角色拥有 aipc_action_client 对 health 对象 操作
+env.AddComponentAction("SCENE", "health", function(inst, doer, actions, right)
+	if not inst or not right then
+		return
+	end
+
+	local item = getActionableItem(doer)
+
+	if item.components.aipc_action_client:CanActOn(doer, inst) then
+		table.insert(actions, GLOBAL.ACTIONS.AIPC_CASTER_ACTION)
 	end
 end)
 

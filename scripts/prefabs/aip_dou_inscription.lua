@@ -19,6 +19,11 @@ local LANG_MAP = {
 			REC_DESC = "附魔火元素",
 			DESC = "它能够召唤火元素",
 		},
+		aip_dou_follow_inscription = {
+			NAME = "铭文：追",
+			REC_DESC = "使魔法可以追随目标",
+			DESC = "使魔法可以追随目标",
+		},
 	},
 	chinese = {
 		aip_dou_fire_inscription = {
@@ -31,6 +36,11 @@ local LANG_MAP = {
 			REC_DESC = "附魔冰元素",
 			DESC = "它能够召唤冰元素",
 		},
+		aip_dou_follow_inscription = {
+			NAME = "铭文：追",
+			REC_DESC = "使魔法可以追随目标",
+			DESC = "使魔法可以追随目标",
+		},
 	},
 }
 
@@ -42,6 +52,7 @@ local IngredientLeafNote = Ingredient("aip_leaf_note", 1, "images/inventoryimage
 local INSCRIPTIONS = {
 	aip_dou_fire_inscription =		{ tag = "FIRE",		recipes = { IngredientLeafNote, } },
 	aip_dou_ice_inscription =		{ tag = "ICE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_follow_inscription =	{ tag = "FOLLOW",	recipes = { IngredientLeafNote, } },
 }
 
 ------------------------------------ 功能 ------------------------------------

@@ -1,6 +1,7 @@
 local categories = {
 	FIRE = "element",
 	ICE = "element",
+	FOLLOW = "action",
 }
 
 local function getType(item)
