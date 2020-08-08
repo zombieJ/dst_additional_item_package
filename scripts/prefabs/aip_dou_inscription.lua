@@ -24,6 +24,11 @@ local LANG_MAP = {
 			REC_DESC = "使魔法可以追随目标",
 			DESC = "使魔法可以追随目标",
 		},
+		aip_dou_trough_inscription = {
+			NAME = "铭文：透",
+			REC_DESC = "朝一个方向发射魔法",
+			DESC = "朝一个方向发射魔法",
+		},
 	},
 	chinese = {
 		aip_dou_fire_inscription = {
@@ -41,6 +46,11 @@ local LANG_MAP = {
 			REC_DESC = "使魔法可以追随目标",
 			DESC = "使魔法可以追随目标",
 		},
+		aip_dou_trough_inscription = {
+			NAME = "铭文：透",
+			REC_DESC = "朝一个方向发射魔法",
+			DESC = "朝一个方向发射魔法",
+		},
 	},
 }
 
@@ -53,6 +63,7 @@ local INSCRIPTIONS = {
 	aip_dou_fire_inscription =		{ tag = "FIRE",		recipes = { IngredientLeafNote, } },
 	aip_dou_ice_inscription =		{ tag = "ICE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_follow_inscription =	{ tag = "FOLLOW",	recipes = { IngredientLeafNote, } },
+	aip_dou_trough_inscription =	{ tag = "THROUGH",	recipes = { IngredientLeafNote, } },
 }
 
 ------------------------------------ 功能 ------------------------------------

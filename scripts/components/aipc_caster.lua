@@ -89,7 +89,7 @@ function Caster:SetUp(type)
     self:StopTargeting()
   end
 
-  if type == "LINE" then
+  if type == "LINE" or type == "THROUGH" then
     self.reticule.reticuleprefab = "reticulelong"
     self.reticule.pingprefab = "reticulelongping"
     self.reticule.targetfn = ReticuleTargetFn
