@@ -27,14 +27,14 @@ function calculateProjectile(items)
 	]]
 
 	if #items == 0 then
-		projectileInfo.queue = createGroup()
+		projectileInfo.queue = { createGroup() }
 		return projectileInfo
 	end
 
 	local group = nil
 
 	for i, item in pairs(items) do
-		if group = nil then
+		if group == nil then
 			group = createGroup()
 		end
 

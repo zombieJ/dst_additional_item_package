@@ -50,6 +50,7 @@ local function AreaReticuleTargetFn()
 end
 
 ------------------------------ Component ------------------------------
+-- Client only
 local Caster = Class(function(self, inst)
     self.inst = inst
     self.reticule = {
@@ -66,6 +67,9 @@ local Caster = Class(function(self, inst)
 
     self.active = false
     self.type = nil
+
+    self.onEquip = nil
+    self.onUnequip = nil
 end)
 
 local function RefreshReticule(inst)
@@ -108,6 +112,10 @@ end
 
 -- Active when on equip
 function Caster:OnEquip()
+  if self.onEquip ~= nil then
+    self.onEquip(self.inst)
+  end
+
   if not self.active then
     self.active = true
     self:StartTargeting()
@@ -115,6 +123,10 @@ function Caster:OnEquip()
 end
 
 function Caster:OnUnequip()
+  if self.onUnequip ~= nil then
+    self.onUnequip(self.inst)
+  end
+
   if self.active then
     self.active = false
     self:StopTargeting()

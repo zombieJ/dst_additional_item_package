@@ -44,13 +44,21 @@ local prefabs = {
 local function refreshScepter(inst)
     local projectileInfo = { queue = {} }
 
-    if inst.components.container ~= nil then
-        projectileInfo = calculateProjectile(inst.components.container:GetAllItems())
+    if inst.replica.container ~= nil then
+        projectileInfo = calculateProjectile(inst.replica.container:GetItems())
     end
 
     inst._projectileInfo = projectileInfo
 
-    inst.components.aipc_caster:SetUp(projectileInfo.queue[0].action or "line")
+    aipTypePrint("Refresh:", inst.replica.container ~= nil, projectileInfo.queue)
+    aipTypePrint("Refresh2333:", projectileInfo.queue[0])
+    aipTypePrint("Refresh2333:", projectileInfo.queue[1])
+    aipTypePrint("Refresh2333:", projectileInfo.queue.damage)
+    if inst.components.aipc_caster ~= nil then
+        inst.components.aipc_caster:SetUp(
+            projectileInfo.queue[1].action or "line"
+        )
+    end
 end
 
 local function onsave(inst, data)
@@ -91,8 +99,6 @@ local function onequip(inst, owner)
 
     if inst.components.container ~= nil then
         inst.components.container:Open(owner)
-
-        refreshScepter(inst)
     end
 end
 
@@ -106,13 +112,18 @@ local function onunequip(inst, owner)
 end
 
 -- 添加元素
-local function onItemLoaded(inst, data)
+local function onCasterEquip(inst)
     refreshScepter(inst)
 end
 
-local function onItemUnloaded(inst, data)
+local function onCasterUnequip(inst)
     refreshScepter(inst)
 end
+-- local function onItemLoaded(inst, data)
+-- end
+
+-- local function onItemUnloaded(inst, data)
+-- end
 
 local function fn()
     local inst = CreateEntity()
@@ -139,6 +150,8 @@ local function fn()
 
     -- 添加施法者
     inst:AddComponent("aipc_caster")
+    inst.components.aipc_caster.onEquip = onCasterEquip
+    inst.components.aipc_caster.onUnequip = onCasterUnequip
 
     inst:AddComponent("aipc_action_client")
     inst.components.aipc_action_client.canActOn = function(inst, doer, target)
@@ -163,8 +176,8 @@ local function fn()
     inst:AddComponent("container")
     inst.components.container:WidgetSetup("aip_dou_scepter4")
     inst.components.container.canbeopened = false
-    inst:ListenForEvent("itemget", onItemLoaded)
-    inst:ListenForEvent("itemlose", onItemUnloaded)
+    -- inst:ListenForEvent("itemget", onItemLoaded)
+    -- inst:ListenForEvent("itemlose", onItemUnloaded)
 
     inst:AddComponent("inspectable")
 
