@@ -38,8 +38,8 @@ local LANG_MAP = {
 	chinese = {
 		aip_dou_fire_inscription = {
 			NAME = "铭文：火",
-			REC_DESC = "附魔火元素",
-			DESC = "它能够召唤火元素",
+			REC_DESC = "有 40% 概率点燃目标",
+			DESC = "有 40% 概率点燃目标",
 		},
 		aip_dou_ice_inscription = {
 			NAME = "铭文：冰",
@@ -70,11 +70,11 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 local IngredientLeafNote = Ingredient("aip_leaf_note", 1, "images/inventoryimages/aip_leaf_note.xml")
 
 local INSCRIPTIONS = {
-	aip_dou_fire_inscription =		{ tag = "FIRE",		recipes = { IngredientLeafNote, } },
+	aip_dou_fire_inscription =		{ tag = "FIRE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_ice_inscription =		{ tag = "ICE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_follow_inscription =	{ tag = "FOLLOW",	recipes = { IngredientLeafNote, } },
-	aip_dou_through_inscription =	{ tag = "THROUGH",	recipes = { IngredientLeafNote, } },
-	aip_dou_area_inscription =		{ tag = "AREA",		recipes = { IngredientLeafNote, } },
+	aip_dou_follow_inscription =	{ tag = "FOLLOW",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_through_inscription =	{ tag = "THROUGH",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_area_inscription =		{ tag = "AREA",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 }
 
 ------------------------------------ 功能 ------------------------------------

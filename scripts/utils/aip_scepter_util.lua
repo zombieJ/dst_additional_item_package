@@ -6,6 +6,11 @@ local categories = {
 	AREA = "action",
 }
 
+local damages = {
+	FIRE = 5, -- 火焰有燃烧效果，只给予少量伤害
+	ICE = 20,
+}
+
 local function getType(item)
 	local type = categories[item._douTag]
 	return { name = item._douTag, type = type }
@@ -15,6 +20,7 @@ local function createGroup()
 	return {
 		action = nil,
 		element = nil,
+		elementCount = 0,
 		damage = 5,
 	}
 end
@@ -44,7 +50,13 @@ function calculateProjectile(items)
 				local typeInfo = getType(item)
 				if typeInfo.type == "element" then
 					-- 元素类型
+					if group.element ~= typeInfo.name then
+						group.elementCount = 0
+					end
+					
 					group.element = typeInfo.name
+					group.elementCount = group.elementCount + 1
+					group.damage = group.damage + (damages[typeInfo.name] or 5)
 
 				elseif typeInfo.type == "action" then
 					-- 施法动作

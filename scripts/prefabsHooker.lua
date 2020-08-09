@@ -40,7 +40,7 @@ for i, name in ipairs(birds) do
 					prefab = originPrefab(inst)
 				end
 
-				if prefab == "seeds" and math.random() < .3 then
+				if prefab == "seeds" and math.random() < .15 then
 					return "aip_leaf_note"
 				end
 

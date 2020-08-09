@@ -1,18 +1,68 @@
 local COMBAT_TAGS = { "_combat" }
 local NO_TAGS = { "player" }
 
+local function include(table, value)
+    for k,v in ipairs(table) do
+      if v == value then
+          return true
+      end
+    end
+    return false
+end
+
 local function isLine(action)
 	return action == nil or action == "LINE" or action == "THROUGH"
 end
 
-local function FindEntities(pos, radius)
-	local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, radius or 2, COMBAT_TAGS, NO_TAGS)
-	return ents
+local function ShowEffect(element, point, smallEffect)
+	local prefab
+
+	if element == "FIRE" then
+		prefab = SpawnPrefab("explode_small")
+	else
+		prefab = SpawnPrefab("collapse_small")
+	end
+
+	if prefab ~= nil then
+		if smallEffect then
+			prefab.Transform:SetScale(0.5, 0.5, 0.5)
+		end
+		prefab.Transform:SetPosition(point.x, point.y, point.z)
+	end
+end
+
+local function ApplyElementEffect(target, element, elementCount)
+	if element == "FIRE" and math.random() < (elementCount or 0) * .4 then
+		-- 应用火焰伤害
+		if target.components.burnable ~= nil and not target.components.burnable:IsBurning() then
+			if target.components.freezable ~= nil and target.components.freezable:IsFrozen() then
+				target.components.freezable:Unfreeze()
+			elseif target.components.fueled == nil
+				or (target.components.fueled.fueltype ~= FUELTYPE.BURNABLE and
+					target.components.fueled.secondaryfueltype ~= FUELTYPE.BURNABLE) then
+				--does not take burnable fuel, so just burn it
+				if target.components.burnable.canlight or target.components.combat ~= nil then
+					target.components.burnable:Ignite(true)
+				end
+			elseif target.components.fueled.accepting then
+				--takes burnable fuel, so fuel it
+				local fuel = SpawnPrefab("cutgrass")
+				if fuel ~= nil then
+					if fuel.components.fuel ~= nil and
+						fuel.components.fuel.fueltype == FUELTYPE.BURNABLE then
+						target.components.fueled:TakeFuelItem(fuel)
+					else
+						fuel:Remove()
+					end
+				end
+			end
+		end
+	end
 end
 
 local Projectile = Class(function(self, inst)
 	self.inst = inst
-	self.speed = 10
+	self.speed = 20
 	self.launchoffset = Vector3(0.25, 2, 0)
 
 	self.doer = nil
@@ -25,6 +75,7 @@ local Projectile = Class(function(self, inst)
 	self.distance = nil
 	self.cachePos = nil -- 存储上一次位置
 	self.diffTime = nil -- 释放后经过的时间
+	self.affectedEntities = nil -- 被影响到的单位
 
 	-- 超时可能投掷物已经卡死，删除之
 	inst:DoTaskInTime(120, function()
@@ -48,6 +99,7 @@ function Projectile:CalculateTask()
 
 	self.task = task
 	self.diffTime = 0
+	self.affectedEntities = {}
 	self.inst.AnimState:SetMultColour(1, 1, 1, 1)
 
 	if isLine(self.task.action) then
@@ -55,6 +107,20 @@ function Projectile:CalculateTask()
 	elseif self.task.action == "AREA" then
 		self.inst.AnimState:SetMultColour(0, 0, 0, 0)
 	end
+end
+
+function Projectile:FindEntities(pos, radius)
+	local filteredEnts = {}
+	local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, radius or 2, COMBAT_TAGS, NO_TAGS)
+
+	for i, ent in ipairs(ents) do
+		if not include(self.affectedEntities, ent) then
+			table.insert(self.affectedEntities, ent)
+			table.insert(filteredEnts, ent)
+		end
+	end
+
+	return filteredEnts
 end
 
 function Projectile:RotateToTarget(dest)
@@ -97,13 +163,18 @@ function Projectile:StartBy(doer, queue, target, targetPos)
 end
 
 function Projectile:EffectTaskOn(target)
+	local doEffect = false
 	-- 伤害
 	if not self.task.cure then
 		target.components.combat:GetAttacked(self.doer, self.task.damage, nil, nil)
-		return true
+		doEffect = true
 	end
 
-	return false
+	if doEffect then
+		ApplyElementEffect(target, self.task.element, self.task.elementCount)
+	end
+
+	return doEffect
 end
 
 function Projectile:OnUpdate(dt)
@@ -120,7 +191,7 @@ function Projectile:OnUpdate(dt)
 
 	-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 线性 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	if isLine(self.task.action) then
-		local ents = FindEntities(self.inst:GetPosition())
+		local ents = self:FindEntities(self.inst:GetPosition())
 
 		-- 通杀
 		for i, prefab in ipairs(ents) do
@@ -131,7 +202,12 @@ function Projectile:OnUpdate(dt)
 				prefab.components.combat ~= nil and
 				prefab.components.health ~= nil
 			then
-				finishTask = self:EffectTaskOn(prefab) or finishTask
+				local effectWork = self:EffectTaskOn(prefab)
+				if self.task.action ~= "THROUGH" then
+					finishTask = effectWork or finishTask
+				elseif effectWork then
+					ShowEffect(self.task.element, prefab:GetPosition(), true)
+				end
 			end
 		end
 
@@ -139,6 +215,10 @@ function Projectile:OnUpdate(dt)
 		self.distance = self.distance - self.speed * dt
 		if self.distance < 0 then
 			finishTask = true
+		end
+
+		if finishTask and self.task.action ~= "THROUGH" then
+			ShowEffect(self.task.element, self.inst:GetPosition())
 		end
 
 	-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 跟随 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -151,15 +231,17 @@ function Projectile:OnUpdate(dt)
 
 			if distsq(currentPos, targetPos) < 3 then
 				finishTask = self:EffectTaskOn(self.target) or finishTask
+				ShowEffect(self.task.element, self.target:GetPosition())
 			else
 				self:RotateToTarget(self.targetPos)
 			end
 		end
+
 	-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 区域 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	elseif self.task.action == "AREA" then
 		-- 区域魔法会经过一定延迟释放
 		if self.diffTime >= 0.1 then
-			local ents = FindEntities(self.targetPos)
+			local ents = self:FindEntities(self.targetPos)
 
 			-- 通杀
 			for i, prefab in ipairs(ents) do
@@ -175,6 +257,10 @@ function Projectile:OnUpdate(dt)
 			end
 
 			finishTask = true
+		end
+
+		if finishTask then
+			ShowEffect(self.task.element, self.targetPos)
 		end
 	end
 
