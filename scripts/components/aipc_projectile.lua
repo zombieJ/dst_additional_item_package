@@ -53,7 +53,6 @@ function Projectile:CalculateTask()
 	if isLine(self.task.action) then
 		self.distance = 10
 	elseif self.task.action == "AREA" then
-		aipPrint("!!!")
 		self.inst.AnimState:SetMultColour(0, 0, 0, 0)
 	end
 end

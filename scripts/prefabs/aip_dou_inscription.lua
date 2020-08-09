@@ -82,8 +82,9 @@ local function makeInscription(name, info)
 	-- 资源
 	local assets =
 	{
-		Asset("ATLAS", "images/inventoryimages/aip_dou_opal.xml"),
-		Asset("ANIM", "anim/aip_dou_opal.zip"),
+		-- Asset("ATLAS", "images/inventoryimages/"..name..".xml"),
+		Asset("ATLAS", "images/inventoryimages/aip_dou_fire_inscription.xml"),
+		Asset("ANIM", "anim/aip_dou_inscription.zip"),
 	}
 
 	-- 文字
@@ -96,8 +97,10 @@ local function makeInscription(name, info)
 
 	-- 生成配方
 	local aip_dou_inscription = Recipe(name, info.recipes, RECIPETABS.AIP_DOU_SCEPTER, TECH.AIP_DOU_SCEPTER_ONE, nil, nil, true)
-	aip_dou_inscription.atlas = "images/inventoryimages/aip_dou_opal.xml"
-	aip_dou_inscription.image = "aip_dou_opal.tex"
+	-- aip_dou_inscription.atlas = "images/inventoryimages/"..name..".xml"
+	-- aip_dou_inscription.image = name..".tex"
+	aip_dou_inscription.atlas = "images/inventoryimages/aip_dou_fire_inscription.xml"
+	aip_dou_inscription.image = "aip_dou_fire_inscription.tex"
 
 	local function fn()
 		local inst = CreateEntity()
@@ -111,8 +114,8 @@ local function makeInscription(name, info)
 		inst:AddTag("aip_dou_inscription")
 		inst._douTag = info.tag
 
-		inst.AnimState:SetBank("aip_dou_opal")
-		inst.AnimState:SetBuild("aip_dou_opal")
+		inst.AnimState:SetBank("aip_dou_inscription")
+		inst.AnimState:SetBuild("aip_dou_inscription")
 		inst.AnimState:PlayAnimation("idle")
 
 		MakeInventoryFloatable(inst, "med", 0.1, 0.75)
@@ -126,8 +129,10 @@ local function makeInscription(name, info)
 		inst:AddComponent("inspectable")
 
 		inst:AddComponent("inventoryitem")
-		inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_dou_opal.xml"
-		inst.components.inventoryitem.imagename = "aip_dou_opal"
+		-- inst.components.inventoryitem.atlasname = "images/inventoryimages/"..name..".xml"
+		-- inst.components.inventoryitem.imagename = name
+		inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_dou_fire_inscription.xml"
+		inst.components.inventoryitem.imagename = "aip_dou_fire_inscription"
 
 		MakeSmallBurnable(inst, TUNING.LARGE_BURNTIME)
 		MakeSmallPropagator(inst)
