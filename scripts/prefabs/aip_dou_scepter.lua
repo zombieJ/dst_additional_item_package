@@ -173,7 +173,7 @@ local function fn()
         local projectile = SpawnPrefab("aip_dou_scepter_projectile")
         local projectileInfo = refreshScepter(inst)
 
-        projectile.components.aipc_projectile:StartBy(doer, projectileInfo.queue)
+        projectile.components.aipc_projectile:StartBy(doer, projectileInfo.queue, nil, point)
     end
 
     -- 接受元素提炼

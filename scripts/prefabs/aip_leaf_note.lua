@@ -63,7 +63,6 @@ local function setNote(inst, idx)
 
   inst.components.inspectable:SetDescription(LANG.NOTES[mergedIdx + 1])
   inst._noteIdx = mergedIdx
-  aipTypePrint(LANG.NOTES, mergedIdx, #LANG.NOTES)
 end
 
 local function onsave(inst, data)
@@ -88,7 +87,8 @@ function fn()
   MakeInventoryPhysics(inst)
 
   -- Show spoiled age
-  inst:AddTag("edible_"..FOODTYPE.GENERIC)
+  inst:AddTag("show_spoilage")
+  inst:AddTag("icebox_valid")
 
 	inst.AnimState:SetBank("aip_leaf_note")
 	inst.AnimState:SetBuild("aip_leaf_note")
@@ -108,7 +108,7 @@ function fn()
   inst:AddComponent("perishable")
   inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
   inst.components.perishable:StartPerishing()
-  inst.components.perishable.onperishreplacement = "spoiled_food"
+  inst.components.perishable.onperishreplacement = "ash"
 
   inst:AddComponent("inspectable")
 

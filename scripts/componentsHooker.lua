@@ -7,7 +7,7 @@ local function triggerComponentAction(player, item, target, targetPoint)
 		if target ~= nil then
 			item.components.aipc_action:DoTargetAction(player, target)
 		elseif targetPoint ~= nil then
-			item.components.aipc_action:DoPointAction(player, pos)
+			item.components.aipc_action:DoPointAction(player, targetPoint)
 		end
 	end
 end
@@ -81,7 +81,7 @@ local AIPC_CASTER_ACTION = env.AddAction("AIPC_CASTER_ACTION", LANG.CAST, functi
 
 	if GLOBAL.TheNet:GetIsServer() then
 		-- server
-		triggerComponentAction(doer, item, target, pos)
+		triggerComponentAction(doer, item, target, pos ~= nil and act:GetActionPoint())
 	else
 		-- client
 		SendModRPCToServer(MOD_RPC[env.modname]["aipComponentAction"], doer, item, target, pos)
@@ -106,8 +106,8 @@ env.AddComponentAction("POINT", "aipc_action_client", function(inst, doer, pos, 
 	end
 end)
 
--- 角色拥有 aipc_action_client 对 health 对象 操作
-env.AddComponentAction("SCENE", "health", function(inst, doer, actions, right)
+-- 角色拥有 aipc_action_client 对 combat 对象 操作
+env.AddComponentAction("SCENE", "combat", function(inst, doer, actions, right)
 	if not inst or not right then
 		return
 	end

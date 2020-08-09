@@ -37,6 +37,9 @@ local function fn()
         return inst
     end
 
+    inst:AddComponent("combat")
+    inst.components.combat:SetDefaultDamage(1)
+
     inst:AddComponent("aipc_projectile")
 
     return inst

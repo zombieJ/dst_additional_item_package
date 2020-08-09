@@ -152,7 +152,6 @@ function Caster:OnUnequip()
 end
 
 function Caster:StartTargeting()
-  aipPrint("START!!!")
     if self.inst.components.reticule == nil then
         self.inst:AddComponent("reticule")
         for k, v in pairs(self.reticule) do
@@ -163,7 +162,6 @@ function Caster:StartTargeting()
 end
 
 function Caster:StopTargeting()
-  aipPrint("STOP???")
     if self.inst.components.reticule ~= nil then
         self.inst:RemoveComponent("reticule")
         RefreshReticule(self.inst)
