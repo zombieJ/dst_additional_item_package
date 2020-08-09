@@ -24,7 +24,7 @@ local LANG_MAP = {
 			REC_DESC = "使魔法可以追随目标",
 			DESC = "使魔法可以追随目标",
 		},
-		aip_dou_trough_inscription = {
+		aip_dou_through_inscription = {
 			NAME = "铭文：透",
 			REC_DESC = "朝一个方向发射魔法",
 			DESC = "朝一个方向发射魔法",
@@ -51,7 +51,7 @@ local LANG_MAP = {
 			REC_DESC = "使魔法可以追随目标",
 			DESC = "使魔法可以追随目标",
 		},
-		aip_dou_trough_inscription = {
+		aip_dou_through_inscription = {
 			NAME = "铭文：透",
 			REC_DESC = "朝一个方向发射魔法",
 			DESC = "朝一个方向发射魔法",
@@ -73,7 +73,7 @@ local INSCRIPTIONS = {
 	aip_dou_fire_inscription =		{ tag = "FIRE",		recipes = { IngredientLeafNote, } },
 	aip_dou_ice_inscription =		{ tag = "ICE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_follow_inscription =	{ tag = "FOLLOW",	recipes = { IngredientLeafNote, } },
-	aip_dou_trough_inscription =	{ tag = "THROUGH",	recipes = { IngredientLeafNote, } },
+	aip_dou_through_inscription =	{ tag = "THROUGH",	recipes = { IngredientLeafNote, } },
 	aip_dou_area_inscription =		{ tag = "AREA",		recipes = { IngredientLeafNote, } },
 }
 
@@ -82,8 +82,8 @@ local function makeInscription(name, info)
 	-- 资源
 	local assets =
 	{
-		-- Asset("ATLAS", "images/inventoryimages/"..name..".xml"),
-		Asset("ATLAS", "images/inventoryimages/aip_dou_fire_inscription.xml"),
+		Asset("ATLAS", "images/inventoryimages/"..name..".xml"),
+		-- Asset("ATLAS", "images/inventoryimages/aip_dou_fire_inscription.xml"),
 		Asset("ANIM", "anim/aip_dou_inscription.zip"),
 	}
 
@@ -97,10 +97,10 @@ local function makeInscription(name, info)
 
 	-- 生成配方
 	local aip_dou_inscription = Recipe(name, info.recipes, RECIPETABS.AIP_DOU_SCEPTER, TECH.AIP_DOU_SCEPTER_ONE, nil, nil, true)
-	-- aip_dou_inscription.atlas = "images/inventoryimages/"..name..".xml"
-	-- aip_dou_inscription.image = name..".tex"
-	aip_dou_inscription.atlas = "images/inventoryimages/aip_dou_fire_inscription.xml"
-	aip_dou_inscription.image = "aip_dou_fire_inscription.tex"
+	aip_dou_inscription.atlas = "images/inventoryimages/"..name..".xml"
+	aip_dou_inscription.image = name..".tex"
+	-- aip_dou_inscription.atlas = "images/inventoryimages/aip_dou_fire_inscription.xml"
+	-- aip_dou_inscription.image = "aip_dou_fire_inscription.tex"
 
 	local function fn()
 		local inst = CreateEntity()
@@ -129,10 +129,10 @@ local function makeInscription(name, info)
 		inst:AddComponent("inspectable")
 
 		inst:AddComponent("inventoryitem")
-		-- inst.components.inventoryitem.atlasname = "images/inventoryimages/"..name..".xml"
-		-- inst.components.inventoryitem.imagename = name
-		inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_dou_fire_inscription.xml"
-		inst.components.inventoryitem.imagename = "aip_dou_fire_inscription"
+		inst.components.inventoryitem.atlasname = "images/inventoryimages/"..name..".xml"
+		inst.components.inventoryitem.imagename = name
+		-- inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_dou_fire_inscription.xml"
+		-- inst.components.inventoryitem.imagename = "aip_dou_fire_inscription"
 
 		MakeSmallBurnable(inst, TUNING.LARGE_BURNTIME)
 		MakeSmallPropagator(inst)
