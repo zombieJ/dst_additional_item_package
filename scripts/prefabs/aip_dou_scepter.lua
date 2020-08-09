@@ -157,7 +157,7 @@ local function fn()
     inst:AddComponent("aipc_action_client")
     inst.components.aipc_action_client.canActOn = function(inst, doer, target)
         refreshScepter(inst)
-        return inst._projectileInfo.action == "FOLLOW"
+        return inst._projectileInfo.action == "FOLLOW" and target.components.health ~= nil
     end
     inst.components.aipc_action_client.canActOnPoint = function()
         refreshScepter(inst)
@@ -168,12 +168,21 @@ local function fn()
         return inst
     end
 
+    -- 施法
     inst:AddComponent("aipc_action")
+
     inst.components.aipc_action.onDoPointAction = function(inst, doer, point)
         local projectile = SpawnPrefab("aip_dou_scepter_projectile")
         local projectileInfo = refreshScepter(inst)
 
         projectile.components.aipc_projectile:StartBy(doer, projectileInfo.queue, nil, point)
+    end
+
+    inst.components.aipc_action.onDoTargetAction = function(inst, doer, target)
+        local projectile = SpawnPrefab("aip_dou_scepter_projectile")
+        local projectileInfo = refreshScepter(inst)
+
+        projectile.components.aipc_projectile:StartBy(doer, projectileInfo.queue, target)
     end
 
     -- 接受元素提炼

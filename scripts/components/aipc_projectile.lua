@@ -7,7 +7,7 @@ end
 
 local Projectile = Class(function(self, inst)
 	self.inst = inst
-	self.speed = 25
+	self.speed = 10
 	self.launchoffset = Vector3(0.25, 2, 0)
 
 	self.doer = nil
@@ -18,16 +18,27 @@ local Projectile = Class(function(self, inst)
 	self.target = nil
 	self.targetPos = nil
 	self.distance = nil
+	self.cachePos = nil -- 存储上一次位置
 
 	-- 超时可能投掷物已经卡死，删除之
-	inst:DoTaskInTime(120, function(inst)
-		inst:Remove()
+	inst:DoTaskInTime(120, function()
+		self:CleanUp()
 	end)
 end)
+
+function Projectile:CleanUp()
+	self.inst:StopUpdatingComponent(self)
+	self.inst:Remove()
+end
 
 function Projectile:CalculateTask()
 	local task = self.queue[1]
 	table.remove(self.queue, 1)
+
+	if task == nil then
+		self:CleanUp()
+		return
+	end
 
 	self.task = task
 	if isLine(self.task.action) then
@@ -51,6 +62,11 @@ function Projectile:StartBy(doer, queue, target, targetPos)
 	self.queue = queue
 	self.target = target
 	self.targetPos = targetPos
+	self.cachePos = doer:GetPosition()
+
+	if self.target and not self.targetPos then
+		self.targetPos = self.target:GetPosition()
+	end
 
 	-- 设置位置
 	local x, y, z = doer.Transform:GetWorldPosition()
@@ -58,7 +74,7 @@ function Projectile:StartBy(doer, queue, target, targetPos)
 	self.inst.Physics:Teleport(x + self.launchoffset.x * math.cos(facing_angle), y + self.launchoffset.y, z - self.launchoffset.x * math.sin(facing_angle))
 
 	-- 动感超人！
-	self:RotateToTarget(targetPos)
+	self:RotateToTarget(self.targetPos)
 	self.inst.Physics:SetVel(0, 0, 0)
 	self.inst.Physics:SetFriction(0)
 	self.inst.Physics:SetDamping(0)
@@ -69,13 +85,25 @@ function Projectile:StartBy(doer, queue, target, targetPos)
 	self.inst:StartUpdatingComponent(self)
 end
 
+function Projectile:EffectTaskOn(target)
+	-- 伤害
+	if not self.task.cure then
+		target.components.combat:GetAttacked(self.doer, self.task.damage, nil, nil)
+		return true
+	end
+
+	return false
+end
+
 function Projectile:OnUpdate(dt)
 	-- 没有队列的话就可以清理了
 	if self.task == nil then
-		self.inst:StopUpdatingComponent(self)
-		self.inst:Remove()
+		self:CleanUp()
 		return
 	end
+
+	local currentPos = self.inst:GetPosition()
+	local finishTask = false
 
 	-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 线性 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	if isLine(self.task.action) then
@@ -83,7 +111,6 @@ function Projectile:OnUpdate(dt)
 		local ents = TheSim:FindEntities(x, y, z, 2, COMBAT_TAGS, NO_TAGS)
 
 		-- 通杀
-		local hit = false
 		for i, prefab in ipairs(ents) do
 			if
 				prefab:IsValid() and
@@ -92,22 +119,38 @@ function Projectile:OnUpdate(dt)
 				prefab.components.combat ~= nil and
 				prefab.components.health ~= nil
 			then
-				-- 伤害
-				if not self.task.cure then
-					-- self.inst.components.combat:
-					prefab.components.combat:GetAttacked(self.doer, self.task.damage, nil, nil)
-					-- prefab.components.health:Kill()
-					hit = true
-				end
+				finishTask = self:EffectTaskOn(target) or finishTask
 			end
 		end
 
 		-- 距离到了就删除
 		self.distance = self.distance - self.speed * dt
-		if hit or self.distance < 0 then
-			self.inst:Remove()
+		if self.distance < 0 then
+			finishTask = true
 		end
+
+	-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 跟随 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	elseif self.task.action == "FOLLOW" then
+		if self.target == nil or self.target.components.health == nil or self.target.components.health:IsDead() then
+			finishTask = true
+		else
+			local targetPos = self.target:GetPosition()
+			self.targetPos = targetPos
+
+			if distsq(currentPos, targetPos) < 3 then
+				finishTask = self:EffectTaskOn(self.target) or finishTask
+			else
+				self:RotateToTarget(self.targetPos)
+			end
+		end
+		
 	end
+
+	if finishTask then
+		self:CalculateTask()
+	end
+
+	self.cachePos = currentPos
 end
 
 

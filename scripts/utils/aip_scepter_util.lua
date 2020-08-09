@@ -3,7 +3,7 @@ local categories = {
 	ICE = "element",
 	FOLLOW = "action",
 	THROUGH = "action",
-	THROW = "action",
+	AREA = "action",
 }
 
 local function getType(item)
