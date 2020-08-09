@@ -19,6 +19,7 @@ local Projectile = Class(function(self, inst)
 	self.targetPos = nil
 	self.distance = nil
 	self.cachePos = nil -- 存储上一次位置
+	self.diffTime = nil -- 释放后经过的时间
 
 	-- 超时可能投掷物已经卡死，删除之
 	inst:DoTaskInTime(120, function()
@@ -41,6 +42,8 @@ function Projectile:CalculateTask()
 	end
 
 	self.task = task
+	self.diffTime = 0
+
 	if isLine(self.task.action) then
 		self.distance = 10
 	end
@@ -102,6 +105,9 @@ function Projectile:OnUpdate(dt)
 		return
 	end
 
+	self.diffTime = self.diffTime + dt
+	aipPrint(dt, self.diffTime)
+
 	local currentPos = self.inst:GetPosition()
 	local finishTask = false
 
@@ -143,7 +149,18 @@ function Projectile:OnUpdate(dt)
 				self:RotateToTarget(self.targetPos)
 			end
 		end
-		
+	-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 区域 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	elseif self.task.action == "AREA" then
+		-- 区域魔法会经过一定延迟释放
+		if self.diffTime > 0.5 then
+			local ash = SpawnPrefab("ash")
+			ash.Physics:Teleport(self.targetPos.x, self.targetPos.y, self.targetPos.z)
+
+			local ash2 = SpawnPrefab("ash")
+			ash2.Physics:Teleport(self.targetPos.x + 2, self.targetPos.y, self.targetPos.z)
+
+			finishTask = true
+		end
 	end
 
 	if finishTask then
