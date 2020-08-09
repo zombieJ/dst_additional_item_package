@@ -16,16 +16,25 @@ end
 
 local function ShowEffect(element, point, smallEffect)
 	local prefab
+	local normalScale = 1
+	local smallScale = 0.5
 
 	if element == "FIRE" then
 		prefab = SpawnPrefab("explode_small")
+		normalScale = 1.2
+	elseif element == "ICE" then
+		prefab = SpawnPrefab("icespike_fx_2")
+		normalScale = 2
+		smallScale = 0.7
 	else
 		prefab = SpawnPrefab("collapse_small")
 	end
 
 	if prefab ~= nil then
 		if smallEffect then
-			prefab.Transform:SetScale(0.5, 0.5, 0.5)
+			prefab.Transform:SetScale(smallScale, smallScale, smallScale)
+		else
+			prefab.Transform:SetScale(normalScale, normalScale, normalScale)
 		end
 		prefab.Transform:SetPosition(point.x, point.y, point.z)
 	end

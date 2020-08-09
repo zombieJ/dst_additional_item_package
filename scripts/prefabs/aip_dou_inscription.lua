@@ -43,8 +43,8 @@ local LANG_MAP = {
 		},
 		aip_dou_ice_inscription = {
 			NAME = "铭文：冰",
-			REC_DESC = "附魔冰元素",
-			DESC = "它能够召唤冰元素",
+			REC_DESC = "有 40% 概率冰冻目标",
+			DESC = "有 40% 概率冰冻目标",
 		},
 		aip_dou_follow_inscription = {
 			NAME = "铭文：追",
