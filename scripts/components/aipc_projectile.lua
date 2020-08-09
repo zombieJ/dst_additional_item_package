@@ -5,6 +5,11 @@ local function isLine(action)
 	return action == nil or action == "LINE" or action == "THROUGH"
 end
 
+local function FindEntities(pos, radius)
+	local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, radius or 2, COMBAT_TAGS, NO_TAGS)
+	return ents
+end
+
 local Projectile = Class(function(self, inst)
 	self.inst = inst
 	self.speed = 10
@@ -43,9 +48,13 @@ function Projectile:CalculateTask()
 
 	self.task = task
 	self.diffTime = 0
+	self.inst.AnimState:SetMultColour(1, 1, 1, 1)
 
 	if isLine(self.task.action) then
 		self.distance = 10
+	elseif self.task.action == "AREA" then
+		aipPrint("!!!")
+		self.inst.AnimState:SetMultColour(0, 0, 0, 0)
 	end
 end
 
@@ -106,15 +115,13 @@ function Projectile:OnUpdate(dt)
 	end
 
 	self.diffTime = self.diffTime + dt
-	aipPrint(dt, self.diffTime)
 
 	local currentPos = self.inst:GetPosition()
 	local finishTask = false
 
 	-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 线性 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	if isLine(self.task.action) then
-		local x, y, z = self.inst.Transform:GetWorldPosition()
-		local ents = TheSim:FindEntities(x, y, z, 2, COMBAT_TAGS, NO_TAGS)
+		local ents = FindEntities(self.inst:GetPosition())
 
 		-- 通杀
 		for i, prefab in ipairs(ents) do
@@ -125,7 +132,7 @@ function Projectile:OnUpdate(dt)
 				prefab.components.combat ~= nil and
 				prefab.components.health ~= nil
 			then
-				finishTask = self:EffectTaskOn(target) or finishTask
+				finishTask = self:EffectTaskOn(prefab) or finishTask
 			end
 		end
 
@@ -152,12 +159,21 @@ function Projectile:OnUpdate(dt)
 	-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 区域 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	elseif self.task.action == "AREA" then
 		-- 区域魔法会经过一定延迟释放
-		if self.diffTime > 0.5 then
-			local ash = SpawnPrefab("ash")
-			ash.Physics:Teleport(self.targetPos.x, self.targetPos.y, self.targetPos.z)
+		if self.diffTime >= 0.1 then
+			local ents = FindEntities(self.targetPos)
 
-			local ash2 = SpawnPrefab("ash")
-			ash2.Physics:Teleport(self.targetPos.x + 2, self.targetPos.y, self.targetPos.z)
+			-- 通杀
+			for i, prefab in ipairs(ents) do
+				if
+					prefab:IsValid() and
+					prefab.entity:IsVisible() and
+					self.inst.components.combat:CanTarget(prefab) and
+					prefab.components.combat ~= nil and
+					prefab.components.health ~= nil
+				then
+					self:EffectTaskOn(prefab)
+				end
+			end
 
 			finishTask = true
 		end
