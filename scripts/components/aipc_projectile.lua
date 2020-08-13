@@ -1,5 +1,6 @@
 local COMBAT_TAGS = { "_combat" }
-local NO_TAGS = { "player" }
+-- local NO_TAGS = { "player" }
+local NO_TAGS = nil
 
 local function include(table, value)
     for k,v in ipairs(table) do
@@ -145,14 +146,17 @@ function Projectile:CalculateTask()
 	end
 end
 
-function Projectile:FindEntities(pos, radius)
+function Projectile:FindEntities(element, pos, radius)
 	local filteredEnts = {}
 	local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, radius or 2, COMBAT_TAGS, NO_TAGS)
 
 	for i, ent in ipairs(ents) do
-		if not include(self.affectedEntities, ent) then
-			table.insert(self.affectedEntities, ent)
-			table.insert(filteredEnts, ent)
+		-- 根据元素选择目标
+		if (element == "HEAL" and ent:HasTag("player")) or (element ~= "HEAL" and not ent:HasTag("player")) then
+			if not include(self.affectedEntities, ent) then
+				table.insert(self.affectedEntities, ent)
+				table.insert(filteredEnts, ent)
+			end
 		end
 	end
 
@@ -201,7 +205,13 @@ end
 function Projectile:EffectTaskOn(target)
 	local doEffect = false
 	-- 伤害
-	if not self.task.cure then
+	if self.task.element == "HEAL" then
+		if target.components.health ~= nil then
+			target.components.health:DoDelta(self.task.damage, false, self.inst.prefab)
+			doEffect = true
+		end
+		
+	else
 		target.components.combat:GetAttacked(self.doer, self.task.damage, nil, nil)
 		doEffect = true
 	end
@@ -227,7 +237,7 @@ function Projectile:OnUpdate(dt)
 
 	-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 线性 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	if isLine(self.task.action) then
-		local ents = self:FindEntities(self.inst:GetPosition())
+		local ents = self:FindEntities(self.task.element, self.inst:GetPosition())
 
 		-- 通杀
 		for i, prefab in ipairs(ents) do
@@ -277,7 +287,7 @@ function Projectile:OnUpdate(dt)
 	elseif self.task.action == "AREA" then
 		-- 区域魔法会经过一定延迟释放
 		if self.diffTime >= 0.1 then
-			local ents = self:FindEntities(self.targetPos)
+			local ents = self:FindEntities(self.task.element, self.targetPos)
 
 			-- 通杀
 			for i, prefab in ipairs(ents) do

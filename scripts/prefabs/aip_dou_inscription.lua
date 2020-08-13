@@ -24,6 +24,11 @@ local LANG_MAP = {
 			REC_DESC = "命中时产生一根沙柱",
 			DESC = "命中时产生一根沙柱",
 		},
+		aip_dou_heal_inscription = {
+			NAME = "铭文：春",
+			REC_DESC = "生效时治疗目标",
+			DESC = "生效时治疗目标",
+		},
 		aip_dou_follow_inscription = {
 			NAME = "铭文：追",
 			REC_DESC = "使魔法可以追随目标",
@@ -56,6 +61,11 @@ local LANG_MAP = {
 			REC_DESC = "命中时产生一根沙柱",
 			DESC = "命中时产生一根沙柱",
 		},
+		aip_dou_heal_inscription = {
+			NAME = "铭文：春",
+			REC_DESC = "生效时治疗目标",
+			DESC = "生效时治疗目标",
+		},
 		aip_dou_follow_inscription = {
 			NAME = "铭文：追",
 			REC_DESC = "使魔法可以追随目标",
@@ -83,6 +93,7 @@ local INSCRIPTIONS = {
 	aip_dou_fire_inscription =		{ tag = "FIRE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_ice_inscription =		{ tag = "ICE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_sand_inscription =		{ tag = "SAND",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_heal_inscription =		{ tag = "HEAL",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_follow_inscription =	{ tag = "FOLLOW",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_through_inscription =	{ tag = "THROUGH",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_area_inscription =		{ tag = "AREA",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
