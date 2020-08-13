@@ -19,6 +19,11 @@ local LANG_MAP = {
 			REC_DESC = "附魔火元素",
 			DESC = "它能够召唤火元素",
 		},
+		aip_dou_sand_inscription = {
+			NAME = "铭文：沙",
+			REC_DESC = "命中时产生一根沙柱",
+			DESC = "命中时产生一根沙柱",
+		},
 		aip_dou_follow_inscription = {
 			NAME = "铭文：追",
 			REC_DESC = "使魔法可以追随目标",
@@ -43,8 +48,13 @@ local LANG_MAP = {
 		},
 		aip_dou_ice_inscription = {
 			NAME = "铭文：冰",
-			REC_DESC = "有 40% 概率冰冻目标",
-			DESC = "有 40% 概率冰冻目标",
+			REC_DESC = "降低目标温度以冰冻目标",
+			DESC = "降低目标温度以冰冻目标",
+		},
+		aip_dou_sand_inscription = {
+			NAME = "铭文：沙",
+			REC_DESC = "命中时产生一根沙柱",
+			DESC = "命中时产生一根沙柱",
 		},
 		aip_dou_follow_inscription = {
 			NAME = "铭文：追",
@@ -72,6 +82,7 @@ local IngredientLeafNote = Ingredient("aip_leaf_note", 1, "images/inventoryimage
 local INSCRIPTIONS = {
 	aip_dou_fire_inscription =		{ tag = "FIRE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_ice_inscription =		{ tag = "ICE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_sand_inscription =		{ tag = "SAND",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_follow_inscription =	{ tag = "FOLLOW",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_through_inscription =	{ tag = "THROUGH",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_area_inscription =		{ tag = "AREA",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },

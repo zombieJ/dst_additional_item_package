@@ -26,6 +26,19 @@ local function ShowEffect(element, point, smallEffect)
 		prefab = SpawnPrefab("icespike_fx_2")
 		normalScale = 2
 		smallScale = 0.7
+	elseif element == "SAND" then
+		smallScale = 1
+		if smallEffect then
+			prefab = SpawnPrefab("sandspike_short")
+		else
+			prefab = SpawnPrefab("sandspike_tall")
+		end
+		
+		-- 重置一下伤害
+		if prefab.components.combat ~= nil then
+			prefab.components.combat:SetDefaultDamage(10)
+			prefab.components.combat.playerdamagepercent = 1
+		end
 	else
 		prefab = SpawnPrefab("collapse_small")
 	end
@@ -66,6 +79,20 @@ local function ApplyElementEffect(target, element, elementCount)
 				end
 			end
 		end
+	elseif element == "ICE" then
+		-- 应用冰冻效果
+		if target.components.freezable ~= nil then
+			target.components.freezable:AddColdness(elementCount or 1)
+			target.components.freezable:SpawnShatterFX()
+		end
+	end
+end
+
+local function ApplySandEffect(element, position)
+	if element == "SAND" then
+		-- 创建沙丁
+		local blocker = SpawnPrefab("sandspike_med")
+		blocker.Physics:Teleport(position.x, position.y, position.z)
 	end
 end
 
@@ -214,9 +241,9 @@ function Projectile:OnUpdate(dt)
 				local effectWork = self:EffectTaskOn(prefab)
 				if self.task.action ~= "THROUGH" then
 					finishTask = effectWork or finishTask
-				elseif effectWork then
-					ShowEffect(self.task.element, prefab:GetPosition(), true)
 				end
+
+				ShowEffect(self.task.element, prefab:GetPosition(), true)
 			end
 		end
 
@@ -226,9 +253,9 @@ function Projectile:OnUpdate(dt)
 			finishTask = true
 		end
 
-		if finishTask and self.task.action ~= "THROUGH" then
-			ShowEffect(self.task.element, self.inst:GetPosition())
-		end
+		-- if finishTask and self.task.action ~= "THROUGH" then
+		-- 	ShowEffect(self.task.element, self.inst:GetPosition())
+		-- end
 
 	-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 跟随 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	elseif self.task.action == "FOLLOW" then

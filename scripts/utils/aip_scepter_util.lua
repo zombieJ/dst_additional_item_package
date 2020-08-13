@@ -1,6 +1,7 @@
 local categories = {
 	FIRE = "element",
 	ICE = "element",
+	SAND = "element",
 	FOLLOW = "action",
 	THROUGH = "action",
 	AREA = "action",
@@ -8,7 +9,8 @@ local categories = {
 
 local damages = {
 	FIRE = 5, -- 火焰有燃烧效果，只给予少量伤害
-	ICE = 20,
+	ICE = 20, -- 冰冻能冰冻敌人，但是没有附加伤害
+	SAND = 10, -- 沙子本身是地形影响，减少伤害量
 }
 
 local function getType(item)
