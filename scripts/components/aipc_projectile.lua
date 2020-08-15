@@ -139,6 +139,8 @@ local Projectile = Class(function(self, inst)
 
 	-- Task
 	self.task = nil
+	self.source = nil
+	self.sourcePos = nil
 	self.target = nil
 	self.targetPos = nil
 	self.distance = nil
@@ -157,7 +159,7 @@ function Projectile:CleanUp()
 	self.inst:Remove()
 end
 
-function Projectile:CalculateTask()
+function Projectile:CalculateTask(nextOne)
 	local task = self.queue[1]
 	table.remove(self.queue, 1)
 
@@ -165,6 +167,19 @@ function Projectile:CalculateTask()
 		self:CleanUp()
 		return
 	end
+
+		-- 如果是后续的任务需要重新计算一下相关距离
+		if nextOne then
+			local diffX = self.targetPos.x - self.sourcePos.x
+			local diffZ = self.targetPos.z - self.sourcePos.z
+
+			self.source = self.target
+			self.sourcePos = self.targetPos
+
+			if task.action == "AREA" then
+				self.targetPos = Vector3(self.targetPos.x + diffX / 2, self.targetPos.y, self.targetPos.z + diffZ / 2)
+			end
+		end
 
 	self.task = task
 	self.diffTime = 0
@@ -209,6 +224,8 @@ function Projectile:StartBy(doer, queue, target, targetPos)
 	self.inst.Physics:ClearCollidesWith(COLLISION.LIMITS)
 	self.doer = doer
 	self.queue = queue
+	self.source = doer
+	self.sourcePos = doer:GetPosition()
 	self.target = target
 	self.targetPos = targetPos
 	self.cachePos = doer:GetPosition()
@@ -351,7 +368,7 @@ function Projectile:OnUpdate(dt)
 	end
 
 	if finishTask then
-		self:CalculateTask()
+		self:CalculateTask(true)
 	end
 
 	self.cachePos = currentPos
