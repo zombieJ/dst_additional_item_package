@@ -57,13 +57,17 @@ local function ShowEffect(element, point, targetEffect)
 			-- 范围施法时样式不太一样
 			local flowerIndex = math.floor(math.random() * #FLOWERS) + 1
 			local flower = SpawnFlower(flowerIndex)
-			flower.Transform:SetPosition(point.x, point.y, point.z)
+			flower.Transform:SetPosition(point.x, 0, point.z)
+
+			-- 范围特效添加一个光环效果
+			local aip_sanity_fx = SpawnPrefab("aip_sanity_fx")
+			aip_sanity_fx.Transform:SetPosition(point.x, 0, point.z)
 
 			for i = 1, 8 do
 				local flower = SpawnFlower(flowerIndex + i)
 				local angle = 2 * PI / 8 * i
 				local distance = 1.5 + math.random() / 2
-				flower.Transform:SetPosition(point.x + math.cos(angle) * distance, point.y, point.z + math.sin(angle) * distance)
+				flower.Transform:SetPosition(point.x + math.cos(angle) * distance, 0, point.z + math.sin(angle) * distance)
 			end
 		end
 	else

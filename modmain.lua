@@ -40,6 +40,7 @@ PrefabFiles =
 	"aip_dou_scepter",
 	"aip_dou_scepter_projectile",
 	"aip_heal_fx",
+	"aip_sanity_fx",
 	"aip_dou_inscription",
 
 	-- Building
