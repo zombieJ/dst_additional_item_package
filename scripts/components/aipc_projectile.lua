@@ -102,8 +102,10 @@ end
 
 local Projectile = Class(function(self, inst)
 	self.inst = inst
+	-- self.speed = 20
 	self.speed = 20
-	self.launchoffset = Vector3(0.25, 2, 0)
+	-- self.launchoffset = Vector3(0.25, 2, 0)
+	self.launchoffset = Vector3(0, 1.6, 0)
 
 	self.doer = nil
 	self.queue = {}
@@ -252,12 +254,15 @@ function Projectile:OnUpdate(dt)
 				prefab.components.combat ~= nil and
 				prefab.components.health ~= nil
 			then
-				local effectWork = self:EffectTaskOn(prefab)
-				if self.task.action ~= "THROUGH" then
-					finishTask = effectWork or finishTask
-				end
+				-- 只有穿透才能对施法者有效
+				if self.doer ~= prefab or self.task.action == "THROUGH" then
+					local effectWork = self:EffectTaskOn(prefab)
+					if self.task.action ~= "THROUGH" then
+						finishTask = effectWork or finishTask
+					end
 
-				ShowEffect(self.task.element, prefab:GetPosition(), true)
+					ShowEffect(self.task.element, prefab:GetPosition(), true)
+				end
 			end
 		end
 
@@ -279,7 +284,7 @@ function Projectile:OnUpdate(dt)
 			local targetPos = self.target:GetPosition()
 			self.targetPos = targetPos
 
-			if distsq(currentPos, targetPos) < 3 then
+			if distsq(currentPos, targetPos) < 5 then
 				finishTask = self:EffectTaskOn(self.target) or finishTask
 				ShowEffect(self.task.element, self.target:GetPosition())
 			else

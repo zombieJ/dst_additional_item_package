@@ -16,10 +16,10 @@
                 <key id="0" spin="0">
                     <object folder="0" file="0" x="0" y="200" a="0"/>
                 </key>
-                <key id="1" time="100" spin="0">
+                <key id="1" time="300" spin="0">
                     <object folder="0" file="0" x="0" y="250" a="1"/>
                 </key>
-                <key id="2" time="600" spin="0">
+                <key id="2" time="900" spin="0">
                     <object folder="0" file="0" x="0" y="450" a="0"/>
                 </key>
                  <key id="3" time="1500" spin="0">
@@ -33,10 +33,10 @@
                 <key id="1" time="100" spin="0">
                     <object folder="0" file="0" x="-50" y="200" a="0"/>
                 </key>
-                <key id="2" time="200" spin="0">
+                <key id="2" time="400" spin="0">
                     <object folder="0" file="0" x="-50" y="250" a="1"/>
                 </key>
-                <key id="3" time="700" spin="0">
+                <key id="3" time="1000" spin="0">
                     <object folder="0" file="0" x="-50" y="450" a="0"/>
                 </key>
                  <key id="4" time="1500" spin="0">
@@ -50,10 +50,10 @@
                 <key id="1" time="200" spin="0">
                     <object folder="0" file="0" x="50" y="200" a="0"/>
                 </key>
-                <key id="2" time="300" spin="0">
+                <key id="2" time="500" spin="0">
                     <object folder="0" file="0" x="50" y="250" a="1"/>
                 </key>
-                <key id="3" time="800" spin="0">
+                <key id="3" time="1100" spin="0">
                     <object folder="0" file="0" x="50" y="450" a="0"/>
                 </key>
                  <key id="4" time="1500" spin="0">
