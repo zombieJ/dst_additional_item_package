@@ -15,7 +15,7 @@ local function isLine(action)
 	return action == nil or action == "LINE" or action == "THROUGH"
 end
 
-local function ShowEffect(element, point, smallEffect)
+local function ShowEffect(element, point, targetEffect)
 	local prefab
 	local normalScale = 1
 	local smallScale = 0.5
@@ -29,7 +29,7 @@ local function ShowEffect(element, point, smallEffect)
 		smallScale = 0.7
 	elseif element == "SAND" then
 		smallScale = 1
-		if smallEffect then
+		if targetEffect then
 			prefab = SpawnPrefab("sandspike_short")
 		else
 			prefab = SpawnPrefab("sandspike_tall")
@@ -48,7 +48,7 @@ local function ShowEffect(element, point, smallEffect)
 	end
 
 	if prefab ~= nil then
-		if smallEffect then
+		if targetEffect then
 			prefab.Transform:SetScale(smallScale, smallScale, smallScale)
 		else
 			prefab.Transform:SetScale(normalScale, normalScale, normalScale)
@@ -211,7 +211,7 @@ function Projectile:EffectTaskOn(target)
 	if self.task.element == "HEAL" then
 		if target.components.health ~= nil then
 			target.components.health:DoDelta(self.task.damage, false, self.inst.prefab)
-			doEffect = self.doer ~= target
+			doEffect = true
 		end
 
 	-- 伤害
@@ -248,7 +248,7 @@ function Projectile:OnUpdate(dt)
 			if
 				prefab:IsValid() and
 				prefab.entity:IsVisible() and
-				self.inst.components.combat:CanTarget(prefab) and
+				-- self.inst.components.combat:CanTarget(prefab) and
 				prefab.components.combat ~= nil and
 				prefab.components.health ~= nil
 			then
