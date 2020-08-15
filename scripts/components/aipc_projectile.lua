@@ -2,13 +2,22 @@ local COMBAT_TAGS = { "_combat" }
 -- local NO_TAGS = { "player" }
 local NO_TAGS = nil
 
+local FLOWERS = { "stalker_bulb", "stalker_berry", "stalker_fern" }
+
+local function SpawnFlower(index)
+	local flower = SpawnPrefab(FLOWERS[math.fmod(index, #FLOWERS) + 1])
+	flower.Transform:SetScale(0.7, 0.7, 0.7)
+	flower:AddTag("NOCLICK")
+	return flower
+end
+
 local function include(table, value)
-    for k,v in ipairs(table) do
-      if v == value then
-          return true
-      end
-    end
-    return false
+	for k,v in ipairs(table) do
+		if v == value then
+			return true
+		end
+	end
+	return false
 end
 
 local function isLine(action)
@@ -41,8 +50,22 @@ local function ShowEffect(element, point, targetEffect)
 			prefab.components.combat.playerdamagepercent = 1
 		end
 	elseif element == "HEAL" then
-		prefab = SpawnPrefab("aip_heal_fx")
-		smallScale = 1
+		if targetEffect then
+			prefab = SpawnPrefab("aip_heal_fx")
+			smallScale = 1
+		else
+			-- 范围施法时样式不太一样
+			local flowerIndex = math.floor(math.random() * #FLOWERS) + 1
+			local flower = SpawnFlower(flowerIndex)
+			flower.Transform:SetPosition(point.x, point.y, point.z)
+
+			for i = 1, 8 do
+				local flower = SpawnFlower(flowerIndex + i)
+				local angle = 2 * PI / 8 * i
+				local distance = 1.5 + math.random() / 2
+				flower.Transform:SetPosition(point.x + math.cos(angle) * distance, point.y, point.z + math.sin(angle) * distance)
+			end
+		end
 	else
 		prefab = SpawnPrefab("collapse_small")
 	end
@@ -308,6 +331,10 @@ function Projectile:OnUpdate(dt)
 					prefab.components.health ~= nil
 				then
 					self:EffectTaskOn(prefab)
+
+					if self.task.element == "HEAL" then
+						ShowEffect(self.task.element, prefab:GetPosition(), true)
+					end
 				end
 			end
 
