@@ -168,18 +168,50 @@ function Projectile:CalculateTask(nextOne)
 		return
 	end
 
-		-- 如果是后续的任务需要重新计算一下相关距离
-		if nextOne then
-			local diffX = self.targetPos.x - self.sourcePos.x
-			local diffZ = self.targetPos.z - self.sourcePos.z
+	-- 如果是后续的任务需要重新计算一下相关距离
+	if nextOne then
+		-- 重置位置
+		self.inst.Physics:Teleport(self.targetPos.x, self.targetPos.y, self.targetPos.z)
 
-			self.source = self.target
-			self.sourcePos = self.targetPos
+		local diffX = self.targetPos.x - self.sourcePos.x
+		local diffZ = self.targetPos.z - self.sourcePos.z
 
-			if task.action == "AREA" then
-				self.targetPos = Vector3(self.targetPos.x + diffX / 2, self.targetPos.y, self.targetPos.z + diffZ / 2)
+		self.source = self.target
+		self.sourcePos = self.targetPos
+
+		if task.action == "AREA" then
+			-- 圈会在释放点后一定的距离再次释放，最多不超过 4 格距离
+			self.target = nil
+			self.targetPos = Vector3(self.targetPos.x + math.min(4, diffX / 2), self.targetPos.y, self.targetPos.z + math.min(4, diffZ / 2))
+		elseif task.action == "FOLLOW" then
+			-- 跟踪是不知道下一个目标的，所以在施法距离内随机选一个符合要求的目标
+			local ents = self:FindEntities(task.element, self.sourcePos, 6)
+
+			-- 优先寻找最远的且不是原来的目标的
+			local bestTarget = nil
+			local bestDistance = 0
+
+			for i, prefab in ipairs(ents) do
+				local prefabPos = prefab:GetPosition()
+				local dst = distsq(self.targetPos.x, self.targetPos.z, prefabPos.x, prefabPos.z)
+				if prefab ~= self.target and dst > bestDistance then
+					bestTarget = prefab
+					bestDistance = dst
+				end
 			end
+
+			if bestTarget == nil and self.target ~= nil then
+				bestTarget = self.target
+			else
+				-- 附近没有新目标，结束施法
+				self:CleanUp()
+				return
+			end
+
+			self.target = bestTarget
+			self.targetPos = self.target:GetPosition()
 		end
+	end
 
 	self.task = task
 	self.diffTime = 0
@@ -303,6 +335,12 @@ function Projectile:OnUpdate(dt)
 					local effectWork = self:EffectTaskOn(prefab)
 					if self.task.action ~= "THROUGH" then
 						finishTask = effectWork or finishTask
+
+						-- 命中则更新位置和目标
+						if effectWork then
+							self.target = prefab
+							self.targetPos = self.target:GetPosition()
+						end
 					end
 
 					ShowEffect(self.task.element, prefab:GetPosition(), true)
@@ -325,6 +363,7 @@ function Projectile:OnUpdate(dt)
 		if self.target == nil or self.target.components.health == nil or self.target.components.health:IsDead() then
 			finishTask = true
 		else
+			-- 命中更新目标位置
 			local targetPos = self.target:GetPosition()
 			self.targetPos = targetPos
 
