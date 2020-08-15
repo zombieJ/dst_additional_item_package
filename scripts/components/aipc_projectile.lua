@@ -40,6 +40,9 @@ local function ShowEffect(element, point, smallEffect)
 			prefab.components.combat:SetDefaultDamage(10)
 			prefab.components.combat.playerdamagepercent = 1
 		end
+	elseif element == "HEAL" then
+		prefab = SpawnPrefab("aip_heal_fx")
+		smallScale = 1
 	else
 		prefab = SpawnPrefab("collapse_small")
 	end
@@ -204,13 +207,14 @@ end
 
 function Projectile:EffectTaskOn(target)
 	local doEffect = false
-	-- 伤害
+	-- 治疗
 	if self.task.element == "HEAL" then
 		if target.components.health ~= nil then
 			target.components.health:DoDelta(self.task.damage, false, self.inst.prefab)
-			doEffect = true
+			doEffect = self.doer ~= target
 		end
-		
+
+	-- 伤害
 	else
 		target.components.combat:GetAttacked(self.doer, self.task.damage, nil, nil)
 		doEffect = true
