@@ -185,16 +185,16 @@ function Projectile:CalculateTask(nextOne)
 			self.targetPos = Vector3(self.targetPos.x + math.min(4, diffX / 2), self.targetPos.y, self.targetPos.z + math.min(4, diffZ / 2))
 		elseif task.action == "FOLLOW" then
 			-- 跟踪是不知道下一个目标的，所以在施法距离内随机选一个符合要求的目标
-			local ents = self:FindEntities(task.element, self.sourcePos, 6)
+			local ents = self:FindEntities(task.element, self.sourcePos, 8)
 
-			-- 优先寻找最远的且不是原来的目标的
+			-- 优先寻找靠中间的且不是原来的目标的以展示弹道
 			local bestTarget = nil
-			local bestDistance = 0
+			local bestDistance = 999999
 
 			for i, prefab in ipairs(ents) do
 				local prefabPos = prefab:GetPosition()
-				local dst = distsq(self.targetPos.x, self.targetPos.z, prefabPos.x, prefabPos.z)
-				if prefab ~= self.target and dst > bestDistance then
+				local dst = math.abs(distsq(self.targetPos.x, self.targetPos.z, prefabPos.x, prefabPos.z) - 4)
+				if prefab ~= self.target and dst < bestDistance then
 					bestTarget = prefab
 					bestDistance = dst
 				end
@@ -202,8 +202,10 @@ function Projectile:CalculateTask(nextOne)
 
 			if bestTarget == nil and self.target ~= nil then
 				bestTarget = self.target
-			else
-				-- 附近没有新目标，结束施法
+			end
+
+			-- 附近没有新目标，结束施法
+			if bestTarget == nil then
 				self:CleanUp()
 				return
 			end
@@ -232,7 +234,8 @@ function Projectile:FindEntities(element, pos, radius)
 	for i, ent in ipairs(ents) do
 		-- 根据元素选择目标
 		if (element == "HEAL" and ent:HasTag("player")) or (element ~= "HEAL" and not ent:HasTag("player")) then
-			if not include(self.affectedEntities, ent) then
+			-- 只寻找活着的生物
+			if not include(self.affectedEntities, ent) and self.inst.components.combat:CanTarget(ent) then
 				table.insert(self.affectedEntities, ent)
 				table.insert(filteredEnts, ent)
 			end
