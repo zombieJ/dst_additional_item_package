@@ -483,9 +483,11 @@ function fn()
 	inst.components.perishable:StartPerishing()
 	inst.components.perishable.onperishreplacement = "spoiled_food"
 
-	-- 火焰传播者
-	MakeSmallBurnable(inst)
-	MakeSmallPropagator(inst)
+	-- 火焰传播者 - 不会着火
+	-- MakeSmallBurnable(inst)
+	-- MakeSmallPropagator(inst)
+
+	-- 作祟
 	MakeHauntableLaunch(inst)
 
 	inst.OnSave = onSave

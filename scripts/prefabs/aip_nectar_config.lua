@@ -76,6 +76,7 @@ local LANG_MAP = {
 local LANG_VALUE_MAP = {
 	english = {
 		fruit = "Fruit",
+		flower = "Fragrant",
 		sweetener = "Honey",
 		frozen = "Frozen",
 		exquisite = "Exquisite",
@@ -100,6 +101,7 @@ local LANG_VALUE_MAP = {
 	},
 	chinese = {
 		fruit = "果香",
+		flower = "清香",
 		sweetener = "香甜",
 		frozen = "冰镇",
 		exquisite = "精酿",
@@ -124,6 +126,7 @@ local LANG_VALUE_MAP = {
 	},
 	russian = {
 		fruit = "Фрукт",
+		flower = "Ароматный",
 		sweetener = "Мёд",
 		frozen = "Заморожен",
 		Exquisite = "Изысканный",
@@ -157,6 +160,7 @@ local TT = TUNING.FOOD_TEMP_AVERAGE / 10 -- 1 second
 
 local VALUE_WEIGHT = {
 	fruit =			{1.0, 0.1, 0.1, 1.0},
+	flower =		{0.5, 1.0, 0.8, 1.0},
 	sweetener =		{0.1, 1.0, 1.0, 1.0},
 	frozen =		{1.0, 1.0, 1.0, 0.0},
 	exquisite =		{1.0, 1.0, 1.0, 1.0},
@@ -177,6 +181,11 @@ local VALUE_EAT_BONUS = {
 		health = HP * 3,
 		hunger = HU * 4,
 		sanity = SAN * 1,
+	},
+	flower = {
+		health = HP * 1,
+		hunger = HU * 0,
+		sanity = SAN * 7,
 	},
 	sweetener = {
 		health = HP * 6,

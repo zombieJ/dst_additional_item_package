@@ -15,6 +15,8 @@ local function getNectarValues(item)
 		return values
 	end
 
+	local prefab = item.prefab
+
 	----------------------------- 标签属性 -----------------------------
 	if item:HasTag("aip_nectar_material") then
 		-- 标签
@@ -47,9 +49,20 @@ local function getNectarValues(item)
 		end
 	end
 
-	----------------------------- 特殊物品 -----------------------------
-	local prefab = item.prefab
+	-------------------------------- 花 --------------------------------
+	if prefab == "petals" then
+		-- 花瓣
+		values.flower = 1
+	elseif prefab == "petals_evil" then
+		-- 恶魔花瓣
+		values.flower = 1
+		values.terrible = 0.5
+	elseif prefab == "moon_tree_blossom" or prefab == "cactus_flower" then
+		-- 月树花 & 仙人掌花
+		values.flower = 2
+	end
 
+	----------------------------- 特殊物品 -----------------------------
 	-- 荧光珠
 	if prefab == "lightbulb" then
 		values.light = 1
