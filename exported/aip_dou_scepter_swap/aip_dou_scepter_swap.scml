@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
     <folder id="0" name="aip_dou_scepter_swap">
-        <file id="0" name="aip_dou_scepter_swap/output.png" width="144" height="300" pivot_x="0.574031" pivot_y="0.382061"/>
+        <file id="0" name="aip_dou_scepter_swap/output.png" width="100" height="276" pivot_x="0.524526" pivot_y="0.324299"/>
     </folder>
     <entity id="0" name="aip_dou_scepter_swap">
         <animation id="0" name="BUILD" length="1000">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="output" folder="0" file="0" abs_x="15.925969" abs_y="60.117939" abs_pivot_x="0.574031" abs_pivot_y="0.382061" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="0" name="output" folder="0" file="0" abs_x="3.975474" abs_y="41.175701" abs_pivot_x="0.524526" abs_pivot_y="0.324299" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
             </mainline>
             <timeline id="0" name="output">
                 <key id="0" spin="0">
-                    <object folder="0" file="0" x="15.925969" y="60.117939" angle="0"/>
+                    <object folder="0" file="0" x="3.975474" y="41.175701" angle="0"/>
                 </key>
             </timeline>
         </animation>
