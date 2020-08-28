@@ -1,3 +1,5 @@
+local open_beta = GLOBAL.aipGetModConfig("open_beta")
+
 ------------------------------------ 贪婪观察者 ------------------------------------
 -- 暗影跟随者
 function ShadowFollowerPrefabPostInit(inst)
@@ -27,6 +29,10 @@ AddPrefabPostInit("toadstool_dark", function(inst) ShadowFollowerPrefabPostInit(
 local birds = { "crow", "robin", "robin_winter", "canary", "quagmire_pigeon", "puffin" }
 for i, name in ipairs(birds) do
 	AddPrefabPostInit(name, function(inst)
+		if open_beta ~= "open" then
+			return nil
+		end
+
 		if inst.components.periodicspawner ~= nil then
 			-- 因为我们占用了一点概率，因而稍微加快一点生成间隔
 			inst.components.periodicspawner.randtime = inst.components.periodicspawner.randtime * 0.9

@@ -119,17 +119,6 @@ configuration_options =
 		default = "open",
 	},
 	{
-		name = "additional_experiment",
-		label = "Experiment Recipes",
-		hover = "Experience new released items",
-		options =
-		{
-			{description = "Open", data = "open"},
-			{description = "Close", data = "close"},
-		},
-		default = "open",
-	},
-	{
 		name = "weapon_uses",
 		label = "Weapon Usage times",
 		options =
@@ -208,6 +197,28 @@ configuration_options =
 			{description = "Korean", data = "korean"},
 		},
 		default = "english",
+	},
+	--[[{
+		name = "additional_experiment",
+		label = "Experiment Recipes",
+		hover = "Experience new released items",
+		options =
+		{
+			{description = "Open", data = "open"},
+			{description = "Close", data = "close"},
+		},
+		default = "open",
+	},]]
+	{
+		name = "open_beta",
+		label = "Open Beta (公测功能)",
+		hover = "Help me to test new items! (协助我测试新的物品!)",
+		options =
+		{
+			{description = "Open", data = "open"},
+			{description = "Close", data = "close"},
+		},
+		default = "close",
 	},
 	{
 		name = "dev_mode",

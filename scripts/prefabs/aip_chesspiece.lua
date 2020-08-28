@@ -1,4 +1,5 @@
-local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
+-- 公测开启
+local open_beta = aipGetModConfig("open_beta")
 
 ------------------------------------ 配置 ------------------------------------
 -- 食物关闭
@@ -153,6 +154,11 @@ local PIECES =
 		moonevent = false,
 		recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("plantmeat_cooked", 1), Ingredient("pinecone", 1)},
 		master_postinit = function(inst)
+			-- 测试版本开启
+			if open_beta ~= "open" then
+				return
+			end
+
 			-- 添加箱子能力
 			inst:AddComponent("container")
 			inst.components.container:WidgetSetup("aip_doujiang_chesspiece")
