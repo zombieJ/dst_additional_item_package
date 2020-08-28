@@ -8,17 +8,22 @@ local calculateProjectile = require("utils/aip_scepter_util")
 
 local language = aipGetModConfig("language")
 
+local BASIC_USE = TUNING.LARGE_FUEL / 10
+local MAX_USES = BASIC_USE * 10 * 5
+
 -- 文字描述
 local LANG_MAP = {
 	["english"] = {
         ["NAME"] = "Mystic Scepter",
         ["REC_DESC"] = "Customize your magic!",
-		["DESC"] = "Customize your magic!",
+        ["DESC"] = "Customize your magic!",
+        ["EMPTY"] = "No more mana!",
 	},
 	["chinese"] = {
         ["NAME"] = "神秘权杖",
         ["REC_DESC"] = "自定义你的魔法！",
-		["DESC"] = "自定义你的魔法！",
+        ["DESC"] = "自定义你的魔法！",
+        ["EMPTY"] = "权杖需要充能了",
 	},
 }
 
@@ -119,11 +124,17 @@ end
 local function onCasterUnequip(inst)
     refreshScepter(inst)
 end
--- local function onItemLoaded(inst, data)
--- end
 
--- local function onItemUnloaded(inst, data)
--- end
+-- 使用消耗
+local function beforeAction(inst, projectileInfo, doer)
+    if inst.components.fueled:IsEmpty() then
+        doer.components.talker:Say(LANG.EMPTY)
+        return false
+    end
+
+    inst.components.fueled:DoDelta(-BASIC_USE * projectileInfo.uses)
+    return true
+end
 
 local function fn()
     local inst = CreateEntity()
@@ -172,25 +183,27 @@ local function fn()
     inst:AddComponent("aipc_action")
 
     inst.components.aipc_action.onDoPointAction = function(inst, doer, point)
-        local projectile = SpawnPrefab("aip_dou_scepter_projectile")
         local projectileInfo = refreshScepter(inst)
 
-        projectile.components.aipc_projectile:StartBy(doer, projectileInfo.queue, nil, point)
+        if beforeAction(inst, projectileInfo, doer) then
+            local projectile = SpawnPrefab("aip_dou_scepter_projectile")
+            projectile.components.aipc_projectile:StartBy(doer, projectileInfo.queue, nil, point)
+        end
     end
 
     inst.components.aipc_action.onDoTargetAction = function(inst, doer, target)
-        local projectile = SpawnPrefab("aip_dou_scepter_projectile")
         local projectileInfo = refreshScepter(inst)
 
-        projectile.components.aipc_projectile:StartBy(doer, projectileInfo.queue, target)
+        if beforeAction(inst, projectileInfo, doer) then
+            local projectile = SpawnPrefab("aip_dou_scepter_projectile")
+            projectile.components.aipc_projectile:StartBy(doer, projectileInfo.queue, target)
+        end
     end
 
     -- 接受元素提炼
     inst:AddComponent("container")
     inst.components.container:WidgetSetup("aip_dou_scepter4")
     inst.components.container.canbeopened = false
-    -- inst:ListenForEvent("itemget", onItemLoaded)
-    -- inst:ListenForEvent("itemlose", onItemUnloaded)
 
     inst:AddComponent("inspectable")
 
@@ -200,6 +213,14 @@ local function fn()
     inst.components.prototyper.onturnoff = onturnoff
     -- inst.components.prototyper.onactivate = onactivate
     inst.components.prototyper.trees = TUNING.PROTOTYPER_TREES.AIP_DOU_SCEPTER_ONE
+
+    -- 需要充能
+    inst:AddComponent("fueled")
+    inst.components.fueled.fueltype = FUELTYPE.NIGHTMARE
+    inst.components.fueled:InitializeFuelLevel(MAX_USES)
+    -- inst.components.fueled:SetDepletedFn(nofuel)
+    -- inst.components.fueled:SetTakeFuelFn(ontakefuel)
+    inst.components.fueled.accepting = true
 
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_dou_scepter.xml"

@@ -33,6 +33,7 @@ end
 function calculateProjectile(items)
 	local projectileInfo = {
 		action = nil,
+		uses = 1,
 		queue = {},
 	}
 
@@ -63,11 +64,17 @@ function calculateProjectile(items)
 					group.elementCount = group.elementCount + 1
 					group.damage = group.damage + (damages[typeInfo.name] or 5)
 
+					-- 元素消耗 1 点
+					projectileInfo.uses = projectileInfo.uses + 1
+
 				elseif typeInfo.type == "action" then
 					-- 施法动作
 					group.action = typeInfo.name
 					table.insert(projectileInfo.queue, group)
 					group = nil
+
+					-- 动作消耗 2 点
+					projectileInfo.uses = projectileInfo.uses + 2
 				end
 			end
 		end
