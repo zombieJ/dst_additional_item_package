@@ -22,6 +22,9 @@ local prefabs = {}
 local function CreateTail(inst)
     local tail = createEffectVest("aip_dou_scepter_projectile", "aip_dou_scepter_projectile", "disappear")
 
+    local color = inst.components.aipc_info_client:Get("aip_projectile_color")
+    tail.AnimState:OverrideMultColour(color[1] / 10, color[2] / 10, color[3] / 10, color[4] / 10)
+
     local x, y, z = inst.Transform:GetWorldPosition()
     local speed = 15
 
@@ -63,6 +66,10 @@ local function fn()
     inst:AddTag("projectile")
     inst:AddTag("flying")
     inst:AddTag("ignorewalkableplatformdrowning")
+
+    -- 额外信息（颜色传递）
+    inst:AddComponent("aipc_info_client")
+	inst.components.aipc_info_client:SetByteArray("aip_projectile_color", nil, true)
 
     -- 客户端的特效
     if not TheNet:IsDedicated() then

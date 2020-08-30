@@ -16,11 +16,11 @@ local damages = {
 	PLANT = 5, -- 植物会用树苗包围目标
 }
 
-local defaultColor = { 1, 1, 1, 1 }
+local defaultColor = { 0.6, 0.6, 0.6, 0.1 }
 
 local colors = {
 	FIRE = { 1, 0.8, 0, 1 },
-	ICE = { 0, 0.5, 1, 1 },
+	ICE = { 0.2, 0.4, 1, 1 },
 	SAND = { 1, 0.8, 0.1, 1 },
 	HEAL = { 0, 0.8, 0.1, 1 },
 	PLANT = { 0, 0.8, 0.1, 1 },
