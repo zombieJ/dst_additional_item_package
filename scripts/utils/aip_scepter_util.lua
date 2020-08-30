@@ -16,6 +16,16 @@ local damages = {
 	PLANT = 5, -- 植物会用树苗包围目标
 }
 
+local defaultColor = { 1, 1, 1, 1 }
+
+local colors = {
+	FIRE = { 1, 0.8, 0, 1 },
+	ICE = { 0, 0.5, 1, 1 },
+	SAND = { 1, 0.8, 0.1, 1 },
+	HEAL = { 0, 0.8, 0.1, 1 },
+	PLANT = { 0, 0.8, 0.1, 1 },
+}
+
 local function getType(item)
 	local type = categories[item._douTag]
 	return { name = item._douTag, type = type }
@@ -27,6 +37,7 @@ local function createGroup()
 		element = nil,
 		elementCount = 0,
 		damage = 5,
+		color = defaultColor,
 	}
 end
 
@@ -63,6 +74,7 @@ function calculateProjectile(items)
 					group.element = typeInfo.name
 					group.elementCount = group.elementCount + 1
 					group.damage = group.damage + (damages[typeInfo.name] or 5)
+					group.color = colors[typeInfo.name] or defaultColor
 
 					-- 元素消耗 1 点
 					projectileInfo.uses = projectileInfo.uses + 1

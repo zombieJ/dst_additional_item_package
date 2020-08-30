@@ -56,7 +56,7 @@ local function fn()
     inst.AnimState:SetBank("aip_dou_scepter_projectile")
     inst.AnimState:SetBuild("aip_dou_scepter_projectile")
     inst.AnimState:PlayAnimation("idle", true)
-    inst.AnimState:OverrideMultColour(1, 0.8, 0, 1)
+    -- inst.AnimState:OverrideMultColour(1, 0.8, 0, 1)
     -- inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
 
     --projectile (from projectile component) added to pristine state for optimization

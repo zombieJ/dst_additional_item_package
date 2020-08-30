@@ -168,6 +168,10 @@ function Projectile:CalculateTask(nextOne)
 		return
 	end
 
+	-- 重置颜色
+	local color = task.color
+	self.inst.AnimState:OverrideMultColour(color[1], color[2], color[3], color[4])
+
 	-- 如果是后续的任务需要重新计算一下相关距离
 	if nextOne then
 		-- 重置位置
