@@ -20,9 +20,12 @@ local prefabs = {}
 
 --------------------------------- 实体 ---------------------------------
 local function CreateTail(inst)
-    local tail = createEffectVest("aip_dou_scepter_projectile", "aip_dou_scepter_projectile", "disappear")
-
     local color = inst.components.aipc_info_client:Get("aip_projectile_color")
+    if not color or #color < 4 then
+        return nil
+    end
+
+    local tail = createEffectVest("aip_dou_scepter_projectile", "aip_dou_scepter_projectile", "disappear")
     tail.AnimState:OverrideMultColour(color[1] / 10, color[2] / 10, color[3] / 10, color[4] / 10)
 
     local x, y, z = inst.Transform:GetWorldPosition()
@@ -40,7 +43,6 @@ local function CreateTail(inst)
 end
 
 local function OnUpdateProjectileTail(inst)
-    -- 
     if inst.entity:IsVisible() then
         local tail = CreateTail(inst)
     end
@@ -59,7 +61,6 @@ local function fn()
     inst.AnimState:SetBank("aip_dou_scepter_projectile")
     inst.AnimState:SetBuild("aip_dou_scepter_projectile")
     inst.AnimState:PlayAnimation("idle", true)
-    -- inst.AnimState:OverrideMultColour(1, 0.8, 0, 1)
     -- inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
 
     --projectile (from projectile component) added to pristine state for optimization
@@ -73,7 +74,7 @@ local function fn()
 
     -- 客户端的特效
     if not TheNet:IsDedicated() then
-        inst:DoPeriodicTask(0, OnUpdateProjectileTail, nil)
+        inst.tailPeriodTask = inst:DoPeriodicTask(0, OnUpdateProjectileTail)
     end
 
     inst.entity:SetPristine()
