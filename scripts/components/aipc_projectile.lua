@@ -159,79 +159,6 @@ function Projectile:CleanUp()
 	self.inst:Remove()
 end
 
-function Projectile:CalculateTask(nextOne)
-	local task = self.queue[1]
-	table.remove(self.queue, 1)
-
-	if task == nil then
-		self:CleanUp()
-		return
-	end
-
-	-- 重置颜色
-	local color = task.color
-	self.inst.AnimState:OverrideMultColour(color[1], color[2], color[3], color[4])
-	self.inst.components.aipc_info_client:SetByteArray("aip_projectile_color", { color[1] * 10, color[2] * 10, color[3] * 10, color[4] * 10 })
-
-	-- 如果是后续的任务需要重新计算一下相关距离
-	if nextOne then
-		-- 重置位置
-		self.inst.Physics:Teleport(self.targetPos.x, self.targetPos.y, self.targetPos.z)
-
-		local diffX = self.targetPos.x - self.sourcePos.x
-		local diffZ = self.targetPos.z - self.sourcePos.z
-
-		self.source = self.target
-		self.sourcePos = self.targetPos
-
-		if task.action == "AREA" then
-			-- 圈会在释放点后一定的距离再次释放，最多不超过 4 格距离
-			self.target = nil
-			self.targetPos = Vector3(self.targetPos.x + math.min(4, diffX / 2), self.targetPos.y, self.targetPos.z + math.min(4, diffZ / 2))
-		elseif task.action == "FOLLOW" then
-			-- 跟踪是不知道下一个目标的，所以在施法距离内随机选一个符合要求的目标
-			local ents = self:FindEntities(task.element, self.sourcePos, 8)
-
-			-- 优先寻找靠中间的且不是原来的目标的以展示弹道
-			local bestTarget = nil
-			local bestDistance = 999999
-
-			for i, prefab in ipairs(ents) do
-				local prefabPos = prefab:GetPosition()
-				local dst = math.abs(distsq(self.targetPos.x, self.targetPos.z, prefabPos.x, prefabPos.z) - 4)
-				if prefab ~= self.target and dst < bestDistance then
-					bestTarget = prefab
-					bestDistance = dst
-				end
-			end
-
-			if bestTarget == nil and self.target ~= nil then
-				bestTarget = self.target
-			end
-
-			-- 附近没有新目标，结束施法
-			if bestTarget == nil then
-				self:CleanUp()
-				return
-			end
-
-			self.target = bestTarget
-			self.targetPos = self.target:GetPosition()
-		end
-	end
-
-	self.task = task
-	self.diffTime = 0
-	self.affectedEntities = {}
-	self.inst.AnimState:SetMultColour(1, 1, 1, 1)
-
-	if isLine(self.task.action) then
-		self.distance = 10
-	elseif self.task.action == "AREA" then
-		self.inst.AnimState:SetMultColour(0, 0, 0, 0)
-	end
-end
-
 function Projectile:FindEntities(element, pos, radius)
 	local filteredEnts = {}
 	local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, radius or 2, COMBAT_TAGS, NO_TAGS)
@@ -258,6 +185,90 @@ function Projectile:RotateToTarget(dest)
 	local angle = math.acos(direction:Dot(Vector3(1, 0, 0))) / DEGREES
 	self.inst.Transform:SetRotation(angle)
 	self.inst:FacePoint(dest)
+end
+
+---------------------------------------- 计算任务 ----------------------------------------
+function Projectile:DoNextTask()
+	local newQueue = {}
+
+	-- 复制一份
+	for i = 2, #self.queue do
+		local task = self.queue[i]
+		table.insert(newQueue, task)
+	end
+
+	if #newQueue >= 1 then
+		local nextTask = newQueue[1]
+		local nextProjectile = SpawnPrefab("aip_dou_scepter_projectile")
+		local nextPos = nil
+		local nextTarget = nil
+
+		local diffX = self.targetPos.x - self.sourcePos.x
+		local diffZ = self.targetPos.z - self.sourcePos.z
+
+		if nextTask.action == "AREA" then
+			-- 圈会在释放点后一定的距离再次释放，最多不超过 4 格距离
+			nextPos = Vector3(self.targetPos.x + math.min(4, diffX / 2), self.targetPos.y, self.targetPos.z + math.min(4, diffZ / 2))
+		elseif nextTask.action == "FOLLOW" then
+			-- 跟踪是不知道下一个目标的，所以在施法距离内随机选一个符合要求的目标
+			local ents = self:FindEntities(nextTask.element, self.targetPos, 8)
+
+			-- 优先寻找靠中间的且不是原来的目标的以展示弹道
+			local bestTarget = nil
+			local bestDistance = 999999
+
+			for i, prefab in ipairs(ents) do
+				local prefabPos = prefab:GetPosition()
+				local dst = math.abs(distsq(self.targetPos.x, self.targetPos.z, prefabPos.x, prefabPos.z) - 4)
+				if prefab ~= self.target and dst < bestDistance then
+					bestTarget = prefab
+					bestDistance = dst
+				end
+			end
+
+			if bestTarget == nil and self.target ~= nil then
+				bestTarget = self.target
+			end
+
+			-- 附近没有新目标，结束施法
+			if bestTarget == nil then
+				self:CleanUp()
+				return
+			end
+
+			nextTarget = bestTarget
+			nextPos = self.target:GetPosition()
+		end
+
+		nextProjectile.components.aipc_projectile:StartBy(self.doer, newQueue, nextTarget, nextPos)
+	end
+
+	self:CleanUp()
+end
+
+function Projectile:CalculateTask()
+	local task = self.queue[1]
+
+	if task == nil then
+		self:CleanUp()
+		return
+	end
+
+	-- 重置颜色
+	local color = task.color
+	self.inst.AnimState:OverrideMultColour(color[1], color[2], color[3], color[4])
+	self.inst.components.aipc_info_client:SetByteArray("aip_projectile_color", { color[1] * 10, color[2] * 10, color[3] * 10, color[4] * 10 })
+
+	self.task = task
+	self.diffTime = 0
+	self.affectedEntities = {}
+	self.inst.AnimState:SetMultColour(1, 1, 1, 1)
+
+	if isLine(self.task.action) then
+		self.distance = 10
+	elseif self.task.action == "AREA" then
+		self.inst.AnimState:SetMultColour(0, 0, 0, 0)
+	end
 end
 
 function Projectile:StartBy(doer, queue, target, targetPos)
@@ -291,6 +302,7 @@ function Projectile:StartBy(doer, queue, target, targetPos)
 	self.inst:StartUpdatingComponent(self)
 end
 
+---------------------------------------- 效果执行 ----------------------------------------
 function Projectile:EffectTaskOn(target)
 	local doEffect = false
 	-- 治疗
@@ -415,7 +427,7 @@ function Projectile:OnUpdate(dt)
 	end
 
 	if finishTask then
-		self:CalculateTask(true)
+		self:DoNextTask()
 	end
 
 	self.cachePos = currentPos
