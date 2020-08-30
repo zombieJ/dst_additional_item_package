@@ -240,7 +240,7 @@ function Projectile:DoNextTask()
 			nextPos = self.target:GetPosition()
 		end
 
-		nextProjectile.components.aipc_projectile:StartBy(self.doer, newQueue, nextTarget, nextPos)
+		nextProjectile.components.aipc_projectile:StartBy(self.doer, newQueue, nextTarget, nextPos, self.targetPos)
 	end
 
 	self:CleanUp()
@@ -271,12 +271,12 @@ function Projectile:CalculateTask()
 	end
 end
 
-function Projectile:StartBy(doer, queue, target, targetPos)
+function Projectile:StartBy(doer, queue, target, targetPos, replaceSourcePos)
 	self.inst.Physics:ClearCollidesWith(COLLISION.LIMITS)
 	self.doer = doer
 	self.queue = queue
 	self.source = doer
-	self.sourcePos = doer:GetPosition()
+	self.sourcePos = replaceSourcePos or doer:GetPosition()
 	self.target = target
 	self.targetPos = targetPos
 	self.cachePos = doer:GetPosition()
