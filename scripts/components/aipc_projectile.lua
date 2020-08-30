@@ -237,7 +237,7 @@ function Projectile:DoNextTask()
 			end
 
 			nextTarget = bestTarget
-			nextPos = self.target:GetPosition()
+			nextPos = nextTarget:GetPosition()
 		end
 
 		nextProjectile.components.aipc_projectile:StartBy(self.doer, newQueue, nextTarget, nextPos, self.targetPos)
