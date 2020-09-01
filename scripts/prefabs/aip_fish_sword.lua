@@ -78,16 +78,14 @@ aip_fish_sword.atlas = "images/inventoryimages/aip_fish_sword.xml"
 
 -----------------------------------------------------------
 
-local function UpdateDamage(inst)
+local function calcDamage(inst, attacker, target)
 	if inst.components.perishable and inst.components.weapon then
 		local dmg = TUNING.AIP_FISH_SWORD_DAMAGE * inst.components.perishable:GetPercent()
 		dmg = Remap(dmg, 0, TUNING.AIP_FISH_SWORD_DAMAGE, TUNING.HAMBAT_MIN_DAMAGE_MODIFIER*TUNING.AIP_FISH_SWORD_DAMAGE, TUNING.AIP_FISH_SWORD_DAMAGE)
-		inst.components.weapon:SetDamage(dmg)
+		return dmg
 	end
-end
 
-local function OnLoad(inst, data)
-	UpdateDamage(inst)
+	return TUNING.HAMBAT_MIN_DAMAGE_MODIFIER * TUNING.AIP_FISH_SWORD_DAMAGE
 end
 
 local function onequip(inst, owner)
@@ -131,8 +129,7 @@ function fn()
 	inst.components.perishable.onperishreplacement = "spoiled_food"
 
 	inst:AddComponent("weapon")
-	inst.components.weapon:SetDamage(TUNING.AIP_FISH_SWORD_DAMAGE)
-	inst.components.weapon:SetOnAttack(UpdateDamage)
+	inst.components.weapon:SetDamage(calcDamage)
 
 	inst.OnLoad = OnLoad
 
