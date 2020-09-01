@@ -12,7 +12,10 @@
 			tag: string - 指定免疫的单位类型
 		},
 		waterproofer: bool,
-		dapperness: number - 恢复理智值,
+		dapperness: number - 恢复理智值
+
+		onEquip(inst, owner)
+		onUnequip(inst, owner)
 	}
 ]]
 
@@ -49,6 +52,10 @@ local function template(name, config)
 		if inst.components.fueled ~= nil then
 			inst.components.fueled:StartConsuming()
 		end
+
+		if config.onEquip ~= nil then
+			config.onEquip(inst, owner)
+		end
 	end
 
 	local function onunequip(inst, owner)
@@ -70,6 +77,10 @@ local function template(name, config)
 
 		if inst.components.fueled ~= nil then
 			inst.components.fueled:StopConsuming()
+		end
+
+		if config.onUnequip ~= nil then
+			config.onUnequip(inst, owner)
 		end
 	end
 

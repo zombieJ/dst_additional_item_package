@@ -44,4 +44,11 @@ return tempalte("aip_som", {
 		level = TUNING.AIP_SOM_FUEL,
 	},
 	dapperness = TUNING.DAPPERNESS_LARGE,
+
+	onEquip = function(inst, owner)
+		-- 添加光环
+	end,
+	onUnequip = function(inst, owner)
+		-- 移除光环
+	end,
 })
