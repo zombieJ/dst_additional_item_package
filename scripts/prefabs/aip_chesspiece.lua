@@ -148,6 +148,7 @@ local MATERIALS =
 {
 	{name="marble",		prefab="marble"},
 	{name="stone",		prefab="cutstone"},
+	{name="moonglass",	prefab="moonglass"},
 }
 
 local PHYSICS_RADIUS = .45

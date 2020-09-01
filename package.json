@@ -4,10 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dist": "node ./dist.js",
-    "dist-test": "node ./dist.js --target='../aip_output'",
+    "dist": "node ./tools-scripts/dist.js",
+    "dist-test": "node ./tools-scripts/dist.js --target='../aip_output'",
     "gen:preview": "node gen/foodPreview",
     "gen:seed": "node gen/veggie",
+    "ktech": "node ./tools-scripts/ktech.js",
+    "krane": "node ./tools-scripts/krane.js",
     "init": "node gen/init",
     "compile": "node gen/init --compile"
   },

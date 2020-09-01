@@ -17,10 +17,12 @@ PrefabFiles =
 	"aip_nectar_maker",
 	"aip_nectar",
 
+	-- Weapon
 	"popcorngun",
 	"aip_blood_package",
 	"aip_fish_sword",
 	"aip_beehave",
+	"aip_oar_woodead",
 
 	-- Building
 	"incinerator",
@@ -32,6 +34,7 @@ PrefabFiles =
 
 	-- Dress
 	"aip_dress",
+	"aip_armor_gambler",
 
 	-- Chesspiece
 	"aip_chesspiece",
@@ -46,6 +49,9 @@ PrefabFiles =
 
 --------------------------------------- 工具 ---------------------------------------
 modimport("scripts/aipUtils.lua")
+
+------------------------------------- 组件钩子 -------------------------------------
+modimport("scripts/componentsHooker.lua")
 
 --------------------------------------- 图标 ---------------------------------------
 AddMinimapAtlas("minimap/dark_observer_vest.xml")
@@ -87,6 +93,7 @@ AddPrefabPostInit("bearger", function(inst) ShadowFollowerPrefabPostInit(inst) e
 AddPrefabPostInit("moose", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 麋鹿鹅
 AddPrefabPostInit("beequeen", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 蜂后
 AddPrefabPostInit("klaus", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 克劳斯
+AddPrefabPostInit("klaus_sack", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 克劳斯袋子
 AddPrefabPostInit("antlion", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 蚁狮
 AddPrefabPostInit("toadstool", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 蟾蜍王
 AddPrefabPostInit("toadstool_dark", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 苦难蟾蜍王
