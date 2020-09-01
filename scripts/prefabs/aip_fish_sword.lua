@@ -82,7 +82,7 @@ local function calcDamage(inst, attacker, target)
 	local MAX_DAMAGE = TUNING.AIP_FISH_SWORD_DAMAGE
 	local MIN_DAMAGE = TUNING.HAMBAT_MIN_DAMAGE_MODIFIER * MAX_DAMAGE
 
-	if attacker:IsOnOcean(true) then
+	if attacker ~= nil and attacker:IsOnOcean(true) then
 		return MAX_DAMAGE
 	elseif inst.components.perishable and inst.components.weapon then
 		local dmg = MAX_DAMAGE * inst.components.perishable:GetPercent()
@@ -135,8 +135,6 @@ function fn()
 
 	inst:AddComponent("weapon")
 	inst.components.weapon:SetDamage(calcDamage)
-
-	inst.OnLoad = OnLoad
 
 	inst:AddComponent("inspectable")
 
