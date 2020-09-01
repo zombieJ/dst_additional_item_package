@@ -26,7 +26,7 @@ local LANG_MAP = {
 	["english"] = {
 		["NAME"] = "Fish Sword",
 		["REC_DESC"] = "Fish is best friend!",
-		["DESC"] = "Too hunger to eat it",
+		["DESC"] = "Strong in the ocean",
 	},
 	["russian"] = {
 		["NAME"] = "Рыбный меч",
@@ -46,7 +46,7 @@ local LANG_MAP = {
 	["chinese"] = {
 		["NAME"] = "鱼刀",
 		["REC_DESC"] = "鱼是最好的朋友！",
-		["DESC"] = "即便很饿也不能吃掉它",
+		["DESC"] = "在海上始终强力",
 	},
 }
 
@@ -79,13 +79,18 @@ aip_fish_sword.atlas = "images/inventoryimages/aip_fish_sword.xml"
 -----------------------------------------------------------
 
 local function calcDamage(inst, attacker, target)
-	if inst.components.perishable and inst.components.weapon then
-		local dmg = TUNING.AIP_FISH_SWORD_DAMAGE * inst.components.perishable:GetPercent()
-		dmg = Remap(dmg, 0, TUNING.AIP_FISH_SWORD_DAMAGE, TUNING.HAMBAT_MIN_DAMAGE_MODIFIER*TUNING.AIP_FISH_SWORD_DAMAGE, TUNING.AIP_FISH_SWORD_DAMAGE)
+	local MAX_DAMAGE = TUNING.AIP_FISH_SWORD_DAMAGE
+	local MIN_DAMAGE = TUNING.HAMBAT_MIN_DAMAGE_MODIFIER * MAX_DAMAGE
+
+	if attacker:IsOnOcean(true) then
+		return MAX_DAMAGE
+	elseif inst.components.perishable and inst.components.weapon then
+		local dmg = MAX_DAMAGE * inst.components.perishable:GetPercent()
+		dmg = Remap(dmg, 0, MAX_DAMAGE, MIN_DAMAGE, MAX_DAMAGE)
 		return dmg
 	end
 
-	return TUNING.HAMBAT_MIN_DAMAGE_MODIFIER * TUNING.AIP_FISH_SWORD_DAMAGE
+	return MIN_DAMAGE
 end
 
 local function onequip(inst, owner)
