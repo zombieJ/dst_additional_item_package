@@ -36,8 +36,7 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SOM = LANG.DESC
 local CHARACTER_CAN_TAGS = { "player" }
 local CHARACTER_CANT_TAGS = { "INLIMBO", "NOCLICK", "flying", "ghost" }
 
-local refreshInterval = 0.2
-local sanityPerSec = 0.1
+local refreshInterval = 0.1
 
 local tempalte = require("prefabs/aip_dress_template")
 return tempalte("aip_som", {
@@ -45,26 +44,39 @@ return tempalte("aip_som", {
 	fueled = {
 		level = TUNING.AIP_SOM_FUEL,
 	},
-	-- dapperness = TUNING.DAPPERNESS_LARGE,
+	dapperness = TUNING.DAPPERNESS_TINY,
 
 	onEquip = function(inst, owner)
 		-- 添加光环
-		inst._auraTask = inst:DoPeriodicTask(refreshInterval, function()
-			if owner.components.health ~= nil and not owner.components.health:IsDead() then
-				local x, y, z = owner.Transform:GetWorldPosition()
-				local players = TheSim:FindEntities(x, y, z, 8, CHARACTER_CAN_TAGS, CHARACTER_CANT_TAGS)
+		local follower = CreateEntity()
 
-				for i, player in ipairs(players) do
-					if player.components.sanity ~= nil then
-						player.components.sanity:DoDelta(sanityPerSec * refreshInterval, true)
-					end
-				end
-			end
+		follower.entity:AddTransform()
+		follower.entity:AddAnimState()
+		follower.entity:AddNetwork()
+
+		MakeInventoryPhysics(follower)
+		RemovePhysicsColliders(follower)
+		
+		follower.entity:SetPristine()
+
+		if not TheWorld.ismastersim then
+			return
+		end
+
+		follower.persists = false
+		follower:AddComponent("sanityaura")
+		follower.components.sanityaura.aura = TUNING.DAPPERNESS_LARGE
+
+		inst._follower = follower
+
+		inst._auraTask = inst:DoPeriodicTask(refreshInterval, function()
+			follower.Transform:SetPosition(owner.Transform:GetWorldPosition())
 		end)
 	end,
 	onUnequip = function(inst, owner)
 		-- 移除光环
 		inst._auraTask:Cancel()
 		inst._auraTask = nil
+		inst._follower:Remove()
 	end,
 })
