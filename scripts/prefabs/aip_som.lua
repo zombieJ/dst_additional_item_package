@@ -33,9 +33,11 @@ STRINGS.NAMES.AIP_SOM = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_SOM = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SOM = LANG.DESC
 
--- 配方
--- local aip_horse_head = Recipe("aip_horse_head", {Ingredient("beefalowool", 5),Ingredient("boneshard", 3),Ingredient("beardhair", 3)}, RECIPETABS.DRESS, TECH.SCIENCE_TWO)
--- aip_horse_head.atlas = "images/inventoryimages/aip_horse_head.xml"
+local CHARACTER_CAN_TAGS = { "player" }
+local CHARACTER_CANT_TAGS = { "INLIMBO", "NOCLICK", "flying", "ghost" }
+
+local refreshInterval = 0.2
+local sanityPerSec = 0.1
 
 local tempalte = require("prefabs/aip_dress_template")
 return tempalte("aip_som", {
@@ -43,12 +45,26 @@ return tempalte("aip_som", {
 	fueled = {
 		level = TUNING.AIP_SOM_FUEL,
 	},
-	dapperness = TUNING.DAPPERNESS_LARGE,
+	-- dapperness = TUNING.DAPPERNESS_LARGE,
 
 	onEquip = function(inst, owner)
 		-- 添加光环
+		inst._auraTask = inst:DoPeriodicTask(refreshInterval, function()
+			if owner.components.health ~= nil and not owner.components.health:IsDead() then
+				local x, y, z = owner.Transform:GetWorldPosition()
+				local players = TheSim:FindEntities(x, y, z, 8, CHARACTER_CAN_TAGS, CHARACTER_CANT_TAGS)
+
+				for i, player in ipairs(players) do
+					if player.components.sanity ~= nil then
+						player.components.sanity:DoDelta(sanityPerSec * refreshInterval, true)
+					end
+				end
+			end
+		end)
 	end,
 	onUnequip = function(inst, owner)
 		-- 移除光环
+		inst._auraTask:Cancel()
+		inst._auraTask = nil
 	end,
 })
