@@ -4,7 +4,7 @@ local assets =
 	Asset("ANIM", "anim/staff_projectile.zip"),
 }
 
-local function fn()
+function fn()
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()
@@ -14,14 +14,10 @@ local function fn()
 	MakeInventoryPhysics(inst)
 	RemovePhysicsColliders(inst)
 
-	inst.AnimState:SetBank("projectile")
-	inst.AnimState:SetBuild("staff_projectile")
-	inst.AnimState:PlayAnimation("fire_spin_loop")
-	
 	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
-		return
+		return inst
 	end
 
 	inst.persists = false
