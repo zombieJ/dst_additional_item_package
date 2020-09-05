@@ -8,7 +8,7 @@ elseif survival_effect == "large" then
   gamblerChance = .99
 end
 
-local ARMOR = TUNING.ARMORWOOD / 450 * 400;
+local ARMOR = TUNING.ARMORWOOD / 450 * 1250;
 local ARMO_ABSORPTION = TUNING.ARMORWOOD_ABSORPTION / .8 * .7;
 
 local LANG_MAP = {
@@ -43,7 +43,7 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_ARMOR_GAMBLER = LANG.DESC
 
 -- 配方
 local aip_armor_gambler = Recipe("aip_armor_gambler", {
-    Ingredient("papyrus", 3),
+    Ingredient("papyrus", 6),
     Ingredient("nightmarefuel", 1),
     Ingredient("rope", 1)
   },

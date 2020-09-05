@@ -1,5 +1,8 @@
 --[[
 	config: {
+		prefabs, -- 额外关联实体
+
+
 		keepHead: bool, - 保留原始头部
 		hideHead: bool,
 		walkspeedmult: number - 移动速度增加,
@@ -12,7 +15,10 @@
 			tag: string - 指定免疫的单位类型
 		},
 		waterproofer: bool,
-		dapperness: number - 恢复理智值,
+		dapperness: number - 恢复理智值
+
+		onEquip(inst, owner)
+		onUnequip(inst, owner)
 	}
 ]]
 
@@ -23,10 +29,6 @@ local function template(name, config)
 		Asset("ATLAS", "images/inventoryimages/"..name..".xml"),
 		Asset("IMAGE", "images/inventoryimages/"..name..".tex"),
 		Asset("ANIM", "anim/"..name..".zip"),
-	}
-
-	local prefabs =
-	{
 	}
 
 	local function onequip(inst, owner)
@@ -49,6 +51,10 @@ local function template(name, config)
 		if inst.components.fueled ~= nil then
 			inst.components.fueled:StartConsuming()
 		end
+
+		if config.onEquip ~= nil then
+			config.onEquip(inst, owner)
+		end
 	end
 
 	local function onunequip(inst, owner)
@@ -70,6 +76,10 @@ local function template(name, config)
 
 		if inst.components.fueled ~= nil then
 			inst.components.fueled:StopConsuming()
+		end
+
+		if config.onUnequip ~= nil then
+			config.onUnequip(inst, owner)
 		end
 	end
 
@@ -142,7 +152,7 @@ local function template(name, config)
 		return inst
 	end
 
-	return Prefab(name, fn, assets, prefabs)
+	return Prefab(name, fn, assets, config.prefabs)
 end
 
 return template
