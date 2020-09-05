@@ -32,6 +32,7 @@
     "xml2js": "^0.4.19"
   },
   "devDependencies": {
+    "archiver": "^5.0.0",
     "chalk": "^2.4.2",
     "yargs": "^13.3.2"
   }

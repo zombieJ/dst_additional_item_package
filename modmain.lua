@@ -12,7 +12,7 @@ Assets =
 PrefabFiles =
 {
 	-- vest
-	-- "aip_vest",
+	"aip_vest",
 
 	-- Food
 	"aip_veggies",
