@@ -40,6 +40,7 @@ local refreshInterval = 0.1
 
 local tempalte = require("prefabs/aip_dress_template")
 return tempalte("aip_som", {
+	-- prefabs = { "aip_vest" },
 	hideHead = true,
 	fueled = {
 		level = TUNING.AIP_SOM_FUEL,
@@ -48,35 +49,21 @@ return tempalte("aip_som", {
 
 	onEquip = function(inst, owner)
 		-- 添加光环
-		local follower = CreateEntity()
+		-- local follower = SpawnPrefab("aip_vest")
 
-		follower.entity:AddTransform()
-		follower.entity:AddAnimState()
-		follower.entity:AddNetwork()
+		-- follower:AddComponent("sanityaura")
+		-- follower.components.sanityaura.aura = TUNING.DAPPERNESS_LARGE
 
-		MakeInventoryPhysics(follower)
-		RemovePhysicsColliders(follower)
-		
-		follower.entity:SetPristine()
+		-- inst._follower = follower
 
-		if not TheWorld.ismastersim then
-			return
-		end
-
-		follower.persists = false
-		follower:AddComponent("sanityaura")
-		follower.components.sanityaura.aura = TUNING.DAPPERNESS_LARGE
-
-		inst._follower = follower
-
-		inst._auraTask = inst:DoPeriodicTask(refreshInterval, function()
-			follower.Transform:SetPosition(owner.Transform:GetWorldPosition())
-		end)
+		-- inst._auraTask = inst:DoPeriodicTask(refreshInterval, function()
+		-- 	follower.Transform:SetPosition(owner.Transform:GetWorldPosition())
+		-- end)
 	end,
 	onUnequip = function(inst, owner)
 		-- 移除光环
-		inst._auraTask:Cancel()
-		inst._auraTask = nil
-		inst._follower:Remove()
+		-- inst._auraTask:Cancel()
+		-- inst._auraTask = nil
+		-- inst._follower:Remove()
 	end,
 })

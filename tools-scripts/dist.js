@@ -48,8 +48,19 @@ if (argv.target) {
 	const relativePath = path.resolve(argv.target);
 	console.log(chalk.green(`Copy generated package to '${relativePath}'`));
 
-	console.log(chalk.yellow("Clean up..."));
-	fs.removeSync(relativePath);
+	console.log(chalk.yellow("Clean up target..."));
+	try {
+		fs.removeSync(relativePath);
+	} catch(e) {
+		console.error(e);
+		console.log(chalk.yellow("Remove folder failed. Clean up content instead..."));
+		const targetFiles = fs.readdirSync(relativePath);
+		targetFiles.forEach((file) => {
+			const targetFile = path.join(relativePath, file);
+			console.log('- Remove:', targetFile);
+			fs.removeSync(targetFile);
+		});
+	}
 
 	console.log(chalk.cyan("Copy package..."));
 	fs.copySync('package', relativePath);

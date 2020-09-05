@@ -11,6 +11,9 @@ Assets =
 -- 物品列表
 PrefabFiles =
 {
+	-- vest
+	-- "aip_vest",
+
 	-- Food
 	"aip_veggies",
 	"foods",
