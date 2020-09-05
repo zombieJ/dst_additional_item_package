@@ -33,9 +33,6 @@ STRINGS.NAMES.AIP_SOM = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_SOM = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SOM = LANG.DESC
 
-local CHARACTER_CAN_TAGS = { "player" }
-local CHARACTER_CANT_TAGS = { "INLIMBO", "NOCLICK", "flying", "ghost" }
-
 local refreshInterval = 0.1
 
 local tempalte = require("prefabs/aip_dress_template")
