@@ -4,6 +4,7 @@ package
 node_modules
 __STEAM__
 exported/*/*.zip
+exported/**/aip_armor_gambler.zip
 *.tmp
 tmp/
 .DS_Store
