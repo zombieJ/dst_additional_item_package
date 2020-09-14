@@ -286,7 +286,7 @@ function Projectile:StartBy(doer, queue, target, targetPos, replaceSourcePos)
 	end
 
 	-- 设置位置
-	local x, y, z = doer.Transform:GetWorldPosition()
+	local x, y, z = self.sourcePos:Get()
 	local facing_angle = doer.Transform:GetRotation() * DEGREES
 	self.inst.Physics:Teleport(x + self.launchoffset.x * math.cos(facing_angle), y + self.launchoffset.y, z - self.launchoffset.x * math.sin(facing_angle))
 
