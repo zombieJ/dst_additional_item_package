@@ -2,13 +2,27 @@ local COMBAT_TAGS = { "_combat" }
 -- local NO_TAGS = { "player" }
 local NO_TAGS = nil
 
-local FLOWERS = { "stalker_bulb", "stalker_berry", "stalker_fern" }
+-- local FLOWERS = { "stalker_bulb", "stalker_berry", "stalker_fern" }
+local FLOWERS = { 1, 2, 3, 4 }
 
 local function SpawnFlower(index)
-	local flower = SpawnPrefab(FLOWERS[math.fmod(index, #FLOWERS) + 1])
-	flower.Transform:SetScale(0.7, 0.7, 0.7)
-	flower:AddTag("NOCLICK")
+	-- local flower = SpawnPrefab(FLOWERS[math.fmod(index, #FLOWERS) + 1])
+	-- flower.Transform:SetScale(0.7, 0.7, 0.7)
+	-- flower:AddTag("NOCLICK")
+	-- return flower
+	local flower = SpawnPrefab("wormwood_plant_fx")
+	local rnd = FLOWERS[math.fmod(index, #FLOWERS) + 1]
+	flower:SetVariation(rnd)
 	return flower
+end
+
+local function SpawnFlowers(point, dest, count, flowerIndex)
+	for i = 1, count do
+		local flower = SpawnFlower(flowerIndex + i)
+		local angle = 2 * PI / count * i
+		local distance = dest + math.random() / 2
+		flower.Transform:SetPosition(point.x + math.cos(angle) * distance, 0, point.z + math.sin(angle) * distance)
+	end
 end
 
 local function include(table, value)
@@ -63,12 +77,11 @@ local function ShowEffect(element, point, targetEffect)
 			local aip_sanity_fx = SpawnPrefab("aip_sanity_fx")
 			aip_sanity_fx.Transform:SetPosition(point.x, 0, point.z)
 
-			for i = 1, 8 do
-				local flower = SpawnFlower(flowerIndex + i)
-				local angle = 2 * PI / 8 * i
-				local distance = 1.5 + math.random() / 2
-				flower.Transform:SetPosition(point.x + math.cos(angle) * distance, 0, point.z + math.sin(angle) * distance)
-			end
+			-- 最远的花
+			SpawnFlowers(point, 1.5, 8, flowerIndex + 1)
+
+			-- 中间的花
+			SpawnFlowers(point, 0.5, 5, flowerIndex + 9)
 		end
 	else
 		prefab = SpawnPrefab("collapse_small")
@@ -238,6 +251,9 @@ function Projectile:DoNextTask()
 
 			nextTarget = bestTarget
 			nextPos = nextTarget:GetPosition()
+		else
+			-- 直线目标
+			nextPos = Vector3(self.targetPos.x + diffX, self.targetPos.y, self.targetPos.z + diffZ)
 		end
 
 		nextProjectile.components.aipc_projectile:StartBy(self.doer, newQueue, nextTarget, nextPos, self.targetPos)

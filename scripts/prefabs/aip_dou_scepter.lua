@@ -49,6 +49,7 @@ local assets = {
 
 local prefabs = {
     "aip_dou_scepter_projectile",
+    "wormwood_plant_fx",
 }
 
 --------------------------------- 配方 ---------------------------------

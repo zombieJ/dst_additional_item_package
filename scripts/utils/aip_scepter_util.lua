@@ -22,8 +22,8 @@ local colors = {
 	FIRE = { 1, 0.8, 0, 1 },
 	ICE = { 0.2, 0.4, 1, 1 },
 	SAND = { 1, 0.8, 0.1, 1 },
-	HEAL = { 0, 0.8, 0.1, 1 },
-	PLANT = { 0, 0.8, 0.1, 1 },
+	HEAL = { 0, 0.6, 0.1, 0.5 },
+	PLANT = { 0, 0.6, 0.1, 0.5 },
 }
 
 local function getType(item)
