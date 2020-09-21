@@ -31,13 +31,20 @@ local function getType(item)
 	return { name = item._douTag, type = type }
 end
 
-local function createGroup()
+local function createGroup(prevGrp)
+	local prev = prevGrp or {}
+
 	return {
+		-- 施法行为
 		action = nil,
-		element = nil,
+		-- 元素类型
+		element = prev.element or nil,
+		-- 元素叠加数量
 		elementCount = 0,
-		damage = 5,
-		color = defaultColor,
+		-- 伤害
+		damage = prev.damage or 5,
+		-- 颜色
+		color = prev.color or defaultColor,
 	}
 end
 
@@ -57,10 +64,11 @@ function calculateProjectile(items)
 		projectileInfo.queue = { createGroup() }
 	else
 		local group = nil
+		local prevGroup = nil
 
 		for i, item in pairs(items) do
 			if group == nil then
-				group = createGroup()
+				group = createGroup(prevGroup)
 			end
 
 			if item ~= nil then
@@ -83,6 +91,7 @@ function calculateProjectile(items)
 					-- 施法动作
 					group.action = typeInfo.name
 					table.insert(projectileInfo.queue, group)
+					prevGroup = group
 					group = nil
 
 					-- 动作消耗 2 点
