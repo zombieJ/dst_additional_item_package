@@ -76,6 +76,8 @@ function calculateProjectile(items)
 
 			if item ~= nil then
 				local typeInfo = getType(item)
+				local damage = group.damage + (damages[typeInfo.name] or 5)
+
 				if typeInfo.type == "element" then
 					-- 元素类型
 					if group.element ~= typeInfo.name then
@@ -84,18 +86,21 @@ function calculateProjectile(items)
 					
 					group.element = typeInfo.name
 					group.elementCount = group.elementCount + 1
-					group.damage = group.damage + (damages[typeInfo.name] or 5)
+					group.damage = group.damage + damage
 					group.color = colors[typeInfo.name] or defaultColor
 
 					-- 元素消耗 1 点
 					projectileInfo.uses = projectileInfo.uses + 1
 
-				elseif typeInfo.type == "spit" then
+				elseif typeInfo.type == "split" then
 					group.split = group.split + 1
+					group.damage = group.damage + damage
 
 				elseif typeInfo.type == "action" then
 					-- 施法动作
 					group.action = typeInfo.name
+					group.damage = group.damage + damage
+
 					table.insert(projectileInfo.queue, group)
 					prevGroup = group
 					group = nil

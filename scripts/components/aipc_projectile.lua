@@ -25,6 +25,13 @@ local function SpawnFlowers(point, dest, count, flowerIndex)
 	end
 end
 
+-- 返回角度：0 ~ 360
+function getAngle(src, tgt)
+	local direction = (tgt - src):GetNormalized()
+	local angle = math.acos(direction:Dot(Vector3(1, 0, 0))) / DEGREES
+	return angle
+end
+
 local function include(table, value)
 	for k,v in ipairs(table) do
 		if v == value then
@@ -191,16 +198,98 @@ function Projectile:FindEntities(element, pos, radius)
 end
 
 function Projectile:RotateToTarget(dest)
-	local direction = (
-		dest - 
-		self.inst:GetPosition()
-	):GetNormalized()
-	local angle = math.acos(direction:Dot(Vector3(1, 0, 0))) / DEGREES
+	local angle = getAngle(self.inst:GetPosition(), dest)
 	self.inst.Transform:SetRotation(angle)
 	self.inst:FacePoint(dest)
 end
 
 ---------------------------------------- 计算任务 ----------------------------------------
+-- 开始任务
+function Projectile:StartBy(doer, queue, target, targetPos, replaceSourcePos)
+	local task = queue[1]
+
+	if task == nil then
+		self:CleanUp()
+		return
+	end
+
+	local splitCount = task.split + 1
+	for i = 1, splitCount do
+		local effectProjectile = SpawnPrefab("aip_dou_scepter_projectile")
+
+
+		if task.action == "FOLLOW" then
+		else
+			-- 方向性技能四散而去
+			local sourcePos = replaceSourcePos or doer:GetPosition()
+			local angle = (getAngle(sourcePos, targetPos) + ((i - 1) - (splitCount - 1) / 2) * 25)
+			local radius = angle / 180 * PI
+			local distance = distsq(sourcePos.x, sourcePos.z, targetPos.x, targetPos.z)
+			local newTargetPos = Vector3(sourcePos.x + math.cos(radius) * distance, sourcePos.y, sourcePos.z + math.sin(radius) * distance)
+
+			effectProjectile.components.aipc_projectile:StartEffectTask(doer, queue, target, newTargetPos, replaceSourcePos)
+		end
+	end
+end
+
+-- 分裂完毕后启动的单个任务
+function Projectile:StartEffectTask(doer, queue, target, targetPos, replaceSourcePos)
+	self.inst.Physics:ClearCollidesWith(COLLISION.LIMITS)
+	self.doer = doer
+	self.queue = queue
+	self.source = doer
+	self.sourcePos = replaceSourcePos or doer:GetPosition()
+	self.target = target
+	self.targetPos = targetPos
+	self.cachePos = doer:GetPosition()
+
+	if self.target and not self.targetPos then
+		self.targetPos = self.target:GetPosition()
+	end
+
+	-- 设置位置
+	local x, y, z = self.sourcePos:Get()
+	local facing_angle = doer.Transform:GetRotation() * DEGREES
+	self.inst.Physics:Teleport(x + self.launchoffset.x * math.cos(facing_angle), y + self.launchoffset.y, z - self.launchoffset.x * math.sin(facing_angle))
+
+	-- 动感超人！
+	self:RotateToTarget(self.targetPos)
+	self.inst.Physics:SetVel(0, 0, 0)
+	self.inst.Physics:SetFriction(0)
+	self.inst.Physics:SetDamping(0)
+	self.inst.Physics:SetMotorVel(self.speed, 1, 0)
+	-- self.inst.Physics:SetMotorVel(self.speed, 0, 0)
+
+	self:CalculateTask()
+	self.inst:StartUpdatingComponent(self)
+end
+
+-- 计算后续操作
+function Projectile:CalculateTask()
+	local task = self.queue[1]
+
+	if task == nil then
+		self:CleanUp()
+		return
+	end
+
+	-- 重置颜色
+	local color = task.color
+	self.inst.AnimState:OverrideMultColour(color[1], color[2], color[3], color[4])
+	self.inst.components.aipc_info_client:SetByteArray("aip_projectile_color", { color[1] * 10, color[2] * 10, color[3] * 10, color[4] * 10 })
+
+	self.task = task
+	self.diffTime = 0
+	self.affectedEntities = {}
+	self.inst.AnimState:SetMultColour(1, 1, 1, 1)
+
+	if isLine(self.task.action) then
+		self.distance = 10
+	elseif self.task.action == "AREA" then
+		self.inst.AnimState:SetMultColour(0, 0, 0, 0)
+	end
+end
+
 function Projectile:DoNextTask()
 	local newQueue = {}
 
@@ -260,62 +349,6 @@ function Projectile:DoNextTask()
 	end
 
 	self:CleanUp()
-end
-
-function Projectile:CalculateTask()
-	local task = self.queue[1]
-
-	if task == nil then
-		self:CleanUp()
-		return
-	end
-
-	-- 重置颜色
-	local color = task.color
-	self.inst.AnimState:OverrideMultColour(color[1], color[2], color[3], color[4])
-	self.inst.components.aipc_info_client:SetByteArray("aip_projectile_color", { color[1] * 10, color[2] * 10, color[3] * 10, color[4] * 10 })
-
-	self.task = task
-	self.diffTime = 0
-	self.affectedEntities = {}
-	self.inst.AnimState:SetMultColour(1, 1, 1, 1)
-
-	if isLine(self.task.action) then
-		self.distance = 10
-	elseif self.task.action == "AREA" then
-		self.inst.AnimState:SetMultColour(0, 0, 0, 0)
-	end
-end
-
-function Projectile:StartBy(doer, queue, target, targetPos, replaceSourcePos)
-	self.inst.Physics:ClearCollidesWith(COLLISION.LIMITS)
-	self.doer = doer
-	self.queue = queue
-	self.source = doer
-	self.sourcePos = replaceSourcePos or doer:GetPosition()
-	self.target = target
-	self.targetPos = targetPos
-	self.cachePos = doer:GetPosition()
-
-	if self.target and not self.targetPos then
-		self.targetPos = self.target:GetPosition()
-	end
-
-	-- 设置位置
-	local x, y, z = self.sourcePos:Get()
-	local facing_angle = doer.Transform:GetRotation() * DEGREES
-	self.inst.Physics:Teleport(x + self.launchoffset.x * math.cos(facing_angle), y + self.launchoffset.y, z - self.launchoffset.x * math.sin(facing_angle))
-
-	-- 动感超人！
-	self:RotateToTarget(self.targetPos)
-	self.inst.Physics:SetVel(0, 0, 0)
-	self.inst.Physics:SetFriction(0)
-	self.inst.Physics:SetDamping(0)
-	self.inst.Physics:SetMotorVel(self.speed, 1, 0)
-	-- self.inst.Physics:SetMotorVel(self.speed, 0, 0)
-
-	self:CalculateTask()
-	self.inst:StartUpdatingComponent(self)
 end
 
 ---------------------------------------- 效果执行 ----------------------------------------
