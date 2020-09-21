@@ -15,6 +15,7 @@ local damages = {
 	SAND = 10, -- 沙子本身是地形影响，减少伤害量
 	HEAL = 25, -- 治疗比较特殊，但是叠加的时候算伤害
 	PLANT = 5, -- 植物会用树苗包围目标
+	SPLIT = 0.01, -- 分裂很 IMBA
 }
 
 local defaultColor = { 0.6, 0.6, 0.6, 0.1 }

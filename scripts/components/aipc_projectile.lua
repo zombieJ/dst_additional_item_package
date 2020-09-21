@@ -28,6 +28,7 @@ end
 -- 返回角度：0 ~ 360
 function getAngle(src, tgt)
 	local direction = (tgt - src):GetNormalized()
+	-- TODO: 角度不对
 	local angle = math.acos(direction:Dot(Vector3(1, 0, 0))) / DEGREES
 	return angle
 end
@@ -224,7 +225,7 @@ function Projectile:StartBy(doer, queue, target, targetPos, replaceSourcePos)
 			local sourcePos = replaceSourcePos or doer:GetPosition()
 			local angle = (getAngle(sourcePos, targetPos) + ((i - 1) - (splitCount - 1) / 2) * 25)
 			local radius = angle / 180 * PI
-			local distance = distsq(sourcePos.x, sourcePos.z, targetPos.x, targetPos.z)
+			local distance = math.pow(distsq(sourcePos.x, sourcePos.z, targetPos.x, targetPos.z), 0.5)
 			local newTargetPos = Vector3(sourcePos.x + math.cos(radius) * distance, sourcePos.y, sourcePos.z + math.sin(radius) * distance)
 
 			effectProjectile.components.aipc_projectile:StartEffectTask(doer, queue, target, newTargetPos, replaceSourcePos)
@@ -321,7 +322,7 @@ function Projectile:DoNextTask()
 
 			for i, prefab in ipairs(ents) do
 				local prefabPos = prefab:GetPosition()
-				local dst = math.abs(distsq(self.targetPos.x, self.targetPos.z, prefabPos.x, prefabPos.z) - 4)
+				local dst = math.abs(math.pow(distsq(self.targetPos.x, self.targetPos.z, prefabPos.x, prefabPos.z), 0.5) - 4)
 				if prefab ~= self.target and dst < bestDistance then
 					bestTarget = prefab
 					bestDistance = dst
@@ -436,7 +437,7 @@ function Projectile:OnUpdate(dt)
 			local targetPos = self.target:GetPosition()
 			self.targetPos = targetPos
 
-			if distsq(currentPos, targetPos) < 5 then
+			if distsq(currentPos, targetPos) < 3 then
 				finishTask = self:EffectTaskOn(self.target) or finishTask
 				ShowEffect(self.task.element, self.target:GetPosition())
 			else
