@@ -50,25 +50,30 @@ local LANG_MAP = {
 			REC_DESC = "直接在目标点释放魔法",
 			DESC = "直接在目标点释放魔法",
 		},
+		aip_dou_split_inscription = {
+			NAME = "铭文：裂",
+			REC_DESC = "分裂你的魔法",
+			DESC = "分裂你的魔法",
+		},
 	},
 	chinese = {
 		aip_dou_fire_inscription = {
-			NAME = "铭文：火",
+			NAME = "元素：火",
 			REC_DESC = "有 40% 概率点燃目标",
 			DESC = "有 40% 概率点燃目标",
 		},
 		aip_dou_ice_inscription = {
-			NAME = "铭文：冰",
+			NAME = "元素：冰",
 			REC_DESC = "降低目标温度以冰冻目标",
 			DESC = "降低目标温度以冰冻目标",
 		},
 		aip_dou_sand_inscription = {
-			NAME = "铭文：沙",
+			NAME = "元素：沙",
 			REC_DESC = "命中时产生一根沙柱",
 			DESC = "命中时产生一根沙柱",
 		},
 		aip_dou_heal_inscription = {
-			NAME = "铭文：春",
+			NAME = "元素：春",
 			REC_DESC = "生效时治疗目标",
 			DESC = "生效时治疗目标",
 		},
@@ -87,6 +92,11 @@ local LANG_MAP = {
 			REC_DESC = "直接在目标点释放魔法",
 			DESC = "直接在目标点释放魔法",
 		},
+		aip_dou_split_inscription = {
+			NAME = "附魔：裂",
+			REC_DESC = "分裂你的魔法",
+			DESC = "分裂你的魔法",
+		},
 	},
 }
 
@@ -103,6 +113,7 @@ local INSCRIPTIONS = {
 	aip_dou_follow_inscription =	{ tag = "FOLLOW",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_through_inscription =	{ tag = "THROUGH",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_area_inscription =		{ tag = "AREA",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_split_inscription =		{ tag = "SPLIT",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 }
 
 ------------------------------------ 功能 ------------------------------------

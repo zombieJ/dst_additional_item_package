@@ -6,6 +6,7 @@ local categories = {
 	FOLLOW = "action",
 	THROUGH = "action",
 	AREA = "action",
+	SPLIT = "split", -- 分裂是特殊的
 }
 
 local damages = {
@@ -45,6 +46,8 @@ local function createGroup(prevGrp)
 		damage = prev.damage or 5,
 		-- 颜色
 		color = prev.color or defaultColor,
+		-- 分裂
+		split = 0,
 	}
 end
 
@@ -86,6 +89,9 @@ function calculateProjectile(items)
 
 					-- 元素消耗 1 点
 					projectileInfo.uses = projectileInfo.uses + 1
+
+				elseif typeInfo.type == "spit" then
+					group.split = group.split + 1
 
 				elseif typeInfo.type == "action" then
 					-- 施法动作
