@@ -28,8 +28,10 @@ end
 -- 返回角度：0 ~ 360
 function getAngle(src, tgt)
 	local direction = (tgt - src):GetNormalized()
-	-- TODO: 角度不对
 	local angle = math.acos(direction:Dot(Vector3(1, 0, 0))) / DEGREES
+	if direction.z < 0 then
+		angle = 360 - angle
+	end
 	return angle
 end
 
@@ -184,6 +186,10 @@ function Projectile:FindEntities(element, pos, radius)
 	local filteredEnts = {}
 	local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, radius or 2, COMBAT_TAGS, NO_TAGS)
 
+	if self.affectedEntities == nil then
+		self.affectedEntities = {}
+	end
+
 	for i, ent in ipairs(ents) do
 		-- 根据元素选择目标
 		if (element == "HEAL" and ent:HasTag("player")) or (element ~= "HEAL" and not ent:HasTag("player")) then
@@ -215,15 +221,36 @@ function Projectile:StartBy(doer, queue, target, targetPos, replaceSourcePos)
 	end
 
 	local splitCount = task.split + 1
+
+	local ents = {}
+	if task.action == "FOLLOW" and target ~= nil then
+		local tmpEnts = self:FindEntities(task.element, target:GetPosition(), 4)
+
+		for i, prefab in ipairs(tmpEnts) do
+			if prefab ~= target then
+				table.insert(ents, prefab)
+			end
+		end
+	end
+
 	for i = 1, splitCount do
 		local effectProjectile = SpawnPrefab("aip_dou_scepter_projectile")
 
 
 		if task.action == "FOLLOW" then
+			-- 对随机目标施放
+			if i == 1 then
+				-- 第一个始终为目标
+				effectProjectile.components.aipc_projectile:StartEffectTask(doer, queue, target, targetPos, replaceSourcePos)
+			elseif ents[i + 1] ~= nil then
+				-- 依次作用目标
+				local newTarget = ents[i + 1]
+				effectProjectile.components.aipc_projectile:StartEffectTask(doer, queue, newTarget, newTarget:GetPosition(), replaceSourcePos)
+			end
 		else
 			-- 方向性技能四散而去
 			local sourcePos = replaceSourcePos or doer:GetPosition()
-			local angle = (getAngle(sourcePos, targetPos) + ((i - 1) - (splitCount - 1) / 2) * 25)
+			local angle = (getAngle(sourcePos, targetPos) + ((i - 1) - (splitCount - 1) / 2) * 30)
 			local radius = angle / 180 * PI
 			local distance = math.pow(distsq(sourcePos.x, sourcePos.z, targetPos.x, targetPos.z), 0.5)
 			local newTargetPos = Vector3(sourcePos.x + math.cos(radius) * distance, sourcePos.y, sourcePos.z + math.sin(radius) * distance)
@@ -322,7 +349,9 @@ function Projectile:DoNextTask()
 
 			for i, prefab in ipairs(ents) do
 				local prefabPos = prefab:GetPosition()
-				local dst = math.abs(math.pow(distsq(self.targetPos.x, self.targetPos.z, prefabPos.x, prefabPos.z), 0.5) - 4)
+				local sq = distsq(self.targetPos.x, self.targetPos.z, prefabPos.x, prefabPos.z)
+				local dst = math.abs(math.pow(sq, 0.5) - 4)
+
 				if prefab ~= self.target and dst < bestDistance then
 					bestTarget = prefab
 					bestDistance = dst

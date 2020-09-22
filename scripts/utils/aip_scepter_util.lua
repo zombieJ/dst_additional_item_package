@@ -43,8 +43,8 @@ local function createGroup(prevGrp)
 		element = prev.element or nil,
 		-- 元素叠加数量
 		elementCount = 0,
-		-- 伤害
-		damage = prev.damage or 5,
+		-- 伤害，继承前一个伤害的 75%
+		damage = math.max((prev.damage or 0) * 0.75, 5),
 		-- 颜色
 		color = prev.color or defaultColor,
 		-- 分裂
