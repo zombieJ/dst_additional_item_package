@@ -169,7 +169,6 @@ local Projectile = Class(function(self, inst)
 	self.distance = nil
 	self.cachePos = nil -- 存储上一次位置
 	self.diffTime = nil -- 释放后经过的时间
-	self.affectedEntities = nil -- 被影响到的单位
 
 	-- 超时可能投掷物已经卡死，删除之
 	inst:DoTaskInTime(120, function()
@@ -186,16 +185,13 @@ function Projectile:FindEntities(element, pos, radius)
 	local filteredEnts = {}
 	local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, radius or 2, COMBAT_TAGS, NO_TAGS)
 
-	if self.affectedEntities == nil then
-		self.affectedEntities = {}
-	end
-
 	for i, ent in ipairs(ents) do
 		-- 根据元素选择目标
 		if (element == "HEAL" and ent:HasTag("player")) or (element ~= "HEAL" and not ent:HasTag("player")) then
 			-- 只寻找活着的生物
-			if not include(self.affectedEntities, ent) and self.inst.components.combat:CanTarget(ent) then
-				table.insert(self.affectedEntities, ent)
+			-- if not include(self.affectedEntities, ent) and self.inst.components.combat:CanTarget(ent) then
+			-- TODO 去重寻找
+			if self.inst.components.combat:CanTarget(ent) then
 				table.insert(filteredEnts, ent)
 			end
 		end
@@ -222,15 +218,17 @@ function Projectile:StartBy(doer, queue, target, targetPos, replaceSourcePos)
 
 	local splitCount = task.split + 1
 
+	-- 跟踪需要准备单位池
 	local ents = {}
 	if task.action == "FOLLOW" and target ~= nil then
-		local tmpEnts = self:FindEntities(task.element, target:GetPosition(), 4)
+		local tmpEnts = self:FindEntities(task.element, target:GetPosition(), 8)
 
 		for i, prefab in ipairs(tmpEnts) do
 			if prefab ~= target then
 				table.insert(ents, prefab)
 			end
 		end
+		aipPrint(splitCount, #tmpEnts, #ents)
 	end
 
 	for i = 1, splitCount do
@@ -242,10 +240,12 @@ function Projectile:StartBy(doer, queue, target, targetPos, replaceSourcePos)
 			if i == 1 then
 				-- 第一个始终为目标
 				effectProjectile.components.aipc_projectile:StartEffectTask(doer, queue, target, targetPos, replaceSourcePos)
-			elseif ents[i + 1] ~= nil then
+			else
 				-- 依次作用目标
-				local newTarget = ents[i + 1]
-				effectProjectile.components.aipc_projectile:StartEffectTask(doer, queue, newTarget, newTarget:GetPosition(), replaceSourcePos)
+				local newTarget = ents[i - 1]
+				if newTarget ~= nil then
+					effectProjectile.components.aipc_projectile:StartEffectTask(doer, queue, newTarget, newTarget:GetPosition(), replaceSourcePos)
+				end
 			end
 		else
 			-- 方向性技能四散而去
