@@ -218,7 +218,7 @@ function params.aip_shadow_chest.widget.buttoninfo.fn(inst)
 end
 
 -------------- 月光豆酱雕塑 --------------
-params.aip_doujiang_chesspiece =
+params.chesspiece_aip_doujiang =
 {
 	widget =
 	{
@@ -260,7 +260,7 @@ local aip_doujiang_slot_bgs = {
 for i, v in ipairs(aip_doujiang_slot_bgs) do
 	local name = v.name
 	table.insert(
-		params.aip_doujiang_chesspiece.widget.slotbg,
+		params.chesspiece_aip_doujiang.widget.slotbg,
 		{
 			atlas = "images/inventoryimages/aip_doujiang_slot_"..name.."_bg.xml",
 			image = "aip_doujiang_slot_"..name.."_bg.tex",
@@ -268,7 +268,7 @@ for i, v in ipairs(aip_doujiang_slot_bgs) do
 	)
 end
 
-function params.aip_doujiang_chesspiece.itemtestfn(container, item, slot)
+function params.chesspiece_aip_doujiang.itemtestfn(container, item, slot)
 	local ret = true
 	local fail = nil
 
@@ -290,7 +290,7 @@ function params.aip_doujiang_chesspiece.itemtestfn(container, item, slot)
 end
 
 -- 操作按钮
-function params.aip_doujiang_chesspiece.widget.buttoninfo.fn(inst)
+function params.chesspiece_aip_doujiang.widget.buttoninfo.fn(inst)
 	if inst.components.container ~= nil then
 		GLOBAL.BufferedAction(inst.components.container.opener, inst, AIP_ACTION):Do()
 	elseif inst.replica.container ~= nil and not inst.replica.container:IsBusy() then
@@ -299,7 +299,7 @@ function params.aip_doujiang_chesspiece.widget.buttoninfo.fn(inst)
 end
 
 -- 校验是否可以按下
-function params.aip_doujiang_chesspiece.widget.buttoninfo.validfn(inst)
+function params.chesspiece_aip_doujiang.widget.buttoninfo.validfn(inst)
 	return inst.replica.container ~= nil and inst.replica.container:IsFull()
 end
 

@@ -161,7 +161,7 @@ local PIECES =
 
 			-- 添加箱子能力
 			inst:AddComponent("container")
-			inst.components.container:WidgetSetup("aip_doujiang_chesspiece")
+			inst.components.container:WidgetSetup("chesspiece_aip_doujiang")
 
 			-- 操作
 			inst:AddComponent("aipc_action")
