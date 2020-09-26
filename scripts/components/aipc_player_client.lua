@@ -6,8 +6,12 @@ local function OnEquip(inst, data)
 		return
 	end
 
+	-- 临时变量保存物品
+	ThePlayer._aip_tmp_item = nil
+
 	if data.eslot == EQUIPSLOTS.HANDS then
 		if data.item.components.aipc_caster ~= nil then
+			ThePlayer._aip_tmp_item = data.item
 			data.item.components.aipc_caster:OnEquip()
 		end
 	end
@@ -20,8 +24,8 @@ local function OnUnequip(inst, data)
 	end
 
 	if data.eslot == EQUIPSLOTS.HANDS then
-		if data.item.components.aipc_caster ~= nil then
-			data.item.components.aipc_caster:OnUnequip()
+		if ThePlayer._aip_tmp_item ~= nil and ThePlayer._aip_tmp_item.components.aipc_caster ~= nil then
+			ThePlayer._aip_tmp_item.components.aipc_caster:OnUnequip()
 		end
 	end
 end
@@ -35,8 +39,8 @@ local Player = Class(function(self, inst)
 	end)
 
 	-- We can not get ThePlayer in AddPlayerPostInit. So need additonal check in follow events
-		self.inst:ListenForEvent("equip", OnEquip)
-		self.inst:ListenForEvent("unequip", OnUnequip)
+	self.inst:ListenForEvent("equip", OnEquip)
+	self.inst:ListenForEvent("unequip", OnUnequip)
 end)
 
 function Player:OffMineCar()
