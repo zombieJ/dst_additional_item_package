@@ -1,3 +1,5 @@
+local AREA_DISTANCE = 2
+
 local COMBAT_TAGS = { "_combat" }
 -- local NO_TAGS = { "player" }
 local NO_TAGS = nil
@@ -183,7 +185,7 @@ end
 
 function Projectile:FindEntities(element, pos, radius)
 	local filteredEnts = {}
-	local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, radius or 2, COMBAT_TAGS, NO_TAGS)
+	local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, radius or AREA_DISTANCE, COMBAT_TAGS, NO_TAGS)
 
 	for i, ent in ipairs(ents) do
 		-- 根据元素选择目标
@@ -318,8 +320,10 @@ function Projectile:CalculateTask()
 	end
 end
 
+-- 开始下一个任务
 function Projectile:DoNextTask()
 	local newQueue = {}
+	local prevTask = self.queue[1]
 
 	-- 复制一份
 	for i = 2, #self.queue do
@@ -333,15 +337,19 @@ function Projectile:DoNextTask()
 		local nextPos = nil
 		local nextTarget = nil
 
-		local diffX = self.targetPos.x - self.sourcePos.x
-		local diffZ = self.targetPos.z - self.sourcePos.z
+		-- 临时变量减少代码体积
+		local targetPos = self.targetPos
+		-- 替换的起始位置
+		local replaceSourcePos = targetPos
+		local diffX = targetPos.x - self.sourcePos.x
+		local diffZ = targetPos.z - self.sourcePos.z
 
 		if nextTask.action == "AREA" then
 			-- 圈会在释放点后一定的距离再次释放，最多不超过 4 格距离
-			nextPos = Vector3(self.targetPos.x + math.min(4, diffX / 2), self.targetPos.y, self.targetPos.z + math.min(4, diffZ / 2))
+			nextPos = Vector3(targetPos.x + math.min(4, diffX / 2), targetPos.y, targetPos.z + math.min(4, diffZ / 2))
 		elseif nextTask.action == "FOLLOW" then
 			-- 跟踪是不知道下一个目标的，所以在施法距离内随机选一个符合要求的目标
-			local ents = self:FindEntities(nextTask.element, self.targetPos, 8)
+			local ents = self:FindEntities(nextTask.element, targetPos, 8)
 
 			-- 优先寻找靠中间的且不是原来的目标的以展示弹道
 			local bestTarget = nil
@@ -349,7 +357,7 @@ function Projectile:DoNextTask()
 
 			for i, prefab in ipairs(ents) do
 				local prefabPos = prefab:GetPosition()
-				local sq = distsq(self.targetPos.x, self.targetPos.z, prefabPos.x, prefabPos.z)
+				local sq = distsq(targetPos.x, targetPos.z, prefabPos.x, prefabPos.z)
 				local dst = math.abs(math.pow(sq, 0.5) - 4)
 
 				if prefab ~= self.target and dst < bestDistance then
@@ -372,10 +380,17 @@ function Projectile:DoNextTask()
 			nextPos = nextTarget:GetPosition()
 		else
 			-- 直线目标
-			nextPos = Vector3(self.targetPos.x + diffX, self.targetPos.y, self.targetPos.z + diffZ)
+			nextPos = Vector3(targetPos.x + diffX * 100, targetPos.y, targetPos.z + diffZ * 100)
+
+			-- 如果是 Area 则计算 2 格偏移量以免重复的命中目标
+			if prevTask.action == "AREA" then
+				local angle = getAngle(targetPos, nextPos)
+				local radius = angle / 180 * PI
+				replaceSourcePos = Vector3(targetPos.x + math.cos(radius) * AREA_DISTANCE, targetPos.y, targetPos.z + math.sin(radius) * AREA_DISTANCE)
+			end
 		end
 
-		nextProjectile.components.aipc_projectile:StartBy(self.doer, newQueue, nextTarget, nextPos, self.targetPos)
+		nextProjectile.components.aipc_projectile:StartBy(self.doer, newQueue, nextTarget, nextPos, replaceSourcePos)
 	end
 
 	self:CleanUp()
