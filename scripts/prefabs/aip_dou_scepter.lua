@@ -209,7 +209,7 @@ local function fn()
 
     -- 接受元素提炼
     inst:AddComponent("container")
-    inst.components.container:WidgetSetup("aip_dou_scepter4")
+    inst.components.container:WidgetSetup("aip_dou_scepter")
     inst.components.container.canbeopened = false
 
     inst:AddComponent("inspectable")

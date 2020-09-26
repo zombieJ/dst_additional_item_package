@@ -332,6 +332,9 @@ end
 
 fillDouScepter(4)
 
+-- 容器名字必须和物品名字一样，sad
+params.aip_dou_scepter = params.aip_dou_scepter4
+
 ----------------------------------------------------------------------------------------------
 local containers = GLOBAL.require "containers"
 local old_widgetsetup = containers.widgetsetup
