@@ -230,7 +230,6 @@ function Projectile:StartBy(doer, queue, target, targetPos, replaceSourcePos)
 				table.insert(ents, prefab)
 			end
 		end
-		aipPrint(splitCount, #tmpEnts, #ents)
 	end
 
 	for i = 1, splitCount do

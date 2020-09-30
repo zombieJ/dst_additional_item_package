@@ -175,7 +175,7 @@ local function fn()
     inst:AddComponent("aipc_action_client")
     inst.components.aipc_action_client.canActOn = function(inst, doer, target)
         refreshScepter(inst)
-        return inst._projectileInfo.action == "FOLLOW" and target.components.health ~= nil
+        return inst._projectileInfo.action == "FOLLOW" and (target.components.health ~= nil or target.replica.health ~= nil)
     end
     inst.components.aipc_action_client.canActOnPoint = function()
         refreshScepter(inst)
