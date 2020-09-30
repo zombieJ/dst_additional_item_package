@@ -16,85 +16,69 @@ local language = aipGetModConfig("language")
 local LANG_MAP = {
 	english = {
 		aip_dou_fire_inscription = {
-			NAME = "铭文",
-			REC_DESC = "火元素效果",
-			DESC = "用它来进行附魔",
+			NAME = "Element: Fire",
+			DESC = "40% chance to ignite the target",
 		},
 		aip_dou_ice_inscription = {
-			NAME = "铭文：火",
-			REC_DESC = "附魔火元素",
-			DESC = "它能够召唤火元素",
+			NAME = "Element: Ice",
+			DESC = "Freeze the target",
 		},
 		aip_dou_sand_inscription = {
-			NAME = "铭文：沙",
-			REC_DESC = "命中时产生一根沙柱",
-			DESC = "命中时产生一根沙柱",
+			NAME = "Element: Sand",
+			DESC = "Summon sand pillar",
 		},
 		aip_dou_heal_inscription = {
-			NAME = "铭文：春",
-			REC_DESC = "生效时治疗目标",
-			DESC = "生效时治疗目标",
+			NAME = "Element: Heal",
+			DESC = "Heal the target",
 		},
 		aip_dou_follow_inscription = {
-			NAME = "铭文：追",
-			REC_DESC = "使魔法可以追随目标",
-			DESC = "使魔法可以追随目标",
+			NAME = "Inscription: Follow",
+			DESC = "Your magic can follow target",
 		},
 		aip_dou_through_inscription = {
-			NAME = "铭文：透",
-			REC_DESC = "朝一个方向发射魔法",
-			DESC = "朝一个方向发射魔法",
+			NAME = "Inscription: Through",
+			DESC = "Fire a throughable magic",
 		},
 		aip_dou_area_inscription = {
-			NAME = "铭文：环",
-			REC_DESC = "直接在目标点释放魔法",
-			DESC = "直接在目标点释放魔法",
+			NAME = "Inscription: Area",
+			DESC = "Effect on a area",
 		},
 		aip_dou_split_inscription = {
-			NAME = "铭文：裂",
-			REC_DESC = "分裂你的魔法",
-			DESC = "分裂你的魔法",
+			NAME = "Enchant: Split",
+			DESC = "Split your magic",
 		},
 	},
 	chinese = {
 		aip_dou_fire_inscription = {
 			NAME = "元素：火",
-			REC_DESC = "有 40% 概率点燃目标",
 			DESC = "有 40% 概率点燃目标",
 		},
 		aip_dou_ice_inscription = {
 			NAME = "元素：冰",
-			REC_DESC = "降低目标温度以冰冻目标",
 			DESC = "降低目标温度以冰冻目标",
 		},
 		aip_dou_sand_inscription = {
 			NAME = "元素：沙",
-			REC_DESC = "命中时产生一根沙柱",
 			DESC = "命中时产生一根沙柱",
 		},
 		aip_dou_heal_inscription = {
 			NAME = "元素：春",
-			REC_DESC = "生效时治疗目标",
 			DESC = "生效时治疗目标",
 		},
 		aip_dou_follow_inscription = {
 			NAME = "铭文：追",
-			REC_DESC = "使魔法可以追随目标",
 			DESC = "使魔法可以追随目标",
 		},
 		aip_dou_through_inscription = {
 			NAME = "铭文：透",
-			REC_DESC = "朝一个方向发射魔法",
 			DESC = "朝一个方向发射魔法",
 		},
 		aip_dou_area_inscription = {
 			NAME = "铭文：环",
-			REC_DESC = "直接在目标点释放魔法",
 			DESC = "直接在目标点释放魔法",
 		},
 		aip_dou_split_inscription = {
 			NAME = "附魔：裂",
-			REC_DESC = "分裂你的魔法",
 			DESC = "分裂你的魔法",
 		},
 	},
@@ -131,7 +115,7 @@ local function makeInscription(name, info)
 	local PREFAB_LANG = LANG[name] or LANG_MAP.english[name]
 
 	STRINGS.NAMES[upperName] = PREFAB_LANG.NAME
-	STRINGS.RECIPE_DESC[upperName] = PREFAB_LANG.REC_DESC
+	STRINGS.RECIPE_DESC[upperName] = PREFAB_LANG.DESC
 	STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperName] = PREFAB_LANG.DESC
 
 	-- 生成配方
