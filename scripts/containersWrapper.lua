@@ -224,7 +224,7 @@ params.chesspiece_aip_doujiang =
 	{
 		animbank = "aip_ui_doujiang_chest",
 		animbuild = "aip_ui_doujiang_chest",
-		pos = Vector3(300, 100, 0),
+		pos = Vector3(300, 50, 0), -- x, y(越大越上)
 		side_align_tip = 160,
 
 		slotpos = {

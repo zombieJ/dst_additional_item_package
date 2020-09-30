@@ -153,6 +153,19 @@ local PIECES =
 		name = "aip_doujiang",
 		moonevent = false,
 		recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("plantmeat_cooked", 1), Ingredient("pinecone", 1)},
+		client_postinit = function(inst)
+			-- 测试版本开启
+			if open_beta ~= "open" then
+				return
+			end
+
+			-- 拒绝要说话
+			inst:AddComponent("talker")
+			inst.components.talker.fontsize = 30
+			inst.components.talker.font = TALKINGFONT
+			inst.components.talker.colour = Vector3(.9, 1, .9)
+			inst.components.talker.offset = Vector3(0, -400, 0)
+		end,
 		master_postinit = function(inst)
 			-- 测试版本开启
 			if open_beta ~= "open" then
@@ -186,13 +199,6 @@ local PIECES =
 				-- 	opal.components.burnable:StartWildfire()
 				-- end)
 			end
-
-			-- 拒绝要说话
-			inst:AddComponent("talker")
-			inst.components.talker.fontsize = 30
-			inst.components.talker.font = TALKINGFONT
-			inst.components.talker.colour = Vector3(.9, 1, .9)
-			inst.components.talker.offset = Vector3(0, -400, 0)
 
 			-- 延迟获得材质，移除材质不匹配的组件能力
 			inst:DoTaskInTime(0.5, function(inst)
@@ -422,6 +428,10 @@ local function makepiece(pieceid, materialid)
 		end
 
 		inst.entity:SetPristine()
+
+		if PIECES[pieceid].client_postinit ~= nil then
+			PIECES[pieceid].client_postinit(inst)
+		end
 
 		if not TheWorld.ismastersim then
 			return inst
