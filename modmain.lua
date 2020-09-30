@@ -6,6 +6,18 @@ Assets =
 	Asset("ATLAS", "images/inventoryimages/popcorngun.xml"),
 	Asset("ATLAS", "images/inventoryimages/incinerator.xml"),
 	Asset("ATLAS", "images/inventoryimages/dark_observer.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
+
+	-- 豆酱雕塑需要提前加载
+	Asset("ATLAS", "images/inventoryimages/aip_dou_tech.xml"),
+	Asset("ANIM", "anim/aip_ui_doujiang_chest.zip"),
+	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_bg.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_ash_bg.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_electricity_bg.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_fire_bg.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_plant_bg.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_water_bg.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_wind_bg.xml"),
 }
 
 -- 物品列表
@@ -19,6 +31,7 @@ PrefabFiles =
 	"foods",
 	"aip_nectar_maker",
 	"aip_nectar",
+	"aip_leaf_note",
 
 	-- Weapon
 	"popcorngun",
@@ -26,6 +39,12 @@ PrefabFiles =
 	"aip_fish_sword",
 	"aip_beehave",
 	"aip_oar_woodead",
+	"aip_dou_opal",
+	"aip_dou_scepter",
+	"aip_dou_scepter_projectile",
+	"aip_heal_fx",
+	"aip_sanity_fx",
+	"aip_dou_inscription",
 
 	-- Building
 	"incinerator",
@@ -50,8 +69,24 @@ PrefabFiles =
 	"aip_shadow_wrapper",
 }
 
+
 --------------------------------------- 工具 ---------------------------------------
 modimport("scripts/aipUtils.lua")
+
+--------------------------------------- 科技 ---------------------------------------
+modimport("scripts/custom_tech_tree.lua")
+
+-- 添加一个 Tab
+GLOBAL.RECIPETABS.AIP_DOU_SCEPTER = {
+    str = "AIP_DOU_SCEPTER",
+    sort = 100,
+    icon_atlas = "images/inventoryimages/aip_dou_tech.xml",
+    icon = "aip_dou_tech.tex",
+    crafting_station = true
+}
+GLOBAL.STRINGS.TABS.AIP_DOU_SCEPTER = "神秘魔法"
+
+GLOBAL.aipAddNewTechTree("AIP_DOU_SCEPTER")
 
 ------------------------------------- 组件钩子 -------------------------------------
 modimport("scripts/componentsHooker.lua")
@@ -77,29 +112,10 @@ if GetModConfigData("additional_orbit") == "open" then
 	modimport("scripts/mineCarAction.lua")
 end
 
------------------------------------- 贪婪观察者 ------------------------------------
--- 暗影跟随者
-function ShadowFollowerPrefabPostInit(inst)
-	if not GLOBAL.TheWorld.ismastersim then
-		return
-	end
 
-	if not inst.components.shadow_follower then
-		inst:AddComponent("shadow_follower")
-	end
-end
+------------------------------------- 对象钩子 -------------------------------------
+modimport("scripts/prefabsHooker.lua")
 
-
-AddPrefabPostInit("dragonfly", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 龙蝇
-AddPrefabPostInit("deerclops", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 鹿角怪
-AddPrefabPostInit("bearger", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 熊獾
-AddPrefabPostInit("moose", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 麋鹿鹅
-AddPrefabPostInit("beequeen", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 蜂后
-AddPrefabPostInit("klaus", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 克劳斯
-AddPrefabPostInit("klaus_sack", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 克劳斯袋子
-AddPrefabPostInit("antlion", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 蚁狮
-AddPrefabPostInit("toadstool", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 蟾蜍王
-AddPrefabPostInit("toadstool_dark", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 苦难蟾蜍王
 
 -- 世界追踪
 function WorldPrefabPostInit(inst)

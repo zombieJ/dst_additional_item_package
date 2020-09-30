@@ -1,10 +1,4 @@
 ------------------------------------ 配置 ------------------------------------
--- 体验关闭
-local additional_experiment = aipGetModConfig("additional_experiment")
-if additional_experiment ~= "open" then
-	return nil
-end
-
 -- 建筑关闭
 local additional_building = aipGetModConfig("additional_building")
 if additional_building ~= "open" then

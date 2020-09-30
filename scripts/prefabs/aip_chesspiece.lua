@@ -1,4 +1,5 @@
-local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
+-- 公测开启
+local open_beta = aipGetModConfig("open_beta")
 
 ------------------------------------ 配置 ------------------------------------
 -- 食物关闭
@@ -27,6 +28,14 @@ local LANG_MAP = {
 			["NAME"] = "Dou Jiang",
 			["REC_DESC"] = "Happy is life target",
 			["DESC"] = "Looks like turn into stone",
+
+			["AIP_WIND_ONLY"] = "Something can more represent of wind",
+			["AIP_FIRE_ONLY"] = "Something can more represent of fire",
+			["AIP_WATER_ONLY"] = "Something can more represent of water",
+			["AIP_ASH_ONLY"] = "Something can more represent of earth",
+			["AIP_ELECTRICITY_ONLY"] = "Something can more represent of electricity",
+			["AIP_PLANT_ONLY"] = "Something can more represent of plant",
+			["AIP_SLOT_ONLY"] = "Need put in slot instead",
 		},
 		["aip_deer"] = {
 			["NAME"] = "Watcher",
@@ -61,6 +70,14 @@ local LANG_MAP = {
 			["NAME"] = "豆酱",
 			["REC_DESC"] = "无忧无虑的生活最是向往",
 			["DESC"] = "看起来就像是被石化了",
+
+			["AIP_WIND_ONLY"] = "应该有更能代表风的物品",
+			["AIP_FIRE_ONLY"] = "应该有更能代表火的物品",
+			["AIP_WATER_ONLY"] = "应该有更能代表水的物品",
+			["AIP_ASH_ONLY"] = "应该有更能代表土的物品",
+			["AIP_ELECTRICITY_ONLY"] = "应该有更能代表电的物品",
+			["AIP_PLANT_ONLY"] = "应该有更能代表木的物品",
+			["AIP_SLOT_ONLY"] = "需要放到对应的插槽中",
 		},
 		["aip_deer"] = {
 			["NAME"] = "守望者",
@@ -87,8 +104,33 @@ local LANG_MAP = {
 	},	
 }
 
+
+
+
 local LANG = LANG_MAP[language] or LANG_MAP.english
 local LANG_ENG = LANG_MAP.english
+
+-- 拒绝豆酱的物品
+local LangDouJiang = LANG.aip_doujiang or LANG_ENG.aip_doujiang
+STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.GIVE.AIP_WIND_ONLY = LangDouJiang.AIP_WIND_ONLY or LANG_ENG.aip_doujiang.AIP_WIND_ONLY
+STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.GIVE.AIP_FIRE_ONLY = LangDouJiang.AIP_FIRE_ONLY or LANG_ENG.aip_doujiang.AIP_FIRE_ONLY
+STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.GIVE.AIP_WATER_ONLY = LangDouJiang.AIP_WATER_ONLY or LANG_ENG.aip_doujiang.AIP_WATER_ONLY
+STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.GIVE.AIP_ASH_ONLY = LangDouJiang.AIP_ASH_ONLY or LANG_ENG.aip_doujiang.AIP_ASH_ONLY
+STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.GIVE.AIP_ELECTRICITY_ONLY = LangDouJiang.AIP_ELECTRICITY_ONLY or LANG_ENG.aip_doujiang.AIP_ELECTRICITY_ONLY
+STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.GIVE.AIP_PLANT_ONLY = LangDouJiang.AIP_PLANT_ONLY or LANG_ENG.aip_doujiang.AIP_PLANT_ONLY
+
+------------------------------------ 常量 -------------------------------------
+local MOON_EVENT_RADIUS = 12
+local MOON_EVENT_MINPIECES = 3
+
+local MATERIALS =
+{
+	{name="marble",		prefab="marble",	inv_suffix=""},
+	{name="stone",		prefab="cutstone",	inv_suffix="_stone"},
+	{name="moonglass",	prefab="moonglass",	inv_suffix="_moonglass"},
+}
+
+local PHYSICS_RADIUS = .45
 
 ---------------------------------- 物品列表 -----------------------------------
 local PIECES =
@@ -98,6 +140,7 @@ local PIECES =
 		moonevent = false,
 		recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("moonrocknugget", 9), Ingredient("frozen_heart", 1, "images/inventoryimages/frozen_heart.xml")},
 		common_postinit = function(inst)
+			-- 月光星尘会发光
 			inst.entity:AddLight()
 			inst.Light:Enable(true)
 			inst.Light:SetRadius(2)
@@ -110,6 +153,63 @@ local PIECES =
 		name = "aip_doujiang",
 		moonevent = false,
 		recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("plantmeat_cooked", 1), Ingredient("pinecone", 1)},
+		client_postinit = function(inst)
+			-- 测试版本开启
+			if open_beta ~= "open" then
+				return
+			end
+
+			-- 拒绝要说话
+			inst:AddComponent("talker")
+			inst.components.talker.fontsize = 30
+			inst.components.talker.font = TALKINGFONT
+			inst.components.talker.colour = Vector3(.9, 1, .9)
+			inst.components.talker.offset = Vector3(0, -400, 0)
+		end,
+		master_postinit = function(inst)
+			-- 测试版本开启
+			if open_beta ~= "open" then
+				return
+			end
+
+			-- 添加箱子能力
+			inst:AddComponent("container")
+			inst.components.container:WidgetSetup("chesspiece_aip_doujiang")
+
+			-- 操作
+			inst:AddComponent("aipc_action")
+			inst.components.aipc_action.onDoAction = function(inst, doer)
+				local pos = inst:GetPosition()
+
+				-- 掉落猫眼石
+				local opal = SpawnPrefab("aip_dou_opal")
+				opal.Transform:SetPosition(inst.Transform:GetWorldPosition())
+
+				-- 损毁该物品
+				local fx = SpawnPrefab("collapse_big")
+				fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+				fx:SetMaterial("metal")
+				inst:Remove()
+
+				-- 延迟创造一条闪电点燃该物品 -- 豆酱：不掉落了，免得玩家懵逼了
+				-- opal:DoTaskInTime(0.1, function()
+				-- 	TheWorld:PushEvent("ms_sendlightningstrike", opal:GetPosition())
+
+				-- 	opal.components.burnable:Extinguish()
+				-- 	opal.components.burnable:StartWildfire()
+				-- end)
+			end
+
+			-- 延迟获得材质，移除材质不匹配的组件能力
+			inst:DoTaskInTime(0.5, function(inst)
+				if MATERIALS[inst.materialid].name ~= "moonglass" then
+					inst:RemoveComponent("container")
+					inst:RemoveComponent("aipc_action")
+					inst:RemoveComponent("talker")
+					return
+				end
+			end)
+		end,
 	},
 	{
 		name = "aip_deer",
@@ -141,18 +241,6 @@ for pieceid = 1,#PIECES do
 end
 
 ------------------------------------ 模板 ------------------------------------
-local MOON_EVENT_RADIUS = 12
-local MOON_EVENT_MINPIECES = 3
-
-local MATERIALS =
-{
-	{name="marble",		prefab="marble"},
-	{name="stone",		prefab="cutstone"},
-	{name="moonglass",	prefab="moonglass"},
-}
-
-local PHYSICS_RADIUS = .45
-
 local function GetBuildName(pieceid, materialid)
 	local piece = PIECES[pieceid]
 	if not piece or not piece.name then
@@ -173,6 +261,10 @@ local function SetMaterial(inst, materialid)
 	inst.AnimState:SetBuild(GetBuildName(inst.pieceid, materialid))
 
 	inst.components.lootdropper:SetLoot({MATERIALS[materialid].prefab})
+
+	local inv_image_suffix = (materialid ~= nil and MATERIALS[materialid].inv_suffix) or ""
+	inst.components.inventoryitem:ChangeImageName("chesspiece_"..PIECES[inst.pieceid].name..inv_image_suffix)
+	inst.components.inventoryitem.atlasname = "images/inventoryimages/chesspiece_"..PIECES[inst.pieceid].name..inv_image_suffix..".xml"
 end
 
 local function DoStruggle(inst, count)
@@ -292,10 +384,13 @@ local function makepiece(pieceid, materialid)
 	local prefabs = 
 	{
 		"collapse_small",
+		"collapse_big",
 	}
 	if materialid then
 		table.insert(prefabs, MATERIALS[materialid].prefab)
 		table.insert(assets, Asset("ANIM", "anim/"..build..".zip"))
+		table.insert(assets, Asset("ATLAS", "images/inventoryimages/chesspiece_"..PIECES[pieceid].name..MATERIALS[materialid].inv_suffix..".xml"))
+		-- table.insert(assets, Asset("INV_IMAGE", "chesspiece_"..PIECES[pieceid].name..MATERIALS[materialid].inv_suffix))
 	else
 		for m = 1, #MATERIALS do
 			local p = "chesspiece_" .. PIECES[pieceid].name .. "_" .. MATERIALS[m].name
@@ -329,10 +424,14 @@ local function makepiece(pieceid, materialid)
 		inst:SetPrefabName("chesspiece_"..PIECES[pieceid].name)
 
 		if PIECES[pieceid].common_postinit ~= nil then
-			PIECES[pieceid].common_postinit(inst)
+			PIECES[pieceid].common_postinit(inst, materialid and MATERIALS[materialid].name)
 		end
 
 		inst.entity:SetPristine()
+
+		if PIECES[pieceid].client_postinit ~= nil then
+			PIECES[pieceid].client_postinit(inst)
+		end
 
 		if not TheWorld.ismastersim then
 			return inst

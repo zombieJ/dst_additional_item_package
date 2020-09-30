@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="aip_heal_fx">
+        <file id="0" name="aip_heal_fx/plus.png" width="64" height="64" pivot_x="0.5" pivot_y="0.5"/>
+    </folder>
+    <entity id="0" name="aip_heal_fx">
+        <animation id="0" name="idle" length="1500">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="plus1" timeline="0" folder="0" file="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="plus2" timeline="1" folder="0" file="0" key="0" z_index="1"/>
+                    <object_ref id="2" name="plus3" timeline="2" folder="0" file="0" key="0" z_index="2"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="plus1">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="0" y="200" a="0"/>
+                </key>
+                <key id="1" time="300" spin="0">
+                    <object folder="0" file="0" x="0" y="250" a="1"/>
+                </key>
+                <key id="2" time="900" spin="0">
+                    <object folder="0" file="0" x="0" y="450" a="0"/>
+                </key>
+                 <key id="3" time="1500" spin="0">
+                    <object folder="0" file="0" x="0" y="450" a="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="plus2">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-50" y="200" a="0"/>
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="0" file="0" x="-50" y="200" a="0"/>
+                </key>
+                <key id="2" time="400" spin="0">
+                    <object folder="0" file="0" x="-50" y="250" a="1"/>
+                </key>
+                <key id="3" time="1000" spin="0">
+                    <object folder="0" file="0" x="-50" y="450" a="0"/>
+                </key>
+                 <key id="4" time="1500" spin="0">
+                    <object folder="0" file="0" x="-50" y="450" a="0"/>
+                </key>
+            </timeline>
+            <timeline id="2" name="plus3">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="50" y="200" a="0"/>
+                </key>
+                <key id="1" time="200" spin="0">
+                    <object folder="0" file="0" x="50" y="200" a="0"/>
+                </key>
+                <key id="2" time="500" spin="0">
+                    <object folder="0" file="0" x="50" y="250" a="1"/>
+                </key>
+                <key id="3" time="1100" spin="0">
+                    <object folder="0" file="0" x="50" y="450" a="0"/>
+                </key>
+                 <key id="4" time="1500" spin="0">
+                    <object folder="0" file="0" x="50" y="450" a="0"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

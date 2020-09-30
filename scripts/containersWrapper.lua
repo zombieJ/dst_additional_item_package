@@ -217,6 +217,124 @@ function params.aip_shadow_chest.widget.buttoninfo.fn(inst)
 	end
 end
 
+-------------- 月光豆酱雕塑 --------------
+params.chesspiece_aip_doujiang =
+{
+	widget =
+	{
+		animbank = "aip_ui_doujiang_chest",
+		animbuild = "aip_ui_doujiang_chest",
+		pos = Vector3(300, 50, 0), -- x, y(越大越上)
+		side_align_tip = 160,
+
+		slotpos = {
+			Vector3(0, -170, 0),
+			Vector3(0, 170, 0),
+			Vector3(156, 90, 0),
+			Vector3(156, -90, 0),
+			Vector3(-156, 90, 0),
+			Vector3(-156, -90, 0),
+		},
+
+		slotbg = {},
+
+		buttoninfo =
+		{
+			text = STRINGS.ACTIONS.CRAFT,
+			position = Vector3(0, -88, 0),
+		}
+	},
+	acceptsstacks = false,
+	type = "chest",
+}
+
+local aip_doujiang_slot_bgs = {
+	{ name="ash",prefab="fertilizer",fail="AIP_ASH_ONLY" },
+	{ name="electricity",prefab="nightstick",fail="AIP_ELECTRICITY_ONLY" },
+	{ name="fire",prefab="firestaff",fail="AIP_FIRE_ONLY" },
+	{ name="plant",prefab="boards",fail="AIP_PLANT_ONLY" },
+	{ name="water",prefab="waterballoon",fail="AIP_WATER_ONLY" },
+	{ name="wind",prefab="featherfan",fail="AIP_WIND_ONLY" },
+}
+
+for i, v in ipairs(aip_doujiang_slot_bgs) do
+	local name = v.name
+	table.insert(
+		params.chesspiece_aip_doujiang.widget.slotbg,
+		{
+			atlas = "images/inventoryimages/aip_doujiang_slot_"..name.."_bg.xml",
+			image = "aip_doujiang_slot_"..name.."_bg.tex",
+		}
+	)
+end
+
+function params.chesspiece_aip_doujiang.itemtestfn(container, item, slot)
+	local ret = true
+	local fail = nil
+
+	if slot == nil or aip_doujiang_slot_bgs[slot] == nil then
+		ret = false
+		fail = "AIP_SLOT_ONLY"
+	elseif aip_doujiang_slot_bgs[slot].prefab ~= item.prefab then
+		ret = false
+		fail = aip_doujiang_slot_bgs[slot].fail
+	end
+
+	if container.inst ~= nil and container.inst.components.talker ~= nil then
+		container.inst.components.talker:Say(
+			STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.GIVE[fail]
+		)
+	end
+
+	return ret
+end
+
+-- 操作按钮
+function params.chesspiece_aip_doujiang.widget.buttoninfo.fn(inst)
+	if inst.components.container ~= nil then
+		GLOBAL.BufferedAction(inst.components.container.opener, inst, AIP_ACTION):Do()
+	elseif inst.replica.container ~= nil and not inst.replica.container:IsBusy() then
+		GLOBAL.SendRPCToServer(GLOBAL.RPC.DoWidgetButtonAction, AIP_ACTION.code, inst, AIP_ACTION.mod_name)
+	end
+end
+
+-- 校验是否可以按下
+function params.chesspiece_aip_doujiang.widget.buttoninfo.validfn(inst)
+	return inst.replica.container ~= nil and inst.replica.container:IsFull()
+end
+
+---------------- 豆酱权杖 ----------------
+function fillDouScepter(slotCount)
+	local name = "aip_dou_scepter"..tostring(slotCount)
+	local loopIndex = slotCount - 1
+
+	params[name] = {
+		widget = {
+			slotpos = {},
+			animbank = "ui_cookpot_1x4",
+			animbuild = "ui_cookpot_1x4",
+			pos = Vector3(0, -30 + loopIndex * 45, 0),
+		},
+		acceptsstacks = false,
+		usespecificslotsforitems = true,
+		type = "hand_inv",
+	}
+
+	for y = 0, loopIndex do
+		table.insert(params[name].widget.slotpos, Vector3(0, 108 - 72 * y, 0))
+	end
+
+	-- 只接受魔法元素
+	params[name].itemtestfn = function(container, item, slot)
+		return item:HasTag("aip_dou_inscription")
+	end
+end
+
+fillDouScepter(4)
+
+-- 容器名字必须和物品名字一样，sad
+params.aip_dou_scepter = params.aip_dou_scepter4
+
 ----------------------------------------------------------------------------------------------
 local containers = GLOBAL.require "containers"
 local old_widgetsetup = containers.widgetsetup

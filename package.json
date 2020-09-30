@@ -6,6 +6,7 @@
   "scripts": {
     "dist": "node ./tools-scripts/dist.js",
     "dist-test": "node ./tools-scripts/dist.js --target='../aip_output'",
+    "test": "npm run dist-test",
     "gen:preview": "node gen/foodPreview",
     "gen:seed": "node gen/veggie",
     "ktech": "node ./tools-scripts/ktech.js",
