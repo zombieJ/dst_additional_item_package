@@ -127,7 +127,7 @@ function prototyper:TurnOn(doer, ...)
 		local trees_changed = false
 		local tech_tree = player.components.builder.accessible_tech_trees
 		for tech_name, _ in pairs(db_new_techs) do
-			if tech_tree[tech_name] > 0 then
+			if tech_tree ~= nil and tech_tree[tech_name] ~= nil and tech_tree[tech_name] > 0 then
 				trees_changed = true
 				tech_tree[tech_name] = 0
 			end
