@@ -10,10 +10,20 @@ local language = aipGetModConfig("language")
 local LANG_MAP = {
 	["english"] = {
 		["NAME"] = "Woodener",
-		["DESC"] = "a shy totem pole",
+		["DESC"] = "Shy totem pole.",
 		["DESCRIBE"] = "You can give, but not ask for.",
 		["ACTIONFAIL"] = {
 			["GENERIC"] = "He only accept log.",
+			["WAXWELL"] = "It only needs cheap stuff like wood.",
+			["WOLFGANG"] = "It can't fit anything but wood!",
+			["WX78"] = "PARAMETER = WOOD.",
+			["WILLOW"] = "Feed him with wood or burn it!",
+			["WENDY"] = "Maybe we should insert a wood in this thing?",
+			["WOODIE"] = "He wants wood too.",
+			["WICKERBOTTOM"] = "The key to it is wood.",
+			["WATHGRITHR"] = "I eat meat, you eat wood!",
+			["WEBBER"] = "It needs more wood.",
+			["WINONA"] = "Wood. Buildings needs wood.",
 		},
 	},
 	["chinese"] = {
@@ -32,6 +42,24 @@ local LANG_MAP = {
 			["WATHGRITHR"] = "我吃肉，你吃木头！",
 			["WEBBER"] = "它需要更多的木头",
 			["WINONA"] = "木头建筑吃木头",
+		},
+	},
+	["russian"] = {
+		["NAME"] = "Древенер",
+		["DESC"] = "Застенчивый тотемный столб",
+		["DESCRIBE"] = "Вы можете давать, но не просить",
+		["ACTIONFAIL"] = {
+			["GENERIC"] = "Ему нужны только брёвна",
+			["WAXWELL"] = "Ему нужны только дешевые вещи, такие как дерево.",
+			["WOLFGANG"] = "В него ничего не входит, только дерево!",
+			["WX78"] = "ПАРАМЕТР = ДЕРЕВО.",
+			["WILLOW"] = "Накорми его дровами или сожги!",
+			["WENDY"] = "Может быть нам стоит вставить в эту штуку дерево?",
+			["WOODIE"] = "Он тоже жаждит дерева.",
+			["WICKERBOTTOM"] = "Ключ к нему - дерево.",
+			["WATHGRITHR"] = "Я ем мясо, ты ешь дерево!",
+			["WEBBER"] = "Ему нужно больше дров.",
+			["WINONA"] = "Дерево. Постройкам нужна древесина.",
 		},
 	},
 }
