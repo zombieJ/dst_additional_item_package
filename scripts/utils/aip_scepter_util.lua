@@ -64,13 +64,18 @@ function calculateProjectile(items)
 		施法动作：line(default) - 直线, throw - 抛物区域, trough - 直线穿透, follow - 追踪
 	]]
 
-	if #items == 0 then
+	local flattenItems = {}
+	for i, item in pairs(items) do
+		table.insert(flattenItems, item)
+	end
+
+	if #flattenItems == 0 then
 		projectileInfo.queue = { createGroup() }
 	else
 		local group = nil
 		local prevGroup = nil
 
-		for i, item in pairs(items) do
+		for i, item in pairs(flattenItems) do
 			if group == nil then
 				group = createGroup(prevGroup)
 			end
