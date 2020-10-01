@@ -43,11 +43,17 @@ local LANG_MAP = {
         ["DESC"] = "Will harm more with same target",
         ["ATTACH_SPEECH"] = "A new enemy!",
     },
-    ["chinese"] = {
+   ["chinese"] = {
         ["NAME"] = "树精木浆",
         ["REC_DESC"] = "更擅长战斗",
         ["DESC"] = "打人要专注，效果会更好",
         ["ATTACH_SPEECH"] = "一个新的敌人！",
+    },
+   ["russian"] = {
+        ["NAME"] = "Весло Вудеда",
+        ["REC_DESC"] = "Хорошо в бою",
+        ["DESC"] = "Бъёт болнее по одной цели.",
+        ["ATTACH_SPEECH"] = "О, новый враг!",
     },
 }
 
