@@ -65,7 +65,7 @@ local Caster = Class(function(self, inst)
         ispassableatallpoints = true,
     }
 
-    self.active = false
+    self.active = nil -- 初始化时是 nil，卸载后才会变成 false
     self.type = nil
 
     self.onEquip = nil
@@ -84,7 +84,8 @@ end
 
 function Caster:SetUp(type)
   -- 如果类型变了就重置一下
-  local needRefresh = self.type ~= type and self.active
+  local needRefresh = self.type ~= type and self.active ~= false
+
   if needRefresh then
     self:StopTargeting()
   end
