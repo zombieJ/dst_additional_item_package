@@ -1,11 +1,16 @@
--- 打平表格，去除中间的空格并且保持顺序
-function GLOBAL.aipFlattenTable(originTbl)
-	local targetTbl = {}
-	local tbl = originTbl or {}
+local function countTable(tbl)
 	local count = 0
 	for k, v in pairs(tbl) do
 		count = count + 1
 	end
+	return count
+end
+
+-- 打平表格，去除中间的空格并且保持顺序
+function GLOBAL.aipFlattenTable(originTbl)
+	local targetTbl = {}
+	local tbl = originTbl or {}
+	local count = countTable(tbl)
 
 	local i = 1
 	for i = 1, 10000 do
