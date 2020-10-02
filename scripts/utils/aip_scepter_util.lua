@@ -64,10 +64,7 @@ function calculateProjectile(items)
 		施法动作：line(default) - 直线, throw - 抛物区域, trough - 直线穿透, follow - 追踪
 	]]
 
-	local flattenItems = {}
-	for i, item in pairs(items) do
-		table.insert(flattenItems, item)
-	end
+	local flattenItems = aipFlattenTable(items)
 
 	if #flattenItems == 0 then
 		projectileInfo.queue = { createGroup() }
