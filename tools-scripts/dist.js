@@ -4,6 +4,35 @@ const path = require('path');
 const archiver = require('archiver');
 const { argv } = require('yargs');
 
+// 压缩 lua
+function compressLua(text = '') {
+	const lines = text.split(/[\r\n]+/);
+
+	return lines.map(line => line
+		.replace(/\s+/g, ' ')				// 多个空格替换成单个
+		.replace(/\s*=\s*/g, '=')			// 等号前后空格
+		.replace(/\s*==\s*/g, '==')			// 等式前后空格
+		.replace(/^\s+/g, '')				// 行首空格
+	).join('\n');
+}
+
+// 压缩文件
+async function compressFolderLua(folderPath) {
+	const fileList = await fs.readdir(folderPath);
+
+	console.log(">>>>>>", fileList)
+	fileList.forEach(fileName => {
+		const filePath = path.join(folderPath, fileName);
+		if (filePath.toLowerCase().endsWith('.lua')) {
+			// 压缩 lua
+			const text = fs.readFileSync(filePath, 'utf8');
+			const compressed = compressLua(text)
+			console.log(compressed);
+			// fs.writeFileSync()
+		}
+	});
+}
+
 async function doJob() {
 	console.log(chalk.yellow("Clean up..."));
 	fs.removeSync('package/');
@@ -45,6 +74,9 @@ async function doJob() {
 	replaceText('package/modinfo.lua', /"\(DEV MODE\)",/g, '');
 	replaceText('package/modinfo.lua', /name = "Additional Item Package DEV"/g, 'name = "Additional Item Package"');
 	replaceText('package/modmain.lua', /TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE = "Additional Item Package DEV"/g, 'TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE = "Additional Item Package"');
+
+	// 压缩一下 LUA 代码
+	await compressFolderLua('package/')
 
 	if (argv.target) {
 		const relativePath = path.resolve(argv.target);
