@@ -29,7 +29,9 @@ end
 
 function GLOBAL.aipCommonStr(showType, split, ...)
 	local str = ""
-	for i,v in ipairs(arg) do
+	local count = countTable(arg)
+	for i = 1, count do
+		local v = arg[i]
 		local parsed = v
 		local vType = type(v)
 
@@ -57,7 +59,7 @@ function GLOBAL.aipCommonStr(showType, split, ...)
 				parsed = parsed .. "}"
 			end
 
-			str = str .. "[" .. type(v) .. ": " .. tostring(parsed) .. "]" .. split
+			str = str .. "[" .. vType .. ": " .. tostring(parsed) .. "]" .. split
 		else
 			-- 显示文字
 			str = str .. tostring(parsed) .. split
