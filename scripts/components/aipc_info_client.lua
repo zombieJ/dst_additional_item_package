@@ -82,19 +82,16 @@ function InfoClient:SetUInt(key, value, mock)
 end
 
 function InfoClient:SetByteArray(key, value, mock)
-	aipTypePrint("Set Byte Array", key, value, mock)
 	self:Set(net_bytearray, key, value, mock)
 end
 
 function InfoClient:Get(key)
-	aipTypePrint("Get", key, self.valuesInited)
 	if not self.valuesInited[key] then
 		local net = self.networks[key]
 
 		if net then
 			self.values[key] = net:value()
 			self.valuesInited[key] = true
-			aipTypePrint("Get Net:", self.values, self.valuesInited)
 		end
 	end
 

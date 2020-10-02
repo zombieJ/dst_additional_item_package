@@ -1,8 +1,18 @@
 local function countTable(tbl)
 	local count = 0
+	local lastKey = nil
+	local lastVal = nil
 	for k, v in pairs(tbl) do
 		count = count + 1
+		lastKey = k
+		lastVal = v
 	end
+
+	-- arg 会带上一个 n 表示数量
+	if lastKey == "n" and type(lastVal) == "number" then
+		count = count - 1
+	end
+
 	return count
 end
 
@@ -28,8 +38,9 @@ function GLOBAL.aipFlattenTable(originTbl)
 end
 
 function GLOBAL.aipCommonStr(showType, split, ...)
-	local str = ""
 	local count = countTable(arg)
+	local str = "("..tostring(count)..") "
+
 	for i = 1, count do
 		local v = arg[i]
 		local parsed = v
