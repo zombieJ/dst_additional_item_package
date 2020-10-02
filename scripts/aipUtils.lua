@@ -1,11 +1,26 @@
+local function countTable(tbl)
+	local count = 0
+	local lastKey = nil
+	local lastVal = nil
+	for k, v in pairs(tbl) do
+		count = count + 1
+		lastKey = k
+		lastVal = v
+	end
+
+	-- arg 会带上一个 n 表示数量
+	if lastKey == "n" and type(lastVal) == "number" then
+		count = count - 1
+	end
+
+	return count
+end
+
 -- 打平表格，去除中间的空格并且保持顺序
 function GLOBAL.aipFlattenTable(originTbl)
 	local targetTbl = {}
 	local tbl = originTbl or {}
-	local count = 0
-	for k, v in pairs(tbl) do
-		count = count + 1
-	end
+	local count = countTable(tbl)
 
 	local i = 1
 	for i = 1, 10000 do
@@ -23,8 +38,11 @@ function GLOBAL.aipFlattenTable(originTbl)
 end
 
 function GLOBAL.aipCommonStr(showType, split, ...)
+	local count = countTable(arg)
 	local str = ""
-	for i,v in ipairs(arg) do
+
+	for i = 1, count do
+		local v = arg[i]
 		local parsed = v
 		local vType = type(v)
 
@@ -52,7 +70,7 @@ function GLOBAL.aipCommonStr(showType, split, ...)
 				parsed = parsed .. "}"
 			end
 
-			str = str .. "[" .. type(v) .. ": " .. tostring(parsed) .. "]" .. split
+			str = str .. "[" .. vType .. ": " .. tostring(parsed) .. "]" .. split
 		else
 			-- 显示文字
 			str = str .. tostring(parsed) .. split

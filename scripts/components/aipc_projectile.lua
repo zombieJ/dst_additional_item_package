@@ -304,7 +304,6 @@ function Projectile:CalculateTask()
 
 	-- 重置颜色
 	local color = task.color
-	self.inst.AnimState:OverrideMultColour(color[1], color[2], color[3], color[4])
 	self.inst.components.aipc_info_client:SetByteArray("aip_projectile_color", { color[1] * 10, color[2] * 10, color[3] * 10, color[4] * 10 })
 
 	self.task = task
