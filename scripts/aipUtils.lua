@@ -39,7 +39,7 @@ end
 
 function GLOBAL.aipCommonStr(showType, split, ...)
 	local count = countTable(arg)
-	local str = "("..tostring(count)..") "
+	local str = ""
 
 	for i = 1, count do
 		local v = arg[i]
