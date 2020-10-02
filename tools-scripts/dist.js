@@ -4,31 +4,57 @@ const path = require('path');
 const archiver = require('archiver');
 const { argv } = require('yargs');
 
+const GROUP_START_COMMENT = '--[[';
+const GROUP_END_COMMENT = ']]';
+
 // 压缩 lua
 function compressLua(text = '') {
-	const lines = text.split(/[\r\n]+/);
+	let clone = '';
+
+	// 删除群组注释
+	let commenting = false
+	for (let i = 0; i < text.length; i += 1) {
+		const char = text[i];
+		if (!commenting && text.substr(i, GROUP_START_COMMENT.length) === GROUP_START_COMMENT) {
+			commenting = true
+		} else if (commenting && text.substr(i, GROUP_END_COMMENT.length) === GROUP_END_COMMENT) {
+			i = i + GROUP_END_COMMENT.length - 1;
+			commenting = false;
+		} else if (!commenting || char === '\n' || char === '\r') {
+			clone += char
+		}
+	}
+
+	const lines = clone.split(/\n/);
 
 	return lines.map(line => line
-		.replace(/\s+/g, ' ')				// 多个空格替换成单个
-		.replace(/\s*=\s*/g, '=')			// 等号前后空格
-		.replace(/\s*==\s*/g, '==')			// 等式前后空格
-		.replace(/^\s+/g, '')				// 行首空格
+		.replace(/\s+/g, ' ')					// 多个空格替换成单个
+		.replace(/\s*=\s*/g, '=')				// 等号前后空格
+		.replace(/\s*==\s*/g, '==')				// 等式前后空格
+		.replace(/\s*~=\s*/g, '~=')				// 不等式前后空格
+		.replace(/---*\s.*/g, '')				// 删除简单注释
+		.replace(/---.*/g, '')					// 删除简单注释
+		.replace(/\s*([\+\-\*\/])\s*/g, '$1')	// 加减乘除不需要空格
+		.replace(/\s*,\s*/g, ',')				// 逗号前后不需要空格
+		.replace(/^\s+/g, '')					// 行首空格
+		.replace(/\s+$/g, '')					// 行尾空格
 	).join('\n');
 }
 
 // 压缩文件
-async function compressFolderLua(folderPath) {
-	const fileList = await fs.readdir(folderPath);
+function compressFolderLua(folderPath) {
+	const fileList = fs.readdirSync(folderPath);
 
-	console.log(">>>>>>", fileList)
 	fileList.forEach(fileName => {
 		const filePath = path.join(folderPath, fileName);
 		if (filePath.toLowerCase().endsWith('.lua')) {
 			// 压缩 lua
 			const text = fs.readFileSync(filePath, 'utf8');
-			const compressed = compressLua(text)
-			console.log(compressed);
-			// fs.writeFileSync()
+			const compressed = compressLua(text);
+			fs.writeFileSync(filePath, compressed, 'utf8');
+		} else if (fs.statSync(filePath).isDirectory()) {
+			// 递归压缩文件夹
+			compressFolderLua(filePath)
 		}
 	});
 }
