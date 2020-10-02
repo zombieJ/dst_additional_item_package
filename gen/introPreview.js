@@ -1,0 +1,88 @@
+/**
+ * 生成物品介绍页面：
+ * - node .\gen\introPreview.js
+ */
+const fs = require('fs-extra');
+const path = require('path');
+const jimp = require("jimp");
+const chalk = require("chalk");
+const execSync = require('child_process').execSync;
+
+const IMG_SIZE = 64;
+const MAX_WIDTH_COUNT = 9;
+
+const IMAGES = [
+	['aip_blood_package', 'aip_mine_car'],
+	['incinerator', 'aip_orbit_item', 'aip_nectar_maker', 'aip_woodener'],
+	['dark_observer', 'aip_shadow_paper_package', 'aip_shadow_package'],
+	['popcorngun', 'aip_fish_sword', 'aip_beehave', 'aip_oar_woodead', 'aip_armor_gambler'],
+	['aip_horse_head', 'aip_som', 'aip_blue_glasses'],
+	[
+		'chesspiece_aip_doujiang_marble', 'chesspiece_aip_doujiang_stone', 'chesspiece_aip_doujiang_moonglass',
+		'chesspiece_aip_deer', 'chesspiece_aip_deer_stone', 'chesspiece_aip_deer_moonglass',
+		'chesspiece_aip_moon_marble', 'chesspiece_aip_moon_stone', 'chesspiece_aip_moon_moonglass',
+	],
+	[
+		'aip_veggie_wheat', 'aip_veggie_wheat_cooked',
+		'aip_veggie_sunflower', 'aip_veggie_sunflower_cooked',
+		'aip_veggie_grape', 'aip_veggie_grape_cooked',
+	],
+];
+
+// 获取根目录
+const rootPath = path.join(path.normalize(__dirname), '..');
+const __STEAM__PATH = path.join(rootPath, '__STEAM__');
+
+// 获取图片文件路径
+function getImagePath(name) {
+	const modItemPath = path.join(rootPath, 'images', 'inventoryimages', `${name}.png`);
+	if (fs.existsSync(modItemPath)) {
+		return modItemPath;
+	}
+	return  path.join(rootPath, 'images_done', `${name}.png`);
+}
+
+(async function() {
+	console.log(chalk.cyan("Start build intro image..."));
+
+	// 获取食物
+	console.log(chalk.yellow("Generate food json..."));
+	execSync(`node "${path.resolve(rootPath, 'gen', 'foodPreview.js')}"`);
+
+	const foodList = fs.readJSONSync(path.join(__STEAM__PATH, 'food.json'));
+	IMAGES.push(foodList.map(food => food.name));
+
+	// Auto break lines
+	console.log(chalk.cyan("Relayouting..."));
+	const imageLines = [];
+	IMAGES.forEach(images => {
+		const clone = images.slice();
+		while(clone.length) {
+			const fitLine = clone.splice(0, MAX_WIDTH_COUNT);
+			imageLines.push(fitLine);
+		}
+	});
+	console.log(imageLines);
+
+	// Generate images
+	console.log(chalk.cyan("Generating..."));
+	const descImg = new jimp(MAX_WIDTH_COUNT * IMG_SIZE, imageLines.length * IMG_SIZE);
+
+	for (let y = 0; y < imageLines.length; y += 1) {
+		const images = imageLines[y];
+
+		for (let x = 0; x < images.length; x += 1) {
+			const imagePath = getImagePath(images[x]);
+			const img = await jimp.read(imagePath);
+
+			descImg.composite(img, x * IMG_SIZE, y * IMG_SIZE);
+		}
+	}
+
+	console.log(chalk.cyan("Saving..."));
+	const savedPath = path.join(__STEAM__PATH, 'intro.png');
+	descImg
+		.write(savedPath);
+
+		console.log(chalk.green(`done: ${savedPath}`));
+})();

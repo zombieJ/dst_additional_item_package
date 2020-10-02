@@ -354,6 +354,10 @@ async function run() {
 	// Save images
 	await Promise.all(promiseList);
 
+	console.log('================= Help ================');
+	// 保存一份食物文档
+	FSE.writeFileSync(PATH.join(descPath, 'food.json'), JSON.stringify(foodList, null, 2), 'utf8');
+
 	console.log('================= Save ================');
 	const destPath = PATH.join(descPath, 'food.png');
 	descImg
