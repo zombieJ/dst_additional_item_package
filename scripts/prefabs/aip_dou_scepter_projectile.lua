@@ -18,28 +18,36 @@ local assets = {
 
 local prefabs = {}
 
+local function patchColor(inst, color)
+    if not color or #color < 4 then
+        return false
+    end
+
+    inst.AnimState:OverrideMultColour(color[1] / 10, color[2] / 10, color[3] / 10, color[4] / 10)
+    return true
+end
+
 --------------------------------- 实体 ---------------------------------
 local function CreateTail(inst)
     local color = inst.components.aipc_info_client:Get("aip_projectile_color")
-    if not color or #color < 4 then
-        return nil
-    end
-
     local tail = createEffectVest("aip_dou_scepter_projectile", "aip_dou_scepter_projectile", "disappear")
-    tail.AnimState:OverrideMultColour(color[1] / 10, color[2] / 10, color[3] / 10, color[4] / 10)
 
-    local x, y, z = inst.Transform:GetWorldPosition()
-    local speed = 15
+    if patchColor(tail, color) then
+        local x, y, z = inst.Transform:GetWorldPosition()
+        local speed = 15
 
-    local rot = inst.Transform:GetRotation()
-    tail.Transform:SetRotation(rot)
-    rot = rot * DEGREES
-    local offsangle = math.random() * 2 * PI
-    local offsradius = math.random() * .2 + .2
-    local hoffset = math.cos(offsangle) * offsradius
-    local voffset = math.sin(offsangle) * offsradius
-    tail.Transform:SetPosition(x + math.sin(rot) * hoffset, y + voffset, z + math.cos(rot) * hoffset)
-    tail.Physics:SetMotorVel(speed * (.2 + math.random() * .3), 0, 0)
+        local rot = inst.Transform:GetRotation()
+        tail.Transform:SetRotation(rot)
+        rot = rot * DEGREES
+        local offsangle = math.random() * 2 * PI
+        local offsradius = math.random() * .2 + .2
+        local hoffset = math.cos(offsangle) * offsradius
+        local voffset = math.sin(offsangle) * offsradius
+        tail.Transform:SetPosition(x + math.sin(rot) * hoffset, y + voffset, z + math.cos(rot) * hoffset)
+        tail.Physics:SetMotorVel(speed * (.2 + math.random() * .3), 0, 0)
+    else
+        tail:Remove()
+    end
 end
 
 local function OnUpdateProjectileTail(inst)
@@ -70,7 +78,10 @@ local function fn()
 
     -- 额外信息（颜色传递）
     inst:AddComponent("aipc_info_client")
-	inst.components.aipc_info_client:SetByteArray("aip_projectile_color", nil, true)
+    inst.components.aipc_info_client:SetByteArray("aip_projectile_color", nil, true)
+    inst.components.aipc_info_client:ListenForEvent("aip_projectile_color", function(inst, color)
+        patchColor(inst, color)
+    end)
 
     -- 客户端的特效
     if not TheNet:IsDedicated() then
