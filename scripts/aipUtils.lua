@@ -1,3 +1,27 @@
+-- 打平表格，去除中间的空格并且保持顺序
+function GLOBAL.aipFlattenTable(originTbl)
+	local targetTbl = {}
+	local tbl = originTbl or {}
+	local count = 0
+	for k, v in pairs(tbl) do
+		count = count + 1
+	end
+
+	local i = 1
+	for i = 1, 10000 do
+		local current = tbl[i]
+		if current ~= nil then
+			table.insert(targetTbl, current)
+		end
+
+		if #targetTbl >= count then
+			break
+		end
+	end
+
+	return targetTbl
+end
+
 function GLOBAL.aipCommonStr(showType, split, ...)
 	local str = ""
 	for i,v in ipairs(arg) do
@@ -43,6 +67,8 @@ function GLOBAL.aipCommonPrint(showType, split, ...)
 	local str = "[AIP] "..GLOBAL.aipCommonStr(showType, split, ...)
 
 	print(str)
+
+	return str
 end
 
 function GLOBAL.aipStr(...)

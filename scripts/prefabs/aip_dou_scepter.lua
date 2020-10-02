@@ -57,7 +57,8 @@ local function refreshScepter(inst)
     local projectileInfo = { queue = {} }
 
     if inst.components.container ~= nil then
-        projectileInfo = calculateProjectile(inst.components.container:GetAllItems())
+        -- 不能用 GetAllItems，否则顺序不对
+        projectileInfo = calculateProjectile(inst.components.container.slots)
     elseif inst.replica.container ~= nil then
         projectileInfo = calculateProjectile(inst.replica.container:GetItems())
     end
