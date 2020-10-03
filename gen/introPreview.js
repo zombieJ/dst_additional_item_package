@@ -14,8 +14,12 @@ const MAX_WIDTH_COUNT = 9;
 const IMAGES = [
 	['aip_blood_package', 'aip_mine_car'],
 	['incinerator', 'aip_orbit_item', 'aip_nectar_maker', 'aip_woodener'],
-	['dark_observer', 'aip_shadow_paper_package', 'aip_shadow_package'],
-	['popcorngun', 'aip_fish_sword', 'aip_beehave', 'aip_oar_woodead', 'aip_armor_gambler'],
+	['dark_observer', 'aip_shadow_paper_package', 'aip_shadow_package', 'aip_dou_opal', 'aip_leaf_note'],
+	['popcorngun', 'aip_fish_sword', 'aip_beehave', 'aip_oar_woodead', 'aip_armor_gambler', 'aip_dou_scepter'],
+	[
+		'aip_dou_fire_inscription', 'aip_dou_heal_inscription', 'aip_dou_ice_inscription', 'aip_dou_sand_inscription',
+		'aip_dou_area_inscription', 'aip_dou_follow_inscription', 'aip_dou_split_inscription', 'aip_dou_through_inscription',
+	],
 	['aip_horse_head', 'aip_som', 'aip_blue_glasses'],
 	[
 		'chesspiece_aip_doujiang_marble', 'chesspiece_aip_doujiang_stone', 'chesspiece_aip_doujiang_moonglass',
