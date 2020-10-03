@@ -35,14 +35,25 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_JOKER_FACE = LANG.DESC
 local aip_joker_face = Recipe("aip_joker_face", {Ingredient("livinglog", 3), Ingredient("spidereggsack", 1), Ingredient("razor", 1)}, RECIPETABS.DRESS, TECH.SCIENCE_TWO)
 aip_joker_face.atlas = "images/inventoryimages/aip_joker_face.xml"
 
-local tempalte = require("prefabs/aip_dress_template")
+-- 环形球
 
-return tempalte("aip_joker_face", {
+-- 面具实体
+local tempalte = require("prefabs/aip_dress_template")
+local prefab = tempalte("aip_joker_face", {
+	keepHead = true,
 	fueled = {
 		level = TUNING.AIP_JOKER_FACE_FUEL,
 	},
-	onEquip = function()
+	onEquip = function(inst, owner)
 	end,
-	onUnequip = function()
+	onUnequip = function(inst, owner)
+	end,
+	postInst = function(inst)
+		-- 不能修
+		inst.components.fueled.no_sewing = true
+
+		
 	end,
 })
+
+return prefab
