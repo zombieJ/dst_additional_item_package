@@ -129,3 +129,13 @@ function GLOBAL.aipGetAnimState(inst)
 
 	return match and data or nil
 end
+
+-- 返回角度：0 ~ 360
+function GLOBAL.aipGetAngle(src, tgt)
+	local direction = (tgt - src):GetNormalized()
+	local angle = math.acos(direction:Dot(GLOBAL.Vector3(1, 0, 0))) / DEGREES
+	if direction.z < 0 then
+		angle = 360 - angle
+	end
+	return angle
+end
