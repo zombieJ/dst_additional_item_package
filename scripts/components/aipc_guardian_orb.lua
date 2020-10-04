@@ -8,7 +8,7 @@ local ANGLE_SPEED = 360
 local MAX_COUNT = 3
 local INCREASE_TIMEOUT = 2
 local DISTANCE = 1.5
-local DISTANCE_FAST = 2
+local DISTANCE_FAST = 2.5
 
 -- 获取法球目标点
 local function getTargetPoint(angle, pos, offset)
