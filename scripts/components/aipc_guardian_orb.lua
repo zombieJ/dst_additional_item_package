@@ -13,6 +13,12 @@ local function getTargetPoint(angle, pos, offset)
 	return targetPos
 end
 
+local function facePoint(orb, targetPoint)
+	local orbPos = orb:GetPosition()
+	local targetAngle = aipGetAngle(orbPos, targetPoint)
+	orb.Transform:SetRotation(targetAngle)
+end
+
 local GuardianOrb = Class(function(self, inst)
 	self.inst = inst
 
@@ -60,18 +66,18 @@ function GuardianOrb:OnUpdate(dt)
 	for i = 1, #self.orbs do
 		local orb = self.orbs[i]
 		local orbPos = orb:GetPosition()
-		local targetPoint = getTargetPoint(self.angle, instPos, i - 1)
-
-		local angle = aipGetAngle(orbPos, targetPoint)
-		orb.Transform:SetRotation(angle)
-		orb:FacePoint(targetPoint)
 
 		-- 根据玩家间距调整速度
 		local sq = distsq(orbPos.x, orbPos.z, instPos.x, instPos.z)
 		if sq > DISTANCE_FAST * DISTANCE_FAST then
-			orb.Physics:SetMotorVel(ORB_SPEED_FAST, 0, 0) -- 太远了就要追上去
+			-- 太远了就直接往目标身上追
+			facePoint(orb, instPos)
+			orb.Physics:SetMotorVel(ORB_SPEED_FAST, 0, 0)
 		else
-			orb.Physics:SetMotorVel(ORB_SPEED, 0, 0) -- 在附近则慢慢来
+			-- 在附近则转圈圈
+			local targetPoint = getTargetPoint(self.angle, instPos, i - 1)
+			facePoint(orb, targetPoint)
+			orb.Physics:SetMotorVel(ORB_SPEED, 0, 0)
 		end
 	end
 end
