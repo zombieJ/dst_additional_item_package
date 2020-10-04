@@ -10,6 +10,12 @@ if additional_weapon ~= "open" then
 	return nil
 end
 
+-- 雕塑关闭
+local additional_chesspieces = aipGetModConfig("additional_chesspieces")
+if additional_chesspieces ~= "open" then
+	return nil
+end
+
 local calculateProjectile = require("utils/aip_scepter_util")
 
 local language = aipGetModConfig("language")
