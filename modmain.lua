@@ -85,30 +85,23 @@ if
 		100,
 		"images/inventoryimages/aip_dou_tech.xml",
 		"aip_dou_tech.tex",
+		nil,
 		true
 	)
 
-	-- GLOBAL.STRINGS.TABS.AIP_DOU_SCEPTER = "神秘魔法"
+	GLOBAL.STRINGS.TABS.AIP_DOU_SCEPTER = "神秘魔法"
 
-	-- modimport("scripts/techHooker.lua")
+	modimport("scripts/techHooker.lua")
+
+	local inscriptions = require("utils/aip_scepter_util").inscriptions
+	for name, info in pairs(inscriptions) do
+		AddRecipe(
+			name, info.recipes, AIP_DOU_SCEPTER, GLOBAL.TECH.AIP_DOU_SCEPTER,
+			nil, nil, true, nil, nil,
+			"images/inventoryimages/"..name..".xml", name..".tex"
+		)
+	end
 end
-
-
--- if GetModConfigData("additional_chesspieces") == "open" then
--- 	modimport("scripts/custom_tech_tree.lua")
-
--- 	-- 添加一个 Tab
--- 	GLOBAL.RECIPETABS.AIP_DOU_SCEPTER = {
--- 		str = "AIP_DOU_SCEPTER",
--- 		sort = 100,
--- 		icon_atlas = "images/inventoryimages/aip_dou_tech.xml",
--- 		icon = "aip_dou_tech.tex",
--- 		crafting_station = true
--- 	}
--- 	GLOBAL.STRINGS.TABS.AIP_DOU_SCEPTER = "神秘魔法"
-
--- 	GLOBAL.aipAddNewTechTree("AIP_DOU_SCEPTER")
--- end
 
 ------------------------------------- 组件钩子 -------------------------------------
 modimport("scripts/componentsHooker.lua")

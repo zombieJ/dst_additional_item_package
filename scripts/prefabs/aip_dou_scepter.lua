@@ -10,7 +10,7 @@ if additional_weapon ~= "open" then
 	return nil
 end
 
-local calculateProjectile = require("utils/aip_scepter_util")
+local calculateProjectile = require("utils/aip_scepter_util").calculateProjectile
 
 local language = aipGetModConfig("language")
 
