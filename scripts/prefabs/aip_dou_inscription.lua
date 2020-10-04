@@ -119,11 +119,9 @@ local function makeInscription(name, info)
 	STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperName] = PREFAB_LANG.DESC
 
 	-- 生成配方
-	local aip_dou_inscription = Recipe(name, info.recipes, RECIPETABS.AIP_DOU_SCEPTER, TECH.AIP_DOU_SCEPTER_ONE, nil, nil, true)
-	aip_dou_inscription.atlas = "images/inventoryimages/"..name..".xml"
-	aip_dou_inscription.image = name..".tex"
-	-- aip_dou_inscription.atlas = "images/inventoryimages/aip_dou_fire_inscription.xml"
-	-- aip_dou_inscription.image = "aip_dou_fire_inscription.tex"
+	-- local aip_dou_inscription = Recipe(name, info.recipes, RECIPETABS.AIP_DOU_SCEPTER, TECH.AIP_DOU_SCEPTER, nil, nil, true)
+	-- aip_dou_inscription.atlas = "images/inventoryimages/"..name..".xml"
+	-- aip_dou_inscription.image = name..".tex"
 
 	local function fn()
 		local inst = CreateEntity()

@@ -74,21 +74,41 @@ PrefabFiles =
 modimport("scripts/aipUtils.lua")
 
 --------------------------------------- 科技 ---------------------------------------
-if GetModConfigData("additional_chesspieces") == "open" then
-	modimport("scripts/custom_tech_tree.lua")
+if
+	GetModConfigData("additional_chesspieces") == "open" and
+	GetModConfigData("open_beta") == "open" then
+	-- 只有开启测试才需要注入
 
-	-- 添加一个 Tab
-	GLOBAL.RECIPETABS.AIP_DOU_SCEPTER = {
-		str = "AIP_DOU_SCEPTER",
-		sort = 100,
-		icon_atlas = "images/inventoryimages/aip_dou_tech.xml",
-		icon = "aip_dou_tech.tex",
-		crafting_station = true
-	}
-	GLOBAL.STRINGS.TABS.AIP_DOU_SCEPTER = "神秘魔法"
+	-- 添加对应标签
+	local AIP_DOU_SCEPTER = AddRecipeTab(
+		"AIP_DOU_SCEPTER",
+		100,
+		"images/inventoryimages/aip_dou_tech.xml",
+		"aip_dou_tech.tex",
+		true
+	)
 
-	GLOBAL.aipAddNewTechTree("AIP_DOU_SCEPTER")
+	-- GLOBAL.STRINGS.TABS.AIP_DOU_SCEPTER = "神秘魔法"
+
+	-- modimport("scripts/techHooker.lua")
 end
+
+
+-- if GetModConfigData("additional_chesspieces") == "open" then
+-- 	modimport("scripts/custom_tech_tree.lua")
+
+-- 	-- 添加一个 Tab
+-- 	GLOBAL.RECIPETABS.AIP_DOU_SCEPTER = {
+-- 		str = "AIP_DOU_SCEPTER",
+-- 		sort = 100,
+-- 		icon_atlas = "images/inventoryimages/aip_dou_tech.xml",
+-- 		icon = "aip_dou_tech.tex",
+-- 		crafting_station = true
+-- 	}
+-- 	GLOBAL.STRINGS.TABS.AIP_DOU_SCEPTER = "神秘魔法"
+
+-- 	GLOBAL.aipAddNewTechTree("AIP_DOU_SCEPTER")
+-- end
 
 ------------------------------------- 组件钩子 -------------------------------------
 modimport("scripts/componentsHooker.lua")
