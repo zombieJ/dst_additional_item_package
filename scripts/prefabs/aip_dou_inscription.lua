@@ -87,18 +87,7 @@ local LANG_MAP = {
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
 ------------------------------------ 元素 ------------------------------------
-local IngredientLeafNote = Ingredient("aip_leaf_note", 1, "images/inventoryimages/aip_leaf_note.xml")
-
-local INSCRIPTIONS = {
-	aip_dou_fire_inscription =		{ tag = "FIRE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_ice_inscription =		{ tag = "ICE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_sand_inscription =		{ tag = "SAND",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_heal_inscription =		{ tag = "HEAL",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_follow_inscription =	{ tag = "FOLLOW",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_through_inscription =	{ tag = "THROUGH",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_area_inscription =		{ tag = "AREA",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_split_inscription =		{ tag = "SPLIT",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-}
+local INSCRIPTIONS = require("utils/aip_scepter_util").inscriptions
 
 ------------------------------------ 功能 ------------------------------------
 local function makeInscription(name, info)
@@ -117,13 +106,6 @@ local function makeInscription(name, info)
 	STRINGS.NAMES[upperName] = PREFAB_LANG.NAME
 	STRINGS.RECIPE_DESC[upperName] = PREFAB_LANG.DESC
 	STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperName] = PREFAB_LANG.DESC
-
-	-- 生成配方
-	local aip_dou_inscription = Recipe(name, info.recipes, RECIPETABS.AIP_DOU_SCEPTER, TECH.AIP_DOU_SCEPTER_ONE, nil, nil, true)
-	aip_dou_inscription.atlas = "images/inventoryimages/"..name..".xml"
-	aip_dou_inscription.image = name..".tex"
-	-- aip_dou_inscription.atlas = "images/inventoryimages/aip_dou_fire_inscription.xml"
-	-- aip_dou_inscription.image = "aip_dou_fire_inscription.tex"
 
 	local function fn()
 		local inst = CreateEntity()
