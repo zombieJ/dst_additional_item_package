@@ -21,7 +21,7 @@ end
 -- 寻找附近的敌对玩家
 local function findNearEnemy(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()
-	local ents = TheSim:FindEntities(x, y, z, TUNING.WINONA_CATAPULT_MAX_RANGE, RETARGET_MUST_TAGS, RETARGET_CANT_TAGS)
+	local ents = TheSim:FindEntities(x, y, z, TUNING.AIP_JOKER_FACE_MAX_RANGE, RETARGET_MUST_TAGS, RETARGET_CANT_TAGS)
 
 	local enemy = nil
 	local targetedEnemy = nil
@@ -42,6 +42,8 @@ end
 local GuardianOrb = Class(function(self, inst)
 	self.inst = inst
 
+	-- 施法者
+	self.owner = nil
 	-- 计算第一个法球的位置
 	self.angle = 0
 	-- 法球数组
@@ -55,7 +57,8 @@ local GuardianOrb = Class(function(self, inst)
 end)
 
 -- 启动守护法球
-function GuardianOrb:Start()
+function GuardianOrb:Start(owner)
+	self.owner = owner
 	self.inst:StartUpdatingComponent(self)
 end
 
@@ -108,10 +111,21 @@ function GuardianOrb:OnUpdate(dt)
 		if i == #self.orbs then
 			local target = findNearEnemy(self.inst)
 			if target ~= nil then
-				local orbTargetAngle = aipGetAngle(orbPos, target:GetPosition())
+				local targetPos = target:GetPosition()
+				local orbTargetAngle = orb:GetAngleToPoint(targetPos.x, targetPos.y, targetPos.z)
 				local diffAngle = aipDiffAngle(orb:GetRotation(), orbTargetAngle)
 
-				aipPrint(diffAngle)
+				if diffAngle < 30 then
+					-- 偏差小于 30 度就可以发射了
+					local proj = SpawnPrefab(self.projectilePrefab)
+					local x, y, z = orb.Transform:GetWorldPosition()
+					proj.Transform:SetPosition(orb.Transform:GetWorldPosition())
+					proj.components.projectile:Throw(self.inst, target, self.owner)
+
+					-- 清理原来的
+					table.remove(self.orbs, i)
+					orb:Remove()
+				end
 			end
 		end
 	end

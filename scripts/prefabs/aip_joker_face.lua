@@ -25,6 +25,7 @@ local LANG_MAP = {
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
 TUNING.AIP_JOKER_FACE_FUEL = TUNING.SPIDERHAT_PERISHTIME * PERISH_MAP[dress_uses]
+TUNING.AIP_JOKER_FACE_MAX_RANGE = 8
 
 -- 文字描述
 STRINGS.NAMES.AIP_JOKER_FACE = LANG.NAME
@@ -75,7 +76,7 @@ local prefab = tempalte("aip_joker_face", {
 		level = TUNING.AIP_JOKER_FACE_FUEL,
 	},
 	onEquip = function(inst, owner)
-		inst.components.aipc_guardian_orb:Start()
+		inst.components.aipc_guardian_orb:Start(owner)
 	end,
 	onUnequip = function(inst, owner)
 		inst.components.aipc_guardian_orb:Stop()
@@ -88,6 +89,11 @@ local prefab = tempalte("aip_joker_face", {
 		inst:AddComponent("aipc_guardian_orb")
 		inst.components.aipc_guardian_orb.spawnPrefab = "aip_joker_orb"
 		inst.components.aipc_guardian_orb.projectilePrefab = "fire_projectile"
+
+		-- 添加武器类型
+		inst:AddComponent("weapon")
+		inst.components.weapon:SetDamage(99999)
+		inst.components.weapon:SetRange(0, 0)
 	end,
 })
 
