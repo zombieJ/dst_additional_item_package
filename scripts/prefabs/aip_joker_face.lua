@@ -31,7 +31,7 @@ local LANG_MAP = {
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
 TUNING.AIP_JOKER_FACE_FUEL = TUNING.SPIDERHAT_PERISHTIME * PERISH_MAP[dress_uses]
-TUNING.AIP_JOKER_FACE_MAX_RANGE = 8
+TUNING.AIP_JOKER_FACE_MAX_RANGE = 12
 TUNING.AIP_JOKER_FACE_DAMAGE = DAMAGE_MAP[weapon_damage]
 
 -- 文字描述
@@ -49,6 +49,7 @@ local function jokerOrbFn()
 
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
+	inst.entity:AddLight()
 	inst.entity:AddNetwork()
 
 	MakeFlyingCharacterPhysics(inst, 1, .5)
@@ -61,11 +62,25 @@ local function jokerOrbFn()
 	inst:AddTag("flying")
 	inst:AddTag("ignorewalkableplatformdrowning")
 
+	-- 添加一抹灯光
+	inst.Light:SetIntensity(.6)
+	inst.Light:SetRadius(.5)
+	inst.Light:SetFalloff(.6)
+	inst.Light:Enable(true)
+	inst.Light:SetColour(180 / 255, 195 / 255, 225 / 255)
+
 	inst.entity:SetPristine() -- 客户端执行相同实体，Transform AnimState Network 等等
 
 	if not TheWorld.ismastersim then
 		return inst
 	end
+
+	
+	inst:DoTaskInTime(0.5, function()
+		if orb._master ~= true then
+			orb:Remove()
+		end
+	end)
 
 	return inst
 end

@@ -1,4 +1,3 @@
--- local COMBAT_TAGS = { "_combat", "hostile" }
 local RETARGET_MUST_TAGS = { "_combat", "_health" }
 local RETARGET_CANT_TAGS = { "INLIMBO", "player", "engineering" }
 
@@ -8,7 +7,8 @@ local ANGLE_SPEED = 360
 local MAX_COUNT = 3
 local INCREASE_TIMEOUT = 2
 local DISTANCE = 1.5
-local DISTANCE_FAST = 2.5
+local DISTANCE_FAST = 2
+local PROJECTILE_INTERVAL = 0.6 -- 设置可以攻击目标间隔
 
 -- 获取法球目标点
 local function getTargetPoint(angle, pos, offset)
@@ -54,6 +54,8 @@ local GuardianOrb = Class(function(self, inst)
 	self.spawnPrefab = nil
 	-- 发射出去的法球
 	self.projectilePrefab = nil
+	-- 法球释放间隔
+	self.projectileTimeout = 0
 end)
 
 -- 启动守护法球
@@ -84,8 +86,12 @@ function GuardianOrb:OnUpdate(dt)
 			table.insert(self.orbs, orb)
 			orb.Transform:SetPosition(instPos.x, instPos.y, instPos.z)
 			orb.Physics:SetMotorVel(ORB_SPEED, 0, 0)
+			orb._master = true
 		end
 	end
+
+	-- 计算是否可以释放法球
+	self.projectileTimeout = self.projectileTimeout + dt
 
 	-- 计算角度
 	self.angle = math.mod((self.angle + dt * ANGLE_SPEED), 360)
@@ -108,7 +114,7 @@ function GuardianOrb:OnUpdate(dt)
 		end
 
 		-- 只有最后一个发球可以被扔出去
-		if i == #self.orbs then
+		if i == #self.orbs and self.projectileTimeout > PROJECTILE_INTERVAL then
 			local target = findNearEnemy(self.inst)
 			if target ~= nil then
 				local targetPos = target:GetPosition()
@@ -126,6 +132,7 @@ function GuardianOrb:OnUpdate(dt)
 					-- 清理原来的
 					table.remove(self.orbs, i)
 					orb:Remove()
+					self.projectileTimeout = 0
 				end
 			end
 		end
