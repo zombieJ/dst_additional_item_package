@@ -1,3 +1,16 @@
+local IngredientLeafNote = Ingredient("aip_leaf_note", 1, "images/inventoryimages/aip_leaf_note.xml")
+
+local inscriptions = {
+	aip_dou_fire_inscription =		{ tag = "FIRE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_ice_inscription =		{ tag = "ICE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_sand_inscription =		{ tag = "SAND",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_heal_inscription =		{ tag = "HEAL",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_follow_inscription =	{ tag = "FOLLOW",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_through_inscription =	{ tag = "THROUGH",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_area_inscription =		{ tag = "AREA",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_split_inscription =		{ tag = "SPLIT",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+}
+
 local categories = {
 	FIRE = "element",
 	ICE = "element",
@@ -126,4 +139,7 @@ function calculateProjectile(items)
 	return projectileInfo
 end
 
-return calculateProjectile
+return {
+	calculateProjectile = calculateProjectile,
+	inscriptions = inscriptions,
+}
