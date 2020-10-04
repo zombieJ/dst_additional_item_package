@@ -62,7 +62,7 @@ local function jokerOrbFn()
 	return inst
 end
 
-local jokerOrbPrefab = Prefab("aip_joker_orb", jokerOrbFn, { Asset("ANIM", "anim/staff_projectile.zip") })
+local jokerOrbPrefab = Prefab("aip_joker_orb", jokerOrbFn, { Asset("ANIM", "anim/staff_projectile.zip") }, { "fire_projectile" })
 
 ------------------------------------------------------ 面具实体 ------------------------------------------------------
 local tempalte = require("prefabs/aip_dress_template")
@@ -87,6 +87,7 @@ local prefab = tempalte("aip_joker_face", {
 		-- 添加守护法球组件
 		inst:AddComponent("aipc_guardian_orb")
 		inst.components.aipc_guardian_orb.spawnPrefab = "aip_joker_orb"
+		inst.components.aipc_guardian_orb.projectilePrefab = "fire_projectile"
 	end,
 })
 

@@ -1,3 +1,7 @@
+-- local COMBAT_TAGS = { "_combat", "hostile" }
+local RETARGET_MUST_TAGS = { "_combat", "_health" }
+local RETARGET_CANT_TAGS = { "INLIMBO", "player", "engineering" }
+
 local ORB_SPEED = 9
 local ORB_SPEED_FAST = 20
 local ANGLE_SPEED = 360
@@ -6,6 +10,7 @@ local INCREASE_TIMEOUT = 2
 local DISTANCE = 1.5
 local DISTANCE_FAST = 2
 
+-- 获取法球目标点
 local function getTargetPoint(angle, pos, offset)
 	local offsetAngle = angle + (360 / MAX_COUNT * offset)
 	local radius = offsetAngle / 180 * PI
@@ -13,10 +18,25 @@ local function getTargetPoint(angle, pos, offset)
 	return targetPos
 end
 
-local function facePoint(orb, targetPoint)
-	local orbPos = orb:GetPosition()
-	local targetAngle = aipGetAngle(orbPos, targetPoint)
-	orb.Transform:SetRotation(targetAngle)
+-- 寻找附近的敌对玩家
+local function findNearEnemy(inst)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local ents = TheSim:FindEntities(x, y, z, TUNING.WINONA_CATAPULT_MAX_RANGE, RETARGET_MUST_TAGS, RETARGET_CANT_TAGS)
+
+	local enemy = nil
+	local targetedEnemy = nil
+
+	for i, v in ipairs(ents) do
+		if v.entity:IsVisible() and not v.components.health:IsDead() then
+			if v:HasTag("hostile") then
+				enemy = v
+			elseif v.components.combat.target ~= nil and v.components.combat.target:HasTag("player") then
+				targetedEnemy = v
+			end
+		end
+	end
+
+	return targetedEnemy or enemy
 end
 
 local GuardianOrb = Class(function(self, inst)
@@ -30,6 +50,8 @@ local GuardianOrb = Class(function(self, inst)
 	self.timeout = 0
 	-- 召唤的法球物质
 	self.spawnPrefab = nil
+	-- 发射出去的法球
+	self.projectilePrefab = nil
 end)
 
 -- 启动守护法球
@@ -45,6 +67,8 @@ end
 -- 计算法球位置
 function GuardianOrb:OnUpdate(dt)
 	local instPos = self.inst:GetPosition()
+
+	-- TODO: 死亡需要取消效果
 
 	-- 法球数量计算
 	self.timeout = self.timeout + dt
@@ -71,13 +95,24 @@ function GuardianOrb:OnUpdate(dt)
 		local sq = distsq(orbPos.x, orbPos.z, instPos.x, instPos.z)
 		if sq > DISTANCE_FAST * DISTANCE_FAST then
 			-- 太远了就直接往目标身上追
-			facePoint(orb, instPos)
+			orb:FacePoint(instPos)
 			orb.Physics:SetMotorVel(ORB_SPEED_FAST, 0, 0)
 		else
 			-- 在附近则转圈圈
 			local targetPoint = getTargetPoint(self.angle, instPos, i - 1)
-			facePoint(orb, targetPoint)
+			orb:FacePoint(targetPoint)
 			orb.Physics:SetMotorVel(ORB_SPEED, 0, 0)
+		end
+
+		-- 只有最后一个发球可以被扔出去
+		if i == #self.orbs then
+			local target = findNearEnemy(self.inst)
+			if target ~= nil then
+				local orbTargetAngle = aipGetAngle(orbPos, target:GetPosition())
+				local diffAngle = aipDiffAngle(orb:GetRotation(), orbTargetAngle)
+
+				aipPrint(diffAngle)
+			end
 		end
 	end
 end

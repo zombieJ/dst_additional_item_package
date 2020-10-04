@@ -139,3 +139,14 @@ function GLOBAL.aipGetAngle(src, tgt)
 	end
 	return angle
 end
+
+-- 返回(0 ~ 360)两个角度的偏差值
+function GLOBAL.aipDiffAngle(a1, a2)
+	local min = math.min(a1, a2)
+	local max = math.max(a1, a2)
+
+	local diff1 = max - min
+	local diff2 = min + 360 - max
+
+	return math.min(diff1, diff2)
+end
