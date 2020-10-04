@@ -1,5 +1,6 @@
 -- 配置
 local dress_uses = aipGetModConfig("dress_uses")
+local weapon_damage = aipGetModConfig("weapon_damage")
 local language = aipGetModConfig("language")
 
 -- 默认参数
@@ -7,6 +8,11 @@ local PERISH_MAP = {
 	less = 0.5,
 	normal = 1,
 	much = 2,
+}
+local DAMAGE_MAP = {
+	less = TUNING.SPEAR_DAMAGE * 0.5,
+	normal = TUNING.SPEAR_DAMAGE,
+	large = TUNING.SPEAR_DAMAGE * 2,
 }
 
 local LANG_MAP = {
@@ -26,6 +32,7 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 TUNING.AIP_JOKER_FACE_FUEL = TUNING.SPIDERHAT_PERISHTIME * PERISH_MAP[dress_uses]
 TUNING.AIP_JOKER_FACE_MAX_RANGE = 8
+TUNING.AIP_JOKER_FACE_DAMAGE = DAMAGE_MAP[weapon_damage]
 
 -- 文字描述
 STRINGS.NAMES.AIP_JOKER_FACE = LANG.NAME
@@ -92,7 +99,7 @@ local prefab = tempalte("aip_joker_face", {
 
 		-- 添加武器类型
 		inst:AddComponent("weapon")
-		inst.components.weapon:SetDamage(99999)
+		inst.components.weapon:SetDamage(TUNING.AIP_JOKER_FACE_DAMAGE)
 		inst.components.weapon:SetRange(0, 0)
 	end,
 })

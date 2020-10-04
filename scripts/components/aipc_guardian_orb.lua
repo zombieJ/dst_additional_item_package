@@ -120,6 +120,7 @@ function GuardianOrb:OnUpdate(dt)
 					local proj = SpawnPrefab(self.projectilePrefab)
 					local x, y, z = orb.Transform:GetWorldPosition()
 					proj.Transform:SetPosition(orb.Transform:GetWorldPosition())
+					proj.components.projectile:SetSpeed(ORB_SPEED_FAST)
 					proj.components.projectile:Throw(self.inst, target, self.owner)
 
 					-- 清理原来的
