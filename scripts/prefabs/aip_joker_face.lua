@@ -77,8 +77,8 @@ local function jokerOrbFn()
 
 	
 	inst:DoTaskInTime(0.5, function()
-		if orb._master ~= true then
-			orb:Remove()
+		if inst._master ~= true then
+			inst:Remove()
 		end
 	end)
 
