@@ -20,7 +20,7 @@ const IMAGES = [
 		'aip_dou_fire_inscription', 'aip_dou_heal_inscription', 'aip_dou_ice_inscription', 'aip_dou_sand_inscription',
 		'aip_dou_area_inscription', 'aip_dou_follow_inscription', 'aip_dou_split_inscription', 'aip_dou_through_inscription',
 	],
-	['aip_horse_head', 'aip_som', 'aip_blue_glasses'],
+	['aip_blue_glasses', 'aip_horse_head', 'aip_som', 'aip_joker_face'],
 	[
 		'chesspiece_aip_doujiang_marble', 'chesspiece_aip_doujiang_stone', 'chesspiece_aip_doujiang_moonglass',
 		'chesspiece_aip_deer', 'chesspiece_aip_deer_stone', 'chesspiece_aip_deer_moonglass',
