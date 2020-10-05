@@ -23,8 +23,8 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 -- 文字描述
 STRINGS.NAMES.AIP_GLASS_CHEST = LANG.NAME
-STRINGS.RECIPE_DESC.AIP_GLASS_CHEST = LANG.DESC
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_GLASS_CHEST = LANG.DESCRIBE
+STRINGS.RECIPE_DESC.AIP_GLASS_CHEST = LANG.RECDESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_GLASS_CHEST = LANG.DESC
 
 -- 配方
 local aip_glass_chest = Recipe("aip_glass_chest", {Ingredient("log", 1)}, RECIPETABS.MAGIC, TECH.MAGIC_TWO, "aip_glass_chest_placer")
@@ -44,12 +44,16 @@ local prefabs = {}
 local function onopen(inst)
 	inst.AnimState:PlayAnimation("open")
 	inst.SoundEmitter:PlaySound("dontstarve/wilson/chest_open")
-end 
+
+	inst.components.aipc_unity_container:LockOthers()
+end
 
 local function onclose(inst)
 	inst.AnimState:PlayAnimation("close")
 	inst.AnimState:PushAnimation("closed", false)
 	inst.SoundEmitter:PlaySound("dontstarve/wilson/chest_close")
+
+	inst.components.aipc_unity_container:UnlockOthers()
 end
 
 local function onhammered(inst, worker)
@@ -70,6 +74,8 @@ local function onhit(inst, worker)
 		inst.components.container:DropEverything()
 		inst.components.container:Close()
 	end
+
+	inst.components.aipc_unity_container:UnlockOthers()
 end
 
 local function onbuilt(inst)
@@ -113,6 +119,9 @@ local function fn()
 	inst.components.container.onclosefn = onclose
 	inst.components.container.skipclosesnd = true
 	inst.components.container.skipopensnd = true
+	inst.components.container.canbeopened = true
+
+	inst:AddComponent("aipc_unity_container")
 
 	inst:AddComponent("lootdropper")
 
