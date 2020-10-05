@@ -56,3 +56,8 @@ for i, name in ipairs(birds) do
 	end)
 end
 
+------------------------------------------ 活木 ------------------------------------------
+AddPrefabPostInit("livinglog", function(inst)
+	-- 添加燃料类型
+	inst:AddTag("LIVINGLOG_fuel")
+end)

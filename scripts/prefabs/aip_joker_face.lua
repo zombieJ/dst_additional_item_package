@@ -43,6 +43,9 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_JOKER_FACE = LANG.DESC
 local aip_joker_face = Recipe("aip_joker_face", {Ingredient("livinglog", 3), Ingredient("spidereggsack", 1), Ingredient("razor", 1)}, RECIPETABS.DRESS, TECH.SCIENCE_TWO)
 aip_joker_face.atlas = "images/inventoryimages/aip_joker_face.xml"
 
+---------------------------------------------------- 注入燃料类型 ----------------------------------------------------
+FUELTYPE.AIP_LIVINGLOG = "LIVINGLOG"
+
 ------------------------------------------------------- 环形球 -------------------------------------------------------
 local function jokerOrbFn()
 	local inst = CreateEntity()
@@ -87,6 +90,11 @@ end
 
 local jokerOrbPrefab = Prefab("aip_joker_orb", jokerOrbFn, { Asset("ANIM", "anim/staff_projectile.zip") }, { "fire_projectile" })
 
+-------------------------------------------------------- 函数 --------------------------------------------------------
+local function canAcceptFuelFn(inst, item)
+	return item ~= nil and item.prefab == "livinglog"
+end
+
 ------------------------------------------------------ 面具实体 ------------------------------------------------------
 local tempalte = require("prefabs/aip_dress_template")
 local prefab = tempalte("aip_joker_face", {
@@ -104,9 +112,6 @@ local prefab = tempalte("aip_joker_face", {
 		inst.components.aipc_guardian_orb:Stop()
 	end,
 	postInst = function(inst)
-		-- 不能修
-		inst.components.fueled.no_sewing = true
-
 		-- 添加守护法球组件
 		inst:AddComponent("aipc_guardian_orb")
 		inst.components.aipc_guardian_orb.spawnPrefab = "aip_joker_orb"
@@ -116,6 +121,13 @@ local prefab = tempalte("aip_joker_face", {
 		inst:AddComponent("weapon")
 		inst.components.weapon:SetDamage(TUNING.AIP_JOKER_FACE_DAMAGE)
 		inst.components.weapon:SetRange(0, 0)
+
+		-- 接受充能
+		inst.components.fueled.fueltype = FUELTYPE.AIP_LIVINGLOG
+		inst.components.fueled:SetSections(5)
+		inst.components.fueled.accepting = true
+		inst.components.fueled.canAcceptFuelFn = canAcceptFuelFn
+		inst.components.fueled.bonusmult = TUNING.AIP_JOKER_FACE_FUEL / 5 / TUNING.MED_FUEL -- 每次添加 1/5
 	end,
 })
 
