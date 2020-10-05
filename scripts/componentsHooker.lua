@@ -141,6 +141,6 @@ AddComponentPostInit("fueled", function(self)
 		if self.canAcceptFuelFn ~= nil then
 			return self.canAcceptFuelFn(self.inst, item)
 		end
-		return originCanAcceptFuelItem(item)
+		return originCanAcceptFuelItem(self, item)
 	end
 end)
