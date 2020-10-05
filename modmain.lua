@@ -49,6 +49,7 @@ PrefabFiles =
 	-- Building
 	"incinerator",
 	"aip_woodener",
+	"aip_glass_chest",
 
 	-- Orbit
 	"aip_orbit",
