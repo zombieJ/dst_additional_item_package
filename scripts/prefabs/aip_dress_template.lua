@@ -19,6 +19,8 @@
 
 		onEquip(inst, owner)
 		onUnequip(inst, owner)
+
+		postInst(inst) - 全部完成后的额外代码
 	}
 ]]
 
@@ -147,6 +149,11 @@ local function template(name, config)
 			if config.armor.tag then
 				inst.components.armor:SetTags(config.armor.tag)
 			end
+		end
+
+		-- 护甲
+		if config.postInst then
+			config.postInst(inst)
 		end
 
 		return inst

@@ -29,6 +29,11 @@ if _G.rawget(_G,"aipAddNewTechTree") then --Make compatible with other mods.
 	return
 end
 
+-- 额外对比数字 src > tgt
+local function largeThan(src, tgt)
+	return src ~= nil and src > tgt
+end
+
 --Prepare variables. Save existing environment.
 
 local db = {} -- db.MAGIC == 0
@@ -127,7 +132,7 @@ function prototyper:TurnOn(doer, ...)
 		local trees_changed = false
 		local tech_tree = player.components.builder.accessible_tech_trees
 		for tech_name, _ in pairs(db_new_techs) do
-			if tech_tree ~= nil and tech_tree[tech_name] ~= nil and tech_tree[tech_name] > 0 then
+			if largeThan(tech_tree[tech_name], 0) then
 				trees_changed = true
 				tech_tree[tech_name] = 0
 			end
@@ -175,7 +180,7 @@ function builder:KnowsRecipe(recname)
 		end
 		local recipe = AllRecipes[recname]
 		for tech_name,v in pairs(db_new_techs) do
-			if recipe.level[tech_name] > 0 then
+			if largeThan(recipe.level[tech_name], 0) then
 				return false --no custom bonus
 			end
 		end
@@ -197,7 +202,7 @@ function replica:KnowsRecipe(recname)
 		end
 		local recipe = AllRecipes[recname]
 		for tech_name,v in pairs(db_new_techs) do
-			if recipe.level[tech_name] > 0 then
+			if largeThan(recipe.level[tech_name], 0) then
 				return false --no custom bonus
 			end
 		end
@@ -298,7 +303,7 @@ AddClassPostConstruct("widgets/recipepopup",function(self)
 			local custom_tech, custom_level
 			for tech_name, _ in pairs(db_new_techs) do --Check if it's really custom.
 				custom_level = save_hint_recipe.level[tech_name]
-				if custom_level > 0 then
+				if largeThan(custom_level, 0) then
 					custom_tech = tech_name
 					break
 				end

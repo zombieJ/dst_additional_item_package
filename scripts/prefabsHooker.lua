@@ -39,14 +39,14 @@ for i, name in ipairs(birds) do
 
 			local originPrefab = inst.components.periodicspawner.prefab
 
-			-- 鸟儿掉落物如果是种子则有 30% 概率改成树叶笔记
+			-- 鸟儿掉落物如果是种子则有 10% 概率改成树叶笔记
 			inst.components.periodicspawner.prefab = function(inst)
 				local prefab = originPrefab
 				if type(originPrefab) == "function" then
 					prefab = originPrefab(inst)
 				end
 
-				if prefab == "seeds" and math.random() < .15 then
+				if prefab == "seeds" and math.random() < .1 then
 					return "aip_leaf_note"
 				end
 
@@ -56,3 +56,8 @@ for i, name in ipairs(birds) do
 	end)
 end
 
+------------------------------------------ 活木 ------------------------------------------
+AddPrefabPostInit("livinglog", function(inst)
+	-- 添加燃料类型
+	inst:AddTag("LIVINGLOG_fuel")
+end)
