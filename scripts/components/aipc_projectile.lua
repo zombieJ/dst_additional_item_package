@@ -27,16 +27,6 @@ local function SpawnFlowers(point, dest, count, flowerIndex)
 	end
 end
 
--- 返回角度：0 ~ 360
-function getAngle(src, tgt)
-	local direction = (tgt - src):GetNormalized()
-	local angle = math.acos(direction:Dot(Vector3(1, 0, 0))) / DEGREES
-	if direction.z < 0 then
-		angle = 360 - angle
-	end
-	return angle
-end
-
 local function include(table, value)
 	for k,v in ipairs(table) do
 		if v == value then
@@ -203,7 +193,7 @@ function Projectile:FindEntities(element, pos, radius)
 end
 
 function Projectile:RotateToTarget(dest)
-	local angle = getAngle(self.inst:GetPosition(), dest)
+	local angle = aipGetAngle(self.inst:GetPosition(), dest)
 	self.inst.Transform:SetRotation(angle)
 	self.inst:FacePoint(dest)
 end
@@ -251,7 +241,7 @@ function Projectile:StartBy(doer, queue, target, targetPos, replaceSourcePos)
 		else
 			-- 方向性技能四散而去
 			local sourcePos = replaceSourcePos or doer:GetPosition()
-			local angle = (getAngle(sourcePos, targetPos) + ((i - 1) - (splitCount - 1) / 2) * 30)
+			local angle = (aipGetAngle(sourcePos, targetPos) + ((i - 1) - (splitCount - 1) / 2) * 30)
 			local radius = angle / 180 * PI
 			local distance = math.pow(distsq(sourcePos.x, sourcePos.z, targetPos.x, targetPos.z), 0.5)
 			local newTargetPos = Vector3(sourcePos.x + math.cos(radius) * distance, sourcePos.y, sourcePos.z + math.sin(radius) * distance)
@@ -382,7 +372,7 @@ function Projectile:DoNextTask()
 
 			-- 如果是 Area 则计算 2 格偏移量以免重复的命中目标
 			if prevTask.action == "AREA" then
-				local angle = getAngle(targetPos, nextPos)
+				local angle = aipGetAngle(targetPos, nextPos)
 				local radius = angle / 180 * PI
 				replaceSourcePos = Vector3(targetPos.x + math.cos(radius) * AREA_DISTANCE, targetPos.y, targetPos.z + math.sin(radius) * AREA_DISTANCE)
 			end

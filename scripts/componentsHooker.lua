@@ -132,3 +132,15 @@ AddComponentPostInit("health", function(self)
 		origiDoDelta(self, data.amount, GLOBAL.unpack(arg))
 	end
 end)
+
+-- 燃料允许自定义接受测试
+AddComponentPostInit("fueled", function(self)
+	local originCanAcceptFuelItem = self.CanAcceptFuelItem
+
+	function self:CanAcceptFuelItem(item)
+		if self.canAcceptFuelFn ~= nil then
+			return self.canAcceptFuelFn(self.inst, item)
+		end
+		return originCanAcceptFuelItem(item)
+	end
+end)
