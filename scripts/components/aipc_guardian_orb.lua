@@ -24,12 +24,18 @@ local function findNearEnemy(inst)
 	local ents = TheSim:FindEntities(x, y, z, TUNING.AIP_JOKER_FACE_MAX_RANGE, RETARGET_MUST_TAGS, RETARGET_CANT_TAGS)
 
 	local enemy = nil
+	local distance = 9999999
 	local targetedEnemy = nil
 
 	for i, v in ipairs(ents) do
 		if v.entity:IsVisible() and not v.components.health:IsDead() then
-			if v:HasTag("hostile") then
+			local vx, vy, vz = v.Transform:GetWorldPosition()
+			local sq = distsq(x, z, vx, vz)
+
+			if v:HasTag("hostile") and sq < distance then
+				-- 总是寻找最近的
 				enemy = v
+				distance = sq
 			elseif v.components.combat.target ~= nil and v.components.combat.target:HasTag("player") then
 				targetedEnemy = v
 			end
@@ -67,13 +73,27 @@ end
 -- 关闭守护法球
 function GuardianOrb:Stop()
 	self.inst:StopUpdatingComponent(self)
+
+	for i = 1, #self.orbs do
+		local orb = self.orbs[i]
+		local explode = SpawnPrefab("explode_firecrackers")
+		local x, y, z = orb.Transform:GetWorldPosition()
+		explode.Transform:SetPosition(x, y + 1, z)
+		explode.Transform:SetScale(0.3, 0.3, 0.3)
+		orb:Remove()
+	end
+
+	self.orbs = {}
 end
 
 -- 计算法球位置
 function GuardianOrb:OnUpdate(dt)
 	local instPos = self.inst:GetPosition()
 
-	-- TODO: 死亡需要取消效果
+	-- 死亡取消效果
+	if self.owner == nil or not self.owner.components.health or self.owner.components.health:IsDead() then
+		self:Stop()
+	end
 
 	-- 法球数量计算
 	self.timeout = self.timeout + dt
@@ -87,6 +107,11 @@ function GuardianOrb:OnUpdate(dt)
 			orb.Transform:SetPosition(instPos.x, instPos.y, instPos.z)
 			orb.Physics:SetMotorVel(ORB_SPEED, 0, 0)
 			orb._master = true
+
+			-- 只有一个发球的时候，重置一下可以攻击的时间
+			if #self.orbs == 1 then
+				self.projectileTimeout = 0
+			end
 		end
 	end
 
@@ -95,6 +120,16 @@ function GuardianOrb:OnUpdate(dt)
 
 	-- 计算角度
 	self.angle = math.mod((self.angle + dt * ANGLE_SPEED), 360)
+	local dist = 999999
+
+	local target = nil
+	local targetPos = nil
+	if self.projectileTimeout > PROJECTILE_INTERVAL then
+		target = findNearEnemy(self.inst)
+		if target ~= nil then
+			targetPos = target:GetPosition()
+		end
+	end
 
 	for i = 1, #self.orbs do
 		local orb = self.orbs[i]
@@ -114,26 +149,26 @@ function GuardianOrb:OnUpdate(dt)
 		end
 
 		-- 只有最后一个发球可以被扔出去
-		if i == #self.orbs and self.projectileTimeout > PROJECTILE_INTERVAL then
-			local target = findNearEnemy(self.inst)
-			if target ~= nil then
-				local targetPos = target:GetPosition()
-				local orbTargetAngle = orb:GetAngleToPoint(targetPos.x, targetPos.y, targetPos.z)
-				local diffAngle = aipDiffAngle(orb:GetRotation(), orbTargetAngle)
+		if target ~= nil then
+			local targetPos = target:GetPosition()
+			local sq = distsq(targetPos.x, targetPos.z, orbPos.x, orbPos.z)
 
-				if diffAngle < 30 then
-					-- 偏差小于 30 度就可以发射了
-					local proj = SpawnPrefab(self.projectilePrefab)
-					local x, y, z = orb.Transform:GetWorldPosition()
-					proj.Transform:SetPosition(orb.Transform:GetWorldPosition())
-					proj.components.projectile:SetSpeed(ORB_SPEED_FAST)
-					proj.components.projectile:Throw(self.inst, target, self.owner)
+			if sq < dist then
+				dist = sq
+			end
 
-					-- 清理原来的
-					table.remove(self.orbs, i)
-					orb:Remove()
-					self.projectileTimeout = 0
-				end
+			if i == #self.orbs and dist == sq then
+				-- 距离最近则可以发射
+				local proj = SpawnPrefab(self.projectilePrefab)
+				local x, y, z = orb.Transform:GetWorldPosition()
+				proj.Transform:SetPosition(orb.Transform:GetWorldPosition())
+				proj.components.projectile:SetSpeed(ORB_SPEED_FAST)
+				proj.components.projectile:Throw(self.inst, target, self.owner)
+
+				-- 清理原来的
+				table.remove(self.orbs, i)
+				orb:Remove()
+				self.projectileTimeout = 0
 			end
 		end
 	end
