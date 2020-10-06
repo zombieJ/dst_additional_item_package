@@ -9,13 +9,15 @@ local language = aipGetModConfig("language")
 local LANG_MAP = {
 	english = {
 		NAME = "Jade Chest",
-		RECDESC = "Box with well-developed root system",
+		RECDESC = "Boxes that share items and will also steal items from nearby lureplant when opened",
 		DESC = "They seem to be a unity",
+		DISABLED = "Some chest is opened by other player",
 	},
 	chinese = {
 		NAME = "翡翠箱",
-		RECDESC = "根系发达的箱子",
+		RECDESC = "共享物品的箱子，打开时也会窃取附近食人花中的物品。",
 		DESC = "它们似乎是一个整体",
+		DISABLED = "有玩家正在使用这套箱子",
 	},
 }
 
@@ -25,6 +27,7 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 STRINGS.NAMES.AIP_GLASS_CHEST = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_GLASS_CHEST = LANG.RECDESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_GLASS_CHEST = LANG.DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_GLASS_CHEST_DISABLED = LANG.DISABLED
 
 -- 配方
 local aip_glass_chest = Recipe("aip_glass_chest", {Ingredient("log", 1)}, RECIPETABS.MAGIC, TECH.MAGIC_TWO, "aip_glass_chest_placer")

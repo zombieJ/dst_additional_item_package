@@ -63,6 +63,7 @@ function UnityCotainer:LockOthers()
 	for i, chest in ipairs(TheWorld.components.world_common_store.chests) do
 		if chest ~= self.inst then
 			chest.components.container.canbeopened = false
+			chest.components.inspectable:SetDescription(STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_GLASS_CHEST_DISABLED)
 
 			-- 把所有箱子里的东西都移动到这个箱子里
 			moveItems(chest, self.inst)
@@ -85,6 +86,7 @@ function UnityCotainer:UnlockOthers()
 	if TheWorld.components.world_common_store.openedChest == self.inst then
 		for i, chest in ipairs(TheWorld.components.world_common_store.chests) do
 			chest.components.container.canbeopened = true
+			chest.components.inspectable:SetDescription(nil)
 		end
 	end
 end
