@@ -71,7 +71,7 @@ function UnityCotainer:LockOthers()
 
 	-- 获取附近的食人花容器
 	local x, y, z = self.inst.Transform:GetWorldPosition()
-	local lureplants = TheSim:FindEntities(x, y, z, 60, { "lureplant" })
+	local lureplants = TheSim:FindEntities(x, y, z, 60, nil, nil, { "lureplant", "eyeplant" })
 	for i, lureplant in ipairs(lureplants) do
 		collectItems(lureplant, self.inst)
 	end
