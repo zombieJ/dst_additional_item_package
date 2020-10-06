@@ -36,7 +36,9 @@ local function collectItems(lureplant)
 
 	-- 收集食人花内的物品
 	local items = lureplant.components.inventory:FindItems(function(item)
-		return not item:HasTag("nosteal") and item.prefab ~= "plantmeat"
+		return not item:HasTag("nosteal") and
+		-- item.prefab ~= "plantmeat" and 叶肉无所谓啦
+		(lureplant.components.shelf == nil or item ~= lureplant.components.shelf.itemonshelf)
 	end)
 
 	for i, item in ipairs(items) do
