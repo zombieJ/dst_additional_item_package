@@ -92,13 +92,15 @@ async function doJob() {
 	console.log(chalk.green("Copy resourse...mode info done"));
 
 	console.log(chalk.cyan("Replace DEV mark..."));
+	const outputMark = !!argv.target
+
 	function replaceText(filepath, src, tgt) {
 		let text = fs.readFileSync(filepath, 'utf8');
 		text = text.replace(src, tgt);
 		fs.writeFileSync(filepath, text, 'utf8');
 	}
-	replaceText('package/modinfo.lua', /"\(DEV MODE\)",/g, '');
-	replaceText('package/modinfo.lua', /name = "Additional Item Package DEV"/g, 'name = "Additional Item Package"');
+	replaceText('package/modinfo.lua', /"\(DEV MODE\)",/g, outputMark ? '"(OUTPUT)",' : '');
+	replaceText('package/modinfo.lua', /name = "Additional Item Package DEV"/g, `name = "Additional Item Package${outputMark ? ' (OUTPUT)' : ''}"`);
 	replaceText('package/modmain.lua', /TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE = "Additional Item Package DEV"/g, 'TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE = "Additional Item Package"');
 
 	// 压缩一下 LUA 代码
