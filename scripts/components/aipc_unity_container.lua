@@ -58,11 +58,18 @@ local function collectItems(lureplant)
 				end
 			end
 
-			-- 满了，就在食人花中移除掉
-			if restCount >= item.components.stackable:StackSize() then
-				lureplant.components.inventory:RemoveItem(item, true)
+			-- 没有空间了，我们也不用拆分了
+			if restCount > 0 then
+				if restCount >= item.components.stackable:StackSize() then
+					-- 箱子放得下就从食人花里移除
+					lureplant.components.inventory:RemoveItem(item, true)
+					holderChest.components.container:GiveItem(item)
+				else
+					-- 箱子放不下就修改堆叠
+					local filledItem = item.components.stackable:Get(restCount)
+					holderChest.components.container:GiveItem(filledItem)
+				end
 			end
-			holderChest.components.container:GiveItem(item)
 		end
 	end
 end
