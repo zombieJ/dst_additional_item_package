@@ -26,13 +26,19 @@ local function collectItems(lureplant, chest)
 		return
 	end
 
-	for i = 1, 99 do
-		if not chest.components.container:IsFull() then
-			-- 找到一个物品
-			local item = lureplant.components.inventory:FindItem(function(item) return not item:HasTag("nosteal") end)
+	for i = 1, 20 do
+		if chest.components.container:IsFull() then
+			break
+		else
+			-- 找到一个物品，且不能是叶肉
+			local item = lureplant.components.inventory:FindItem(function(item) return not item:HasTag("nosteal") and item.prefab ~= "plantmeat" end)
 
-			lureplant.components.inventory:RemoveItem(item, true)
-			chest.components.container:GiveItem(item, nil, nil, true)
+			if item == nil then
+				break
+			else
+				lureplant.components.inventory:RemoveItem(item, true)
+				chest.components.container:GiveItem(item, nil, nil, true)
+			end
 		end
 	end
 end
@@ -65,7 +71,7 @@ function UnityCotainer:LockOthers()
 
 	-- 获取附近的食人花容器
 	local x, y, z = self.inst.Transform:GetWorldPosition()
-	local lureplants = TheSim:FindEntities(x, y, z, 30, { "lureplant" })
+	local lureplants = TheSim:FindEntities(x, y, z, 60, { "lureplant" })
 	for i, lureplant in ipairs(lureplants) do
 		collectItems(lureplant, self.inst)
 	end
