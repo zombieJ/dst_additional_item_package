@@ -1,3 +1,4 @@
+-- 合并箱子中的物品
 local function moveItems(src, tgt)
 	if src.components.container ~= nil and tgt.components.container ~= nil then
 		local numslots = tgt.components.container:GetNumSlots()
@@ -11,7 +12,7 @@ local function moveItems(src, tgt)
 					src.components.container:RemoveItem(srcItem, true)
 					tgt.components.container:GiveItem(srcItem, slot, nil, true)
 				else
-					-- 如果已经有东西，直接扔地上
+					-- 如果已经有东西，直接扔地上（不应该出现，不过以防万一扔出来）
 					tgt.components.container:DropItemBySlot(slot)
 				end
 			end
@@ -21,6 +22,7 @@ local function moveItems(src, tgt)
 	end
 end
 
+-- 收集物品
 local function collectItems(lureplant, chest)
 	if lureplant == nil or lureplant.components.inventory == nil then
 		return
@@ -49,11 +51,11 @@ local UnityCotainer = Class(function(self, inst)
 	-- 全局注册
 	table.insert(TheWorld.components.world_common_store.chests, self.inst)
 
-	-- 移除时删除
+	-- 移除时从全局删除
 	self.inst:ListenForEvent("onremove", function()
 		for i, v in ipairs(TheWorld.components.world_common_store.chests) do
 			if v == self.inst then
-				table.remove(TheWorld.components.world_common_store.chests, self.inst)
+				table.remove(TheWorld.components.world_common_store.chests, i)
 			end
 		end
 	end)
