@@ -45,11 +45,19 @@ local function collectItems(lureplant, chest)
 	end
 end
 
+------------------------------------------------------------------------------------------
 local UnityCotainer = Class(function(self, inst)
 	self.inst = inst
 
 	-- 全局注册
 	table.insert(TheWorld.components.world_common_store.chests, self.inst)
+
+	-- 异步标记当前为最重要的箱子
+	self.inst:DoTaskInTime(0.5, function()
+		if self.inst.components.container ~= nil and not self.inst.components.container:IsEmpty() then
+			TheWorld.components.world_common_store.holderChest = self.inst
+		end
+	end)
 
 	-- 移除时从全局删除
 	self.inst:ListenForEvent("onremove", function()
@@ -58,6 +66,8 @@ local UnityCotainer = Class(function(self, inst)
 				table.remove(TheWorld.components.world_common_store.chests, i)
 			end
 		end
+
+		self:UnlockOthers()
 	end)
 end)
 
@@ -79,18 +89,22 @@ function UnityCotainer:LockOthers()
 		collectItems(lureplant, self.inst)
 	end
 
-	-- 记录一下哪个箱子被打开了
-	TheWorld.components.world_common_store.openedChest = self.inst
+	-- 记录一下当前主要管理箱子是谁
+	TheWorld.components.world_common_store.holderChest = self.inst
+	TheWorld.components.world_common_store.chestOpened = true
 end
 
 function UnityCotainer:UnlockOthers()
 	-- 如果被打开的箱子关闭了，则全部解锁
-	if TheWorld.components.world_common_store.openedChest == self.inst then
+	if TheWorld.components.world_common_store.holderChest == self.inst then
 		for i, chest in ipairs(TheWorld.components.world_common_store.chests) do
 			chest.components.container.canbeopened = true
 			chest.components.inspectable:SetDescription(nil)
 		end
 	end
+
+	-- 更新记录箱子已经关闭
+	TheWorld.components.world_common_store.chestOpened = false
 end
 
 return UnityCotainer
