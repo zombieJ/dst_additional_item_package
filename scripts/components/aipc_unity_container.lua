@@ -1,3 +1,26 @@
+local function moveItems(src, tgt)
+	if src.components.container ~= nil and tgt.components.container ~= nil then
+		local numslots = tgt.components.container:GetNumSlots()
+		for slot = 1, numslots do
+			local srcItem = src.components.container:GetItemInSlot(slot)
+			local tgtItem = tgt.components.container:GetItemInSlot(slot)
+
+			-- 转移物品
+			if srcItem ~= nil then
+				if tgtItem == nil then
+					src.components.container:RemoveItem(srcItem, true)
+					tgt.components.container:GiveItem(srcItem, slot, nil, true)
+				else
+					-- 如果已经有东西，直接扔地上
+					tgt.components.container:DropItemBySlot(slot)
+				end
+			end
+		end
+
+		tgt.components.container:GetNumSlots()
+	end
+end
+
 local UnityCotainer = Class(function(self, inst)
 	self.inst = inst
 
@@ -18,6 +41,9 @@ function UnityCotainer:LockOthers()
 	for i, chest in ipairs(TheWorld.components.world_common_store.chests) do
 		if chest ~= self.inst then
 			chest.components.container.canbeopened = false
+
+			-- 把所有箱子里的东西都移动到这个箱子里
+			moveItems(chest, self.inst)
 		end
 	end
 
