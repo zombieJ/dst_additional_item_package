@@ -22,6 +22,9 @@ AddPrefabPostInit("klaus_sack", function(inst) ShadowFollowerPrefabPostInit(inst
 AddPrefabPostInit("antlion", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 蚁狮
 AddPrefabPostInit("toadstool", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 蟾蜍王
 AddPrefabPostInit("toadstool_dark", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 苦难蟾蜍王
+AddPrefabPostInit("crabking", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 帝王蟹
+AddPrefabPostInit("hermithouse", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 隐士之家
+AddPrefabPostInit("malbatross", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 邪天翁
 
 -- ------------------------------------- 豆酱权杖 -------------------------------------
 -- GLOBAL.LOCKTYPE.AIP_DOU_OPAL = "aip_dou_opal"
