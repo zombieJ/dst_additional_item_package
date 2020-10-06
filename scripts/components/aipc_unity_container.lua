@@ -21,6 +21,22 @@ local function moveItems(src, tgt)
 	end
 end
 
+local function collectItems(lureplant, chest)
+	if lureplant == nil or lureplant.components.inventory == nil then
+		return
+	end
+
+	for i = 1, 99 do
+		if not chest.components.container:IsFull() then
+			-- 找到一个物品
+			local item = lureplant.components.inventory:FindItem(function(item) return not item:HasTag("nosteal") end)
+
+			lureplant.components.inventory:RemoveItem(item, true)
+			chest.components.container:GiveItem(item, nil, nil, true)
+		end
+	end
+end
+
 local UnityCotainer = Class(function(self, inst)
 	self.inst = inst
 
@@ -45,6 +61,13 @@ function UnityCotainer:LockOthers()
 			-- 把所有箱子里的东西都移动到这个箱子里
 			moveItems(chest, self.inst)
 		end
+	end
+
+	-- 获取附近的食人花容器
+	local x, y, z = self.inst.Transform:GetWorldPosition()
+	local lureplants = TheSim:FindEntities(x, y, z, 30, { "lureplant" })
+	for i, lureplant in ipairs(lureplants) do
+		collectItems(lureplant, self.inst)
 	end
 
 	-- 记录一下哪个箱子被打开了
