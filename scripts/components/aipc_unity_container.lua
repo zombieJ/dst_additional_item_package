@@ -95,11 +95,7 @@ local UnityCotainer = Class(function(self, inst)
 
 	-- 移除时从全局删除
 	self.inst:ListenForEvent("onremove", function()
-		for i, v in ipairs(TheWorld.components.world_common_store.chests) do
-			if v == self.inst then
-				table.remove(TheWorld.components.world_common_store.chests, i)
-			end
-		end
+		aipTableRemove(TheWorld.components.world_common_store.chests, self.inst)
 
 		self:UnlockOthers()
 	end)

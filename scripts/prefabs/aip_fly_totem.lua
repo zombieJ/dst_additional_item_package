@@ -133,6 +133,12 @@ local function fn()
     MakeHauntableWork(inst)
     inst:ListenForEvent("onbuilt", onbuilt)
 
+    -- 全局注册或者移除
+    table.insert(TheWorld.components.world_common_store.flyTotems, inst)
+    inst:ListenForEvent("onremove", function()
+        aipTableRemove(TheWorld.components.world_common_store.flyTotems, inst)
+	end)
+
     return inst
 end
 

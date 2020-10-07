@@ -1,3 +1,5 @@
+local _G = GLOBAL
+
 local function countTable(tbl)
 	local count = 0
 	local lastKey = nil
@@ -17,7 +19,7 @@ local function countTable(tbl)
 end
 
 -- 打平表格，去除中间的空格并且保持顺序
-function GLOBAL.aipFlattenTable(originTbl)
+function _G.aipFlattenTable(originTbl)
 	local targetTbl = {}
 	local tbl = originTbl or {}
 	local count = countTable(tbl)
@@ -37,7 +39,15 @@ function GLOBAL.aipFlattenTable(originTbl)
 	return targetTbl
 end
 
-function GLOBAL.aipCommonStr(showType, split, ...)
+function _G.aipTableRemove(tbl, item)
+	for i, v in ipairs(tbl) do
+		if v == item then
+			table.remove(tbl, i)
+		end
+	end
+end
+
+function _G.aipCommonStr(showType, split, ...)
 	local count = countTable(arg)
 	local str = ""
 
@@ -81,29 +91,29 @@ function GLOBAL.aipCommonStr(showType, split, ...)
 	return str
 end
 
-function GLOBAL.aipCommonPrint(showType, split, ...)
-	local str = "[AIP] "..GLOBAL.aipCommonStr(showType, split, ...)
+function _G.aipCommonPrint(showType, split, ...)
+	local str = "[AIP] ".._G.aipCommonStr(showType, split, ...)
 
 	print(str)
 
 	return str
 end
 
-function GLOBAL.aipStr(...)
-	return GLOBAL.aipCommonStr(false, "", ...)
+function _G.aipStr(...)
+	return _G.aipCommonStr(false, "", ...)
 end
 
-function GLOBAL.aipPrint(...)
-	return GLOBAL.aipCommonPrint(false, " ", ...)
+function _G.aipPrint(...)
+	return _G.aipCommonPrint(false, " ", ...)
 end
 
-function GLOBAL.aipTypePrint(...)
-	return GLOBAL.aipCommonPrint(true, " ", ...)
+function _G.aipTypePrint(...)
+	return _G.aipCommonPrint(true, " ", ...)
 end
 
-GLOBAL.aipGetModConfig = GetModConfigData
+_G.aipGetModConfig = GetModConfigData
 
-function GLOBAL.aipGetAnimState(inst)
+function _G.aipGetAnimState(inst)
 	local match = false
 	local data = {}
 
@@ -131,9 +141,9 @@ function GLOBAL.aipGetAnimState(inst)
 end
 
 -- 返回角度：0 ~ 360
-function GLOBAL.aipGetAngle(src, tgt)
+function _G.aipGetAngle(src, tgt)
 	local direction = (tgt - src):GetNormalized()
-	local angle = math.acos(direction:Dot(GLOBAL.Vector3(1, 0, 0))) / GLOBAL.DEGREES
+	local angle = math.acos(direction:Dot(_G.Vector3(1, 0, 0))) / _G.DEGREES
 	if direction.z < 0 then
 		angle = 360 - angle
 	end
@@ -141,7 +151,7 @@ function GLOBAL.aipGetAngle(src, tgt)
 end
 
 -- 返回(0 ~ 360)两个角度的偏差值
-function GLOBAL.aipDiffAngle(a1, a2)
+function _G.aipDiffAngle(a1, a2)
 	local min = math.min(a1, a2)
 	local max = math.max(a1, a2)
 
