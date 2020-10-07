@@ -16,5 +16,35 @@
                 </key>
             </timeline>
         </animation>
+        <animation id="1" name="hit" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="totem" folder="0" file="0" abs_x="0.986711" abs_y="-0.658354" abs_pivot_x="0.513289" abs_pivot_y="0.158354" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="120">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+                <key id="2" time="214">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                </key>
+                <key id="3" time="300">
+                    <object_ref id="0" timeline="0" key="3" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="totem">
+                <key id="0" spin="-1">
+                    <object folder="0" file="0" x="0.986711" y="-0.658354" pivot_x="0.513289" pivot_y="0.158354"/>
+                </key>
+                <key id="1" time="120">
+                    <object folder="0" file="0" x="0.986711" y="-0.658354" pivot_x="0.513289" pivot_y="0.158354" angle="353.308917" scale_x="1" scale_y="1"/>
+                </key>
+                <key id="2" time="214" spin="-1">
+                    <object folder="0" file="0" x="0.986711" y="-0.658354" pivot_x="0.513289" pivot_y="0.158354" angle="6.262944"/>
+                </key>
+                <key id="3" time="300" spin="0">
+                    <object folder="0" file="0" x="0.986711" y="-0.658354" pivot_x="0.513289" pivot_y="0.158354"/>
+                </key>
+            </timeline>
+        </animation>
     </entity>
 </spriter_data>

@@ -41,6 +41,27 @@ local assets = {
 local prefabs = {}
 
 ---------------------------------- 事件 ----------------------------------
+local function onhammered(inst, worker)
+	if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
+		inst.components.burnable:Extinguish()
+	end
+	inst.components.lootdropper:DropLoot()
+	local fx = SpawnPrefab("collapse_small")
+	fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
+	fx:SetMaterial("wood")
+	inst:Remove()
+end
+
+local function onhit(inst, worker)
+	if not inst:HasTag("burnt") then
+		inst.AnimState:PlayAnimation("hit")
+		inst.AnimState:PushAnimation("idle", false)
+	end
+end
+
+local function onbuilt(inst)
+    inst.SoundEmitter:PlaySound("dontstarve/common/sign_craft")
+end
 
 ---------------------------------- 实体 ----------------------------------
 local function fn()
@@ -81,11 +102,11 @@ local function fn()
     inst:AddComponent("writeable")
     inst:AddComponent("lootdropper")
 
-    -- inst:AddComponent("workable")
-    -- inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
-    -- inst.components.workable:SetWorkLeft(4)
-    -- inst.components.workable:SetOnFinishCallback(onhammered)
-    -- inst.components.workable:SetOnWorkCallback(onhit)
+    inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
+    inst.components.workable:SetWorkLeft(4)
+    inst.components.workable:SetOnFinishCallback(onhammered)
+    inst.components.workable:SetOnWorkCallback(onhit)
     MakeSnowCovered(inst)
 
     MakeSmallBurnable(inst, TUNING.LARGE_BURNTIME)
@@ -94,7 +115,7 @@ local function fn()
     -- inst.OnLoad = onload
 
     MakeHauntableWork(inst)
-    -- inst:ListenForEvent("onbuilt", onbuilt)
+    inst:ListenForEvent("onbuilt", onbuilt)
 
     return inst
 end
