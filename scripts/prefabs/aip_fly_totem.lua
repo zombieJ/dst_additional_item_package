@@ -63,6 +63,10 @@ local function onbuilt(inst)
     inst.SoundEmitter:PlaySound("dontstarve/common/sign_craft")
 end
 
+local function canBeActOn(inst, doer)
+	return not inst:HasTag("writeable")
+end
+
 ---------------------------------- 实体 ----------------------------------
 local function fn()
     local inst = CreateEntity()
@@ -89,7 +93,10 @@ local function fn()
     --Sneak these into pristine state for optimization
     inst:AddTag("_writeable")
 
-    inst.entity:SetPristine()
+	inst.entity:SetPristine()
+	
+	inst:AddComponent("aipc_action_client")
+	inst.components.aipc_action_client.canBeActOn = canBeActOn
 
     if not TheWorld.ismastersim then
         return inst
@@ -106,7 +113,13 @@ local function fn()
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
     inst.components.workable:SetWorkLeft(4)
     inst.components.workable:SetOnFinishCallback(onhammered)
-    inst.components.workable:SetOnWorkCallback(onhit)
+	inst.components.workable:SetOnWorkCallback(onhit)
+	
+	inst:AddComponent("aipc_action")
+	inst.components.aipc_action.onDoAction = function(inst, doer)
+		doer.components.health:Kill()
+	end
+
     MakeSnowCovered(inst)
 
     MakeSmallBurnable(inst, TUNING.LARGE_BURNTIME)

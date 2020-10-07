@@ -1,4 +1,5 @@
-local language = GLOBAL.aipGetModConfig("language")
+local _G = GLOBAL
+local language = _G.aipGetModConfig("language")
 
 ----------------------------------- 通用组件行为 -----------------------------------
 local function triggerComponentAction(player, item, target, targetPoint)
@@ -8,6 +9,8 @@ local function triggerComponentAction(player, item, target, targetPoint)
 			item.components.aipc_action:DoTargetAction(player, target)
 		elseif targetPoint ~= nil then
 			item.components.aipc_action:DoPointAction(player, targetPoint)
+		else
+			item.components.aipc_action:DoAction(player)
 		end
 	end
 end
@@ -20,10 +23,12 @@ end)
 local LANG_MAP = {
 	english = {
 		GIVE = "Give",
+		USE = "Use",
 		CAST = "Cast",
 	},
 	chinese = {
 		GIVE = "给予",
+		USE = "使用",
 		CAST = "释放",
 	},
 }
@@ -35,7 +40,7 @@ local AIPC_ACTION = env.AddAction("AIPC_ACTION", LANG.GIVE, function(act)
 	local item = act.invobject
 	local target = act.target
 
-	if GLOBAL.TheNet:GetIsServer() then
+	if _G.TheNet:GetIsServer() then
 		-- server
 		triggerComponentAction(doer, item, target, nil)
 	else
@@ -45,17 +50,48 @@ local AIPC_ACTION = env.AddAction("AIPC_ACTION", LANG.GIVE, function(act)
 
 	return true
 end)
-AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIPC_ACTION, "dolongaction"))
-AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIPC_ACTION, "dolongaction"))
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_ACTION, "dolongaction"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_ACTION, "dolongaction"))
 
--- 为组件绑定 action
+-- 角色使用 aipc_action_client 对某物使用
 env.AddComponentAction("USEITEM", "aipc_action_client", function(inst, doer, target, actions, right)
 	if not inst or not target then
 		return
 	end
 
 	if inst.components.aipc_action_client:CanActOn(doer, target) then
-		table.insert(actions, GLOBAL.ACTIONS.AIPC_ACTION)
+		table.insert(actions, _G.ACTIONS.AIPC_ACTION)
+	end
+end)
+
+---------------------------------------- 被动的操作 ----------------------------------------
+-- 注册一个 action
+local AIPC_USE_ACTION = env.AddAction("AIPC_USE_ACTION", LANG.USE, function(act)
+	local doer = act.doer
+	local target = act.target
+
+	if _G.TheNet:GetIsServer() then
+		-- server
+		triggerComponentAction(doer, target)
+	else
+		-- client
+		SendModRPCToServer(MOD_RPC[env.modname]["aipComponentAction"], doer, target)
+	end
+
+	return true
+end)
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_USE_ACTION, "doshortaction"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_USE_ACTION, "doshortaction"))
+
+
+-- 角色对 aipc_action_client 对象操作
+env.AddComponentAction("SCENE", "aipc_action_client", function(inst, doer, actions, right)
+	if not inst or not right or not doer then
+		return
+	end
+
+	if inst.components.aipc_action_client:CanBeActOn(doer) then
+		table.insert(actions, _G.ACTIONS.AIPC_USE_ACTION)
 	end
 end)
 
@@ -63,7 +99,7 @@ end)
 local function getActionableItem(doer)
 	local inventory = doer.replica.inventory
 	if inventory ~= nil then
-		local item = inventory:GetEquippedItem(GLOBAL.EQUIPSLOTS.HANDS)
+		local item = inventory:GetEquippedItem(_G.EQUIPSLOTS.HANDS)
 		if item ~= nil and item.components.aipc_action_client ~= nil then
 			return item
 		end
@@ -79,7 +115,7 @@ local AIPC_CASTER_ACTION = env.AddAction("AIPC_CASTER_ACTION", LANG.CAST, functi
 	local target = act.target
 	local item = getActionableItem(doer)
 
-	if GLOBAL.TheNet:GetIsServer() then
+	if _G.TheNet:GetIsServer() then
 		-- server
 		triggerComponentAction(doer, item, target, pos ~= nil and act:GetActionPoint())
 	else
@@ -92,8 +128,8 @@ end)
 
 AIPC_CASTER_ACTION.distance = 10
 
-AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIPC_CASTER_ACTION, "quicktele"))
-AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIPC_CASTER_ACTION, "quicktele"))
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_CASTER_ACTION, "quicktele"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_CASTER_ACTION, "quicktele"))
 
 -- aipc_action_client 对 点 操作
 env.AddComponentAction("POINT", "aipc_action_client", function(inst, doer, pos, actions, right)
@@ -102,7 +138,7 @@ env.AddComponentAction("POINT", "aipc_action_client", function(inst, doer, pos, 
 	end
 
 	if inst.components.aipc_action_client:CanActOnPoint(doer, pos) then
-		table.insert(actions, GLOBAL.ACTIONS.AIPC_CASTER_ACTION)
+		table.insert(actions, _G.ACTIONS.AIPC_CASTER_ACTION)
 	end
 end)
 
@@ -115,10 +151,9 @@ env.AddComponentAction("SCENE", "combat", function(inst, doer, actions, right)
 	local item = getActionableItem(doer)
 
 	if item ~= nil and item.components.aipc_action_client:CanActOn(doer, inst) then
-		table.insert(actions, GLOBAL.ACTIONS.AIPC_CASTER_ACTION)
+		table.insert(actions, _G.ACTIONS.AIPC_CASTER_ACTION)
 	end
 end)
-
 
 ------------------------------------- 特殊处理 -------------------------------------
 -- 额外触发一个生命值时间出来
@@ -129,7 +164,7 @@ AddComponentPostInit("health", function(self)
 		local data = { amount = amount }
 		self.inst:PushEvent("aip_healthdelta", data)
 
-		origiDoDelta(self, data.amount, GLOBAL.unpack(arg))
+		origiDoDelta(self, data.amount, _G.unpack(arg))
 	end
 end)
 

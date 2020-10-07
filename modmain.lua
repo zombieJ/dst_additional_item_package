@@ -119,6 +119,7 @@ modimport("scripts/writeablesWrapper.lua")
 modimport("scripts/itemTileWrapper.lua")
 modimport("scripts/hudWrapper.lua")
 modimport("scripts/shadowPackageAction.lua")
+modimport("scripts/widgetHooker.lua")
 
 ------------------------------------- 测试专用 -------------------------------------
 if GetModConfigData("dev_mode") == "enabled" then
