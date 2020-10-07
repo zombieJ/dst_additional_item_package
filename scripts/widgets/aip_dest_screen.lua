@@ -6,7 +6,7 @@ local Menu = require "widgets/menu"
 local UIAnim = require "widgets/uianim"
 local ImageButton = require "widgets/imagebutton"
 
-local function oncancel(inst, doer, widget)
+local function oncancel(doer, widget)
     if not widget.isopen then
         return
 	end
@@ -26,6 +26,7 @@ local DestinationScreen = Class(Screen, function(self, owner, config)
 
     self.isopen = false
 
+	----------------------------------- 以下直接抄的木板代码 -----------------------------------
     self._scrnw, self._scrnh = TheSim:GetScreenSize()
 
     self:SetScaleMode(SCALEMODE_PROPORTIONAL)
@@ -47,9 +48,11 @@ local DestinationScreen = Class(Screen, function(self, owner, config)
         end
     end, owner.HUD.inst)
 
-    self.root = self.scalingroot:AddChild(Widget("writeablewidgetroot"))
-    self.root:SetScale(.6, .6, .6)
+	self.root = self.scalingroot:AddChild(Widget("writeablewidgetroot"))
+	local scale = 0.8
+    self.root:SetScale(scale, scale, scale)
 
+	-- 不可见的透明背景：mask
     self.black = self.root:AddChild(Image("images/global.xml", "square.tex"))
     self.black:SetVRegPoint(ANCHOR_MIDDLE)
     self.black:SetHRegPoint(ANCHOR_MIDDLE)
@@ -59,15 +62,21 @@ local DestinationScreen = Class(Screen, function(self, owner, config)
     self.black:SetTint(0, 0, 0, 0)
     self.black.OnMouseButton = function() oncancel(self.owner, self) end
 
+	-- 木板 UI
     self.bganim = self.root:AddChild(UIAnim())
     self.bganim:SetScale(1, 1, 1)
     self.bgimage = self.root:AddChild(Image())
-    self.bganim:SetScale(1, 1, 1)
+	self.bganim:SetScale(1, 1, 1)
 
+	self.bganim:GetAnimState():SetBank("ui_board_5x3")
+    self.bganim:GetAnimState():SetBuild("ui_board_5x3")
+
+	-- 按钮
     self.buttons = {}
-    table.insert(self.buttons, { text = config.cancelbtn.text, cb = function() oncancel(self.owner, self) end, control = config.cancelbtn.control })
+    table.insert(self.buttons, { text = STRINGS.SIGNS.MENU.CANCEL, cb = function() oncancel(self.owner, self) end, control = CONTROL_CANCEL })
 
-    local menuoffset = config.menuoffset or Vector3(0, 0, 0)
+	-- 看起来像是根据输入控制用不同的东东，但是不知道区别是什么。反正是菜单按钮的，不用管。
+    local menuoffset = Vector3(6, -160, 0)
     if TheInput:ControllerAttached() then
         local spacing = 150
         self.menu = self.root:AddChild(Menu(self.buttons, spacing, true, "none"))
@@ -81,27 +90,47 @@ local DestinationScreen = Class(Screen, function(self, owner, config)
         self.menu:SetPosition(menuoffset.x - .5 * spacing * (#self.buttons - 1), menuoffset.y, menuoffset.z)
     end
 
-    local defaulttext = ""
+	-------------------------------------- 展示目的地列表 --------------------------------------
+	self.destLeft = {}
+	table.insert(self.destLeft, {
+		text = "目的地！",
+		cb = function() oncancel(self.owner, self) end,
+	})
+	table.insert(self.destLeft, {
+		text = "另一个目的地！",
+		cb = function() oncancel(self.owner, self) end,
+	})
+	table.insert(self.destLeft, {
+		text = "另一个目的地！",
+		cb = function() oncancel(self.owner, self) end,
+	})
+	table.insert(self.destLeft, {
+		text = "另一个目的地！",
+		cb = function() oncancel(self.owner, self) end,
+	})
+	table.insert(self.destLeft, {
+		text = "另一个目的地！",
+		cb = function() oncancel(self.owner, self) end,
+	})
 
-    self:OverrideText(defaulttext)
+	self.destLeftMenu = self.root:AddChild(Menu(self.destLeft, 55, false, "carny_long"))
+	self.destLeftMenu:SetTextSize(35)
+	self.destLeftMenu:SetPosition(-118, -90, 0)
 
-    if config.bgatlas ~= nil and config.bgimage ~= nil then
-        self.bgimage:SetTexture(config.bgatlas, config.bgimage)
-    end
 
-    if config.animbank ~= nil then
-        self.bganim:GetAnimState():SetBank(config.animbank)
-    end
 
-    if config.animbuild ~= nil then
-        self.bganim:GetAnimState():SetBuild(config.animbuild)
-    end
+	self.destRight = {}
+	table.insert(self.destRight, {
+		text = "没有的事情啊",
+		cb = function() oncancel(self.owner, self) end,
+	})
 
-    if config.pos ~= nil then
-        self.root:SetPosition(config.pos)
-    else
-        self.root:SetPosition(0, 150, 0)
-    end
+	self.destRightMenu = self.root:AddChild(Menu(self.destRight, 55, false, "carny_long"))
+	self.destRightMenu:SetTextSize(35)
+	self.destRightMenu:SetPosition(118, -95, 0)
+
+	----------------------------------- 以下直接抄的木板代码 -----------------------------------
+	self.root:SetPosition(0, 150, 0)
 
     self.isopen = true
     self:Show()
@@ -123,6 +152,8 @@ function DestinationScreen:Close()
 
 		self.black:Kill()
 		self.menu:Kill()
+		self.destLeftMenu:Kill()
+		self.destRightMenu:Kill()
 
 		self.isopen = false
 
