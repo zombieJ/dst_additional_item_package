@@ -50,6 +50,7 @@ PrefabFiles =
 	"incinerator",
 	"aip_woodener",
 	"aip_glass_chest",
+	"aip_fly_totem",
 
 	-- Orbit
 	"aip_orbit",
@@ -114,6 +115,7 @@ AddMinimapAtlas("minimap/dark_observer_vest.xml")
 modimport("scripts/recipeWrapper.lua")
 modimport("scripts/seedsWrapper.lua")
 modimport("scripts/containersWrapper.lua")
+modimport("scripts/writeablesWrapper.lua")
 modimport("scripts/itemTileWrapper.lua")
 modimport("scripts/hudWrapper.lua")
 modimport("scripts/shadowPackageAction.lua")
