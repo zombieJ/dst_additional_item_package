@@ -10,12 +10,14 @@ local LANG_MAP = {
 	english = {
 		NAME = "Fly Totem",
 		RECDESC = "Unicom's flight site",
-		DESC = "To Infinity... and Beyond",
+        DESC = "To Infinity... and Beyond",
+        UNNAMED = "[UNNAMED]",
 	},
 	chinese = {
 		NAME = "飞行图腾",
 		RECDESC = "联通的飞行站点",
-		DESC = "飞向宇宙，浩瀚无垠！",
+        DESC = "飞向宇宙，浩瀚无垠！",
+        UNNAMED = "[未命名]",
 	},
 }
 
@@ -69,9 +71,24 @@ end
 
 local function onDoAction(inst, doer)
 	-- 展示一个对话框
-	if doer and doer.HUD then
+    if doer and doer.HUD then
 		return doer.HUD:OpenAIPDestination(inst)
 	end
+end
+
+local function syncFlyTotems()
+    -- 这个不能同步到所有玩家，需要重新计算
+    local totemNames = {}
+    for i, totem in ipairs(TheWorld.components.world_common_store.flyTotems) do
+        local text = totem.components.writeable:GetText()
+        table.insert(totemNames, text or LANG.UNNAMED)
+    end
+
+    for i, player in ipairs(AllPlayers) do
+        if player and player.components.aipc_player_client ~= nil then
+            player.components.aipc_player_client:UpdateTotems(totemNames)
+        end
+    end
 end
 
 ---------------------------------- 实体 ----------------------------------
@@ -135,8 +152,10 @@ local function fn()
 
     -- 全局注册或者移除
     table.insert(TheWorld.components.world_common_store.flyTotems, inst)
+    syncFlyTotems()
     inst:ListenForEvent("onremove", function()
         aipTableRemove(TheWorld.components.world_common_store.flyTotems, inst)
+        syncFlyTotems()
 	end)
 
     return inst

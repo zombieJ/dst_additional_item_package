@@ -18,3 +18,11 @@ function CommonStore:isShadowFollowing()
 end
 
 return CommonStore
+
+
+-- for i, v in ipairs(AllPlayers) do
+--     OnPlayerJoined(self, v)
+-- end
+
+-- inst:ListenForEvent("ms_playerjoined", OnPlayerJoined, TheWorld)
+-- inst:ListenForEvent("ms_playerleft", OnPlayerLeft, TheWorld)

@@ -140,6 +140,7 @@ function _G.aipGetAnimState(inst)
 	return match and data or nil
 end
 
+--------------------------------------- 角度 ---------------------------------------
 -- 返回角度：0 ~ 360
 function _G.aipGetAngle(src, tgt)
 	local direction = (tgt - src):GetNormalized()
