@@ -9,6 +9,9 @@ local Action = Class(function(self, inst)
 	self.canActOnPoint = nil
 	self.canActOnTarget = nil
 	self.canBeActOn = nil
+
+	-- 做行动
+	self.onDoAction = nil
 end)
 
 function Action:CanActOn(doer, target)
@@ -30,6 +33,12 @@ function Action:CanBeActOn(doer)
 		return self.canBeActOn(self.inst, doer)
 	end
 	return false
+end
+
+function Action:DoAction(doer)
+	if self.onDoAction then
+		self.onDoAction(self.inst, doer)
+	end
 end
 
 return Action

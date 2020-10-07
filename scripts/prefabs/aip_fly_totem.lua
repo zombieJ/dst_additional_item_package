@@ -67,6 +67,13 @@ local function canBeActOn(inst, doer)
 	return not inst:HasTag("writeable")
 end
 
+local function onDoAction(inst, doer)
+	-- 展示一个对话框
+	if doer and doer.HUD then
+		return doer.HUD:OpenAIPDestination(inst)
+	end
+end
+
 ---------------------------------- 实体 ----------------------------------
 local function fn()
     local inst = CreateEntity()
@@ -97,6 +104,7 @@ local function fn()
 	
 	inst:AddComponent("aipc_action_client")
 	inst.components.aipc_action_client.canBeActOn = canBeActOn
+	inst.components.aipc_action_client.onDoAction = onDoAction
 
     if not TheWorld.ismastersim then
         return inst
@@ -114,11 +122,6 @@ local function fn()
     inst.components.workable:SetWorkLeft(4)
     inst.components.workable:SetOnFinishCallback(onhammered)
 	inst.components.workable:SetOnWorkCallback(onhit)
-	
-	inst:AddComponent("aipc_action")
-	inst.components.aipc_action.onDoAction = function(inst, doer)
-		doer.components.health:Kill()
-	end
 
     MakeSnowCovered(inst)
 

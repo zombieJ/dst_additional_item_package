@@ -1,17 +1,17 @@
 local _G = GLOBAL
--- local TechTree = require("screens/")
+local DestinationScreen = require("widgets/aip_dest_screen")
 
--- function PlayerHud:OpenCookbookScreen()
---     self.cookbookscreen = CookbookPopupScreen(self.owner)
---     self:OpenScreenUnderPause(self.cookbookscreen)
---     return true
--- end
+local PlayerHud = _G.require("screens/playerhud")
 
--- function PlayerHud:CloseCookbookScreen()
---     if self.cookbookscreen ~= nil then
---         if self.cookbookscreen.inst:IsValid() then
---             TheFrontEnd:PopScreen(self.cookbookscreen)
--- 		end
---         self.cookbookscreen = nil
---     end
--- end
+function PlayerHud:OpenAIPDestination()
+	self.aipDestScreen = DestinationScreen(self.owner)
+	self:OpenScreenUnderPause(self.aipDestScreen)
+	return self.aipDestScreen
+end
+
+function PlayerHud:CloseAIPDestination()
+	if self.aipDestScreen then
+		self.aipDestScreen:Close()
+		self.aipDestScreen = nil
+	end
+end

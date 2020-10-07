@@ -2,6 +2,7 @@ local _G = GLOBAL
 local language = _G.aipGetModConfig("language")
 
 ----------------------------------- 通用组件行为 -----------------------------------
+-- 服务端组件
 local function triggerComponentAction(player, item, target, targetPoint)
 	if item.components.aipc_action ~= nil then
 		-- trigger action
@@ -17,6 +18,17 @@ end
 
 env.AddModRPCHandler(env.modname, "aipComponentAction", function(player, item, target, targetPoint)
 	triggerComponentAction(player, item, target, targetPoint)
+end)
+
+-- 客户端组件
+local function triggerComponentClientAction(player, item, target, targetPoint)
+	if item.components.aipc_action_client ~= nil then
+		item.components.aipc_action_client:DoAction(player)
+	end
+end
+
+env.AddModRPCHandler(env.modname, "aipComponentClientAction", function(player, item, target, targetPoint)
+	triggerComponentClientAction(player, item, target, targetPoint)
 end)
 
 -------------------- 组合行为
@@ -72,10 +84,10 @@ local AIPC_USE_ACTION = env.AddAction("AIPC_USE_ACTION", LANG.USE, function(act)
 
 	if _G.TheNet:GetIsServer() then
 		-- server
-		triggerComponentAction(doer, target)
+		triggerComponentClientAction(doer, target)
 	else
 		-- client
-		SendModRPCToServer(MOD_RPC[env.modname]["aipComponentAction"], doer, target)
+		SendModRPCToServer(MOD_RPC[env.modname]["aipComponentClientAction"], doer, target)
 	end
 
 	return true
