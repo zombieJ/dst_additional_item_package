@@ -83,8 +83,8 @@ local UnityCotainer = Class(function(self, inst)
 	-- 全局注册
 	table.insert(TheWorld.components.world_common_store.chests, self.inst)
 
-	-- 每隔一段时间收取食人花内的物品（食人花 20 秒消化一次，我们 19 秒收集一次保证都收集到）
-	self.task = self.inst:DoPeriodicTask(19, function() self:CollectLureplant() end)
+	-- 每隔一段时间收取食人花内的物品（食人花 20 秒消化一次，我们 9.5 秒收集一次保证都收集到）
+	self.task = self.inst:DoPeriodicTask(9.5, function() self:CollectLureplant() end)
 
 	-- 异步标记当前为最重要的箱子
 	self.inst:DoTaskInTime(0.5, function()
