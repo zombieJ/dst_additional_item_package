@@ -84,10 +84,8 @@ local function syncFlyTotems()
         table.insert(totemNames, text or LANG.UNNAMED)
     end
 
-    for i, player in ipairs(AllPlayers) do
-        if player and player.components.aipc_player_client ~= nil then
-            player.components.aipc_player_client:UpdateTotems(totemNames)
-        end
+    if TheWorld.components.aip_world_common_store_client ~= nil then
+        TheWorld.components.aip_world_common_store_client:UpdateTotems(totemNames)
     end
 end
 

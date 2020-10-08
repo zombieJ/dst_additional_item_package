@@ -18,11 +18,12 @@ local function oncancel(doer, widget)
     doer.HUD:CloseAIPDestination()
 end
 
-local DestinationScreen = Class(Screen, function(self, owner, config)
+local DestinationScreen = Class(Screen, function(self, owner)
     Screen._ctor(self, "AIP_DestinationScreen")
 
     self.owner = owner
-    self.config = config
+
+    aipTypePrint("Screen:", TheWorld.components.aip_world_common_store_client:GetTotems())
 
     self.isopen = false
 

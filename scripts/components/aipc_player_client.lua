@@ -41,9 +41,6 @@ local Player = Class(function(self, inst)
 	-- We can not get ThePlayer in AddPlayerPostInit. So need additonal check in follow events
 	self.inst:ListenForEvent("equip", OnEquip)
 	self.inst:ListenForEvent("unequip", OnUnequip)
-
-	-- 添加飞行图腾的一些数据
-	self.flyTotems = net_string(inst.GUID, "aipc_fly_totem", "aipc_fly_totem")
 end)
 
 function Player:OffMineCar()
@@ -64,22 +61,6 @@ function Player:OffMineCar()
 			end
 		end
 	end
-end
-
------------------------------------ 飞行图腾 -----------------------------------
-function Player:UpdateTotems(totemNames)
-	local strs = table.concat(totemNames, "_AIP_FLY_TOTEM_")
-	aipPrint("Set Names:", strs)
-	self.flyTotems:set(strs)
-end
-
-function Player:GetTotems()
-	local names = {}
-	aipPrint("Get Names:", self.flyTotems:value())
-	for i in string.gmatch(self.flyTotems:value(), "_AIP_FLY_TOTEM_") do
-		table.insert(names, i)
-	 end
-	 return names
 end
 
 -------------------------------------------------------------------------------

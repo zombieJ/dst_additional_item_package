@@ -140,6 +140,16 @@ function _G.aipGetAnimState(inst)
 	return match and data or nil
 end
 
+--------------------------------------- 文本 ---------------------------------------
+function _G.aipSplit(str, spliter)
+	local list = {}
+	local str = self.flyTotems:value()..spliter
+	for i in str:gmatch("(.-)"..spliter) do
+		table.insert(list, i)
+	 end
+	 return list
+end
+
 --------------------------------------- 角度 ---------------------------------------
 -- 返回角度：0 ~ 360
 function _G.aipGetAngle(src, tgt)

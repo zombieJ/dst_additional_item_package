@@ -135,15 +135,14 @@ end
 ------------------------------------- 对象钩子 -------------------------------------
 modimport("scripts/prefabsHooker.lua")
 
-
 -- 世界追踪
-function WorldPrefabPostInit(inst)
-	inst:AddComponent("world_common_store")
-end
+AddPrefabPostInit("world", function(inst)
+	inst:AddComponent("aip_world_common_store_client")
 
-if GLOBAL.TheNet:GetIsServer() or GLOBAL.TheNet:IsDedicated() then
-	AddPrefabPostInit("world", WorldPrefabPostInit)
-end
+	if GLOBAL.TheNet:GetIsServer() or GLOBAL.TheNet:IsDedicated() then
+		inst:AddComponent("world_common_store")
+	end
+end)
 
 ------------------------------------- 玩家钩子 -------------------------------------
 function PlayerPrefabPostInit(inst)
