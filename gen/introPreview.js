@@ -14,7 +14,7 @@ const MAX_WIDTH_COUNT = 9;
 const IMAGES = [
 	['aip_blood_package', 'aip_mine_car'],
 	['incinerator', 'aip_orbit_item', 'aip_nectar_maker', 'aip_woodener'],
-	['dark_observer', 'aip_shadow_paper_package', 'aip_shadow_package', 'aip_dou_opal', 'aip_leaf_note'],
+	['dark_observer', 'aip_shadow_paper_package', 'aip_shadow_package', 'aip_dou_opal', 'aip_leaf_note', 'aip_glass_chest'],
 	['popcorngun', 'aip_fish_sword', 'aip_beehave', 'aip_oar_woodead', 'aip_armor_gambler', 'aip_dou_scepter'],
 	[
 		'aip_dou_fire_inscription', 'aip_dou_heal_inscription', 'aip_dou_ice_inscription', 'aip_dou_sand_inscription',
