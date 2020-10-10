@@ -70,6 +70,8 @@ local function canBeActOn(inst, doer)
 end
 
 local function onDoAction(inst, doer)
+    aipTypePrint("Open Dialog!!!", doer.HUD, doer)
+
 	-- 展示一个对话框
     if doer and doer.HUD then
 		return doer.HUD:OpenAIPDestination(inst)

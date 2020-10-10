@@ -29,6 +29,7 @@ function Action:CanActOnPoint(doer, pos)
 end
 
 function Action:CanBeActOn(doer)
+	aipTypePrint("Can Be Act!!!", doer)
 	if self.canBeActOn then
 		return self.canBeActOn(self.inst, doer)
 	end
@@ -36,6 +37,7 @@ function Action:CanBeActOn(doer)
 end
 
 function Action:DoAction(doer)
+	aipTypePrint("Action Dialog!!!", doer)
 	if self.onDoAction then
 		self.onDoAction(self.inst, doer)
 	end

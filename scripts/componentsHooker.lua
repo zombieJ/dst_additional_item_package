@@ -20,17 +20,6 @@ env.AddModRPCHandler(env.modname, "aipComponentAction", function(player, item, t
 	triggerComponentAction(player, item, target, targetPoint)
 end)
 
--- 客户端组件
-local function triggerComponentClientAction(player, item, target, targetPoint)
-	if item.components.aipc_action_client ~= nil then
-		item.components.aipc_action_client:DoAction(player)
-	end
-end
-
-env.AddModRPCHandler(env.modname, "aipComponentClientAction", function(player, item, target, targetPoint)
-	triggerComponentClientAction(player, item, target, targetPoint)
-end)
-
 -------------------- 组合行为
 local LANG_MAP = {
 	english = {
@@ -76,24 +65,24 @@ env.AddComponentAction("USEITEM", "aipc_action_client", function(inst, doer, tar
 	end
 end)
 
----------------------------------------- 被动的操作 ----------------------------------------
--- 注册一个 action
-local AIPC_USE_ACTION = env.AddAction("AIPC_USE_ACTION", LANG.USE, function(act)
+---------------------------------------- 客户端操作 ----------------------------------------
+-- 注册一个 client action
+local AIPC_CLIENT_USE_ACTION = env.AddAction("AIPC_CLIENT_USE_ACTION", LANG.USE, function(act)
 	local doer = act.doer
 	local target = act.target
 
-	if _G.TheNet:GetIsServer() then
-		-- server
-		triggerComponentClientAction(doer, target)
-	else
-		-- client
-		SendModRPCToServer(MOD_RPC[env.modname]["aipComponentClientAction"], doer, target)
+	_G.aipTypePrint("Why???", doer)
+	-- https://www.it610.com/article/5822028.htm replica?  https://tieba.baidu.com/p/5233026066?red_tag=0315191083
+	-- https://www.zybuluo.com/longfei/note/600827
+
+	if target.components.aipc_action_client ~= nil then
+		target.components.aipc_action_client:DoAction(doer)
 	end
 
 	return true
 end)
-AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_USE_ACTION, "doshortaction"))
-AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_USE_ACTION, "doshortaction"))
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_CLIENT_USE_ACTION, "doshortaction"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_CLIENT_USE_ACTION, "doshortaction"))
 
 
 -- 角色对 aipc_action_client 对象操作
@@ -103,7 +92,7 @@ env.AddComponentAction("SCENE", "aipc_action_client", function(inst, doer, actio
 	end
 
 	if inst.components.aipc_action_client:CanBeActOn(doer) then
-		table.insert(actions, _G.ACTIONS.AIPC_USE_ACTION)
+		table.insert(actions, _G.ACTIONS.AIPC_CLIENT_USE_ACTION)
 	end
 end)
 
