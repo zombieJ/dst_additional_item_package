@@ -109,6 +109,8 @@ function DestinationScreen:RenderDestinations()
         self.menu:Kill()
     end
 
+    aipTypePrint(self.totemNames, names)
+
     -- 左侧列表
     for i = 1, PageSize / 2 do
         table.insert(self.destLeft, {

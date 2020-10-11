@@ -152,13 +152,13 @@ end)
 ------------------------------------- 特殊处理 -------------------------------------
 -- 额外触发一个生命值时间出来
 AddComponentPostInit("health", function(self)
-	local origiDoDelta = self.DoDelta
+	local originDoDelta = self.DoDelta
 
 	function self:DoDelta(amount, ...)
 		local data = { amount = amount }
 		self.inst:PushEvent("aip_healthdelta", data)
 
-		origiDoDelta(self, data.amount, _G.unpack(arg))
+		originDoDelta(self, data.amount, _G.unpack(arg))
 	end
 end)
 
@@ -171,5 +171,18 @@ AddComponentPostInit("fueled", function(self)
 			return self.canAcceptFuelFn(self.inst, item)
 		end
 		return originCanAcceptFuelItem(self, item)
+	end
+end)
+
+-- writeable 完成时额外触发一个事件
+AddComponentPostInit("writeable", function(self)
+	local originEndWriting = self.EndWriting
+
+	function self:EndWriting(...)
+		if self.onAipEndWriting ~= nil then
+			self.onAipEndWriting()
+		end
+
+		originEndWriting(self, _G.unpack(arg))
 	end
 end)

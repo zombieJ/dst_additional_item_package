@@ -27,6 +27,7 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 STRINGS.NAMES.AIP_FLY_TOTEM = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_FLY_TOTEM = LANG.RECDESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM = LANG.DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_UNNAMED = LANG.UNNAMED
 
 -- 配方
 local aip_fly_totem = Recipe("aip_fly_totem", {Ingredient("boards", 1)}, RECIPETABS.TOWN, TECH.SCIENCE_ONE, "aip_fly_totem_placer")
@@ -74,19 +75,6 @@ local function onDoAction(inst, doer)
     if doer and doer.HUD then
 		return doer.HUD:OpenAIPDestination(inst)
 	end
-end
-
-local function syncFlyTotems()
-    -- 这个不能同步到所有玩家，需要重新计算
-    local totemNames = {}
-    for i, totem in ipairs(TheWorld.components.world_common_store.flyTotems) do
-        local text = totem.components.writeable:GetText()
-        table.insert(totemNames, text or LANG.UNNAMED)
-    end
-
-    if TheWorld.components.aip_world_common_store_client ~= nil then
-        TheWorld.components.aip_world_common_store_client:UpdateTotems(totemNames)
-    end
 end
 
 ---------------------------------- 实体 ----------------------------------
@@ -146,14 +134,6 @@ local function fn()
 
     MakeHauntableWork(inst)
     inst:ListenForEvent("onbuilt", onbuilt)
-
-    -- 全局注册或者移除
-    table.insert(TheWorld.components.world_common_store.flyTotems, inst)
-    syncFlyTotems()
-    inst:ListenForEvent("onremove", function()
-        aipTableRemove(TheWorld.components.world_common_store.flyTotems, inst)
-        syncFlyTotems()
-	end)
 
     return inst
 end
