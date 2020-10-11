@@ -143,7 +143,7 @@ end
 --------------------------------------- 文本 ---------------------------------------
 function _G.aipSplit(str, spliter)
 	local list = {}
-	local str = self.flyTotems:value()..spliter
+	local str = str..spliter
 	for i in str:gmatch("(.-)"..spliter) do
 		table.insert(list, i)
 	 end

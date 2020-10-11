@@ -117,11 +117,10 @@ local function fn()
     --Sneak these into pristine state for optimization
     inst:AddTag("_writeable")
 
+    -- 添加飞行图腾
+    inst:AddComponent("aipc_fly_picker_client")
+
 	inst.entity:SetPristine()
-	
-	inst:AddComponent("aipc_action_client")
-	inst.components.aipc_action_client.canBeActOn = canBeActOn
-	inst.components.aipc_action_client.onDoAction = onDoAction
 
     if not TheWorld.ismastersim then
         return inst
@@ -138,7 +137,7 @@ local function fn()
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
     inst.components.workable:SetWorkLeft(4)
     inst.components.workable:SetOnFinishCallback(onhammered)
-	inst.components.workable:SetOnWorkCallback(onhit)
+    inst.components.workable:SetOnWorkCallback(onhit)
 
     MakeSnowCovered(inst)
 

@@ -65,37 +65,6 @@ env.AddComponentAction("USEITEM", "aipc_action_client", function(inst, doer, tar
 	end
 end)
 
----------------------------------------- 客户端操作 ----------------------------------------
--- 注册一个 client action
-local AIPC_CLIENT_USE_ACTION = env.AddAction("AIPC_CLIENT_USE_ACTION", LANG.USE, function(act)
-	local doer = act.doer
-	local target = act.target
-
-	_G.aipTypePrint("Why???", doer)
-	-- https://www.it610.com/article/5822028.htm replica?  https://tieba.baidu.com/p/5233026066?red_tag=0315191083
-	-- https://www.zybuluo.com/longfei/note/600827
-
-	if target.components.aipc_action_client ~= nil then
-		target.components.aipc_action_client:DoAction(doer)
-	end
-
-	return true
-end)
-AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_CLIENT_USE_ACTION, "doshortaction"))
-AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_CLIENT_USE_ACTION, "doshortaction"))
-
-
--- 角色对 aipc_action_client 对象操作
-env.AddComponentAction("SCENE", "aipc_action_client", function(inst, doer, actions, right)
-	if not inst or not right or not doer then
-		return
-	end
-
-	if inst.components.aipc_action_client:CanBeActOn(doer) then
-		table.insert(actions, _G.ACTIONS.AIPC_CLIENT_USE_ACTION)
-	end
-end)
-
 -------------------- 施法行为 https://www.zybuluo.com/longfei/note/600841
 local function getActionableItem(doer)
 	local inventory = doer.replica.inventory
@@ -154,6 +123,32 @@ env.AddComponentAction("SCENE", "combat", function(inst, doer, actions, right)
 	if item ~= nil and item.components.aipc_action_client:CanActOn(doer, inst) then
 		table.insert(actions, _G.ACTIONS.AIPC_CASTER_ACTION)
 	end
+end)
+
+------------------------------------- 飞行图腾 -------------------------------------
+local AIPC_FLY_ACTION = env.AddAction("AIPC_FLY_ACTION", LANG.CAST, function(act)
+	local doer = act.doer
+	local target = act.target
+
+	_G.aipTypePrint(">>>", _G.TheNet:GetIsServer())
+
+	if target and target.components.aipc_fly_picker_client ~= nil then
+		target.components.aipc_fly_picker_client:ShowPicker(doer)
+	end
+
+	return true
+end)
+
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_FLY_ACTION, "doshortaction"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_FLY_ACTION, "doshortaction"))
+
+-- 注册 replica
+env.AddComponentAction("SCENE", "aipc_fly_picker_client", function(inst, doer, actions, right)
+	if not inst or not right then
+		return
+	end
+
+	table.insert(actions, _G.ACTIONS.AIPC_FLY_ACTION)
 end)
 
 ------------------------------------- 特殊处理 -------------------------------------
