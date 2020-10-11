@@ -90,8 +90,12 @@ local DestinationScreen = Class(Screen, function(self, owner)
     end
 end)
 
-local PageSize = 2
+function DestinationScreen:OffsetPage(offset)
+    self.page = self.page + offset
+    self:RenderDestinations()
+end
 
+local PageSize = 2
 function DestinationScreen:RenderDestinations()
     local startIndex = (self.page) * PageSize
     local names = aipTableSlice(self.totemNames, startIndex + 1, PageSize)
@@ -101,7 +105,8 @@ function DestinationScreen:RenderDestinations()
     -- 如果有了就清理一下
     if self.destLeftMenu ~= nil then
         self.destLeftMenu:Kill()
-		self.destRightMenu:Kill()
+        self.destRightMenu:Kill()
+        self.menu:Kill()
     end
 
     -- 左侧列表
@@ -131,9 +136,15 @@ function DestinationScreen:RenderDestinations()
     -- 按钮
     self.buttons = {}
 
-    table.insert(self.buttons, { text = STRINGS.UI.HELP.PREVPAGE, cb = function() oncancel(self.owner, self) end, control = CONTROL_CANCEL })
+    table.insert(self.buttons, { text = STRINGS.UI.HELP.PREVPAGE, cb = function()
+        self:OffsetPage(-1)
+    end, control = CONTROL_CANCEL })
+
     table.insert(self.buttons, { text = STRINGS.SIGNS.MENU.CANCEL, cb = function() oncancel(self.owner, self) end, control = CONTROL_CANCEL })
-    table.insert(self.buttons, { text = STRINGS.UI.HELP.NEXTPAGE, cb = function() oncancel(self.owner, self) end, control = CONTROL_CANCEL })
+
+    table.insert(self.buttons, { text = STRINGS.UI.HELP.NEXTPAGE, cb = function()
+        self:OffsetPage(1)
+    end, control = CONTROL_CANCEL })
 
 	-- 看起来像是根据输入控制用不同的东东，但是不知道区别是什么。反正是菜单按钮的，不用管。
     local menuoffset = Vector3(6, -160, 0)
