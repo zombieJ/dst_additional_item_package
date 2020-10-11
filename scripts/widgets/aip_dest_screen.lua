@@ -95,7 +95,7 @@ function DestinationScreen:OffsetPage(offset)
     self:RenderDestinations()
 end
 
-local PageSize = 2
+local PageSize = 10
 function DestinationScreen:RenderDestinations()
     local startIndex = (self.page) * PageSize
     local names = aipTableSlice(self.totemNames, startIndex + 1, PageSize)
