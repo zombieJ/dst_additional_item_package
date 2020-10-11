@@ -79,8 +79,6 @@ function Player:Destroy()
 	self.inst:RemoveEventCallback("equip", OnEquip)
 	self.inst:RemoveEventCallback("unequip", OnUnequip)
 
-	aipPrint("Player leave:", player.name, "(", player.userid, ")")
-
 	---------------------------------- Client ----------------------------------
 
 	---------------------------------- Server ----------------------------------

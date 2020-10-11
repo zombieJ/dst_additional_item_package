@@ -1,6 +1,5 @@
 local function OnPickerTrigger(inst)
 	local msg = inst.components.aipc_fly_picker_client.trigger:value()
-	aipTypePrint("Get Message:", msg, TheNet:GetUserID())
 	local cells = aipSplit(msg, "|")
 
 	if ThePlayer and tostring(TheNet:GetUserID()) == cells[1] and ThePlayer.HUD then

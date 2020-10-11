@@ -130,8 +130,6 @@ local AIPC_FLY_ACTION = env.AddAction("AIPC_FLY_ACTION", LANG.CAST, function(act
 	local doer = act.doer
 	local target = act.target
 
-	_G.aipTypePrint(">>>", _G.TheNet:GetIsServer())
-
 	if target and target.components.aipc_fly_picker_client ~= nil then
 		target.components.aipc_fly_picker_client:ShowPicker(doer)
 	end

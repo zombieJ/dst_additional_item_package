@@ -1,5 +1,6 @@
 local _G = GLOBAL
 
+--------------------------------------- 表格 ---------------------------------------
 local function countTable(tbl)
 	local count = 0
 	local lastKey = nil
@@ -47,6 +48,16 @@ function _G.aipTableRemove(tbl, item)
 	end
 end
 
+function _G.aipTableSlice(tbl, start, len)
+	local list = {}
+
+	for i = start, math.min(len + start - 1, #tbl) do
+		table.insert(list, tbl[i])
+	end
+	return list
+end
+
+--------------------------------------- 调试 ---------------------------------------
 function _G.aipCommonStr(showType, split, ...)
 	local count = countTable(arg)
 	local str = ""
