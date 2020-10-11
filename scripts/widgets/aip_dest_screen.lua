@@ -73,25 +73,6 @@ local DestinationScreen = Class(Screen, function(self, owner)
 	self.bganim:GetAnimState():SetBank("ui_board_5x3")
     self.bganim:GetAnimState():SetBuild("ui_board_5x3")
 
-	-- 按钮
-    self.buttons = {}
-    table.insert(self.buttons, { text = STRINGS.SIGNS.MENU.CANCEL, cb = function() oncancel(self.owner, self) end, control = CONTROL_CANCEL })
-
-	-- 看起来像是根据输入控制用不同的东东，但是不知道区别是什么。反正是菜单按钮的，不用管。
-    local menuoffset = Vector3(6, -160, 0)
-    if TheInput:ControllerAttached() then
-        local spacing = 150
-        self.menu = self.root:AddChild(Menu(self.buttons, spacing, true, "none"))
-        self.menu:SetTextSize(40)
-        local w = self.menu:AutoSpaceByText(15)
-        self.menu:SetPosition(menuoffset.x - .5 * w, menuoffset.y, menuoffset.z)
-    else
-        local spacing = 110
-        self.menu = self.root:AddChild(Menu(self.buttons, spacing, true, "small"))
-        self.menu:SetTextSize(35)
-        self.menu:SetPosition(menuoffset.x - .5 * spacing * (#self.buttons - 1), menuoffset.y, menuoffset.z)
-    end
-
     -------------------------------------- 展示目的地列表 --------------------------------------
     self.page = 0
     self:RenderDestinations()
@@ -109,9 +90,11 @@ local DestinationScreen = Class(Screen, function(self, owner)
     end
 end)
 
+local PageSize = 2
+
 function DestinationScreen:RenderDestinations()
-    local startIndex = (self.page) * 10
-    local names = aipTableSlice(self.totemNames, startIndex + 1, 10)
+    local startIndex = (self.page) * PageSize
+    local names = aipTableSlice(self.totemNames, startIndex + 1, PageSize)
     self.destLeft = {}
     self.destRight = {}
 
@@ -122,10 +105,9 @@ function DestinationScreen:RenderDestinations()
     end
 
     -- 左侧列表
-    for i = 1, 5 do
+    for i = 1, PageSize / 2 do
         table.insert(self.destLeft, {
             text = self.totemNames[startIndex + i] or "-",
-            totemIndex = startIndex + i,
             cb = function() oncancel(self.owner, self) end,
         })
     end
@@ -135,17 +117,46 @@ function DestinationScreen:RenderDestinations()
 	self.destLeftMenu:SetPosition(-118, 130, 0)
 
     -- 右侧列表
-	for i = 6, 10 do
+	for i = PageSize / 2 + 1, PageSize do
         table.insert(self.destRight, {
             text = self.totemNames[startIndex + i] or "-",
-            totemIndex = startIndex + i,
             cb = function() oncancel(self.owner, self) end,
         })
     end
 
 	self.destRightMenu = self.root:AddChild(Menu(self.destRight, -55, false, "carny_long"))
 	self.destRightMenu:SetTextSize(35)
-	self.destRightMenu:SetPosition(118, 130, 0)
+    self.destRightMenu:SetPosition(118, 130, 0)
+
+    -- 按钮
+    self.buttons = {}
+
+    table.insert(self.buttons, { text = STRINGS.UI.HELP.PREVPAGE, cb = function() oncancel(self.owner, self) end, control = CONTROL_CANCEL })
+    table.insert(self.buttons, { text = STRINGS.SIGNS.MENU.CANCEL, cb = function() oncancel(self.owner, self) end, control = CONTROL_CANCEL })
+    table.insert(self.buttons, { text = STRINGS.UI.HELP.NEXTPAGE, cb = function() oncancel(self.owner, self) end, control = CONTROL_CANCEL })
+
+	-- 看起来像是根据输入控制用不同的东东，但是不知道区别是什么。反正是菜单按钮的，不用管。
+    local menuoffset = Vector3(6, -160, 0)
+    if TheInput:ControllerAttached() then
+        local spacing = 150
+        self.menu = self.root:AddChild(Menu(self.buttons, spacing, true, "none"))
+        self.menu:SetTextSize(40)
+        local w = self.menu:AutoSpaceByText(15)
+        self.menu:SetPosition(menuoffset.x - .5 * w, menuoffset.y, menuoffset.z)
+    else
+        local spacing = 110
+        self.menu = self.root:AddChild(Menu(self.buttons, spacing, true, "small"))
+        self.menu:SetTextSize(35)
+        self.menu:SetPosition(menuoffset.x - .5 * spacing * (#self.buttons - 1), menuoffset.y, menuoffset.z)
+    end
+
+    -- 根据页码调整按钮使用
+    if self.page == 0 then
+        self.menu:DisableItem(1)
+    end
+    if self.page + 1 >= math.ceil(#self.totemNames / PageSize) then
+        self.menu:DisableItem(3)
+    end
 end
 
 function DestinationScreen:Close()
