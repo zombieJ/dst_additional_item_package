@@ -1,4 +1,6 @@
-GLOBAL.STRINGS.AIP = {}
+local _G = GLOBAL
+
+_G.STRINGS.AIP = {}
 
 -- 资源
 Assets =
@@ -91,14 +93,14 @@ if
 		true
 	)
 
-	GLOBAL.STRINGS.TABS.AIP_DOU_SCEPTER = "神秘魔法"
+	_G.STRINGS.TABS.AIP_DOU_SCEPTER = "神秘魔法"
 
 	modimport("scripts/techHooker.lua")
 
 	local inscriptions = require("utils/aip_scepter_util").inscriptions
 	for name, info in pairs(inscriptions) do
 		AddRecipe(
-			name, info.recipes, AIP_DOU_SCEPTER, GLOBAL.TECH.AIP_DOU_SCEPTER,
+			name, info.recipes, AIP_DOU_SCEPTER, _G.TECH.AIP_DOU_SCEPTER,
 			nil, nil, true, nil, nil,
 			"images/inventoryimages/"..name..".xml", name..".tex"
 		)
@@ -139,7 +141,7 @@ modimport("scripts/prefabsHooker.lua")
 AddPrefabPostInit("world", function(inst)
 	inst:AddComponent("aip_world_common_store_client")
 
-	if GLOBAL.TheNet:GetIsServer() or GLOBAL.TheNet:IsDedicated() then
+	if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 		inst:AddComponent("world_common_store")
 	end
 end)
@@ -150,7 +152,23 @@ function PlayerPrefabPostInit(inst)
 		inst:AddComponent("aipc_player_client")
 	end
 
-	if not GLOBAL.TheWorld.ismastersim then
+	-- inst:ListenForEvent("setowner", function()
+	-- 	-- 禁止除了键盘外的所有行为
+	-- 	if inst.components.playercontroller ~= nil then
+	-- 		inst.components.playercontroller.DoAction = function() end
+	-- 	end
+	-- end)
+
+	-- 黏住目标
+	-- inst.components.pinnable:Stick()
+
+	-- 不让走路
+	-- inst.components.locomotor.WalkForward = function() end
+	-- inst.components.locomotor.RunForward = function()
+	-- 	GLOABLa.test()
+	-- end
+
+	if not _G.TheWorld.ismastersim then
 		return
 	end
 	
@@ -160,3 +178,32 @@ function PlayerPrefabPostInit(inst)
 end
 
 AddPlayerPostInit(PlayerPrefabPostInit)
+
+
+-- 监听玩家状态
+local function AddPlayerSgPostInit(fn)
+    AddStategraphPostInit('wilson', fn)
+    AddStategraphPostInit('wilson_client', fn)
+end
+
+AddPlayerSgPostInit(function(self)
+	-- local run_start = self.states.run_start
+	-- if run_start then
+	-- 	function run_start.onenter(inst, ...)
+	-- 	end
+
+	-- 	function run_start.onupdate(inst, ...)
+	-- 	end
+	-- end
+
+	-- _G.aipTypePrint(self.events)
+
+	-- 移除动画能力
+	-- local originLocomoteFn = self.events.locomote.fn
+
+	-- self.events.locomote.fn = 
+end)
+
+-- 添加一个状态
+-- AddStategraphState("wilson", JumpState(false, true))
+-- AddStategraphState("wilson_client", JumpState(true, true))
