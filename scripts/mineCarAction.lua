@@ -204,7 +204,7 @@ local function bindKey(keyCode)
 	
 		-- Client-side
 		else
-			SendModRPCToServer(MOD_RPC[modname]["aipRunMineCar"], rotation, keyCode == KEY_EXIT)
+			_G.aipRPC("aipRunMineCar", rotation, keyCode == KEY_EXIT)
 		end
 	end)
 	

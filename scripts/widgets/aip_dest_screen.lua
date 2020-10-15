@@ -10,8 +10,8 @@ local function onselect(doer, widget, index)
     if not widget.isopen then
         return
     end
-    
-    SendModRPCToServer(MOD_RPC[env.modname]["aipFlyToTotem"], doer, index)
+
+    _G.aipRPC("aipFlyToTotem", index)
 
     doer.HUD:CloseAIPDestination()
 end
@@ -115,15 +115,15 @@ function DestinationScreen:RenderDestinations()
         self.menu:Kill()
     end
 
-    aipTypePrint(self.totemNames, names)
-
     -- 左侧列表
     for i = 1, PageSize / 2 do
         local idx = startIndex + i
-        table.insert(self.destLeft, {
-            text = self.totemNames[idx] or "-",
-            cb = function() onselect(self.owner, self, idx) end,
-        })
+        if self.totemNames[idx] ~= nil then
+            table.insert(self.destLeft, {
+                text = self.totemNames[idx],
+                cb = function() onselect(self.owner, self, idx) end,
+            })
+        end
     end
 
 	self.destLeftMenu = self.root:AddChild(Menu(self.destLeft, -55, false, "carny_long"))
@@ -133,10 +133,12 @@ function DestinationScreen:RenderDestinations()
     -- 右侧列表
     for i = PageSize / 2 + 1, PageSize do
         local idx = startIndex + i
-        table.insert(self.destRight, {
-            text = self.totemNames[idx] or "-",
-            cb = function() onselect(self.owner, self, idx) end,
-        })
+        if self.totemNames[idx] ~= nil then
+            table.insert(self.destRight, {
+                text = self.totemNames[idx] or "-",
+                cb = function() onselect(self.owner, self, idx) end,
+            })
+        end
     end
 
 	self.destRightMenu = self.root:AddChild(Menu(self.destRight, -55, false, "carny_long"))

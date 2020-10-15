@@ -46,7 +46,7 @@ local AIPC_ACTION = env.AddAction("AIPC_ACTION", LANG.GIVE, function(act)
 		triggerComponentAction(doer, item, target, nil)
 	else
 		-- client
-		SendModRPCToServer(MOD_RPC[env.modname]["aipComponentAction"], doer, item, target, nil)
+		_G.aipRPC("aipComponentAction", item, target, nil)
 	end
 
 	return true
@@ -90,7 +90,7 @@ local AIPC_CASTER_ACTION = env.AddAction("AIPC_CASTER_ACTION", LANG.CAST, functi
 		triggerComponentAction(doer, item, target, pos ~= nil and act:GetActionPoint())
 	else
 		-- client
-		SendModRPCToServer(MOD_RPC[env.modname]["aipComponentAction"], doer, item, target, pos)
+		_G.aipRPC("aipComponentAction", item, target, pos)
 	end
 
 	return true
@@ -128,7 +128,12 @@ end)
 ------------------------------------- 飞行图腾 -------------------------------------
 -- 服务端组件
 local function flyToTotem(player, index)
-	_G.aipTypePrint(">>", index, player)
+	if player.components.aipc_flyer == nil then
+		local totem = _G.TheWorld.components.world_common_store.flyTotems[index]
+
+		player:AddComponent("aipc_flyer")
+		player.components.aipc_flyer:FlyTo(totem)
+	end
 end
 
 env.AddModRPCHandler(env.modname, "aipFlyToTotem", function(player, index)
