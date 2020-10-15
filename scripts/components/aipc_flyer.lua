@@ -2,20 +2,22 @@
 local Flyer = Class(function(self, inst)
 	self.inst = inst
 	self.target = nil
-	self.speed = 20
+	self.speed = 50
 end)
 
 function Flyer:FlyTo(target)
 	self.target = target
-	self.inst:StartUpdatingComponent(self)
 
 	RemovePhysicsColliders(self.inst)
 	self.inst.Physics:SetCollisionGroup(COLLISION.FLYERS)
+	self.inst.Physics:ClearCollisionMask()
 	self.inst.Physics:SetMotorVel(self.speed, 1, 0)
 
 	if self.inst.components.drownable then
 		self.inst.components.drownable.enabled = false
 	end
+
+	self.inst:StartUpdatingComponent(self)
 end
 
 function Flyer:RotateToTarget(dest)
@@ -26,6 +28,7 @@ end
 
 function Flyer:End(target)
 	ChangeToCharacterPhysics(self.inst)
+	self.inst.Physics:SetMotorVel(0, 0, 0)
 
 	self.inst:RemoveComponent("aipc_flyer")
 	self.inst:StopUpdatingComponent(self)
@@ -45,12 +48,10 @@ function Flyer:OnUpdate(dt)
 		local instPos = self.inst:GetPosition()
 		local pos = self.target:GetPosition()
 		self:RotateToTarget(pos)
-		-- self.inst.Transform:SetPosition(pos.x, pos.y, pos.z)
 
 		local distance = distsq(instPos.x, instPos.z, pos.x, pos.z)
-		aipPrint("dist", distance)
-		if distance < 3 then
-			aipPrint("less dist")
+		if distance < 4 then
+			self.inst.Transform:SetPosition(pos.x, pos.y, pos.z)
 			self:End()
 		else
 			self:RotateToTarget(pos)
