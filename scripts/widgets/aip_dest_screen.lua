@@ -6,14 +6,20 @@ local Menu = require "widgets/menu"
 local UIAnim = require "widgets/uianim"
 local ImageButton = require "widgets/imagebutton"
 
+local function onselect(doer, widget, index)
+    if not widget.isopen then
+        return
+    end
+    
+    SendModRPCToServer(MOD_RPC[env.modname]["aipFlyToTotem"], doer, index)
+
+    doer.HUD:CloseAIPDestination()
+end
+
 local function oncancel(doer, widget)
     if not widget.isopen then
         return
 	end
-
-    -- if widget.config.cancelbtn.cb ~= nil then
-    --     widget.config.cancelbtn.cb(inst, doer, widget)
-    -- end
 
     doer.HUD:CloseAIPDestination()
 end
@@ -113,9 +119,10 @@ function DestinationScreen:RenderDestinations()
 
     -- 左侧列表
     for i = 1, PageSize / 2 do
+        local idx = startIndex + i
         table.insert(self.destLeft, {
-            text = self.totemNames[startIndex + i] or "-",
-            cb = function() oncancel(self.owner, self) end,
+            text = self.totemNames[idx] or "-",
+            cb = function() onselect(self.owner, self, idx) end,
         })
     end
 
@@ -124,10 +131,11 @@ function DestinationScreen:RenderDestinations()
 	self.destLeftMenu:SetPosition(-118, 130, 0)
 
     -- 右侧列表
-	for i = PageSize / 2 + 1, PageSize do
+    for i = PageSize / 2 + 1, PageSize do
+        local idx = startIndex + i
         table.insert(self.destRight, {
-            text = self.totemNames[startIndex + i] or "-",
-            cb = function() oncancel(self.owner, self) end,
+            text = self.totemNames[idx] or "-",
+            cb = function() onselect(self.owner, self, idx) end,
         })
     end
 

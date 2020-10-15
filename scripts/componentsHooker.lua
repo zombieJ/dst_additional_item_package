@@ -126,6 +126,16 @@ env.AddComponentAction("SCENE", "combat", function(inst, doer, actions, right)
 end)
 
 ------------------------------------- 飞行图腾 -------------------------------------
+-- 服务端组件
+local function flyToTotem(player, index)
+	_G.aipTypePrint(">>", index, player)
+end
+
+env.AddModRPCHandler(env.modname, "aipFlyToTotem", function(player, index)
+	flyToTotem(player, index)
+end)
+
+-- 添加飞行动作
 local AIPC_FLY_ACTION = env.AddAction("AIPC_FLY_ACTION", LANG.CAST, function(act)
 	local doer = act.doer
 	local target = act.target
@@ -140,7 +150,7 @@ end)
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_FLY_ACTION, "doshortaction"))
 AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_FLY_ACTION, "doshortaction"))
 
--- 注册 replica
+-- 未飞行选择器
 env.AddComponentAction("SCENE", "aipc_fly_picker_client", function(inst, doer, actions, right)
 	if not inst or not right then
 		return

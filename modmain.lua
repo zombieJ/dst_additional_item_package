@@ -199,11 +199,42 @@ AddPlayerSgPostInit(function(self)
 	-- _G.aipTypePrint(self.events)
 
 	-- 移除动画能力
-	-- local originLocomoteFn = self.events.locomote.fn
+	local originLocomoteFn = self.events.locomote.fn
 
-	-- self.events.locomote.fn = 
+	self.events.locomote.fn = function(...)
+		originLocomoteFn(_G.unpack(arg))
+	end
 end)
 
 -- 添加一个状态
 -- AddStategraphState("wilson", JumpState(false, true))
 -- AddStategraphState("wilson_client", JumpState(true, true))
+
+-- MakeFlyingCharacterPhysics(inst, 1, .5)
+
+-- 船是一个平台，理论上来说，我们可以让玩家坐飞机
+AddPrefabPostInit("boat", function(inst)
+	-- _G.MakeTinyFlyingCharacterPhysics(inst, 1, .5)
+
+	-- -- 边界变大后就会提前跳，然后淹死
+	-- inst.components.walkableplatform.radius = 5
+
+	-- 改变物理可以让它飞起来
+	-- inst.Physics:SetMass(500)
+    -- inst.Physics:SetFriction(0)
+    -- inst.Physics:SetDamping(5)
+    -- inst.Physics:SetCollisionGroup(_G.COLLISION.FLYERS)
+    -- inst.Physics:ClearCollisionMask()
+    -- inst.Physics:CollidesWith((_G.TheWorld.has_ocean and _G.COLLISION.GROUND) or _G.COLLISION.WORLD)
+    -- inst.Physics:CollidesWith(_G.COLLISION.FLYERS)
+    -- inst.Physics:SetCapsule(.5, 1)
+end)
+
+-- AddComponentPostInit("drownable", function(self)
+-- 	-- 淹不死
+-- 	function self:ShouldDrown()
+-- 		-- Map:GetPlatformAtPoint(pos_x, pos_y, pos_z, extra_radius) 获取站着的平台
+-- 		_G.aipTypePrint("Platform:", self.inst:GetCurrentPlatform())
+-- 		return false
+-- 	end
+-- end)
