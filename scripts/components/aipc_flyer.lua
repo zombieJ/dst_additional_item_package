@@ -3,6 +3,7 @@ local Flyer = Class(function(self, inst)
 	self.inst = inst
 	self.target = nil
 	self.speed = 50
+	self.height = 3
 end)
 
 function Flyer:FlyTo(target)
@@ -11,7 +12,6 @@ function Flyer:FlyTo(target)
 	RemovePhysicsColliders(self.inst)
 	self.inst.Physics:SetCollisionGroup(COLLISION.FLYERS)
 	self.inst.Physics:ClearCollisionMask()
-	self.inst.Physics:SetMotorVel(self.speed, 1, 0)
 
 	if self.inst.components.drownable then
 		self.inst.components.drownable.enabled = false
@@ -47,10 +47,13 @@ function Flyer:OnUpdate(dt)
 		-- 飞过去
 		local instPos = self.inst:GetPosition()
 		local pos = self.target:GetPosition()
+
+		-- 调整速度
 		self:RotateToTarget(pos)
+		self.inst.Physics:SetMotorVel(self.speed, (self.height - instPos.y) * 2, 0)
 
 		local distance = distsq(instPos.x, instPos.z, pos.x, pos.z)
-		if distance < 4 then
+		if distance < 2 then
 			self.inst.Transform:SetPosition(pos.x, pos.y, pos.z)
 			self:End()
 		else
