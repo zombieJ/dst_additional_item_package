@@ -8,7 +8,7 @@ local function FlyActionFilter(inst, action)
 end
 
 
--- 飞行器，玩家添加后会飞向目标地点。落地后删除该组件
+-- 飞行器【server & client】，玩家添加后会飞向目标地点。落地后删除该组件
 local Flyer = Class(function(self, inst)
 	self.inst = inst
 	self.target = nil
@@ -56,7 +56,6 @@ end
 
 function Flyer:End(target)
 	ChangeToCharacterPhysics(self.inst)
-	self.inst.Physics:SetMotorVel(0, 0, 0)
 
 	self.inst:StopUpdatingComponent(self)
 
@@ -77,6 +76,8 @@ function Flyer:End(target)
 		self.inst.components.locomotor:Stop()
 	end
 
+	self.inst.Physics:SetMotorVel(0, -5, 0)
+
 	self.isFlying:set(false)
 end
 
@@ -95,8 +96,8 @@ function Flyer:OnUpdate(dt)
 		self.inst.Physics:SetMotorVel(self.speed, (self.height - instPos.y) * 2, 0)
 
 		local distance = distsq(instPos.x, instPos.z, pos.x, pos.z)
-		if distance < 2 then
-			self.inst.Transform:SetPosition(pos.x, pos.y, pos.z)
+		if distance < 4 then
+			-- self.inst.Transform:SetPosition(pos.x, pos.y, pos.z)
 			self:End()
 		else
 			self:RotateToTarget(pos)

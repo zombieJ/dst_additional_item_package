@@ -7,11 +7,18 @@ local UIAnim = require "widgets/uianim"
 local ImageButton = require "widgets/imagebutton"
 
 local function onselect(doer, widget, index, triggerIndex)
-    if not widget.isopen or index == triggerIndex then
+    if not widget.isopen then
         return
     end
 
-    _G.aipRPC("aipFlyToTotem", index)
+    if index == triggerIndex then
+        -- 提示玩家不能去了
+        if doer.components.talker then
+            doer.components.talker:Say(STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_CURRENT)
+        end
+    else
+        _G.aipRPC("aipFlyToTotem", index)
+    end
 
     doer.HUD:CloseAIPDestination()
 end

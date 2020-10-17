@@ -18,7 +18,8 @@ AddPrefabPostInit("player_classified", function(inst)
 	inst:ListenForEvent("aip_fly_totem_names_dirty", function(inst)
 		local totemNames = _G.aipSplit(inst.aip_fly_totem_names:value(), split)
 
-		if _G.ThePlayer.player_classified == inst and _G.ThePlayer.aipOnTotemFetch then
+		-- 服务端没有玩家
+		if _G.ThePlayer and _G.ThePlayer.player_classified == inst and _G.ThePlayer.aipOnTotemFetch then
 			-- 去掉第一个，那是时间戳
 			_G.ThePlayer.aipOnTotemFetch(_G.aipTableSlice(totemNames, 2, #totemNames))
 		end
