@@ -1,3 +1,5 @@
+local fly_totem = aipGetModConfig("fly_totem")
+
 -- 禁止所有动作
 local function ActionButton(inst, force_target)
 	return
@@ -43,6 +45,12 @@ end
 
 function Flyer:FlyTo(target)
 	self.target = target
+
+	if fly_totem == 'teleport' then
+		local pos = self.target:GetPosition()
+		self.inst.Transform:SetPosition(pos.x, pos.y, pos.z)
+		return
+	end
 
 	RemovePhysicsColliders(self.inst)
 	self.inst.Physics:SetCollisionGroup(COLLISION.FLYERS)

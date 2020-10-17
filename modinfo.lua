@@ -174,6 +174,17 @@ configuration_options =
 		default = "normal",
 	},
 	{
+		name = "fly_totem",
+		label = "Fly Totem - 飞行图腾",
+		options =
+		{
+			{description = "Fly To", data = "fly"},
+			{description = "Teleport", data = "teleport"},
+			{description = "Close", data = "close"},
+		},
+		default = "open",
+	},
+	{
 		name = "tooltip_enhance",
 		label = "Tooltip info enhance",
 		hover = "Let some item in slot support additional tooltip",
