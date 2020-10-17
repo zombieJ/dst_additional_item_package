@@ -56,6 +56,7 @@ PrefabFiles =
 	"aip_woodener",
 	"aip_glass_chest",
 	"aip_fly_totem",
+	"aip_fly_totem_cloud",
 
 	-- Orbit
 	"aip_orbit",
