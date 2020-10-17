@@ -1,3 +1,13 @@
+-- 禁止所有动作
+local function ActionButton(inst, force_target)
+	return
+end
+
+local function FlyActionFilter(inst, action)
+	return false
+end
+
+
 -- 飞行器，玩家添加后会飞向目标地点。落地后删除该组件
 local Flyer = Class(function(self, inst)
 	self.inst = inst
@@ -8,6 +18,16 @@ local Flyer = Class(function(self, inst)
 	self.isFlying = net_bool(inst.GUID, "aipc_flyer_flying", "aipc_flyer_flying_dirty")
 	self.isFlying:set(false)
 end)
+
+function Flyer:IsFlying()
+	return self.isFlying:value()
+end
+
+function Flyer:RotateToTarget(dest)
+	local angle = aipGetAngle(self.inst:GetPosition(), dest)
+	self.inst.Transform:SetRotation(angle)
+	self.inst:FacePoint(dest)
+end
 
 function Flyer:FlyTo(target)
 	aipPrint("START...")
@@ -21,19 +41,18 @@ function Flyer:FlyTo(target)
 		self.inst.components.drownable.enabled = false
 	end
 
+	if self.inst.components.playercontroller ~= nil then
+		self.inst.components.playercontroller.actionbuttonoverride = ActionButton
+		self.inst.components.playercontroller:Enable(false)
+	end
+
+	if self.inst.components.playeractionpicker ~= nil then
+		self.inst.components.playeractionpicker:PushActionFilter(FlyActionFilter, 999)
+	end
+
 	self.inst:StartUpdatingComponent(self)
 
 	self.isFlying:set(true)
-end
-
-function Flyer:IsFlying()
-	return self.isFlying:value()
-end
-
-function Flyer:RotateToTarget(dest)
-	local angle = aipGetAngle(self.inst:GetPosition(), dest)
-	self.inst.Transform:SetRotation(angle)
-	self.inst:FacePoint(dest)
 end
 
 function Flyer:End(target)
@@ -45,6 +64,15 @@ function Flyer:End(target)
 
 	if self.inst.components.drownable then
 		self.inst.components.drownable.enabled = true
+	end
+
+	if self.inst.components.playercontroller ~= nil then
+		self.inst.components.playercontroller.actionbuttonoverride = nil
+		self.inst.components.playercontroller:Enable(true)
+	end
+
+	if self.inst.components.playeractionpicker ~= nil then
+		self.inst.components.playeractionpicker:PopActionFilter(FlyActionFilter, 999)
 	end
 
 	if self.inst.components.locomotor then
