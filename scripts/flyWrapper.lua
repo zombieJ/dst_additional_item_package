@@ -10,7 +10,7 @@ end)
 ----------------------------------- 添加动作 -----------------------------------
 -- 服务端组件
 local function flyToTotem(player, index)
-	if player.components.aipc_flyer == nil then
+	if player.components.aipc_flyer_sc then
 		local totem = _G.TheWorld.components.world_common_store.flyTotems[index]
 
 		player.components.aipc_flyer_sc:FlyTo(totem)
@@ -53,4 +53,14 @@ local function AddPlayerSgPostInit(fn)
 end
 
 AddPlayerSgPostInit(function(self)
+	-- 如果是飞行中，就不让走路
+	local originLocomoteFn = self.events.locomote.fn
+
+	self.events.locomote.fn = function(inst, ...)
+		if inst.components.aipc_flyer_sc and inst.components.aipc_flyer_sc:IsFlying() then
+			return
+		end
+
+		originLocomoteFn(inst, _G.unpack(arg))
+	end
 end)

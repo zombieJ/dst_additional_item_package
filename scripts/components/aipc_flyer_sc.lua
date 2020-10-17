@@ -4,9 +4,13 @@ local Flyer = Class(function(self, inst)
 	self.target = nil
 	self.speed = 50
 	self.height = 3
+
+	self.isFlying = net_bool(inst.GUID, "aipc_flyer_flying", "aipc_flyer_flying_dirty")
+	self.isFlying:set(false)
 end)
 
 function Flyer:FlyTo(target)
+	aipPrint("START...")
 	self.target = target
 
 	RemovePhysicsColliders(self.inst)
@@ -18,6 +22,12 @@ function Flyer:FlyTo(target)
 	end
 
 	self.inst:StartUpdatingComponent(self)
+
+	self.isFlying:set(true)
+end
+
+function Flyer:IsFlying()
+	return self.isFlying:value()
 end
 
 function Flyer:RotateToTarget(dest)
@@ -27,6 +37,7 @@ function Flyer:RotateToTarget(dest)
 end
 
 function Flyer:End(target)
+	aipPrint("End...")
 	ChangeToCharacterPhysics(self.inst)
 	self.inst.Physics:SetMotorVel(0, 0, 0)
 
@@ -35,6 +46,12 @@ function Flyer:End(target)
 	if self.inst.components.drownable then
 		self.inst.components.drownable.enabled = true
 	end
+
+	if self.inst.components.locomotor then
+		self.inst.components.locomotor:Stop()
+	end
+
+	self.isFlying:set(false)
 end
 
 function Flyer:OnUpdate(dt)
