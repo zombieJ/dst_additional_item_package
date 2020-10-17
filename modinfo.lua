@@ -178,8 +178,10 @@ configuration_options =
 		label = "Fly Totem - 飞行图腾",
 		options =
 		{
-			{description = "Fly To", data = "fly"},
+			{description = "Fly", data = "fly"},
+			{description = "Fly anyway", data = "fly_anyway"},
 			{description = "Teleport", data = "teleport"},
+			{description = "Teleport Anayway", data = "teleport_anyway"},
 			{description = "Close", data = "close"},
 		},
 		default = "open",

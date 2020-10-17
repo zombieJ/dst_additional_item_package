@@ -9,6 +9,33 @@ local function FlyActionFilter(inst, action)
 	return false
 end
 
+-- 附近有危险吗？
+local function IsNearDanger(inst)
+	-- 猎犬不能在
+    local hounded = TheWorld.components.hounded
+    if hounded ~= nil and (hounded:GetWarning() or hounded:GetAttacking()) then
+        return true
+	end
+	
+	-- 被点燃不能走
+    local burnable = inst.components.burnable
+    if burnable ~= nil and (burnable:IsBurning() or burnable:IsSmoldering()) then
+        return true
+	end
+	
+	-- 附近不能有敌对单位
+	return FindEntity(
+		inst,
+		10,
+		function(target)
+			return (target.components.combat ~= nil and target.components.combat.target == inst) or
+					(target:HasTag("monster") and not target:HasTag("player"))
+		end,
+		nil,
+		nil,
+		{ "monster", "_combat" }) ~= nil
+end
+
 
 -- 飞行器【server & client】，玩家添加后会飞向目标地点。落地后删除该组件
 local Flyer = Class(function(self, inst)
@@ -46,7 +73,17 @@ end
 function Flyer:FlyTo(target)
 	self.target = target
 
-	if fly_totem == 'teleport' then
+	if fly_totem == 'teleport' or fly_totem == 'fly' then
+		if IsNearDanger(self.inst) then
+			if self.inst.components.talker then
+				self.inst.components.talker:say(STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_IN_DANGER)
+			end
+
+			return
+		end
+	end
+
+	if fly_totem == 'teleport' or fly_totem == 'teleport_anyway' then
 		local pos = self.target:GetPosition()
 		self.inst.Transform:SetPosition(pos.x, pos.y, pos.z)
 		return
