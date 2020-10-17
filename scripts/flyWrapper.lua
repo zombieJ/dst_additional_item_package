@@ -85,21 +85,44 @@ end)
 --     AddStategraphPostInit('wilson_client', fn)
 -- end
 
+local function normalize(angle)
+    while angle > 360 do
+        angle = angle - 360
+    end
+    while angle < 0 do
+        angle = angle + 360
+    end
+    return angle
+end
+
 -- 镜头锁定
 AddClassPostConstruct("cameras/followcamera", function(inst)
-	function inst:SetFlyView()
-		self.targetoffset = _G.Vector3(0, 1.3, 0) -- ADDING HEIGHT ADJUSTER
-		self.distance = 5
-		
-		self.fov = 60 --FPS
-		self.pangain = 50
-		self.headinggain = 50
-		self.distancegain = 20
-		
-		self.distancetarget = 0.5
-		self.pitch = 0 -- LOOK STRAIGHT AHEAD
+	local dist = 8
 
-		self.mindist = 0
-		self.maxdist = 45
+	function inst:SetFlyView(flying)
+		if flying then
+			-- 锁定距离
+			self.mindist = dist
+			self.maxdist = dist + 20
+			self.pangain = 999999 -- 完全跟随玩家
+
+			self._aipOriginHeadingtarget = self.headingtarget
+		else
+			self.headingtarget = self._aipOriginHeadingtarget
+			self:SetDefault()
+		end
+
+		self._aipFlying = flying
+	end
+
+	local OriginUpdate = inst.Update
+	function inst:Update(dt, ...)
+		-- 缓慢变更到目标距离
+		if self._aipFlying then
+			self.distance = self.distance * 0.75 + dist * 0.25
+			self.headingtarget = normalize(180 - _G.ThePlayer:GetRotation())
+		end
+
+		return OriginUpdate(self, dt, _G.unpack(arg))
 	end
 end)

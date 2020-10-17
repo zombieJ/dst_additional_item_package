@@ -23,9 +23,9 @@ local Flyer = Class(function(self, inst)
 		-- 仅对当前玩家锁定屏幕
 		if self.inst == ThePlayer then
 			if self:IsFlying() then
-				TheCamera:SetFlyView()
+				TheCamera:SetFlyView(true)
 			else
-				TheCamera:SetDefault()
+				TheCamera:SetFlyView(false)
 			end
 		end
 	end)
