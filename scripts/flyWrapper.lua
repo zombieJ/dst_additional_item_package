@@ -79,8 +79,27 @@ env.AddComponentAction("SCENE", "aipc_fly_picker_client", function(inst, doer, a
 end)
 
 ----------------------------------- 添加动作 -----------------------------------
--- 监听玩家状态
-local function AddPlayerSgPostInit(fn)
-    AddStategraphPostInit('wilson', fn)
-    AddStategraphPostInit('wilson_client', fn)
-end
+-- -- 监听玩家状态
+-- local function AddPlayerSgPostInit(fn)
+--     AddStategraphPostInit('wilson', fn)
+--     AddStategraphPostInit('wilson_client', fn)
+-- end
+
+-- 镜头锁定
+AddClassPostConstruct("cameras/followcamera", function(inst)
+	function inst:SetFlyView()
+		self.targetoffset = _G.Vector3(0, 1.3, 0) -- ADDING HEIGHT ADJUSTER
+		self.distance = 5
+		
+		self.fov = 60 --FPS
+		self.pangain = 50
+		self.headinggain = 50
+		self.distancegain = 20
+		
+		self.distancetarget = 0.5
+		self.pitch = 0 -- LOOK STRAIGHT AHEAD
+
+		self.mindist = 0
+		self.maxdist = 45
+	end
+end)

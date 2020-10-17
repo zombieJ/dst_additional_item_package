@@ -18,6 +18,17 @@ local Flyer = Class(function(self, inst)
 
 	self.isFlying = net_bool(inst.GUID, "aipc_flyer_flying", "aipc_flyer_flying_dirty")
 	self.isFlying:set(false)
+
+	self.inst:ListenForEvent("aipc_flyer_flying_dirty", function()
+		-- 仅对当前玩家锁定屏幕
+		if self.inst == ThePlayer then
+			if self:IsFlying() then
+				TheCamera:SetFlyView()
+			else
+				TheCamera:SetDefault()
+			end
+		end
+	end)
 end)
 
 function Flyer:IsFlying()
@@ -95,7 +106,7 @@ function Flyer:End(target)
 end
 
 function Flyer:OnUpdate(dt)
-	if self.target == nil or (self.components.health and self.components.health:IsDead()) then
+	if self.target == nil or (self.inst.components.health and self.inst.components.health:IsDead()) then
 		-- 目标没了 or 玩家死了，结束飞行
 		aipPrint("no target")
 		self:End()
