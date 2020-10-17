@@ -6,8 +6,8 @@ local Menu = require "widgets/menu"
 local UIAnim = require "widgets/uianim"
 local ImageButton = require "widgets/imagebutton"
 
-local function onselect(doer, widget, index)
-    if not widget.isopen then
+local function onselect(doer, widget, index, triggerIndex)
+    if not widget.isopen or index == triggerIndex then
         return
     end
 
@@ -24,10 +24,12 @@ local function oncancel(doer, widget)
     doer.HUD:CloseAIPDestination()
 end
 
-local DestinationScreen = Class(Screen, function(self, owner)
+local DestinationScreen = Class(Screen, function(self, owner, triggerIndex)
     Screen._ctor(self, "AIP_DestinationScreen")
 
     self.owner = owner
+
+    self.triggerIndex = triggerIndex
 
     self.totemNames = {}
 
@@ -40,6 +42,7 @@ local DestinationScreen = Class(Screen, function(self, owner)
 
         ThePlayer.aipOnTotemFetch = nil
     end
+
     aipRPC("aipGetFlyTotemNames")
 
 	----------------------------------- 以下直接抄的木板代码 -----------------------------------
@@ -129,7 +132,7 @@ function DestinationScreen:RenderDestinations()
         if self.totemNames[idx] ~= nil then
             table.insert(self.destLeft, {
                 text = self.totemNames[idx],
-                cb = function() onselect(self.owner, self, idx) end,
+                cb = function() onselect(self.owner, self, idx, self.triggerIndex) end,
             })
         end
     end
@@ -144,7 +147,7 @@ function DestinationScreen:RenderDestinations()
         if self.totemNames[idx] ~= nil then
             table.insert(self.destRight, {
                 text = self.totemNames[idx] or "-",
-                cb = function() onselect(self.owner, self, idx) end,
+                cb = function() onselect(self.owner, self, idx, self.triggerIndex) end,
             })
         end
     end

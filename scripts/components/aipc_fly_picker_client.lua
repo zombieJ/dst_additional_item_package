@@ -3,7 +3,7 @@ local function OnPickerTrigger(inst)
 	local cells = aipSplit(msg, "|")
 
 	if ThePlayer and tostring(TheNet:GetUserID()) == cells[1] and ThePlayer.HUD then
-		ThePlayer.HUD:OpenAIPDestination(inst)
+		ThePlayer.HUD:OpenAIPDestination(inst, tonumber(cells[2]))
 	end
 end
 
@@ -27,8 +27,10 @@ local FlyPicker = Class(function(self, inst)
 end)
 
 function FlyPicker:ShowPicker(doer)
+	local index = aipTableIndex(TheWorld.components.world_common_store.flyTotems, self.inst)
+
 	-- 加一个时间戳以便于玩家反复打开时强制触发
-	self.trigger:set(doer.userid.."|"..os.time())
+	self.trigger:set(doer.userid.."|"..index.."|"..os.time())
 end
 
 return FlyPicker

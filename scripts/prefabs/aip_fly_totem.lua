@@ -70,13 +70,6 @@ local function canBeActOn(inst, doer)
 	return not inst:HasTag("writeable")
 end
 
-local function onDoAction(inst, doer)
-	-- 展示一个对话框
-    if doer and doer.HUD then
-		return doer.HUD:OpenAIPDestination(inst)
-	end
-end
-
 ---------------------------------- 实体 ----------------------------------
 local function fn()
     local inst = CreateEntity()

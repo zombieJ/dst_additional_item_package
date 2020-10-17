@@ -57,6 +57,16 @@ function _G.aipTableSlice(tbl, start, len)
 	return list
 end
 
+function _G.aipTableIndex(tbl, item)
+	for i, v in ipairs(tbl) do
+		if v == item then
+			return i
+		end
+	end
+
+	return nil
+end
+
 --------------------------------------- 调试 ---------------------------------------
 function _G.aipCommonStr(showType, split, ...)
 	local count = countTable(arg)

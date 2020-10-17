@@ -18,15 +18,16 @@ AddPrefabPostInit("player_classified", function(inst)
 	inst:ListenForEvent("aip_fly_totem_names_dirty", function(inst)
 		local totemNames = _G.aipSplit(inst.aip_fly_totem_names:value(), split)
 
-		if ThePlayer.player_classified == inst and ThePlayer.aipOnTotemFetch then
-			ThePlayer.aipOnTotemFetch(totemNames)
+		if _G.ThePlayer.player_classified == inst and _G.ThePlayer.aipOnTotemFetch then
+			-- 去掉第一个，那是时间戳
+			_G.ThePlayer.aipOnTotemFetch(_G.aipTableSlice(totemNames, 2, #totemNames))
 		end
 	end)
 end)
 
 env.AddModRPCHandler(env.modname, "aipGetFlyTotemNames", function(player)
 	-- 生成姓名表
-	local totemNames = {}
+	local totemNames = { _G.os.time() }
 
 	for i, totem in ipairs(_G.TheWorld.components.world_common_store.flyTotems) do
 		local text = totem.components.writeable:GetText()
