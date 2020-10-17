@@ -7,6 +7,37 @@ AddPlayerPostInit(function(inst)
 	end
 end)
 
+--------------------------------- 添加共享存储 ---------------------------------
+local split = "_AIP_FLY_TOTEM_"
+
+AddPrefabPostInit("player_classified", function(inst)
+	-- 共享字段
+	inst.aip_fly_totem_names = _G.net_string(inst.GUID, "aip_fly_totem_names", "aip_fly_totem_names_dirty")
+
+	-- 字段变化触发对应弹窗变更
+	inst:ListenForEvent("aip_fly_totem_names_dirty", function(inst)
+		local totemNames = _G.aipSplit(inst.aip_fly_totem_names:value(), split)
+
+		if ThePlayer.player_classified == inst and ThePlayer.aipOnTotemFetch then
+			ThePlayer.aipOnTotemFetch(totemNames)
+		end
+	end)
+end)
+
+env.AddModRPCHandler(env.modname, "aipGetFlyTotemNames", function(player)
+	-- 生成姓名表
+	local totemNames = {}
+
+	for i, totem in ipairs(_G.TheWorld.components.world_common_store.flyTotems) do
+		local text = totem.components.writeable:GetText()
+		table.insert(totemNames, text or _G.STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_UNNAMED)
+	end
+
+	-- 赋值
+	local strs = table.concat(totemNames, split)
+	player.player_classified.aip_fly_totem_names:set(strs)
+end)
+
 ----------------------------------- 添加动作 -----------------------------------
 -- 服务端组件
 local function flyToTotem(player, index)
@@ -51,16 +82,3 @@ local function AddPlayerSgPostInit(fn)
     AddStategraphPostInit('wilson', fn)
     AddStategraphPostInit('wilson_client', fn)
 end
-
-AddPlayerSgPostInit(function(self)
-	-- 如果是飞行中，就不让走路
-	local originLocomoteFn = self.events.locomote.fn
-
-	self.events.locomote.fn = function(inst, ...)
-		if inst.components.aipc_flyer_sc and inst.components.aipc_flyer_sc:IsFlying() then
-			return
-		end
-
-		originLocomoteFn(inst, _G.unpack(arg))
-	end
-end)

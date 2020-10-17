@@ -29,10 +29,18 @@ local DestinationScreen = Class(Screen, function(self, owner)
 
     self.owner = owner
 
-    -- aipTypePrint("Screen:", TheWorld.components.aip_world_common_store_client:GetTotems())
-    self.totemNames = TheWorld.components.aip_world_common_store_client:GetTotems()
+    self.totemNames = {}
 
     self.isopen = false
+
+    ----------------------------------- RPC 调用获取图腾列表 -----------------------------------
+    ThePlayer.aipOnTotemFetch = function(names)
+        self.totemNames = names
+        self:RenderDestinations()
+
+        ThePlayer.aipOnTotemFetch = nil
+    end
+    aipRPC("aipGetFlyTotemNames")
 
 	----------------------------------- 以下直接抄的木板代码 -----------------------------------
     self._scrnw, self._scrnh = TheSim:GetScreenSize()

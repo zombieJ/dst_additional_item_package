@@ -30,7 +30,6 @@ function Flyer:RotateToTarget(dest)
 end
 
 function Flyer:FlyTo(target)
-	aipPrint("START...")
 	self.target = target
 
 	RemovePhysicsColliders(self.inst)
@@ -56,7 +55,6 @@ function Flyer:FlyTo(target)
 end
 
 function Flyer:End(target)
-	aipPrint("End...")
 	ChangeToCharacterPhysics(self.inst)
 	self.inst.Physics:SetMotorVel(0, 0, 0)
 

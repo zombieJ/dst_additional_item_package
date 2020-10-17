@@ -143,8 +143,6 @@ modimport("scripts/prefabsHooker.lua")
 
 -- 世界追踪
 AddPrefabPostInit("world", function(inst)
-	inst:AddComponent("aip_world_common_store_client")
-
 	if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 		inst:AddComponent("world_common_store")
 	end
