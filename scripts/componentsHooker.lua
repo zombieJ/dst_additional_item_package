@@ -35,6 +35,8 @@ local LANG_MAP = {
 }
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
+_G.STRINGS.ACTIONS.AIP_USE = LANG.USE
+
 -- 注册一个 action
 local AIPC_ACTION = env.AddAction("AIPC_ACTION", LANG.GIVE, function(act)
 	local doer = act.doer
@@ -123,45 +125,6 @@ env.AddComponentAction("SCENE", "combat", function(inst, doer, actions, right)
 	if item ~= nil and item.components.aipc_action_client:CanActOn(doer, inst) then
 		table.insert(actions, _G.ACTIONS.AIPC_CASTER_ACTION)
 	end
-end)
-
-------------------------------------- 飞行图腾 -------------------------------------
--- 服务端组件
-local function flyToTotem(player, index)
-	if player.components.aipc_flyer == nil then
-		local totem = _G.TheWorld.components.world_common_store.flyTotems[index]
-
-		player:AddComponent("aipc_flyer")
-		player.components.aipc_flyer:FlyTo(totem)
-	end
-end
-
-env.AddModRPCHandler(env.modname, "aipFlyToTotem", function(player, index)
-	flyToTotem(player, index)
-end)
-
--- 添加飞行动作
-local AIPC_FLY_ACTION = env.AddAction("AIPC_FLY_ACTION", LANG.CAST, function(act)
-	local doer = act.doer
-	local target = act.target
-
-	if target and target.components.aipc_fly_picker_client ~= nil then
-		target.components.aipc_fly_picker_client:ShowPicker(doer)
-	end
-
-	return true
-end)
-
-AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_FLY_ACTION, "doshortaction"))
-AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_FLY_ACTION, "doshortaction"))
-
--- 未飞行选择器
-env.AddComponentAction("SCENE", "aipc_fly_picker_client", function(inst, doer, actions, right)
-	if not inst or not right then
-		return
-	end
-
-	table.insert(actions, _G.ACTIONS.AIPC_FLY_ACTION)
 end)
 
 ------------------------------------- 特殊处理 -------------------------------------

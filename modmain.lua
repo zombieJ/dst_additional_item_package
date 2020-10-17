@@ -20,6 +20,9 @@ Assets =
 	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_plant_bg.xml"),
 	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_water_bg.xml"),
 	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_wind_bg.xml"),
+
+	-- 添加一个动作
+	-- Asset( "ANIM", "anim/aip_player_surf.zip"),
 }
 
 -- 物品列表
@@ -122,6 +125,7 @@ modimport("scripts/itemTileWrapper.lua")
 modimport("scripts/hudWrapper.lua")
 modimport("scripts/shadowPackageAction.lua")
 modimport("scripts/widgetHooker.lua")
+modimport("scripts/flyWrapper.lua")
 
 ------------------------------------- 测试专用 -------------------------------------
 if GetModConfigData("dev_mode") == "enabled" then
@@ -180,31 +184,44 @@ end
 AddPlayerPostInit(PlayerPrefabPostInit)
 
 
--- 监听玩家状态
-local function AddPlayerSgPostInit(fn)
-    AddStategraphPostInit('wilson', fn)
-    AddStategraphPostInit('wilson_client', fn)
-end
 
-AddPlayerSgPostInit(function(self)
-	-- local run_start = self.states.run_start
-	-- if run_start then
-	-- 	function run_start.onenter(inst, ...)
-	-- 	end
 
-	-- 	function run_start.onupdate(inst, ...)
-	-- 	end
-	-- end
+-- AddPlayerSgPostInit(function(self)
+-- 	-- local run_start = self.states.run_start
+-- 	-- if run_start then
+-- 	-- 	function run_start.onenter(inst, ...)
+-- 	-- 	end
 
-	-- _G.aipTypePrint(self.events)
+-- 	-- 	function run_start.onupdate(inst, ...)
+-- 	-- 	end
+-- 	-- end
 
-	-- 移除动画能力
-	local originLocomoteFn = self.events.locomote.fn
+-- 	-- _G.aipTypePrint(self.events)
 
-	self.events.locomote.fn = function(...)
-		originLocomoteFn(_G.unpack(arg))
-	end
-end)
+-- 	-- 移除动画能力
+-- 	-- local originLocomoteFn = self.events.locomote.fn
+
+-- 	-- self.events.locomote.fn = function(...)
+-- 	-- 	originLocomoteFn(_G.unpack(arg))
+-- 	-- end
+
+-- 	-- 修改走路动画
+-- 	local run = self.states.run 
+-- 	if run then
+-- 		local old_enter = run.onenter
+-- 		function run.onenter(inst, ...)
+-- 			if old_enter then 
+-- 				old_enter(inst, ...)
+-- 			end
+-- 			-- if IsFlying(inst) then
+-- 				if not inst.AnimState:IsCurrentAnimation("fall_off") then
+-- 					inst.AnimState:PlayAnimation("sand_idle_loop", true)
+-- 				end
+-- 				inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + .5 * FRAMES)
+-- 			-- end
+-- 		end
+-- 	end
+-- end)
 
 -- 添加一个状态
 -- AddStategraphState("wilson", JumpState(false, true))
@@ -213,22 +230,22 @@ end)
 -- MakeFlyingCharacterPhysics(inst, 1, .5)
 
 -- 船是一个平台，理论上来说，我们可以让玩家坐飞机
-AddPrefabPostInit("boat", function(inst)
-	-- _G.MakeTinyFlyingCharacterPhysics(inst, 1, .5)
+-- AddPrefabPostInit("boat", function(inst)
+-- 	-- _G.MakeTinyFlyingCharacterPhysics(inst, 1, .5)
 
-	-- -- 边界变大后就会提前跳，然后淹死
-	-- inst.components.walkableplatform.radius = 5
+-- 	-- -- 边界变大后就会提前跳，然后淹死
+-- 	-- inst.components.walkableplatform.radius = 5
 
-	-- 改变物理可以让它飞起来
-	-- inst.Physics:SetMass(500)
-    -- inst.Physics:SetFriction(0)
-    -- inst.Physics:SetDamping(5)
-    -- inst.Physics:SetCollisionGroup(_G.COLLISION.FLYERS)
-    -- inst.Physics:ClearCollisionMask()
-    -- inst.Physics:CollidesWith((_G.TheWorld.has_ocean and _G.COLLISION.GROUND) or _G.COLLISION.WORLD)
-    -- inst.Physics:CollidesWith(_G.COLLISION.FLYERS)
-    -- inst.Physics:SetCapsule(.5, 1)
-end)
+-- 	-- 改变物理可以让它飞起来
+-- 	-- inst.Physics:SetMass(500)
+--     -- inst.Physics:SetFriction(0)
+--     -- inst.Physics:SetDamping(5)
+--     -- inst.Physics:SetCollisionGroup(_G.COLLISION.FLYERS)
+--     -- inst.Physics:ClearCollisionMask()
+--     -- inst.Physics:CollidesWith((_G.TheWorld.has_ocean and _G.COLLISION.GROUND) or _G.COLLISION.WORLD)
+--     -- inst.Physics:CollidesWith(_G.COLLISION.FLYERS)
+--     -- inst.Physics:SetCapsule(.5, 1)
+-- end)
 
 -- AddComponentPostInit("drownable", function(self)
 -- 	-- 淹不死

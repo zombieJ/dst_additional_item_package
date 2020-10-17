@@ -30,7 +30,6 @@ function Flyer:End(target)
 	ChangeToCharacterPhysics(self.inst)
 	self.inst.Physics:SetMotorVel(0, 0, 0)
 
-	self.inst:RemoveComponent("aipc_flyer")
 	self.inst:StopUpdatingComponent(self)
 
 	if self.inst.components.drownable then
