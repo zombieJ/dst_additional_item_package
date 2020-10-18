@@ -176,8 +176,8 @@ local function effectFn()
 
     inst.persists = false
 
-    inst:DoTaskInTime(.4, function()
-        inst.SoundEmitter:PlaySound("dontstarve/maxwell/disappear")
+    inst:DoTaskInTime(.1, function()
+        inst.SoundEmitter:PlaySound("dontstarve/maxwell/appear_adventure")
     end)
 
     inst:DoTaskInTime(1, inst.Remove)
