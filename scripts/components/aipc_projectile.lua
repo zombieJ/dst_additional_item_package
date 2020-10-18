@@ -40,6 +40,20 @@ local function isLine(action)
 	return action == nil or action == "LINE" or action == "THROUGH"
 end
 
+-- 不知道为啥，暗影生物居然不算是可以被攻击的。添加一个目标是你
+local function CanTarget(inst, target)
+	if
+		-- 你可以打它
+		(inst.components.combat and inst.components.combat:CanTarget(target)) or
+
+		-- 敌对的
+		(target:HasTag("hostile") and target.components.health and not target.components.health:IsDead())
+	then
+		return true
+	end
+	return false
+end
+
 local function ShowEffect(element, point, targetEffect)
 	local prefab
 	local normalScale = 1
@@ -180,10 +194,8 @@ function Projectile:FindEntities(element, pos, radius)
 	for i, ent in ipairs(ents) do
 		-- 根据元素选择目标
 		if (element == "HEAL" and ent:HasTag("player")) or (element ~= "HEAL" and not ent:HasTag("player")) then
-			-- 只寻找活着的生物
-			-- if not include(self.affectedEntities, ent) and self.inst.components.combat:CanTarget(ent) then
 			-- TODO 去重寻找
-			if self.inst.components.combat:CanTarget(ent) then
+			if CanTarget(self.inst, ent) then
 				table.insert(filteredEnts, ent)
 			end
 		end
@@ -439,7 +451,6 @@ function Projectile:OnUpdate(dt)
 			if
 				prefab:IsValid() and
 				prefab.entity:IsVisible() and
-				-- self.inst.components.combat:CanTarget(prefab) and
 				prefab.components.combat ~= nil and
 				prefab.components.health ~= nil
 			then
@@ -499,7 +510,7 @@ function Projectile:OnUpdate(dt)
 				if
 					prefab:IsValid() and
 					prefab.entity:IsVisible() and
-					self.inst.components.combat:CanTarget(prefab) and
+					CanTarget(self.inst, prefab) and
 					prefab.components.combat ~= nil and
 					prefab.components.health ~= nil
 				then
