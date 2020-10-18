@@ -51,6 +51,6 @@ return tempalte("aip_blue_glasses", {
 	armor = {
 		amount = 500 * PERISH_MAP[dress_uses],
 		absorb_percent = 1,
-		tag = { "shadowcreature", "nightmarecreature", "shadowchesspiece" },
+		tag = aipShadowTags,
 	},
 })

@@ -150,3 +150,16 @@ function GLOBAL.aipDiffAngle(a1, a2)
 
 	return math.min(diff1, diff2)
 end
+
+--------------------------------------- 辅助 ---------------------------------------
+-- 是暗影生物
+_G.aipShadowTags = { "shadow", "shadowminion", "shadowchesspiece", "stalker", "stalkerminion" }
+
+function _G.aipIsShadowCreature(inst)
+	for i, tag in ipairs(_G.aipShadowTags) do
+		if inst:HasTag(tag) then
+			return true
+		end
+	end
+	return true
+end
