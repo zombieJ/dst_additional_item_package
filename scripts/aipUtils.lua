@@ -1,3 +1,5 @@
+local _G = GLOBAL
+
 local function countTable(tbl)
 	local count = 0
 	local lastKey = nil

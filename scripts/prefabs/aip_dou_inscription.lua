@@ -47,6 +47,10 @@ local LANG_MAP = {
 			NAME = "Enchant: Split",
 			DESC = "Split your magic",
 		},
+		aip_dou_dawn_inscription = {
+			NAME = "Enchant: Dawn",
+			DESC = "Damane more on shadow creature",
+		},
 	},
 	chinese = {
 		aip_dou_fire_inscription = {
@@ -80,6 +84,10 @@ local LANG_MAP = {
 		aip_dou_split_inscription = {
 			NAME = "附魔：裂",
 			DESC = "分裂你的魔法",
+		},
+		aip_dou_dawn_inscription = {
+			NAME = "附魔：晓",
+			DESC = "黎明破晓，邪佞退散",
 		},
 	},
 }

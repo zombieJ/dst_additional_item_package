@@ -5,10 +5,13 @@ local inscriptions = {
 	aip_dou_ice_inscription =		{ tag = "ICE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_sand_inscription =		{ tag = "SAND",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_heal_inscription =		{ tag = "HEAL",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+
 	aip_dou_follow_inscription =	{ tag = "FOLLOW",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_through_inscription =	{ tag = "THROUGH",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_area_inscription =		{ tag = "AREA",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+
 	aip_dou_split_inscription =		{ tag = "SPLIT",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_dawn_inscription =		{ tag = "DAWN",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 }
 
 local categories = {
@@ -20,6 +23,7 @@ local categories = {
 	THROUGH = "action",
 	AREA = "action",
 	SPLIT = "split", -- 分裂是特殊的
+	DAWN = "dawn", -- 晓明是特殊的
 }
 
 local damages = {
@@ -29,6 +33,7 @@ local damages = {
 	HEAL = 25, -- 治疗比较特殊，但是叠加的时候算伤害
 	PLANT = 5, -- 植物会用树苗包围目标
 	SPLIT = 0.01, -- 分裂很 IMBA
+	DAWN = 0.01, -- 对暗影怪造成额外伤害，所以本身不高
 }
 
 local defaultColor = { 0.6, 0.6, 0.6, 0.1 }
@@ -62,6 +67,8 @@ local function createGroup(prevGrp)
 		color = prev.color or defaultColor,
 		-- 分裂
 		split = 0,
+		-- 晓明
+		dawn = 0,
 	}
 end
 
@@ -94,6 +101,7 @@ function calculateProjectile(items)
 				local typeInfo = getType(item)
 				local damage = group.damage + (damages[typeInfo.name] or 5)
 
+				------------------------- 元素 -------------------------
 				if typeInfo.type == "element" then
 					-- 元素类型
 					if group.element ~= typeInfo.name then
@@ -108,10 +116,22 @@ function calculateProjectile(items)
 					-- 元素消耗 1 点
 					projectileInfo.uses = projectileInfo.uses + 1
 
+				------------------------- 附魔 -------------------------
 				elseif typeInfo.type == "split" then
 					group.split = group.split + 1
 					group.damage = group.damage + damage
 
+					-- 元素消耗 1 点
+					projectileInfo.uses = projectileInfo.uses + 1
+
+				elseif typeInfo.type == "dawn" then
+					group.dawn = 1
+					group.damage = group.damage + damage
+
+					-- 元素消耗 1 点
+					projectileInfo.uses = projectileInfo.uses + 1
+
+				------------------------- 铭文 -------------------------
 				elseif typeInfo.type == "action" then
 					-- 施法动作
 					group.action = typeInfo.name
