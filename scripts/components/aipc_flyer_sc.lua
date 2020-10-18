@@ -1,4 +1,5 @@
 local fly_totem = aipGetModConfig("fly_totem")
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 -- 禁止所有动作
 local function ActionButton(inst, force_target)
@@ -48,7 +49,7 @@ end
 local Flyer = Class(function(self, inst)
 	self.inst = inst
 	self.target = nil
-	self.speed = 50
+	self.speed = dev_mode and 1 or 50
 	self.height = 3
 	self.cloud = nil
 
@@ -94,17 +95,25 @@ function Flyer:FlyTo(target)
 		return
 	end
 
+	------------------ 开始飞行 ------------------
+
+	-- 创建特效
+	local effect = SpawnPrefab("aip_fly_totem_effect")
+	effect.Transform:SetPosition(self.inst.Transform:GetWorldPosition())
+
 	-- 扣除理智
 	if self.inst.components.sanity then
 		self.inst.components.sanity:DoDelta(-10)
 	end
 
+	-- 如果是瞬间移动
 	if fly_totem == 'teleport' or fly_totem == 'teleport_anyway' then
 		local pos = self.target:GetPosition()
 		self.inst.Transform:SetPosition(pos.x, pos.y, pos.z)
 		return
 	end
 
+	-- 移除物理碰撞
 	RemovePhysicsColliders(self.inst)
 	self.inst.Physics:SetCollisionGroup(COLLISION.FLYERS)
 	self.inst.Physics:ClearCollisionMask()

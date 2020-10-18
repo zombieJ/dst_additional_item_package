@@ -184,7 +184,7 @@ configuration_options =
 			{description = "Teleport Anayway", data = "teleport_anyway"},
 			{description = "Close", data = "close"},
 		},
-		default = "open",
+		default = "fly",
 	},
 	{
 		name = "tooltip_enhance",

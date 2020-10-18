@@ -145,5 +145,47 @@ local function fn()
     return inst
 end
 
+---------------------------------- 特效 ----------------------------------
+local function effectFn()
+    local inst = CreateEntity()
+    local opacity = .5
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddNetwork()
+
+    inst.AnimState:SetBank("lavaarena_attack_buff_effect")
+    inst.AnimState:SetBuild("lavaarena_attack_buff_effect")
+    inst.AnimState:PlayAnimation("in")
+    inst.AnimState:SetMultColour(0, 0, 0, opacity)
+
+    inst:AddTag("NOCLICK")
+    inst:AddTag("FX")
+
+    inst.entity:SetPristine()
+
+    inst:DoPeriodicTask(0.1, function()
+        opacity = math.max(opacity - 0.05, 0)
+        inst.AnimState:SetMultColour(0, 0, 0, opacity)
+    end)
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.persists = false
+
+    inst:DoTaskInTime(.4, function()
+        inst.SoundEmitter:PlaySound("dontstarve/maxwell/disappear")
+    end)
+
+    inst:DoTaskInTime(1, inst.Remove)
+
+    return inst
+end
+
+
 return Prefab("aip_fly_totem", fn, assets, prefabs),
-    MakePlacer("aip_fly_totem_placer", "aip_fly_totem", "aip_fly_totem", "idle")
+        MakePlacer("aip_fly_totem_placer", "aip_fly_totem", "aip_fly_totem", "idle"),
+        Prefab("aip_fly_totem_effect", effectFn, { Asset("ANIM", "anim/lavaarena_attack_buff_effect.zip") })
