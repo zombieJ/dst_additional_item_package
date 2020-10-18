@@ -19,6 +19,7 @@ local LANG_MAP = {
         UNNAMED = "[UNNAMED]",
         CURRENT = "I'm already here!",
         IN_DANGER = "It's not safe time to travel!",
+        CRAZY = "It's too crazy...",
 	},
 	chinese = {
 		NAME = "飞行图腾",
@@ -27,6 +28,7 @@ local LANG_MAP = {
         UNNAMED = "[未命名]",
         CURRENT = "我就在这里！",
         IN_DANGER = "这不是一个安全旅行的时机",
+        CRAZY = "你觉得我还不够疯狂吗？",
 	},
 }
 
@@ -39,6 +41,7 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_UNNAMED = LANG.UNNAMED
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_CURRENT = LANG.CURRENT
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_IN_DANGER = LANG.IN_DANGER
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_CRAZY = LANG.CRAZY
 
 -- 配方
 local aip_fly_totem = Recipe("aip_fly_totem", {Ingredient("boards", 1)}, RECIPETABS.TOWN, TECH.SCIENCE_ONE, "aip_fly_totem_placer")

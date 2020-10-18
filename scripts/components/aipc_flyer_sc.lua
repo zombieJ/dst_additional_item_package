@@ -9,6 +9,13 @@ local function FlyActionFilter(inst, action)
 	return false
 end
 
+-- 对话
+local function DoTalk(inst, str)
+	if inst.components.talker then
+		inst.components.talker:say(str)
+	end
+end
+
 -- 附近有危险吗？
 local function IsNearDanger(inst)
 	-- 猎犬不能在
@@ -73,14 +80,23 @@ end
 function Flyer:FlyTo(target)
 	self.target = target
 
+	-- 危险的时候不能飞
 	if fly_totem == 'teleport' or fly_totem == 'fly' then
 		if IsNearDanger(self.inst) then
-			if self.inst.components.talker then
-				self.inst.components.talker:say(STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_IN_DANGER)
-			end
-
+			DoTalk(self.inst, STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_IN_DANGER)
 			return
 		end
+	end
+
+	-- 理智低的时候不能飞
+	if self.inst.components.sanity and self.inst.components.sanity.current < 10 then
+		DoTalk(self.inst, STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_CRAZY)
+		return
+	end
+
+	-- 扣除理智
+	if self.inst.components.sanity then
+		self.inst.components.sanity:DoDelta(-10)
 	end
 
 	if fly_totem == 'teleport' or fly_totem == 'teleport_anyway' then
