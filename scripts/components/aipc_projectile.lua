@@ -1,5 +1,7 @@
 local AREA_DISTANCE = 2
 
+local SAND_DAMAGE = 30
+
 -- local COMBAT_TAGS = { "_combat" }
 local COMBAT_TAGS = { "_combat", "_health" }
 -- local NO_TAGS = { "player" }
@@ -80,7 +82,7 @@ local function ShowEffect(element, point, targetEffect)
 		
 		-- 重置一下伤害
 		if prefab.components.combat ~= nil then
-			prefab.components.combat:SetDefaultDamage(50)
+			prefab.components.combat:SetDefaultDamage(SAND_DAMAGE)
 			prefab.components.combat.playerdamagepercent = 1
 		end
 	elseif element == "DAWN" then
@@ -157,14 +159,6 @@ local function ApplyElementEffect(target, element, elementCount)
 	end
 end
 
-local function ApplySandEffect(element, position)
-	if element == "SAND" then
-		-- 创建沙丁
-		local blocker = SpawnPrefab("sandspike_med")
-		blocker.Physics:Teleport(position.x, position.y, position.z)
-	end
-end
-
 local Projectile = Class(function(self, inst)
 	self.inst = inst
 	self.speed = 20
@@ -194,18 +188,18 @@ function Projectile:CleanUp()
 	self.inst:Remove()
 end
 
-function Projectile:FindEntities(element, pos, radius)
+function Projectile:FindEntities(element, pos, radius, excludePrefabs)
 	local filteredEnts = {}
 	local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, radius or AREA_DISTANCE, COMBAT_TAGS, NO_TAGS)
 
 	for i, ent in ipairs(ents) do
 		-- 无论是什么元素，都会对符合条件的目标产生效果。即便是敌人
 		if
+			not aipInTable(excludePrefabs, ent) and
 			ent:IsValid() and ent.entity:IsVisible() and
 			ent.components.combat and
 			ent.components.health and not ent.components.health:IsDead()
 		then
-			-- TODO 去重寻找
 			table.insert(filteredEnts, ent)
 		end
 	end
@@ -449,7 +443,7 @@ function Projectile:OnUpdate(dt)
 
 	-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 线性 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	if isLine(self.task.action) then
-		local ents = self:FindEntities(self.task.element, self.inst:GetPosition())
+		local ents = self:FindEntities(self.task.element, self.inst:GetPosition(), nil, self.affectedEntities)
 
 		-- 通杀
 		for i, prefab in ipairs(ents) do
@@ -459,9 +453,15 @@ function Projectile:OnUpdate(dt)
 				prefab.components.combat ~= nil and
 				prefab.components.health ~= nil
 			then
-				-- 只有穿透才能对施法者有效
-				if self.doer ~= prefab or self.task.action == "THROUGH" then
+				-- 不会对施法者生效
+				if self.doer ~= prefab then
 					local effectWork = self:EffectTaskOn(prefab)
+
+					-- 生效后就加入黑名单
+					if effectWork then
+						table.insert(self.affectedEntities, prefab)
+					end
+
 					if self.task.action ~= "THROUGH" then
 						finishTask = effectWork or finishTask
 

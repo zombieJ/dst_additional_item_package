@@ -18,6 +18,18 @@ local function countTable(tbl)
 	return count
 end
 
+-- 查询是否在表格里
+function _G.aipInTable(tbl, match)
+	local list = tbl or {}
+	for i, item in ipairs(list) do
+		if item == match then
+			return true
+		end
+	end
+
+	return false
+end
+
 -- 打平表格，去除中间的空格并且保持顺序
 function GLOBAL.aipFlattenTable(originTbl)
 	local targetTbl = {}
