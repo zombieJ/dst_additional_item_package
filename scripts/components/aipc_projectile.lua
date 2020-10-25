@@ -86,12 +86,8 @@ local function ShowEffect(element, point, targetEffect)
 	elseif element == "DAWN" then
 		prefab = SpawnPrefab("aip_shadow_wrapper")
 		prefab.DoShow()
-
-		-- if targetEffect then
-		-- 	prefab = SpawnPrefab("aip_shadow_wrapper")
-		-- else
-		-- 	SpawnCircle(point, 1.5, { "shadow_despawn", "shadow_despawn", "shadow_despawn" })
-		-- end
+		normalScale = 2
+		smallScale = 0.7
 	elseif element == "HEAL" then
 		if targetEffect then
 			prefab = SpawnPrefab("aip_heal_fx")
