@@ -145,9 +145,7 @@ end
 
 local Projectile = Class(function(self, inst)
 	self.inst = inst
-	-- self.speed = 20
 	self.speed = 20
-	-- self.launchoffset = Vector3(0.25, 2, 0)
 	self.launchoffset = Vector3(0, 1.6, 0)
 
 	self.doer = nil
@@ -401,13 +399,9 @@ function Projectile:EffectTaskOn(target)
 	else
 		local finalDamage = self.task.damage
 
-		-- 如果存在“晓”且为暗影怪，则造成额外 50% 当前生命值（最少 10，最多 100）的伤害
-		if self.task.dawn ~= 0 and aipIsShadowCreature(target) and target.components.health then
-			local additionalDamage = target.components.health.currenthealth / 2
-			additionalDamage = math.min(additionalDamage, 100)
-			additionalDamage = math.max(additionalDamage, 10)
-
-			finalDamage = finalDamage + additionalDamage
+		-- 如果存在“晓”且为暗影怪，则每个元素额外造成 50 点伤害
+		if self.task.element == "DAWN" and aipIsShadowCreature(target) and target.components.health then
+			finalDamage = finalDamage + self.task.elementCount * 50
 		end
 
 		target.components.combat:GetAttacked(self.doer, finalDamage, nil, nil)

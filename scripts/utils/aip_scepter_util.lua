@@ -5,13 +5,13 @@ local inscriptions = {
 	aip_dou_ice_inscription =		{ tag = "ICE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_sand_inscription =		{ tag = "SAND",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_heal_inscription =		{ tag = "HEAL",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_dawn_inscription =		{ tag = "DAWN",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 
 	aip_dou_follow_inscription =	{ tag = "FOLLOW",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_through_inscription =	{ tag = "THROUGH",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_area_inscription =		{ tag = "AREA",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 
 	aip_dou_split_inscription =		{ tag = "SPLIT",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_dawn_inscription =		{ tag = "DAWN",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 }
 
 local categories = {
@@ -19,11 +19,11 @@ local categories = {
 	ICE = "element",
 	SAND = "element",
 	HEAL = "element",
+	DAWN = "element",
 	FOLLOW = "action",
 	THROUGH = "action",
 	AREA = "action",
 	SPLIT = "split", -- 分裂是特殊的
-	DAWN = "dawn", -- 晓明是特殊的
 }
 
 local damages = {
@@ -31,13 +31,15 @@ local damages = {
 	ICE = 20, -- 冰冻能冰冻敌人，但是没有附加伤害
 	SAND = 5, -- 沙子本身是地形影响，减少伤害量
 	HEAL = 25, -- 治疗比较特殊，但是叠加的时候算伤害
+	DAWN = 10, -- 对暗影怪造成额外伤害，所以本身不高
 	PLANT = 5, -- 植物会用树苗包围目标
 	FOLLOW = 0.01, -- 跟随比较简单，不提供额外伤害
 	THROUGH = 15, -- 穿透比较难，增加的多一点
 	AREA = 5, -- 范围伤害很多单位
 	SPLIT = 0.01, -- 分裂很 IMBA
-	DAWN = 0.01, -- 对暗影怪造成额外伤害，所以本身不高
 }
+
+local 
 
 local defaultColor = { 0.6, 0.6, 0.6, 0.1 }
 
@@ -45,6 +47,7 @@ local colors = {
 	FIRE = { 1, 0.8, 0, 1 },
 	ICE = { 0.2, 0.4, 1, 1 },
 	SAND = { 1, 0.8, 0.1, 1 },
+	DAWN = { 0.4, 0, 1, 1 },
 	HEAL = { 0, 0.6, 0.1, 0.5 },
 	PLANT = { 0, 0.6, 0.1, 0.5 },
 }
@@ -70,8 +73,6 @@ local function createGroup(prevGrp)
 		color = prev.color or defaultColor,
 		-- 分裂
 		split = 0,
-		-- 晓明
-		dawn = 0,
 	}
 end
 
@@ -127,13 +128,6 @@ function calculateProjectile(items)
 					-- 元素消耗 1 点
 					projectileInfo.uses = projectileInfo.uses + 1
 
-				elseif typeInfo.type == "dawn" then
-					group.dawn = group.dawn + 1
-					group.damage = group.damage + slotDamage
-
-					-- 元素消耗 1 点
-					projectileInfo.uses = projectileInfo.uses + 1
-
 				------------------------- 铭文 -------------------------
 				elseif typeInfo.type == "action" then
 					-- 施法动作
@@ -161,7 +155,9 @@ function calculateProjectile(items)
 
 	-- 根据元素叠加额外造成效果（哈哈，原来这是个 bug）
 	for i, task in ipairs(projectileInfo.queue) do
-		task.damage = task.damage * math.pow(1.25, task.elementCount or 1)
+		if task.elementCount >= 1 then
+			task.damage = task.damage * math.pow(1.25, task.elementCount - 1)
+		end
 	end
 
 	return projectileInfo
