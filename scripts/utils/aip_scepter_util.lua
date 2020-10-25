@@ -39,8 +39,6 @@ local damages = {
 	SPLIT = 0.01, -- 分裂很 IMBA
 }
 
-local 
-
 local defaultColor = { 0.6, 0.6, 0.6, 0.1 }
 
 local colors = {

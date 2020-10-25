@@ -19,13 +19,30 @@ local function SpawnFlower(index)
 	return flower
 end
 
-local function SpawnFlowers(point, dest, count, flowerIndex)
-	for i = 1, count do
-		local flower = SpawnFlower(flowerIndex + i)
+-- 生成一圈单位特效
+local function SpawnCircle(point, dest, list)
+	local count = #list
+
+	for i, prefab in ipairs(list) do
+		local special = type(prefab) == "string" and SpawnPrefab(prefab) or prefab
 		local angle = 2 * PI / count * i
 		local distance = dest + math.random() / 2
-		flower.Transform:SetPosition(point.x + math.cos(angle) * distance, 0, point.z + math.sin(angle) * distance)
+		special.Transform:SetPosition(point.x + math.cos(angle) * distance, 0, point.z + math.sin(angle) * distance)
 	end
+end
+
+local function SpawnFlowers(point, dest, count, flowerIndex)
+	local list = {}
+
+	for i = 1, count do
+		-- local flower = SpawnFlower(flowerIndex + i)
+		table.insert(list, SpawnFlower(flowerIndex + i))
+		-- local angle = 2 * PI / count * i
+		-- local distance = dest + math.random() / 2
+		-- flower.Transform:SetPosition(point.x + math.cos(angle) * distance, 0, point.z + math.sin(angle) * distance)
+	end
+
+	SpawnCircle(point, dest, list)
 end
 
 local function include(table, value)
@@ -65,6 +82,12 @@ local function ShowEffect(element, point, targetEffect)
 		if prefab.components.combat ~= nil then
 			prefab.components.combat:SetDefaultDamage(50)
 			prefab.components.combat.playerdamagepercent = 1
+		end
+	elseif element == "DAWN" then
+		if targetEffect then
+			prefab = SpawnPrefab("shadow_despawn")
+		else
+			SpawnCircle(point, 1.5, { "shadow_despawn", "shadow_despawn", "shadow_despawn" })
 		end
 	elseif element == "HEAL" then
 		if targetEffect then
@@ -201,8 +224,6 @@ end
 -- 开始任务
 function Projectile:StartBy(doer, queue, target, targetPos, replaceSourcePos)
 	local task = queue[1]
-
-	aipTypePrint(">>>>>>", task)
 
 	if task == nil then
 		self:CleanUp()
