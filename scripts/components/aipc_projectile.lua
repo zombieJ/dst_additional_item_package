@@ -1,8 +1,9 @@
 local AREA_DISTANCE = 2
 
-local COMBAT_TAGS = { "_combat" }
+-- local COMBAT_TAGS = { "_combat" }
+local COMBAT_TAGS = { "_combat", "_health" }
 -- local NO_TAGS = { "player" }
-local NO_TAGS = nil
+local NO_TAGS = { "NO_TAGS" }
 
 -- local FLOWERS = { "stalker_bulb", "stalker_berry", "stalker_fern" }
 local FLOWERS = { 1, 2, 3, 4 }
@@ -38,20 +39,6 @@ end
 
 local function isLine(action)
 	return action == nil or action == "LINE" or action == "THROUGH"
-end
-
--- 不知道为啥，暗影生物居然不算是可以被攻击的。添加一个目标是你
-local function CanTarget(inst, target)
-	if
-		-- 你可以打它
-		(inst.components.combat and inst.components.combat:CanTarget(target)) or
-
-		-- 敌对的
-		(target:HasTag("hostile") and target.components.health and not target.components.health:IsDead())
-	then
-		return true
-	end
-	return false
 end
 
 local function ShowEffect(element, point, targetEffect)
@@ -192,12 +179,14 @@ function Projectile:FindEntities(element, pos, radius)
 	local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, radius or AREA_DISTANCE, COMBAT_TAGS, NO_TAGS)
 
 	for i, ent in ipairs(ents) do
-		-- 根据元素选择目标
-		if (element == "HEAL" and ent:HasTag("player")) or (element ~= "HEAL" and not ent:HasTag("player")) then
+		-- 无论是什么元素，都会对符合条件的目标产生效果。即便是敌人
+		if
+			ent:IsValid() and ent.entity:IsVisible() and
+			ent.components.combat and
+			ent.components.health and not ent.components.health:IsDead()
+		then
 			-- TODO 去重寻找
-			if CanTarget(self.inst, ent) then
-				table.insert(filteredEnts, ent)
-			end
+			table.insert(filteredEnts, ent)
 		end
 	end
 
@@ -507,18 +496,10 @@ function Projectile:OnUpdate(dt)
 
 			-- 通杀
 			for i, prefab in ipairs(ents) do
-				if
-					prefab:IsValid() and
-					prefab.entity:IsVisible() and
-					CanTarget(self.inst, prefab) and
-					prefab.components.combat ~= nil and
-					prefab.components.health ~= nil
-				then
-					self:EffectTaskOn(prefab)
+				self:EffectTaskOn(prefab)
 
-					if self.task.element == "HEAL" then
-						ShowEffect(self.task.element, prefab:GetPosition(), true)
-					end
+				if self.task.element == "HEAL" then
+					ShowEffect(self.task.element, prefab:GetPosition(), true)
 				end
 			end
 
