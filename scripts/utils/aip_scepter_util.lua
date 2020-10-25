@@ -27,14 +27,14 @@ local categories = {
 }
 
 local damages = {
-	FIRE = 5, -- 火焰有燃烧效果，只给予少量伤害
+	FIRE = 15, -- 火焰有燃烧效果，只给予少量伤害
 	ICE = 20, -- 冰冻能冰冻敌人，但是没有附加伤害
-	SAND = 10, -- 沙子本身是地形影响，减少伤害量
+	SAND = 5, -- 沙子本身是地形影响，减少伤害量
 	HEAL = 25, -- 治疗比较特殊，但是叠加的时候算伤害
 	PLANT = 5, -- 植物会用树苗包围目标
-	FOLLOW = 5, -- 跟随比较简单，所以额外伤害不多
+	FOLLOW = 0.01, -- 跟随比较简单，不提供额外伤害
 	THROUGH = 15, -- 穿透比较难，增加的多一点
-	AREA = 10, -- 范围略微有点难，稍微多一点
+	AREA = 5, -- 范围伤害很多单位
 	SPLIT = 0.01, -- 分裂很 IMBA
 	DAWN = 0.01, -- 对暗影怪造成额外伤害，所以本身不高
 }
@@ -128,7 +128,7 @@ function calculateProjectile(items)
 					projectileInfo.uses = projectileInfo.uses + 1
 
 				elseif typeInfo.type == "dawn" then
-					group.dawn = 1
+					group.dawn = group.dawn + 1
 					group.damage = group.damage + slotDamage
 
 					-- 元素消耗 1 点
@@ -158,6 +158,11 @@ function calculateProjectile(items)
 
 	-- 填充默认类型
 	projectileInfo.action = projectileInfo.queue[1].action or "LINE"
+
+	-- 根据元素叠加额外造成效果（哈哈，原来这是个 bug）
+	for i, task in ipairs(projectileInfo.queue) do
+		task.damage = task.damage * math.pow(1.25, task.elementCount or 1)
+	end
 
 	return projectileInfo
 end

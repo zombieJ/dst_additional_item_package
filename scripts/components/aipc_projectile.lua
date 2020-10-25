@@ -63,7 +63,7 @@ local function ShowEffect(element, point, targetEffect)
 		
 		-- 重置一下伤害
 		if prefab.components.combat ~= nil then
-			prefab.components.combat:SetDefaultDamage(10)
+			prefab.components.combat:SetDefaultDamage(50)
 			prefab.components.combat.playerdamagepercent = 1
 		end
 	elseif element == "HEAL" then
