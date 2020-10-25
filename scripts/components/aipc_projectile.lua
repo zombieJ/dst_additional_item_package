@@ -84,11 +84,14 @@ local function ShowEffect(element, point, targetEffect)
 			prefab.components.combat.playerdamagepercent = 1
 		end
 	elseif element == "DAWN" then
-		if targetEffect then
-			prefab = SpawnPrefab("shadow_despawn")
-		else
-			SpawnCircle(point, 1.5, { "shadow_despawn", "shadow_despawn", "shadow_despawn" })
-		end
+		prefab = SpawnPrefab("aip_shadow_wrapper")
+		prefab.DoShow()
+
+		-- if targetEffect then
+		-- 	prefab = SpawnPrefab("aip_shadow_wrapper")
+		-- else
+		-- 	SpawnCircle(point, 1.5, { "shadow_despawn", "shadow_despawn", "shadow_despawn" })
+		-- end
 	elseif element == "HEAL" then
 		if targetEffect then
 			prefab = SpawnPrefab("aip_heal_fx")
