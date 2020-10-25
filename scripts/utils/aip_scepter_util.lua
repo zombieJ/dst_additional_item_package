@@ -32,6 +32,9 @@ local damages = {
 	SAND = 10, -- 沙子本身是地形影响，减少伤害量
 	HEAL = 25, -- 治疗比较特殊，但是叠加的时候算伤害
 	PLANT = 5, -- 植物会用树苗包围目标
+	FOLLOW = 5, -- 跟随比较简单，所以额外伤害不多
+	THROUGH = 15, -- 穿透比较难，增加的多一点
+	AREA = 10, -- 范围略微有点难，稍微多一点
 	SPLIT = 0.01, -- 分裂很 IMBA
 	DAWN = 0.01, -- 对暗影怪造成额外伤害，所以本身不高
 }
@@ -99,7 +102,7 @@ function calculateProjectile(items)
 
 			if item ~= nil then
 				local typeInfo = getType(item)
-				local damage = group.damage + (damages[typeInfo.name] or 5)
+				local slotDamage = damages[typeInfo.name] or 5
 
 				------------------------- 元素 -------------------------
 				if typeInfo.type == "element" then
@@ -110,7 +113,7 @@ function calculateProjectile(items)
 					
 					group.element = typeInfo.name
 					group.elementCount = group.elementCount + 1
-					group.damage = group.damage + damage
+					group.damage = group.damage + slotDamage
 					group.color = colors[typeInfo.name] or defaultColor
 
 					-- 元素消耗 1 点
@@ -119,14 +122,14 @@ function calculateProjectile(items)
 				------------------------- 附魔 -------------------------
 				elseif typeInfo.type == "split" then
 					group.split = group.split + 1
-					group.damage = group.damage + damage
+					group.damage = group.damage + slotDamage
 
 					-- 元素消耗 1 点
 					projectileInfo.uses = projectileInfo.uses + 1
 
 				elseif typeInfo.type == "dawn" then
 					group.dawn = 1
-					group.damage = group.damage + damage
+					group.damage = group.damage + slotDamage
 
 					-- 元素消耗 1 点
 					projectileInfo.uses = projectileInfo.uses + 1
@@ -135,7 +138,7 @@ function calculateProjectile(items)
 				elseif typeInfo.type == "action" then
 					-- 施法动作
 					group.action = typeInfo.name
-					group.damage = group.damage + damage
+					group.damage = group.damage + slotDamage
 
 					table.insert(projectileInfo.queue, group)
 					prevGroup = group
