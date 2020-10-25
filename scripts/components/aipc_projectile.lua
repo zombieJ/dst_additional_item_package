@@ -204,6 +204,8 @@ end
 function Projectile:StartBy(doer, queue, target, targetPos, replaceSourcePos)
 	local task = queue[1]
 
+	aipTypePrint(">>>>>>", task)
+
 	if task == nil then
 		self:CleanUp()
 		return
@@ -400,7 +402,7 @@ function Projectile:EffectTaskOn(target)
 		local finalDamage = self.task.damage
 
 		-- 如果存在“晓”且为暗影怪，则造成额外 50% 当前生命值（最少 10，最多 100）的伤害
-		if self.task.dawn and aipIsShadowCreature(target) and target.components.health then
+		if self.task.dawn ~= 0 and aipIsShadowCreature(target) and target.components.health then
 			local additionalDamage = target.components.health.currenthealth / 2
 			additionalDamage = math.min(additionalDamage, 100)
 			additionalDamage = math.max(additionalDamage, 10)

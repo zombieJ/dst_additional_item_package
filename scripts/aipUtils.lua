@@ -163,5 +163,5 @@ function _G.aipIsShadowCreature(inst)
 			return true
 		end
 	end
-	return true
+	return false
 end
