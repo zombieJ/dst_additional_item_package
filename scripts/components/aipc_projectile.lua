@@ -88,8 +88,8 @@ local function ShowEffect(element, point, targetEffect)
 	elseif element == "DAWN" then
 		prefab = SpawnPrefab("aip_shadow_wrapper")
 		prefab.DoShow()
-		normalScale = 2
-		smallScale = 0.7
+		normalScale = 1.5
+		smallScale = 0.6
 	elseif element == "HEAL" then
 		if targetEffect then
 			prefab = SpawnPrefab("aip_heal_fx")
