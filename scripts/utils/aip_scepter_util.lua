@@ -6,6 +6,7 @@ local inscriptions = {
 	aip_dou_sand_inscription =		{ tag = "SAND",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_heal_inscription =		{ tag = "HEAL",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_dawn_inscription =		{ tag = "DAWN",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_rock_inscription =		{ tag = "ROCK",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 
 	aip_dou_follow_inscription =	{ tag = "FOLLOW",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_through_inscription =	{ tag = "THROUGH",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
@@ -20,6 +21,7 @@ local categories = {
 	SAND = "element",
 	HEAL = "element",
 	DAWN = "element",
+	ROCK = "element",
 	FOLLOW = "action",
 	THROUGH = "action",
 	AREA = "action",
@@ -27,11 +29,12 @@ local categories = {
 }
 
 local damages = {
-	FIRE = 15, -- 火焰有燃烧效果，只给予少量伤害
-	ICE = 20, -- 冰冻能冰冻敌人，但是没有附加伤害
+	FIRE = 12, -- 火焰有燃烧效果，只给予少量伤害
+	ICE = 18, -- 冰冻能冰冻敌人，但是没有附加伤害
 	SAND = 5, -- 沙子本身是地形影响，减少伤害量
 	HEAL = 25, -- 治疗比较特殊，但是叠加的时候算伤害
 	DAWN = 10, -- 对暗影怪造成额外伤害，所以本身不高
+	ROCK = 24, -- 岩石伤害高，如果用的是环切没有打到目标，会召唤元素图腾
 	PLANT = 5, -- 植物会用树苗包围目标
 	FOLLOW = 0.01, -- 跟随比较简单，不提供额外伤害
 	THROUGH = 15, -- 穿透比较难，增加的多一点
@@ -46,6 +49,7 @@ local colors = {
 	ICE = { 0.2, 0.4, 1, 1 },
 	SAND = { 1, 0.8, 0.1, 1 },
 	DAWN = { 0.4, 0, 1, 1 },
+	ROCK = { 0.6, 0.6, 0.6, 1 },
 	HEAL = { 0, 0.6, 0.1, 0.5 },
 	PLANT = { 0, 0.6, 0.1, 0.5 },
 }
