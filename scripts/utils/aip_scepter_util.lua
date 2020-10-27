@@ -75,6 +75,8 @@ local function createGroup(prevGrp)
 		color = prev.color or defaultColor,
 		-- 分裂
 		split = 0,
+		-- 岩石守卫
+		guard = 0,
 	}
 end
 
@@ -118,6 +120,10 @@ function calculateProjectile(items)
 					group.elementCount = group.elementCount + 1
 					group.damage = group.damage + slotDamage
 					group.color = colors[typeInfo.name] or defaultColor
+
+					if group.element == "ROCK" then
+						group.guard = group.guard + 1
+					end
 
 					-- 元素消耗 1 点
 					projectileInfo.uses = projectileInfo.uses + 1
