@@ -46,7 +46,7 @@ local defaultColor = { 0.6, 0.6, 0.6, 0.1 }
 
 local colors = {
 	FIRE = { 1, 0.8, 0, 1 },
-	ICE = { 0.2, 0.4, 1, 1 },
+	ICE = { 0.6, 0.7, 0.8, 1 },
 	SAND = { 1, 0.8, 0.1, 1 },
 	DAWN = { 0.4, 0, 1, 1 },
 	ROCK = { 0.6, 0.6, 0.6, 1 },
@@ -174,4 +174,5 @@ end
 return {
 	calculateProjectile = calculateProjectile,
 	inscriptions = inscriptions,
+	colors = colors,
 }

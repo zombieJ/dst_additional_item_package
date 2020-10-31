@@ -30,62 +30,96 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 STRINGS.NAMES.AIP_DOU_ELEMENT_GUARD = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_ELEMENT_GUARD = LANG.DESC
 
----------------------------------- 资源 ----------------------------------
-local assets = {
-	Asset("ANIM", "anim/aip_dou_element_fire_guard.zip"),
-}
-
 ---------------------------------- 特效 ----------------------------------
 local createEffectVest = require("utils/aip_vest_util").createEffectVest
 
-local function OnEffect(inst)
+local function OnEffect(inst, color)
 	if inst.entity:IsVisible() then
 		local vest = createEffectVest("aip_dou_scepter_projectile", "aip_dou_scepter_projectile", "disappear")
+		local rot = PI * 2 * math.random()
+		local dist = .8
 
 		local x, y, z = inst.Transform:GetWorldPosition()
-		vest.Transform:SetPosition(x + (0.5 - math.random()) * 0.8, y + 2, z + (0.5 - math.random()) * 0.8)
+		vest.Transform:SetPosition(x + math.sin(rot) * dist, y + 2, z + math.cos(rot) * dist)
 		vest.Physics:SetMotorVel(0, -3, 0)
-		vest.AnimState:OverrideMultColour(1, 0.8, 0, 1)
+		vest.AnimState:OverrideMultColour(color[1], color[2], color[3], color[4])
 	end
 end
 
 
 ---------------------------------- 实体 ----------------------------------
-local function fn()
-	local inst = CreateEntity()
+local function getFn(buildName, effectColor, light)
+	-- 返回函数哦
+	local function fn()
+		local inst = CreateEntity()
 
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddSoundEmitter()
-	inst.entity:AddNetwork()
-	inst.entity:AddLight()
+		inst.entity:AddTransform()
+		inst.entity:AddAnimState()
+		inst.entity:AddSoundEmitter()
+		inst.entity:AddNetwork()
 
-	inst.Light:SetIntensity(.75)
-	inst.Light:SetColour(200 / 255, 150 / 255, 50 / 255)
-	inst.Light:SetFalloff(.5)
-	inst.Light:SetRadius(1)
+		if light == true then
+			inst.entity:AddLight()
+			inst.Light:SetIntensity(.75)
+			inst.Light:SetColour(200 / 255, 150 / 255, 50 / 255)
+			inst.Light:SetFalloff(.5)
+			inst.Light:SetRadius(1)
+		end
 
-	inst.AnimState:SetBank("aip_dou_element_fire_guard")
-	inst.AnimState:SetBuild("aip_dou_element_fire_guard")
+		MakeObstaclePhysics(inst, .1)
 
-	inst.AnimState:PlayAnimation("idle", true)
-	-- inst.AnimState:PlayAnimation("place")
-	-- inst.AnimState:PushAnimation("idle", true)
+		inst.AnimState:SetBank(buildName)
+		inst.AnimState:SetBuild(buildName)
 
-	-- 客户端的特效
-	if not TheNet:IsDedicated() then
-		inst.periodTask = inst:DoPeriodicTask(0.2, OnEffect)
-	end
+		inst.AnimState:PlayAnimation("idle", true)
+		-- inst.AnimState:PlayAnimation("place")
+		-- inst.AnimState:PushAnimation("idle", true)
 
-	inst.entity:SetPristine()
+		-- 客户端的特效
+		if not TheNet:IsDedicated() then
+			inst.periodTask = inst:DoPeriodicTask(0.2, OnEffect, nil, effectColor)
+		end
 
-	if not TheWorld.ismastersim then
+		inst.entity:SetPristine()
+
+		if not TheWorld.ismastersim then
+			return inst
+		end
+
+		inst:AddComponent("inspectable")
+
+		-- 召唤元素存活时间很短
+		inst:DoTaskInTime(6, function(inst)
+			inst:Remove()
+		end)
+
 		return inst
 	end
 
-	inst:AddComponent("inspectable")
-
-	return inst
+	return fn
 end
 
-return Prefab("aip_dou_element_fire_guard", fn, assets)
+---------------------------------- 特例 ----------------------------------
+local colors = require("utils/aip_scepter_util").colors
+
+local list = {
+	{
+		name = "aip_dou_element_fire_guard",
+		color = colors.FIRE,
+		assets = { Asset("ANIM", "anim/aip_dou_element_fire_guard.zip") },
+		light = true
+	},
+	{
+		name = "aip_dou_element_ice_guard",
+		color = colors.ICE,
+		assets = { Asset("ANIM", "anim/aip_dou_element_ice_guard.zip") },
+	},
+}
+
+local prefabs = {}
+
+for i, data in ipairs(list) do
+	table.insert(prefabs, Prefab(data.name, getFn(data.name, data.color, data.light), data.assets))
+end
+
+return unpack(prefabs)

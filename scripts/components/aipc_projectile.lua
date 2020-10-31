@@ -33,27 +33,29 @@ local function SpawnCircle(point, dest, list)
 	end
 end
 
+-- 生成一圈花朵特效
 local function SpawnFlowers(point, dest, count, flowerIndex)
 	local list = {}
 
 	for i = 1, count do
-		-- local flower = SpawnFlower(flowerIndex + i)
 		table.insert(list, SpawnFlower(flowerIndex + i))
-		-- local angle = 2 * PI / count * i
-		-- local distance = dest + math.random() / 2
-		-- flower.Transform:SetPosition(point.x + math.cos(angle) * distance, 0, point.z + math.sin(angle) * distance)
 	end
 
 	SpawnCircle(point, dest, list)
 end
 
-local function include(table, value)
-	for k,v in ipairs(table) do
-		if v == value then
-			return true
-		end
+-- 生成元素图腾
+local function SpawnGuard(point, element)
+	local guards = {
+		FIRE = "aip_dou_element_fire_guard",
+		ICE = "aip_dou_element_ice_guard",
+	}
+
+	local guardName = guards[element]
+	if guardName ~= nil then
+		local guard = SpawnPrefab(guardName)
+		guard.Transform:SetPosition(point.x, point.y, point.z)
 	end
-	return false
 end
 
 local function isLine(action)
@@ -521,8 +523,7 @@ function Projectile:OnUpdate(dt)
 
 			-- 如果没有命中任何单位且包含守卫属性则召唤
 			if #ents == 0 and self.task.guard >= 1 then
-				local guard = SpawnPrefab("aip_dou_element_fire_guard")
-				guard.Transform:SetPosition(self.targetPos.x, self.targetPos.y, self.targetPos.z)
+				SpawnGuard(self.targetPos, self.task.element)
 			end
 
 			finishTask = true
