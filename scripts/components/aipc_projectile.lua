@@ -521,7 +521,7 @@ function Projectile:OnUpdate(dt)
 
 			-- 如果没有命中任何单位且包含守卫属性则召唤
 			if #ents == 0 and self.task.guard >= 1 then
-				local guard = SpawnPrefab("aip_dou_element_guard")
+				local guard = SpawnPrefab("aip_dou_element_fire_guard")
 				guard.Transform:SetPosition(self.targetPos.x, self.targetPos.y, self.targetPos.z)
 			end
 
