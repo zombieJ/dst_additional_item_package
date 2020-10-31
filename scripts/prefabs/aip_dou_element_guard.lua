@@ -95,6 +95,9 @@ local function getFn(data)
 
 		-- 召唤元素存活时间很短
 		inst:DoTaskInTime(6, function(inst)
+			local effect = SpawnPrefab("collapse_small")
+			effect.Transform:SetPosition(inst.Transform:GetWorldPosition())
+
 			inst:Remove()
 		end)
 
@@ -143,3 +146,4 @@ for i, data in ipairs(list) do
 end
 
 return unpack(prefabs)
+-- c_give("backpack") c_give("aip_dou_fire_inscription") c_give("aip_dou_ice_inscription") c_give("aip_dou_sand_inscription") c_give("aip_dou_heal_inscription") c_give("aip_dou_dawn_inscription")

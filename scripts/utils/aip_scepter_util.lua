@@ -7,7 +7,6 @@ local inscriptions = {
 	aip_dou_sand_inscription =		{ tag = "SAND",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_heal_inscription =		{ tag = "HEAL",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_dawn_inscription =		{ tag = "DAWN",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_rock_inscription =		{ tag = "ROCK",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 
 	-- Inscription 铭文
 	aip_dou_follow_inscription =	{ tag = "FOLLOW",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
@@ -16,6 +15,7 @@ local inscriptions = {
 
 	-- Enchant 附魔
 	aip_dou_split_inscription =		{ tag = "SPLIT",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_rock_inscription =		{ tag = "ROCK",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 }
 
 local categories = {
@@ -24,7 +24,7 @@ local categories = {
 	SAND = "element",
 	HEAL = "element",
 	DAWN = "element",
-	ROCK = "element",
+	ROCK = "guard",
 	FOLLOW = "action",
 	THROUGH = "action",
 	AREA = "action",
@@ -126,9 +126,13 @@ function calculateProjectile(items)
 					group.damage = group.damage + slotDamage
 					group.color = colors[typeInfo.name] or defaultColor
 
-					if group.element == "ROCK" then
-						group.guard = group.guard + 1
-					end
+					-- 元素消耗 1 点
+					projectileInfo.uses = projectileInfo.uses + 1
+
+				------------------------- 守卫 -------------------------
+				elseif typeInfo.type == "guard" then
+					group.guard = group.guard + 1
+					group.damage = group.damage + slotDamage
 
 					-- 元素消耗 1 点
 					projectileInfo.uses = projectileInfo.uses + 1
