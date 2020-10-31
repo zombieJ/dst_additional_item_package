@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="body">
+        <file id="0" name="body/tree.png" width="253" height="413" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="body/doujiang.png" width="65" height="99" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_dou_element_heal_guard">
+        <animation id="0" name="idle" length="2000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="tree" folder="0" file="0" abs_x="-1.057087" abs_y="1.460145" abs_pivot_x="0.557087" abs_pivot_y="0.039855" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="doujiang" folder="0" file="1" abs_x="13.068182" abs_y="333.555" abs_pivot_x="0.431818" abs_pivot_y="0.945" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="999">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+                <key id="2" time="1999">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="2" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="tree">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-1.057087" y="1.460145" pivot_x="0.557087" pivot_y="0.039855" angle="0"/>
+                </key>
+                <key id="1" time="999" spin="0">
+                    <object folder="0" file="0" x="-1.057087" y="1.460145" pivot_x="0.557087" pivot_y="0.039855" angle="0"/>
+                </key>
+                <key id="2" time="1999" spin="0">
+                    <object folder="0" file="0" x="-1.057087" y="1.460145" pivot_x="0.557087" pivot_y="0.039855" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="doujiang">
+                <key id="0" spin="-1">
+                    <object folder="0" file="1" x="13.068182" y="333.555" pivot_x="0.431818" pivot_y="0.945" angle="0"/>
+                </key>
+                <key id="1" time="999">
+                    <object folder="0" file="1" x="13.068182" y="333.555" pivot_x="0.431818" pivot_y="0.945" angle="352.93191"/>
+                </key>
+                <key id="2" time="1999" spin="0">
+                    <object folder="0" file="1" x="13.068182" y="333.555" pivot_x="0.431818" pivot_y="0.945" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

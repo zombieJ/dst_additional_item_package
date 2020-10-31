@@ -1,6 +1,7 @@
 local IngredientLeafNote = Ingredient("aip_leaf_note", 1, "images/inventoryimages/aip_leaf_note.xml")
 
 local inscriptions = {
+	-- Element 元素
 	aip_dou_fire_inscription =		{ tag = "FIRE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_ice_inscription =		{ tag = "ICE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_sand_inscription =		{ tag = "SAND",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
@@ -8,10 +9,12 @@ local inscriptions = {
 	aip_dou_dawn_inscription =		{ tag = "DAWN",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_rock_inscription =		{ tag = "ROCK",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 
+	-- Inscription 铭文
 	aip_dou_follow_inscription =	{ tag = "FOLLOW",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_through_inscription =	{ tag = "THROUGH",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_area_inscription =		{ tag = "AREA",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 
+	-- Enchant 附魔
 	aip_dou_split_inscription =		{ tag = "SPLIT",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 }
 
@@ -47,11 +50,13 @@ local defaultColor = { 0.6, 0.6, 0.6, 0.1 }
 local colors = {
 	FIRE = { 1, 0.8, 0, 1 },
 	ICE = { 0.6, 0.7, 0.8, 1 },
-	SAND = { 1, 0.8, 0.1, 1 },
+	SAND = { 0.8, 0.7, 0.5, 1 },
 	DAWN = { 0.4, 0, 1, 1 },
 	ROCK = { 0.6, 0.6, 0.6, 1 },
-	HEAL = { 0, 0.6, 0.1, 0.5 },
+	HEAL = { 0.4, 0.7, 0.4, 0.5 },
 	PLANT = { 0, 0.6, 0.1, 0.5 },
+
+	_default = defaultColor,
 }
 
 local function getType(item)

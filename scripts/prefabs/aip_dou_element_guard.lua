@@ -48,7 +48,9 @@ end
 
 
 ---------------------------------- 实体 ----------------------------------
-local function getFn(buildName, effectColor, light)
+local colors = require("utils/aip_scepter_util").colors
+
+local function getFn(data)
 	-- 返回函数哦
 	local function fn()
 		local inst = CreateEntity()
@@ -58,7 +60,7 @@ local function getFn(buildName, effectColor, light)
 		inst.entity:AddSoundEmitter()
 		inst.entity:AddNetwork()
 
-		if light == true then
+		if data.light == true then
 			inst.entity:AddLight()
 			inst.Light:SetIntensity(.75)
 			inst.Light:SetColour(200 / 255, 150 / 255, 50 / 255)
@@ -68,16 +70,19 @@ local function getFn(buildName, effectColor, light)
 
 		MakeObstaclePhysics(inst, .1)
 
-		inst.AnimState:SetBank(buildName)
-		inst.AnimState:SetBuild(buildName)
+		inst.AnimState:SetBank(data.name)
+		inst.AnimState:SetBuild(data.name)
 
 		inst.AnimState:PlayAnimation("idle", true)
 		-- inst.AnimState:PlayAnimation("place")
 		-- inst.AnimState:PushAnimation("idle", true)
 
+		local scale = data.scale or 1
+		inst.Transform:SetScale(scale, scale, scale)
+
 		-- 客户端的特效
 		if not TheNet:IsDedicated() then
-			inst.periodTask = inst:DoPeriodicTask(0.2, OnEffect, nil, effectColor)
+			inst.periodTask = inst:DoPeriodicTask(0.2, OnEffect, nil, data.color or colors._default)
 		end
 
 		inst.entity:SetPristine()
@@ -100,8 +105,6 @@ local function getFn(buildName, effectColor, light)
 end
 
 ---------------------------------- 特例 ----------------------------------
-local colors = require("utils/aip_scepter_util").colors
-
 local list = {
 	{
 		name = "aip_dou_element_fire_guard",
@@ -114,12 +117,29 @@ local list = {
 		color = colors.ICE,
 		assets = { Asset("ANIM", "anim/aip_dou_element_ice_guard.zip") },
 	},
+	{
+		name = "aip_dou_element_sand_guard",
+		color = colors.SAND,
+		assets = { Asset("ANIM", "anim/aip_dou_element_sand_guard.zip") },
+	},
+	{
+		name = "aip_dou_element_heal_guard",
+		color = colors.HEAL,
+		assets = { Asset("ANIM", "anim/aip_dou_element_heal_guard.zip") },
+		scale = 1.5,
+	},
+	{
+		name = "aip_dou_element_dawn_guard",
+		color = colors.HEAL,
+		assets = { Asset("ANIM", "anim/aip_dou_element_dawn_guard.zip") },
+		scale = 1.5,
+	},
 }
 
 local prefabs = {}
 
 for i, data in ipairs(list) do
-	table.insert(prefabs, Prefab(data.name, getFn(data.name, data.color, data.light), data.assets))
+	table.insert(prefabs, Prefab(data.name, getFn(data), data.assets))
 end
 
 return unpack(prefabs)

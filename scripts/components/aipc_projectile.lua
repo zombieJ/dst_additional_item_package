@@ -49,6 +49,9 @@ local function SpawnGuard(point, element)
 	local guards = {
 		FIRE = "aip_dou_element_fire_guard",
 		ICE = "aip_dou_element_ice_guard",
+		SAND = "aip_dou_element_sand_guard",
+		HEAL = "aip_dou_element_heal_guard",
+		DAWN = "aip_dou_element_dawn_guard",
 	}
 
 	local guardName = guards[element]
