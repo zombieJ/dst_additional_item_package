@@ -60,12 +60,8 @@ local function getFn(data)
 		inst.entity:AddSoundEmitter()
 		inst.entity:AddNetwork()
 
-		if data.light == true then
-			inst.entity:AddLight()
-			inst.Light:SetIntensity(.75)
-			inst.Light:SetColour(200 / 255, 150 / 255, 50 / 255)
-			inst.Light:SetFalloff(.5)
-			inst.Light:SetRadius(1)
+		if data.preFn ~= nil then
+			data.preFn(inst)
 		end
 
 		MakeObstaclePhysics(inst, .1)
@@ -93,8 +89,12 @@ local function getFn(data)
 
 		inst:AddComponent("inspectable")
 
+		if data.postFn ~= nil then
+			data.postFn(inst)
+		end
+
 		-- 召唤元素存活时间很短
-		inst:DoTaskInTime(6, function(inst)
+		inst:DoTaskInTime(data.duration or 6, function(inst)
 			local effect = SpawnPrefab("collapse_small")
 			effect.Transform:SetPosition(inst.Transform:GetWorldPosition())
 
@@ -117,18 +117,30 @@ end
 
 ---------------------------------- 特例 ----------------------------------
 local list = {
-	{	-- 火焰守卫：主动攻击目标
+	{	-- 火焰守卫：长时间光亮
 		name = "aip_dou_element_fire_guard",
 		color = colors.FIRE,
 		assets = { Asset("ANIM", "anim/aip_dou_element_fire_guard.zip") },
-		light = true
+		preFn = function(inst)
+			inst.entity:AddLight()
+			inst.Light:SetIntensity(.75)
+			inst.Light:SetColour(200 / 255, 150 / 255, 50 / 255)
+			inst.Light:SetFalloff(.5)
+			inst.Light:SetRadius(1)
+		end,
+		postFn = function(inst)
+			-- 加热附近的单位
+			inst:AddComponent("heater")
+			inst.components.heater.heat = 115
+		end,
+		duration = 30, -- 火焰持续 30 秒
 	},
-	{	-- 冰冻守卫：温度光环
+	{	-- 冰冻守卫：灭火、降温球
 		name = "aip_dou_element_ice_guard",
 		color = colors.ICE,
 		assets = { Asset("ANIM", "anim/aip_dou_element_ice_guard.zip") },
 	},
-	{	-- 沙眼守卫：
+	{	-- 沙眼守卫：主动攻击
 		name = "aip_dou_element_sand_guard",
 		color = colors.SAND,
 		assets = { Asset("ANIM", "anim/aip_dou_element_sand_guard.zip") },
