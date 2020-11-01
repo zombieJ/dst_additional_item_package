@@ -487,6 +487,10 @@ function Projectile:OnUpdate(dt)
 		if self.distance < 0 then
 			finishTask = true
 
+			-- 更新自己的坐标为当前
+			self.targetPos = self.inst:GetPosition()
+			self.targetPos.y = 0
+
 			-- 如果距离到了又没有碰到任何单位就召唤守卫
 			if finishTask and self.task.guard >= 1 and #self.affectedEntities == 0 then
 				SpawnGuard(self.targetPos, self.task.element)
