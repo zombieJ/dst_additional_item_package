@@ -486,11 +486,12 @@ function Projectile:OnUpdate(dt)
 		self.distance = self.distance - self.speed * dt
 		if self.distance < 0 then
 			finishTask = true
-		end
 
-		-- if finishTask and self.task.action ~= "THROUGH" then
-		-- 	ShowEffect(self.task.element, self.inst:GetPosition())
-		-- end
+			-- 如果距离到了又没有碰到任何单位就召唤守卫
+			if finishTask and self.task.guard >= 1 and #self.affectedEntities == 0 then
+				SpawnGuard(self.targetPos, self.task.element)
+			end
+		end
 
 	-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 跟随 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	elseif self.task.action == "FOLLOW" then

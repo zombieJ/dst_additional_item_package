@@ -101,6 +101,14 @@ local function getFn(data)
 			inst:Remove()
 		end)
 
+		aipTypePrint(data)
+		if data.spawnPrefab ~= nil then
+			inst:DoTaskInTime(0.01, function()
+				local effect = SpawnPrefab(data.spawnPrefab)
+				effect.Transform:SetPosition(inst.Transform:GetWorldPosition())
+			end)
+		end
+
 		return inst
 	end
 
@@ -109,33 +117,33 @@ end
 
 ---------------------------------- 特例 ----------------------------------
 local list = {
-	{
+	{	-- 火焰守卫：主动攻击目标
 		name = "aip_dou_element_fire_guard",
 		color = colors.FIRE,
 		assets = { Asset("ANIM", "anim/aip_dou_element_fire_guard.zip") },
 		light = true
 	},
-	{
+	{	-- 冰冻守卫：温度光环
 		name = "aip_dou_element_ice_guard",
 		color = colors.ICE,
 		assets = { Asset("ANIM", "anim/aip_dou_element_ice_guard.zip") },
 	},
-	{
+	{	-- 沙眼守卫：
 		name = "aip_dou_element_sand_guard",
 		color = colors.SAND,
 		assets = { Asset("ANIM", "anim/aip_dou_element_sand_guard.zip") },
 	},
-	{
+	{	-- 治疗守卫：治疗球
 		name = "aip_dou_element_heal_guard",
 		color = colors.HEAL,
 		assets = { Asset("ANIM", "anim/aip_dou_element_heal_guard.zip") },
 		scale = 1.5,
+		spawnPrefab = "collapse_small",
 	},
-	{
+	{	-- 晓明守卫：理智光环
 		name = "aip_dou_element_dawn_guard",
 		color = colors.HEAL,
 		assets = { Asset("ANIM", "anim/aip_dou_element_dawn_guard.zip") },
-		scale = 1.5,
 	},
 }
 
