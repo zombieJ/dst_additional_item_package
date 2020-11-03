@@ -25,6 +25,7 @@ PrefabFiles =
 {
 	-- vest
 	"aip_vest",
+	"aip_projectile",
 
 	-- Food
 	"aip_veggies",

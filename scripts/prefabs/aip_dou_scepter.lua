@@ -202,7 +202,7 @@ local function fn()
 
         if beforeAction(inst, projectileInfo, doer) then
             local projectile = SpawnPrefab("aip_dou_scepter_projectile")
-            projectile.components.aipc_projectile:StartBy(doer, projectileInfo.queue, nil, point)
+            projectile.components.aipc_dou_projectile:StartBy(doer, projectileInfo.queue, nil, point)
         end
     end
 
@@ -211,7 +211,7 @@ local function fn()
 
         if beforeAction(inst, projectileInfo, doer) then
             local projectile = SpawnPrefab("aip_dou_scepter_projectile")
-            projectile.components.aipc_projectile:StartBy(doer, projectileInfo.queue, target)
+            projectile.components.aipc_dou_projectile:StartBy(doer, projectileInfo.queue, target)
         end
     end
 

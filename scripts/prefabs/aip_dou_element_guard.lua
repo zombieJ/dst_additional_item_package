@@ -94,14 +94,13 @@ local function getFn(data)
 		end
 
 		-- 召唤元素存活时间很短
-		inst:DoTaskInTime(data.duration or 6, function(inst)
+		inst:DoTaskInTime(data.duration or 7, function(inst)
 			local effect = SpawnPrefab("collapse_small")
 			effect.Transform:SetPosition(inst.Transform:GetWorldPosition())
 
 			inst:Remove()
 		end)
 
-		aipTypePrint(data)
 		if data.spawnPrefab ~= nil then
 			inst:DoTaskInTime(0.01, function()
 				local effect = SpawnPrefab(data.spawnPrefab)
@@ -132,6 +131,12 @@ local list = {
 			-- 加热附近的单位
 			inst:AddComponent("heater")
 			inst.components.heater.heat = 115
+
+			-- 点燃能力
+			inst:AddComponent("propagator")
+			inst.components.propagator.heatoutput = 15
+			inst.components.propagator.spreading = true
+			inst.components.propagator:StartUpdating()
 		end,
 		duration = 30, -- 火焰持续 30 秒
 	},
@@ -139,6 +144,27 @@ local list = {
 		name = "aip_dou_element_ice_guard",
 		color = colors.ICE,
 		assets = { Asset("ANIM", "anim/aip_dou_element_ice_guard.zip") },
+		prefabs = { "aip_projectile" },
+		postFn = function(inst)
+			-- 灭火能力
+			inst:AddComponent("wateryprotection")
+			inst.components.wateryprotection.extinguishheatpercent = TUNING.FIRESUPPRESSOR_EXTINGUISH_HEAT_PERCENT
+			inst.components.wateryprotection.temperaturereduction = TUNING.FIRESUPPRESSOR_TEMP_REDUCTION
+			inst.components.wateryprotection.witherprotectiontime = TUNING.FIRESUPPRESSOR_PROTECTION_TIME
+			inst.components.wateryprotection.addcoldness = TUNING.FIRESUPPRESSOR_ADD_COLDNESS
+			-- inst.components.wateryprotection:AddIgnoreTag("player")
+
+			-- 寻找火源
+			inst:AddComponent("firedetector")
+			inst.components.firedetector:Activate(0)
+			inst.components.firedetector:SetOnFindFireFn(function(inst, firePos)
+				-- TODO 投掷一个冰球
+				-- inst.components.wateryprotection:SpreadProtectionAtPoint(firePos:Get())
+				local proj = SpawnPrefab("aip_projectile")
+				proj.Transform:SetPosition(inst.Transform:GetWorldPosition())
+				proj.components.aipc_projectile:GoToPoint(firePos)
+			end)
+		end
 	},
 	{	-- 沙眼守卫：主动攻击
 		name = "aip_dou_element_sand_guard",
@@ -162,8 +188,9 @@ local list = {
 local prefabs = {}
 
 for i, data in ipairs(list) do
-	table.insert(prefabs, Prefab(data.name, getFn(data), data.assets))
+	table.insert(prefabs, Prefab(data.name, getFn(data), data.assets, data.prefabs))
 end
 
 return unpack(prefabs)
 -- c_give("backpack") c_give("aip_dou_fire_inscription") c_give("aip_dou_ice_inscription") c_give("aip_dou_sand_inscription") c_give("aip_dou_heal_inscription") c_give("aip_dou_dawn_inscription")
+-- c_give("houndfire") c_give("aip_dou_ice_inscription")
