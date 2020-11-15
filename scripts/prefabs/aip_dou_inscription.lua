@@ -152,8 +152,9 @@ local function makeInscription(name, info)
 		inst:AddComponent("inventoryitem")
 		inst.components.inventoryitem.atlasname = "images/inventoryimages/"..name..".xml"
 		inst.components.inventoryitem.imagename = name
-		-- inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_dou_fire_inscription.xml"
-		-- inst.components.inventoryitem.imagename = "aip_dou_fire_inscription"
+		
+		inst:AddComponent("stackable")
+		inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM
 
 		MakeSmallBurnable(inst, TUNING.LARGE_BURNTIME)
 		MakeSmallPropagator(inst)
