@@ -165,6 +165,13 @@ function GLOBAL.aipDiffAngle(a1, a2)
 	return math.min(diff1, diff2)
 end
 
+-- 返回两点之间的距离（无视 Y 坐标）
+function GLOBAL.aipDist(p1, p2)
+	local dx = p1.x - p2.x
+	local dz = p1.z - p2.z
+	return math.pow(dx*dx+dz*dz, 0.5)
+end
+
 --------------------------------------- 辅助 ---------------------------------------
 -- 是暗影生物
 _G.aipShadowTags = { "shadow", "shadowminion", "shadowchesspiece", "stalker", "stalkerminion" }

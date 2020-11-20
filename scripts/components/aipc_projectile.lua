@@ -8,17 +8,21 @@ local Projectile = Class(function(self, inst)
 end)
 
 -- 飞向目标
-function Projectile:GoToTarget(target)
+function Projectile:GoToTarget(target, callback)
 	self.target = target
 	self.targetPos = self.target:GetPosition()
+
+	self.onFinish = callback
 
 	self:Start()
 end
 
 -- 飞向目标点
-function Projectile:GoToPoint(targetPos)
+function Projectile:GoToPoint(targetPos, callback)
 	self.target = nil
 	self.targetPos = targetPos
+
+	self.onFinish = callback
 
 	self:Start()
 end
@@ -37,9 +41,14 @@ function Projectile:RotateToTarget(dest)
 end
 
 function Projectile:OnUpdate(dt)
+	if self.target ~= nil then
+		self.targetPos = self.target:GetPosition()
+	end
+
 	self:RotateToTarget(self.targetPos)
 
-	if distsq(self.inst:GetPosition(), self.targetPos) < 0.3 then
+	if aipDist(self.inst:GetPosition(), self.targetPos) < 0.3 then
+		aipPrint("di tototot!!!!")
 		self.inst:StopUpdatingComponent(self)
 
 		if self.onFinish ~= nil then

@@ -94,7 +94,7 @@ local function getFn(data)
 		end
 
 		-- 召唤元素存活时间很短
-		inst:DoTaskInTime(data.duration or 7, function(inst)
+		inst:DoTaskInTime(data.duration or 8, function(inst)
 			local effect = SpawnPrefab("collapse_small")
 			effect.Transform:SetPosition(inst.Transform:GetWorldPosition())
 
@@ -146,23 +146,45 @@ local list = {
 		assets = { Asset("ANIM", "anim/aip_dou_element_ice_guard.zip") },
 		prefabs = { "aip_projectile" },
 		postFn = function(inst)
-			-- 灭火能力
-			inst:AddComponent("wateryprotection")
-			inst.components.wateryprotection.extinguishheatpercent = TUNING.FIRESUPPRESSOR_EXTINGUISH_HEAT_PERCENT
-			inst.components.wateryprotection.temperaturereduction = TUNING.FIRESUPPRESSOR_TEMP_REDUCTION
-			inst.components.wateryprotection.witherprotectiontime = TUNING.FIRESUPPRESSOR_PROTECTION_TIME
-			inst.components.wateryprotection.addcoldness = TUNING.FIRESUPPRESSOR_ADD_COLDNESS
-			-- inst.components.wateryprotection:AddIgnoreTag("player")
+			-- 我们存一个临时变量列表
+			inst.fireEnts = {}
 
 			-- 寻找火源
-			inst:AddComponent("firedetector")
-			inst.components.firedetector:Activate(0)
-			inst.components.firedetector:SetOnFindFireFn(function(inst, firePos)
-				-- TODO 投掷一个冰球
-				-- inst.components.wateryprotection:SpreadProtectionAtPoint(firePos:Get())
-				local proj = SpawnPrefab("aip_projectile")
-				proj.Transform:SetPosition(inst.Transform:GetWorldPosition())
-				proj.components.aipc_projectile:GoToPoint(firePos)
+			inst:DoPeriodicTask(TUNING.FIRE_DETECTOR_PERIOD, function()
+				local x, y, z = inst.Transform:GetWorldPosition()
+
+				local NOTAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "burnt", "player", "monster" }
+				local NONEMERGENCY_FIREONLY_TAGS = {"fire"} -- {"fire", "smolder"}
+
+				local ents = TheSim:FindEntities(
+					x, 0, z,
+					TUNING.FIRE_DETECTOR_RANGE, nil, NOTAGS, NONEMERGENCY_FIREONLY_TAGS
+				)
+
+				-- 寻找对象
+				local match = nil
+				for i, ent in ipairs(ents) do
+					if ent.components.burnable ~= nil and ent.components.burnable:IsBurning() and not aipInTable(inst.fireEnts, ent) then
+						table.insert(inst.fireEnts, ent)
+						match = ent
+					end
+				end
+
+				if match == nil then
+					-- 如果没有更多对象匹配了，则重置搜查
+					inst.fireEnts = {}
+				else
+					-- 发射灭火元素
+					local proj = SpawnPrefab("aip_projectile")
+					local x, y, z = inst.Transform:GetWorldPosition()
+
+					proj.Transform:SetPosition(x, 1, z)
+					proj.components.aipc_projectile:GoToTarget(match, function()
+						if match ~= nil and match.components.burnable ~= nil and match.components.burnable:IsBurning() then
+							match.components.burnable:Extinguish()
+						end
+					end)
+				end
 			end)
 		end
 	},
@@ -194,3 +216,6 @@ end
 return unpack(prefabs)
 -- c_give("backpack") c_give("aip_dou_fire_inscription") c_give("aip_dou_ice_inscription") c_give("aip_dou_sand_inscription") c_give("aip_dou_heal_inscription") c_give("aip_dou_dawn_inscription")
 -- c_give("houndfire") c_give("aip_dou_ice_inscription")
+
+
+-- c_give("houndfire")
