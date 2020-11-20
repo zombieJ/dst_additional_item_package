@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="content">
+        <file id="0" name="content/projectile.png" width="160" height="160" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="content/projectile_out.png" width="160" height="160" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_dou_scepter_projectile">
+        <animation id="0" name="idle" length="256">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="projectile_out" folder="0" file="1" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="projectile" folder="0" file="0" abs_x="2.149425" abs_y="0.850575" abs_pivot_x="0.514184" abs_pivot_y="0.507092" abs_angle="0" abs_scale_x="0.6" abs_scale_y="0.6" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="256">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="projectile_out">
+                <key id="0" spin="-1">
+                    <object folder="0" file="1" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+                <key id="1" time="256">
+                    <object folder="0" file="1" pivot_x="0.5" pivot_y="0.5" angle="270.784825"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="projectile">
+                <key id="0">
+                    <object folder="0" file="0" x="2.149425" y="0.850575" pivot_x="0.514184" pivot_y="0.507092" angle="0" scale_x="0.6" scale_y="0.6"/>
+                </key>
+                <key id="1" time="256" spin="-1">
+                    <object folder="0" file="0" x="0.149425" y="0.850575" pivot_x="0.514184" pivot_y="0.507092" angle="89.848793" scale_x="0.6" scale_y="0.6"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="1" name="disappear" length="500">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="projectile_000" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.524845" abs_pivot_y="0.506211" abs_angle="0" abs_scale_x="0.5" abs_scale_y="0.5" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="499">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="projectile_000">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.524845" pivot_y="0.506211" angle="0" scale_x="0.5" scale_y="0.5"/>
+                </key>
+                <key id="1" time="499" spin="0">
+                    <object folder="0" file="0" pivot_x="0.524845" pivot_y="0.506211" angle="0" scale_x="0.001" scale_y="0.001"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="explode" length="200">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="projectile_001" folder="0" file="0" abs_x="-50" abs_y="48" abs_pivot_x="0" abs_pivot_y="1" abs_angle="360" abs_scale_x="0.6" abs_scale_y="0.6" abs_a="1" timeline="1" key="0" z_index="0"/>
+                    <object_ref id="1" name="projectile_002" folder="0" file="0" abs_x="-38.268634" abs_y="37" abs_pivot_x="0" abs_pivot_y="1" abs_angle="360" abs_scale_x="0.462733" abs_scale_y="0.461599" abs_a="1" timeline="2" key="0" z_index="1"/>
+                    <object_ref id="2" name="projectile_003" folder="0" file="0" abs_x="-37.274845" abs_y="36" abs_pivot_x="0" abs_pivot_y="1" abs_angle="360" abs_scale_x="0.450311" abs_scale_y="0.449162" abs_a="1" timeline="3" key="0" z_index="2"/>
+                </key>
+                <key id="1" time="196">
+                    <object_ref id="0" timeline="1" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="2" key="1" z_index="1"/>
+                    <object_ref id="2" timeline="3" key="1" z_index="2"/>
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="1" key="2" z_index="0"/>
+                    <object_ref id="1" timeline="2" key="2" z_index="1"/>
+                    <object_ref id="2" timeline="3" key="2" z_index="2"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="projectile_000">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.524845" pivot_y="0.506211" angle="0" scale_x="0.5" scale_y="0.5"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="projectile_001">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-50" y="48" scale_x="0.6" scale_y="0.6"/>
+                </key>
+                <key id="1" time="196" spin="0">
+                    <object folder="0" file="0" x="33.990605" y="-43.14" scale_x="0.021211" scale_y="0.020986"/>
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="0" file="0" x="35.753727" y="-45" scale_x="0.107453" scale_y="0.106855"/>
+                </key>
+            </timeline>
+            <timeline id="2" name="projectile_002">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-38.268634" y="37" scale_x="0.462733" scale_y="0.461599"/>
+                </key>
+                <key id="1" time="196" spin="0">
+                    <object folder="0" file="0" x="-115.90579" y="40.92" scale_x="0.028419" scale_y="0.028099"/>
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="0" file="0" x="-117.46118" y="41" scale_x="0.07764" scale_y="0.076999"/>
+                </key>
+            </timeline>
+            <timeline id="3" name="projectile_003">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-37.274845" y="36" scale_x="0.450311" scale_y="0.449162"/>
+                </key>
+                <key id="1" time="196" spin="0">
+                    <object folder="0" file="0" x="75.21047" y="72.26" scale_x="0.020941" scale_y="0.020679"/>
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="0" file="0" x="77.541925" y="73" scale_x="0.083851" scale_y="0.083169"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

@@ -5,11 +5,13 @@ local Projectile = Class(function(self, inst)
 	self.targetPos = nil
 	self.speed = 6
 	self.onFinish = nil
+	self.hasTarget = false
 end)
 
 -- 飞向目标
 function Projectile:GoToTarget(target, callback)
 	self.target = target
+	self.hasTarget = true
 	self.targetPos = self.target:GetPosition()
 
 	self.onFinish = callback
@@ -20,6 +22,7 @@ end
 -- 飞向目标点
 function Projectile:GoToPoint(targetPos, callback)
 	self.target = nil
+	self.hasTarget = false
 	self.targetPos = targetPos
 
 	self.onFinish = callback
@@ -40,22 +43,35 @@ function Projectile:RotateToTarget(dest)
 	self.inst:FacePoint(dest)
 end
 
+function Projectile:OnFinish()
+	self.inst:StopUpdatingComponent(self)
+	self.inst.Physics:SetMotorVel(0, 0, 0)
+
+	if self.onFinish ~= nil then
+		self.onFinish(self.inst)
+	end
+
+	if self.inst.OnFinish ~= nil then
+		self.inst.OnFinish(self.inst)
+	end
+
+	self.inst:Remove()
+end
+
 function Projectile:OnUpdate(dt)
-	if self.target ~= nil then
-		self.targetPos = self.target:GetPosition()
+	if self.hasTarget then
+		if self.target == nil then
+			self:OnFinish()
+			return
+		else
+			self.targetPos = self.target:GetPosition()
+		end
 	end
 
 	self:RotateToTarget(self.targetPos)
 
 	if aipDist(self.inst:GetPosition(), self.targetPos) < 0.3 then
-		aipPrint("di tototot!!!!")
-		self.inst:StopUpdatingComponent(self)
-
-		if self.onFinish ~= nil then
-			self.onFinish(self.inst)
-		end
-
-		self.inst:Remove()
+		self:OnFinish()
 	end
 end
 

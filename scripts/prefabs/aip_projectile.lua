@@ -62,6 +62,12 @@ function fn()
 
     inst:AddComponent("aipc_projectile")
 
+    inst.OnFinish = function()
+        local pos = inst:GetPosition()
+        local vest = createEffectVest("aip_dou_scepter_projectile", "aip_dou_scepter_projectile", "explode")
+        vest.Transform:SetPosition(pos.x, pos.y, pos.z)
+    end
+
     return inst
 end
 
