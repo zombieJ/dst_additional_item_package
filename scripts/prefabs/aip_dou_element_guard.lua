@@ -254,6 +254,9 @@ local list = {
 				if player ~= nil then
 					-- 发射治疗元素
 					local proj = SpawnPrefab("aip_projectile")
+					proj.components.aipc_info_client:SetByteArray( -- 调整颜色
+						"aip_projectile_color", { colors.HEAL[1] * 10, colors.HEAL[2] * 10, colors.HEAL[3] * 10, colors.HEAL[4] * 10 }
+					)
 
 					proj.Transform:SetPosition(x, 1, z)
 					proj.components.aipc_projectile:GoToTarget(player, function()

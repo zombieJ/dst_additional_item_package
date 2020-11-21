@@ -1,20 +1,6 @@
 -- 马甲投射物
 local createEffectVest = require("utils/aip_vest_util").createEffectVest
 
-function OnUpdateProjectileTail(inst)
-    local pos = inst:GetPosition()
-
-    local vest = createEffectVest("aip_dou_scepter_projectile", "aip_dou_scepter_projectile", "disappear")
-    vest.Transform:SetPosition(pos.x, pos.y, pos.z)
-
-    -- 需要设置一下速度，否则它就会自己往下掉
-    vest.Physics:SetMotorVel(0, 1, 0)
-end
-
-local assets = {
-    Asset("ANIM", "anim/aip_dou_scepter_projectile.zip"),
-}
-
 local function patchColor(inst, color)
     if not color or #color < 4 then
         return false
@@ -23,6 +9,23 @@ local function patchColor(inst, color)
     inst.AnimState:OverrideMultColour(color[1] / 10, color[2] / 10, color[3] / 10, color[4] / 10)
     return true
 end
+
+function OnUpdateProjectileTail(inst)
+    local pos = inst:GetPosition()
+
+    local vest = createEffectVest("aip_dou_scepter_projectile", "aip_dou_scepter_projectile", "disappear")
+    vest.Transform:SetPosition(pos.x, pos.y, pos.z)
+
+    -- 需要设置一下速度，否则它就会自己往下掉
+    vest.Physics:SetMotorVel(0, 1, 0)
+
+    -- 调整颜色
+    patchColor(vest, inst.components.aipc_info_client:Get("aip_projectile_color"))
+end
+
+local assets = {
+    Asset("ANIM", "anim/aip_dou_scepter_projectile.zip"),
+}
 
 function fn()
 	local inst = CreateEntity()
@@ -66,6 +69,7 @@ function fn()
         local pos = inst:GetPosition()
         local vest = createEffectVest("aip_dou_scepter_projectile", "aip_dou_scepter_projectile", "explode")
         vest.Transform:SetPosition(pos.x, pos.y, pos.z)
+        patchColor(vest, inst.components.aipc_info_client:Get("aip_projectile_color"))
     end
 
     return inst
