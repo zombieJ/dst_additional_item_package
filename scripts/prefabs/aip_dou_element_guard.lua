@@ -201,7 +201,7 @@ local list = {
 				local x, y, z = inst.Transform:GetWorldPosition()
 				local NOTAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "burnt", "monster", "structure" }
 
-				local ents = TheSim:FindEntities(x, 0, z, TUNING.FIRE_DETECTOR_RANGE, nil, NOTAGS, { "_combat", "_health" })
+				local ents = TheSim:FindEntities(x, 0, z, TUNING.FIRE_DETECTOR_RANGE, { "_combat", "_health" }, NOTAGS)
 				ents = aipFilterTable(ents, function(ent)
 					return ent.components.health ~= nil and not ent.components.health:IsDead() and not ent.components.health:IsInvincible()
 				end)
@@ -238,6 +238,35 @@ local list = {
 		assets = { Asset("ANIM", "anim/aip_dou_element_heal_guard.zip") },
 		scale = 1.5,
 		spawnPrefab = "collapse_small",
+		postFn = function(inst)
+			-- 每隔 1 秒治疗一个玩家
+			inst:DoPeriodicTask(1, function()
+				local x, y, z = inst.Transform:GetWorldPosition()
+				local NOTAGS = { "FX", "NOCLICK", "DECOR", "playerghost", "INLIMBO" }
+
+				local ents = TheSim:FindEntities(x, 0, z, TUNING.FIRE_DETECTOR_RANGE, { "player", "_health" }, NOTAGS)
+				ents = aipFilterTable(ents, function(ent) -- 只治疗受伤的
+					return ent.components.health ~= nil and ent.components.health:IsHurt()
+				end)
+				local player = aipRandomEnt(ents)
+				aipTypePrint(ents)
+
+				if player ~= nil then
+					-- 发射治疗元素
+					local proj = SpawnPrefab("aip_projectile")
+
+					proj.Transform:SetPosition(x, 1, z)
+					proj.components.aipc_projectile:GoToTarget(player, function()
+						if player ~= nil and player.components.health ~= nil and not player.components.health:IsDead() then
+							local cur = player.components.health.currenthealth
+							local max = player.components.health.maxhealth
+							local diff = max - cur
+							player.components.health:DoDelta(math.max(diff * 0.10, 5)) -- 每次恢复损失生命值的 10%，至少 5 点
+						end
+					end)
+				end
+			end)
+		end,
 	},
 	{	-- 晓明守卫：理智光环
 		name = "aip_dou_element_dawn_guard",
@@ -257,4 +286,4 @@ return unpack(prefabs)
 -- c_give("houndfire") c_give("aip_dou_ice_inscription")
 
 
---              c_give("aip_dou_sand_inscription")
+--               c_give("aip_dou_heal_inscription")
