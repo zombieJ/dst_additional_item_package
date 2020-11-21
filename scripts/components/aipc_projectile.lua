@@ -5,13 +5,11 @@ local Projectile = Class(function(self, inst)
 	self.targetPos = nil
 	self.speed = 6
 	self.onFinish = nil
-	self.hasTarget = false
 end)
 
 -- 飞向目标
 function Projectile:GoToTarget(target, callback)
 	self.target = target
-	self.hasTarget = true
 	self.targetPos = self.target:GetPosition()
 
 	self.onFinish = callback
@@ -22,7 +20,6 @@ end
 -- 飞向目标点
 function Projectile:GoToPoint(targetPos, callback)
 	self.target = nil
-	self.hasTarget = false
 	self.targetPos = targetPos
 
 	self.onFinish = callback
@@ -59,13 +56,13 @@ function Projectile:OnFinish()
 end
 
 function Projectile:OnUpdate(dt)
-	if self.hasTarget then
-		if self.target == nil then
-			self:OnFinish()
-			return
-		else
-			self.targetPos = self.target:GetPosition()
-		end
+	if self.target ~= nil and (not self.target:IsValid() or self.target:IsInLimbo()) then
+		-- 目标已经失效
+		self:OnFinish()
+		return
+	else
+		-- 目标留存
+		self.targetPos = self.target:GetPosition()
 	end
 
 	self:RotateToTarget(self.targetPos)

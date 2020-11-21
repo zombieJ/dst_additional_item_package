@@ -188,7 +188,7 @@ local list = {
 			end)
 		end
 	},
-	{	-- 沙眼守卫：主动攻击
+	{	-- 沙眼守卫：不断召唤沙刺
 		name = "aip_dou_element_sand_guard",
 		color = colors.SAND,
 		assets = { Asset("ANIM", "anim/aip_dou_element_sand_guard.zip") },
@@ -218,4 +218,4 @@ return unpack(prefabs)
 -- c_give("houndfire") c_give("aip_dou_ice_inscription")
 
 
--- c_give("houndfire")
+--                        c_give("houndfire")
