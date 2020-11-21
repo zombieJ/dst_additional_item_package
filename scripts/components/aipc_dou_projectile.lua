@@ -47,17 +47,20 @@ end
 -- 生成元素图腾
 local function SpawnGuard(point, element)
 	local guards = {
-		FIRE = "aip_dou_element_fire_guard",
-		ICE = "aip_dou_element_ice_guard",
-		SAND = "aip_dou_element_sand_guard",
-		HEAL = "aip_dou_element_heal_guard",
-		DAWN = "aip_dou_element_dawn_guard",
+		FIRE =		{prefab = "aip_dou_element_fire_guard"},
+		ICE =		{prefab = "aip_dou_element_ice_guard"},
+		SAND =		{prefab = "aip_dou_element_sand_guard"},
+		HEAL =		{prefab = "aip_dou_element_heal_guard"},
+		DAWN =		{prefab = "aip_dou_element_dawn_guard"},
 	}
 
-	local guardName = guards[element]
-	if guardName ~= nil then
-		local guard = SpawnPrefab(guardName)
-		guard.Transform:SetPosition(point.x, point.y, point.z)
+	local guard = guards[element]
+
+	if guard ~= nil then
+		TheWorld:DoTaskInTime(guard.delay or 0, function()
+			local guard = SpawnPrefab(guard.prefab)
+			guard.Transform:SetPosition(point.x, point.y, point.z)
+		end)
 	end
 end
 
@@ -93,6 +96,12 @@ local function ShowEffect(element, point, targetEffect)
 		-- 沙刺是无敌的
 		if prefab.components.health ~= nil then
 			prefab.components.health:SetInvincible(true)
+			prefab.components.health:LockInvincible(true)
+			prefab:DoTaskInTime(4, function()
+				prefab.components.health:LockInvincible(false)
+				prefab.components.health:SetInvincible(false)
+				prefab.components.health:Kill()
+			end)
 		end
 	elseif element == "DAWN" then
 		prefab = SpawnPrefab("aip_shadow_wrapper")
@@ -533,8 +542,8 @@ function Projectile:OnUpdate(dt)
 				end
 			end
 
-			-- 如果没有命中任何单位且包含守卫属性则召唤
-			if #ents == 0 and self.task.guard >= 1 then
+			-- 如果没有命中任何单位或者是沙元素且包含守卫属性则召唤
+			if (#ents == 0 or self.task.element == "SAND") and self.task.guard >= 1 then
 				SpawnGuard(self.targetPos, self.task.element)
 			end
 
@@ -542,7 +551,10 @@ function Projectile:OnUpdate(dt)
 		end
 
 		if finishTask then
-			ShowEffect(self.task.element, self.targetPos)
+			-- 沙子开启守卫就不会产生区域效果
+			if self.task.element ~= "SAND" or self.task.guard == 0 then
+				ShowEffect(self.task.element, self.targetPos)
+			end
 		end
 	end
 

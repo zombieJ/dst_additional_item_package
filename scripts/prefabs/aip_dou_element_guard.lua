@@ -192,18 +192,25 @@ local list = {
 		name = "aip_dou_element_sand_guard",
 		color = colors.SAND,
 		assets = { Asset("ANIM", "anim/aip_dou_element_sand_guard.zip") },
-		prefabs = { "aip_projectile" },
+		prefabs = { "sandspike_short" },
+		scale = 1.5,
+		spawnPrefab = "collapse_small",
 		postFn = function(inst)
 			-- 每隔 1 秒召唤一个沙刺
 			inst:DoPeriodicTask(1, function()
 				local x, y, z = inst.Transform:GetWorldPosition()
-				local NOTAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "burnt", "monster" }
+				local NOTAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "burnt", "monster", "structure" }
 
 				local ents = TheSim:FindEntities(x, 0, z, TUNING.FIRE_DETECTOR_RANGE, nil, NOTAGS, { "_combat", "_health" })
-				local target = ents[math.random(#ents)] -- 随机选一个目标召唤沙刺
-				
+				ents = aipFilterTable(ents, function(ent)
+					return ent.components.health ~= nil and not ent.components.health:IsDead() and not ent.components.health:IsInvincible()
+				end)
+				local target = aipRandomEnt(ents) -- 随机选一个目标召唤沙刺
+
 				if target ~= nil then
 					local prefab = SpawnPrefab("sandspike_short")
+					local nx, ny, nz = target.Transform:GetWorldPosition()
+					prefab.Transform:SetPosition(nx + (0.5 - math.random()) / 2, 0, nz + (0.5 - math.random()) / 2)
 
 					-- 重置一下伤害
 					if prefab.components.combat ~= nil then
@@ -213,6 +220,12 @@ local list = {
 					-- 沙刺是无敌的
 					if prefab.components.health ~= nil then
 						prefab.components.health:SetInvincible(true)
+						prefab.components.health:LockInvincible(true)
+						prefab:DoTaskInTime(3, function() -- 随机沙锥时间更短一些
+							prefab.components.health:LockInvincible(false)
+							prefab.components.health:SetInvincible(false)
+							prefab.components.health:Kill()
+						end)
 					end
 				end
 			end)
