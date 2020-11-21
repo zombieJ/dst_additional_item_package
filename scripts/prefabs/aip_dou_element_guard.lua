@@ -17,10 +17,28 @@ local LANG_MAP = {
 	english = {
 		NAME = "Element Spirit",
 		DESC = "Why help me?",
+		DAWN_SPEACH = {
+			"I don't care",
+			"You can try",
+			"This is it",
+			"Not popular",
+			"Give me five",
+			"Your guard",
+			"(Caugh~)",
+		},
 	},
 	chinese = {
 		NAME = "元素之灵",
 		DESC = "为什么帮我？",
+		DAWN_SPEACH = {
+			"我不在乎",
+			"可以试试",
+			"这下可以了",
+			"一点都不火",
+			"喜欢点个赞",
+			"你的生存导师",
+			"咳咳咳~",
+		},
 	},
 }
 
@@ -29,6 +47,7 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 -- 文字描述
 STRINGS.NAMES.AIP_DOU_ELEMENT_GUARD = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_ELEMENT_GUARD = LANG.DESC
+STRINGS.AIP_DAWN_GUARD_SPEACH = LANG.DAWN_SPEACH
 
 ---------------------------------- 特效 ----------------------------------
 local createEffectVest = require("utils/aip_vest_util").createEffectVest
@@ -271,10 +290,46 @@ local list = {
 			end)
 		end,
 	},
-	{	-- 晓明守卫：理智光环
+	{	-- 晓明守卫：鼓励机制
 		name = "aip_dou_element_dawn_guard",
-		color = colors.HEAL,
+		color = colors.DAWN,
 		assets = { Asset("ANIM", "anim/aip_dou_element_dawn_guard.zip") },
+		duration = 16,
+		preFn = function(inst)
+			inst:AddComponent("talker")
+			inst.components.talker.fontsize = 30
+			inst.components.talker.font = TALKINGFONT
+			inst.components.talker.colour = Vector3(.9, 1, .9)
+			inst.components.talker.offset = Vector3(0, -500, 0)
+		end,
+		postFn = function(inst)
+			-- 添加生命值
+			inst:AddComponent("health")
+			inst.components.health:SetMaxHealth(TUNING.BABYBEEFALO_HEALTH)
+
+			inst:AddComponent("combat")
+			inst.components.combat:SetDefaultDamage(1)
+
+			-- 每隔 6 秒说一句话嘲讽敌人
+			inst:DoPeriodicTask(6, function()
+				inst.components.talker:Say(aipRandomEnt(STRINGS.AIP_DAWN_GUARD_SPEACH))
+
+				-- 找到所有敌人
+				local INSTANT_TARGET_MUST_HAVE_TAGS = {"_combat", "_health"}
+				local INSTANT_TARGET_CANTHAVE_TAGS = { "INLIMBO", "epic", "structure", "butterfly", "wall", "balloon", "groundspike", "smashable", "companion", "player"}
+
+				local x, y, z = inst.Transform:GetWorldPosition()
+				local entities_near_me = TheSim:FindEntities(
+					x, y, z,
+					TUNING.BATTLESONG_ATTACH_RADIUS, INSTANT_TARGET_MUST_HAVE_TAGS, INSTANT_TARGET_CANTHAVE_TAGS
+				)
+				for _, ent in ipairs(entities_near_me) do
+					if ent.components.combat:CanTarget(inst) then
+						ent.components.combat:SetTarget(inst)
+					end
+				end
+			end, 0)
+		end,
 	},
 }
 
@@ -289,4 +344,4 @@ return unpack(prefabs)
 -- c_give("houndfire") c_give("aip_dou_ice_inscription")
 
 
---               c_give("aip_dou_heal_inscription")
+--               c_give("aip_dou_dawn_inscription")
