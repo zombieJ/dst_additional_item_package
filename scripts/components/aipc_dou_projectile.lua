@@ -90,6 +90,10 @@ local function ShowEffect(element, point, targetEffect)
 			prefab.components.combat:SetDefaultDamage(SAND_DAMAGE)
 			prefab.components.combat.playerdamagepercent = 1
 		end
+		-- 沙刺是无敌的
+		if prefab.components.health ~= nil then
+			prefab.components.health:SetInvincible(true)
+		end
 	elseif element == "DAWN" then
 		prefab = SpawnPrefab("aip_shadow_wrapper")
 		prefab.DoShow()
@@ -198,12 +202,12 @@ function Projectile:FindEntities(element, pos, radius, excludePrefabs)
 	local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, radius or AREA_DISTANCE, COMBAT_TAGS, NO_TAGS)
 
 	for i, ent in ipairs(ents) do
-		-- 无论是什么元素，都会对符合条件的目标产生效果。即便是敌人
+		-- 无论是什么元素，都会对符合条件的目标产生效果。即便是敌人，要求活的、不无敌的
 		if
 			not aipInTable(excludePrefabs, ent) and
 			ent:IsValid() and ent.entity:IsVisible() and
 			ent.components.combat and
-			ent.components.health and not ent.components.health:IsDead()
+			ent.components.health and not ent.components.health:IsDead() and not ent.components.health:IsInvincible()
 		then
 			table.insert(filteredEnts, ent)
 		end

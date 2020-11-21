@@ -192,6 +192,32 @@ local list = {
 		name = "aip_dou_element_sand_guard",
 		color = colors.SAND,
 		assets = { Asset("ANIM", "anim/aip_dou_element_sand_guard.zip") },
+		prefabs = { "aip_projectile" },
+		postFn = function(inst)
+			-- 每隔 1 秒召唤一个沙刺
+			inst:DoPeriodicTask(1, function()
+				local x, y, z = inst.Transform:GetWorldPosition()
+				local NOTAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "burnt", "monster" }
+
+				local ents = TheSim:FindEntities(x, 0, z, TUNING.FIRE_DETECTOR_RANGE, nil, NOTAGS, { "_combat", "_health" })
+				local target = ents[math.random(#ents)] -- 随机选一个目标召唤沙刺
+				
+				if target ~= nil then
+					local prefab = SpawnPrefab("sandspike_short")
+
+					-- 重置一下伤害
+					if prefab.components.combat ~= nil then
+						prefab.components.combat:SetDefaultDamage(15)
+						prefab.components.combat.playerdamagepercent = 1
+					end
+					-- 沙刺是无敌的
+					if prefab.components.health ~= nil then
+						prefab.components.health:SetInvincible(true)
+					end
+				end
+			end)
+		end,
+		duration = 7,
 	},
 	{	-- 治疗守卫：治疗球
 		name = "aip_dou_element_heal_guard",
@@ -218,4 +244,4 @@ return unpack(prefabs)
 -- c_give("houndfire") c_give("aip_dou_ice_inscription")
 
 
---                        c_give("houndfire")
+--              c_give("aip_dou_sand_inscription")
