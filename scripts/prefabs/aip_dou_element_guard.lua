@@ -17,6 +17,20 @@ local LANG_MAP = {
 	english = {
 		NAME = "Element Spirit",
 		DESC = "Why help me?",
+		NAMES = {
+			AIP_DOU_ELEMENT_FIRE_GUARD = "Light Guard",
+			AIP_DOU_ELEMENT_ICE_GUARD = "Ice Guard",
+			AIP_DOU_ELEMENT_SAND_GUARD = "Attack Guard",
+			AIP_DOU_ELEMENT_HEAL_GUARD = "Cure Guard",
+			AIP_DOU_ELEMENT_DAWN_GUARD = "Ridicule Guard",
+		},
+		DESC = {
+			AIP_DOU_ELEMENT_FIRE_GUARD = "Faint light can burn away troubles",
+			AIP_DOU_ELEMENT_ICE_GUARD = "Helper to extinguish the flame",
+			AIP_DOU_ELEMENT_SAND_GUARD = "Killer without loyalty",
+			AIP_DOU_ELEMENT_HEAL_GUARD = "Only recover the lost part",
+			AIP_DOU_ELEMENT_DAWN_GUARD = "Humorous",
+		},
 		DAWN_SPEACH = {
 			"I don't care",
 			"You can try",
@@ -30,6 +44,20 @@ local LANG_MAP = {
 	chinese = {
 		NAME = "元素之灵",
 		DESC = "为什么帮我？",
+		NAMES = {
+			AIP_DOU_ELEMENT_FIRE_GUARD = "黄昏照耀者",
+			AIP_DOU_ELEMENT_ICE_GUARD = "炙烤抵御者",
+			AIP_DOU_ELEMENT_SAND_GUARD = "混沌刺杀者",
+			AIP_DOU_ELEMENT_HEAL_GUARD = "冯芳治疗者",
+			AIP_DOU_ELEMENT_DAWN_GUARD = "高傲嘲讽者",
+		},
+		DESC = {
+			AIP_DOU_ELEMENT_FIRE_GUARD = "微弱的光芒可以烧除烦恼",
+			AIP_DOU_ELEMENT_ICE_GUARD = "扑灭火焰的帮手",
+			AIP_DOU_ELEMENT_SAND_GUARD = "毫无忠诚的杀手",
+			AIP_DOU_ELEMENT_HEAL_GUARD = "只恢复损失的那一部分",
+			AIP_DOU_ELEMENT_DAWN_GUARD = "幽默风趣",
+		},
 		DAWN_SPEACH = {
 			"我不在乎",
 			"可以试试",
@@ -47,7 +75,18 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 -- 文字描述
 STRINGS.NAMES.AIP_DOU_ELEMENT_GUARD = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_ELEMENT_GUARD = LANG.DESC
-STRINGS.AIP_DAWN_GUARD_SPEACH = LANG.DAWN_SPEACH
+STRINGS.AIP_DAWN_GUARD_SPEACH = LANG.DAWN_SPEACH or LANG_MAP.english.DAWN_SPEACH
+
+-- 填充名字 & 描述
+local names = LANG.NAMES or LANG_MAP.english.NAMES
+for key, name in pairs(names) do
+	STRINGS.NAMES[key] = name
+end
+
+local descs = LANG.DESC or LANG_MAP.english.DESC
+for key, name in pairs(descs) do
+	STRINGS.CHARACTERS.GENERIC.DESCRIBE[key] = name
+end
 
 ---------------------------------- 特效 ----------------------------------
 local createEffectVest = require("utils/aip_vest_util").createEffectVest
