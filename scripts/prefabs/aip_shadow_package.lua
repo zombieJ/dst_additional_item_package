@@ -71,6 +71,7 @@ function fn_common(name, preFunc, postFunc)
 	inst.AnimState:SetBuild("aip_shadow_package")
 
 	inst:AddTag("bundle")
+	inst:AddTag("aip_package")
 
 	inst.entity:SetPristine()
 

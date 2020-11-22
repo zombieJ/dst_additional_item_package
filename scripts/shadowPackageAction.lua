@@ -113,5 +113,7 @@ env.AddComponentAction("USEITEM", "aipc_info_client", function(inst, doer, targe
 		return
 	end
 
-	table.insert(actions, GLOBAL.ACTIONS.AIP_PACKAGER)
+	if inst:HasTag("aip_package") then
+		table.insert(actions, GLOBAL.ACTIONS.AIP_PACKAGER)
+	end
 end)
