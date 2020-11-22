@@ -31,6 +31,10 @@ local LANG_MAP = {
 			NAME = "Element: Heal",
 			DESC = "Heal the target",
 		},
+		aip_dou_dawn_inscription = {
+			NAME = "Element: Dawn",
+			DESC = "Damane more on shadow creature",
+		},
 		aip_dou_follow_inscription = {
 			NAME = "Inscription: Follow",
 			DESC = "Your magic can follow target",
@@ -46,6 +50,10 @@ local LANG_MAP = {
 		aip_dou_split_inscription = {
 			NAME = "Enchant: Split",
 			DESC = "Split your magic",
+		},
+		aip_dou_rock_inscription = {
+			NAME = "Enchant: Guard",
+			DESC = "Miss is hit",
 		},
 	},
 	chinese = {
@@ -65,6 +73,10 @@ local LANG_MAP = {
 			NAME = "元素：春",
 			DESC = "生效时治疗目标",
 		},
+		aip_dou_dawn_inscription = {
+			NAME = "元素：晓",
+			DESC = "黎明破晓，邪佞退散",
+		},
 		aip_dou_follow_inscription = {
 			NAME = "铭文：追",
 			DESC = "使魔法可以追随目标",
@@ -80,6 +92,10 @@ local LANG_MAP = {
 		aip_dou_split_inscription = {
 			NAME = "附魔：裂",
 			DESC = "分裂你的魔法",
+		},
+		aip_dou_rock_inscription = {
+			NAME = "附魔：守",
+			DESC = "失误也是一种美",
 		},
 	},
 }
@@ -136,8 +152,9 @@ local function makeInscription(name, info)
 		inst:AddComponent("inventoryitem")
 		inst.components.inventoryitem.atlasname = "images/inventoryimages/"..name..".xml"
 		inst.components.inventoryitem.imagename = name
-		-- inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_dou_fire_inscription.xml"
-		-- inst.components.inventoryitem.imagename = "aip_dou_fire_inscription"
+		
+		inst:AddComponent("stackable")
+		inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM
 
 		MakeSmallBurnable(inst, TUNING.LARGE_BURNTIME)
 		MakeSmallPropagator(inst)

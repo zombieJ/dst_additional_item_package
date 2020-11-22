@@ -25,6 +25,7 @@ PrefabFiles =
 {
 	-- vest
 	"aip_vest",
+	"aip_projectile",
 
 	-- Food
 	"aip_veggies",
@@ -45,6 +46,7 @@ PrefabFiles =
 	"aip_heal_fx",
 	"aip_sanity_fx",
 	"aip_dou_inscription",
+	"aip_dou_element_guard",
 
 	-- Building
 	"incinerator",

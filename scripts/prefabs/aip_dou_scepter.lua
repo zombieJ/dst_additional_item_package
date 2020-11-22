@@ -56,6 +56,7 @@ local assets = {
 local prefabs = {
     "aip_dou_scepter_projectile",
     "wormwood_plant_fx",
+    "aip_shadow_wrapper",
 }
 
 --------------------------------- 配方 ---------------------------------
@@ -201,7 +202,7 @@ local function fn()
 
         if beforeAction(inst, projectileInfo, doer) then
             local projectile = SpawnPrefab("aip_dou_scepter_projectile")
-            projectile.components.aipc_projectile:StartBy(doer, projectileInfo.queue, nil, point)
+            projectile.components.aipc_dou_projectile:StartBy(doer, projectileInfo.queue, nil, point)
         end
     end
 
@@ -210,7 +211,7 @@ local function fn()
 
         if beforeAction(inst, projectileInfo, doer) then
             local projectile = SpawnPrefab("aip_dou_scepter_projectile")
-            projectile.components.aipc_projectile:StartBy(doer, projectileInfo.queue, target)
+            projectile.components.aipc_dou_projectile:StartBy(doer, projectileInfo.queue, target)
         end
     end
 
@@ -256,4 +257,48 @@ local function fn()
     return inst
 end
 
-return Prefab("aip_dou_scepter", fn, assets, prefabs)
+------------------------------- 黑暗爆炸 -------------------------------
+local function explodeShadowFn()
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddLight()
+	inst.entity:AddNetwork()
+
+	MakeFlyingCharacterPhysics(inst, 1, .5)
+
+	inst.AnimState:SetBank("projectile")
+	inst.AnimState:SetBuild("staff_projectile")
+	inst.AnimState:PlayAnimation("fire_spin_loop", true)
+	
+	inst:AddTag("projectile")
+	inst:AddTag("flying")
+	inst:AddTag("ignorewalkableplatformdrowning")
+
+	-- 添加一抹灯光
+	inst.Light:SetIntensity(.6)
+	inst.Light:SetRadius(.5)
+	inst.Light:SetFalloff(.6)
+	inst.Light:Enable(true)
+	inst.Light:SetColour(180 / 255, 195 / 255, 225 / 255)
+
+	inst.entity:SetPristine() -- 客户端执行相同实体，Transform AnimState Network 等等
+
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
+	
+	inst:DoTaskInTime(0.5, function()
+		if inst._master ~= true then
+			inst:Remove()
+		end
+	end)
+
+	return inst
+end
+
+
+return Prefab("aip_dou_scepter", fn, assets, prefabs),
+        Prefab("aip_explode_shadow", explodeShadowFn, { Asset("ANIM", "anim/staff_projectile.zip") }, { "fire_projectile" })
