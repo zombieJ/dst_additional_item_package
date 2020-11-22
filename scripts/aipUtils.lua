@@ -19,6 +19,18 @@ local function countTable(tbl)
 	return count
 end
 
+-- 查询是否在表格里
+function _G.aipInTable(tbl, match)
+	local list = tbl or {}
+	for i, item in ipairs(list) do
+		if item == match then
+			return true
+		end
+	end
+
+	return false
+end
+
 -- 打平表格，去除中间的空格并且保持顺序
 function _G.aipFlattenTable(originTbl)
 	local targetTbl = {}
@@ -65,6 +77,17 @@ function _G.aipTableIndex(tbl, item)
 	end
 
 	return nil
+end
+
+-- 过滤表格
+function _G.aipFilterTable(originTbl, filterFn)
+	local tbl = {}
+	for i, v in ipairs(originTbl) do
+		if filterFn(v, i) then
+			table.insert(tbl, v)
+		end
+	end
+	return tbl
 end
 
 --------------------------------------- 调试 ---------------------------------------
@@ -191,6 +214,33 @@ function _G.aipDiffAngle(a1, a2)
 	local diff2 = min + 360 - max
 
 	return math.min(diff1, diff2)
+end
+
+-- 返回两点之间的距离（无视 Y 坐标）
+function _G.aipDist(p1, p2)
+	local dx = p1.x - p2.x
+	local dz = p1.z - p2.z
+	return math.pow(dx*dx+dz*dz, 0.5)
+end
+
+function _G.aipRandomEnt(ents)
+	if #ents == 0 then
+		return nil
+	end
+	return ents[math.random(#ents)]
+end
+
+--------------------------------------- 辅助 ---------------------------------------
+-- 是暗影生物
+_G.aipShadowTags = { "shadow", "shadowminion", "shadowchesspiece", "stalker", "stalkerminion" }
+
+function _G.aipIsShadowCreature(inst)
+	for i, tag in ipairs(_G.aipShadowTags) do
+		if inst:HasTag(tag) then
+			return true
+		end
+	end
+	return false
 end
 
 --------------------------------------- RPC ---------------------------------------

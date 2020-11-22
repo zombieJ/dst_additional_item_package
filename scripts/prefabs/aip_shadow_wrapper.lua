@@ -57,20 +57,17 @@ function fn()
 		end)
 
 		inst:DoTaskInTime(45 * FRAMES, function()
-			if inst.OnFinished then
-				inst.OnFinished(inst)
-			end
+			inst:Remove()
 		end)
 	end
 
 	-- Play show
 	inst.DoShow = function()
+		inst.SoundEmitter:PlaySound("dontstarve/maxwell/shadowmax_despawn")
 		inst.AnimState:PlayAnimation("end")
 
 		inst:DoTaskInTime(10 * FRAMES, function()
-			if inst.OnFinished then
-				inst.OnFinished(inst)
-			end
+			inst:Remove()
 		end)
 	end
 

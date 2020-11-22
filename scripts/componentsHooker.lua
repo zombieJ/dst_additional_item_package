@@ -130,6 +130,7 @@ end)
 ------------------------------------- 特殊处理 -------------------------------------
 -- 额外触发一个生命值时间出来
 AddComponentPostInit("health", function(self)
+	-- 生命变化钩子
 	local originDoDelta = self.DoDelta
 
 	function self:DoDelta(amount, ...)
@@ -138,6 +139,20 @@ AddComponentPostInit("health", function(self)
 
 		originDoDelta(self, data.amount, _G.unpack(arg))
 	end
+
+	-- 锁定无敌，锁定后无法再更改无敌状态
+	function self:LockInvincible(val)
+		self.aipLockInvincible = val
+	end
+
+	-- 设置无敌
+	local originSetInvincible = self.SetInvincible
+	function self:SetInvincible(val, ...)
+		if self.aipLockInvincible ~= true then
+			return originSetInvincible(self, val, GLOBAL.unpack(arg))
+		end
+	end
+
 end)
 
 -- 燃料允许自定义接受测试

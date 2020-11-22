@@ -1,5 +1,5 @@
 -- 创建客户端马甲单位
-function createClientVest(bank, build, animate)
+function createClientVest(bank, build, animate, sound)
 	local inst = CreateEntity()
 
 	inst:AddTag("FX")
@@ -11,7 +11,35 @@ function createClientVest(bank, build, animate)
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
 
-	MakeInventoryPhysics(inst)
+	if sound ~= nil then
+		inst.entity:AddSoundEmitter()
+	end
+
+	-- MakeFlyingCharacterPhysics(inst, 1, .1)
+	MakeProjectilePhysics(inst)
+
+	-- MakeFlyingCharacterPhysics
+	-- local phys = inst.entity:AddPhysics()
+    -- phys:SetMass(mass)
+    -- phys:SetFriction(0)
+    -- phys:SetDamping(5)
+    -- phys:SetCollisionGroup(COLLISION.FLYERS)
+    -- phys:ClearCollisionMask()
+    -- phys:CollidesWith((TheWorld.has_ocean and COLLISION.GROUND) or COLLISION.WORLD)
+    -- phys:CollidesWith(COLLISION.FLYERS)
+    -- phys:SetCapsule(rad, 1)
+
+	-- MakeProjectilePhysics
+	-- local phys = inst.entity:AddPhysics()
+	-- phys:SetMass(mass or 1)
+	-- phys:SetFriction(.1)
+	-- phys:SetDamping(0)
+	-- phys:SetRestitution(.5)
+	-- phys:SetCollisionGroup(COLLISION.ITEMS)
+	-- phys:ClearCollisionMask()
+	-- phys:CollidesWith(COLLISION.GROUND)
+	-- phys:SetSphere(rad or 0.5)
+
 	inst.Physics:ClearCollisionMask()
 
 	inst.AnimState:SetBank(bank)
@@ -22,11 +50,15 @@ function createClientVest(bank, build, animate)
 end
 
 -- 创建客户端马甲且动画播放完会消失的单位
-function createEffectVest(bank, build, animate)
-	local inst = createClientVest(bank, build, animate)
+function createEffectVest(bank, build, animate, sound)
+	local inst = createClientVest(bank, build, animate, sound)
 
 	-- inst.AnimState:SetFinalOffset(-1)
 	inst:ListenForEvent("animover", inst.Remove)
+
+	if sound ~= nil then
+		inst.SoundEmitter:PlaySound(sound)
+	end
 
 	return inst
 end

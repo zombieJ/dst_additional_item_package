@@ -1,14 +1,21 @@
 local IngredientLeafNote = Ingredient("aip_leaf_note", 1, "images/inventoryimages/aip_leaf_note.xml")
 
 local inscriptions = {
+	-- Element 元素
 	aip_dou_fire_inscription =		{ tag = "FIRE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_ice_inscription =		{ tag = "ICE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_sand_inscription =		{ tag = "SAND",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_heal_inscription =		{ tag = "HEAL",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_dawn_inscription =		{ tag = "DAWN",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+
+	-- Inscription 铭文
 	aip_dou_follow_inscription =	{ tag = "FOLLOW",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_through_inscription =	{ tag = "THROUGH",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 	aip_dou_area_inscription =		{ tag = "AREA",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+
+	-- Enchant 附魔
 	aip_dou_split_inscription =		{ tag = "SPLIT",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_rock_inscription =		{ tag = "ROCK",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
 }
 
 local categories = {
@@ -16,6 +23,8 @@ local categories = {
 	ICE = "element",
 	SAND = "element",
 	HEAL = "element",
+	DAWN = "element",
+	ROCK = "guard",
 	FOLLOW = "action",
 	THROUGH = "action",
 	AREA = "action",
@@ -23,11 +32,16 @@ local categories = {
 }
 
 local damages = {
-	FIRE = 5, -- 火焰有燃烧效果，只给予少量伤害
-	ICE = 20, -- 冰冻能冰冻敌人，但是没有附加伤害
-	SAND = 10, -- 沙子本身是地形影响，减少伤害量
+	FIRE = 12, -- 火焰有燃烧效果，只给予少量伤害
+	ICE = 18, -- 冰冻能冰冻敌人，但是没有附加伤害
+	SAND = 5, -- 沙子本身是地形影响，减少伤害量
 	HEAL = 25, -- 治疗比较特殊，但是叠加的时候算伤害
+	DAWN = 10, -- 对暗影怪造成额外伤害，所以本身不高
+	ROCK = 24, -- 岩石伤害高，如果用的是环切没有打到目标，会召唤元素图腾
 	PLANT = 5, -- 植物会用树苗包围目标
+	FOLLOW = 0.01, -- 跟随比较简单，不提供额外伤害
+	THROUGH = 15, -- 穿透比较难，增加的多一点
+	AREA = 5, -- 范围伤害很多单位
 	SPLIT = 0.01, -- 分裂很 IMBA
 }
 
@@ -35,10 +49,14 @@ local defaultColor = { 0.6, 0.6, 0.6, 0.1 }
 
 local colors = {
 	FIRE = { 1, 0.8, 0, 1 },
-	ICE = { 0.2, 0.4, 1, 1 },
-	SAND = { 1, 0.8, 0.1, 1 },
-	HEAL = { 0, 0.6, 0.1, 0.5 },
+	ICE = { 0.6, 0.7, 0.8, 1 },
+	SAND = { 0.8, 0.7, 0.5, 1 },
+	DAWN = { 0, 0, 0, 0.5 },
+	ROCK = { 0.6, 0.6, 0.6, 1 },
+	HEAL = { 0.4, 0.7, 0.4, 0.5 },
 	PLANT = { 0, 0.6, 0.1, 0.5 },
+
+	_default = defaultColor,
 }
 
 local function getType(item)
@@ -62,6 +80,8 @@ local function createGroup(prevGrp)
 		color = prev.color or defaultColor,
 		-- 分裂
 		split = 0,
+		-- 岩石守卫
+		guard = 0,
 	}
 end
 
@@ -92,8 +112,9 @@ function calculateProjectile(items)
 
 			if item ~= nil then
 				local typeInfo = getType(item)
-				local damage = group.damage + (damages[typeInfo.name] or 5)
+				local slotDamage = damages[typeInfo.name] or 5
 
+				------------------------- 元素 -------------------------
 				if typeInfo.type == "element" then
 					-- 元素类型
 					if group.element ~= typeInfo.name then
@@ -102,20 +123,33 @@ function calculateProjectile(items)
 					
 					group.element = typeInfo.name
 					group.elementCount = group.elementCount + 1
-					group.damage = group.damage + damage
+					group.damage = group.damage + slotDamage
 					group.color = colors[typeInfo.name] or defaultColor
 
 					-- 元素消耗 1 点
 					projectileInfo.uses = projectileInfo.uses + 1
 
+				------------------------- 守卫 -------------------------
+				elseif typeInfo.type == "guard" then
+					group.guard = group.guard + 1
+					group.damage = group.damage + slotDamage
+
+					-- 元素消耗 1 点
+					projectileInfo.uses = projectileInfo.uses + 1
+
+				------------------------- 附魔 -------------------------
 				elseif typeInfo.type == "split" then
 					group.split = group.split + 1
-					group.damage = group.damage + damage
+					group.damage = group.damage + slotDamage
 
+					-- 元素消耗 1 点
+					projectileInfo.uses = projectileInfo.uses + 1
+
+				------------------------- 铭文 -------------------------
 				elseif typeInfo.type == "action" then
 					-- 施法动作
 					group.action = typeInfo.name
-					group.damage = group.damage + damage
+					group.damage = group.damage + slotDamage
 
 					table.insert(projectileInfo.queue, group)
 					prevGroup = group
@@ -136,10 +170,18 @@ function calculateProjectile(items)
 	-- 填充默认类型
 	projectileInfo.action = projectileInfo.queue[1].action or "LINE"
 
+	-- 根据元素叠加额外造成效果（哈哈，原来这是个 bug）
+	for i, task in ipairs(projectileInfo.queue) do
+		if task.elementCount >= 1 then
+			task.damage = task.damage * math.pow(1.25, task.elementCount - 1)
+		end
+	end
+
 	return projectileInfo
 end
 
 return {
 	calculateProjectile = calculateProjectile,
 	inscriptions = inscriptions,
+	colors = colors,
 }

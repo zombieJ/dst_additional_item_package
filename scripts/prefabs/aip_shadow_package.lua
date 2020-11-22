@@ -71,6 +71,7 @@ function fn_common(name, preFunc, postFunc)
 	inst.AnimState:SetBuild("aip_shadow_package")
 
 	inst:AddTag("bundle")
+	inst:AddTag("aip_package")
 
 	inst.entity:SetPristine()
 
@@ -142,9 +143,6 @@ local function doPackage(inst, doer, target)
 
 		-- Hide target
 		removeFromScene(target)
-	end
-	shadowWrapper.OnFinished = function(shadowInst)
-		shadowInst:Remove()
 	end
 
 	shadowWrapper.DoHide()
@@ -265,9 +263,6 @@ local function onDeploy(inst, pt, deployer)
 	-- Create shadow wrapper
 	local shadowWrapper =  SpawnPrefab("aip_shadow_wrapper")
 	shadowWrapper.Transform:SetPosition(pt.x, pt.y + 0.1, pt.z)
-	shadowWrapper.OnFinished = function(shadowInst)
-		shadowInst:Remove()
-	end
 
 	shadowWrapper.DoShow()
 end
