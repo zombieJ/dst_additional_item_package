@@ -17,9 +17,10 @@ const IMAGES = [
 	['dark_observer', 'aip_shadow_paper_package', 'aip_shadow_package', 'aip_dou_opal', 'aip_leaf_note', 'aip_glass_chest'],
 	['popcorngun', 'aip_fish_sword', 'aip_beehave', 'aip_oar_woodead', 'aip_armor_gambler', 'aip_dou_scepter'],
 	[
-		'aip_dou_fire_inscription', 'aip_dou_heal_inscription', 'aip_dou_ice_inscription', 'aip_dou_sand_inscription',
+		'aip_dou_fire_inscription', 'aip_dou_heal_inscription', 'aip_dou_ice_inscription', 'aip_dou_sand_inscription', "aip_dou_dawn_inscription",
+		"aip_dou_rock_inscription",
 		'aip_dou_area_inscription', 'aip_dou_follow_inscription', 'aip_dou_split_inscription', 
-		'aip_dou_through_inscription', 'aip_dou_dawn_inscription',
+		'aip_dou_through_inscription',
 	],
 	['aip_blue_glasses', 'aip_horse_head', 'aip_som', 'aip_joker_face'],
 	[
