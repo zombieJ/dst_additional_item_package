@@ -1,9 +1,3 @@
--- 公测开启
-local open_beta = aipGetModConfig("open_beta")
-if open_beta ~= "open" then
-	return nil
-end
-
 ------------------------------------ 配置 ------------------------------------
 -- 雕塑关闭
 local additional_chesspieces = aipGetModConfig("additional_chesspieces")

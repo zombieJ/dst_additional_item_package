@@ -1,6 +1,3 @@
--- 公测开启
-local open_beta = aipGetModConfig("open_beta")
-
 ------------------------------------ 配置 ------------------------------------
 -- 食物关闭
 local additional_food = aipGetModConfig("additional_food")
@@ -154,11 +151,6 @@ local PIECES =
 		moonevent = false,
 		recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("plantmeat_cooked", 1), Ingredient("pinecone", 1)},
 		client_postinit = function(inst)
-			-- 测试版本开启
-			if open_beta ~= "open" then
-				return
-			end
-
 			-- 拒绝要说话
 			inst:AddComponent("talker")
 			inst.components.talker.fontsize = 30
@@ -167,11 +159,6 @@ local PIECES =
 			inst.components.talker.offset = Vector3(0, -400, 0)
 		end,
 		master_postinit = function(inst)
-			-- 测试版本开启
-			if open_beta ~= "open" then
-				return
-			end
-
 			-- 添加箱子能力
 			inst:AddComponent("container")
 			inst.components.container:WidgetSetup("chesspiece_aip_doujiang")

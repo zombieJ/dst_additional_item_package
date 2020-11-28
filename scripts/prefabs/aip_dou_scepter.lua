@@ -1,9 +1,3 @@
--- 公测开启
-local open_beta = aipGetModConfig("open_beta")
-if open_beta ~= "open" then
-	return nil
-end
-
 -- 配置
 local additional_weapon = aipGetModConfig("additional_weapon")
 if additional_weapon ~= "open" then

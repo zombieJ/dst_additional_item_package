@@ -72,38 +72,39 @@ PrefabFiles =
 	"aip_shadow_wrapper",
 }
 
+local language = GetModConfigData("language")
 
 --------------------------------------- 工具 ---------------------------------------
 modimport("scripts/aipUtils.lua")
 
 --------------------------------------- 科技 ---------------------------------------
-if
-	GetModConfigData("additional_chesspieces") == "open" and
-	GetModConfigData("open_beta") == "open" then
-	-- 只有开启测试才需要注入
 
-	-- 添加对应标签
-	local AIP_DOU_SCEPTER = AddRecipeTab(
-		"AIP_DOU_SCEPTER",
-		100,
-		"images/inventoryimages/aip_dou_tech.xml",
-		"aip_dou_tech.tex",
-		nil,
-		true
+-- 添加对应标签
+local AIP_DOU_SCEPTER = AddRecipeTab(
+	"AIP_DOU_SCEPTER",
+	100,
+	"images/inventoryimages/aip_dou_tech.xml",
+	"aip_dou_tech.tex",
+	nil,
+	true
+)
+
+local TECH_LANG = {
+	english = "Mysterious"
+	chinese = "神秘魔法"
+}
+
+GLOBAL.STRINGS.TABS.AIP_DOU_SCEPTER = TECH_LANG[language]
+
+modimport("scripts/techHooker.lua")
+
+local inscriptions = require("utils/aip_scepter_util").inscriptions
+for name, info in pairs(inscriptions) do
+	AddRecipe(
+		name, info.recipes, AIP_DOU_SCEPTER, GLOBAL.TECH.AIP_DOU_SCEPTER,
+		nil, nil, true, nil, nil,
+		"images/inventoryimages/"..name..".xml", name..".tex"
 	)
-
-	GLOBAL.STRINGS.TABS.AIP_DOU_SCEPTER = "神秘魔法"
-
-	modimport("scripts/techHooker.lua")
-
-	local inscriptions = require("utils/aip_scepter_util").inscriptions
-	for name, info in pairs(inscriptions) do
-		AddRecipe(
-			name, info.recipes, AIP_DOU_SCEPTER, GLOBAL.TECH.AIP_DOU_SCEPTER,
-			nil, nil, true, nil, nil,
-			"images/inventoryimages/"..name..".xml", name..".tex"
-		)
-	end
 end
 
 ------------------------------------- 组件钩子 -------------------------------------
