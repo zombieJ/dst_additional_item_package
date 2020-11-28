@@ -1,21 +1,22 @@
-local IngredientLeafNote = Ingredient("aip_leaf_note", 1, "images/inventoryimages/aip_leaf_note.xml")
+local ILN = Ingredient("aip_leaf_note", 1, "images/inventoryimages/aip_leaf_note.xml")
+local IL = Ingredient("log", 1)
 
 local inscriptions = {
 	-- Element 元素
-	aip_dou_fire_inscription =		{ tag = "FIRE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_ice_inscription =		{ tag = "ICE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_sand_inscription =		{ tag = "SAND",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_heal_inscription =		{ tag = "HEAL",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_dawn_inscription =		{ tag = "DAWN",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_fire_inscription =		{ tag = "FIRE",		recipes = { ILN, IL, Ingredient("redgem", 1) } },
+	aip_dou_ice_inscription =		{ tag = "ICE",		recipes = { ILN, IL, Ingredient("bluegem", 1) } },
+	aip_dou_sand_inscription =		{ tag = "SAND",		recipes = { ILN, IL, Ingredient("townportaltalisman", 1) } },
+	aip_dou_heal_inscription =		{ tag = "HEAL",		recipes = { ILN, IL, Ingredient("butterflywings", 1) } },
+	aip_dou_dawn_inscription =		{ tag = "DAWN",		recipes = { ILN, IL, Ingredient("nightmarefuel", 1) } },
 
 	-- Inscription 铭文
-	aip_dou_follow_inscription =	{ tag = "FOLLOW",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_through_inscription =	{ tag = "THROUGH",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_area_inscription =		{ tag = "AREA",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_follow_inscription =	{ tag = "FOLLOW",	recipes = { ILN, IL, Ingredient("feather_canary", 1) } },
+	aip_dou_through_inscription =	{ tag = "THROUGH",	recipes = { ILN, IL, Ingredient("feather_robin_winter", 1) } },
+	aip_dou_area_inscription =		{ tag = "AREA",		recipes = { ILN, IL, Ingredient("feather_robin", 1) } },
 
 	-- Enchant 附魔
-	aip_dou_split_inscription =		{ tag = "SPLIT",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_rock_inscription =		{ tag = "ROCK",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_split_inscription =		{ tag = "SPLIT",	recipes = { ILN, IL, Ingredient("steelwool", 1) } },
+	aip_dou_rock_inscription =		{ tag = "ROCK",		recipes = { ILN, IL, Ingredient("walrus_tusk", 1) } },
 }
 
 local categories = {
