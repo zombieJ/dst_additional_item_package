@@ -8,6 +8,7 @@ local inscriptions = {
 	aip_dou_sand_inscription =		{ tag = "SAND",		recipes = { ILN, IL, Ingredient("townportaltalisman", 1) } },
 	aip_dou_heal_inscription =		{ tag = "HEAL",		recipes = { ILN, IL, Ingredient("butterflywings", 1) } },
 	aip_dou_dawn_inscription =		{ tag = "DAWN",		recipes = { ILN, IL, Ingredient("nightmarefuel", 1) } },
+	aip_dou_cost_inscription =		{ tag = "COST",		recipes = { ILN, IL, Ingredient("reviver", 1) } },
 
 	-- Inscription 铭文
 	aip_dou_follow_inscription =	{ tag = "FOLLOW",	recipes = { ILN, IL, Ingredient("feather_canary", 1) } },
@@ -25,6 +26,7 @@ local categories = {
 	SAND = "element",
 	HEAL = "element",
 	DAWN = "element",
+	COST = "element",
 	ROCK = "guard",
 	FOLLOW = "action",
 	THROUGH = "action",
@@ -38,6 +40,7 @@ local damages = {
 	SAND = 5, -- 沙子本身是地形影响，减少伤害量
 	HEAL = 25, -- 治疗比较特殊，但是叠加的时候算伤害
 	DAWN = 10, -- 对暗影怪造成额外伤害，所以本身不高
+	COST = 15, -- 痛作为最后元素时则会额外造成伤害，但是如果攻击的目标没有死则反弹 10% 伤害
 	ROCK = 24, -- 岩石伤害高，如果用的是环切没有打到目标，会召唤元素图腾
 	PLANT = 5, -- 植物会用树苗包围目标
 	FOLLOW = 0.01, -- 跟随比较简单，不提供额外伤害
@@ -83,6 +86,8 @@ local function createGroup(prevGrp)
 		split = 0,
 		-- 岩石守卫
 		guard = 0,
+		-- 痛
+		cost = 0,
 	}
 end
 
@@ -121,7 +126,7 @@ function calculateProjectile(items)
 					if group.element ~= typeInfo.name then
 						group.elementCount = 0
 					end
-					
+
 					group.element = typeInfo.name
 					group.elementCount = group.elementCount + 1
 					group.damage = group.damage + slotDamage

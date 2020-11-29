@@ -29,6 +29,10 @@ local LANG_MAP = {
 			NAME = "Element: Dawn",
 			DESC = "Damane more on shadow creature",
 		},
+		aip_dou_cost_inscription = {
+			NAME = "Element: Cost",
+			DESC = "Must we give in return?",
+		},
 		aip_dou_follow_inscription = {
 			NAME = "Inscription: Follow",
 			DESC = "Your magic can follow target",
@@ -70,6 +74,10 @@ local LANG_MAP = {
 		aip_dou_dawn_inscription = {
 			NAME = "元素：晓",
 			DESC = "黎明破晓，邪佞退散",
+		},
+		aip_dou_cost_inscription = {
+			NAME = "元素：痛",
+			DESC = "但是，狗蛋，代价是什么呢?",
 		},
 		aip_dou_follow_inscription = {
 			NAME = "铭文：追",

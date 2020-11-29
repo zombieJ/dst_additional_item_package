@@ -42,7 +42,7 @@ local LANG_MAP = {
 			AIP_DOU_ELEMENT_FIRE_GUARD = "黄昏照耀者",
 			AIP_DOU_ELEMENT_ICE_GUARD = "炙烤抵御者",
 			AIP_DOU_ELEMENT_SAND_GUARD = "混沌刺杀者",
-			AIP_DOU_ELEMENT_HEAL_GUARD = "冯芳治疗者",
+			AIP_DOU_ELEMENT_HEAL_GUARD = "芬芳治疗者",
 			AIP_DOU_ELEMENT_DAWN_GUARD = "高傲嘲讽者",
 		},
 		DESC = {
@@ -377,4 +377,4 @@ return unpack(prefabs)
 -- c_give("houndfire") c_give("aip_dou_ice_inscription")
 
 
---               c_give("aip_dou_dawn_inscription")
+--               c_give("aip_dou_cost_inscription") c_give("beefalo")

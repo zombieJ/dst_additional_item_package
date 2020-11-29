@@ -90,8 +90,8 @@ local AIP_DOU_SCEPTER = AddRecipeTab(
 )
 
 local TECH_LANG = {
-	english = "Mysterious"
-	chinese = "神秘魔法"
+	english = "Mysterious",
+	chinese = "神秘魔法",
 }
 
 GLOBAL.STRINGS.TABS.AIP_DOU_SCEPTER = TECH_LANG[language]

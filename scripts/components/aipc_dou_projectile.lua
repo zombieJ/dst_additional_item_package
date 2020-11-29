@@ -431,13 +431,40 @@ function Projectile:EffectTaskOn(target)
 	else
 		local finalDamage = self.task.damage
 
-		-- 如果存在“晓”且为暗影怪，则每个元素额外造成 50 点伤害
+		-- 【晓】如果存在“晓”且为暗影怪，则每个元素额外造成 50 点伤害
 		if self.task.element == "DAWN" and aipIsShadowCreature(target) and target.components.health then
 			finalDamage = finalDamage + self.task.elementCount * 50
 		end
 
+		-- 【痛】如果元素为“痛”，会造成额外伤害。如果没杀死目标则反伤施法者
+		if self.task.element == "COST" then
+			finalDamage = finalDamage * math.pow(1.5, self.task.elementCount)
+		end
+
 		target.components.combat:GetAttacked(self.doer, finalDamage, nil, nil)
 		doEffect = true
+
+		-- 【痛】看看死了没有，准备反伤施法者
+		if target.components.health ~= nil and not target.components.health:IsDead() and self.doer ~= self.target then
+			local proj = SpawnPrefab("aip_projectile")
+			proj.components.aipc_info_client:SetByteArray( -- 调整颜色
+				"aip_projectile_color", { 20, 0, 0, 50 }
+			)
+
+			local x, y, z = target.Transform:GetWorldPosition()
+
+			proj.Transform:SetPosition(x, 1, z)
+			proj.components.aipc_projectile.speed = 20
+			proj.components.aipc_projectile:GoToTarget(self.doer, function()
+				if
+					self.doer.components.combat ~= nil and
+					self.doer.components.health ~= nil and not self.doer.components.health:IsDead() and
+					self.doer:IsValid() and not self.doer:IsInLimbo()
+				then
+					self.doer.components.combat:GetAttacked(target, finalDamage * 0.1, nil, nil)
+				end
+			end)
+		end
 	end
 
 	if doEffect then
