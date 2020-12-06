@@ -6,6 +6,18 @@ if additional_chesspieces ~= "open" then
 end
 
 ------------------------------------ 函数 ------------------------------------
+local FADE_DES = 0.04
+
+local function onFade(inst)
+	inst._fade = inst._fade + inst._fadeIn
+	if inst._fade < 0.4 then
+		inst._fadeIn = FADE_DES
+	elseif inst._fade >= 1 then
+		inst._fadeIn = -FADE_DES
+	end
+
+	inst.AnimState:SetMultColour(1, 1, 1, inst._fade)
+end
 
 local function getFn(data)
 	-- 返回函数哦
@@ -24,6 +36,13 @@ local function getFn(data)
 		inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
 		inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
 		inst.AnimState:SetSortOrder(2)
+
+		-- 客户端的特效
+		if not TheNet:IsDedicated() then
+			inst._fade = 1
+			inst._fadeIn = -FADE_DES
+			inst.periodTask = inst:DoPeriodicTask(0.1, onFade)
+		end
 
 		inst.entity:SetPristine()
 
