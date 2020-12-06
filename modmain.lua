@@ -34,9 +34,12 @@ PrefabFiles =
 	"aip_nectar",
 	"aip_leaf_note",
 
+	-- survival
+	"aip_blood_package",
+	"aip_plaster",
+
 	-- Weapon
 	"popcorngun",
-	"aip_blood_package",
 	"aip_fish_sword",
 	"aip_beehave",
 	"aip_oar_woodead",

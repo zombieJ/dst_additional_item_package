@@ -5,6 +5,9 @@ if additional_food ~= "open" then
 	return nil
 end
 
+-- 生存
+local additional_survival = aipGetModConfig("additional_survival")
+
 -- 雕塑关闭
 local additional_chesspieces = aipGetModConfig("additional_chesspieces")
 if additional_chesspieces ~= "open" then
@@ -159,6 +162,11 @@ local PIECES =
 			inst.components.talker.offset = Vector3(0, -400, 0)
 		end,
 		master_postinit = function(inst)
+			-- 如果没有开启生存，就不提供了
+			if additional_survival ~= "open" then
+				return
+			end
+
 			-- 添加箱子能力
 			inst:AddComponent("container")
 			inst.components.container:WidgetSetup("chesspiece_aip_doujiang")

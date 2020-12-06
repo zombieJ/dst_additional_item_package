@@ -448,20 +448,19 @@ function Projectile:EffectTaskOn(target)
 		if target.components.health ~= nil and not target.components.health:IsDead() and self.doer ~= self.target then
 			local proj = SpawnPrefab("aip_projectile")
 			proj.components.aipc_info_client:SetByteArray( -- 调整颜色
-				"aip_projectile_color", { 20, 0, 0, 50 }
+				"aip_projectile_color", { 0.5, 0, 0, 5 }
 			)
 
 			local x, y, z = target.Transform:GetWorldPosition()
 
 			proj.Transform:SetPosition(x, 1, z)
-			proj.components.aipc_projectile.speed = 20
+			proj.components.aipc_projectile.speed = 10
 			proj.components.aipc_projectile:GoToTarget(self.doer, function()
 				if
-					self.doer.components.combat ~= nil and
 					self.doer.components.health ~= nil and not self.doer.components.health:IsDead() and
 					self.doer:IsValid() and not self.doer:IsInLimbo()
 				then
-					self.doer.components.combat:GetAttacked(target, finalDamage * 0.1, nil, nil)
+					self.doer.components.health:DoDelta(-finalDamage * 0.1)
 				end
 			end)
 		end
