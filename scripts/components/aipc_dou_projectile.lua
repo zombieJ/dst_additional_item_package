@@ -52,6 +52,7 @@ local function SpawnGuard(point, element)
 		SAND =		{prefab = "aip_dou_element_sand_guard"},
 		HEAL =		{prefab = "aip_dou_element_heal_guard"},
 		DAWN =		{prefab = "aip_dou_element_dawn_guard"},
+		COST =		{prefab = "aip_dou_element_cost_guard"},
 	}
 
 	local guard = guards[element]

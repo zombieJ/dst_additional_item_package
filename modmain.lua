@@ -50,6 +50,7 @@ PrefabFiles =
 	"aip_sanity_fx",
 	"aip_dou_inscription",
 	"aip_dou_element_guard",
+	"aip_aura",
 
 	-- Building
 	"incinerator",

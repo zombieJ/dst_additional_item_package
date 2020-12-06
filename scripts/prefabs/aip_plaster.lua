@@ -23,7 +23,7 @@ local LANG_MAP = {
 	},
 	["chinese"] = {
 		["NAME"] = "草木灰",
-		["DESC"] = "治疗烫伤的土方",
+		["DESC"] = "治疗烫伤的游方",
 		["DESCRIBE"] = "江湖郎中的独家秘方",
 	},
 }
