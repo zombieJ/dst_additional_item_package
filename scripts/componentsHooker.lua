@@ -130,7 +130,7 @@ AddComponentPostInit("health", function(self)
 	function self:DoDelta(amount, ...)
 		-- healthCost buffer 的对象会受到更多伤害
 		if _G.hasBuffer(self.inst, "healthCost") and amount < 0 then
-			amount = -999999999
+			amount = amount * 2
 		end
 
 		local data = { amount = amount }

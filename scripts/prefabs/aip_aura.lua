@@ -51,7 +51,7 @@ local function getFn(data)
 		end
 
 		inst:AddComponent("aipc_aura")
-		inst.components.aipc_aura.range = data.range or 6
+		inst.components.aipc_aura.range = data.range or 15
 		inst.components.aipc_aura.bufferName = data.bufferName
 		inst.components.aipc_aura.bufferDuration = data.bufferDuration or 3
 		inst.components.aipc_aura.bufferFn = data.bufferFn

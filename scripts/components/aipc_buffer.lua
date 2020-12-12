@@ -22,6 +22,7 @@ local function DoEffect(inst, self)
 
 	if allRemove then
 		inst:RemoveComponent("aipc_buffer")
+		self.task:Cancel()
 	end
 end
 

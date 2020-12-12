@@ -1,7 +1,7 @@
 -- 光环组件，每隔 1.5s 检测周围单位并添加光环 buffer（aipc_buffer）组件
 local Aura = Class(function(self, inst)
 	self.inst = inst
-	self.range = 6
+	self.range = 15
 	self.bufferName = nil
 	self.bufferDuration = nil
 	self.bufferFn = nil
