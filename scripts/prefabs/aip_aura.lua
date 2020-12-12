@@ -53,8 +53,10 @@ local function getFn(data)
 		inst:AddComponent("aipc_aura")
 		inst.components.aipc_aura.range = data.range or 6
 		inst.components.aipc_aura.bufferName = data.bufferName
-		inst.components.aipc_aura.bufferDuration = data.bufferDuration or 1
+		inst.components.aipc_aura.bufferDuration = data.bufferDuration or 3
 		inst.components.aipc_aura.bufferFn = data.bufferFn
+		inst.components.aipc_aura.mustTags = data.mustTags
+		inst.components.aipc_aura.noTags = data.noTags
 
 		return inst
 	end
@@ -68,6 +70,8 @@ local list = {
 		name = "aip_aura_cost",
 		assets = { Asset("ANIM", "anim/aip_aura_cost.zip") },
 		bufferName = "healthCost",
+		mustTags = { "_health" },
+		noTags = { "INLIMBO", "NOCLICK", "ghost" },
 	},
 }
 

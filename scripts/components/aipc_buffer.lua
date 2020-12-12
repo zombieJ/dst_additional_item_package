@@ -36,7 +36,10 @@ local Buffer = Class(function(self, inst)
 end)
 
 function Buffer:Patch(name, duration, fn)
-	self.buffers[name] = { duration, fn }
+	self.buffers[name] = {
+		duration = duration or 2,
+		fn = fn
+	}
 end
 
 return Buffer
