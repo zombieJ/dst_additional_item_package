@@ -62,6 +62,20 @@ function _G.aipFilterTable(originTbl, filterFn)
 	return tbl
 end
 
+
+-- 按照 key 过滤表格
+function _G.aipFilterKeysTable(originTbl, keys)
+	local tbl = {}
+
+	for k, v in pairs(originTbl) do
+		if not _G.aipInTable(keys, k) then
+			tbl[k] = v
+		end
+	end
+
+	return tbl
+end
+
 function _G.aipCommonStr(showType, split, ...)
 	local count = countTable(arg)
 	local str = ""
@@ -200,5 +214,23 @@ function _G.aipIsShadowCreature(inst)
 			return true
 		end
 	end
+	return false
+end
+
+-- 添加 aipc_buffer
+function _G.patchBuffer(inst, name, duration, fn)
+	if inst.components.aipc_buffer == nil then
+		inst:AddComponent("aipc_buffer")
+	end
+
+	inst.components.aipc_buffer:Patch(name, duration, fn)
+end
+
+-- 存在 aipc_buffer
+function _G.hasBuffer(inst, name)
+	if inst.components.aipc_buffer ~= nil then
+		return inst.components.aipc_buffer.buffers[name] ~= nil
+	end
+
 	return false
 end

@@ -50,6 +50,12 @@ local function getFn(data)
 			return inst
 		end
 
+		inst:AddComponent("aipc_aura")
+		inst.components.aipc_aura.range = data.range or 6
+		inst.components.aipc_aura.bufferName = data.bufferName
+		inst.components.aipc_aura.bufferDuration = data.bufferDuration or 1
+		inst.components.aipc_aura.bufferFn = data.bufferFn
+
 		return inst
 	end
 
@@ -58,9 +64,10 @@ end
 
 ------------------------------------ 列表 ------------------------------------
 local list = {
-	{	-- 痛苦光环
+	{	-- 痛苦光环：所有生物伤害都变多，依赖于 health 注入
 		name = "aip_aura_cost",
 		assets = { Asset("ANIM", "anim/aip_aura_cost.zip") },
+		bufferName = "healthCost",
 	},
 }
 
