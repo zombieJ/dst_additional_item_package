@@ -2,10 +2,8 @@ local assets = {
 	Asset("ANIM", "anim/aip_buffer.zip")
 }
 
-local function getFn(data)
-	-- 返回函数哦
-	local function fn()
-		local inst = CreateEntity()
+local function fn(data)
+	local inst = CreateEntity()
 
 		inst.entity:AddTransform()
 		inst.entity:AddAnimState()
@@ -15,6 +13,7 @@ local function getFn(data)
 		inst.AnimState:SetBuild("aip_buffer")
 
 		inst.AnimState:PlayAnimation("idle", true)
+		inst.AnimState:SetMultColour(0.24, 0.27, 0.38, 1)
 
 		inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
 		inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
@@ -29,9 +28,6 @@ local function getFn(data)
 		inst.persists = false
 
 		return inst
-	end
-
-	return fn
 end
 
 return Prefab("aip_buffer_fx", fn, assets)
