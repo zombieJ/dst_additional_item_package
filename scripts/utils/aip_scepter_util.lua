@@ -1,21 +1,23 @@
-local IngredientLeafNote = Ingredient("aip_leaf_note", 1, "images/inventoryimages/aip_leaf_note.xml")
+local ILN = Ingredient("aip_leaf_note", 1, "images/inventoryimages/aip_leaf_note.xml")
+local IL = Ingredient("log", 1)
 
 local inscriptions = {
 	-- Element 元素
-	aip_dou_fire_inscription =		{ tag = "FIRE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_ice_inscription =		{ tag = "ICE",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_sand_inscription =		{ tag = "SAND",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_heal_inscription =		{ tag = "HEAL",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_dawn_inscription =		{ tag = "DAWN",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_fire_inscription =		{ tag = "FIRE",		recipes = { ILN, IL, Ingredient("redgem", 1) } },
+	aip_dou_ice_inscription =		{ tag = "ICE",		recipes = { ILN, IL, Ingredient("bluegem", 1) } },
+	aip_dou_sand_inscription =		{ tag = "SAND",		recipes = { ILN, IL, Ingredient("townportaltalisman", 1) } },
+	aip_dou_heal_inscription =		{ tag = "HEAL",		recipes = { ILN, IL, Ingredient("butterflywings", 1) } },
+	aip_dou_dawn_inscription =		{ tag = "DAWN",		recipes = { ILN, IL, Ingredient("nightmarefuel", 1) } },
+	aip_dou_cost_inscription =		{ tag = "COST",		recipes = { ILN, IL, Ingredient("reviver", 1) } },
 
 	-- Inscription 铭文
-	aip_dou_follow_inscription =	{ tag = "FOLLOW",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_through_inscription =	{ tag = "THROUGH",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_area_inscription =		{ tag = "AREA",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_follow_inscription =	{ tag = "FOLLOW",	recipes = { ILN, IL, Ingredient("feather_canary", 1) } },
+	aip_dou_through_inscription =	{ tag = "THROUGH",	recipes = { ILN, IL, Ingredient("feather_robin_winter", 1) } },
+	aip_dou_area_inscription =		{ tag = "AREA",		recipes = { ILN, IL, Ingredient("feather_robin", 1) } },
 
 	-- Enchant 附魔
-	aip_dou_split_inscription =		{ tag = "SPLIT",	recipes = { IngredientLeafNote, Ingredient("log", 1), } },
-	aip_dou_rock_inscription =		{ tag = "ROCK",		recipes = { IngredientLeafNote, Ingredient("log", 1), } },
+	aip_dou_split_inscription =		{ tag = "SPLIT",	recipes = { ILN, IL, Ingredient("steelwool", 1) } },
+	aip_dou_rock_inscription =		{ tag = "ROCK",		recipes = { ILN, IL, Ingredient("walrus_tusk", 1) } },
 }
 
 local categories = {
@@ -24,6 +26,7 @@ local categories = {
 	SAND = "element",
 	HEAL = "element",
 	DAWN = "element",
+	COST = "element",
 	ROCK = "guard",
 	FOLLOW = "action",
 	THROUGH = "action",
@@ -37,6 +40,7 @@ local damages = {
 	SAND = 5, -- 沙子本身是地形影响，减少伤害量
 	HEAL = 25, -- 治疗比较特殊，但是叠加的时候算伤害
 	DAWN = 10, -- 对暗影怪造成额外伤害，所以本身不高
+	COST = 15, -- 痛作为最后元素时则会额外造成伤害，但是如果攻击的目标没有死则反弹 10% 伤害
 	ROCK = 24, -- 岩石伤害高，如果用的是环切没有打到目标，会召唤元素图腾
 	PLANT = 5, -- 植物会用树苗包围目标
 	FOLLOW = 0.01, -- 跟随比较简单，不提供额外伤害
@@ -52,6 +56,7 @@ local colors = {
 	ICE = { 0.6, 0.7, 0.8, 1 },
 	SAND = { 0.8, 0.7, 0.5, 1 },
 	DAWN = { 0, 0, 0, 0.5 },
+	COST = { 0.2, 0.14, 0.14, 1 },
 	ROCK = { 0.6, 0.6, 0.6, 1 },
 	HEAL = { 0.4, 0.7, 0.4, 0.5 },
 	PLANT = { 0, 0.6, 0.1, 0.5 },
@@ -82,6 +87,8 @@ local function createGroup(prevGrp)
 		split = 0,
 		-- 岩石守卫
 		guard = 0,
+		-- 痛
+		cost = 0,
 	}
 end
 
@@ -120,7 +127,7 @@ function calculateProjectile(items)
 					if group.element ~= typeInfo.name then
 						group.elementCount = 0
 					end
-					
+
 					group.element = typeInfo.name
 					group.elementCount = group.elementCount + 1
 					group.damage = group.damage + slotDamage

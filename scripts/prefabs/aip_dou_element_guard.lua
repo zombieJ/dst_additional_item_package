@@ -1,9 +1,3 @@
--- 公测开启
-local open_beta = aipGetModConfig("open_beta")
-if open_beta ~= "open" then
-	return nil
-end
-
 ------------------------------------ 配置 ------------------------------------
 -- 雕塑关闭
 local additional_chesspieces = aipGetModConfig("additional_chesspieces")
@@ -23,6 +17,7 @@ local LANG_MAP = {
 			AIP_DOU_ELEMENT_SAND_GUARD = "Attack Guard",
 			AIP_DOU_ELEMENT_HEAL_GUARD = "Cure Guard",
 			AIP_DOU_ELEMENT_DAWN_GUARD = "Ridicule Guard",
+			AIP_DOU_ELEMENT_COST_GUARD = "Misery Guard",
 		},
 		DESC = {
 			AIP_DOU_ELEMENT_FIRE_GUARD = "Faint light can burn away troubles",
@@ -30,6 +25,7 @@ local LANG_MAP = {
 			AIP_DOU_ELEMENT_SAND_GUARD = "Killer without loyalty",
 			AIP_DOU_ELEMENT_HEAL_GUARD = "Only recover the lost part",
 			AIP_DOU_ELEMENT_DAWN_GUARD = "Humorous",
+			AIP_DOU_ELEMENT_COST_GUARD = "Make you more painful",
 		},
 		DAWN_SPEACH = {
 			"I don't care",
@@ -48,8 +44,9 @@ local LANG_MAP = {
 			AIP_DOU_ELEMENT_FIRE_GUARD = "黄昏照耀者",
 			AIP_DOU_ELEMENT_ICE_GUARD = "炙烤抵御者",
 			AIP_DOU_ELEMENT_SAND_GUARD = "混沌刺杀者",
-			AIP_DOU_ELEMENT_HEAL_GUARD = "冯芳治疗者",
+			AIP_DOU_ELEMENT_HEAL_GUARD = "芬芳治疗者",
 			AIP_DOU_ELEMENT_DAWN_GUARD = "高傲嘲讽者",
+			AIP_DOU_ELEMENT_COST_GUARD = "苦难支配者",
 		},
 		DESC = {
 			AIP_DOU_ELEMENT_FIRE_GUARD = "微弱的光芒可以烧除烦恼",
@@ -57,6 +54,7 @@ local LANG_MAP = {
 			AIP_DOU_ELEMENT_SAND_GUARD = "毫无忠诚的杀手",
 			AIP_DOU_ELEMENT_HEAL_GUARD = "只恢复损失的那一部分",
 			AIP_DOU_ELEMENT_DAWN_GUARD = "幽默风趣",
+			AIP_DOU_ELEMENT_COST_GUARD = "让苦痛更甚",
 		},
 		DAWN_SPEACH = {
 			"我不在乎",
@@ -370,6 +368,19 @@ local list = {
 			end, 0)
 		end,
 	},
+	{	-- 痛苦守卫：光环对受害者加深效果
+		name = "aip_dou_element_cost_guard",
+		color = colors.COST,
+		assets = { Asset("ANIM", "anim/aip_dou_element_cost_guard.zip") },
+		prefabs = { "aip_aura" },
+		scale = 1.5,
+		spawnPrefab = "collapse_small",
+		duration = 16,
+		postFn = function(inst)
+			local aura = SpawnPrefab("aip_aura_cost")
+			inst:AddChild(aura)
+		end,
+	}
 }
 
 local prefabs = {}
@@ -380,7 +391,7 @@ end
 
 return unpack(prefabs)
 -- c_give("backpack") c_give("aip_dou_fire_inscription") c_give("aip_dou_ice_inscription") c_give("aip_dou_sand_inscription") c_give("aip_dou_heal_inscription") c_give("aip_dou_dawn_inscription")
--- c_give("houndfire") c_give("aip_dou_ice_inscription")
+-- c_give("houndfire") c_give("aip_dou_cost_inscription")
 
 
---               c_give("aip_dou_dawn_inscription")
+--               c_give("aip_dou_cost_inscription") c_give("beefalo")                      c_give"aip_buffer_fx"

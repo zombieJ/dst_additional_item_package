@@ -212,7 +212,7 @@ configuration_options =
 	{
 		name = "open_beta",
 		label = "Open Beta (公测功能)",
-		hover = "Help me to test new items! (协助我测试新的物品!)",
+		hover = "Help me to test new items! (协助我测试新的物品！)",
 		options =
 		{
 			{description = "Open", data = "open"},

@@ -1,4 +1,5 @@
-local language = GLOBAL.aipGetModConfig("language")
+local _G = GLOBAL
+local language = _G.aipGetModConfig("language")
 
 ----------------------------------- 通用组件行为 -----------------------------------
 local function triggerComponentAction(player, item, target, targetPoint)
@@ -35,7 +36,7 @@ local AIPC_ACTION = env.AddAction("AIPC_ACTION", LANG.GIVE, function(act)
 	local item = act.invobject
 	local target = act.target
 
-	if GLOBAL.TheNet:GetIsServer() then
+	if _G.TheNet:GetIsServer() then
 		-- server
 		triggerComponentAction(doer, item, target, nil)
 	else
@@ -45,8 +46,8 @@ local AIPC_ACTION = env.AddAction("AIPC_ACTION", LANG.GIVE, function(act)
 
 	return true
 end)
-AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIPC_ACTION, "dolongaction"))
-AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIPC_ACTION, "dolongaction"))
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_ACTION, "dolongaction"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_ACTION, "dolongaction"))
 
 -- 为组件绑定 action
 env.AddComponentAction("USEITEM", "aipc_action_client", function(inst, doer, target, actions, right)
@@ -55,7 +56,7 @@ env.AddComponentAction("USEITEM", "aipc_action_client", function(inst, doer, tar
 	end
 
 	if inst.components.aipc_action_client:CanActOn(doer, target) then
-		table.insert(actions, GLOBAL.ACTIONS.AIPC_ACTION)
+		table.insert(actions, _G.ACTIONS.AIPC_ACTION)
 	end
 end)
 
@@ -63,7 +64,7 @@ end)
 local function getActionableItem(doer)
 	local inventory = doer.replica.inventory
 	if inventory ~= nil then
-		local item = inventory:GetEquippedItem(GLOBAL.EQUIPSLOTS.HANDS)
+		local item = inventory:GetEquippedItem(_G.EQUIPSLOTS.HANDS)
 		if item ~= nil and item.components.aipc_action_client ~= nil then
 			return item
 		end
@@ -79,7 +80,7 @@ local AIPC_CASTER_ACTION = env.AddAction("AIPC_CASTER_ACTION", LANG.CAST, functi
 	local target = act.target
 	local item = getActionableItem(doer)
 
-	if GLOBAL.TheNet:GetIsServer() then
+	if _G.TheNet:GetIsServer() then
 		-- server
 		triggerComponentAction(doer, item, target, pos ~= nil and act:GetActionPoint())
 	else
@@ -92,8 +93,8 @@ end)
 
 AIPC_CASTER_ACTION.distance = 10
 
-AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIPC_CASTER_ACTION, "quicktele"))
-AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIPC_CASTER_ACTION, "quicktele"))
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_CASTER_ACTION, "quicktele"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_CASTER_ACTION, "quicktele"))
 
 -- aipc_action_client 对 点 操作
 env.AddComponentAction("POINT", "aipc_action_client", function(inst, doer, pos, actions, right)
@@ -102,7 +103,7 @@ env.AddComponentAction("POINT", "aipc_action_client", function(inst, doer, pos, 
 	end
 
 	if inst.components.aipc_action_client:CanActOnPoint(doer, pos) then
-		table.insert(actions, GLOBAL.ACTIONS.AIPC_CASTER_ACTION)
+		table.insert(actions, _G.ACTIONS.AIPC_CASTER_ACTION)
 	end
 end)
 
@@ -115,7 +116,7 @@ env.AddComponentAction("SCENE", "combat", function(inst, doer, actions, right)
 	local item = getActionableItem(doer)
 
 	if item ~= nil and item.components.aipc_action_client:CanActOn(doer, inst) then
-		table.insert(actions, GLOBAL.ACTIONS.AIPC_CASTER_ACTION)
+		table.insert(actions, _G.ACTIONS.AIPC_CASTER_ACTION)
 	end
 end)
 
@@ -127,10 +128,15 @@ AddComponentPostInit("health", function(self)
 	local origiDoDelta = self.DoDelta
 
 	function self:DoDelta(amount, ...)
+		-- healthCost buffer 的对象会受到更多伤害
+		if _G.hasBuffer(self.inst, "healthCost") and amount < 0 then
+			amount = amount * 2
+		end
+
 		local data = { amount = amount }
 		self.inst:PushEvent("aip_healthdelta", data)
 
-		origiDoDelta(self, data.amount, GLOBAL.unpack(arg))
+		origiDoDelta(self, data.amount, _G.unpack(arg))
 	end
 
 	-- 锁定无敌，锁定后无法再更改无敌状态
@@ -142,7 +148,7 @@ AddComponentPostInit("health", function(self)
 	local originSetInvincible = self.SetInvincible
 	function self:SetInvincible(val, ...)
 		if self.aipLockInvincible ~= true then
-			return originSetInvincible(self, val, GLOBAL.unpack(arg))
+			return originSetInvincible(self, val, _G.unpack(arg))
 		end
 	end
 
@@ -157,5 +163,18 @@ AddComponentPostInit("fueled", function(self)
 			return self.canAcceptFuelFn(self.inst, item)
 		end
 		return originCanAcceptFuelItem(self, item)
+	end
+end)
+
+-- 治疗允许回调
+AddComponentPostInit("healer", function(self)
+	local originHeal = self.Heal
+
+	function self:Heal(target, ...)
+		if self.onHealTarget ~= nil then
+			self.onHealTarget(self.inst, target)
+		end
+
+		return originHeal(self, target, _G.unpack(arg))
 	end
 end)

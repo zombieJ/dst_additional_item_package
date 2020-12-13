@@ -1,5 +1,3 @@
-local open_beta = GLOBAL.aipGetModConfig("open_beta")
-
 ------------------------------------ 贪婪观察者 ------------------------------------
 -- 暗影跟随者
 function ShadowFollowerPrefabPostInit(inst)
@@ -32,24 +30,20 @@ AddPrefabPostInit("malbatross", function(inst) ShadowFollowerPrefabPostInit(inst
 local birds = { "crow", "robin", "robin_winter", "canary", "quagmire_pigeon", "puffin" }
 for i, name in ipairs(birds) do
 	AddPrefabPostInit(name, function(inst)
-		if open_beta ~= "open" then
-			return nil
-		end
-
 		if inst.components.periodicspawner ~= nil then
 			-- 因为我们占用了一点概率，因而稍微加快一点生成间隔
-			inst.components.periodicspawner.randtime = inst.components.periodicspawner.randtime * 0.9
+			inst.components.periodicspawner.randtime = inst.components.periodicspawner.randtime * 0.95
 
 			local originPrefab = inst.components.periodicspawner.prefab
 
-			-- 鸟儿掉落物如果是种子则有 10% 概率改成树叶笔记
+			-- 鸟儿掉落物如果是种子则有 2% 概率改成树叶笔记
 			inst.components.periodicspawner.prefab = function(inst)
 				local prefab = originPrefab
 				if type(originPrefab) == "function" then
 					prefab = originPrefab(inst)
 				end
 
-				if prefab == "seeds" and math.random() < .1 then
+				if prefab == "seeds" and math.random() <= .02 then
 					return "aip_leaf_note"
 				end
 
