@@ -23,6 +23,7 @@ local function DoEffect(inst, self)
 	if allRemove then
 		inst:RemoveComponent("aipc_buffer")
 		self.task:Cancel()
+		self.fx:Remove()
 	end
 end
 
@@ -34,6 +35,10 @@ local Buffer = Class(function(self, inst)
 	self.buffers = {}
 
 	self.task = self.inst:DoPeriodicTask(1, DoEffect, 0.1, self)
+
+	-- TODO: Test this
+	self.fx = SpawnPrefab("aip_buffer_fx")
+	self.inst:AddChild(self.fx)
 end)
 
 function Buffer:Patch(name, duration, fn)

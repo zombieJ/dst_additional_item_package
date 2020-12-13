@@ -394,4 +394,4 @@ return unpack(prefabs)
 -- c_give("houndfire") c_give("aip_dou_cost_inscription")
 
 
---               c_give("aip_dou_cost_inscription") c_give("beefalo")
+--               c_give("aip_dou_cost_inscription") c_give("beefalo")                      c_give"aip_buffer_fx"

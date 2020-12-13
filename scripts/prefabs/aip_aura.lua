@@ -1,11 +1,3 @@
------------------------------------- 配置 ------------------------------------
--- 雕塑关闭
-local additional_chesspieces = aipGetModConfig("additional_chesspieces")
-if additional_chesspieces ~= "open" then
-	return nil
-end
-
------------------------------------- 函数 ------------------------------------
 local FADE_DES = 0.04
 
 local function onFade(inst)
