@@ -11,7 +11,8 @@ local dev_mode = GLOBAL.aipGetModConfig("dev_mode") == "enabled"
 -- 概率
 local PROBABILITY = dev_mode and 1 or 0.15
 
-local VEGGIES = GLOBAL.require('prefabs/aip_veggies_list')
+local veggiesList = GLOBAL.require('prefabs/aip_veggies_list')
+local VEGGIES = veggiesList.VEGGIES
 
 -- 添加其他种子概率
 function mergePickProduct(oriFunc, probability)
@@ -53,4 +54,25 @@ end)
 -- 给蔬菜赋值
 for name, data in pairs(VEGGIES) do
 	env.AddIngredientValues({"aip_veggie_"..name}, data.tags or {}, data.cancook or false, data.candry or false)
+end
+
+------------------------------------------------- 新版农场 -------------------------------------------------
+if GROUND.FARMING_SOIL ~= nil then
+	-- 添加作物
+	AddSimPostInit(function()
+		if GLOBAL.VEGGIES ~= nil then
+			for name, data in pairs(VEGGIES) do
+				GLOBAL.VEGGIES[name] = data
+
+				if dev_mode then
+					data.seed_weight = 999999999
+				end
+			end
+		end
+	end)
+
+	-- 注入作物
+	local PLANT_DEFS = require("prefabs/farm_plant_defs").PLANT_DEFS
+
+
 end

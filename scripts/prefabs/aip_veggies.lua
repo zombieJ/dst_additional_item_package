@@ -7,7 +7,7 @@ if additional_food ~= "open" then
 	return nil
 end
 
-local ORI_VEGGIES = require("prefabs/aip_veggies_list")
+local CUSTOM_VEGGIES = require("prefabs/aip_veggies_list").VEGGIES
 
 local food_effect = aipGetModConfig("food_effect")
 local language = aipGetModConfig("language")
@@ -33,7 +33,7 @@ local LANG_ENG = LANG_MAP.english
 
 -- 资源
 local VEGGIES = {}
-for veggiename, veggiedata in pairs(ORI_VEGGIES) do
+for veggiename, veggiedata in pairs(CUSTOM_VEGGIES) do
 	local wrapName = "aip_veggie_"..veggiename
 
 	-- 属性
@@ -108,6 +108,7 @@ local function MakeVeggie(name, has_seeds)
 		inst.entity:AddNetwork()
 
 		MakeInventoryPhysics(inst)
+		MakeInventoryFloatable(inst)
 
 		inst.AnimState:SetBank("seeds")
 		inst.AnimState:SetBuild("seeds")
@@ -163,6 +164,7 @@ local function MakeVeggie(name, has_seeds)
 		inst.entity:AddNetwork()
 
 		MakeInventoryPhysics(inst)
+		MakeInventoryFloatable(inst)
 
 		inst.AnimState:SetBank(name)
 		inst.AnimState:SetBuild(name)
@@ -232,6 +234,7 @@ local function MakeVeggie(name, has_seeds)
 		inst.entity:AddNetwork()
 
 		MakeInventoryPhysics(inst)
+		MakeInventoryFloatable(inst)
 
 		inst.AnimState:SetBank(name)
 		inst.AnimState:SetBuild(name)
