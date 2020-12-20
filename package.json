@@ -12,7 +12,8 @@
     "ktech": "node ./tools-scripts/ktech.js",
     "krane": "node ./tools-scripts/krane.js",
     "init": "node gen/init",
-    "compile": "node gen/init --compile"
+    "compile": "node gen/init --compile",
+    "preview": "node gen/introPreview.js"
   },
   "repository": {
     "type": "git",
