@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="seed">
+        <file id="0" name="seed/seed.png" width="75" height="76" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="farm_plant_aip_wheat">
+        <animation id="0" name="crop_seed" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="seed" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="seed">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="1" name="crop_sprout" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="seed" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="seed">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="crop_small" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="seed" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="seed">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="3" name="crop_med" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="seed" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="seed">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="4" name="crop_full" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="seed" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="seed">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="5" name="crop_oversized" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="seed" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="seed">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="6" name="crop_rot" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="seed" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="seed">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="7" name="crop_rot_oversized" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="seed" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="seed">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="8" name="dug" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="seed" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="seed">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="9" name="grow_seed" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="seed" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="seed">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="10" name="grow_sprout" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="seed" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="seed">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="11" name="grow_small" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="seed" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="seed">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="12" name="grow_med" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="seed" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="seed">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="13" name="grow_full" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="seed" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="seed">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="14" name="grow_oversized" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="seed" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="seed">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="15" name="grow_rot" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="seed" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="seed">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="16" name="grow_rot_oversized" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="seed" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="seed">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="17" name="idle_oversized" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="seed" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="seed">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="18" name="idle_rot_oversized" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="seed" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="seed">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="19" name="picked" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="seed" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="seed">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="20" name="rot_to_sprout" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="seed" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="seed">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="21" name="wax_oversized" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="seed" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="seed">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

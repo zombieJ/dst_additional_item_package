@@ -319,7 +319,7 @@ local food_recipes = {
 		test = function(cooker, names, tags)
 			return tags.meat and tags.meat >= 1.5 and tags.meat < 3 and (
 				names.berries or names.berries_cooked or names.berries_juicy or names.berries_juicy_cooked or
-				names.aip_veggie_grape or names.aip_veggie_grape_cooked
+				names.aip_grape or names.aip_grape_cooked
 			)
 		end,
 		priority = 1,
@@ -346,7 +346,7 @@ local food_recipes = {
 	},
 	aip_food_grape_suger = {
 		test = function(cooker, names, tags)
-			return tags.sweetener and tags.inedible and tags.inedible == 1 and names.aip_veggie_grape
+			return tags.sweetener and tags.inedible and tags.inedible == 1 and names.aip_grape
 		end,
 		priority = 10,
 		weight = 1,

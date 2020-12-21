@@ -1,10 +1,14 @@
-local COMMON = 3
-local UNCOMMON = 1
-local RARE = .5
+local PLANT_DEFS = require("prefabs/farm_plant_defs").PLANT_DEFS
+
+local COMMON = TUNING.SEED_CHANCE_COMMON
+local UNCOMMON = TUNING.SEED_CHANCE_UNCOMMON
+local RARE = TUNING.SEED_CHANCE_RARE
 
 --[[
 	未使用属性： halloweenmoonmutable_settings, secondary_foodtype, lure_data
 ]]
+
+local S = TUNING.FARM_PLANT_CONSUME_NUTRIENT_LOW
 
 -- 作物列表
 local VEGGIES =
@@ -21,10 +25,12 @@ local VEGGIES =
 		cooked_sanity = 0,
 		cooked_perishtime = 5,
 
+		nutrient_consumption = {S,0,0},
+
 		tags = { starch = 1 },
 		dryable = false,
 	},
-	sunflower = {
+	--[[sunflower = {
 		seed_weight = COMMON,
 
 		health = 1,
@@ -35,6 +41,8 @@ local VEGGIES =
 		cooked_hunger = 5,
 		cooked_sanity = 5,
 		cooked_perishtime = TUNING.PERISH_MED,
+
+		nutrient_consumption = {0,0,S},
 
 		tags = { starch = 1 },
 		dryable = false,
@@ -51,28 +59,18 @@ local VEGGIES =
 		cooked_sanity = 0,
 		cooked_perishtime = TUNING.PERISH_FAST,
 
+		nutrient_consumption = {0,0,0},
+
 		tags = { fruit = 1 },
 		dryable = false,
-	},
-
-	--[[onion = {
-		seed_weight = COMMON,
-		health = HP * 5,
-		hunger = HU * 12.5,
-		sanity = SAN * 0,
-		perishtime = PER * 30,
-		cooked_health = HP * 5,
-		cooked_hunger = HU * 25,
-		cooked_sanity = SAN * 5,
-		cooked_perishtime = PER * 5,
 	},]]
 }
 
 -- 作物生长动画
 local VEGGIE_DEFS = {}
 
-local function makeVeggieDef(name, drink_rate, good_seasons)
-	local prefab = "aip_farm_plant_"..name
+local function makeVeggieDef(name, nutrient_consumption, drink_rate, good_seasons)
+	local prefab = "farm_plant_aip_"..name
 	local product = "aip_"..name
 
 	-- 生成生长时间
@@ -101,16 +99,16 @@ local function makeVeggieDef(name, drink_rate, good_seasons)
 		product = product, -- 产物
 		product_oversized = product.."_oversized", -- 巨大化产物
 		seed = product.."_seeds",
-		build = "aip_farm_plant_"..name,
-		bank = "aip_farm_plant_"..name,
+		build = "farm_plant_aip_"..name,
+		bank = "farm_plant_aip_"..name,
 		grow_time = MakeGrowTimes(12 * TUNING.SEG_TIME, 16 * TUNING.SEG_TIME, 4 * TUNING.TOTAL_DAY_TIME, 7 * TUNING.TOTAL_DAY_TIME),
 		moisture = {drink_rate = drink_rate, min_percent = TUNING.FARM_PLANT_DROUGHT_TOLERANCE}, -- 潮湿度
 		good_seasons = good_seasons, -- 喜爱季节
 		nutrient_consumption = nutrient_consumption, -- 肥料需求
 		max_killjoys_tolerance	= TUNING.FARM_PLANT_KILLJOY_TOLERANCE,
 		fireproof = false, -- 不防火
-		weight_data = { 372.82, 465.65, .26 } -- 巨大化重量
-		sounds = PLANT_DEFS.pumpkin.sounds -- 默认声效
+		weight_data = { 372.82, 465.65, .26 }, -- 巨大化重量
+		sounds = PLANT_DEFS.pumpkin.sounds, -- 默认声效
 		plant_type_tag = prefab,
 		family_min_count = TUNING.FARM_PLANT_SAME_FAMILY_MIN,
 		family_check_dist = TUNING.FARM_PLANT_SAME_FAMILY_RADIUS,
@@ -119,7 +117,7 @@ local function makeVeggieDef(name, drink_rate, good_seasons)
 		-- 官方图鉴
 		plantregistrywidget = "widgets/redux/farmplantpage",
 		plantregistrysummarywidget = "widgets/redux/farmplantsummarywidget",
-		pictureframeanim = {anim = "emoteXL_happycheer", time = 0.5}
+		pictureframeanim = {anim = "emoteXL_happycheer", time = 0.5},
 
 		-- 状态与动效
 		plantregistryinfo = {
@@ -192,6 +190,11 @@ local function makeVeggieDef(name, drink_rate, good_seasons)
 	data.loot_oversized_rot = {"spoiled_food", "spoiled_food", "spoiled_food", data.seed, "fruitfly", "fruitfly"}
 
 	VEGGIE_DEFS[name] = data
+end
+
+-- 遍历生成，默认不用多少水且四季都可以巨大化
+for name, data in pairs(VEGGIES) do
+	makeVeggieDef(name, data.nutrient_consumption, TUNING.FARM_PLANT_DRINK_LOW, {autumn = true,	winter = true,	spring = true,	summer = true})
 end
 
 return {

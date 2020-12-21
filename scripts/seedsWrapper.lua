@@ -13,6 +13,7 @@ local PROBABILITY = dev_mode and 1 or 0.15
 
 local veggiesList = GLOBAL.require('prefabs/aip_veggies_list')
 local VEGGIES = veggiesList.VEGGIES
+local VEGGIE_DEFS = veggiesList.VEGGIE_DEFS
 
 -- 添加其他种子概率
 function mergePickProduct(oriFunc, probability)
@@ -28,7 +29,7 @@ function mergePickProduct(oriFunc, probability)
 			for veggiename,v in pairs(VEGGIES) do
 				rnd = rnd - (v.seed_weight or 1)
 				if rnd <= 0 then
-					return "aip_veggie_"..veggiename
+					return "aip_"..veggiename
 				end
 			end
 		end
@@ -53,7 +54,7 @@ end)
 
 -- 给蔬菜赋值
 for name, data in pairs(VEGGIES) do
-	env.AddIngredientValues({"aip_veggie_"..name}, data.tags or {}, data.cancook or false, data.candry or false)
+	env.AddIngredientValues({"aip_"..name}, data.tags or {}, data.cancook or false, data.candry or false)
 end
 
 ------------------------------------------------- 新版农场 -------------------------------------------------
@@ -73,6 +74,8 @@ if GROUND.FARMING_SOIL ~= nil then
 
 	-- 注入作物
 	local PLANT_DEFS = require("prefabs/farm_plant_defs").PLANT_DEFS
-
+	for name, data in pairs(VEGGIE_DEFS) do
+		PLANT_DEFS[name] = data
+	end
 
 end
