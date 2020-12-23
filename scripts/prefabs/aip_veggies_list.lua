@@ -189,7 +189,7 @@ local function makeVeggieDef(name, nutrient_consumption, drink_rate, good_season
 	-- 巨型腐烂物
 	data.loot_oversized_rot = {"spoiled_food", "spoiled_food", "spoiled_food", data.seed, "fruitfly", "fruitfly"}
 
-	VEGGIE_DEFS[name] = data
+	VEGGIE_DEFS[product] = data
 end
 
 -- 遍历生成，默认不用多少水且四季都可以巨大化

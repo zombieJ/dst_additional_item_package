@@ -66,7 +66,7 @@ for veggiename, veggiedata in pairs(CUSTOM_VEGGIES) do
 	STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperCase_seeds] = LANG[veggiename.."_seeds"].DESC or LANG_ENG[veggiename.."_seeds"].DESC
 
 	-- 《种瓜得瓜》兼容
-	STRINGS.NAMES.["KNOWN_"..upperCase_seeds] = STRINGS.NAMES[upperCase_seeds]
+	STRINGS.NAMES["KNOWN_"..upperCase_seeds] = STRINGS.NAMES[upperCase_seeds]
 end
 
 ------------------------------------ 通用 ------------------------------------
@@ -271,7 +271,7 @@ local function MakeVeggie(name)
 	table.insert(prefabs, name.."_oversized_waxed")
 	table.insert(prefabs, name.."_oversized_rotten")
 	table.insert(prefabs, "splash_green")
-	
+
 	table.insert(assets_oversized, Asset("ANIM", "anim/"..CUSTOM_PLANT_DEFS[name].build..".zip"))
 
 
@@ -754,12 +754,11 @@ local function MakeVeggie(name)
 
     local exported_prefabs = {}
 
-	if has_seeds then
-		table.insert(exported_prefabs, Prefab(name.."_seeds", fn_seeds, assets_seeds, seeds_prefabs))
-        table.insert(exported_prefabs, Prefab(name.."_oversized", fn_oversized, assets_oversized))
-        table.insert(exported_prefabs, Prefab(name.."_oversized_waxed", fn_oversized_waxed, assets_oversized))
-        table.insert(exported_prefabs, Prefab(name.."_oversized_rotten", fn_oversized_rotten, assets_oversized))
-	end
+	table.insert(exported_prefabs, Prefab(name.."_seeds", fn_seeds, assets_seeds, seeds_prefabs))
+	table.insert(exported_prefabs, Prefab(name.."_oversized", fn_oversized, assets_oversized))
+	table.insert(exported_prefabs, Prefab(name.."_oversized_waxed", fn_oversized_waxed, assets_oversized))
+	table.insert(exported_prefabs, Prefab(name.."_oversized_rotten", fn_oversized_rotten, assets_oversized))
+
 	if dryable ~= nil then
 		table.insert(exported_prefabs, Prefab(name.."_dried", fn_dried, assets_dried))
     end

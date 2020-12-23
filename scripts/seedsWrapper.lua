@@ -63,7 +63,7 @@ if GROUND.FARMING_SOIL ~= nil then
 	AddSimPostInit(function()
 		if GLOBAL.VEGGIES ~= nil then
 			for name, data in pairs(VEGGIES) do
-				GLOBAL.VEGGIES[name] = data
+				GLOBAL.VEGGIES["aip_"..name] = data
 
 				if dev_mode then
 					data.seed_weight = 999999999
