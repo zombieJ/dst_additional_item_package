@@ -18,9 +18,12 @@ function PlayerPrefabPostInit(inst)
     inst:RemoveTag("insomniac")
 
     inst.components.aipc_timer:Interval(1, function()
-        inst.components.health:DoDelta(100)
-        inst.components.sanity:DoDelta(100)
-        inst.components.hunger:DoDelta(100)
+        if inst.components.health.currenthealth < 50 then
+            inst.components.health:DoDelta(50)
+        end
+        if inst.components.sanity.current < 30 then
+            inst.components.sanity:DoDelta(30)
+        end
     end)
 end
 

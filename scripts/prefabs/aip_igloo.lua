@@ -5,11 +5,39 @@ if additional_building ~= "open" then
 	return nil
 end
 
+local language = aipGetModConfig("language")
+
+local LANG_MAP = {
+	english = {
+		NAME = "Igloo",
+        DESC = "No break in winter",
+        COLD = "It's frozen!",
+        MELT = "It's melting",
+	},
+	chinese = {
+		NAME = "雪人小屋",
+        DESC = "冬天不会消耗耐久度",
+        COLD = "冻得结结实实的",
+        MELT = "有些融化了",
+	},
+}
+
+local LANG = LANG_MAP[language] or LANG_MAP.english
+
+-- 文字描述
+STRINGS.NAMES.AIP_IGLOO = LANG.NAME
+STRINGS.RECIPE_DESC.AIP_IGLOO = LANG.DESC
+STRINGS.AIP.AIP_IGLOO_COLD = LANG.COLD
+STRINGS.AIP.AIP_IGLOO_MELT = LANG.MELT
+
+
+
 require "prefabutil"
 
 local igloo_assets =
 {
     Asset("ANIM", "anim/aip_igloo.zip"),
+    Asset("ATLAS", "images/inventoryimages/aip_igloo.xml"),
 }
 
 -----------------------------------------------------------------------
@@ -76,27 +104,8 @@ local function onfinished(inst)
     end
 end
 
-local function onbuilt_tent(inst)
-    inst.AnimState:PlayAnimation("place")
-    inst.AnimState:PushAnimation("idle", true)
-    inst.SoundEmitter:PlaySound("dontstarve/common/tent_craft")
-end
-
 local function onignite(inst)
     inst.components.sleepingbag:DoWakeUp()
-end
-
-local function onwake(inst, sleeper, nostatechange)
-    sleeper:RemoveEventCallback("onignite", onignite, inst)
-
-    if inst.sleep_anim ~= nil then
-        inst.AnimState:PushAnimation("idle", true)
-        stopsleepsound(inst)
-    end
-
-    if inst.components.finiteuses ~= nil then
-        inst.components.finiteuses:Use()
-    end
 end
 
 local function onsleep(inst, sleeper)
@@ -132,7 +141,29 @@ local function temperaturetick(inst, sleeper)
     end
 end
 
-local function common_fn(bank, build, icon, tag, onbuiltfn, burnable)
+local function onWake(inst, sleeper, nostatechange)
+    sleeper:RemoveEventCallback("onignite", onignite, inst)
+
+    if inst.sleep_anim ~= nil then
+        inst.AnimState:PushAnimation("idle", true)
+        stopsleepsound(inst)
+    end
+
+    -- 如果配置过使用方式则用自定义的
+    if inst.onUse ~= nil then
+        inst.onUse(inst)
+    else
+        inst.components.finiteuses:Use()
+    end
+end
+
+local function onBuilt(inst)
+    inst.AnimState:PlayAnimation("place")
+    inst.AnimState:PushAnimation("idle", true)
+    inst.SoundEmitter:PlaySound("dontstarve/common/tent_craft")
+end
+
+local function common_fn(name, config)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -145,15 +176,15 @@ local function common_fn(bank, build, icon, tag, onbuiltfn, burnable)
 
     inst:AddTag("tent")
     inst:AddTag("structure")
-    if tag ~= nil then
-        inst:AddTag(tag)
+    if config.tag ~= nil then
+        inst:AddTag(config.tag)
     end
 
-    inst.AnimState:SetBank(bank)
-    inst.AnimState:SetBuild(build)
+    inst.AnimState:SetBank(name)
+    inst.AnimState:SetBuild(name)
     inst.AnimState:PlayAnimation("idle", true)
 
-    inst.MiniMapEntity:SetIcon(icon)
+    inst.MiniMapEntity:SetIcon("tent.png")
 
     MakeSnowCoveredPristine(inst)
 
@@ -162,6 +193,8 @@ local function common_fn(bank, build, icon, tag, onbuiltfn, burnable)
     if not TheWorld.ismastersim then
         return inst
     end
+
+    inst.onUse = config.onUse
 
     inst:AddComponent("inspectable")
 
@@ -177,16 +210,17 @@ local function common_fn(bank, build, icon, tag, onbuiltfn, burnable)
 
     inst:AddComponent("sleepingbag")
     inst.components.sleepingbag.onsleep = onsleep
-    inst.components.sleepingbag.onwake = onwake
     inst.components.sleepingbag.health_tick = TUNING.SLEEP_HEALTH_PER_TICK * 2
     --convert wetness delta to drying rate
     inst.components.sleepingbag.dryingrate = math.max(0, -TUNING.SLEEP_WETNESS_PER_TICK / TUNING.SLEEP_TICK_PERIOD)
     inst.components.sleepingbag:SetTemperatureTickFn(temperaturetick)
 
-    MakeSnowCovered(inst)
-    inst:ListenForEvent("onbuilt", onbuiltfn)
+    inst.components.sleepingbag.onwake = onWake
 
-    if burnable then
+    MakeSnowCovered(inst)
+    inst:ListenForEvent("onbuilt", onBuilt)
+
+    if config.burnable then
         MakeLargeBurnable(inst, nil, nil, true)
         MakeMediumPropagator(inst)
     end
@@ -204,13 +238,34 @@ end
 local aip_igloo = Recipe("aip_igloo", {Ingredient("ice", 21), Ingredient("carrot", 1), Ingredient("twigs", 2)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_TWO, "aip_igloo_placer")
 aip_igloo.atlas = "images/inventoryimages/aip_igloo.xml"
 
-local function TemperatureChange(inst, data)
+-- local function TemperatureChange(inst, data)
+--     local curTemp = inst.components.temperature:GetCurrent()
+--     aipTypePrint("temp:", curTemp)
+-- end
+
+local function onUseIgloo(inst)
     local curTemp = inst.components.temperature:GetCurrent()
-    aipTypePrint("temp:", curTemp)
+    if curTemp > 3 then -- 超过 3 度就开始消费使用次数
+        inst.components.finiteuses:Use()
+    else -- 反之充满
+        inst.components.finiteuses:SetPercent(1)
+    end
+end
+
+local function getIglooDesc(inst)
+    local curTemp = inst.components.temperature:GetCurrent()
+    if curTemp > 3 then
+        return STRINGS.AIP.AIP_IGLOO_MELT
+    end
+    return STRINGS.AIP.AIP_IGLOO_COLD
 end
 
 local function igloo()
-    local inst = common_fn("aip_igloo", "aip_igloo", "tent.png", "siestahut", onbuilt_tent, false) -- 移除这个 TAG
+    local inst = common_fn("aip_igloo", {
+        tag = "siestahut", -- 移除这个 TAG
+        burnable = false,
+        onUse = onUseIgloo,
+    })
 
     inst:AddTag("meltable")
 
@@ -221,11 +276,14 @@ local function igloo()
     -- TODO: 临时添加一个白天睡觉开发用
     inst.components.sleepingbag:SetSleepPhase("day")
 
+    inst.components.inspectable.descriptionfn = getIglooDesc
+
     inst.sleep_anim = "sleep_loop"
     inst.components.sleepingbag.hunger_tick = TUNING.SLEEP_HUNGER_PER_TICK
 
-    -- 雪人小屋不限制使用次数
-    inst:RemoveComponent("finiteuses")
+    -- 雪人小屋和帐篷有一样的使用次数，只是在冬天不会消费
+    inst.components.finiteuses:SetMaxUses(TUNING.TENT_USES)
+    inst.components.finiteuses:SetUses(TUNING.TENT_USES)
 
     -- 雪人小屋自己有温度
     inst:AddComponent("temperature")
@@ -233,7 +291,7 @@ local function igloo()
     inst.components.temperature.current = -20 -- 初始低温
     inst.components.temperature.inherentinsulation = TUNING.INSULATION_MED
     inst.components.temperature.inherentsummerinsulation = TUNING.INSULATION_MED
-    inst:ListenForEvent("temperaturedelta", TemperatureChange)
+    -- inst:ListenForEvent("temperaturedelta", TemperatureChange)
 
     return inst
 end
@@ -241,4 +299,11 @@ end
 return Prefab("aip_igloo", igloo, igloo_assets),
     MakePlacer("aip_igloo_placer", "aip_igloo", "aip_igloo", "idle")
 
---                     c_give"aip_igloo"
+--[[
+                         c_give"aip_igloo"
+
+
+self.inst:WatchWorldState("phase", function(inst, phase) 阶段
+end)
+
+]]

@@ -382,7 +382,7 @@
                     <object folder="0" file="1" x="4.675742" y="-28.120915" pivot_x="0.511758" pivot_y="0.120915" angle="0" scale_x="1.258172" scale_y="0.475932"/>
                 </key>
                 <key id="2" time="500" spin="0">
-                    <object folder="0" file="1" x="4.675742" y="198.879085" pivot_x="0.511758" pivot_y="0.120915" angle="0" scale_x="0.07259"/>
+                    <object folder="0" file="1" x="4.675742" y="198.879085" pivot_x="0.511758" pivot_y="0.120915" angle="0" scale_x="0.004666"/>
                 </key>
             </timeline>
             <timeline id="1" name="o_hole">
@@ -393,7 +393,7 @@
                     <object folder="0" file="2" x="-1.563676" y="-4.634153" pivot_x="0.501176" pivot_y="0.259153" angle="0" scale_x="1.334018" scale_y="0.546507"/>
                 </key>
                 <key id="2" time="500" spin="0">
-                    <object folder="0" file="2" x="-1.563676" y="280.365847" pivot_x="0.501176" pivot_y="0.259153" angle="0" scale_x="0.076165" scale_y="1.406601"/>
+                    <object folder="0" file="2" x="-1.563676" y="280.365847" pivot_x="0.501176" pivot_y="0.259153" angle="0" scale_x="0.007376" scale_y="1.406601"/>
                 </key>
             </timeline>
             <timeline id="2" name="o_snow_left">
@@ -404,7 +404,7 @@
                     <object folder="0" file="3" x="-225.016715" y="-39.702778" pivot_x="0.516715" pivot_y="0.265278" angle="0" scale_x="1.219686" scale_y="0.634177"/>
                 </key>
                 <key id="2" time="500" spin="0">
-                    <object folder="0" file="3" x="-225.016715" y="86.297222" pivot_x="0.516715" pivot_y="0.265278" angle="0" scale_x="0.100371" scale_y="2.280855"/>
+                    <object folder="0" file="3" x="-225.016715" y="86.297222" pivot_x="0.516715" pivot_y="0.265278" angle="0" scale_x="0.01684" scale_y="2.280855"/>
                 </key>
             </timeline>
             <timeline id="3" name="o_snow_right">
@@ -415,7 +415,7 @@
                     <object folder="0" file="4" x="267.192036" y="-37.702381" pivot_x="0.495464" pivot_y="0.202381" angle="0" scale_x="1.523515" scale_y="0.537603"/>
                 </key>
                 <key id="2" time="500" spin="0">
-                    <object folder="0" file="4" x="267.192036" y="78.297619" pivot_x="0.495464" pivot_y="0.202381" angle="0" scale_x="0.091509" scale_y="1.473209"/>
+                    <object folder="0" file="4" x="267.192036" y="78.297619" pivot_x="0.495464" pivot_y="0.202381" angle="0" scale_x="0.024904" scale_y="1.473209"/>
                 </key>
             </timeline>
         </animation>
