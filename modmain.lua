@@ -28,7 +28,7 @@ PrefabFiles =
 	"aip_projectile",
 
 	-- Food
-	"aip_veggies",
+	-- "aip_veggies", -- 没用了
 	"foods",
 	"aip_nectar_maker",
 	"aip_nectar",
@@ -37,6 +37,7 @@ PrefabFiles =
 	-- survival
 	"aip_blood_package",
 	"aip_plaster",
+	"aip_igloo",
 
 	-- Weapon
 	"popcorngun",

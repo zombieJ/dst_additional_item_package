@@ -14,6 +14,9 @@ function PlayerPrefabPostInit(inst)
         inst:AddComponent("aipc_timer")
     end
 
+    -- 开发模式下移除失眠效果
+    inst:RemoveTag("insomniac")
+
     inst.components.aipc_timer:Interval(1, function()
         inst.components.health:DoDelta(100)
         inst.components.sanity:DoDelta(100)
