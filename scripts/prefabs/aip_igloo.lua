@@ -1,4 +1,10 @@
 ------------------------------------ 配置 ------------------------------------
+-- 公测关闭
+local open_beta = aipGetModConfig("open_beta")
+if open_beta ~= "open" then
+	return nil
+end
+
 -- 建筑关闭
 local additional_building = aipGetModConfig("additional_building")
 if additional_building ~= "open" then

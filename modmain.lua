@@ -50,6 +50,7 @@ PrefabFiles =
 	"aip_heal_fx",
 	"aip_sanity_fx",
 	"aip_dou_inscription",
+	"aip_dou_inscription_package",
 	"aip_dou_element_guard",
 	"aip_aura",
 	"aip_buffer_fx",
