@@ -39,7 +39,10 @@ local assets =
 -- 配方
 local aip_dou_inscription_package = Recipe(
 	"aip_dou_inscription_package",
-	{Ingredient("aip_shadow_package", 1, "images/inventoryimages/aip_shadow_package.xml"), Ingredient("lightbulb", 2)},
+	{
+        Ingredient("aip_shadow_paper_package", 1, "images/inventoryimages/aip_shadow_paper_package.xml"),
+        Ingredient("lightbulb", 2)
+    },
 	RECIPETABS.MAGIC, TECH.MAGIC_TWO
 )
 aip_dou_inscription_package.atlas = "images/inventoryimages/aip_dou_inscription_package.xml"
