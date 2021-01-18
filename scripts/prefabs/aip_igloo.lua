@@ -1,10 +1,4 @@
 ------------------------------------ 配置 ------------------------------------
--- 公测关闭
-local open_beta = aipGetModConfig("open_beta")
-if open_beta ~= "open" then
-	return nil
-end
-
 -- 建筑关闭
 local additional_building = aipGetModConfig("additional_building")
 if additional_building ~= "open" then
@@ -279,8 +273,7 @@ local function igloo()
         return inst
     end
 
-    -- TODO: 临时添加一个白天睡觉开发用
-    inst.components.sleepingbag:SetSleepPhase("day")
+    -- inst.components.sleepingbag:SetSleepPhase("day") -- 白天睡觉
 
     inst.components.inspectable.descriptionfn = getIglooDesc
 
