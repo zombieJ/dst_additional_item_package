@@ -262,7 +262,7 @@ end
 
 local function igloo()
     local inst = common_fn("aip_igloo", {
-        tag = "siestahut", -- 移除这个 TAG
+        -- tag = "siestahut", -- 遮阳棚，白天用。移除这个 TAG
         burnable = false,
         onUse = onUseIgloo,
     })
