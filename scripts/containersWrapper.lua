@@ -378,6 +378,23 @@ for y = 2.5, -0.5, -1 do
     end
 end
 
+----------------- 心悦锄 -----------------
+params.aip_xinyue_hoe = {
+    widget =
+    {
+        slotpos = { Vector3(0,   32 + 4,  0), },
+        animbank = "ui_chest_3x3",
+        animbuild = "ui_chest_3x3",
+        pos = Vector3(0, 15, 0),
+    },
+    usespecificslotsforitems = true,
+    type = "hand_inv",
+}
+
+function params.aip_xinyue_hoe.itemtestfn(container, item, slot)
+	return item.components.plantable ~= nil
+end
+
 ----------------------------------------------------------------------------------------------
 local containers = GLOBAL.require "containers"
 local old_widgetsetup = containers.widgetsetup

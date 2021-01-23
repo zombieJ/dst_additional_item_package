@@ -33,6 +33,7 @@ PrefabFiles =
 	"aip_nectar_maker",
 	"aip_nectar",
 	"aip_leaf_note",
+	"aip_xinyue_hoe",
 
 	-- survival
 	"aip_blood_package",
