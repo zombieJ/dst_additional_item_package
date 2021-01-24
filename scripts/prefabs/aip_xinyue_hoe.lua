@@ -4,8 +4,9 @@ if additional_weapon ~= "open" then
 	return nil
 end
 
-local BASIC_USE = TUNING.LARGE_FUEL / 10
-local MAX_USES = BASIC_USE * 10
+local BASIC_USE = TUNING.LARGE_FUEL / 20
+local ATTACK_USE = BASIC_USE / 5
+local MAX_USES = BASIC_USE * 20
 
 local language = aipGetModConfig("language")
 
@@ -47,16 +48,6 @@ local aip_xinyue_hoe = Recipe("aip_xinyue_hoe", {
 aip_xinyue_hoe.atlas = "images/inventoryimages/aip_dou_scepter.xml"
 
 -- --------------------------------- 功能 ---------------------------------
--- local FERTILIZER_DEFS = require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS
-
--- local function GetFertilizerKey(inst)
---     return inst.prefab
--- end
-
--- local function fertilizerresearchfn(inst)
---     return inst:GetFertilizerKey()
--- end
-
 -- 装备
 local function onequip(inst, owner)
     owner.AnimState:OverrideSymbol("swap_object", "aip_dou_scepter_swap", "aip_dou_scepter_swap")
@@ -79,6 +70,56 @@ local function onunequip(inst, owner)
 end
 
 local digDiff = 1.3
+
+local function onDoPointAction(inst, doer, point)
+    if inst.components.fueled:IsEmpty() then
+        return
+    end
+
+    local tile_x, tile_y, tile_z = TheWorld.Map:GetTileCenterPoint(point.x, 0, point.z)
+
+    -- 一次性挖 3x3 个地
+    local index = 1
+    for z = -1, 1 do
+        for x = 1, -1, -1 do
+            local tx = tile_x + x * digDiff
+            local tz = tile_z + z * digDiff
+
+            if TheWorld.Map:CanTillSoilAtPoint(tx, 0, tz, false) then
+                TheWorld.Map:CollapseSoilAtPoint(tx, 0, tz)
+                local soil = SpawnPrefab("farm_soil")
+                soil.Transform:SetPosition(tx, 0, tz)
+
+                -- 给予植物
+                local item =inst.components.container:GetItemInSlot(index)
+                if item ~= nil and item.components.farmplantable ~= nil then
+                    local left = item
+                    if item.components.stackable ~= nil then
+                        left = item.components.stackable:Get(1)
+                    end
+
+                    left.components.farmplantable:Plant(soil, doer)
+                end
+            end
+
+            index = index + 1
+        end
+    end
+
+    -- 范围内植物全部快乐一次
+    for _, v in pairs(TheSim:FindEntities(tile_x, tile_y, tile_z, math.sqrt(digDiff * digDiff * 2) * 1.1, {"tendable_farmplant"})) do
+        if v.components.farmplanttendable ~= nil then
+            v.components.farmplanttendable:TendTo(doer)
+        end
+    end
+
+    -- 惩罚施法者对应的理智值
+    if doer.components.sanity ~= nil then
+        doer.components.sanity:DoDelta(-30)
+    end
+
+    inst.components.fueled:DoDelta(-BASIC_USE)
+end
 
 -- 启动
 local function fn()
@@ -122,11 +163,13 @@ local function fn()
 
     inst:AddComponent("inspectable")
 
-    -- 需要充能
     inst:AddComponent("fueled")
     inst.components.fueled.fueltype = FUELTYPE.NIGHTMARE
     inst.components.fueled:InitializeFuelLevel(MAX_USES)
     inst.components.fueled.accepting = true
+
+    inst:AddComponent("weapon")
+    inst.components.weapon:SetDamage(TUNING.FARM_HOE_DAMAGE)
 
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_dou_scepter.xml"
@@ -139,44 +182,7 @@ local function fn()
     -- 施法
     inst:AddComponent("aipc_action")
 
-    inst.components.aipc_action.onDoPointAction = function(inst, doer, point)
-        local tile_x, tile_y, tile_z = TheWorld.Map:GetTileCenterPoint(point.x, 0, point.z)
-
-        -- 一次性挖 3x3 个地
-        local index = 1
-        for z = -1, 1 do
-            for x = 1, -1, -1 do
-                local tx = tile_x + x * digDiff
-                local tz = tile_z + z * digDiff
-
-                if TheWorld.Map:CanTillSoilAtPoint(tx, 0, tz, false) then
-                    TheWorld.Map:CollapseSoilAtPoint(tx, 0, tz)
-                    local soil = SpawnPrefab("farm_soil")
-                    soil.Transform:SetPosition(tx, 0, tz)
-
-                    -- 给予植物
-                    local item =inst.components.container:GetItemInSlot(index)
-                    if item ~= nil and item.components.farmplantable ~= nil then
-                        local left = item
-                        if item.components.stackable ~= nil then
-                            left = item.components.stackable:Get(1)
-                        end
-
-                        left.components.farmplantable:Plant(soil, doer)
-                    end
-                end
-
-                index = index + 1
-            end
-        end
-
-        -- 范围内植物全部快乐一次
-        for _, v in pairs(TheSim:FindEntities(tile_x, tile_y, tile_z, math.sqrt(digDiff * digDiff * 2) * 1.1, {"tendable_farmplant"})) do
-            if v.components.farmplanttendable ~= nil then
-                v.components.farmplanttendable:TendTo(doer)
-            end
-        end
-    end
+    inst.components.aipc_action.onDoPointAction = onDoPointAction
 
     MakeHauntableLaunch(inst)
 
