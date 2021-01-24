@@ -78,7 +78,7 @@ local function onunequip(inst, owner)
     end
 end
 
-local digDiff = 1.5
+local digDiff = 1.3
 
 -- 启动
 local function fn()
@@ -167,6 +167,13 @@ local function fn()
                 end
 
                 index = index + 1
+            end
+        end
+
+        -- 范围内植物全部快乐一次
+        for _, v in pairs(TheSim:FindEntities(tile_x, tile_y, tile_z, math.sqrt(digDiff * digDiff * 2) * 1.1, {"tendable_farmplant"})) do
+            if v.components.farmplanttendable ~= nil then
+                v.components.farmplanttendable:TendTo(doer)
             end
         end
     end
