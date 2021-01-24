@@ -43,10 +43,20 @@ local prefabs = {
 --------------------------------- 配方 ---------------------------------
 local aip_xinyue_hoe = Recipe("aip_xinyue_hoe", {
 	Ingredient("golden_farm_hoe", 1), Ingredient("frozen_heart", 1, "images/inventoryimages/frozen_heart.xml"),
-}, RECIPETABS.TOOLS,  TECH.SCIENCE_TWO)
+}, RECIPETABS.TOOLS, TECH.SCIENCE_TWO)
 aip_xinyue_hoe.atlas = "images/inventoryimages/aip_dou_scepter.xml"
 
---------------------------------- 功能 ---------------------------------
+-- --------------------------------- 功能 ---------------------------------
+-- local FERTILIZER_DEFS = require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS
+
+-- local function GetFertilizerKey(inst)
+--     return inst.prefab
+-- end
+
+-- local function fertilizerresearchfn(inst)
+--     return inst:GetFertilizerKey()
+-- end
+
 -- 装备
 local function onequip(inst, owner)
     owner.AnimState:OverrideSymbol("swap_object", "aip_dou_scepter_swap", "aip_dou_scepter_swap")
@@ -88,8 +98,14 @@ local function fn()
 
 	MakeInventoryFloatable(inst, "med", 0.1, 0.75)
 
-	-- 看起来是和农田相关的
-	MakeDeployableFertilizerPristine(inst)
+    inst:AddTag("wateringcan")
+
+    -- 施法
+    inst:AddComponent("aipc_action_client")
+    inst.components.aipc_action_client.canActOnPoint = function(inst, doer, pos)
+        return TheWorld.Map:GetTileAtPoint(pos:Get()) == GROUND.FARMING_SOIL
+    end
+    inst.components.aipc_action_client.gridplacer = true
 
     inst.entity:SetPristine()
 
@@ -117,6 +133,26 @@ local function fn()
     inst:AddComponent("equippable")
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
+
+    -- 施法
+    inst:AddComponent("aipc_action")
+
+    inst.components.aipc_action.onDoPointAction = function(inst, doer, point)
+        aipTypePrint(">>>", doer.prefab, inst.prefab, point)
+    end
+
+    -- 水壶试一试
+    -- inst:AddComponent("finiteuses")
+    -- inst.components.finiteuses:SetMaxUses(99)
+
+    -- inst:AddComponent("wateryprotection")
+    -- inst.components.wateryprotection.extinguishheatpercent = TUNING.WATERINGCAN_EXTINGUISH_HEAT_PERCENT
+    -- inst.components.wateryprotection.temperaturereduction = TUNING.WATERINGCAN_TEMP_REDUCTION
+    -- inst.components.wateryprotection.witherprotectiontime = TUNING.WATERINGCAN_PROTECTION_TIME
+    -- inst.components.wateryprotection.addwetness = TUNING.WATERINGCAN_WATER_AMOUNT
+    -- inst.components.wateryprotection.protection_dist = TUNING.WATERINGCAN_PROTECTION_DIST
+    -- inst.components.wateryprotection:AddIgnoreTag("player")
+    -- inst.components.wateryprotection.onspreadprotectionfn = onuse
 
     MakeHauntableLaunch(inst)
 
