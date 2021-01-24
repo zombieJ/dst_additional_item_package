@@ -143,15 +143,30 @@ local function fn()
         local tile_x, tile_y, tile_z = TheWorld.Map:GetTileCenterPoint(point.x, 0, point.z)
 
         -- 一次性挖 3x3 个地
+        local index = 1
         for z = -1, 1 do
-            for x = -1, 1 do
+            for x = 1, -1, -1 do
                 local tx = tile_x + x * digDiff
                 local tz = tile_z + z * digDiff
 
                 if TheWorld.Map:CanTillSoilAtPoint(tx, 0, tz, false) then
                     TheWorld.Map:CollapseSoilAtPoint(tx, 0, tz)
-                    SpawnPrefab("farm_soil").Transform:SetPosition(tx, 0, tz)
+                    local soil = SpawnPrefab("farm_soil")
+                    soil.Transform:SetPosition(tx, 0, tz)
+
+                    -- 给予植物
+                    local item =inst.components.container:GetItemInSlot(index)
+                    if item ~= nil and item.components.farmplantable ~= nil then
+                        local left = item
+                        if item.components.stackable ~= nil then
+                            left = item.components.stackable:Get(1)
+                        end
+
+                        left.components.farmplantable:Plant(soil, doer)
+                    end
                 end
+
+                index = index + 1
             end
         end
     end
