@@ -78,6 +78,8 @@ local function onunequip(inst, owner)
     end
 end
 
+local digDiff = 1.5
+
 -- 启动
 local function fn()
     local inst = CreateEntity()
@@ -138,21 +140,21 @@ local function fn()
     inst:AddComponent("aipc_action")
 
     inst.components.aipc_action.onDoPointAction = function(inst, doer, point)
-        aipTypePrint(">>>", doer.prefab, inst.prefab, point)
+        local tile_x, tile_y, tile_z = TheWorld.Map:GetTileCenterPoint(point.x, 0, point.z)
+
+        -- 一次性挖 3x3 个地
+        for z = -1, 1 do
+            for x = -1, 1 do
+                local tx = tile_x + x * digDiff
+                local tz = tile_z + z * digDiff
+
+                if TheWorld.Map:CanTillSoilAtPoint(tx, 0, tz, false) then
+                    TheWorld.Map:CollapseSoilAtPoint(tx, 0, tz)
+                    SpawnPrefab("farm_soil").Transform:SetPosition(tx, 0, tz)
+                end
+            end
+        end
     end
-
-    -- 水壶试一试
-    -- inst:AddComponent("finiteuses")
-    -- inst.components.finiteuses:SetMaxUses(99)
-
-    -- inst:AddComponent("wateryprotection")
-    -- inst.components.wateryprotection.extinguishheatpercent = TUNING.WATERINGCAN_EXTINGUISH_HEAT_PERCENT
-    -- inst.components.wateryprotection.temperaturereduction = TUNING.WATERINGCAN_TEMP_REDUCTION
-    -- inst.components.wateryprotection.witherprotectiontime = TUNING.WATERINGCAN_PROTECTION_TIME
-    -- inst.components.wateryprotection.addwetness = TUNING.WATERINGCAN_WATER_AMOUNT
-    -- inst.components.wateryprotection.protection_dist = TUNING.WATERINGCAN_PROTECTION_DIST
-    -- inst.components.wateryprotection:AddIgnoreTag("player")
-    -- inst.components.wateryprotection.onspreadprotectionfn = onuse
 
     MakeHauntableLaunch(inst)
 
