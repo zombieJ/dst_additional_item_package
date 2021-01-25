@@ -195,6 +195,7 @@ end)
 
 -- 燃料允许自定义接受测试
 AddComponentPostInit("fueled", function(self)
+	-- 是否可以添加燃料
 	local originCanAcceptFuelItem = self.CanAcceptFuelItem
 
 	function self:CanAcceptFuelItem(item)

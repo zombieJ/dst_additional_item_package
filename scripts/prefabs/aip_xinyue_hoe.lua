@@ -164,7 +164,7 @@ local function fn()
     inst:AddComponent("inspectable")
 
     inst:AddComponent("fueled")
-    inst.components.fueled.fueltype = FUELTYPE.NIGHTMARE
+    inst.components.fueled.fueltype = "AIP_NEVER"
     inst.components.fueled:InitializeFuelLevel(MAX_USES)
     inst.components.fueled.accepting = true
 
