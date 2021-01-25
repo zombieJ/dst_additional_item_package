@@ -31,10 +31,10 @@ STRINGS.RECIPE_DESC.AIP_XINYUE_HOE = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_XINYUE_HOE = LANG.DESC
 
 local assets = {
-    Asset("ANIM", "anim/aip_dou_scepter.zip"),
-    Asset("ANIM", "anim/aip_dou_scepter_swap.zip"),
+    Asset("ANIM", "anim/aip_xinyue_hoe.zip"),
+    Asset("ANIM", "anim/aip_xinyue_hoe_swap.zip"),
     Asset("ANIM", "anim/floating_items.zip"),
-    Asset("ATLAS", "images/inventoryimages/aip_dou_scepter.xml"),
+    Asset("ATLAS", "images/inventoryimages/aip_xinyue_hoe.xml"),
 }
 
 
@@ -45,12 +45,12 @@ local prefabs = {
 local aip_xinyue_hoe = Recipe("aip_xinyue_hoe", {
 	Ingredient("golden_farm_hoe", 1), Ingredient("frozen_heart", 1, "images/inventoryimages/frozen_heart.xml"),
 }, RECIPETABS.TOOLS, TECH.SCIENCE_TWO)
-aip_xinyue_hoe.atlas = "images/inventoryimages/aip_dou_scepter.xml"
+aip_xinyue_hoe.atlas = "images/inventoryimages/aip_xinyue_hoe.xml"
 
 -- --------------------------------- 功能 ---------------------------------
 -- 装备
 local function onequip(inst, owner)
-    owner.AnimState:OverrideSymbol("swap_object", "aip_dou_scepter_swap", "aip_dou_scepter_swap")
+    owner.AnimState:OverrideSymbol("swap_object", "aip_xinyue_hoe_swap", "aip_xinyue_hoe_swap")
 
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
@@ -132,8 +132,8 @@ local function fn()
 
     MakeInventoryPhysics(inst)
 
-    inst.AnimState:SetBank("aip_dou_scepter")
-    inst.AnimState:SetBuild("aip_dou_scepter")
+    inst.AnimState:SetBank("aip_xinyue_hoe")
+    inst.AnimState:SetBuild("aip_xinyue_hoe")
     inst.AnimState:PlayAnimation("idle")
 
     -- weapon (from weapon component) added to pristine state for optimization
@@ -172,8 +172,8 @@ local function fn()
     inst.components.weapon:SetDamage(TUNING.FARM_HOE_DAMAGE)
 
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_dou_scepter.xml"
-    inst.components.inventoryitem.imagename = "aip_dou_scepter"
+    inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_xinyue_hoe.xml"
+    inst.components.inventoryitem.imagename = "aip_xinyue_hoe"
 
     inst:AddComponent("equippable")
     inst.components.equippable:SetOnEquip(onequip)
