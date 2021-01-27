@@ -378,6 +378,31 @@ for y = 2.5, -0.5, -1 do
     end
 end
 
+----------------- 心悦锄 -----------------
+params.aip_xinyue_hoe = {
+    widget =
+    {
+		slotpos = {},
+        animbank = "ui_chest_3x3",
+        animbuild = "ui_chest_3x3",
+		-- pos = Vector3(0, 15, 0),
+		-- pos = Vector3(0, 45, 0),
+		pos = Vector3(0, 80, 0),
+    },
+    usespecificslotsforitems = true,
+    type = "hand_inv",
+}
+
+for y = 2, 0, -1 do
+    for x = 0, 2 do
+        table.insert(params.aip_xinyue_hoe.widget.slotpos, Vector3(80 * x - 80 * 2 + 80, 80 * y - 80 * 2 + 80, 0))
+    end
+end
+
+function params.aip_xinyue_hoe.itemtestfn(container, item, slot)
+	return item:HasTag("deployedfarmplant")
+end
+
 ----------------------------------------------------------------------------------------------
 local containers = GLOBAL.require "containers"
 local old_widgetsetup = containers.widgetsetup
