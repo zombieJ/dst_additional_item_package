@@ -14,13 +14,13 @@ local language = aipGetModConfig("language")
 local LANG_MAP = {
 	["english"] = {
         ["NAME"] = "XinYue Hoe",
-        ["REC_DESC"] = "Payment is power",
-        ["DESC"] = "No service, no return",
+        ["REC_DESC"] = "Nothing faster than this",
+        ["DESC"] = "Time is money",
 	},
 	["chinese"] = {
         ["NAME"] = "心悦锄",
-        ["REC_DESC"] = "氪使你强大",
-        ["DESC"] = "没有客服，概不退款",
+        ["REC_DESC"] = "快速打理你的花园",
+        ["DESC"] = "时间就是金钱",
 	},
 }
 
@@ -115,7 +115,7 @@ local function onDoPointAction(inst, doer, point)
 
     -- 惩罚施法者对应的理智值
     if doer.components.sanity ~= nil then
-        doer.components.sanity:DoDelta(-30)
+        doer.components.sanity:DoDelta(-50)
     end
 
     inst.components.fueled:DoDelta(-BASIC_USE)
