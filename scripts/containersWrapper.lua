@@ -400,7 +400,7 @@ for y = 2, 0, -1 do
 end
 
 function params.aip_xinyue_hoe.itemtestfn(container, item, slot)
-	return item.components.plantable ~= nil
+	return item:HasTag("deployedfarmplant")
 end
 
 ----------------------------------------------------------------------------------------------

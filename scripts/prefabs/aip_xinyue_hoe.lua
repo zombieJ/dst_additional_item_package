@@ -43,7 +43,7 @@ local prefabs = {
 
 --------------------------------- 配方 ---------------------------------
 local aip_xinyue_hoe = Recipe("aip_xinyue_hoe", {
-	Ingredient("golden_farm_hoe", 1), Ingredient("frozen_heart", 1, "images/inventoryimages/frozen_heart.xml"),
+	Ingredient("golden_farm_hoe", 1), Ingredient("frozen_heart", 1, "images/inventoryimages/frozen_heart.xml"), Ingredient("boneshard", 5)
 }, RECIPETABS.TOOLS, TECH.SCIENCE_TWO)
 aip_xinyue_hoe.atlas = "images/inventoryimages/aip_xinyue_hoe.xml"
 
@@ -190,3 +190,12 @@ local function fn()
 end
 
 return Prefab("aip_xinyue_hoe", fn, assets, prefabs)
+
+--[[
+
+
+c_give"shovel"  c_give"aip_xinyue_hoe"  c_give"farm_plow_item"
+c_give"carrot_seeds"  c_give"corn_seeds"  c_give"eggplant_seeds"  c_give"durian_seeds"  c_give"dragonfruit_seeds"  c_give"watermelon_seeds"
+c_give"tomato_seeds"  c_give"potato_seeds"  c_give"onion_seeds"
+
+]]
