@@ -335,6 +335,29 @@ fillDouScepter(4)
 -- 容器名字必须和物品名字一样，sad
 params.aip_dou_scepter = params.aip_dou_scepter4
 
+---------------- 符文袋 ----------------
+params.aip_dou_inscription_package =
+{
+    widget =
+    {
+        slotpos = {},
+        animbank = "ui_tacklecontainer_3x5",
+        animbuild = "ui_tacklecontainer_3x5",
+        pos = Vector3(0, 280, 0),
+        side_align_tip = 160,
+    },
+	type = "chest",
+	itemtestfn = function(container, item, slot)
+		return item:HasTag("aip_dou_inscription")
+	end
+}
+
+for y = 1, -3, -1 do
+    for x = 0, 2 do
+        table.insert(params.aip_dou_inscription_package.widget.slotpos, Vector3(80 * x - 80 * 2 + 80, 80 * y - 45, 0))
+    end
+end
+
 ---------------- 翡翠宝箱 ----------------
 params.aip_glass_chest =
 {
@@ -353,6 +376,31 @@ for y = 2.5, -0.5, -1 do
     for x = 0, 2 do
         table.insert(params.aip_glass_chest.widget.slotpos, Vector3(75 * x - 75 * 2 + 75, 75 * y - 75 * 2 + 75, 0))
     end
+end
+
+----------------- 心悦锄 -----------------
+params.aip_xinyue_hoe = {
+    widget =
+    {
+		slotpos = {},
+        animbank = "ui_chest_3x3",
+        animbuild = "ui_chest_3x3",
+		-- pos = Vector3(0, 15, 0),
+		-- pos = Vector3(0, 45, 0),
+		pos = Vector3(0, 80, 0),
+    },
+    usespecificslotsforitems = true,
+    type = "hand_inv",
+}
+
+for y = 2, 0, -1 do
+    for x = 0, 2 do
+        table.insert(params.aip_xinyue_hoe.widget.slotpos, Vector3(80 * x - 80 * 2 + 80, 80 * y - 80 * 2 + 80, 0))
+    end
+end
+
+function params.aip_xinyue_hoe.itemtestfn(container, item, slot)
+	return item:HasTag("deployedfarmplant")
 end
 
 ----------------------------------------------------------------------------------------------

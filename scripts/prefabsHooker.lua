@@ -1,7 +1,9 @@
+local _G = GLOBAL
+
 ------------------------------------ 贪婪观察者 ------------------------------------
 -- 暗影跟随者
 function ShadowFollowerPrefabPostInit(inst)
-	if not GLOBAL.TheWorld.ismastersim then
+	if not _G.TheWorld.ismastersim then
 		return
 	end
 
@@ -57,4 +59,30 @@ end
 AddPrefabPostInit("livinglog", function(inst)
 	-- 添加燃料类型
 	inst:AddTag("LIVINGLOG_fuel")
+end)
+
+------------------------------------------ 金块 ------------------------------------------
+local function canActOnGold(inst, doer, target)
+	return target.prefab == "aip_xinyue_hoe"
+end
+
+local function onDoGoldTargetAction(inst, doer, target)
+	-- 充满
+	if target.components.fueled ~= nil then
+		target.components.fueled:DoDelta(target.components.fueled.maxfuel, doer)
+		inst:Remove()
+	end
+end
+
+AddPrefabPostInit("goldnugget", function(inst)
+	-- 燃料注入
+	inst:AddComponent("aipc_action_client")
+	inst.components.aipc_action_client.canActOn = canActOnGold
+
+	if not _G.TheWorld.ismastersim then
+		return inst
+	end
+
+	inst:AddComponent("aipc_action")
+	inst.components.aipc_action.onDoTargetAction = onDoGoldTargetAction
 end)

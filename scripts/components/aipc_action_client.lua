@@ -8,6 +8,9 @@ local Action = Class(function(self, inst)
 	self.canActOn = nil
 	self.canActOnPoint = nil
 	self.canActOnTarget = nil
+
+	-- 是否是带网格纹理的
+	self.gridplacer = false
 end)
 
 function Action:CanActOn(doer, target)

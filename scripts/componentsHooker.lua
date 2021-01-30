@@ -72,7 +72,7 @@ local function getActionableItem(doer)
 	return nil
 end
 
--- 注册一个 action
+-------------> 标准的施法动作
 local AIPC_CASTER_ACTION = env.AddAction("AIPC_CASTER_ACTION", LANG.CAST, function(act)
 	local doer = act.doer
 	-- local item = act.invobject
@@ -90,11 +90,44 @@ local AIPC_CASTER_ACTION = env.AddAction("AIPC_CASTER_ACTION", LANG.CAST, functi
 
 	return true
 end)
-
 AIPC_CASTER_ACTION.distance = 10
 
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_CASTER_ACTION, "quicktele"))
 AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_CASTER_ACTION, "quicktele"))
+
+-------------> 带网格的施法动作：种地相关代码
+local AIPC_GRID_CASTER_ACTION = env.AddAction("AIPC_GRID_CASTER_ACTION", LANG.CAST, function(act)
+	local doer = act.doer
+	-- local item = act.invobject
+	local pos = act.pos
+	local target = act.target
+	local item = getActionableItem(doer)
+
+	if _G.TheNet:GetIsServer() then
+		-- server
+		triggerComponentAction(doer, item, target, pos ~= nil and act:GetActionPoint())
+	else
+		-- client
+		SendModRPCToServer(MOD_RPC[env.modname]["aipComponentAction"], doer, item, target, pos)
+	end
+
+	return true
+end)
+AIPC_GRID_CASTER_ACTION.tile_placer = "gridplacer"
+AIPC_GRID_CASTER_ACTION.theme_music = "farming"
+AIPC_GRID_CASTER_ACTION.customarrivecheck = function(doer, dest) -- 是否可以点到这个地点
+	local doer_pos = doer:GetPosition()
+	local target_pos = _G.Vector3(dest:GetPoint())
+
+	local tile_x, tile_y, tile_z = _G.TheWorld.Map:GetTileCenterPoint(target_pos.x, 0, target_pos.z)
+	local dist = _G.TILE_SCALE * 0.5
+	if math.abs(tile_x - doer_pos.x) <= dist and math.abs(tile_z - doer_pos.z) <= dist then
+		return true
+	end
+end
+
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_GRID_CASTER_ACTION, "quicktele"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_GRID_CASTER_ACTION, "quicktele"))
 
 -- aipc_action_client 对 点 操作
 env.AddComponentAction("POINT", "aipc_action_client", function(inst, doer, pos, actions, right)
@@ -103,7 +136,11 @@ env.AddComponentAction("POINT", "aipc_action_client", function(inst, doer, pos, 
 	end
 
 	if inst.components.aipc_action_client:CanActOnPoint(doer, pos) then
-		table.insert(actions, _G.ACTIONS.AIPC_CASTER_ACTION)
+		if inst.components.aipc_action_client.gridplacer then -- 是否展示网格纹理
+			table.insert(actions, _G.ACTIONS.AIPC_GRID_CASTER_ACTION)
+		else
+			table.insert(actions, _G.ACTIONS.AIPC_CASTER_ACTION)
+		end
 	end
 end)
 
@@ -119,6 +156,8 @@ env.AddComponentAction("SCENE", "combat", function(inst, doer, actions, right)
 		table.insert(actions, _G.ACTIONS.AIPC_CASTER_ACTION)
 	end
 end)
+
+
 
 
 ------------------------------------- 特殊处理 -------------------------------------
@@ -156,6 +195,7 @@ end)
 
 -- 燃料允许自定义接受测试
 AddComponentPostInit("fueled", function(self)
+	-- 是否可以添加燃料
 	local originCanAcceptFuelItem = self.CanAcceptFuelItem
 
 	function self:CanAcceptFuelItem(item)
