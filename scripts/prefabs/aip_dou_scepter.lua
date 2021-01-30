@@ -51,6 +51,7 @@ local prefabs = {
     "aip_dou_scepter_projectile",
     "wormwood_plant_fx",
     "aip_shadow_wrapper",
+    "gridplacer",
 }
 
 --------------------------------- 配方 ---------------------------------
