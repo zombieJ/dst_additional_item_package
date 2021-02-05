@@ -12,7 +12,7 @@ const animPath = path.resolve(path.join(resPath, 'anim.bin'));
 const buildPath = path.resolve(path.join(resPath, 'build.bin'));
 const outPath = path.resolve(path.join(resPath, 'output'));
 
-const ret = spawnSync(path.resolve('./tools-scripts/ktools/krane.exe'), [animPath, buildPath, outPath]);
+const ret = spawnSync(path.resolve('./tools-scripts/ktools/krane.exe'), ['-v', '-v', '-v', '-v', '-v', animPath, buildPath, outPath]);
 
 if (ret.stdout) console.log(ret.stdout.toString());
 if (ret.stderr) console.error(ret.stderr.toString());

@@ -13,24 +13,24 @@ local S = TUNING.FARM_PLANT_CONSUME_NUTRIENT_LOW
 -- 作物列表
 local VEGGIES =
 {
-	wheat = {
-		seed_weight = COMMON,
+	-- wheat = {
+	-- 	seed_weight = COMMON,
 
-		health = 1,
-		hunger = 12.5,
-		sanity = 0,
-		perishtime = 30,
-		cooked_health = 5,
-		cooked_hunger = 25,
-		cooked_sanity = 0,
-		cooked_perishtime = 5,
+	-- 	health = 1,
+	-- 	hunger = 12.5,
+	-- 	sanity = 0,
+	-- 	perishtime = 30,
+	-- 	cooked_health = 5,
+	-- 	cooked_hunger = 25,
+	-- 	cooked_sanity = 0,
+	-- 	cooked_perishtime = 5,
 
-		nutrient_consumption = {S,0,0},
+	-- 	nutrient_consumption = {S,0,0},
 
-		tags = { starch = 1 },
-		dryable = false,
-	},
-	--[[sunflower = {
+	-- 	tags = { starch = 1 },
+	-- 	dryable = false,
+	-- },
+	sunflower = {
 		seed_weight = COMMON,
 
 		health = 1,
@@ -47,23 +47,23 @@ local VEGGIES =
 		tags = { starch = 1 },
 		dryable = false,
 	},
-	grape = {
-		seed_weight = COMMON,
+	-- grape = {
+	-- 	seed_weight = COMMON,
 
-		health = 5,
-		hunger = 10,
-		sanity = 0,
-		perishtime = TUNING.PERISH_FAST,
-		cooked_health = 10,
-		cooked_hunger = 15,
-		cooked_sanity = 0,
-		cooked_perishtime = TUNING.PERISH_FAST,
+	-- 	health = 5,
+	-- 	hunger = 10,
+	-- 	sanity = 0,
+	-- 	perishtime = TUNING.PERISH_FAST,
+	-- 	cooked_health = 10,
+	-- 	cooked_hunger = 15,
+	-- 	cooked_sanity = 0,
+	-- 	cooked_perishtime = TUNING.PERISH_FAST,
 
-		nutrient_consumption = {0,0,0},
+	-- 	nutrient_consumption = {0,0,0},
 
-		tags = { fruit = 1 },
-		dryable = false,
-	},]]
+	-- 	tags = { fruit = 1 },
+	-- 	dryable = false,
+	-- },
 }
 
 -- 作物生长动画
