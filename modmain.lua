@@ -28,7 +28,8 @@ PrefabFiles =
 	"aip_projectile",
 
 	-- Food
-	"aip_veggies", -- 没用了，要移除
+	"aip_wheat",
+	-- "aip_veggies", -- 没用了，要移除
 	"foods",
 	"aip_nectar_maker",
 	"aip_nectar",
