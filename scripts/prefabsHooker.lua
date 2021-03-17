@@ -1,5 +1,8 @@
 local _G = GLOBAL
 
+-- 开发模式
+local dev_mode = _G.aipGetModConfig("dev_mode") == "enabled"
+
 ------------------------------------ 贪婪观察者 ------------------------------------
 -- 暗影跟随者
 function ShadowFollowerPrefabPostInit(inst)
@@ -85,4 +88,30 @@ AddPrefabPostInit("goldnugget", function(inst)
 
 	inst:AddComponent("aipc_action")
 	inst.components.aipc_action.onDoTargetAction = onDoGoldTargetAction
+end)
+
+------------------------------------------ 干草 ------------------------------------------
+AddPrefabPostInit("grass", function(inst)
+	if not _G.TheWorld.ismastersim then
+		return inst
+	end
+
+	if inst.components.pickable ~= nil then
+		local oriPickedFn = inst.components.pickable.onpickedfn
+
+		inst.components.pickable.onpickedfn = function(inst, picker, ...)
+			oriPickedFn(inst, picker, ...)
+
+			local PROBABILITY = dev_mode and 1 or 0.01
+
+			-- 满足一定概率则生成一个小麦
+			if math.random() <= PROBABILITY then
+				local aip_wheat = _G.SpawnPrefab("aip_wheat")
+				local x, y, z = inst.Transform:GetWorldPosition()
+				aip_wheat.Transform:SetPosition(x, y, z)
+				aip_wheat.components.pickable:MakeEmpty()
+				inst:Remove()
+			end
+		end
+	end
 end)

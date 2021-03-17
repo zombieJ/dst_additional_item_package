@@ -39,7 +39,7 @@ local LANG_MAP = {
 	},
 	["chinese"] = {
 		wheat = {
-			["NAME"] = "小麦",
+			["NAME"] = "麦穗",
 			["DESC"] = "吃起来很硬",
 		},
 		wheat_cooked = {

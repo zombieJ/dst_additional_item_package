@@ -1,5 +1,32 @@
+-- 食物
+local additional_food = aipGetModConfig("additional_food")
+if additional_food ~= "open" then
+	return nil
+end
+
 -- 开发模式
 local dev_mode = aipGetModConfig("dev_mode") == "enabled"
+
+local language = aipGetModConfig("language")
+
+local LANG_MAP = {
+	["english"] = {
+		["NAME"] = "Wheat",
+		["DESC"] = "Strong in the ocean",
+	},
+	["chinese"] = {
+		["NAME"] = "小麦",
+		["DESC"] = "它是怎么长出来的？",
+	},
+}
+
+local LANG = LANG_MAP[language] or LANG_MAP.english
+
+-- 文字描述
+STRINGS.NAMES.AIP_WHEAT = LANG.NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_WHEAT = LANG.DESC
+
+------------------------------ Assets ------------------------------
 
 local assets =
 {
@@ -26,6 +53,13 @@ local function onpickedfn(inst, picker)
     inst.AnimState:PlayAnimation("picking")
 
     inst.AnimState:PushAnimation("picked", false)
+
+    -- 再给一份干草
+    if picker ~= nil and picker.components.inventory ~= nil then
+        local loot = SpawnPrefab("cutgrass")
+        picker:PushEvent("picksomething", { object = inst, loot = loot })
+        picker.components.inventory:GiveItem(loot, nil, inst:GetPosition())
+    end
 end
 
 -- 初始化置空
@@ -109,4 +143,4 @@ local function wheatFn()
 	return inst
 end
 
-return Prefab("aip_wheat_plant", wheatFn, assets, prefabs)
+return Prefab("aip_wheat", wheatFn, assets, prefabs)
