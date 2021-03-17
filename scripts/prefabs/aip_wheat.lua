@@ -7,6 +7,12 @@ local assets =
     Asset("SOUND", "sound/common.fsb"),
 }
 
+
+local prefabs =
+{
+	"aip_veggie_wheat",
+}
+
 ----------------------------- Function -----------------------------
 -- 生长
 local function onregenfn(inst)
@@ -76,10 +82,11 @@ local function wheatFn()
     inst:AddComponent("pickable")
     inst.components.pickable.picksound = "dontstarve/wilson/pickup_reeds"
 
-    inst.components.pickable:SetUp("cutgrass", dev_mode and 1 or TUNING.GRASS_REGROW_TIME)
+    inst.components.pickable:SetUp("aip_veggie_wheat", dev_mode and 1 or TUNING.GRASS_REGROW_TIME)
     inst.components.pickable.onregenfn = onregenfn
     inst.components.pickable.onpickedfn = onpickedfn
     inst.components.pickable.makeemptyfn = makeemptyfn
+
     -- 永不贫瘠
     -- inst.components.pickable.makebarrenfn = makebarrenfn
     -- inst.components.pickable.max_cycles = 20
@@ -102,4 +109,4 @@ local function wheatFn()
 	return inst
 end
 
-return Prefab("aip_wheat", wheatFn, assets)
+return Prefab("aip_wheat_plant", wheatFn, assets, prefabs)

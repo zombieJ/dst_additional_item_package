@@ -52,18 +52,6 @@ local VEGGIES =
 		cancook = true,
 		candry = false,
 	},
-
-	--[[onion = {
-		seed_weight = COMMON,
-		health = HP * 5,
-		hunger = HU * 12.5,
-		sanity = SAN * 0,
-		perishtime = PER * 30,
-		cooked_health = HP * 5,
-		cooked_hunger = HU * 25,
-		cooked_sanity = SAN * 5,
-		cooked_perishtime = PER * 5,
-	},]]
 }
 
 return VEGGIES

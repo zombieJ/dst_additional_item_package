@@ -1,5 +1,3 @@
-local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
-
 ------------------------------------ 配置 ------------------------------------
 -- 食物
 local additional_food = aipGetModConfig("additional_food")
@@ -64,10 +62,6 @@ for veggiename, veggiedata in pairs(ORI_VEGGIES) do
 	STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperCase_seeds] = LANG[veggiename.."_seeds"].DESC or LANG_ENG[veggiename.."_seeds"].DESC
 end
 
--- image seed.xml
--- anim/seeds.zip
--- anim/aip_veggie_name.zip
--- anim/aip_veggie_name_cooked.zip
 ------------------------------------ 通用 ------------------------------------
 
 local function MakeVeggie(name, has_seeds)
@@ -284,7 +278,7 @@ end
 
 local prefs = {}
 for veggiename,veggiedata in pairs(VEGGIES) do
-	local veg, cooked, seeds = MakeVeggie(veggiename, true)
+	local veg, cooked, seeds = MakeVeggie(veggiename, false)
 	table.insert(prefs, veg)
 	table.insert(prefs, cooked)
 	if seeds then
