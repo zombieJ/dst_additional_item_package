@@ -3,6 +3,9 @@ local _G = GLOBAL
 -- 开发模式
 local dev_mode = _G.aipGetModConfig("dev_mode") == "enabled"
 
+-- 额外食物
+local additional_food = _G.aipGetModConfig("additional_food") == "open"
+
 ------------------------------------ 贪婪观察者 ------------------------------------
 -- 暗影跟随者
 function ShadowFollowerPrefabPostInit(inst)
@@ -96,18 +99,21 @@ AddPrefabPostInit("grass", function(inst)
 		return inst
 	end
 
-	if inst.components.pickable ~= nil then
-		local oriPickedFn = inst.components.pickable.onpickedfn
+	-- 开启食物时就可以动态草变小麦
+	if additional_food then
+		if inst.components.pickable ~= nil then
+			local oriPickedFn = inst.components.pickable.onpickedfn
 
-		inst.components.pickable.onpickedfn = function(inst, picker, ...)
-			oriPickedFn(inst, picker, ...)
+			inst.components.pickable.onpickedfn = function(inst, picker, ...)
+				oriPickedFn(inst, picker, ...)
 
-			local PROBABILITY = dev_mode and 1 or 0.01
+				local PROBABILITY = dev_mode and 1 or 0.01
 
-			-- 满足一定概率则生成一个小麦
-			if math.random() <= PROBABILITY then
-				local wheat = _G.aipReplacePrefab(inst, "aip_wheat")
-				wheat.components.pickable:MakeEmpty()
+				-- 满足一定概率则生成一个小麦
+				if math.random() <= PROBABILITY then
+					local wheat = _G.aipReplacePrefab(inst, "aip_wheat")
+					wheat.components.pickable:MakeEmpty()
+				end
 			end
 		end
 	end
