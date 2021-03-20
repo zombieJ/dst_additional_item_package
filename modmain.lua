@@ -29,6 +29,7 @@ PrefabFiles =
 
 	-- Food
 	"aip_wheat",
+	"aip_sunflower",
 	"aip_veggies",
 	"foods",
 	"aip_nectar_maker",

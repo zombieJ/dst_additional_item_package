@@ -32,6 +32,10 @@
 
 - [物品制作](./item.md)
 
+## 替换 Symbol
+
+https://www.it610.com/article/5028120.htm
+
 # apiUtils
 
 提供了一些辅助方法

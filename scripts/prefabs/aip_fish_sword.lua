@@ -150,4 +150,4 @@ function fn()
 	return inst
 end
 
-return Prefab( "aip_fish_sword", fn, assets) 
+return Prefab("aip_fish_sword", fn, assets)

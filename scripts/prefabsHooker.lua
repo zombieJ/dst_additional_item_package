@@ -106,11 +106,8 @@ AddPrefabPostInit("grass", function(inst)
 
 			-- 满足一定概率则生成一个小麦
 			if math.random() <= PROBABILITY then
-				local aip_wheat = _G.SpawnPrefab("aip_wheat")
-				local x, y, z = inst.Transform:GetWorldPosition()
-				aip_wheat.Transform:SetPosition(x, y, z)
-				aip_wheat.components.pickable:MakeEmpty()
-				inst:Remove()
+				local wheat = _G.aipReplacePrefab(inst, "aip_wheat")
+				wheat.components.pickable:MakeEmpty()
 			end
 		end
 	end

@@ -205,6 +205,15 @@ function _G.aipRandomEnt(ents)
 end
 
 --------------------------------------- 辅助 ---------------------------------------
+-- 替换单位
+function _G.aipReplacePrefab(inst, prefab)
+	local tgt = _G.SpawnPrefab(prefab)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	tgt.Transform:SetPosition(x, y, z)
+	inst:Remove()
+	return tgt
+end
+
 -- 是暗影生物
 _G.aipShadowTags = { "shadow", "shadowminion", "shadowchesspiece", "stalker", "stalkerminion" }
 
