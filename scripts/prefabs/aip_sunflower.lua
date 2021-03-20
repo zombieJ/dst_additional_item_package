@@ -133,7 +133,7 @@ local function sunflower(stage)
 
 		-- 掉东西
 		inst:AddComponent("lootdropper")
-		inst.components.lootdropper:SetLoot({"log", "log"})
+		inst.components.lootdropper:SetLoot({"log", "log","aip_veggie_sunflower"})
 
 		MakeSnowCovered(inst)
 
