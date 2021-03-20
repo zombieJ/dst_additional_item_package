@@ -45,8 +45,31 @@ local function chop_tree(inst, chopper)
 	inst.AnimState:PushAnimation("idle_"..inst._aip_stage, true)
 end
 
+-- 按照角度砍倒树木
 local function chop_down_tree(inst, chopper)
 	inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
+	local pt = inst:GetPosition()
+
+    local he_right = true
+
+    if chopper then
+        local hispos = chopper:GetPosition()
+        he_right = (hispos - pt):Dot(TheCamera:GetRightVec()) > 0
+    else
+        if math.random() > 0.5 then
+            he_right = false
+        end
+    end
+
+    if he_right then
+        inst.AnimState:PlayAnimation("fallleft_"..inst._aip_stage)
+        inst.components.lootdropper:DropLoot(pt - TheCamera:GetRightVec())
+    else
+        inst.AnimState:PlayAnimation("fallright_"..inst._aip_stage)
+        inst.components.lootdropper:DropLoot(pt + TheCamera:GetRightVec())
+    end
+
+	inst:ListenForEvent("animover", inst.Remove)
 end
 
 local function sunflower(stage)
@@ -108,6 +131,10 @@ local function sunflower(stage)
 		inst.components.workable:SetOnWorkCallback(chop_tree)
 		inst.components.workable:SetOnFinishCallback(chop_down_tree)
 
+		-- 掉东西
+		inst:AddComponent("lootdropper")
+		inst.components.lootdropper:SetLoot({"log", "log"})
+
 		MakeSnowCovered(inst)
 
 		return inst
@@ -155,6 +182,7 @@ return unpack(prefabs)
 --[[
 
 
+c_give"axe"
 
 
 c_give"aip_sunflower"
