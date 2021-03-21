@@ -31,7 +31,13 @@ local assets =
     Asset("ANIM", "anim/aip_sunflower.zip"),
 }
 
-------------------------------- 不同阶段 -------------------------------
+------------------------------- 幼苗阶段 -------------------------------
+local function dig_tree(inst, digger)
+	inst.components.lootdropper:DropLoot(inst:GetPosition())
+	inst:Remove()
+end
+
+------------------------------- 成熟阶段 -------------------------------
 local function chop_tree(inst, chopper)
     if not (chopper ~= nil and chopper:HasTag("playerghost")) then
         inst.SoundEmitter:PlaySound(
@@ -79,7 +85,8 @@ local function chop_down_tree(inst, chopper)
 	inst:ListenForEvent("animover", inst.Remove)
 end
 
-local function sunflower(stage)
+------------------------------- 阶段函数 -------------------------------
+local function sunflower(stage, info)
 	local name = "aip_sunflower_"..stage
 	local uname = string.upper(name)
 
@@ -97,7 +104,9 @@ local function sunflower(stage)
 		inst.entity:AddMiniMapEntity()
 		inst.entity:AddNetwork()
 
-		MakeObstaclePhysics(inst, .25)
+		if info.physics ~= nil then
+			MakeObstaclePhysics(inst, info.physics)
+		end
 
 		inst.MiniMapEntity:SetIcon("twiggy.png")
 
@@ -134,13 +143,14 @@ local function sunflower(stage)
 
 		-- 工作狂
 		inst:AddComponent("workable")
-		inst.components.workable:SetWorkAction(ACTIONS.CHOP)
-		inst.components.workable:SetOnWorkCallback(chop_tree)
-		inst.components.workable:SetOnFinishCallback(chop_down_tree)
+		inst.components.workable:SetWorkLeft(info.workable.times)
+		inst.components.workable:SetWorkAction(info.workable.action)
+		inst.components.workable:SetOnWorkCallback(info.workable.callback)
+		inst.components.workable:SetOnFinishCallback(info.workable.finishCallback)
 
 		-- 掉东西
 		inst:AddComponent("lootdropper")
-		inst.components.lootdropper:SetLoot({"log", "log","aip_veggie_sunflower"})
+		inst.components.lootdropper:SetLoot(info.loot)
 
 		MakeSnowCovered(inst)
 
@@ -175,13 +185,32 @@ end
 
 --------------------------------- 遍历 ---------------------------------
 
-local PLANTS = { "tall" }
+local PLANTS = {
+	short = {
+		workable = {
+			times = 1,
+			action = ACTIONS.DIG,
+			finishCallback = dig_tree,
+		},
+		loot = {"twigs"}
+	},
+	tall = {
+		physics = .25,
+		workable = {
+			times = 7,
+			action = ACTIONS.CHOP,
+			callback = chop_tree,
+			finishCallback = chop_down_tree,
+		},
+		loot = {"log", "log","aip_veggie_sunflower"}
+	},
+}
 local prefabs = {
 	Prefab("aip_sunflower", fn, assets)
 }
 
-for i, stage in ipairs(PLANTS) do
-	table.insert(prefabs, sunflower(stage))
+for stage, info in pairs(PLANTS) do
+	table.insert(prefabs, sunflower(stage, info))
 end
 
 return unpack(prefabs)

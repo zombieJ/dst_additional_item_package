@@ -7,7 +7,7 @@ local RARE = .5
 local function onSunflowerDeploy(inst, pt, deployer)
 	inst = inst.components.stackable:Get()
 
-	local tgt = SpawnPrefab("aip_sunflower")
+	local tgt = SpawnPrefab("aip_sunflower_short")
 	tgt.Transform:SetPosition(pt.x, pt.y, pt.z)
 end
 
