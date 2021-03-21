@@ -37,6 +37,16 @@ local function dig_tree(inst, digger)
 	inst:Remove()
 end
 
+local function growNext(inst)
+	inst.AnimState:PlayAnimation("grow_"..inst._aip_now.."_pre")
+
+	inst:ListenForEvent("animover", function()
+		local tgt = aipReplacePrefab(inst, "aip_sunflower_"..inst._aip_next)
+		tgt.AnimState:PlayAnimation("grow_"..inst._aip_now.."_post", false)
+		tgt.AnimState:PushAnimation("idle_"..inst._aip_next, true)
+	end)
+end
+
 ------------------------------- 成熟阶段 -------------------------------
 local function chop_tree(inst, chopper)
     if not (chopper ~= nil and chopper:HasTag("playerghost")) then
@@ -47,7 +57,7 @@ local function chop_tree(inst, chopper)
         )
     end
 
-    inst.AnimState:PlayAnimation("chop_"..inst._aip_stage)
+	inst.AnimState:PlayAnimation("chop_"..inst._aip_stage)
 	inst.AnimState:PushAnimation("idle_"..inst._aip_stage, true)
 end
 
@@ -152,6 +162,14 @@ local function sunflower(stage, info)
 		inst:AddComponent("lootdropper")
 		inst.components.lootdropper:SetLoot(info.loot)
 
+		-- 可成长
+		if info.grow then
+			inst:AddComponent("aipc_weak_timer")
+			inst._aip_now = stage
+			inst._aip_next = info.grow.next
+			inst.components.aipc_weak_timer:Start(info.grow.time, growNext)
+		end
+
 		MakeSnowCovered(inst)
 
 		return inst
@@ -193,7 +211,10 @@ local PLANTS = {
 			finishCallback = dig_tree,
 		},
 		loot = {"twigs"},
-		grow = {name="baby", time = function() return 10 end, fn = SetBaby}
+		grow = {
+			next = "tall",
+			time = 3,
+		}
 	},
 	tall = {
 		physics = .25,
