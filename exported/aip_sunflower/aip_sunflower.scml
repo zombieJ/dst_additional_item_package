@@ -237,16 +237,16 @@
                     <object folder="0" file="1" x="-52.289035" y="48.861982" pivot_x="0.93428" pivot_y="0.14899" angle="11.232025"/>
                 </key>
                 <key id="2" time="500" spin="-1">
-                    <object folder="0" file="1" x="-70.392483" y="29.034396" pivot_x="0.93428" pivot_y="0.14899" angle="22.464051" scale_x="1" scale_y="1"/>
+                    <object folder="0" file="1" x="-70.392483" y="29.034396" pivot_x="0.93428" pivot_y="0.14899" angle="22.464051"/>
                 </key>
                 <key id="3" time="600">
-                    <object folder="0" file="1" x="-87.633863" y="-17.517328" pivot_x="0.93428" pivot_y="0.14899" angle="13.414775" scale_x="1" scale_y="1"/>
+                    <object folder="0" file="1" x="-87.633863" y="-17.517328" pivot_x="0.93428" pivot_y="0.14899" angle="13.414775"/>
                 </key>
                 <key id="4" time="700" spin="-1">
-                    <object folder="0" file="1" x="-89.7844" y="-2.463565" pivot_x="0.93428" pivot_y="0.14899" angle="24.254138" scale_x="1" scale_y="1"/>
+                    <object folder="0" file="1" x="-89.7844" y="-2.463565" pivot_x="0.93428" pivot_y="0.14899" angle="24.254138"/>
                 </key>
                 <key id="5" time="800" spin="-1">
-                    <object folder="0" file="1" x="-87.633863" y="-17.517328" pivot_x="0.93428" pivot_y="0.14899" angle="13.414775" scale_x="1" scale_y="1"/>
+                    <object folder="0" file="1" x="-87.633863" y="-17.517328" pivot_x="0.93428" pivot_y="0.14899" angle="13.414775"/>
                 </key>
             </timeline>
             <timeline id="1" name="leaf2">
@@ -263,7 +263,7 @@
                     <object folder="0" file="2" x="-165.242575" y="33.658546" pivot_x="0.068594" pivot_y="0.174787" angle="13.125667"/>
                 </key>
                 <key id="4" time="700">
-                    <object folder="0" file="2" x="-160.9415" y="53.013385" pivot_x="0.068594" pivot_y="0.174787" angle="9.539092" scale_x="1"/>
+                    <object folder="0" file="2" x="-160.9415" y="53.013385" pivot_x="0.068594" pivot_y="0.174787" angle="9.539092"/>
                 </key>
                 <key id="5" time="800" spin="-1">
                     <object folder="0" file="2" x="-165.242575" y="33.658546" pivot_x="0.068594" pivot_y="0.174787" angle="13.125667"/>
@@ -274,19 +274,19 @@
                     <object folder="0" file="3" x="36.167402" y="379.177507" pivot_x="0.696234" pivot_y="0.110371" angle="0"/>
                 </key>
                 <key id="1" time="250">
-                    <object folder="0" file="3" x="-169.867081" y="350.729231" pivot_x="0.696234" pivot_y="0.110371" angle="16.958832" scale_x="1"/>
+                    <object folder="0" file="3" x="-169.867081" y="350.729231" pivot_x="0.696234" pivot_y="0.110371" angle="16.958832"/>
                 </key>
                 <key id="2" time="500">
                     <object folder="0" file="3" x="-334.522253" y="229.177507" pivot_x="0.696234" pivot_y="0.110371" angle="68.209732"/>
                 </key>
                 <key id="3" time="600" spin="0">
-                    <object folder="0" file="3" x="-419.005012" y="49.867162" pivot_x="0.696234" pivot_y="0.110371" angle="83.976304" scale_y="1"/>
+                    <object folder="0" file="3" x="-419.005012" y="49.867162" pivot_x="0.696234" pivot_y="0.110371" angle="83.976304"/>
                 </key>
                 <key id="4" time="700" spin="0">
                     <object folder="0" file="3" x="-410.402861" y="68.146732" pivot_x="0.696234" pivot_y="0.110371" angle="83.976304" scale_x="1.012611" scale_y="0.918614"/>
                 </key>
                 <key id="5" time="800" spin="-1">
-                    <object folder="0" file="3" x="-419.005012" y="49.867162" pivot_x="0.696234" pivot_y="0.110371" angle="83.976304" scale_y="1"/>
+                    <object folder="0" file="3" x="-419.005012" y="49.867162" pivot_x="0.696234" pivot_y="0.110371" angle="83.976304"/>
                 </key>
             </timeline>
             <timeline id="3" name="leaf3">
@@ -303,7 +303,7 @@
                     <object folder="0" file="4" x="-328.716083" y="-6.915452" pivot_x="0.846177" pivot_y="0.257667" angle="3.056946" scale_y="0.721621"/>
                 </key>
                 <key id="4" time="700" spin="-1">
-                    <object folder="0" file="4" x="-328.716083" y="-0.463839" pivot_x="0.846177" pivot_y="0.257667" angle="10.022739" scale_x="1" scale_y="0.721621"/>
+                    <object folder="0" file="4" x="-328.716083" y="-0.463839" pivot_x="0.846177" pivot_y="0.257667" angle="10.022739" scale_y="0.721621"/>
                 </key>
                 <key id="5" time="800" spin="-1">
                     <object folder="0" file="4" x="-328.716083" y="-6.915452" pivot_x="0.846177" pivot_y="0.257667" angle="3.056946" scale_y="0.721621"/>
@@ -314,19 +314,19 @@
                     <object folder="0" file="5" x="56.429714" y="380.564574" pivot_x="0.130892" pivot_y="0.238456" angle="0"/>
                 </key>
                 <key id="1" time="250">
-                    <object folder="0" file="5" x="-172.018562" y="378.840436" pivot_x="0.130892" pivot_y="0.238456" angle="13.834841" scale_y="1"/>
+                    <object folder="0" file="5" x="-172.018562" y="378.840436" pivot_x="0.130892" pivot_y="0.238456" angle="13.834841"/>
                 </key>
                 <key id="2" time="500">
-                    <object folder="0" file="5" x="-338.397872" y="259.874919" pivot_x="0.130892" pivot_y="0.238456" angle="27.669682" scale_y="1"/>
+                    <object folder="0" file="5" x="-338.397872" y="259.874919" pivot_x="0.130892" pivot_y="0.238456" angle="27.669682"/>
                 </key>
                 <key id="3" time="600" spin="-1">
-                    <object folder="0" file="5" x="-393.570286" y="87.461126" pivot_x="0.130892" pivot_y="0.238456" angle="33.951794" scale_x="1"/>
+                    <object folder="0" file="5" x="-393.570286" y="87.461126" pivot_x="0.130892" pivot_y="0.238456" angle="33.951794"/>
                 </key>
                 <key id="4" time="700">
-                    <object folder="0" file="5" x="-394.645555" y="101.43962" pivot_x="0.130892" pivot_y="0.238456" angle="27.141728" scale_x="1"/>
+                    <object folder="0" file="5" x="-394.645555" y="101.43962" pivot_x="0.130892" pivot_y="0.238456" angle="27.141728"/>
                 </key>
                 <key id="5" time="800" spin="-1">
-                    <object folder="0" file="5" x="-393.570286" y="87.461126" pivot_x="0.130892" pivot_y="0.238456" angle="33.951794" scale_x="1"/>
+                    <object folder="0" file="5" x="-393.570286" y="87.461126" pivot_x="0.130892" pivot_y="0.238456" angle="33.951794"/>
                 </key>
             </timeline>
             <timeline id="5" name="flower">
@@ -337,16 +337,16 @@
                     <object folder="0" file="6" x="-275.648635" y="533.459375" pivot_x="0.521676" pivot_y="0.321712" angle="22.731011"/>
                 </key>
                 <key id="2" time="500" spin="-1">
-                    <object folder="0" file="6" x="-545.476221" y="271.390409" pivot_x="0.521676" pivot_y="0.321712" angle="45.462023" scale_x="1"/>
+                    <object folder="0" file="6" x="-545.476221" y="271.390409" pivot_x="0.521676" pivot_y="0.321712" angle="45.462023"/>
                 </key>
                 <key id="3" time="600">
-                    <object folder="0" file="6" x="-643.752083" y="59.321443" pivot_x="0.521676" pivot_y="0.321712" angle="22.070645" scale_x="1" scale_y="1"/>
+                    <object folder="0" file="6" x="-643.752083" y="59.321443" pivot_x="0.521676" pivot_y="0.321712" angle="22.070645"/>
                 </key>
                 <key id="4" time="700" spin="-1">
                     <object folder="0" file="6" x="-641.601545" y="74.375207" pivot_x="0.521676" pivot_y="0.321712" angle="28.260729" scale_x="0.950779" scale_y="1.009971"/>
                 </key>
                 <key id="5" time="800" spin="-1">
-                    <object folder="0" file="6" x="-643.752083" y="59.321443" pivot_x="0.521676" pivot_y="0.321712" angle="22.070645" scale_x="1" scale_y="1"/>
+                    <object folder="0" file="6" x="-643.752083" y="59.321443" pivot_x="0.521676" pivot_y="0.321712" angle="22.070645"/>
                 </key>
             </timeline>
             <timeline id="6" name="stump">
@@ -374,19 +374,19 @@
                     <object folder="0" file="8" x="-2.891738" y="56.056878" pivot_x="0.391738" pivot_y="0.109788" angle="0"/>
                 </key>
                 <key id="1" time="250">
-                    <object folder="0" file="8" x="-27.891738" y="61.229292" pivot_x="0.391738" pivot_y="0.109788" angle="33.639866" scale_x="1"/>
+                    <object folder="0" file="8" x="-27.891738" y="61.229292" pivot_x="0.391738" pivot_y="0.109788" angle="33.639866"/>
                 </key>
                 <key id="2" time="500">
-                    <object folder="0" file="8" x="-52.891738" y="66.401706" pivot_x="0.391738" pivot_y="0.109788" angle="67.279732" scale_x="1"/>
+                    <object folder="0" file="8" x="-52.891738" y="66.401706" pivot_x="0.391738" pivot_y="0.109788" angle="67.279732"/>
                 </key>
                 <key id="3" time="600" spin="0">
-                    <object folder="0" file="8" x="-85.650359" y="25.022395" pivot_x="0.391738" pivot_y="0.109788" angle="92.000873" scale_x="1"/>
+                    <object folder="0" file="8" x="-85.650359" y="25.022395" pivot_x="0.391738" pivot_y="0.109788" angle="92.000873"/>
                 </key>
                 <key id="4" time="700" spin="0">
                     <object folder="0" file="8" x="-92.101972" y="40.076159" pivot_x="0.391738" pivot_y="0.109788" angle="92.000873" scale_x="1.092739" scale_y="0.956568"/>
                 </key>
                 <key id="5" time="800" spin="-1">
-                    <object folder="0" file="8" x="-85.650359" y="25.022395" pivot_x="0.391738" pivot_y="0.109788" angle="92.000873" scale_x="1"/>
+                    <object folder="0" file="8" x="-85.650359" y="25.022395" pivot_x="0.391738" pivot_y="0.109788" angle="92.000873"/>
                 </key>
             </timeline>
         </animation>

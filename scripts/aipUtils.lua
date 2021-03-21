@@ -214,6 +214,19 @@ function _G.aipReplacePrefab(inst, prefab)
 	return tgt
 end
 
+-- 获取一个可访达的路径，默认 40。TODO：优化一下避免在建筑附近生成
+function _G.aipGetSpawnPoint(pt, distance)
+    if not _G.TheWorld.Map:IsAboveGroundAtPoint(pt:Get()) then
+        pt = _G.FindNearbyLand(pt, 1) or pt
+    end
+    local offset = _G.FindWalkableOffset(pt, math.random() * 2 * _G.PI, distance or 40, 12, true)
+    if offset ~= nil then
+        offset.x = offset.x + pt.x
+        offset.z = offset.z + pt.z
+        return offset
+    end
+end
+
 -- 是暗影生物
 _G.aipShadowTags = { "shadow", "shadowminion", "shadowchesspiece", "stalker", "stalkerminion" }
 

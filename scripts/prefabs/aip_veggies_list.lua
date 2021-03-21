@@ -2,6 +2,15 @@ local COMMON = 3
 local UNCOMMON = 1
 local RARE = .5
 
+--             c_give"aip_veggie_sunflower"
+
+local function onSunflowerDeploy(inst, pt, deployer)
+	inst = inst.components.stackable:Get()
+
+	local tgt = SpawnPrefab("aip_sunflower")
+	tgt.Transform:SetPosition(pt.x, pt.y, pt.z)
+end
+
 local VEGGIES =
 {
 	wheat = {
@@ -19,6 +28,7 @@ local VEGGIES =
 		tags = { starch = 1 },
 		cancook = true,
 		candry = false,
+		hasSeed = false,
 	},
 	sunflower = {
 		seed_weight = COMMON,
@@ -35,6 +45,13 @@ local VEGGIES =
 		tags = { starch = 1 },
 		cancook = true,
 		candry = false,
+		hasSeed = false,
+
+		post = function(inst)
+			inst:AddComponent("deployable")
+			inst.components.deployable:SetDeployMode(DEPLOYMODE.PLANT)
+			inst.components.deployable.ondeploy = onSunflowerDeploy
+		end
 	},
 	grape = {
 		seed_weight = COMMON,
@@ -51,6 +68,7 @@ local VEGGIES =
 		tags = { fruit = 1 },
 		cancook = true,
 		candry = false,
+		hasSeed = false,
 	},
 }
 

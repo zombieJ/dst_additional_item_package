@@ -45,6 +45,11 @@ local function chop_tree(inst, chopper)
 	inst.AnimState:PushAnimation("idle_"..inst._aip_stage, true)
 end
 
+-- 晃动镜头
+local function chop_down_shake(inst)
+    ShakeAllCameras(CAMERASHAKE.FULL, .25, .025, .14, inst, 6)
+end
+
 -- 按照角度砍倒树木
 local function chop_down_tree(inst, chopper)
 	inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
@@ -68,6 +73,8 @@ local function chop_down_tree(inst, chopper)
         inst.AnimState:PlayAnimation("fallright_"..inst._aip_stage)
         inst.components.lootdropper:DropLoot(pt + TheCamera:GetRightVec())
     end
+
+	inst:DoTaskInTime(0.6, chop_down_shake)
 
 	inst:ListenForEvent("animover", inst.Remove)
 end
@@ -200,6 +207,12 @@ TheWorld:PushEvent("snowcoveredchanged", true)
 TheWorld:PushEvent("ms_setseason", "winter")
 
 
+
+TheWorld:PushEvent("ms_setseason", "spring")
+
+
+
+TheWorld:PushEvent("ms_setseason", "autumn")
 
 
 TheWorld:PushEvent("snowcoveredchanged", true)

@@ -41,6 +41,8 @@ for veggiename, veggiedata in pairs(ORI_VEGGIES) do
 		sanity = SAN * veggiedata.sanity,
 		perishtime = PER * veggiedata.perishtime,
 
+		post = veggiedata.post,
+
 		cooked_health = HP * veggiedata.cooked_health,
 		cooked_hunger = HU * veggiedata.cooked_hunger,
 		cooked_sanity = SAN * veggiedata.cooked_sanity,
@@ -215,6 +217,10 @@ local function MakeVeggie(name, has_seeds)
 
 		MakeHauntableLaunchAndPerish(inst)
 
+		if VEGGIES[name].post ~= nil then
+			VEGGIES[name].post(inst)
+		end
+
 		return inst
 	end
 
@@ -278,7 +284,7 @@ end
 
 local prefs = {}
 for veggiename,veggiedata in pairs(VEGGIES) do
-	local veg, cooked, seeds = MakeVeggie(veggiename, false)
+	local veg, cooked, seeds = MakeVeggie(veggiename, veggiedata.hasSeed)
 	table.insert(prefs, veg)
 	table.insert(prefs, cooked)
 	if seeds then

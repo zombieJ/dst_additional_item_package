@@ -118,3 +118,19 @@ AddPrefabPostInit("grass", function(inst)
 		end
 	end
 end)
+
+
+if additional_food and (_G.TheNet:GetIsServer() or _G.TheNet:IsDedicated()) then
+	AddPrefabPostInit("world", function (inst)
+		inst:WatchWorldState("season", function ()
+			for i, player in ipairs(_G.AllPlayers) do
+				if not player:HasTag("playerghost") and player.entity:IsVisible() then
+					local pos = _G.aipGetSpawnPoint(player:GetPosition())
+					local sunflower = _G.SpawnPrefab("aip_sunflower")
+					sunflower.Transform:SetPosition(pos.x, pos.y, pos.z)
+					break
+				end
+			end
+		end)
+	end)
+end
