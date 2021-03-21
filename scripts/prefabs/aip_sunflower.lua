@@ -192,7 +192,8 @@ local PLANTS = {
 			action = ACTIONS.DIG,
 			finishCallback = dig_tree,
 		},
-		loot = {"twigs"}
+		loot = {"twigs"},
+		grow = {name="baby", time = function() return 10 end, fn = SetBaby}
 	},
 	tall = {
 		physics = .25,
