@@ -39,6 +39,7 @@ end
 
 local function growNext(inst)
 	inst.AnimState:PlayAnimation("grow_"..inst._aip_now.."_pre")
+	inst.SoundEmitter:PlaySound("dontstarve/forest/treeGrow")
 
 	inst:ListenForEvent("animover", function()
 		local tgt = aipReplacePrefab(inst, "aip_sunflower_"..inst._aip_next)
@@ -213,13 +214,13 @@ local PLANTS = {
 		loot = {"twigs"},
 		grow = {
 			next = "tall",
-			time = 3,
+			time = dev_mode and 3 or (TUNING.DAY_TIME_DEFAULT * 3),
 		}
 	},
 	tall = {
 		physics = .25,
 		workable = {
-			times = 7,
+			times = TUNING.EVERGREEN_CHOPS_NORMAL,
 			action = ACTIONS.CHOP,
 			callback = chop_tree,
 			finishCallback = chop_down_tree,
