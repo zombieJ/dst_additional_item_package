@@ -93,7 +93,7 @@ AddPrefabPostInit("goldnugget", function(inst)
 	inst.components.aipc_action.onDoTargetAction = onDoGoldTargetAction
 end)
 
------------------------------------------- 干草 ------------------------------------------
+------------------------------------------ 食物 ------------------------------------------
 AddPrefabPostInit("grass", function(inst)
 	if not _G.TheWorld.ismastersim then
 		return inst
@@ -133,4 +133,11 @@ if additional_food and (_G.TheNet:GetIsServer() or _G.TheNet:IsDedicated()) then
 			end
 		end)
 	end)
+end
+
+-- 给蔬菜赋值
+local VEGGIES = _G.require('prefabs/aip_veggies_list')
+
+for name, data in pairs(VEGGIES) do
+	env.AddIngredientValues({"aip_veggie_"..name}, data.tags or {}, data.cancook or false, data.candry or false)
 end

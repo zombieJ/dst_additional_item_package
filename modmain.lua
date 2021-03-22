@@ -125,7 +125,6 @@ AddMinimapAtlas("minimap/dark_observer_vest.xml")
 
 --------------------------------------- 封装 ---------------------------------------
 modimport("scripts/recipeWrapper.lua")
--- modimport("scripts/seedsWrapper.lua") -- 没用了
 modimport("scripts/containersWrapper.lua")
 modimport("scripts/itemTileWrapper.lua")
 modimport("scripts/hudWrapper.lua")
