@@ -76,7 +76,12 @@ local function onDoGoldTargetAction(inst, doer, target)
 	-- 充满
 	if target.components.fueled ~= nil then
 		target.components.fueled:DoDelta(target.components.fueled.maxfuel, doer)
-		inst:Remove()
+
+		if inst.components.stackable ~= nil then
+			inst.components.stackable:Get():Remove()
+		else
+			inst:Remove()
+		end
 	end
 end
 
