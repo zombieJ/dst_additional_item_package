@@ -28,7 +28,9 @@ PrefabFiles =
 	"aip_projectile",
 
 	-- Food
-	"aip_veggies", -- 没用了，要移除
+	"aip_wheat",
+	"aip_sunflower",
+	"aip_veggies",
 	"foods",
 	"aip_nectar_maker",
 	"aip_nectar",
@@ -123,7 +125,6 @@ AddMinimapAtlas("minimap/dark_observer_vest.xml")
 
 --------------------------------------- 封装 ---------------------------------------
 modimport("scripts/recipeWrapper.lua")
-modimport("scripts/seedsWrapper.lua")
 modimport("scripts/containersWrapper.lua")
 modimport("scripts/itemTileWrapper.lua")
 modimport("scripts/hudWrapper.lua")

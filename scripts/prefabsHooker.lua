@@ -1,5 +1,11 @@
 local _G = GLOBAL
 
+-- 开发模式
+local dev_mode = _G.aipGetModConfig("dev_mode") == "enabled"
+
+-- 额外食物
+local additional_food = _G.aipGetModConfig("additional_food") == "open"
+
 ------------------------------------ 贪婪观察者 ------------------------------------
 -- 暗影跟随者
 function ShadowFollowerPrefabPostInit(inst)
@@ -86,3 +92,52 @@ AddPrefabPostInit("goldnugget", function(inst)
 	inst:AddComponent("aipc_action")
 	inst.components.aipc_action.onDoTargetAction = onDoGoldTargetAction
 end)
+
+------------------------------------------ 食物 ------------------------------------------
+AddPrefabPostInit("grass", function(inst)
+	if not _G.TheWorld.ismastersim then
+		return inst
+	end
+
+	-- 开启食物时就可以动态草变小麦
+	if additional_food then
+		if inst.components.pickable ~= nil then
+			local oriPickedFn = inst.components.pickable.onpickedfn
+
+			inst.components.pickable.onpickedfn = function(inst, picker, ...)
+				oriPickedFn(inst, picker, ...)
+
+				local PROBABILITY = dev_mode and 1 or 0.01
+
+				-- 满足一定概率则生成一个小麦
+				if math.random() <= PROBABILITY then
+					local wheat = _G.aipReplacePrefab(inst, "aip_wheat")
+					wheat.components.pickable:MakeEmpty()
+				end
+			end
+		end
+	end
+end)
+
+
+if additional_food and (_G.TheNet:GetIsServer() or _G.TheNet:IsDedicated()) then
+	AddPrefabPostInit("world", function (inst)
+		inst:WatchWorldState("season", function ()
+			for i, player in ipairs(_G.AllPlayers) do
+				if not player:HasTag("playerghost") and player.entity:IsVisible() then
+					local pos = _G.aipGetSpawnPoint(player:GetPosition())
+					local sunflower = _G.SpawnPrefab("aip_sunflower")
+					sunflower.Transform:SetPosition(pos.x, pos.y, pos.z)
+					break
+				end
+			end
+		end)
+	end)
+end
+
+-- 给蔬菜赋值
+local VEGGIES = _G.require('prefabs/aip_veggies_list')
+
+for name, data in pairs(VEGGIES) do
+	env.AddIngredientValues({"aip_veggie_"..name}, data.tags or {}, data.cancook or false, data.candry or false)
+end
