@@ -131,9 +131,11 @@ if additional_food and (_G.TheNet:GetIsServer() or _G.TheNet:IsDedicated()) then
 			for i, player in ipairs(_G.AllPlayers) do
 				if not player:HasTag("playerghost") and player.entity:IsVisible() then
 					local pos = _G.aipGetSpawnPoint(player:GetPosition())
-					local sunflower = _G.SpawnPrefab("aip_sunflower")
-					sunflower.Transform:SetPosition(pos.x, pos.y, pos.z)
-					break
+					if pos ~= nil then
+						local sunflower = _G.SpawnPrefab("aip_sunflower")
+						sunflower.Transform:SetPosition(pos.x, pos.y, pos.z)
+						break
+					end
 				end
 			end
 		end)
