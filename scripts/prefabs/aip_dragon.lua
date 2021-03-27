@@ -1,3 +1,6 @@
+-- 开发模式
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
+
 local brain = require("brains/aip_dragon_brain")
 
 local assets =
@@ -15,6 +18,24 @@ local sounds =
 	appear = "dontstarve/sanity/creature2/appear",
 	disappear = "dontstarve/sanity/creature2/dissappear",
 }
+
+local RETARGET_CANT_TAGS = {"bat"}
+local RETARGET_ONEOF_TAGS = {"character", "monster"}
+local function Retarget(inst)
+    local newtarget = FindEntity(inst, TUNING.BAT_TARGET_DIST, function(guy)
+            return inst.components.combat:CanTarget(guy)
+        end,
+        nil,
+        RETARGET_CANT_TAGS,
+        RETARGET_ONEOF_TAGS
+    )
+
+	return newtarget
+end
+
+local function KeepTarget(inst, target)
+    return true
+end
 
 local function fn()
 	local inst = CreateEntity()
@@ -63,25 +84,29 @@ local function fn()
 	inst:SetStateGraph("SGaip_dragon")
 	inst:SetBrain(brain)
 
-	-- inst:AddComponent("sanityaura")
-	-- inst.components.sanityaura.aurafn = CalcSanityAura
+	inst:AddComponent("sanityaura")
 
-	-- inst:AddComponent("health")
-	-- inst.components.health:SetMaxHealth(data.health)
+    inst:AddComponent("health")
+    inst.components.health:SetMaxHealth(dev_mode and 1 or TUNING.LEIF_HEALTH)
 	-- inst.components.health.nofadeout = true
 
-	-- inst.sanityreward = data.sanityreward
+	inst:AddComponent("combat")
+    inst.components.combat.hiteffectsymbol = "body"
+	inst.components.combat:SetDefaultDamage(1)
+    inst.components.combat:SetAttackPeriod(TUNING.TERRORBEAK_ATTACK_PERIOD)
+    inst.components.combat:SetRange(TUNING.BAT_ATTACK_DIST)
+    inst.components.combat:SetRetargetFunction(3, Retarget)
+    inst.components.combat:SetKeepTargetFunction(KeepTarget)
 
 	-- inst:AddComponent("combat")
-	-- inst.components.combat:SetDefaultDamage(data.damage)
-	-- inst.components.combat:SetAttackPeriod(data.attackperiod)
+	-- inst.components.combat.hiteffectsymbol = "body"
 	-- inst.components.combat:SetRetargetFunction(3, retargetfn)
-	-- inst.components.combat.onkilledbyother = onkilledbyother
 
 	-- inst:AddComponent("shadowsubmissive")
 
-	-- inst:AddComponent("lootdropper")
-	-- inst.components.lootdropper:SetChanceLootTable('shadow_creature')
+	inst:AddComponent("lootdropper")
+	inst.components.lootdropper:AddRandomLoot("honey", 1)
+	inst.components.lootdropper.numrandomloot = 1
 
 	-- inst:ListenForEvent("attacked", OnAttacked)
 	-- inst:ListenForEvent("newcombattarget", OnNewCombatTarget)
@@ -93,7 +118,7 @@ local function fn()
 	-- end
 
 
-	-- inst.persists = false
+	inst.persists = false
 
 	return inst
 end

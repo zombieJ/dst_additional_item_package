@@ -2,8 +2,14 @@ require("stategraphs/commonstates")
 
 local events =
 {
+	EventHandler("death", function(inst) inst.sg:GoToState("death") end),
     CommonHandlers.OnLocomote(false, true),
 }
+
+local function OnAnimOverRemove(inst)
+    -- inst:Remove()
+	aipPrint("dead over!!!")
+end
 
 local states =
 {
@@ -17,6 +23,29 @@ local states =
                 inst.AnimState:PlayAnimation("idle_loop", true)
             end
         end,
+    },
+
+	State{
+        name = "death",
+        tags = { "busy" },
+
+        onenter = function(inst)
+			-- PlayExtendedSound(inst, "death")
+			inst.AnimState:PlayAnimation("death")
+            inst.Physics:Stop()
+            RemovePhysicsColliders(inst)
+            inst.components.lootdropper:DropLoot(inst:GetPosition())
+            inst:AddTag("NOCLICK")
+            inst.persists = false
+        end,
+
+		events = {
+            EventHandler("animover", OnAnimOverRemove),
+        },
+
+        onexit = function(inst)
+            inst:RemoveTag("NOCLICK")
+        end
     },
 }
 
