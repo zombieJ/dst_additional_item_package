@@ -30,6 +30,7 @@ local function fn()
 	inst.Physics:CollidesWith(COLLISION.SANITY)
 
 	inst.Transform:SetTwoFaced()
+	inst.Transform:SetScale(2, 2, 2)
 
 	inst:AddTag("shadowcreature")
 	inst:AddTag("gestaltnoloot")
@@ -40,8 +41,8 @@ local function fn()
 
 	inst.AnimState:SetBank("aip_dragon")
 	inst.AnimState:SetBuild("aip_dragon")
-	inst.AnimState:PlayAnimation("idle", true)
-	inst.AnimState:SetMultColour(1, 1, 1, .5)
+	inst.AnimState:PlayAnimation("idle_loop", true)
+	inst.AnimState:SetMultColour(1, 1, 1, .7)
 
 	-- 纯粹更新一下玩家的显示透明度
 	-- inst:AddComponent("transparentonsanity")
@@ -53,13 +54,13 @@ local function fn()
 	end
 
 	inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
-	inst.components.locomotor.walkspeed = TUNING.TERRORBEAK_SPEED
+	inst.components.locomotor.walkspeed = TUNING.KNIGHT_WALK_SPEED
 	inst.components.locomotor:SetTriggersCreep(false)
 	inst.components.locomotor.pathcaps = { ignorecreep = true }
 
 	-- inst.sounds = sounds
-	-- inst:SetStateGraph("SGshadowcreature")
 
+	inst:SetStateGraph("SGaip_dragon")
 	inst:SetBrain(brain)
 
 	-- inst:AddComponent("sanityaura")
