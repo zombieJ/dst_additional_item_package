@@ -19,8 +19,8 @@ local sounds =
 	disappear = "dontstarve/sanity/creature2/dissappear",
 }
 
-local RETARGET_CANT_TAGS = {"bat"}
-local RETARGET_ONEOF_TAGS = {"character", "monster"}
+local RETARGET_CANT_TAGS = {}
+local RETARGET_ONEOF_TAGS = {"character"}
 local function Retarget(inst)
     local newtarget = FindEntity(inst, TUNING.BAT_TARGET_DIST, function(guy)
             return inst.components.combat:CanTarget(guy)
@@ -35,6 +35,15 @@ end
 
 local function KeepTarget(inst, target)
     return true
+end
+
+-- 根据目标的理智值施加更多伤害，最多 50 点真实伤害
+local function sanityBonusDamageFn(inst, target, damage, weapon)
+	if target.components.sanity ~= nil then
+		local ptg = target.components.sanity:GetRealPercent()
+		return ptg * 50
+	end
+    return 0
 end
 
 local function fn()
@@ -87,20 +96,17 @@ local function fn()
 	inst:AddComponent("sanityaura")
 
     inst:AddComponent("health")
-    inst.components.health:SetMaxHealth(dev_mode and 1 or TUNING.LEIF_HEALTH)
+    inst.components.health:SetMaxHealth(dev_mode and 100 or TUNING.LEIF_HEALTH)
 	-- inst.components.health.nofadeout = true
 
 	inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "body"
-	inst.components.combat:SetDefaultDamage(1)
+	inst.components.combat:SetDefaultDamage(50)
     inst.components.combat:SetAttackPeriod(TUNING.TERRORBEAK_ATTACK_PERIOD)
     inst.components.combat:SetRange(TUNING.BAT_ATTACK_DIST)
     inst.components.combat:SetRetargetFunction(3, Retarget)
     inst.components.combat:SetKeepTargetFunction(KeepTarget)
-
-	-- inst:AddComponent("combat")
-	-- inst.components.combat.hiteffectsymbol = "body"
-	-- inst.components.combat:SetRetargetFunction(3, retargetfn)
+	inst.components.combat.bonusdamagefn = sanityBonusDamageFn
 
 	-- inst:AddComponent("shadowsubmissive")
 

@@ -130,6 +130,15 @@ function DragonBrain:OnStart()
 	-- 	},1)
 
 	local root = PriorityNode({
+		-- 寻找目标攻击
+		WhileNode(
+			function()
+				return self.inst.components.combat.target == nil or not self.inst.components.combat:InCooldown()
+			end,
+			"AttackMomentarily",
+			ChaseAndAttack(self.inst, 100)
+		),
+
 		-- 漫步
 		Wander(self.inst, function() return nil end, 20),
 	}, .25)
