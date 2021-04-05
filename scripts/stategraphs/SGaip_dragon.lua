@@ -35,8 +35,8 @@ local states =
         end,
 
         timeline = {
-            -- 1 秒 30 次渲染/1000 帧。
-            TimeEvent(12*FRAMES, function(inst) inst.components.combat:DoAttack(inst.sg.statemem.target) end),
+            -- 1 秒 30 次渲染/1000 帧，200 帧时造成伤害。
+            TimeEvent(30*200/1000*FRAMES, function(inst) inst.components.combat:DoAttack(inst.sg.statemem.target) end),
         },
         events = {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),

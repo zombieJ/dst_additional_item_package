@@ -22,7 +22,10 @@ local sounds =
 local RETARGET_CANT_TAGS = {}
 local RETARGET_ONEOF_TAGS = {"character"}
 local function Retarget(inst)
-    local newtarget = FindEntity(inst, TUNING.BAT_TARGET_DIST, function(guy)
+    local newtarget = FindEntity(
+		inst,
+		dev_mode and TUNING.BAT_TARGET_DIST or TUNING.PIG_TARGET_DIST,
+		function(guy)
             return inst.components.combat:CanTarget(guy)
         end,
         nil,
@@ -84,7 +87,7 @@ local function fn()
 	end
 
 	inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
-	inst.components.locomotor.walkspeed = TUNING.KNIGHT_WALK_SPEED
+	inst.components.locomotor.walkspeed = TUNING.CRAWLINGHORROR_SPEED
 	inst.components.locomotor:SetTriggersCreep(false)
 	inst.components.locomotor.pathcaps = { ignorecreep = true }
 
@@ -135,7 +138,7 @@ return Prefab("aip_dragon", fn, assets)
 
 
 
-
+c_give"aip_armor_gambler"
 c_give"aip_dragon"
 
 
