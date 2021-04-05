@@ -42,6 +42,7 @@ PrefabFiles =
 	"aip_plaster",
 	"aip_igloo",
 	"aip_dragon",
+	"aip_dragon_footprint",
 
 	-- Weapon
 	"popcorngun",

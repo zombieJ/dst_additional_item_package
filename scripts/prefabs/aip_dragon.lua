@@ -77,9 +77,6 @@ local function fn()
 	inst.AnimState:PlayAnimation("idle_loop", true)
 	inst.AnimState:SetMultColour(1, 1, 1, .7)
 
-	-- 纯粹更新一下玩家的显示透明度
-	-- inst:AddComponent("transparentonsanity")
-
 	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
@@ -91,7 +88,7 @@ local function fn()
 	inst.components.locomotor:SetTriggersCreep(false)
 	inst.components.locomotor.pathcaps = { ignorecreep = true }
 
-	-- inst.sounds = sounds
+	inst.sounds = sounds
 
 	inst:SetStateGraph("SGaip_dragon")
 	inst:SetBrain(brain)
@@ -104,28 +101,16 @@ local function fn()
 
 	inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "body"
-	inst.components.combat:SetDefaultDamage(50)
+	inst.components.combat:SetDefaultDamage(25)
     inst.components.combat:SetAttackPeriod(TUNING.TERRORBEAK_ATTACK_PERIOD)
     inst.components.combat:SetRange(TUNING.BEEQUEEN_ATTACK_RANGE)
     inst.components.combat:SetRetargetFunction(1, Retarget)
     inst.components.combat:SetKeepTargetFunction(KeepTarget)
 	inst.components.combat.bonusdamagefn = sanityBonusDamageFn
 
-	-- inst:AddComponent("shadowsubmissive")
-
 	inst:AddComponent("lootdropper")
 	inst.components.lootdropper:AddRandomLoot("honey", 1)
 	inst.components.lootdropper.numrandomloot = 1
-
-	-- inst:ListenForEvent("attacked", OnAttacked)
-	-- inst:ListenForEvent("newcombattarget", OnNewCombatTarget)
-	-- inst:ListenForEvent("death", OnDeath)
-
-	-- if data.name == "terrorbeak" then
-	-- 	inst.followtosea = true
-	-- 	inst.ExchangeWithOceanTerror = ExchangeWithOceanTerror
-	-- end
-
 
 	inst.persists = false
 

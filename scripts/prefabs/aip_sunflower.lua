@@ -144,6 +144,7 @@ local function sunflower(stage, info)
 
 		inst:AddTag("plant")
 		inst:AddTag("tree")
+		inst:AddTag("aip_sunflower")
 
 		inst.AnimState:SetBuild("aip_sunflower")
 		inst.AnimState:SetBank("aip_sunflower")
