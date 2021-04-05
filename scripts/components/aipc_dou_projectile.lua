@@ -446,7 +446,12 @@ function Projectile:EffectTaskOn(target)
 		doEffect = true
 
 		-- 【痛】看看死了没有，准备反伤施法者
-		if target.components.health ~= nil and not target.components.health:IsDead() and self.doer ~= self.target then
+		if
+			self.task.element == "COST" and
+			target.components.health ~= nil and
+			not target.components.health:IsDead() and
+			self.doer ~= self.target
+		then
 			local proj = SpawnPrefab("aip_projectile")
 			proj.components.aipc_info_client:SetByteArray( -- 调整颜色
 				"aip_projectile_color", { 0.5, 0, 0, 5 }
