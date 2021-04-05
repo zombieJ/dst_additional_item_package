@@ -35,7 +35,7 @@ local states =
         end,
 
         timeline = {
-            -- TimeEvent(14*FRAMES, function(inst) PlayExtendedSound(inst, "attack") end),
+            -- 1 秒 30 次渲染/1000 帧。
             TimeEvent(12*FRAMES, function(inst) inst.components.combat:DoAttack(inst.sg.statemem.target) end),
         },
         events = {
