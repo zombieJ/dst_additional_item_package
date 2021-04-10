@@ -45,7 +45,7 @@ function Projectile:OnFinish()
 	self.inst.Physics:SetMotorVel(0, 0, 0)
 
 	if self.onFinish ~= nil then
-		self.onFinish(self.inst)
+		self.onFinish(self.inst, self.target or self.targetPos)
 	end
 
 	if self.inst.OnFinish ~= nil then
