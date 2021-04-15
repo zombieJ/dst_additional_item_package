@@ -7,6 +7,8 @@ local prefabs = {
     "aip_shadow_wrapper"
 }
 
+local createGroupVest = require("utils/aip_vest_util").createGroupVest
+
 local brain = require "brains/aip_dragon_footprint_brain"
 
 local function FindSunflower(inst)
@@ -22,14 +24,40 @@ local function FindSunflower(inst)
 	return nil
 end
 
--- local function GoToTarget(inst, target)
--- 	local x, y, z = target.Transform:GetWorldPosition()
--- 	local prefab = SpawnPrefab("aip_shadow_wrapper")
--- 	prefab.Transform:SetPosition(x, y, z)
--- 	prefab.DoShow()
+-- 移动时打印脚印
+local FP_DIST = 0.8
+local FP_OFFSET = 0.5
 
--- 	inst:Remove()
--- end
+local function PrintFootPrint(inst)
+	local curPos = inst:GetPosition()
+
+	-- 初始化一下
+	if inst._pos == nil then
+		inst._pos = curPos
+		return
+	end
+
+	local needPrint = inst._pos == nil or aipDist(curPos, inst._pos) > FP_DIST
+
+	if needPrint then
+		-- 脚印左右走
+		inst._footStep = math.mod(inst._footStep + 1, 2)
+
+		local rot = aipGetAngle(inst._pos, curPos)
+		rot = inst._footStep == 1 and (rot - 90) or (rot + 90)
+		rot = rot / 180 * PI
+
+		local vest = createGroupVest("aip_dragon_footprint", "aip_dragon_footprint", "disappear")
+		vest.Transform:SetPosition(
+			curPos.x + FP_OFFSET * math.cos(rot),
+			0,
+			curPos.z + FP_OFFSET * math.sin(rot)
+		)
+
+		-- 每次打印脚印后就更新一下记录
+		inst._pos = curPos
+	end
+end
 
 local function fn()
 	local inst = CreateEntity()
@@ -49,12 +77,22 @@ local function fn()
 	inst.AnimState:SetMultColour(1, 1, 1, 1)
 
 	MakeCharacterPhysics(inst, 50, .1)
+	RemovePhysicsColliders(inst)
 
 	inst.Transform:SetTwoFaced()
 
 	inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
 	inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
 	inst.AnimState:SetSortOrder(2)
+
+	-- 客户端的特效
+	if not TheNet:IsDedicated() then
+		inst._footStep = 0
+		inst._pos = nil
+		inst.tailPeriodTask = inst:DoPeriodicTask(0.1, PrintFootPrint)
+	end
+
+	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
 		return inst

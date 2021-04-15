@@ -16,7 +16,31 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="1" name="run_pre_90s" length="50">
+        <animation id="1" name="disappear" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="footprint" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.00001" abs_scale_y="0.00001" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="300">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+                <key id="2" time="1000">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="footprint">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.00001" scale_y="0.00001"/>
+                </key>
+                <key id="1" time="300" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+                <key id="2" time="1000" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.0001" scale_y="0.0001"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="run_pre_90s" length="50">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="footprint" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
@@ -34,7 +58,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="2" name="run_loop_90s" length="50">
+        <animation id="3" name="run_loop_90s" length="50">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="footprint" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
@@ -52,7 +76,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="3" name="run_pst_90s" length="50">
+        <animation id="4" name="run_pst_90s" length="50">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="footprint" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
@@ -70,7 +94,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="4" name="walk_pre_90s" length="50">
+        <animation id="5" name="walk_pre_90s" length="50">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="footprint" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
@@ -88,7 +112,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="5" name="walk_loop_90s" length="50">
+        <animation id="6" name="walk_loop_90s" length="50">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="footprint" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
@@ -106,7 +130,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="6" name="walk_pst_90s" length="50">
+        <animation id="7" name="walk_pst_90s" length="50">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="footprint" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
