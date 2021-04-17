@@ -25,8 +25,8 @@ local function FindSunflower(inst)
 end
 
 -- 移动时打印脚印
-local FP_DIST = 0.8
-local FP_OFFSET = 0.5
+local FP_DIST = 0.6
+local FP_OFFSET = 0.4
 
 local function PrintFootPrint(inst)
 	local curPos = inst:GetPosition()
@@ -44,15 +44,23 @@ local function PrintFootPrint(inst)
 		inst._footStep = math.mod(inst._footStep + 1, 2)
 
 		local rot = aipGetAngle(inst._pos, curPos)
-		rot = inst._footStep == 1 and (rot - 90) or (rot + 90)
-		rot = rot / 180 * PI
+		local deg = inst._footStep == 1 and (rot - 90) or (rot + 90)
+		deg = deg / 180 * PI
 
 		local vest = createGroupVest("aip_dragon_footprint", "aip_dragon_footprint", "disappear")
 		vest.Transform:SetPosition(
-			curPos.x + FP_OFFSET * math.cos(rot),
+			curPos.x + FP_OFFSET * math.cos(deg),
 			0,
-			curPos.z + FP_OFFSET * math.sin(rot)
+			curPos.z + FP_OFFSET * math.sin(deg)
 		)
+		vest.Transform:SetRotation(inst.Transform:GetRotation())
+
+		-- 根据玩家理智值显示透明度
+		local player = ThePlayer
+		if player ~= nil and player.replica.sanity ~= nil then
+			local ptg = player.replica.sanity:GetPercent()
+			vest.AnimState:OverrideMultColour(1, 1, 1, 1 - ptg * 0.8)
+		end
 
 		-- 每次打印脚印后就更新一下记录
 		inst._pos = curPos
@@ -74,12 +82,9 @@ local function fn()
 	inst.AnimState:SetBuild("aip_dragon_footprint")
 	inst.AnimState:PlayAnimation("idle", false)
 
-	inst.AnimState:SetMultColour(1, 1, 1, 1)
-
-	MakeCharacterPhysics(inst, 50, .1)
+	MakeCharacterPhysics(inst, 1, .5)
 	RemovePhysicsColliders(inst)
-
-	inst.Transform:SetTwoFaced()
+	inst.Physics:CollidesWith(COLLISION.WORLD)
 
 	inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
 	inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
@@ -89,7 +94,7 @@ local function fn()
 	if not TheNet:IsDedicated() then
 		inst._footStep = 0
 		inst._pos = nil
-		inst.tailPeriodTask = inst:DoPeriodicTask(0.1, PrintFootPrint)
+		inst.tailPeriodTask = inst:DoPeriodicTask(0.02, PrintFootPrint)
 	end
 
 	inst.entity:SetPristine()
@@ -97,6 +102,9 @@ local function fn()
 	if not TheWorld.ismastersim then
 		return inst
 	end
+
+	-- 不可见之物
+	inst.AnimState:SetMultColour(0, 0, 0, 0)
 
 	-- 模拟火鸡的行为，它基本和火鸡很相似
 	inst:AddComponent("locomotor")
