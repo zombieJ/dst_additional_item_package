@@ -205,17 +205,25 @@ function _G.aipRandomEnt(ents)
 end
 
 --------------------------------------- 辅助 ---------------------------------------
+-- 降级值如果没有的话
+function fb(value, defaultValue)
+	if value ~= nil then
+		return value
+	end
+	return defaultValue
+end
+
 -- 在目标位置创建
-function _G.aipSpawnPrefab(inst, prefab)
+function _G.aipSpawnPrefab(inst, prefab, tx, ty, tz)
 	local tgt = _G.SpawnPrefab(prefab)
 	local x, y, z = inst.Transform:GetWorldPosition()
-	tgt.Transform:SetPosition(x, y, z)
+	tgt.Transform:SetPosition(fb(tx, x), fb(ty, y), fb(tz, z))
 	return tgt
 end
 
 -- 替换单位
-function _G.aipReplacePrefab(inst, prefab)
-	local tgt = _G.aipSpawnPrefab(inst, prefab)
+function _G.aipReplacePrefab(inst, prefab, tx, ty, tz)
+	local tgt = _G.aipSpawnPrefab(inst, prefab, tx, ty, tz)
 	inst:Remove()
 	return tgt
 end

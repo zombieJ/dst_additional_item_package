@@ -19,19 +19,6 @@ local createGroupVest = require("utils/aip_vest_util").createGroupVest
 
 local brain = require "brains/aip_dragon_footprint_brain"
 
-local function FindSunflower(inst)
-	local x, y, z = inst.Transform:GetWorldPosition()
-	local ents = TheSim:FindEntities(x, y, z, 100, { "aip_sunflower" })
-
-	for i, v in ipairs(ents) do
-		if v.entity:IsVisible() then
-			return v
-		end
-	end
-
-	return nil
-end
-
 -- 移动时打印脚印
 local FP_DIST = 0.6
 local FP_OFFSET = 0.4
@@ -89,9 +76,40 @@ local function RemoveOnTime(inst)
 		inst._aipRM = nil
 	end
 
-	inst._aipRM = inst:DoTaskInTime(dev_mode and 5 or 20, RemoveIt)
+	inst._aipRM = inst:DoTaskInTime(dev_mode and 10 or 30, RemoveIt)
 end
 
+-- 找向日葵撞
+local function GoToTarget(inst, target)
+	target:Remove()
+end
+
+local function FindSunflower(inst)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local ents = TheSim:FindEntities(x, y, z, 5, { "aip_sunflower" })
+
+	for i, v in ipairs(ents) do
+		if v.entity:IsVisible() then
+			return v
+		end
+	end
+
+	return nil
+end
+
+local function SeekSunflower(inst)
+	local sunflower = FindSunflower(inst)
+	if sunflower ~= nil then
+		local proj = aipReplacePrefab(inst, "aip_projectile", nil, 1)
+		proj.components.aipc_info_client:SetByteArray( -- 调整颜色
+			"aip_projectile_color", { 0, 0, 0, 5 }
+		)
+		proj.components.aipc_projectile.speed = 10
+		proj.components.aipc_projectile:GoToTarget(sunflower, GoToTarget)
+	end
+end
+
+-- ----------------------------------------------------------------------
 local function fn()
 	local inst = CreateEntity()
 
@@ -151,6 +169,9 @@ local function fn()
 			RemoveOnTime(inst)
 		end
 	end)
+
+	-- 检测附近是否有向日葵树，有就飞过去
+	inst:DoPeriodicTask(0.5, SeekSunflower)
 
 	--[[inst:DoTaskInTime(0, function()
 
