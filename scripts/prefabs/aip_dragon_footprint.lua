@@ -1,3 +1,10 @@
+local open_beta = aipGetModConfig("open_beta")
+if open_beta ~= "open" then
+	return nil
+end
+
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
+
 local assets = {
 	Asset("ANIM", "anim/aip_dragon_footprint.zip"),
 }
@@ -70,9 +77,7 @@ end
 
 -- 一定时间后消除对象
 local function RemoveIt(inst)
-	local x, y, z = inst.Transform:GetWorldPosition()
-	local prefab = SpawnPrefab("aip_shadow_wrapper")
-	prefab.Transform:SetPosition(x, y, z)
+	local prefab = aipSpawnPrefab(inst, "aip_shadow_wrapper")
 	prefab.DoShow()
 
 	aipReplacePrefab(inst, "nightmarefuel")
@@ -80,11 +85,11 @@ end
 
 local function RemoveOnTime(inst)
 	if inst._aipRM ~= nil then
-		inst._aipRM:cancel()
+		inst._aipRM:Cancel()
 		inst._aipRM = nil
 	end
 
-	inst._aipRM = inst:DoTaskInTime(10, RemoveIt)
+	inst._aipRM = inst:DoTaskInTime(dev_mode and 5 or 20, RemoveIt)
 end
 
 local function fn()
@@ -136,7 +141,16 @@ local function fn()
 
 	inst.persists = false
 
+	-- 过一段时间自杀
 	RemoveOnTime(inst)
+
+	-- 如果发现有人追就重新设置自杀时间
+	inst:ListenForEvent("locomote", function(inst)
+		local run = inst.components.locomotor:WantsToRun()
+		if run then
+			RemoveOnTime(inst)
+		end
+	end)
 
 	--[[inst:DoTaskInTime(0, function()
 

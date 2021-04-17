@@ -205,11 +205,17 @@ function _G.aipRandomEnt(ents)
 end
 
 --------------------------------------- 辅助 ---------------------------------------
--- 替换单位
-function _G.aipReplacePrefab(inst, prefab)
+-- 在目标位置创建
+function _G.aipSpawnPrefab(inst, prefab)
 	local tgt = _G.SpawnPrefab(prefab)
 	local x, y, z = inst.Transform:GetWorldPosition()
 	tgt.Transform:SetPosition(x, y, z)
+	return tgt
+end
+
+-- 替换单位
+function _G.aipReplacePrefab(inst, prefab)
+	local tgt = _G.aipSpawnPrefab(inst, prefab)
 	inst:Remove()
 	return tgt
 end
