@@ -3,8 +3,9 @@ local assets = {
 }
 
 local prefabs = {
+	"nightmarefuel",
 	"aip_projectile",
-    "aip_shadow_wrapper"
+	"aip_shadow_wrapper"
 }
 
 local createGroupVest = require("utils/aip_vest_util").createGroupVest
@@ -67,6 +68,25 @@ local function PrintFootPrint(inst)
 	end
 end
 
+-- 一定时间后消除对象
+local function RemoveIt(inst)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local prefab = SpawnPrefab("aip_shadow_wrapper")
+	prefab.Transform:SetPosition(x, y, z)
+	prefab.DoShow()
+
+	aipReplacePrefab(inst, "nightmarefuel")
+end
+
+local function RemoveOnTime(inst)
+	if inst._aipRM ~= nil then
+		inst._aipRM:cancel()
+		inst._aipRM = nil
+	end
+
+	inst._aipRM = inst:DoTaskInTime(10, RemoveIt)
+end
+
 local function fn()
 	local inst = CreateEntity()
 
@@ -116,8 +136,11 @@ local function fn()
 
 	inst.persists = false
 
-	inst:DoTaskInTime(0, function()
-		--[[ TODO: 驱赶术
+	RemoveOnTime(inst)
+
+	--[[inst:DoTaskInTime(0, function()
+
+		 TODO: 驱赶术
 
 		local sunflower = FindSunflower(inst)
 		local x, y, z = inst.Transform:GetWorldPosition()
@@ -138,8 +161,8 @@ local function fn()
 
 			inst:Remove()
 		end
-		]]
-	end)
+		
+	end)]]
 
 	return inst
 end
