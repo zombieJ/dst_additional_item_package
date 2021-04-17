@@ -64,8 +64,8 @@ end
 
 -- 一定时间后消除对象
 local function RemoveIt(inst)
-	local prefab = aipSpawnPrefab(inst, "aip_shadow_wrapper")
-	prefab.DoShow()
+	local effect = aipSpawnPrefab(inst, "aip_shadow_wrapper")
+	effect.DoShow()
 
 	aipReplacePrefab(inst, "nightmarefuel")
 end
@@ -76,17 +76,20 @@ local function RemoveOnTime(inst)
 		inst._aipRM = nil
 	end
 
-	inst._aipRM = inst:DoTaskInTime(dev_mode and 10 or 30, RemoveIt)
+	inst._aipRM = inst:DoTaskInTime(dev_mode and 5 or 30, RemoveIt)
 end
 
 -- 找向日葵撞
 local function GoToTarget(inst, target)
-	target:Remove()
+	local prefab = aipSpawnPrefab(target, "aip_shadow_wrapper")
+	prefab.DoShow()
+
+	aipReplacePrefab(target, "aip_sunflower_ghost")
 end
 
 local function FindSunflower(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()
-	local ents = TheSim:FindEntities(x, y, z, 5, { "aip_sunflower" })
+	local ents = TheSim:FindEntities(x, y, z, 10, { "aip_sunflower_tall" })
 
 	for i, v in ipairs(ents) do
 		if v.entity:IsVisible() then
@@ -172,32 +175,6 @@ local function fn()
 
 	-- 检测附近是否有向日葵树，有就飞过去
 	inst:DoPeriodicTask(0.5, SeekSunflower)
-
-	--[[inst:DoTaskInTime(0, function()
-
-		 TODO: 驱赶术
-
-		local sunflower = FindSunflower(inst)
-		local x, y, z = inst.Transform:GetWorldPosition()
-
-		-- 如果地图上有向日葵就动起来
-		if sunflower ~= nil then
-			-- local proj = SpawnPrefab("aip_projectile")
-			-- proj.components.aipc_info_client:SetByteArray( -- 调整颜色
-			-- 	"aip_projectile_color", { 0, 0, 0, 5 }
-			-- )
-			-- proj.Transform:SetPosition(x, 1, z)
-			-- proj.components.aipc_projectile.speed = 10
-			-- proj.components.aipc_projectile:GoToTarget(sunflower, GoToTarget)
-		else
-			local prefab = SpawnPrefab("aip_shadow_wrapper")
-			prefab.Transform:SetPosition(x, y, z)
-			prefab.DoShow()
-
-			inst:Remove()
-		end
-		
-	end)]]
 
 	return inst
 end

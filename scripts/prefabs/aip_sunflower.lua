@@ -1,3 +1,6 @@
+-- 公测
+local open_beta = aipGetModConfig("open_beta") == "open"
+
 -- 食物
 local additional_food = aipGetModConfig("additional_food")
 if additional_food ~= "open" then
@@ -112,6 +115,15 @@ local function chop_down_ghost(inst, chopper)
     inst.AnimState:PlayAnimation("fall_"..inst._aip_stage)
 	inst.components.lootdropper:DropLoot()
 
+	-- 开启公测后创造一个鬼怪出来
+	if open_beta then
+		local effect = aipSpawnPrefab(inst, "aip_shadow_wrapper")
+		effect.Transform:SetScale(2, 2, 2)
+		effect.DoShow()
+
+		aipSpawnPrefab(inst, "aip_dragon")
+	end
+
 	inst:ListenForEvent("animover", inst.Remove)
 end
 
@@ -145,6 +157,10 @@ local function sunflower(stage, info)
 		inst:AddTag("plant")
 		inst:AddTag("tree")
 		inst:AddTag("aip_sunflower")
+
+		if info.tag ~= nil then
+			inst:AddTag(info.tag)
+		end
 
 		inst.AnimState:SetBuild("aip_sunflower")
 		inst.AnimState:SetBank("aip_sunflower")
@@ -239,6 +255,7 @@ local PLANTS = {
 	},
 	tall = {
 		physics = .25,
+		tag = "aip_sunflower_tall",
 		workable = {
 			times = TUNING.EVERGREEN_CHOPS_NORMAL,
 			action = ACTIONS.CHOP,
