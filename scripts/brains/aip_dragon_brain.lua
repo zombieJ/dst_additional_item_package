@@ -4,6 +4,8 @@ require "behaviours/chaseandattack"
 require "behaviours/follow"
 require "behaviours/panic"
 
+local NOTAGS = { "FX", "NOCLICK", "DECOR", "playerghost", "INLIMBO" }
+
 local MAX_CHASE_TIME = 30
 local MAX_CHASE_DIST = 35
 
@@ -14,6 +16,12 @@ local DragonBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
     self.mytarget = nil
 end)
+
+local function TryCast(self)
+	local inst = self.inst
+	local player = aipRandomEnt(aipFindNearPlayers(inst, TUNING.FIRE_DETECTOR_RANGE))
+	return not inst.components.timer:TimerExists("aip_cast_cd") and player ~= nil
+end
 
 function DragonBrain:OnStop()
 end
@@ -133,6 +141,15 @@ function DragonBrain:OnStart()
 	-- 	},1)
 
 	local root = PriorityNode({
+		-- 施法动作
+		WhileNode(
+			function()
+				return TryCast(self)
+			end,
+			"SpecialMoves",
+			ActionNode(function() self.inst:PushEvent("aip_cast") end)
+		),
+
 		-- 寻找目标攻击
 		WhileNode(
 			function()

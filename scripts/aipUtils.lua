@@ -205,6 +205,13 @@ function _G.aipRandomEnt(ents)
 end
 
 --------------------------------------- 辅助 ---------------------------------------
+function _G.aipFindNearPlayers(inst, dist)
+	local NOTAGS = { "FX", "NOCLICK", "DECOR", "playerghost", "INLIMBO" }
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local ents = TheSim:FindEntities(x, 0, z, dist, { "player", "_health" }, NOTAGS)
+	return ents
+end
+
 -- 降级值如果没有的话
 function fb(value, defaultValue)
 	if value ~= nil then

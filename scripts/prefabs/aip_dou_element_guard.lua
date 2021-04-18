@@ -298,14 +298,12 @@ local list = {
 			-- 每隔 1 秒治疗一个玩家
 			inst:DoPeriodicTask(1, function()
 				local x, y, z = inst.Transform:GetWorldPosition()
-				local NOTAGS = { "FX", "NOCLICK", "DECOR", "playerghost", "INLIMBO" }
 
-				local ents = TheSim:FindEntities(x, 0, z, TUNING.FIRE_DETECTOR_RANGE, { "player", "_health" }, NOTAGS)
+				local ents = aipFindNearPlayers(inst, TUNING.FIRE_DETECTOR_RANGE)
 				ents = aipFilterTable(ents, function(ent) -- 只治疗受伤的
 					return ent.components.health ~= nil and ent.components.health:IsHurt()
 				end)
 				local player = aipRandomEnt(ents)
-				aipTypePrint(ents)
 
 				if player ~= nil then
 					-- 发射治疗元素

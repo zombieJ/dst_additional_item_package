@@ -44,7 +44,7 @@ end
 local function sanityBonusDamageFn(inst, target, damage, weapon)
 	if target.components.sanity ~= nil then
 		local ptg = target.components.sanity:GetRealPercent()
-		return ptg * 50
+		return (1 - ptg) * 50
 	end
     return 0
 end
@@ -92,6 +92,8 @@ local function fn()
 
 	inst:SetStateGraph("SGaip_dragon")
 	inst:SetBrain(brain)
+
+	inst:AddComponent("timer")
 
 	inst:AddComponent("sanityaura")
 

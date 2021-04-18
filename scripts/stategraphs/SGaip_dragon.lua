@@ -23,6 +23,13 @@ local events =
 	EventHandler("death", function(inst) inst.sg:GoToState("death") end),
     CommonHandlers.OnAttack(),
     CommonHandlers.OnLocomote(false, true),
+    EventHandler("aip_cast", function(inst)
+        if not (inst.sg:HasStateTag("busy") or inst.components.health:IsDead()) then
+            inst.sg:GoToState("cast")
+        elseif not inst.sg:HasStateTag("cast") then
+            inst.sg.mem.wantToCast = true
+        end
+    end),
 }
 
 local states =
@@ -43,13 +50,15 @@ local states =
         },
     },
 
-	State{
+    State{
         name = "idle",
         tags = { "idle", "canrotate" },
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
-            if not inst.AnimState:IsCurrentAnimation("idle_loop") then
+            if inst.sg.mem.wantToCast then
+                inst.sg:GoToState("cast")
+            elseif not inst.AnimState:IsCurrentAnimation("idle_loop") then
                 inst.AnimState:PlayAnimation("idle_loop", true)
             end
         end,
@@ -75,6 +84,36 @@ local states =
         },
         events = {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
+        },
+    },
+
+    State{
+        name = "cast",
+        tags = { "cast", "busy" },
+
+        onenter = function(inst, target)
+            inst.Physics:Stop()
+            inst.AnimState:PlayAnimation("cast")
+        end,
+
+        timeline = {-- 1 秒 30 次渲染/1000 帧，580 帧时产生效果。
+            -- 30*580/1000
+            TimeEvent(18*FRAMES, function(inst)
+                -- 进入 CD
+                inst.components.timer:StartTimer("aip_cast_cd", 20)
+
+                -- 召唤爆破
+                local player = aipRandomEnt(aipFindNearPlayers(inst, TUNING.FIRE_DETECTOR_RANGE))
+                local effect = aipSpawnPrefab(player, "aip_shadow_wrapper")
+                effect.Transform:SetScale(2, 2, 2)
+                effect.DoShow()
+            end),
+        },
+        events = {
+            EventHandler("animover", function(inst)
+                inst.sg.mem.wantToCast = nil
+                inst.sg:GoToState("idle")
+            end),
         },
     },
 
