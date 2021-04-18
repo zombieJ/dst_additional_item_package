@@ -19,8 +19,15 @@ end)
 
 local function TryCast(self)
 	local inst = self.inst
-	local player = aipRandomEnt(aipFindNearPlayers(inst, TUNING.FIRE_DETECTOR_RANGE))
-	return not inst.components.timer:TimerExists("aip_cast_cd") and player ~= nil
+	local players = aipFindNearPlayers(inst, TUNING.FIRE_DETECTOR_RANGE)
+	players = aipFilterTable(players, function(player)
+		return player ~= nil and
+			player.components.sanity ~= nil and
+			player.components.sanity.current > 20
+	end)
+
+	inst._aipSanityPlayer = aipRandomEnt(players)
+	return not inst.components.timer:TimerExists("aip_cast_cd") and inst._aipSanityPlayer ~= nil
 end
 
 function DragonBrain:OnStop()
