@@ -80,8 +80,8 @@ local function fn()
 	inst:SetBrain(brain)
 
     inst:AddComponent("health")
-    inst.components.health:SetMaxHealth(TUNING.SPIDER_HEALTH)
-	-- inst.components.health.nofadeout = true
+    inst.components.health:SetMaxHealth(dev_mode and 1 or TUNING.SPIDER_HEALTH)
+	inst.components.health.nofadeout = true
 
 	inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "body"

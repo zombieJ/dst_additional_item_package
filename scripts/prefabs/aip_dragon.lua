@@ -84,9 +84,10 @@ local function fn()
 	end
 
 	inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
-	inst.components.locomotor.walkspeed = TUNING.CRAWLINGHORROR_SPEED
+	inst.components.locomotor:EnableGroundSpeedMultiplier(false)
 	inst.components.locomotor:SetTriggersCreep(false)
-	inst.components.locomotor.pathcaps = { ignorecreep = true }
+	inst.components.locomotor.pathcaps = { ignorewalls = true, ignorecreep = true, allowocean = true }
+	inst.components.locomotor.walkspeed = TUNING.CRAWLINGHORROR_SPEED
 
 	inst.sounds = sounds
 
@@ -113,6 +114,9 @@ local function fn()
 	inst:AddComponent("lootdropper")
 	inst.components.lootdropper:AddRandomLoot("honey", 1)
 	inst.components.lootdropper.numrandomloot = 1
+
+	-- 尾巴数量
+	inst._aipTails = {}
 
 	inst.persists = false
 

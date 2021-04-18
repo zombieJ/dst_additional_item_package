@@ -106,6 +106,9 @@ local states =
                     local effect = aipSpawnPrefab(inst._aipSanityPlayer, "aip_shadow_wrapper")
                     effect.Transform:SetScale(2, 2, 2)
                     effect.DoShow()
+
+                    local tail = aipSpawnPrefab(inst._aipSanityPlayer, "aip_dragon_tail")
+                    table.insert(inst._aipTails, tail)
                 end
             end),
         },

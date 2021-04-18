@@ -19,15 +19,27 @@ end)
 
 local function TryCast(self)
 	local inst = self.inst
+
+	-- 过滤尾巴
+	inst._aipTails = aipFilterTable(inst._aipTails, function(tail)
+		return tail:IsValid()
+	end)
+
+	-- 短路：超过 3 条尾巴 或 CD 中
+	if #inst._aipTails >= 3 or inst.components.timer:TimerExists("aip_cast_cd") then
+		return false
+	end
+
+	-- 附近的玩家
 	local players = aipFindNearPlayers(inst, TUNING.FIRE_DETECTOR_RANGE)
 	players = aipFilterTable(players, function(player)
 		return player ~= nil and
 			player.components.sanity ~= nil and
 			player.components.sanity.current > 20
 	end)
-
 	inst._aipSanityPlayer = aipRandomEnt(players)
-	return not inst.components.timer:TimerExists("aip_cast_cd") and inst._aipSanityPlayer ~= nil
+
+	return inst._aipSanityPlayer ~= nil
 end
 
 function DragonBrain:OnStop()

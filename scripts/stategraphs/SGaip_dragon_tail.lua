@@ -19,7 +19,9 @@ local function PlayExtendedSound(inst, soundname)
 end
 
 local events = {
-	EventHandler("death", function(inst) inst.sg:GoToState("death") end),
+	EventHandler("death", function(inst)
+        inst.sg:GoToState("death")
+    end),
     CommonHandlers.OnAttack(),
     CommonHandlers.OnLocomote(false, true),
 }
@@ -30,12 +32,15 @@ local states = {
         tags = { "busy" },
 
         onenter = function(inst)
-            inst.AnimState:PlayAnimation("appear")
             inst.Physics:Stop()
-            PlayExtendedSound(inst, "appear")
+            inst.AnimState:PlayAnimation("appearing")
+            for i = 1, 4 do
+                inst.AnimState:PushAnimation("appearing", false)
+            end
+            inst.AnimState:PushAnimation("appear", false)
         end,
         events = {
-            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
+            EventHandler("animqueueover", function(inst) inst.sg:GoToState("idle") end),
         },
     },
 
@@ -80,15 +85,22 @@ local states = {
 
         onenter = function(inst)
 			PlayExtendedSound(inst, "death")
-			inst.AnimState:PlayAnimation("death")
+
+            if inst.AnimState:IsCurrentAnimation("appearing") then
+                inst.AnimState:PlayAnimation("death_appearing")
+            else
+                inst.AnimState:PlayAnimation("death")
+            end
+
+			
             inst.Physics:Stop()
             RemovePhysicsColliders(inst)
             inst:AddTag("NOCLICK")
             inst.persists = false
         end,
-        onexit = function(inst)
-            inst:RemoveTag("NOCLICK")
-        end
+        events = {
+            EventHandler("animover", function(inst) inst:Remove() end),
+        },
     },
 }
 
