@@ -38,6 +38,13 @@ local function KeepTarget(inst, target)
     return true
 end
 
+local function OnAttack(inst, data)
+	local target = data.target
+	if target ~= nil and target.components.sanity ~= nil then
+		target.components.sanity:DoDelta(-5)
+	end
+end
+
 local function fn()
 	local inst = CreateEntity()
 
@@ -90,6 +97,8 @@ local function fn()
 	inst.components.combat:SetRange(TUNING.BEE_ATTACK_RANGE)
     inst.components.combat:SetRetargetFunction(1, Retarget)
     inst.components.combat:SetKeepTargetFunction(KeepTarget)
+
+	inst:ListenForEvent("onattackother", OnAttack)
 
 	inst.persists = false
 
