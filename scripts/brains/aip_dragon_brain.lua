@@ -16,12 +16,9 @@ local DragonBrain = Class(Brain, function(self, inst)
 end)
 
 function DragonBrain:OnStop()
-    aipPrint("stop!!!")
 end
 
 function DragonBrain:OnStart()
-    aipPrint("start!!!")
-
 	-- 暗影怪
 	-- local root = PriorityNode(
 	-- 	{

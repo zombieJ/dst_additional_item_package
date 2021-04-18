@@ -27,6 +27,22 @@ local events =
 
 local states =
 {
+    State{
+        name = "appear",
+        tags = { "busy" },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("appear")
+            inst.Physics:Stop()
+            PlayExtendedSound(inst, "appear")
+        end,
+
+        events =
+        {
+            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end)
+        },
+    },
+
 	State{
         name = "idle",
         tags = { "idle", "canrotate" },
@@ -83,4 +99,4 @@ local states =
 
 CommonStates.AddWalkStates(states, nil, nil, true)
 
-return StateGraph("SGaip_dragon", states, events, "idle")
+return StateGraph("SGaip_dragon", states, events, "appear")
