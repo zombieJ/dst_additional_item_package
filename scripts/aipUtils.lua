@@ -1,6 +1,6 @@
 local _G = GLOBAL
 
-local function countTable(tbl)
+function _G.aipCountTable(tbl)
 	local count = 0
 	local lastKey = nil
 	local lastVal = nil
@@ -34,7 +34,7 @@ end
 function _G.aipFlattenTable(originTbl)
 	local targetTbl = {}
 	local tbl = originTbl or {}
-	local count = countTable(tbl)
+	local count = _G.aipCountTable(tbl)
 
 	local i = 1
 	for i = 1, 10000 do
@@ -77,7 +77,7 @@ function _G.aipFilterKeysTable(originTbl, keys)
 end
 
 function _G.aipCommonStr(showType, split, ...)
-	local count = countTable(arg)
+	local count = _G.aipCountTable(arg)
 	local str = ""
 
 	for i = 1, count do
