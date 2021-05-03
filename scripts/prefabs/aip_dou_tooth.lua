@@ -42,7 +42,7 @@ local function onDoTargetAction(inst, doer, target)
 
 	-- 随机赋能
 	if target._aipEmpower ~= nil then
-		target._aipEmpower(target)
+		target._aipEmpower(target, doer)
 	end
 
 	if inst.components.stackable ~= nil then

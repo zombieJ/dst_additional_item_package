@@ -228,10 +228,23 @@ function _G.aipSpawnPrefab(inst, prefab, tx, ty, tz)
 	return tgt
 end
 
--- 替换单位
+-- 替换单位（如果是物品则替换对应物品栏）
 function _G.aipReplacePrefab(inst, prefab, tx, ty, tz)
 	local tgt = _G.aipSpawnPrefab(inst, prefab, tx, ty, tz)
-	inst:Remove()
+
+	if inst.components.inventoryitem ~= nil then
+		local container = inst.components.inventoryitem:GetContainer()
+		local slot = inst.components.inventoryitem:GetSlotNum()
+
+		inst:Remove()
+
+		if container ~= nil then
+			container:GiveItem(tgt, slot)
+		end
+	else
+		inst:Remove()
+	end
+
 	return tgt
 end
 

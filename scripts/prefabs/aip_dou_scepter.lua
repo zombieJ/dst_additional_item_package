@@ -141,8 +141,14 @@ local function beforeAction(inst, projectileInfo, doer)
 end
 
 -- 赋能
-local function empower(inst)
+local function empower(inst, doer)
     inst.SoundEmitter:PlaySound("dontstarve/common/ancienttable_repair")
+
+    local cepter = nil
+
+    if math.random() <= 1.1 then
+        cepter = aipReplacePrefab(inst, "aip_dou_huge_scepter")
+    end
 end
 
 local function genScepter(containerName)
