@@ -31,7 +31,7 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_TOOTH = LANG.DESC
 
 -----------------------------------------------------------
 local function canActOn(inst, doer, target)
-	return target.prefab == "aip_dou_scepter"
+	return target:HasTag("aip_dou_scepter")
 end
 
 local function onDoTargetAction(inst, doer, target)

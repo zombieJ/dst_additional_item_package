@@ -77,16 +77,10 @@ local function refreshScepter(inst)
 end
 
 local function onsave(inst, data)
-	data.magicSlot = inst._magicSlot
 end
 
 local function onload(inst, data)
 	if data ~= nil then
-        inst._magicSlot = data.magicSlot
-
-        if inst.components.container ~= nil then
-            inst.components.container:WidgetSetup("aip_dou_scepter"..tostring(inst._magicSlot))
-        end
 	end
 end
 
@@ -146,110 +140,111 @@ local function beforeAction(inst, projectileInfo, doer)
     return true
 end
 
-local function fn()
-    local inst = CreateEntity()
+local function genScepter(containerName)
+    return function()
+        local inst = CreateEntity()
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddSoundEmitter()
-    inst.entity:AddNetwork()
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddSoundEmitter()
+        inst.entity:AddNetwork()
 
-    MakeInventoryPhysics(inst)
+        MakeInventoryPhysics(inst)
 
-    inst.AnimState:SetBank("aip_dou_scepter")
-    inst.AnimState:SetBuild("aip_dou_scepter")
-    inst.AnimState:PlayAnimation("idle")
+        inst.AnimState:SetBank("aip_dou_scepter")
+        inst.AnimState:SetBuild("aip_dou_scepter")
+        inst.AnimState:PlayAnimation("idle")
 
-    -- weapon (from weapon component) added to pristine state for optimization
-    inst:AddTag("weapon")
-    inst:AddTag("prototyper")
-    inst:AddTag("throw_line")
+        -- weapon (from weapon component) added to pristine state for optimization
+        inst:AddTag("weapon")
+        inst:AddTag("prototyper")
+        inst:AddTag("throw_line")
+        inst:AddTag("aip_dou_scepter")
 
-    MakeInventoryFloatable(inst, "med", 0.1, 0.75)
+        MakeInventoryFloatable(inst, "med", 0.1, 0.75)
 
-    inst.entity:SetPristine()
+        inst.entity:SetPristine()
 
-    -- 添加施法者
-    inst:AddComponent("aipc_caster")
-    inst.components.aipc_caster.onEquip = onCasterEquip
-    inst.components.aipc_caster.onUnequip = onCasterUnequip
+        -- 添加施法者
+        inst:AddComponent("aipc_caster")
+        inst.components.aipc_caster.onEquip = onCasterEquip
+        inst.components.aipc_caster.onUnequip = onCasterUnequip
 
-    -- 鼠标类型判断，在判断的时候会刷新一下指针类型，这样利用了 POINT 就实现了动态刷新的效果。学到了就给我的 mod 点个赞吧
-    inst:AddComponent("aipc_action_client")
-    inst.components.aipc_action_client.canActOn = function(inst, doer, target)
-        refreshScepter(inst)
-        return inst._projectileInfo.action == "FOLLOW" and (target.components.health ~= nil or target.replica.health ~= nil)
-    end
-    inst.components.aipc_action_client.canActOnPoint = function()
-        refreshScepter(inst)
-        return inst._projectileInfo.action ~= "FOLLOW"
-    end
+        -- 鼠标类型判断，在判断的时候会刷新一下指针类型，这样利用了 POINT 就实现了动态刷新的效果。学到了就给我的 mod 点个赞吧
+        inst:AddComponent("aipc_action_client")
+        inst.components.aipc_action_client.canActOn = function(inst, doer, target)
+            refreshScepter(inst)
+            return inst._projectileInfo.action == "FOLLOW" and (target.components.health ~= nil or target.replica.health ~= nil)
+        end
+        inst.components.aipc_action_client.canActOnPoint = function()
+            refreshScepter(inst)
+            return inst._projectileInfo.action ~= "FOLLOW"
+        end
 
-    if not TheWorld.ismastersim then
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        -- 施法
+        inst:AddComponent("aipc_action")
+
+        inst.components.aipc_action.onDoPointAction = function(inst, doer, point)
+            local projectileInfo = refreshScepter(inst)
+
+            if beforeAction(inst, projectileInfo, doer) then
+                local projectile = SpawnPrefab("aip_dou_scepter_projectile")
+                projectile.components.aipc_dou_projectile:StartBy(doer, projectileInfo.queue, nil, point)
+            end
+        end
+
+        inst.components.aipc_action.onDoTargetAction = function(inst, doer, target)
+            local projectileInfo = refreshScepter(inst)
+
+            if beforeAction(inst, projectileInfo, doer) then
+                local projectile = SpawnPrefab("aip_dou_scepter_projectile")
+                projectile.components.aipc_dou_projectile:StartBy(doer, projectileInfo.queue, target)
+            end
+        end
+
+        -- 接受元素提炼
+        inst:AddComponent("container")
+        inst.components.container:WidgetSetup(containerName)
+        inst.components.container.canbeopened = false
+
+        inst:AddComponent("inspectable")
+
+        -- 本身也是一个合成台
+        inst:AddComponent("prototyper")
+        inst.components.prototyper.onturnon = onturnon
+        inst.components.prototyper.onturnoff = onturnoff
+        -- inst.components.prototyper.onactivate = onactivate
+        -- inst.components.prototyper.trees = TUNING.PROTOTYPER_TREES.AIP_DOU_SCEPTER_ONE
+        inst.components.prototyper.trees = TUNING.PROTOTYPER_TREES.AIP_DOU_SCEPTER
+
+        -- 需要充能
+        inst:AddComponent("fueled")
+        inst.components.fueled.fueltype = FUELTYPE.NIGHTMARE
+        inst.components.fueled:InitializeFuelLevel(MAX_USES)
+        -- inst.components.fueled:SetDepletedFn(nofuel)
+        -- inst.components.fueled:SetTakeFuelFn(ontakefuel)
+        inst.components.fueled.accepting = true
+
+        inst:AddComponent("inventoryitem")
+        inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_dou_scepter.xml"
+        inst.components.inventoryitem.imagename = "aip_dou_scepter"
+
+        inst:AddComponent("equippable")
+        inst.components.equippable:SetOnEquip(onequip)
+        inst.components.equippable:SetOnUnequip(onunequip)
+        inst.components.equippable.walkspeedmult = TUNING.CANE_SPEED_MULT
+
+        MakeHauntableLaunch(inst)
+
+        inst.OnLoad = onload
+        inst.OnSave = onsave
+
         return inst
     end
-
-    -- 施法
-    inst:AddComponent("aipc_action")
-
-    inst.components.aipc_action.onDoPointAction = function(inst, doer, point)
-        local projectileInfo = refreshScepter(inst)
-
-        if beforeAction(inst, projectileInfo, doer) then
-            local projectile = SpawnPrefab("aip_dou_scepter_projectile")
-            projectile.components.aipc_dou_projectile:StartBy(doer, projectileInfo.queue, nil, point)
-        end
-    end
-
-    inst.components.aipc_action.onDoTargetAction = function(inst, doer, target)
-        local projectileInfo = refreshScepter(inst)
-
-        if beforeAction(inst, projectileInfo, doer) then
-            local projectile = SpawnPrefab("aip_dou_scepter_projectile")
-            projectile.components.aipc_dou_projectile:StartBy(doer, projectileInfo.queue, target)
-        end
-    end
-
-    -- 接受元素提炼
-    inst:AddComponent("container")
-    inst.components.container:WidgetSetup("aip_dou_scepter")
-    inst.components.container.canbeopened = false
-
-    inst:AddComponent("inspectable")
-
-    -- 本身也是一个合成台
-    inst:AddComponent("prototyper")
-    inst.components.prototyper.onturnon = onturnon
-    inst.components.prototyper.onturnoff = onturnoff
-    -- inst.components.prototyper.onactivate = onactivate
-    -- inst.components.prototyper.trees = TUNING.PROTOTYPER_TREES.AIP_DOU_SCEPTER_ONE
-    inst.components.prototyper.trees = TUNING.PROTOTYPER_TREES.AIP_DOU_SCEPTER
-
-    -- 需要充能
-    inst:AddComponent("fueled")
-    inst.components.fueled.fueltype = FUELTYPE.NIGHTMARE
-    inst.components.fueled:InitializeFuelLevel(MAX_USES)
-    -- inst.components.fueled:SetDepletedFn(nofuel)
-    -- inst.components.fueled:SetTakeFuelFn(ontakefuel)
-    inst.components.fueled.accepting = true
-
-    inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_dou_scepter.xml"
-    inst.components.inventoryitem.imagename = "aip_dou_scepter"
-
-    inst:AddComponent("equippable")
-    inst.components.equippable:SetOnEquip(onequip)
-    inst.components.equippable:SetOnUnequip(onunequip)
-    inst.components.equippable.walkspeedmult = TUNING.CANE_SPEED_MULT
-
-    MakeHauntableLaunch(inst)
-
-    inst._magicSlot = 1
-
-    inst.OnLoad = onload
-    inst.OnSave = onsave
-
-    return inst
 end
 
 ------------------------------- 黑暗爆炸 -------------------------------
@@ -295,5 +290,15 @@ local function explodeShadowFn()
 end
 
 
-return Prefab("aip_dou_scepter", fn, assets, prefabs),
-        Prefab("aip_explode_shadow", explodeShadowFn, { Asset("ANIM", "anim/staff_projectile.zip") }, { "fire_projectile" })
+return Prefab("aip_dou_scepter", genScepter("aip_dou_scepter"), assets, prefabs),
+    Prefab("aip_dou_huge_scepter", genScepter("aip_dou_huge_scepter"), assets, prefabs),
+    Prefab("aip_explode_shadow", explodeShadowFn, { Asset("ANIM", "anim/staff_projectile.zip") }, { "fire_projectile" })
+
+
+--[[
+
+
+c_give"aip_dou_huge_scepter"
+
+
+]]
