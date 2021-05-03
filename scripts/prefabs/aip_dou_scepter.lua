@@ -140,6 +140,11 @@ local function beforeAction(inst, projectileInfo, doer)
     return true
 end
 
+-- 赋能
+local function empower(inst)
+    inst.SoundEmitter:PlaySound("dontstarve/common/ancienttable_repair")
+end
+
 local function genScepter(containerName)
     return function()
         local inst = CreateEntity()
@@ -238,6 +243,8 @@ local function genScepter(containerName)
         inst.components.equippable:SetOnUnequip(onunequip)
         inst.components.equippable.walkspeedmult = TUNING.CANE_SPEED_MULT
 
+        inst._aipEmpower = empower
+
         MakeHauntableLaunch(inst)
 
         inst.OnLoad = onload
@@ -291,6 +298,7 @@ end
 
 
 return Prefab("aip_dou_scepter", genScepter("aip_dou_scepter"), assets, prefabs),
+    Prefab("aip_dou_empower_scepter", genScepter("aip_dou_empower_scepter"), assets, prefabs),
     Prefab("aip_dou_huge_scepter", genScepter("aip_dou_huge_scepter"), assets, prefabs),
     Prefab("aip_explode_shadow", explodeShadowFn, { Asset("ANIM", "anim/staff_projectile.zip") }, { "fire_projectile" })
 

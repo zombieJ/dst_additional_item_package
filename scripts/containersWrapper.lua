@@ -340,6 +340,7 @@ fillDouScepter(5, 30, 10)
 
 -- 容器名字必须和物品名字一样，sad
 params.aip_dou_scepter = params.aip_dou_scepter4
+params.aip_dou_empower_scepter = params.aip_dou_scepter4
 params.aip_dou_huge_scepter = params.aip_dou_scepter5
 
 ---------------- 符文袋 ----------------

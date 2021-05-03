@@ -40,10 +40,16 @@ local function onDoTargetAction(inst, doer, target)
 		return inst
 	end
 
-	-- 施法者需要说两句话
-	-- 改变权杖形状
-	inst.SoundEmitter:PlaySound("dontstarve/common/ancienttable_repair")
-	inst:Remove()
+	-- 随机赋能
+	if target._aipEmpower ~= nil then
+		target._aipEmpower(target)
+	end
+
+	if inst.components.stackable ~= nil then
+		inst.components.stackable:Get():Remove()
+	else
+		inst:Remove()
+	end
 end
 
 function fn()
@@ -69,6 +75,8 @@ function fn()
 		return inst
 	end
 
+	inst:AddComponent("stackable")
+
 	inst:AddComponent("aipc_action")
 	inst.components.aipc_action.onDoTargetAction = onDoTargetAction
 
@@ -88,7 +96,7 @@ return Prefab("aip_dou_tooth", fn, assets, prefabs)
 
 
 c_give"aip_dou_scepter"
-c_give"aip_dou_tooth"
+c_give("aip_dou_tooth", 20)
 
 
 ]]
