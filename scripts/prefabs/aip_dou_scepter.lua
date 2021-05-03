@@ -22,13 +22,13 @@ local LANG_MAP = {
 	["english"] = {
         ["NAME"] = "Mystic Scepter",
         ["REC_DESC"] = "Customize your magic!",
-        ["DESC"] = "Customize your magic!",
+        ["DESC"] = "Looks like a key?",
         ["EMPTY"] = "No more mana!",
 	},
 	["chinese"] = {
         ["NAME"] = "神秘权杖",
         ["REC_DESC"] = "自定义你的魔法！",
-        ["DESC"] = "自定义你的魔法！",
+        ["DESC"] = "看起来像一把钥匙？",
         ["EMPTY"] = "权杖需要充能了",
 	},
 }
