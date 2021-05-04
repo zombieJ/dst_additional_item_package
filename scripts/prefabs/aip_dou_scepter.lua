@@ -19,31 +19,46 @@ local MAX_USES = BASIC_USE * 10 * 5
 
 -- 文字描述
 local LANG_MAP = {
-	["english"] = {
-        ["NAME"] = "Mystic Scepter",
-        ["REC_DESC"] = "Customize your magic!",
-        ["DESC"] = "Looks like a key?",
-        ["EMPTY"] = "No more mana!",
+	english = {
+        NAME = "Mystic Scepter",
+        REC_DESC = "Customize your magic!",
+        DESC = "Looks like a key?",
+        EMPTY = "No more mana!",
+        HUGE = "Expansion",
 	},
-	["chinese"] = {
-        ["NAME"] = "神秘权杖",
-        ["REC_DESC"] = "自定义你的魔法！",
-        ["DESC"] = "看起来像一把钥匙？",
-        ["EMPTY"] = "权杖需要充能了",
+	chinese = {
+        NAME = "神秘权杖",
+        REC_DESC = "自定义你的魔法！",
+        DESC = "看起来像一把钥匙？",
+        EMPTY = "权杖需要充能了",
+        HUGE = "扩容",
 	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
+-- 获取名称
+local function getStr(name)
+    return LANG[name] or LANG_MAP.english[name]
+end
+
 STRINGS.NAMES.AIP_DOU_SCEPTER = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_DOU_SCEPTER = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_SCEPTER = LANG.DESC
 
+STRINGS.NAMES.AIP_DOU_EMPOWER_SCEPTER = LANG.NAME
+STRINGS.NAMES.AIP_DOU_HUGE_SCEPTER = LANG.NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_EMPOWER_SCEPTER = LANG.DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_HUGE_SCEPTER = LANG.DESC
+
 local assets = {
     Asset("ANIM", "anim/aip_dou_scepter.zip"),
     Asset("ANIM", "anim/aip_dou_scepter_swap.zip"),
+    Asset("ANIM", "anim/aip_dou_empower_scepter.zip"),
+    Asset("ANIM", "anim/aip_dou_empower_scepter_swap.zip"),
     Asset("ANIM", "anim/floating_items.zip"),
     Asset("ATLAS", "images/inventoryimages/aip_dou_scepter.xml"),
+    Asset("ATLAS", "images/inventoryimages/aip_dou_empower_scepter.xml"),
 }
 
 
@@ -99,27 +114,6 @@ local function onturnoff(inst)
     end
 end
 
--- 装备
-local function onequip(inst, owner)
-    owner.AnimState:OverrideSymbol("swap_object", "aip_dou_scepter_swap", "aip_dou_scepter_swap")
-
-    owner.AnimState:Show("ARM_carry")
-    owner.AnimState:Hide("ARM_normal")
-
-    if inst.components.container ~= nil then
-        inst.components.container:Open(owner)
-    end
-end
-
-local function onunequip(inst, owner)
-    owner.AnimState:Hide("ARM_carry")
-    owner.AnimState:Show("ARM_normal")
-
-    if inst.components.container ~= nil then
-        inst.components.container:Close()
-    end
-end
-
 -- 添加元素
 local function onCasterEquip(inst)
     refreshScepter(inst)
@@ -145,13 +139,43 @@ local function empower(inst, doer)
     inst.SoundEmitter:PlaySound("dontstarve/common/ancienttable_repair")
 
     local cepter = nil
+    local originName = getStr("NAME")
+    local prefixName = getStr("HUGE")
 
     if math.random() <= 1.1 then
         cepter = aipReplacePrefab(inst, "aip_dou_huge_scepter")
     end
+
+    cepter.components.named:SetName(prefixName.."-"..originName)
 end
 
-local function genScepter(containerName)
+local function genScepter(containerName, animName)
+    local anim = animName or containerName
+
+    ------------------------- 装备 -------------------------
+    local swapName = anim.."_swap"
+
+    local function onequip(inst, owner)
+        owner.AnimState:OverrideSymbol("swap_object", swapName, swapName)
+
+        owner.AnimState:Show("ARM_carry")
+        owner.AnimState:Hide("ARM_normal")
+
+        if inst.components.container ~= nil then
+            inst.components.container:Open(owner)
+        end
+    end
+
+    local function onunequip(inst, owner)
+        owner.AnimState:Hide("ARM_carry")
+        owner.AnimState:Show("ARM_normal")
+
+        if inst.components.container ~= nil then
+            inst.components.container:Close()
+        end
+    end
+
+    ------------------------- 实体 -------------------------
     return function()
         local inst = CreateEntity()
 
@@ -162,8 +186,8 @@ local function genScepter(containerName)
 
         MakeInventoryPhysics(inst)
 
-        inst.AnimState:SetBank("aip_dou_scepter")
-        inst.AnimState:SetBuild("aip_dou_scepter")
+        inst.AnimState:SetBank(anim)
+        inst.AnimState:SetBuild(anim)
         inst.AnimState:PlayAnimation("idle")
 
         -- weapon (from weapon component) added to pristine state for optimization
@@ -222,6 +246,7 @@ local function genScepter(containerName)
         inst.components.container:WidgetSetup(containerName)
         inst.components.container.canbeopened = false
 
+        inst:AddComponent("named")
         inst:AddComponent("inspectable")
 
         -- 本身也是一个合成台
@@ -241,8 +266,8 @@ local function genScepter(containerName)
         inst.components.fueled.accepting = true
 
         inst:AddComponent("inventoryitem")
-        inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_dou_scepter.xml"
-        inst.components.inventoryitem.imagename = "aip_dou_scepter"
+        inst.components.inventoryitem.atlasname = "images/inventoryimages/"..anim..".xml"
+        inst.components.inventoryitem.imagename = anim
 
         inst:AddComponent("equippable")
         inst.components.equippable:SetOnEquip(onequip)
@@ -305,7 +330,7 @@ end
 
 return Prefab("aip_dou_scepter", genScepter("aip_dou_scepter"), assets, prefabs),
     Prefab("aip_dou_empower_scepter", genScepter("aip_dou_empower_scepter"), assets, prefabs),
-    Prefab("aip_dou_huge_scepter", genScepter("aip_dou_huge_scepter"), assets, prefabs),
+    Prefab("aip_dou_huge_scepter", genScepter("aip_dou_huge_scepter", "aip_dou_empower_scepter"), assets, prefabs),
     Prefab("aip_explode_shadow", explodeShadowFn, { Asset("ANIM", "anim/staff_projectile.zip") }, { "fire_projectile" })
 
 
