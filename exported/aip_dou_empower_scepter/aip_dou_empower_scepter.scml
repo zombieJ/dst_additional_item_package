@@ -79,16 +79,8 @@
                     <object_ref id="0" name="output" folder="0" file="1" abs_x="2.946023" abs_y="90" abs_pivot_x="0.553977" abs_pivot_y="0.08006" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
                     <object_ref id="1" name="grass" folder="0" file="0" abs_x="0" abs_y="1" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1.391304" abs_scale_y="1.391304" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
-                <key id="1" time="200">
+                <key id="1" time="300">
                     <object_ref id="0" timeline="0" key="1" z_index="0"/>
-                    <object_ref id="1" timeline="1" key="0" z_index="1"/>
-                </key>
-                <key id="2" time="253">
-                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
-                    <object_ref id="1" timeline="1" key="0" z_index="1"/>
-                </key>
-                <key id="3" time="299">
-                    <object_ref id="0" timeline="0" key="3" z_index="0"/>
                     <object_ref id="1" timeline="1" key="0" z_index="1"/>
                 </key>
             </mainline>
@@ -96,13 +88,7 @@
                 <key id="0" spin="0">
                     <object folder="0" file="1" x="2.946023" y="90" pivot_x="0.553977" pivot_y="0.08006" angle="0"/>
                 </key>
-                <key id="1" time="200" spin="0">
-                    <object folder="0" file="1" x="2.946023" y="12.41994" pivot_x="0.553977" pivot_y="0.08006" angle="0"/>
-                </key>
-                <key id="2" time="253" spin="0">
-                    <object folder="0" file="1" x="2.946023" y="27.41994" pivot_x="0.553977" pivot_y="0.08006" angle="0"/>
-                </key>
-                <key id="3" time="299" spin="0">
+                <key id="1" time="300" spin="0">
                     <object folder="0" file="1" x="2.946023" y="12.41994" pivot_x="0.553977" pivot_y="0.08006" angle="0"/>
                 </key>
             </timeline>

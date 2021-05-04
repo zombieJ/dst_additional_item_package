@@ -101,14 +101,6 @@ local function refreshScepter(inst)
     return projectileInfo
 end
 
-local function onsave(inst, data)
-end
-
-local function onload(inst, data)
-	if data ~= nil then
-	end
-end
-
 -- 合成科技
 local function onturnon(inst)
     inst.AnimState:PlayAnimation("proximity_pre")
@@ -146,23 +138,42 @@ end
 
 -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>> 赋能 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 local empowerList = {
-    {
-        prefab = "aip_dou_huge_scepter",
-        empower = "HUGE",       -- 更大容量
-    },
+    -- {
+    --     prefab = "aip_dou_huge_scepter",
+    --     empower = "HUGE",       -- 更大容量
+    -- },
     {
         empower = "SAVING",     -- 更少消耗
     },
-    {
-        empower = "RUNNER",     -- 更快速度
-    },
-    {
-        empower = "POWER",      -- 更多伤害
-    },
-    {
-        empower = "VAMPIRE",    -- 伤害吸血
-    },
+    -- {
+    --     empower = "RUNNER",     -- 更快速度
+    -- },
+    -- {
+    --     empower = "POWER",      -- 更多伤害
+    -- },
+    -- {
+    --     empower = "VAMPIRE",    -- 伤害吸血
+    -- },
 }
+
+local function empowerEffect(inst)
+    local emp = inst._aip_empower
+
+    if emp == "RUNNER" then
+        inst.components.equippable.walkspeedmult = 1.55
+    end
+end
+
+local function onsave(inst, data)
+    data.empower = inst._aip_empower
+end
+
+local function onload(inst, data)
+	if data ~= nil then
+        inst._aip_empower = data.empower
+        empowerEffect(inst)
+	end
+end
 
 local function empower(inst, doer)
     inst.SoundEmitter:PlaySound("dontstarve/common/ancienttable_repair")
@@ -181,10 +192,11 @@ local function empower(inst, doer)
     local originName = getStr("NAME")
     local prefixName = getStr(empower)
 
-    -- 创建法杖 & 赋能
+    ---------------- 创建法杖 & 赋能 ----------------
     local cepter = aipReplacePrefab(inst, prefab)
-
     cepter.components.named:SetName(prefixName.."-"..originName)
+    cepter._aip_empower = empower
+    empowerEffect(cepter)
 end
 
 -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>> 生成 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
