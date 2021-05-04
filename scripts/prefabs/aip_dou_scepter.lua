@@ -24,14 +24,24 @@ local LANG_MAP = {
         REC_DESC = "Customize your magic!",
         DESC = "Looks like a key?",
         EMPTY = "No more mana!",
+
         HUGE = "Expansion",
+        SAVING = "Saving",
+        RUNNER = "Runer",
+        POWER = "Power",
+        VAMPIRE = "Vampire",
 	},
 	chinese = {
         NAME = "神秘权杖",
         REC_DESC = "自定义你的魔法！",
         DESC = "看起来像一把钥匙？",
         EMPTY = "权杖需要充能了",
-        HUGE = "扩容",
+
+        HUGE = "扩容",      -- 更大容量
+        SAVING = "节能",    -- 更少消耗
+        RUNNER = "奔驰",    -- 更快速度
+        POWER = "赋能",     -- 更多伤害
+        VAMPIRE = "嗜血",   -- 伤害吸血
 	},
 }
 
@@ -134,21 +144,50 @@ local function beforeAction(inst, projectileInfo, doer)
     return true
 end
 
--- 赋能
+-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>> 赋能 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+local empowerList = {
+    {
+        prefab = "aip_dou_huge_scepter",
+        empower = "HUGE",       -- 更大容量
+    },
+    {
+        empower = "SAVING",     -- 更少消耗
+    },
+    {
+        empower = "RUNNER",     -- 更快速度
+    },
+    {
+        empower = "POWER",      -- 更多伤害
+    },
+    {
+        empower = "VAMPIRE",    -- 伤害吸血
+    },
+}
+
 local function empower(inst, doer)
     inst.SoundEmitter:PlaySound("dontstarve/common/ancienttable_repair")
 
-    local cepter = nil
-    local originName = getStr("NAME")
-    local prefixName = getStr("HUGE")
-
-    if math.random() <= 1.1 then
-        cepter = aipReplacePrefab(inst, "aip_dou_huge_scepter")
+    -- 掉出所有符文
+    if inst.components.container ~= nil then
+        inst.components.container:DropEverything()
     end
+
+    -- 随机选择强化类型
+    local emp = aipRandomEnt(empowerList)
+    local prefab = emp.prefab or "aip_dou_empower_scepter"
+    local empower = emp.empower
+
+    -- 获取文字描述
+    local originName = getStr("NAME")
+    local prefixName = getStr(empower)
+
+    -- 创建法杖 & 赋能
+    local cepter = aipReplacePrefab(inst, prefab)
 
     cepter.components.named:SetName(prefixName.."-"..originName)
 end
 
+-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>> 生成 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 local function genScepter(containerName, animName)
     local anim = animName or containerName
 

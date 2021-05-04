@@ -99,4 +99,6 @@ c_give"aip_dou_scepter"
 c_give("aip_dou_tooth", 20)
 
 
+c_give("aip_dou_split_inscription", 5)
+
 ]]
