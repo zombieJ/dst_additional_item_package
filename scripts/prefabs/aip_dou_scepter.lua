@@ -85,9 +85,9 @@ local function refreshScepter(inst)
 
     if inst.components.container ~= nil then
         -- 不能用 GetAllItems，否则顺序不对
-        projectileInfo = calculateProjectile(inst.components.container.slots)
+        projectileInfo = calculateProjectile(inst.components.container.slots, inst)
     elseif inst.replica.container ~= nil then
-        projectileInfo = calculateProjectile(inst.replica.container:GetItems())
+        projectileInfo = calculateProjectile(inst.replica.container:GetItems(), inst)
     end
 
     inst._projectileInfo = projectileInfo
@@ -138,22 +138,22 @@ end
 
 -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>> 赋能 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 local empowerList = {
-    -- {
-    --     prefab = "aip_dou_huge_scepter",
-    --     empower = "HUGE",       -- 更大容量
-    -- },
+    {
+        prefab = "aip_dou_huge_scepter",
+        empower = "HUGE",       -- 更大容量
+    },
     {
         empower = "SAVING",     -- 更少消耗
     },
-    -- {
-    --     empower = "RUNNER",     -- 更快速度
-    -- },
-    -- {
-    --     empower = "POWER",      -- 更多伤害
-    -- },
-    -- {
-    --     empower = "VAMPIRE",    -- 伤害吸血
-    -- },
+    {
+        empower = "RUNNER",     -- 更快速度
+    },
+    {
+        empower = "POWER",      -- 更多伤害
+    },
+    {
+        empower = "VAMPIRE",    -- 伤害吸血
+    },
 }
 
 local function empowerEffect(inst)

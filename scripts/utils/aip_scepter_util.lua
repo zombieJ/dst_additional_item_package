@@ -89,10 +89,12 @@ local function createGroup(prevGrp)
 		guard = 0,
 		-- 痛
 		cost = 0,
+		-- 吸血
+		vampire = false,
 	}
 end
 
-function calculateProjectile(items)
+function calculateProjectile(items, inst)
 	local projectileInfo = {
 		action = nil,
 		uses = 1,
@@ -181,6 +183,21 @@ function calculateProjectile(items)
 	for i, task in ipairs(projectileInfo.queue) do
 		if task.elementCount >= 1 then
 			task.damage = task.damage * math.pow(1.25, task.elementCount - 1)
+		end
+	end
+
+	------------------------------ 赋能 ------------------------------
+	local emp = inst ~= nil and inst._aip_empower
+
+	if emp == "SAVING" then				-- 更少魔法消耗（50%）
+		projectileInfo.uses = projectileInfo.uses / 2
+	elseif emp == "POWER" then			-- 更多伤害（1.55 倍）
+		for i, task in ipairs(projectileInfo.queue) do
+			task.damage = task.damage * 1.55
+		end
+	elseif emp == "VAMPIRE" then		-- 吸血
+		for i, task in ipairs(projectileInfo.queue) do
+			task.vampire = true
 		end
 	end
 

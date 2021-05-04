@@ -445,6 +445,27 @@ function Projectile:EffectTaskOn(target)
 		target.components.combat:GetAttacked(self.doer, finalDamage, nil, nil)
 		doEffect = true
 
+		-- 【赋能 - 吸血】每次伤害都恢复 10 点生命值
+		if self.task.vampire then
+			local proj = SpawnPrefab("aip_projectile")
+			proj.components.aipc_info_client:SetByteArray( -- 调整颜色
+				"aip_projectile_color", { 4, 0, 3, 5 }
+			)
+
+			local x, y, z = target.Transform:GetWorldPosition()
+
+			proj.Transform:SetPosition(x, 1, z)
+			proj.components.aipc_projectile.speed = 10
+			proj.components.aipc_projectile:GoToTarget(self.doer, function()
+				if
+					self.doer.components.health ~= nil and not self.doer.components.health:IsDead() and
+					self.doer:IsValid() and not self.doer:IsInLimbo()
+				then
+					self.doer.components.health:DoDelta(10)
+				end
+			end)
+		end
+
 		-- 【痛】看看死了没有，准备反伤施法者
 		if
 			self.task.element == "COST" and
