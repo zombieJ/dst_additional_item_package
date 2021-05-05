@@ -96,6 +96,32 @@ local function chop_down_tree(inst, chopper)
 	inst:ListenForEvent("animover", inst.Remove)
 end
 
+--------------------------------- 鬼树 ---------------------------------
+local function chop_ghost(inst, chopper)
+    if not (chopper ~= nil and chopper:HasTag("playerghost")) then
+		inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/livingtree_hit")
+    end
+
+	inst.AnimState:PlayAnimation("chop_"..inst._aip_stage)
+	inst.AnimState:PushAnimation("idle_"..inst._aip_stage, true)
+end
+
+local function chop_down_ghost(inst, chopper)
+	inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/livingtree_die")
+
+	inst.AnimState:PlayAnimation("fall_"..inst._aip_stage)
+	inst.components.lootdropper:DropLoot()
+
+	-- 开启公测后创造一个鬼怪出来
+	local effect = aipSpawnPrefab(inst, "aip_shadow_wrapper")
+	effect.Transform:SetScale(2, 2, 2)
+	effect.DoShow()
+
+	aipSpawnPrefab(inst, "aip_dragon")
+
+	inst:ListenForEvent("animover", inst.Remove)
+end
+
 ------------------------------- 阶段函数 -------------------------------
 local function sunflower(stage, info)
 	local name = "aip_sunflower_"..stage
@@ -125,6 +151,11 @@ local function sunflower(stage, info)
 
 		inst:AddTag("plant")
 		inst:AddTag("tree")
+		inst:AddTag("aip_sunflower")
+
+		if info.tag ~= nil then
+			inst:AddTag(info.tag)
+		end
 
 		inst.AnimState:SetBuild("aip_sunflower")
 		inst.AnimState:SetBank("aip_sunflower")
@@ -219,6 +250,7 @@ local PLANTS = {
 	},
 	tall = {
 		physics = .25,
+		tag = "aip_sunflower_tall",
 		workable = {
 			times = TUNING.EVERGREEN_CHOPS_NORMAL,
 			action = ACTIONS.CHOP,
@@ -226,6 +258,16 @@ local PLANTS = {
 			finishCallback = chop_down_tree,
 		},
 		loot = {"log", "log","aip_veggie_sunflower"}
+	},
+	ghost = {
+		physics = .25,
+		workable = {
+			times = TUNING.EVERGREEN_CHOPS_NORMAL,
+			action = ACTIONS.CHOP,
+			callback = chop_ghost,
+			finishCallback = chop_down_ghost,
+		},
+		loot = {"nightmarefuel"}
 	},
 }
 local prefabs = {
@@ -245,6 +287,7 @@ c_give"birdcage"
 c_give"robin_winter"
 
 
+c_give"aip_sunflower_ghost"
 
 c_give"axe"
 
@@ -254,14 +297,8 @@ c_give"aip_sunflower"
 
 
 
+
 TheWorld:PushEvent("snowcoveredchanged", true)
-
-
-
-
-
-
-TheWorld:PushEvent("ms_setseason", "winter")
 
 
 
@@ -270,9 +307,5 @@ TheWorld:PushEvent("ms_setseason", "spring")
 
 
 TheWorld:PushEvent("ms_setseason", "autumn")
-
-
-TheWorld:PushEvent("snowcoveredchanged", true)
-
 
 ]]

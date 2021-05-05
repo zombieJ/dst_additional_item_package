@@ -1,5 +1,8 @@
 local _G = GLOBAL
 
+-- 公测
+local open_beta = _G.aipGetModConfig("open_beta") == "open"
+
 -- 开发模式
 local dev_mode = _G.aipGetModConfig("dev_mode") == "enabled"
 
@@ -36,8 +39,6 @@ AddPrefabPostInit("hermithouse", function(inst) ShadowFollowerPrefabPostInit(ins
 AddPrefabPostInit("malbatross", function(inst) ShadowFollowerPrefabPostInit(inst) end) -- 邪天翁
 
 -- ------------------------------------- 豆酱权杖 -------------------------------------
--- GLOBAL.LOCKTYPE.AIP_DOU_OPAL = "aip_dou_opal"
-
 local birds = { "crow", "robin", "robin_winter", "canary", "quagmire_pigeon", "puffin" }
 if additional_chesspieces then
 	for i, name in ipairs(birds) do
@@ -65,6 +66,22 @@ if additional_chesspieces then
 		end)
 	end
 end
+
+----------------------------------------- 暗影怪 -----------------------------------------
+
+function createFootPrint(inst)
+	inst:ListenForEvent("death", function()
+		-- 满足一定概率则生成脚印
+		if math.random() <= (dev_mode and 1 or 0.33) then
+			_G.aipSpawnPrefab(inst, "aip_dragon_footprint")
+		end
+	end)
+end
+
+AddPrefabPostInit("crawlinghorror", createFootPrint)
+AddPrefabPostInit("terrorbeak", createFootPrint)
+AddPrefabPostInit("crawlingnightmare", createFootPrint)
+AddPrefabPostInit("nightmarebeak", createFootPrint)
 
 ------------------------------------------ 活木 ------------------------------------------
 AddPrefabPostInit("livinglog", function(inst)

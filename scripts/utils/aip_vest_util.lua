@@ -63,7 +63,36 @@ function createEffectVest(bank, build, animate, sound)
 	return inst
 end
 
+function createGroupVest(bank, build, animate)
+	local inst = CreateEntity()
+
+	inst:AddTag("FX")
+	inst:AddTag("NOCLICK")
+	--[[Non-networked entity]]
+	inst.entity:SetCanSleep(false)
+	inst.persists = false
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+
+	MakeCharacterPhysics(inst, 1, .1)
+	RemovePhysicsColliders(inst)
+
+	inst.AnimState:SetBank(bank)
+	inst.AnimState:SetBuild(build)
+	inst.AnimState:PlayAnimation(animate)
+
+	inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+	inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
+	inst.AnimState:SetSortOrder(2)
+
+	inst:ListenForEvent("animover", inst.Remove)
+
+	return inst
+end
+
 return {
 	createClientVest = createClientVest,
 	createEffectVest = createEffectVest,
+	createGroupVest = createGroupVest,
 }

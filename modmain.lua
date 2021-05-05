@@ -41,14 +41,15 @@ PrefabFiles =
 	"aip_blood_package",
 	"aip_plaster",
 	"aip_igloo",
+	"aip_dragon",
+	"aip_dragon_tail",
+	"aip_dragon_footprint",
 
 	-- Weapon
 	"popcorngun",
 	"aip_fish_sword",
 	"aip_beehave",
 	"aip_oar_woodead",
-	"aip_dou_opal",
-	"aip_dou_scepter",
 	"aip_dou_scepter_projectile",
 	"aip_heal_fx",
 	"aip_sanity_fx",
@@ -57,6 +58,11 @@ PrefabFiles =
 	"aip_dou_element_guard",
 	"aip_aura",
 	"aip_buffer_fx",
+
+	-- Scepter
+	"aip_dou_opal",
+	"aip_dou_tooth",
+	"aip_dou_scepter",
 
 	-- Building
 	"incinerator",

@@ -306,7 +306,7 @@ function params.chesspiece_aip_doujiang.widget.buttoninfo.validfn(inst)
 end
 
 ---------------- 豆酱权杖 ----------------
-function fillDouScepter(slotCount)
+function fillDouScepter(slotCount, topOffset, offset)
 	local name = "aip_dou_scepter"..tostring(slotCount)
 	local loopIndex = slotCount - 1
 
@@ -315,7 +315,7 @@ function fillDouScepter(slotCount)
 			slotpos = {},
 			animbank = "ui_cookpot_1x4",
 			animbuild = "ui_cookpot_1x4",
-			pos = Vector3(0, -30 + loopIndex * 45, 0),
+			pos = Vector3(0, -30 + loopIndex * 45 - topOffset, 0),
 		},
 		acceptsstacks = false,
 		usespecificslotsforitems = true,
@@ -323,7 +323,10 @@ function fillDouScepter(slotCount)
 	}
 
 	for y = 0, loopIndex do
-		table.insert(params[name].widget.slotpos, Vector3(0, 108 - 72 * y, 0))
+		table.insert(
+			params[name].widget.slotpos,
+			Vector3(0, 108 - (72 - offset) * y, 0)
+		)
 	end
 
 	-- 只接受魔法元素
@@ -332,10 +335,13 @@ function fillDouScepter(slotCount)
 	end
 end
 
-fillDouScepter(4)
+fillDouScepter(4, 0, 0)
+fillDouScepter(5, 30, 10)
 
 -- 容器名字必须和物品名字一样，sad
 params.aip_dou_scepter = params.aip_dou_scepter4
+params.aip_dou_empower_scepter = params.aip_dou_scepter4
+params.aip_dou_huge_scepter = params.aip_dou_scepter5
 
 ---------------- 符文袋 ----------------
 params.aip_dou_inscription_package =
@@ -387,8 +393,6 @@ params.aip_xinyue_hoe = {
 		slotpos = {},
         animbank = "ui_chest_3x3",
         animbuild = "ui_chest_3x3",
-		-- pos = Vector3(0, 15, 0),
-		-- pos = Vector3(0, 45, 0),
 		pos = Vector3(0, 80, 0),
     },
     usespecificslotsforitems = true,

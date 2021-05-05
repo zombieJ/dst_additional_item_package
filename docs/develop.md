@@ -36,6 +36,14 @@
 
 https://www.it610.com/article/5028120.htm
 
+## 动画队列结束
+
+animqueueover
+
+## 永远垂直
+
+redlanternbody.lua
+
 # apiUtils
 
 提供了一些辅助方法

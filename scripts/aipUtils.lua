@@ -205,12 +205,46 @@ function _G.aipRandomEnt(ents)
 end
 
 --------------------------------------- 辅助 ---------------------------------------
--- 替换单位
-function _G.aipReplacePrefab(inst, prefab)
+function _G.aipFindNearPlayers(inst, dist)
+	local NOTAGS = { "FX", "NOCLICK", "DECOR", "playerghost", "INLIMBO" }
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local ents = TheSim:FindEntities(x, 0, z, dist, { "player", "_health" }, NOTAGS)
+	return ents
+end
+
+-- 降级值如果没有的话
+function fb(value, defaultValue)
+	if value ~= nil then
+		return value
+	end
+	return defaultValue
+end
+
+-- 在目标位置创建
+function _G.aipSpawnPrefab(inst, prefab, tx, ty, tz)
 	local tgt = _G.SpawnPrefab(prefab)
 	local x, y, z = inst.Transform:GetWorldPosition()
-	tgt.Transform:SetPosition(x, y, z)
-	inst:Remove()
+	tgt.Transform:SetPosition(fb(tx, x), fb(ty, y), fb(tz, z))
+	return tgt
+end
+
+-- 替换单位（如果是物品则替换对应物品栏）
+function _G.aipReplacePrefab(inst, prefab, tx, ty, tz)
+	local tgt = _G.aipSpawnPrefab(inst, prefab, tx, ty, tz)
+
+	if inst.components.inventoryitem ~= nil then
+		local container = inst.components.inventoryitem:GetContainer()
+		local slot = inst.components.inventoryitem:GetSlotNum()
+
+		inst:Remove()
+
+		if container ~= nil then
+			container:GiveItem(tgt, slot)
+		end
+	else
+		inst:Remove()
+	end
+
 	return tgt
 end
 
