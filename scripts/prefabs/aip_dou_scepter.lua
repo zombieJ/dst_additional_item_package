@@ -23,6 +23,7 @@ local LANG_MAP = {
         NAME = "Mystic Scepter",
         REC_DESC = "Customize your magic!",
         DESC = "Looks like a key?",
+        EMPOWER_DESC = "A fully key!",
         EMPTY = "No more mana!",
 
         HUGE = "Expansion",
@@ -35,6 +36,7 @@ local LANG_MAP = {
         NAME = "神秘权杖",
         REC_DESC = "自定义你的魔法！",
         DESC = "看起来像一把钥匙？",
+        EMPOWER_DESC = "一把完整的钥匙！",
         EMPTY = "权杖需要充能了",
 
         HUGE = "扩容",      -- 更大容量
@@ -58,8 +60,8 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_SCEPTER = LANG.DESC
 
 STRINGS.NAMES.AIP_DOU_EMPOWER_SCEPTER = LANG.NAME
 STRINGS.NAMES.AIP_DOU_HUGE_SCEPTER = LANG.NAME
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_EMPOWER_SCEPTER = LANG.DESC
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_HUGE_SCEPTER = LANG.DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_EMPOWER_SCEPTER = LANG.EMPOWER_DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_HUGE_SCEPTER = LANG.EMPOWER_DESC
 
 local assets = {
     Asset("ANIM", "anim/aip_dou_scepter.zip"),

@@ -52,6 +52,14 @@ local function onDoTargetAction(inst, doer, target)
 	end
 end
 
+local function OnUse(inst, target) -- 恢复 50% 损失的理智值
+	if target.components.sanity ~= nil then
+		local ptg = 1 - target.components.sanity:GetPercentWithPenalty()
+		local max = target.components.sanity:GetMaxWithPenalty()
+		target.components.sanity:DoDelta(max * ptg * 0.5)
+	end
+end
+
 function fn()
 	local inst = CreateEntity()
 
@@ -84,6 +92,10 @@ function fn()
 
 	inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_dou_tooth.xml"
+
+	inst:AddComponent("healer")
+	inst.components.healer:SetHealthAmount(5)
+	inst.components.healer.onhealfn = OnUse
 
 	MakeHauntableLaunchAndIgnite(inst)
 
