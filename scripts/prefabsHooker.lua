@@ -68,23 +68,20 @@ if additional_chesspieces then
 end
 
 ----------------------------------------- 暗影怪 -----------------------------------------
-if open_beta then
-	local PROBABILITY = dev_mode and 1 or 0.33
 
-	function createFootPrint(inst)
-		inst:ListenForEvent("death", function()
-			-- 满足一定概率则生成脚印
-			if math.random() <= PROBABILITY then
-				_G.aipSpawnPrefab(inst, "aip_dragon_footprint")
-			end
-		end)
-	end
-
-	AddPrefabPostInit("crawlinghorror", createFootPrint)
-	AddPrefabPostInit("terrorbeak", createFootPrint)
-	AddPrefabPostInit("crawlingnightmare", createFootPrint)
-	AddPrefabPostInit("nightmarebeak", createFootPrint)
+function createFootPrint(inst)
+	inst:ListenForEvent("death", function()
+		-- 满足一定概率则生成脚印
+		if math.random() <= (dev_mode and 1 or 0.33) then
+			_G.aipSpawnPrefab(inst, "aip_dragon_footprint")
+		end
+	end)
 end
+
+AddPrefabPostInit("crawlinghorror", createFootPrint)
+AddPrefabPostInit("terrorbeak", createFootPrint)
+AddPrefabPostInit("crawlingnightmare", createFootPrint)
+AddPrefabPostInit("nightmarebeak", createFootPrint)
 
 ------------------------------------------ 活木 ------------------------------------------
 AddPrefabPostInit("livinglog", function(inst)

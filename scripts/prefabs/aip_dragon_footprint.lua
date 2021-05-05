@@ -1,8 +1,3 @@
-local open_beta = aipGetModConfig("open_beta")
-if open_beta ~= "open" then
-	return nil
-end
-
 local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 local assets = {

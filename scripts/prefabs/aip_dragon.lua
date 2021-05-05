@@ -3,13 +3,28 @@ local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 local brain = require("brains/aip_dragon_brain")
 
-local assets =
-{
+local assets = {
     Asset("ANIM", "anim/aip_dragon.zip"),
 }
 
-local sounds =
-{
+
+local language = aipGetModConfig("language")
+
+local LANG_MAP = {
+	english = {
+		NAME = "Dragon Horror",
+	},
+	chinese = {
+		NAME = "游龙梦魇",
+	},
+}
+
+local LANG = LANG_MAP[language] or LANG_MAP.english
+
+-- 文字描述
+STRINGS.NAMES.AIP_DRAGON = LANG.NAME
+
+local sounds = {
 	attack = "dontstarve/sanity/creature2/attack",
 	attack_grunt = "dontstarve/sanity/creature2/attack_grunt",
 	death = "dontstarve/sanity/creature2/die",

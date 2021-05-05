@@ -1,6 +1,3 @@
--- 公测
-local open_beta = aipGetModConfig("open_beta") == "open"
-
 -- 食物
 local additional_food = aipGetModConfig("additional_food")
 if additional_food ~= "open" then
@@ -112,17 +109,15 @@ end
 local function chop_down_ghost(inst, chopper)
 	inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/livingtree_die")
 
-    inst.AnimState:PlayAnimation("fall_"..inst._aip_stage)
+	inst.AnimState:PlayAnimation("fall_"..inst._aip_stage)
 	inst.components.lootdropper:DropLoot()
 
 	-- 开启公测后创造一个鬼怪出来
-	if open_beta then
-		local effect = aipSpawnPrefab(inst, "aip_shadow_wrapper")
-		effect.Transform:SetScale(2, 2, 2)
-		effect.DoShow()
+	local effect = aipSpawnPrefab(inst, "aip_shadow_wrapper")
+	effect.Transform:SetScale(2, 2, 2)
+	effect.DoShow()
 
-		aipSpawnPrefab(inst, "aip_dragon")
-	end
+	aipSpawnPrefab(inst, "aip_dragon")
 
 	inst:ListenForEvent("animover", inst.Remove)
 end
