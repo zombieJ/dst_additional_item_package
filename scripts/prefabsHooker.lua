@@ -44,8 +44,10 @@ if additional_chesspieces then
 	for i, name in ipairs(birds) do
 		AddPrefabPostInit(name, function(inst)
 			if inst.components.periodicspawner ~= nil then
-				-- 因为我们占用了一点概率，因而稍微加快一点生成间隔
-				inst.components.periodicspawner.randtime = inst.components.periodicspawner.randtime * 0.95
+				-- 因为我们占用了一点概率，因而稍微加快一点生成间隔。永不妥协 mod 会修改 randtime，兼容之。
+				if inst.components.periodicspawner.randtime ~= nil then
+					inst.components.periodicspawner.randtime = inst.components.periodicspawner.randtime * 0.95
+				end
 
 				local originPrefab = inst.components.periodicspawner.prefab
 

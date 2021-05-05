@@ -7,6 +7,22 @@ local assets = {
 	Asset("ANIM", "anim/aip_dragon_tail.zip"),
 }
 
+local language = aipGetModConfig("language")
+
+local LANG_MAP = {
+	english = {
+		NAME = "Horror Tail",
+	},
+	chinese = {
+		NAME = "梦魇尾兽",
+	},
+}
+
+local LANG = LANG_MAP[language] or LANG_MAP.english
+
+-- 文字描述
+STRINGS.NAMES.AIP_DRAGON_TAIL = LANG.NAME
+
 local sounds = {
 	attack = "dontstarve/sanity/creature2/attack",
 	attack_grunt = "dontstarve/sanity/creature2/attack_grunt",
