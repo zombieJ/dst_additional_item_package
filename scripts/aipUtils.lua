@@ -268,7 +268,7 @@ function _G.aipSpawnPrefab(inst, prefab, tx, ty, tz)
 	return tgt
 end
 
--- 替换单位（如果是物品则替换对应物品栏）
+-- 替换单位（如果是物品则替换对应物品栏），原生也有一个 ReplacePrefab
 function _G.aipReplacePrefab(inst, prefab, tx, ty, tz)
 	local tgt = _G.aipSpawnPrefab(inst, prefab, tx, ty, tz)
 

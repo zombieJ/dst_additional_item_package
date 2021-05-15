@@ -73,6 +73,7 @@ PrefabFiles =
 	"incinerator",
 	"aip_woodener",
 	"aip_glass_chest",
+	"aip_dou_totem",
 	"aip_fly_totem",
 	"aip_fly_totem_cloud",
 

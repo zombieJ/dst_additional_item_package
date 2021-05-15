@@ -182,7 +182,7 @@ configuration_options =
 			{description = "Fly anyway", data = "fly_anyway"},
 			{description = "Teleport", data = "teleport"},
 			{description = "Teleport Anayway", data = "teleport_anyway"},
-			{description = "Close", data = "close"},
+			{description = "No Build", data = "close"},
 		},
 		default = "fly",
 	},

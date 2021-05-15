@@ -1,14 +1,4 @@
 -- 配置
-local additional_building = aipGetModConfig("additional_building")
-if additional_building ~= "open" then
-	return nil
-end
-
-local fly_totem = aipGetModConfig("fly_totem")
-if fly_totem == "close" then
-	return nil
-end
-
 local language = aipGetModConfig("language")
 
 local LANG_MAP = {
