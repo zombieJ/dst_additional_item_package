@@ -1,9 +1,3 @@
--- 公测开启
-local open_beta = aipGetModConfig("open_beta")
-if open_beta ~= "open" then
-	return nil
-end
-
 ------------------------------------ 配置 ------------------------------------
 -- 雕塑关闭
 local additional_chesspieces = aipGetModConfig("additional_chesspieces")
@@ -23,7 +17,7 @@ local LANG_MAP = {
       "water...ball...water",
       "...nightstick...elec...",
       "...luxury Fan bring the wind...",
-      "fertilizer...on..earth",
+      "Plantash...on..earth",
       "...board is made by plant",
     },
 	},
@@ -38,7 +32,7 @@ local LANG_MAP = {
       "水球全都是水",
       "辰星...是带电的",
       "麋鹿鹅...风好大",
-      "便便桶居然代表土?",
+      "草木灰居然代表土?",
       "木板...朴实无华",
     },
 	},

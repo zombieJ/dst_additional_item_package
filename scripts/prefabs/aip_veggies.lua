@@ -1,5 +1,3 @@
-local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
-
 ------------------------------------ 配置 ------------------------------------
 -- 食物
 local additional_food = aipGetModConfig("additional_food")
@@ -43,6 +41,8 @@ for veggiename, veggiedata in pairs(ORI_VEGGIES) do
 		sanity = SAN * veggiedata.sanity,
 		perishtime = PER * veggiedata.perishtime,
 
+		post = veggiedata.post,
+
 		cooked_health = HP * veggiedata.cooked_health,
 		cooked_hunger = HU * veggiedata.cooked_hunger,
 		cooked_sanity = SAN * veggiedata.cooked_sanity,
@@ -64,10 +64,6 @@ for veggiename, veggiedata in pairs(ORI_VEGGIES) do
 	STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperCase_seeds] = LANG[veggiename.."_seeds"].DESC or LANG_ENG[veggiename.."_seeds"].DESC
 end
 
--- image seed.xml
--- anim/seeds.zip
--- anim/aip_veggie_name.zip
--- anim/aip_veggie_name_cooked.zip
 ------------------------------------ 通用 ------------------------------------
 
 local function MakeVeggie(name, has_seeds)
@@ -221,6 +217,10 @@ local function MakeVeggie(name, has_seeds)
 
 		MakeHauntableLaunchAndPerish(inst)
 
+		if VEGGIES[name].post ~= nil then
+			VEGGIES[name].post(inst)
+		end
+
 		return inst
 	end
 
@@ -284,7 +284,7 @@ end
 
 local prefs = {}
 for veggiename,veggiedata in pairs(VEGGIES) do
-	local veg, cooked, seeds = MakeVeggie(veggiename, true)
+	local veg, cooked, seeds = MakeVeggie(veggiename, veggiedata.hasSeed)
 	table.insert(prefs, veg)
 	table.insert(prefs, cooked)
 	if seeds then

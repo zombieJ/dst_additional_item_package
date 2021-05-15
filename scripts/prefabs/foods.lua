@@ -376,6 +376,9 @@ local food_recipes = {
 
 --------------------------------------------------
 for name,data in pairs(food_recipes) do
+	local atlas = "images/inventoryimages/"..name..".xml"
+	local tex = name..".tex"
+
 	-- 预处理
 	data.name = name
 	data.weight = data.weight or 1
@@ -385,6 +388,10 @@ for name,data in pairs(food_recipes) do
 	data.health = data.health * effectPTG
 	data.hunger = data.hunger * effectPTG
 	data.sanity = data.sanity * effectPTG
+
+	-- 食物贴图
+	data.cookbook_atlas = atlas
+	data.cookbook_tex = tex
 
 	-- 添加文字
 	local upperCase = string.upper(name)
@@ -396,11 +403,12 @@ for name,data in pairs(food_recipes) do
 	-- 添加食物
 	AddModPrefabCookerRecipe("cookpot", data)
 	AddModPrefabCookerRecipe("portablecookpot", data)
+	AddModPrefabCookerRecipe("archive_cookpot", data)
 
 	-------------------- 创建食物实体 --------------------
 	local assets = {
-		Asset("ATLAS", "images/inventoryimages/"..data.name..".xml"),
-		Asset("IMAGE", "images/inventoryimages/"..data.name..".tex"),
+		Asset("ATLAS", atlas),
+		Asset("IMAGE", "images/inventoryimages/"..tex),
 		Asset("ANIM", "anim/"..data.name..".zip"),
 	}
 

@@ -1,9 +1,3 @@
--- 公测开启
-local open_beta = aipGetModConfig("open_beta")
-if open_beta ~= "open" then
-	return nil
-end
-
 ------------------------------------ 配置 ------------------------------------
 -- 雕塑关闭
 local additional_chesspieces = aipGetModConfig("additional_chesspieces")
@@ -34,6 +28,10 @@ local LANG_MAP = {
 		aip_dou_dawn_inscription = {
 			NAME = "Element: Dawn",
 			DESC = "Damane more on shadow creature",
+		},
+		aip_dou_cost_inscription = {
+			NAME = "Element: Cost",
+			DESC = "Must we give in return?",
 		},
 		aip_dou_follow_inscription = {
 			NAME = "Inscription: Follow",
@@ -76,6 +74,10 @@ local LANG_MAP = {
 		aip_dou_dawn_inscription = {
 			NAME = "元素：晓",
 			DESC = "黎明破晓，邪佞退散",
+		},
+		aip_dou_cost_inscription = {
+			NAME = "元素：痛",
+			DESC = "但是，狗蛋，代价是什么呢?",
 		},
 		aip_dou_follow_inscription = {
 			NAME = "铭文：追",

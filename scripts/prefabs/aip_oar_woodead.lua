@@ -26,7 +26,7 @@ local woodead_info = {
     DAMAGE_MAX = TUNING.NIGHTSWORD_DAMAGE / 68 * 100 * damageTimes, -- 最大造成伤害量
     ROW_FAIL_WEAR = 6 / usageTimes,
     ATTACKWEAR = 57 / usageTimes,
-    USES = 1,
+    USES = -1,
 }
 
 local assets = {
@@ -65,7 +65,7 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OAR_WOODEAD = LANG.DESC
 
 -- 代码区域
 local function damage_calculation(inst, attacker, target, damage, damage_step, damage_max)
-    if target ~= inst._aip_target then
+    if  target ~= nil and target ~= inst._aip_target then
         inst._aip_target_times = 0
         return damage
     end

@@ -1,5 +1,6 @@
-local Vector3 = GLOBAL.Vector3
-local STRINGS = GLOBAL.STRINGS
+local _G = GLOBAL
+local Vector3 = _G.Vector3
+local STRINGS = _G.STRINGS
 
 ---------------------------------------- 操作 ----------------------------------------
 local AIP_ACTION = env.AddAction("AIP_ACTION", "Operate", function(act)
@@ -14,11 +15,11 @@ local AIP_ACTION = env.AddAction("AIP_ACTION", "Operate", function(act)
 	end
 	return false, "INUSE"
 end)
-AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(AIP_ACTION, "doshortaction"))
-AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(AIP_ACTION, "doshortaction"))
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIP_ACTION, "doshortaction"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIP_ACTION, "doshortaction"))
 
 ---------------------------------------- 配置 ----------------------------------------
-local getNectarValues = GLOBAL.require("utils/aip_nectar_util")
+local getNectarValues = _G.require("utils/aip_nectar_util")
 local params = {}
 
 ----------------- 焚烧炉 -----------------
@@ -57,9 +58,9 @@ end
 
 function params.incinerator.widget.buttoninfo.fn(inst)
 	if inst.components.container ~= nil then
-		GLOBAL.BufferedAction(inst.components.container.opener, inst, AIP_ACTION):Do()
+		_G.BufferedAction(inst.components.container.opener, inst, AIP_ACTION):Do()
 	elseif inst.replica.container ~= nil and not inst.replica.container:IsBusy() then
-		GLOBAL.SendRPCToServer(GLOBAL.RPC.DoWidgetButtonAction, AIP_ACTION.code, inst, AIP_ACTION.mod_name)
+		_G.SendRPCToServer(_G.RPC.DoWidgetButtonAction, AIP_ACTION.code, inst, AIP_ACTION.mod_name)
 	end
 end
 
@@ -94,19 +95,20 @@ end
 
 function params.aip_nectar_maker.itemtestfn(container, item, slot)
 	local values = getNectarValues(item)
-	return GLOBAL.next(values) ~= nil
+	return _G.next(values) ~= nil
 end
 
 function params.aip_nectar_maker.widget.buttoninfo.fn(inst)
 	if inst.components.container ~= nil then
-		GLOBAL.BufferedAction(inst.components.container.opener, inst, AIP_ACTION):Do()
+		_G.BufferedAction(inst.components.container.opener, inst, AIP_ACTION):Do()
 	elseif inst.replica.container ~= nil and not inst.replica.container:IsBusy() then
-		GLOBAL.SendRPCToServer(GLOBAL.RPC.DoWidgetButtonAction, AIP_ACTION.code, inst, AIP_ACTION.mod_name)
+		_G.SendRPCToServer(_G.RPC.DoWidgetButtonAction, AIP_ACTION.code, inst, AIP_ACTION.mod_name)
 	end
 end
 
 function params.aip_nectar_maker.widget.buttoninfo.validfn(inst)
-	return inst.replica.container ~= nil and not inst.replica.container:IsEmpty()
+	-- 超过 1 个才能合成
+	return inst.replica.container ~= nil and _G.aipCountTable(inst.replica.container:GetItems()) > 1
 end
 
 ---------------- 木之图腾 ----------------
@@ -147,9 +149,9 @@ end
 -- 操作按钮
 function params.aip_woodener.widget.buttoninfo.fn(inst)
 	if inst.components.container ~= nil then
-		GLOBAL.BufferedAction(inst.components.container.opener, inst, AIP_ACTION):Do()
+		_G.BufferedAction(inst.components.container.opener, inst, AIP_ACTION):Do()
 	elseif inst.replica.container ~= nil and not inst.replica.container:IsBusy() then
-		GLOBAL.SendRPCToServer(GLOBAL.RPC.DoWidgetButtonAction, AIP_ACTION.code, inst, AIP_ACTION.mod_name)
+		_G.SendRPCToServer(_G.RPC.DoWidgetButtonAction, AIP_ACTION.code, inst, AIP_ACTION.mod_name)
 	end
 end
 
@@ -210,7 +212,7 @@ local tmpConfig = {
 }
 
 function params.aip_shadow_chest.widget.buttoninfo.fn(inst)
-	local player = GLOBAL.ThePlayer
+	local player = _G.ThePlayer
 
 	if player and player.HUD then
 		return player.HUD:ShowAIPAutoConfigWidget(inst, tmpConfig)
@@ -249,7 +251,7 @@ params.chesspiece_aip_doujiang =
 }
 
 local aip_doujiang_slot_bgs = {
-	{ name="ash",prefab="fertilizer",fail="AIP_ASH_ONLY" },
+	{ name="ash",prefab="aip_plaster",fail="AIP_ASH_ONLY" },
 	{ name="electricity",prefab="nightstick",fail="AIP_ELECTRICITY_ONLY" },
 	{ name="fire",prefab="firestaff",fail="AIP_FIRE_ONLY" },
 	{ name="plant",prefab="boards",fail="AIP_PLANT_ONLY" },
@@ -292,9 +294,9 @@ end
 -- 操作按钮
 function params.chesspiece_aip_doujiang.widget.buttoninfo.fn(inst)
 	if inst.components.container ~= nil then
-		GLOBAL.BufferedAction(inst.components.container.opener, inst, AIP_ACTION):Do()
+		_G.BufferedAction(inst.components.container.opener, inst, AIP_ACTION):Do()
 	elseif inst.replica.container ~= nil and not inst.replica.container:IsBusy() then
-		GLOBAL.SendRPCToServer(GLOBAL.RPC.DoWidgetButtonAction, AIP_ACTION.code, inst, AIP_ACTION.mod_name)
+		_G.SendRPCToServer(_G.RPC.DoWidgetButtonAction, AIP_ACTION.code, inst, AIP_ACTION.mod_name)
 	end
 end
 
@@ -304,7 +306,7 @@ function params.chesspiece_aip_doujiang.widget.buttoninfo.validfn(inst)
 end
 
 ---------------- 豆酱权杖 ----------------
-function fillDouScepter(slotCount)
+function fillDouScepter(slotCount, topOffset, offset)
 	local name = "aip_dou_scepter"..tostring(slotCount)
 	local loopIndex = slotCount - 1
 
@@ -313,7 +315,7 @@ function fillDouScepter(slotCount)
 			slotpos = {},
 			animbank = "ui_cookpot_1x4",
 			animbuild = "ui_cookpot_1x4",
-			pos = Vector3(0, -30 + loopIndex * 45, 0),
+			pos = Vector3(0, -30 + loopIndex * 45 - topOffset, 0),
 		},
 		acceptsstacks = false,
 		usespecificslotsforitems = true,
@@ -321,7 +323,10 @@ function fillDouScepter(slotCount)
 	}
 
 	for y = 0, loopIndex do
-		table.insert(params[name].widget.slotpos, Vector3(0, 108 - 72 * y, 0))
+		table.insert(
+			params[name].widget.slotpos,
+			Vector3(0, 108 - (72 - offset) * y, 0)
+		)
 	end
 
 	-- 只接受魔法元素
@@ -330,10 +335,36 @@ function fillDouScepter(slotCount)
 	end
 end
 
-fillDouScepter(4)
+fillDouScepter(4, 0, 0)
+fillDouScepter(5, 30, 10)
 
 -- 容器名字必须和物品名字一样，sad
 params.aip_dou_scepter = params.aip_dou_scepter4
+params.aip_dou_empower_scepter = params.aip_dou_scepter4
+params.aip_dou_huge_scepter = params.aip_dou_scepter5
+
+---------------- 符文袋 ----------------
+params.aip_dou_inscription_package =
+{
+    widget =
+    {
+        slotpos = {},
+        animbank = "ui_tacklecontainer_3x5",
+        animbuild = "ui_tacklecontainer_3x5",
+        pos = Vector3(0, 280, 0),
+        side_align_tip = 160,
+    },
+	type = "chest",
+	itemtestfn = function(container, item, slot)
+		return item:HasTag("aip_dou_inscription")
+	end
+}
+
+for y = 1, -3, -1 do
+    for x = 0, 2 do
+        table.insert(params.aip_dou_inscription_package.widget.slotpos, Vector3(80 * x - 80 * 2 + 80, 80 * y - 45, 0))
+    end
+end
 
 ---------------- 翡翠宝箱 ----------------
 params.aip_glass_chest =
@@ -355,8 +386,31 @@ for y = 2.5, -0.5, -1 do
     end
 end
 
+----------------- 心悦锄 -----------------
+params.aip_xinyue_hoe = {
+    widget =
+    {
+		slotpos = {},
+        animbank = "ui_chest_3x3",
+        animbuild = "ui_chest_3x3",
+		pos = Vector3(0, 80, 0),
+    },
+    usespecificslotsforitems = true,
+    type = "hand_inv",
+}
+
+for y = 2, 0, -1 do
+    for x = 0, 2 do
+        table.insert(params.aip_xinyue_hoe.widget.slotpos, Vector3(80 * x - 80 * 2 + 80, 80 * y - 80 * 2 + 80, 0))
+    end
+end
+
+function params.aip_xinyue_hoe.itemtestfn(container, item, slot)
+	return item:HasTag("deployedfarmplant")
+end
+
 ----------------------------------------------------------------------------------------------
-local containers = GLOBAL.require "containers"
+local containers = _G.require "containers"
 local old_widgetsetup = containers.widgetsetup
 
 -- 豪华锅 和 冰箱 代码有BUG，只能注入一下了

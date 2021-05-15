@@ -24,7 +24,7 @@ end
 name = "Additional Item Package DEV"
 description = joinArray(descList, "\n")
 author = "ZombieJ"
-version = "1.11.0"
+version = "1.16.0"
 forumthread = "http://steamcommunity.com/sharedfiles/filedetails/?id=1085586145"
 icon_atlas = "modicon.xml"
 icon = "modicon.tex"
@@ -225,7 +225,7 @@ configuration_options =
 	{
 		name = "open_beta",
 		label = "Open Beta (公测功能)",
-		hover = "Help me to test new items! (协助我测试新的物品!)",
+		hover = "Help me to test new items! (协助我测试新的物品！)",
 		options =
 		{
 			{description = "Open", data = "open"},

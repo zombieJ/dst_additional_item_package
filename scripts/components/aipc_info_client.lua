@@ -3,12 +3,6 @@ local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKA
 local Empty = Class(function()
 end)
 
--- 提示框提升
-local tooltip_enhance = aipGetModConfig("tooltip_enhance")
-if tooltip_enhance ~= "open" then
-	return Empty
-end
-
 ------------------------------------------------------------------------------------------
 local function OnNilValue(inst)
 	local component = inst.components.aipc_info_client

@@ -1,10 +1,4 @@
 ------------------------------------ 配置 ------------------------------------
--- 公测开启
-local open_beta = aipGetModConfig("open_beta")
-if open_beta ~= "open" then
-	return nil
-end
-
 -- 雕塑关闭
 local additional_chesspieces = aipGetModConfig("additional_chesspieces")
 if additional_chesspieces ~= "open" then
@@ -67,18 +61,7 @@ local function onDoTargetAction(inst, doer, target)
 		return inst
 	end
 
-	local cepter = SpawnPrefab("aip_dou_scepter")
-
-	local owner = target.components.inventoryitem ~= nil and target.components.inventoryitem.owner or nil
-	local holder = owner ~= nil and (owner.components.inventory or owner.components.container) or nil
-	if holder ~= nil then
-		local slot = holder:GetItemSlot(target)
-		target:Remove()
-		holder:GiveItem(cepter, slot)
-	else
-		cepter.Transform:SetPosition(target.Transform:GetWorldPosition())
-		target:Remove()
-	end
+	local cepter = aipReplacePrefab(target, "aip_dou_scepter")
 
 	inst:Remove()
 end
@@ -131,3 +114,15 @@ function fn()
 end
 
 return Prefab("aip_dou_opal", fn, assets, prefabs)
+
+
+--[[
+
+
+
+c_give"cane"
+c_give"aip_dou_opal"
+
+
+
+]]

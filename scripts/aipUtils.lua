@@ -1,7 +1,7 @@
 local _G = GLOBAL
 
 --------------------------------------- 表格 ---------------------------------------
-local function countTable(tbl)
+function _G.aipCountTable(tbl)
 	local count = 0
 	local lastKey = nil
 	local lastVal = nil
@@ -35,7 +35,7 @@ end
 function _G.aipFlattenTable(originTbl)
 	local targetTbl = {}
 	local tbl = originTbl or {}
-	local count = countTable(tbl)
+	local count = _G.aipCountTable(tbl)
 
 	local i = 1
 	for i = 1, 10000 do
@@ -90,9 +90,23 @@ function _G.aipFilterTable(originTbl, filterFn)
 	return tbl
 end
 
+
+-- 按照 key 过滤表格
+function _G.aipFilterKeysTable(originTbl, keys)
+	local tbl = {}
+
+	for k, v in pairs(originTbl) do
+		if not _G.aipInTable(keys, k) then
+			tbl[k] = v
+		end
+	end
+
+	return tbl
+end
+
 --------------------------------------- 调试 ---------------------------------------
 function _G.aipCommonStr(showType, split, ...)
-	local count = countTable(arg)
+	local count = _G.aipCountTable(arg)
 	local str = ""
 
 	for i = 1, count do
@@ -231,6 +245,62 @@ function _G.aipRandomEnt(ents)
 end
 
 --------------------------------------- 辅助 ---------------------------------------
+function _G.aipFindNearPlayers(inst, dist)
+	local NOTAGS = { "FX", "NOCLICK", "DECOR", "playerghost", "INLIMBO" }
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local ents = TheSim:FindEntities(x, 0, z, dist, { "player", "_health" }, NOTAGS)
+	return ents
+end
+
+-- 降级值如果没有的话
+function fb(value, defaultValue)
+	if value ~= nil then
+		return value
+	end
+	return defaultValue
+end
+
+-- 在目标位置创建
+function _G.aipSpawnPrefab(inst, prefab, tx, ty, tz)
+	local tgt = _G.SpawnPrefab(prefab)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	tgt.Transform:SetPosition(fb(tx, x), fb(ty, y), fb(tz, z))
+	return tgt
+end
+
+-- 替换单位（如果是物品则替换对应物品栏）
+function _G.aipReplacePrefab(inst, prefab, tx, ty, tz)
+	local tgt = _G.aipSpawnPrefab(inst, prefab, tx, ty, tz)
+
+	if inst.components.inventoryitem ~= nil then
+		local container = inst.components.inventoryitem:GetContainer()
+		local slot = inst.components.inventoryitem:GetSlotNum()
+
+		inst:Remove()
+
+		if container ~= nil then
+			container:GiveItem(tgt, slot)
+		end
+	else
+		inst:Remove()
+	end
+
+	return tgt
+end
+
+-- 获取一个可访达的路径，默认 40。TODO：优化一下避免在建筑附近生成
+function _G.aipGetSpawnPoint(pt, distance)
+    if not _G.TheWorld.Map:IsAboveGroundAtPoint(pt:Get()) then
+        pt = _G.FindNearbyLand(pt, 1) or pt
+    end
+    local offset = _G.FindWalkableOffset(pt, math.random() * 2 * _G.PI, distance or 40, 12, true)
+    if offset ~= nil then
+        offset.x = offset.x + pt.x
+        offset.z = offset.z + pt.z
+        return offset
+    end
+end
+
 -- 是暗影生物
 _G.aipShadowTags = { "shadow", "shadowminion", "shadowchesspiece", "stalker", "stalkerminion" }
 
@@ -247,4 +317,22 @@ end
 -- RPC 发送时自动会带上 player 作为第一个参数
 function _G.aipRPC(funcName, ...)
 	SendModRPCToServer(MOD_RPC[env.modname][funcName], _G.unpack(arg))
+end
+
+-- 添加 aipc_buffer
+function _G.patchBuffer(inst, name, duration, fn)
+	if inst.components.aipc_buffer == nil then
+		inst:AddComponent("aipc_buffer")
+	end
+
+	inst.components.aipc_buffer:Patch(name, duration, fn)
+end
+
+-- 存在 aipc_buffer
+function _G.hasBuffer(inst, name)
+	if inst.components.aipc_buffer ~= nil then
+		return inst.components.aipc_buffer.buffers[name] ~= nil
+	end
+
+	return false
 end

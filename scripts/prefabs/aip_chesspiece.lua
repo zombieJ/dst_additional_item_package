@@ -1,12 +1,12 @@
--- 公测开启
-local open_beta = aipGetModConfig("open_beta")
-
 ------------------------------------ 配置 ------------------------------------
 -- 食物关闭
 local additional_food = aipGetModConfig("additional_food")
 if additional_food ~= "open" then
 	return nil
 end
+
+-- 生存
+local additional_survival = aipGetModConfig("additional_survival")
 
 -- 雕塑关闭
 local additional_chesspieces = aipGetModConfig("additional_chesspieces")
@@ -154,11 +154,6 @@ local PIECES =
 		moonevent = false,
 		recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("plantmeat_cooked", 1), Ingredient("pinecone", 1)},
 		client_postinit = function(inst)
-			-- 测试版本开启
-			if open_beta ~= "open" then
-				return
-			end
-
 			-- 拒绝要说话
 			inst:AddComponent("talker")
 			inst.components.talker.fontsize = 30
@@ -167,8 +162,8 @@ local PIECES =
 			inst.components.talker.offset = Vector3(0, -400, 0)
 		end,
 		master_postinit = function(inst)
-			-- 测试版本开启
-			if open_beta ~= "open" then
+			-- 如果没有开启生存，就不提供了
+			if additional_survival ~= "open" then
 				return
 			end
 

@@ -33,25 +33,41 @@ PrefabFiles =
 	"aip_projectile",
 
 	-- Food
+	"aip_wheat",
+	"aip_sunflower",
 	"aip_veggies",
 	"foods",
 	"aip_nectar_maker",
 	"aip_nectar",
 	"aip_leaf_note",
+	"aip_xinyue_hoe",
+
+	-- survival
+	"aip_blood_package",
+	"aip_plaster",
+	"aip_igloo",
+	"aip_dragon",
+	"aip_dragon_tail",
+	"aip_dragon_footprint",
 
 	-- Weapon
 	"popcorngun",
-	"aip_blood_package",
 	"aip_fish_sword",
 	"aip_beehave",
 	"aip_oar_woodead",
-	"aip_dou_opal",
-	"aip_dou_scepter",
 	"aip_dou_scepter_projectile",
 	"aip_heal_fx",
 	"aip_sanity_fx",
 	"aip_dou_inscription",
+	"aip_dou_inscription_package",
 	"aip_dou_element_guard",
+	"aip_aura",
+	"aip_buffer_fx",
+
+	-- Scepter
+	"aip_dou_opal",
+	"aip_dou_tooth",
+	"aip_dou_scepter",
 
 	-- Building
 	"incinerator",
@@ -79,38 +95,38 @@ PrefabFiles =
 	"aip_shadow_wrapper",
 }
 
+local language = GetModConfigData("language")
 
 --------------------------------------- 工具 ---------------------------------------
 modimport("scripts/aipUtils.lua")
 
 --------------------------------------- 科技 ---------------------------------------
-if
-	GetModConfigData("additional_chesspieces") == "open" and
-	GetModConfigData("open_beta") == "open" then
-	-- 只有开启测试才需要注入
+-- 添加对应标签
+local AIP_DOU_SCEPTER = AddRecipeTab(
+	"AIP_DOU_SCEPTER",
+	100,
+	"images/inventoryimages/aip_dou_tech.xml",
+	"aip_dou_tech.tex",
+	nil,
+	true
+)
 
-	-- 添加对应标签
-	local AIP_DOU_SCEPTER = AddRecipeTab(
-		"AIP_DOU_SCEPTER",
-		100,
-		"images/inventoryimages/aip_dou_tech.xml",
-		"aip_dou_tech.tex",
-		nil,
-		true
+local TECH_LANG = {
+	english = "Mysterious",
+	chinese = "神秘魔法",
+}
+
+_G.STRINGS.TABS.AIP_DOU_SCEPTER = TECH_LANG[language]
+
+modimport("scripts/techHooker.lua")
+
+local inscriptions = require("utils/aip_scepter_util").inscriptions
+for name, info in pairs(inscriptions) do
+	AddRecipe(
+		name, info.recipes, AIP_DOU_SCEPTER, _G.TECH.AIP_DOU_SCEPTER,
+		nil, nil, true, nil, nil,
+		"images/inventoryimages/"..name..".xml", name..".tex"
 	)
-
-	_G.STRINGS.TABS.AIP_DOU_SCEPTER = "神秘魔法"
-
-	modimport("scripts/techHooker.lua")
-
-	local inscriptions = require("utils/aip_scepter_util").inscriptions
-	for name, info in pairs(inscriptions) do
-		AddRecipe(
-			name, info.recipes, AIP_DOU_SCEPTER, _G.TECH.AIP_DOU_SCEPTER,
-			nil, nil, true, nil, nil,
-			"images/inventoryimages/"..name..".xml", name..".tex"
-		)
-	end
 end
 
 ------------------------------------- 组件钩子 -------------------------------------
@@ -121,7 +137,6 @@ AddMinimapAtlas("minimap/dark_observer_vest.xml")
 
 --------------------------------------- 封装 ---------------------------------------
 modimport("scripts/recipeWrapper.lua")
-modimport("scripts/seedsWrapper.lua")
 modimport("scripts/containersWrapper.lua")
 modimport("scripts/writeablesWrapper.lua")
 modimport("scripts/itemTileWrapper.lua")
