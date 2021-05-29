@@ -1,4 +1,7 @@
 ------------------------------------ 配置 ------------------------------------
+-- 开发模式
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
+
 -- 建筑关闭
 local additional_building = aipGetModConfig("additional_building")
 if additional_building ~= "open" then
@@ -10,7 +13,7 @@ local language = aipGetModConfig("language")
 local LANG_MAP = {
 	["english"] = {
 		["NAME"] = "Woodener",
-		["DESC"] = "Shy totem pole.",
+		["DESC"] = "Who is a good planter?",
 		["DESCRIBE"] = "You can give, but not ask for.",
 		["ACTIONFAIL"] = {
 			["GENERIC"] = "He only accept log.",
@@ -28,7 +31,7 @@ local LANG_MAP = {
 	},
 	["chinese"] = {
 		["NAME"] = "木图腾",
-		["DESC"] = "一根害羞的图腾柱",
+		["DESC"] = "喜爱植树的图腾柱",
 		["DESCRIBE"] = "你可以给予，却不该索取。",
 		["ACTIONFAIL"] = {
 			["GENERIC"] = "他只接受木头",
@@ -129,6 +132,8 @@ local function OnInit(inst)
 	end
 end
 
+
+-- 创造武器
 local function onCreateWoodead(inst)
 	local usageTimes = 0
 
@@ -161,6 +166,39 @@ local function onCreateWoodead(inst)
 
 		inst.components.container:Close()
 		inst.components.container:DestroyContents()
+	end
+end
+
+-- 生成树种
+local function CreatTree(inst)
+	if inst.components.container ~= nil then
+		-- 取一颗种子
+		local pinecone = inst.components.container:FindItem(function(v)
+			return v.prefab == "pinecone"
+		end)
+
+		-- 种子可以种就开始种植
+		if pinecone ~= nil and pinecone.components.deployable ~= nil then
+			for dist = 1, 20 do
+				local pt = aipGetSpawnPoint(inst:GetPosition(), math.random() * dist / 2)
+				local deployable = pinecone.components.deployable:CanDeploy(pt, nil, inst)
+				aipTypePrint(inst:GetPosition(), pt, deployable)
+
+				-- 一次种一颗
+				if pt ~= nil and deployable then
+					local sapling = aipSpawnPrefab(inst, "pinecone_sapling", pt.x, pt.y, pt.z)
+					sapling:StartGrowing()
+
+					if pinecone.components.stackable ~= nil then
+						pinecone.components.stackable:Get():Remove()
+					else
+						pinecone:Remove()
+					end
+
+					return
+				end
+			end
+		end
 	end
 end
 
@@ -219,6 +257,9 @@ local function fn()
 
 	-- 可燃烧
 	MakeMediumBurnable(inst)
+
+	-- 每天清晨都随机生成树种
+	inst:DoPeriodicTask(dev_mode and 1 or 200, CreatTree)
 
 	return inst
 end
