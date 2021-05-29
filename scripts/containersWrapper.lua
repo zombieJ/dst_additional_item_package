@@ -139,7 +139,12 @@ for y = 2, 0, -1 do
 end
 
 function params.aip_woodener.itemtestfn(container, item, slot)
-	if item.prefab ~= "log" and item.prefab ~= "livinglog" and item.prefab ~= "driftwood_log" then
+	if
+		item.prefab ~= "log" and
+		item.prefab ~= "livinglog" and
+		item.prefab ~= "driftwood_log" and
+		item.prefab ~= "pinecone"
+	then
 		return false, "AIP_WOODENER_LOG_ONLY"
 	end
 
@@ -393,7 +398,8 @@ params.aip_xinyue_hoe = {
 		slotpos = {},
         animbank = "ui_chest_3x3",
         animbuild = "ui_chest_3x3",
-		pos = Vector3(0, 80, 0),
+		-- pos = Vector3(0, 80, 0),
+		pos = Vector3(0, 130, 0),
     },
     usespecificslotsforitems = true,
     type = "hand_inv",
