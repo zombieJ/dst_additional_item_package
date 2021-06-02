@@ -59,7 +59,11 @@ CONSTRUCTION_PLANS["aip_dou_totem_powerless"] = {
 }
 
 ---------------------------------- 事件 ----------------------------------
-
+local function doActive(inst)
+    inst._aip_active = true
+    inst.AnimState:PlayAnimation("idle_pre")
+    inst.AnimState:PushAnimation("idle", true)
+end
 
 ---------------------------------- 实体 ----------------------------------
 local function makeTotemFn(name, animation, nextPrefab)
@@ -77,7 +81,7 @@ local function makeTotemFn(name, animation, nextPrefab)
             aipSpawnPrefab(inst, "collapse_big")
             local next = ReplacePrefab(inst, nextPrefab)
 
-            
+            -- 最后一节阶段会开始说话
             if next.components.talker ~= nil then
                 -- 第一句话
                 next:DoTaskInTime(0.5, function()
@@ -108,12 +112,13 @@ local function makeTotemFn(name, animation, nextPrefab)
 
         inst.AnimState:SetBank("aip_dou_totem")
         inst.AnimState:SetBuild("aip_dou_totem")
-        inst.AnimState:PlayAnimation(animation, true)
+        inst.AnimState:PlayAnimation(animation, false)
 
         inst:AddTag("structure")
 
-        -- 最后一个级别会添加对话能力
+        -- 最后一个级别做额外事情
         if nextPrefab == nil then
+            -- 会添加对话能力
             inst:AddComponent("talker")
             inst.components.talker.fontsize = 30
             inst.components.talker.font = TALKINGFONT
@@ -133,6 +138,8 @@ local function makeTotemFn(name, animation, nextPrefab)
             inst:AddComponent("constructionsite")
             inst.components.constructionsite:SetConstructionPrefab("construction_container")
             inst.components.constructionsite:SetOnConstructedFn(OnConstructed)
+        else
+            inst.doActive = doActive
         end
 
         MakeSnowCovered(inst)
@@ -147,7 +154,7 @@ end
 
 return makeTotemFn("aip_dou_totem_broken", "broken", "aip_dou_totem_powerless"),
     makeTotemFn("aip_dou_totem_powerless", "powerless", "aip_dou_totem"),
-    makeTotemFn("aip_dou_totem", "idle")
+    makeTotemFn("aip_dou_totem", "stable")
 
 --[[
 
