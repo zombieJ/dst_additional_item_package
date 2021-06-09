@@ -44,6 +44,28 @@ animqueueover
 
 redlanternbody.lua
 
+## 地图区块数据
+
+TheWorld.topology.nodes
+- type: NODE_TYPE.x
+- poly
+- tags
+- cent [x, z]
+- x
+- y
+- c
+- neighbours
+- area
+- validedges: TheWorld.topology.edgeToNodes
+
+TheWorld.topology.ids
+
+## 找对象
+
+simutil.lua
+
+FindEntities(x, y, z, radius, musthavetags, nottags, hasoneoftags)
+
 # apiUtils
 
 提供了一些辅助方法
