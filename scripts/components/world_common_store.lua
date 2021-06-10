@@ -1,3 +1,5 @@
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
+
 local CommonStore = Class(function(self, inst)
 	self.inst = inst
 	self.shadow_follower_count = 0
@@ -43,27 +45,24 @@ function CommonStore:PostWorld()
 					local x = node.cent[1]
 					local z = node.cent[2]
 
-					-- TheSim:FindEntities(x, 0, z, dist, { "player", "_health" }, NOTAGS)
-
-					-- aipTypePrint(">>>>>", node)
-					-- aipTypePrint("neighbours", node.neighbours)
-					-- aipTypePrint("poly", node.poly)
-					-- aipTypePrint("validedges", node.validedges)
-
-
-
+					-- 找到 天体裂缝
 					local ents = TheSim:FindEntities(x, 0, z, 40)
 					local fissures = aipFilterTable(ents, function(inst)
 						return inst.prefab == "moon_fissure"
 					end)
 
+					-- 找到 天体裂缝
 					local first = fissures[1]
 					if first ~= nil then
 						local tx, ty, tz = first.Transform:GetWorldPosition()
+						local tgt = aipGetSpawnPoint(first:GetPosition(), 10)
+						aipSpawnPrefab(first, "aip_dou_totem_broken", tgt.x, tgt.y, tgt.z)
 
-						for i, player in pairs(AllPlayers) do
-							player.Physics:Teleport(tx, ty, tz)
-						end
+						-- if dev_mode then
+						-- 	for i, player in pairs(AllPlayers) do
+						-- 		player.Physics:Teleport(tx, ty, tz)
+						-- 	end
+						-- end
 						break
 					end
 				end

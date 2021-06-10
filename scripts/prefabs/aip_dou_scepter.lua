@@ -264,11 +264,6 @@ local function genScepter(containerName, animName)
         -- 鼠标类型判断，在判断的时候会刷新一下指针类型，这样利用了 POINT 就实现了动态刷新的效果。学到了就给我的 mod 点个赞吧
         inst:AddComponent("aipc_action_client")
         inst.components.aipc_action_client.canActOn = function(inst, doer, target)
-            -- 如果是图腾，则可以干活
-            if target.prefab == "aip_dou_totem" then
-                return true
-            end
-
             refreshScepter(inst)
             return inst._projectileInfo.action == "FOLLOW" and (target.components.health ~= nil or target.replica.health ~= nil)
         end
@@ -294,22 +289,6 @@ local function genScepter(containerName, animName)
         end
 
         inst.components.aipc_action.onDoTargetAction = function(inst, doer, target)
-            -- 是一把钥匙
-            if target.prefab == "aip_dou_totem" then
-                if inst._aip_empower == nil then
-                    -- 如果没有能力就不能开，提示语音一下
-                    if doer.components.talker ~= nil then
-                        doer.components.talker:Say(
-                            STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_SCEPTER_NOT_KEY
-                        )
-                    end
-                elseif target.doActive ~= nil then
-                    target.doActive(target)
-                end
-
-                return
-            end
-
             local projectileInfo = refreshScepter(inst)
 
             if beforeAction(inst, projectileInfo, doer) then

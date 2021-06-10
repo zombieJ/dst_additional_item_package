@@ -73,3 +73,7 @@ FindEntities(x, y, z, radius, musthavetags, nottags, hasoneoftags)
 - aipPrint(...) 打印内容
 - aipTypePrint(...) 打印内容，同时打印出类别
 - aipGetModConfig(configName: string) 获取全局的 mod 配置信息
+
+# 坐标
+
+local pt = inst:GetPosition()

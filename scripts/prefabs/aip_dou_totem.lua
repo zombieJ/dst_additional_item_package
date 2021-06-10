@@ -59,14 +59,9 @@ CONSTRUCTION_PLANS["aip_dou_totem_powerless"] = {
 }
 
 ---------------------------------- 事件 ----------------------------------
-local function doActive(inst)
-    inst._aip_active = true
-    inst.AnimState:PlayAnimation("idle_pre")
-    inst.AnimState:PushAnimation("idle", true)
-end
 
 ---------------------------------- 实体 ----------------------------------
-local function makeTotemFn(name, animation, nextPrefab)
+local function makeTotemFn(name, animation, nextPrefab, nextPrefabAnimation)
     -- 建筑到下一个级别
     local function OnConstructed(inst, doer)
         local concluded = true
@@ -80,6 +75,12 @@ local function makeTotemFn(name, animation, nextPrefab)
         if concluded then -- 满足建造条件
             aipSpawnPrefab(inst, "collapse_big")
             local next = ReplacePrefab(inst, nextPrefab)
+
+            -- 如果设定了动画，说明有 _pre 动画，播放之
+            if nextPrefabAnimation ~= nil then
+                next.AnimState:PlayAnimation(nextPrefabAnimation.."_pre")
+                next.AnimState:PushAnimation(nextPrefabAnimation, true)
+            end
 
             -- 最后一节阶段会开始说话
             if next.components.talker ~= nil then
@@ -112,7 +113,7 @@ local function makeTotemFn(name, animation, nextPrefab)
 
         inst.AnimState:SetBank("aip_dou_totem")
         inst.AnimState:SetBuild("aip_dou_totem")
-        inst.AnimState:PlayAnimation(animation, false)
+        inst.AnimState:PlayAnimation(animation, true)
 
         inst:AddTag("structure")
 
@@ -138,8 +139,6 @@ local function makeTotemFn(name, animation, nextPrefab)
             inst:AddComponent("constructionsite")
             inst.components.constructionsite:SetConstructionPrefab("construction_container")
             inst.components.constructionsite:SetOnConstructedFn(OnConstructed)
-        else
-            inst.doActive = doActive
         end
 
         MakeSnowCovered(inst)
@@ -153,7 +152,7 @@ local function makeTotemFn(name, animation, nextPrefab)
 end
 
 return makeTotemFn("aip_dou_totem_broken", "broken", "aip_dou_totem_powerless"),
-    makeTotemFn("aip_dou_totem_powerless", "powerless", "aip_dou_totem"),
+    makeTotemFn("aip_dou_totem_powerless", "powerless", "aip_dou_totem", "idle"),
     makeTotemFn("aip_dou_totem", "stable")
 
 --[[
