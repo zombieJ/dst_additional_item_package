@@ -263,8 +263,12 @@ end
 -- 在目标位置创建
 function _G.aipSpawnPrefab(inst, prefab, tx, ty, tz)
 	local tgt = _G.SpawnPrefab(prefab)
-	local x, y, z = inst.Transform:GetWorldPosition()
-	tgt.Transform:SetPosition(fb(tx, x), fb(ty, y), fb(tz, z))
+	if inst ~= nil then
+		local x, y, z = inst.Transform:GetWorldPosition()
+		tgt.Transform:SetPosition(fb(tx, x), fb(ty, y), fb(tz, z))
+	else
+		tgt.Transform:SetPosition(fb(tx, 0), fb(ty, 0), fb(tz, 0))
+	end
 	return tgt
 end
 
@@ -299,6 +303,30 @@ function _G.aipGetSpawnPoint(pt, distance)
         offset.z = offset.z + pt.z
         return offset
     end
+end
+
+-- 在符合 tag 的地形上，且存在匹配的物品，在改物品附近找一个点
+function _G.aipGetTopologyPoint(tag, prefab, dist)
+	for i, node in ipairs(_G.TheWorld.topology.nodes) do
+		if table.contains(node.tags, tag) then
+			local x = node.cent[1]
+			local z = node.cent[2]
+
+			-- 找到 匹配的物品
+			local ents = TheSim:FindEntities(x, 0, z, 40)
+			local fissures = _G.aipFilterTable(ents, function(inst)
+				return inst.prefab == prefab
+			end)
+
+			-- 使用第一个匹配的物品
+			local first = fissures[1]
+			if first ~= nil then
+				return first:GetPosition()
+			end
+		end
+	end
+
+	return nil
 end
 
 -- 是暗影生物

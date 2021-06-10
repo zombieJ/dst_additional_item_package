@@ -40,32 +40,16 @@ function CommonStore:PostWorld()
 
 		--------------------------- 创建图腾 ---------------------------
 		if hasDouTotem == false then
-			for i, node in ipairs(TheWorld.topology.nodes) do
-				if table.contains(node.tags, "lunacyarea") then
-					local x = node.cent[1]
-					local z = node.cent[2]
+			local fissurePT = aipGetTopologyPoint("lunacyarea", "moon_fissure")
+			if fissurePT then
+				local tgt = aipGetSpawnPoint(fissurePT, 10)
+				aipSpawnPrefab(nil, "aip_dou_totem_broken", tgt.x, tgt.y, tgt.z)
 
-					-- 找到 天体裂缝
-					local ents = TheSim:FindEntities(x, 0, z, 40)
-					local fissures = aipFilterTable(ents, function(inst)
-						return inst.prefab == "moon_fissure"
-					end)
-
-					-- 找到 天体裂缝
-					local first = fissures[1]
-					if first ~= nil then
-						local tx, ty, tz = first.Transform:GetWorldPosition()
-						local tgt = aipGetSpawnPoint(first:GetPosition(), 10)
-						aipSpawnPrefab(first, "aip_dou_totem_broken", tgt.x, tgt.y, tgt.z)
-
-						-- if dev_mode then
-						-- 	for i, player in pairs(AllPlayers) do
-						-- 		player.Physics:Teleport(tx, ty, tz)
-						-- 	end
-						-- end
-						break
-					end
-				end
+				-- if dev_mode then
+				-- 	for i, player in pairs(AllPlayers) do
+				-- 		player.Physics:Teleport(fissurePT.x, fissurePT.y, fissurePT.z)
+				-- 	end
+				-- end
 			end
 		end
 	end)

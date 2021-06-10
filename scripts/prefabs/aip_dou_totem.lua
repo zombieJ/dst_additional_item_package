@@ -11,6 +11,7 @@ local LANG_MAP = {
 		DESC = "Seems magic somewhere",
         TALK_WELCOME = "Are you ready?",
         TALK_FIRST = "Your first challenge",
+        TOTEM_POS = "Totem",
 	},
 	chinese = {
         BROEKN_NAME = "一片残骸",
@@ -21,6 +22,7 @@ local LANG_MAP = {
         DESC = "有一丝魔法气息",
         TALK_WELCOME = "想得到我的秘密，你做好准备了吗？",
         TALK_FIRST = "第一个挑战！",
+        TOTEM_POS = "图腾",
 	},
 }
 
@@ -59,6 +61,15 @@ CONSTRUCTION_PLANS["aip_dou_totem_powerless"] = {
 }
 
 ---------------------------------- 事件 ----------------------------------
+local function createFlyTotem(inst)
+    local flyTotem = FindEntity(inst, 5, nil, { "aip_fly_totem" })
+    if flyTotem == nil then
+        local pt = aipGetSpawnPoint(inst:GetPosition(), 3)
+        flyTotem = aipSpawnPrefab(nil, "aip_fly_totem", pt.x, pt.y, pt.z)
+        aipSpawnPrefab(flyTotem, "collapse_small")
+        flyTotem.components.writeable:SetText(LANG.TOTEM_POS)
+    end
+end
 
 ---------------------------------- 实体 ----------------------------------
 local function makeTotemFn(name, animation, nextPrefab, nextPrefabAnimation)
@@ -139,6 +150,9 @@ local function makeTotemFn(name, animation, nextPrefab, nextPrefabAnimation)
             inst:AddComponent("constructionsite")
             inst.components.constructionsite:SetConstructionPrefab("construction_container")
             inst.components.constructionsite:SetOnConstructedFn(OnConstructed)
+        else
+            -- 5s 后会检查附近有没有图腾，并且创造一个
+            inst:DoTaskInTime(5, createFlyTotem)
         end
 
         MakeSnowCovered(inst)
@@ -176,6 +190,10 @@ c_give"aip_dou_totem_powerless"
 c_give("boneshard", 1)
 c_give("monstermeat", 1)
 c_give("aip_blood_package", 1)
+
+
+
+c_give"aip_dou_totem"
 
 
 ]]

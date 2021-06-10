@@ -95,7 +95,7 @@ local function fn()
     MakeSnowCoveredPristine(inst)
 
     inst:AddTag("structure")
-    -- inst:AddTag("sign")
+    inst:AddTag("aip_fly_totem")
 
     --Sneak these into pristine state for optimization
     inst:AddTag("_writeable")
