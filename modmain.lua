@@ -135,6 +135,7 @@ modimport("scripts/componentsHooker.lua")
 
 --------------------------------------- 图标 ---------------------------------------
 AddMinimapAtlas("minimap/dark_observer_vest.xml")
+AddMinimapAtlas("minimap/aip_dou_totem.xml")
 
 --------------------------------------- 封装 ---------------------------------------
 modimport("scripts/recipeWrapper.lua")

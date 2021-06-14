@@ -49,7 +49,7 @@ end
 local Flyer = Class(function(self, inst)
 	self.inst = inst
 	self.target = nil
-	self.speed = dev_mode and 1 or 50
+	self.speed = dev_mode and 1 or 75
 	self.height = 3
 	self.cloud = nil
 

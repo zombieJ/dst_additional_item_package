@@ -25,21 +25,10 @@ end
 function CommonStore:PostWorld()
 	-- 我们在世界启动后 5 做操作以防止世界没有准备好
 	self.inst:DoTaskInTime(5, function()
-		local hasDouTotem = false
-
-		for _, ent in pairs(Ents) do
-			-- 检测图腾
-			if ent:IsValid() and (
-				ent.prefab == "aip_dou_totem_broken" or
-				ent.prefab == "aip_dou_totem_powerless" or
-				ent.prefab == "aip_dou_totem"
-			) then
-				hasDouTotem = true
-			end
-		end
+		local dou_totem = aipFindEnt("aip_dou_totem_broken", "aip_dou_totem_powerless", "aip_dou_totem")
 
 		--------------------------- 创建图腾 ---------------------------
-		if hasDouTotem == false then
+		if dou_totem == nil then
 			local fissurePT = aipGetTopologyPoint("lunacyarea", "moon_fissure")
 			if fissurePT then
 				local tgt = aipGetSpawnPoint(fissurePT, 10)

@@ -329,6 +329,17 @@ function _G.aipGetTopologyPoint(tag, prefab, dist)
 	return nil
 end
 
+function _G.aipFindEnt(...)
+	for _, ent in pairs(_G.Ents) do
+		-- 检测图腾
+		if ent:IsValid() and table.contains(arg, ent.prefab) then
+			return ent
+		end
+	end
+
+	return nil
+end
+
 -- 是暗影生物
 _G.aipShadowTags = { "shadow", "shadowminion", "shadowchesspiece", "stalker", "stalkerminion" }
 

@@ -74,6 +74,20 @@ local function canBeActOn(inst, doer)
 	return not inst:HasTag("writeable")
 end
 
+--[[
+markType 是用于豆酱图腾的标记，
+表示为有图腾柱创造的实体
+]]
+local function onSave(inst, data)
+	data.markType = inst.markType
+end
+
+local function onLoad(inst, data)
+	if data ~= nil then
+		inst.markType = data.markType
+	end
+end
+
 ---------------------------------- 实体 ----------------------------------
 local function fn()
     local inst = CreateEntity()
@@ -126,8 +140,9 @@ local function fn()
 
     MakeSmallBurnable(inst, TUNING.LARGE_BURNTIME)
     MakeSmallPropagator(inst)
-    -- inst.OnSave = onsave
-    -- inst.OnLoad = onload
+
+    inst.OnSave = onSave
+    inst.OnLoad = onLoad
 
     MakeHauntableWork(inst)
     inst:ListenForEvent("onbuilt", onbuilt)

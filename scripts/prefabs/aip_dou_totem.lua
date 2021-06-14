@@ -10,8 +10,9 @@ local LANG_MAP = {
 		NAME = "Dou Jiang Totem",
 		DESC = "Seems magic somewhere",
         TALK_WELCOME = "Are you ready?",
-        TALK_FIRST = "Your first challenge",
-        TOTEM_POS = "Totem",
+        TALK_FIRST = "Start your challenge",
+        TOTEM_POS = "First Totem",
+        TOTEM_PROTECT = "Protect King",
 	},
 	chinese = {
         BROEKN_NAME = "一片残骸",
@@ -21,8 +22,9 @@ local LANG_MAP = {
 		NAME = "豆酱图腾",
         DESC = "有一丝魔法气息",
         TALK_WELCOME = "想得到我的秘密，你做好准备了吗？",
-        TALK_FIRST = "第一个挑战！",
-        TOTEM_POS = "图腾",
+        TALK_FIRST = "开始你的挑战！",
+        TOTEM_POS = "伊始图腾",
+        TOTEM_PROTECT = "守护君主",
 	},
 }
 
@@ -41,6 +43,8 @@ STRINGS.AIP_DOU_TOTEM_TALK_FIRST = LANG.TALK_FIRST
 ---------------------------------- 资源 ----------------------------------
 local assets = {
 	Asset("ANIM", "anim/aip_dou_totem.zip"),
+    Asset("ATLAS", "minimap/aip_dou_totem.xml"),
+	Asset("IMAGE", "minimap/aip_dou_totem.tex"),
 }
 
 local prefabs = {
@@ -61,14 +65,40 @@ CONSTRUCTION_PLANS["aip_dou_totem_powerless"] = {
 }
 
 ---------------------------------- 事件 ----------------------------------
-local function createFlyTotem(inst)
+local function createFlyTotem(pt, name, markType)
+    local flyTotem = aipSpawnPrefab(nil, "aip_fly_totem", pt.x, pt.y, pt.z)
+    aipSpawnPrefab(flyTotem, "collapse_small")
+    flyTotem.components.writeable:SetText(name)
+    flyTotem.markType = markType
+end
+
+local function createFlyTotems(inst)
     local flyTotem = FindEntity(inst, 5, nil, { "aip_fly_totem" })
+
+    -- 初始化一个游戏元素
     if flyTotem == nil then
-        local pt = aipGetSpawnPoint(inst:GetPosition(), 3)
-        flyTotem = aipSpawnPrefab(nil, "aip_fly_totem", pt.x, pt.y, pt.z)
-        aipSpawnPrefab(flyTotem, "collapse_small")
-        flyTotem.components.writeable:SetText(LANG.TOTEM_POS)
+        -- 创建起点
+        createFlyTotem(
+            aipGetSpawnPoint(inst:GetPosition(), 3),
+            LANG.TOTEM_POS,
+            "START"
+        )
+
+        -- 创造猪王附近的图腾
+        local pigking = aipFindEnt("pigking")
+        if pigking then
+            createFlyTotem(
+                aipGetSpawnPoint(pigking:GetPosition(), 100),
+                LANG.TOTEM_PROTECT,
+                "PROTECT"
+            )
+        end
     end
+end
+
+-- 创建挑战点
+local function createChallenge()
+    aipGetTopologyPoint("lunacyarea", "moon_fissure")
 end
 
 ---------------------------------- 实体 ----------------------------------
@@ -115,12 +145,13 @@ local function makeTotemFn(name, animation, nextPrefab, nextPrefabAnimation)
         inst.entity:AddTransform()
         inst.entity:AddAnimState()
         inst.entity:AddSoundEmitter()
-        -- inst.entity:AddMiniMapEntity()
+        inst.entity:AddMiniMapEntity()
         inst.entity:AddNetwork()
 
         MakeObstaclePhysics(inst, .2)
 
-        -- inst.MiniMapEntity:SetIcon("sign.png")
+        inst.MiniMapEntity:SetIcon("aip_dou_totem.tex")
+        inst.MiniMapEntity:SetPriority(10)
 
         inst.AnimState:SetBank("aip_dou_totem")
         inst.AnimState:SetBuild("aip_dou_totem")
@@ -152,7 +183,7 @@ local function makeTotemFn(name, animation, nextPrefab, nextPrefabAnimation)
             inst.components.constructionsite:SetOnConstructedFn(OnConstructed)
         else
             -- 5s 后会检查附近有没有图腾，并且创造一个
-            inst:DoTaskInTime(5, createFlyTotem)
+            inst:DoTaskInTime(5, createFlyTotems)
         end
 
         MakeSnowCovered(inst)
