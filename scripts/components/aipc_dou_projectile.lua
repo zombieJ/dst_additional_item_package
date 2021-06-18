@@ -283,6 +283,9 @@ function Projectile:StartBy(doer, queue, target, targetPos, replaceSourcePos)
 			effectProjectile.components.aipc_dou_projectile:StartEffectTask(doer, queue, target, newTargetPos, replaceSourcePos)
 		end
 	end
+
+	-- 启动后，原来的马甲就可以删除啦~
+	self:CleanUp()
 end
 
 -- 分裂完毕后启动的单个任务

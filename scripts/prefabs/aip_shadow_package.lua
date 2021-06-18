@@ -9,6 +9,9 @@ if additional_magic ~= "open" then
 	return nil
 end
 
+-- 开发模式
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
+
 local language = aipGetModConfig("language")
 
 local LANG_MAP = {
@@ -123,6 +126,7 @@ local function doPackage(inst, doer, target)
 
 	-- New package
 	local item = SpawnPrefab("aip_shadow_package")
+	item:Hide()
 	item.packageTarget = target
 	local holder = doer ~= nil and (doer.components.inventory or doer.components.container) or nil
 
@@ -135,6 +139,7 @@ local function doPackage(inst, doer, target)
 	local shadowWrapper =  SpawnPrefab("aip_shadow_wrapper")
 	shadowWrapper.Transform:SetPosition(tx, ty + 0.1, tz)
 	shadowWrapper.OnFinish = function()
+		item:Show()
 		if holder ~= nil then
 			holder:GiveItem(item)
 		else
@@ -148,6 +153,17 @@ local function doPackage(inst, doer, target)
 	shadowWrapper.DoHide()
 end
 
+-- 修复打包带放置时额外创建一个打包带在地图中间的位置
+local function onPaperLoad(inst)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	if
+		x == 0 and y == 0 and z == 0 and
+		(inst.components.inventoryitem == nil or inst.components.inventoryitem:GetContainer() == nil)
+	then
+		inst:Remove()
+	end
+end
+
 function fnPaper()
 	return fn_common("aip_shadow_paper_package", function(inst)
 		-- Pre Func
@@ -156,6 +172,7 @@ function fnPaper()
 	end, function(inst)
 		-- Post Func
 		inst.components.aipc_action.onDoTargetAction = doPackage
+		inst.OnLoad = onPaperLoad
 	end)
 end
 
@@ -244,7 +261,11 @@ local function onDeploy(inst, pt, deployer)
 
 	-- Clean up
 	inst.packageTarget = nil
-	delayCheckPackaged(inst)
+	if dev_mode then
+		delayCheckPackaged(inst) -- 保留失效
+	else
+		inst:Remove()
+	end
 
 	-- Give Paper
 	local paper = SpawnPrefab("aip_shadow_paper_package")
