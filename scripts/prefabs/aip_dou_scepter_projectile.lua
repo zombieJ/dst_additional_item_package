@@ -93,6 +93,8 @@ local function fn()
 
     inst:AddComponent("aipc_dou_projectile")
 
+    inst.persists = false
+
     return inst
 end
 
