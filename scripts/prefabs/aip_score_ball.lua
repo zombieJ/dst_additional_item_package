@@ -22,38 +22,24 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 -- 文字描述
 STRINGS.NAMES.AIP_SCORE_BALL = LANG.NAME
 
-local function onthrown(inst)
-    -- inst:AddTag("NOCLICK")
-    -- inst.persists = false
-
-    -- inst.AnimState:PlayAnimation("spin_loop", true)
-
-    -- inst.Physics:SetMass(1)
-    -- inst.Physics:SetCapsule(0.2, 0.2)
-    -- inst.Physics:SetFriction(0)
-    -- inst.Physics:SetDamping(0)
-    -- inst.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
-    -- inst.Physics:ClearCollisionMask()
-    -- inst.Physics:CollidesWith(COLLISION.GROUND)
-    -- inst.Physics:CollidesWith(COLLISION.OBSTACLES)
-    -- inst.Physics:CollidesWith(COLLISION.ITEMS)
-end
-
 local function onHit(inst, attacker)
 	if inst.components.complexprojectile == nil then
 		inst:AddComponent("complexprojectile")
 		inst.components.complexprojectile:SetHorizontalSpeed(15)
-		inst.components.complexprojectile:SetGravity(-35)
+		inst.components.complexprojectile:SetGravity(-12)
 		-- inst.components.complexprojectile:SetLaunchOffset(Vector3(.25, 1, 0))
-		-- inst.components.complexprojectile:SetOnLaunch(onthrown)
 		-- inst.components.complexprojectile:SetOnHit(OnHitWater)
 	end
+
+	-- 随机一个距离
+	-- local dist = 5
+	local dist = 15
 
 	-- 计算下一个目标地址
 	local srcPos = inst:GetPosition()
 	local angle = aipGetAngle(attacker:GetPosition(), srcPos)
 	local radius = angle / 180 * PI
-	local tgtPos = Vector3(srcPos.x + math.cos(radius), srcPos.y, srcPos.z + math.sin(radius))
+	local tgtPos = Vector3(srcPos.x + math.cos(radius) * dist, 0, srcPos.z + math.sin(radius) * dist)
 
 	inst.components.complexprojectile:Launch(tgtPos, attacker)
 end
