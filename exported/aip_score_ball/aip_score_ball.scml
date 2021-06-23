@@ -2,17 +2,43 @@
 <spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
     <folder id="0" name="ball">
         <file id="0" name="ball/ball.png" width="256" height="256" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="ball/shadow.png" width="20" height="20" pivot_x="0" pivot_y="1"/>
+        <file id="2" name="ball/circle.png" width="20" height="20" pivot_x="0" pivot_y="1"/>
     </folder>
     <entity id="0" name="aip_score_ball">
-        <animation id="0" name="idle" length="1000">
+        <animation id="0" name="idle" length="100">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="ball" folder="0" file="0" abs_x="0.000614" abs_y="0" abs_pivot_x="0.499386" abs_pivot_y="0.5" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="0" name="ball" folder="0" file="0" abs_x="0" abs_y="108" abs_pivot_x="0.499386" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
             </mainline>
             <timeline id="0" name="ball">
                 <key id="0" spin="0">
-                    <object folder="0" file="0" x="0.000614" pivot_x="0.499386" pivot_y="0.5"/>
+                    <object folder="0" file="0" y="108" pivot_x="0.499386" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="1" name="shadow" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="shadow" folder="0" file="1" abs_x="0.000234" abs_y="-0.00026" abs_pivot_x="0.499766" abs_pivot_y="0.50026" abs_angle="0" abs_scale_x="11" abs_scale_y="11" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="shadow">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="0.000234" y="-0.00026" pivot_x="0.499766" pivot_y="0.50026" angle="0" scale_x="11" scale_y="11"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="circle" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="circle" folder="0" file="2" abs_x="0.000273" abs_y="-0.000918" abs_pivot_x="0.499727" abs_pivot_y="0.500918" abs_angle="0" abs_scale_x="15" abs_scale_y="15" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="circle">
+                <key id="0" spin="0">
+                    <object folder="0" file="2" x="0.000273" y="-0.000918" pivot_x="0.499727" pivot_y="0.500918" angle="0" scale_x="15" scale_y="15"/>
                 </key>
             </timeline>
         </animation>
