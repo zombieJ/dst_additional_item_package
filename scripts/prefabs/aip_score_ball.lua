@@ -53,7 +53,10 @@ function ballFn()
 	inst.entity:AddAnimState()
 	inst.entity:AddNetwork()
 
+	MakeFlyingCharacterPhysics(inst, 1, .5)
+
 	inst:AddTag("FX")
+	inst:AddTag("NOCLICK")
 
 	inst.entity:SetCanSleep(false)
 	inst.persists = false
@@ -67,7 +70,11 @@ end
 
 local function onHit(inst, attacker)
 	if inst.components.aipc_score_ball ~= nil then
-		inst.components.aipc_score_ball:Launch(attacker)
+		inst.components.aipc_score_ball:Launch(
+			attacker,
+			3 + math.random() * 2,
+			10 + math.random() * 5
+		)
 	end
 end
 
@@ -84,23 +91,20 @@ local function fn()
 	RemovePhysicsColliders(inst)
 	inst.Physics:CollidesWith(COLLISION.WORLD)
 
+	inst.entity:AddDynamicShadow()
+	inst.DynamicShadow:SetSize(1.5, .5)
+
 	-- 遇到非人类攻击需要被打破
 
 	inst.AnimState:SetBank("aip_score_ball")
 	inst.AnimState:SetBuild("aip_score_ball")
 	inst.AnimState:PlayAnimation("circle")
 
-	-- inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
-	-- inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
-	-- inst.AnimState:SetSortOrder(2)
-
 	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
 		return inst
 	end
-
-	inst:AddComponent("aipc_score_ball")
 
 	inst:AddComponent("health")
 	inst.components.health:SetMaxHealth(9999999)
@@ -109,15 +113,12 @@ local function fn()
 	inst.components.combat.hiteffectsymbol = "ball"
 	inst.components.combat:SetOnHit(onHit)
 
-	-- 阴影马甲
-	local shadow = SpawnPrefab("aip_score_ball_shadow")
-	inst:AddChild(shadow)
-	inst._aip_shadow = shadow
-
 	-- 球体马甲
 	local ball = SpawnPrefab("aip_score_ball_ball")
 	inst:AddChild(ball)
-	inst._aip_ball = ball
+
+	inst:AddComponent("aipc_score_ball")
+	inst.components.aipc_score_ball:BindVest(ball)
 
 	return inst
 end
