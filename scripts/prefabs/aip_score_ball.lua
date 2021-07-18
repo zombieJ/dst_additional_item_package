@@ -70,7 +70,7 @@ end
 
 local function onHit(inst, attacker)
 	if inst.components.aipc_score_ball ~= nil then
-		inst.components.aipc_score_ball:Launch(
+		inst.components.aipc_score_ball:Kick(
 			attacker,
 			3 + math.random() * 2,
 			10 + math.random() * 5
