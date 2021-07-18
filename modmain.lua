@@ -79,6 +79,8 @@ PrefabFiles =
 	"aip_fly_totem",
 	"aip_fly_totem_cloud",
 	"aip_score_ball",
+	"aip_score_ball_target",
+	"aip_mini_doujiang",
 
 	-- Orbit
 	"aip_orbit",

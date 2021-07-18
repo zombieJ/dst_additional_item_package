@@ -77,10 +77,10 @@ function ScoreBall:OnUpdate(dt)
 		self.inst:StopUpdatingComponent(self)
 
 		-- 如果还有一些速度，我们就弹起来
-		self.recordSpeed = self.recordSpeed / 3 * 2
-		self.yRecordSpeed = self.yRecordSpeed / 2
+		self.recordSpeed = self.recordSpeed / 2
+		self.yRecordSpeed = self.yRecordSpeed / 3 * 2
 		aipTypePrint(self.yRecordSpeed)
-		if self.recordSpeed > .4 and self.yRecordSpeed >= 1 then
+		if self.recordSpeed > .5 and self.yRecordSpeed >= 1 then
 			self:Launch(self.recordSpeed, self.yRecordSpeed)
 		end
 	end

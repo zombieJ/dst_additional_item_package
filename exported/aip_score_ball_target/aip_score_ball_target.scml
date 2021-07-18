@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="/target">
+        <file id="0" name="/target/up.png" width="95" height="85" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="/target/down.png" width="101" height="42" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_score_ball_target">
+        <animation id="0" name="idle" length="2000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="up" folder="0" file="0" abs_x="0.994792" abs_y="14.226744" abs_pivot_x="0.505208" abs_pivot_y="0.273256" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="down" folder="0" file="1" abs_x="-0.004902" abs_y="-17.767442" abs_pivot_x="0.504902" abs_pivot_y="0.267442" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="1000">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="up">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="0.994792" y="14.226744" pivot_x="0.505208" pivot_y="0.273256"/>
+                </key>
+                <key id="1" time="1000" spin="0">
+                    <object folder="0" file="0" x="0.994792" y="22.226744" pivot_x="0.505208" pivot_y="0.273256"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="down">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="-0.004902" y="-17.767442" pivot_x="0.504902" pivot_y="0.267442"/>
+                </key>
+                <key id="1" time="1000" spin="0">
+                    <object folder="0" file="1" x="-0.004902" y="-27.767442" pivot_x="0.504902" pivot_y="0.267442"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

@@ -12,7 +12,7 @@ local LANG_MAP = {
         TALK_WELCOME = "Are you ready?",
         TALK_FIRST = "Start your challenge",
         TOTEM_POS = "First Totem",
-        TOTEM_PROTECT = "Protect King",
+        TOTEM_PROTECT = "Ah Wow",
 	},
 	chinese = {
         BROEKN_NAME = "一片残骸",
@@ -24,7 +24,7 @@ local LANG_MAP = {
         TALK_WELCOME = "想得到我的秘密，你做好准备了吗？",
         TALK_FIRST = "开始你的挑战！",
         TOTEM_POS = "伊始图腾",
-        TOTEM_PROTECT = "守护君主",
+        TOTEM_PROTECT = "啊呜啊哦",
 	},
 }
 
