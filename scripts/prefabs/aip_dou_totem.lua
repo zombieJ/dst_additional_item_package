@@ -198,7 +198,7 @@ end
 
 return makeTotemFn("aip_dou_totem_broken", "broken", "aip_dou_totem_powerless"),
     makeTotemFn("aip_dou_totem_powerless", "powerless", "aip_dou_totem", "idle"),
-    makeTotemFn("aip_dou_totem", "stable")
+    makeTotemFn("aip_dou_totem", "idle")
 
 --[[
 
