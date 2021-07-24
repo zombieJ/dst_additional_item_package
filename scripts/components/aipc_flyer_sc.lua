@@ -13,7 +13,7 @@ end
 -- 对话
 local function DoTalk(inst, str)
 	if inst.components.talker then
-		inst.components.talker:say(str)
+		inst.components.talker:Say(str)
 	end
 end
 
@@ -49,7 +49,13 @@ end
 local Flyer = Class(function(self, inst)
 	self.inst = inst
 	self.target = nil
-	self.speed = dev_mode and 1 or 75
+	self.targetPos = nil
+
+	self.speed = 75 -- dev_mode and 5 or 75
+	self.maxSpeed = 200
+	self.speedUpRange = 30000
+	self.oriDistance = nil
+
 	self.height = 3
 	self.cloud = nil
 
@@ -79,7 +85,10 @@ function Flyer:RotateToTarget(dest)
 end
 
 function Flyer:FlyTo(target)
+	local instPos = self.inst:GetPosition()
 	self.target = target
+	self.targetPos = aipGetSpawnPoint(target:GetPosition(), 1)
+	self.oriDistance = distsq(instPos.x, instPos.z, self.targetPos.x, self.targetPos.z)
 
 	-- 危险的时候不能飞
 	if fly_totem == 'teleport' or fly_totem == 'fly' then
@@ -108,15 +117,17 @@ function Flyer:FlyTo(target)
 
 	-- 如果是瞬间移动
 	if fly_totem == 'teleport' or fly_totem == 'teleport_anyway' then
-		local pos = self.target:GetPosition()
-		self.inst.Transform:SetPosition(pos.x, pos.y, pos.z)
+		self.inst.Transform:SetPosition(self.targetPos.x, self.targetPos.y, self.targetPos.z)
 		return
 	end
 
 	-- 移除物理碰撞
 	RemovePhysicsColliders(self.inst)
-	self.inst.Physics:SetCollisionGroup(COLLISION.FLYERS)
 	self.inst.Physics:ClearCollisionMask()
+	self.inst.Physics:ClearCollidesWith(COLLISION.LIMITS)
+	self.inst.Physics:Stop()
+	self.inst.Physics:SetVel(0, 0, 0)
+	self.inst.Physics:SetMotorVel(0, 0, 0)
 
 	-- 淹不死
 	if self.inst.components.drownable then
@@ -183,15 +194,34 @@ function Flyer:OnUpdate(dt)
 	else
 		-- 飞过去
 		local instPos = self.inst:GetPosition()
-		local pos = self.target:GetPosition()
+		local pos = self.targetPos
 
 		-- 调整速度
 		self:RotateToTarget(pos)
-		self.inst.Physics:SetMotorVel(self.speed, (self.height - instPos.y) * 2, 0)
 
 		local distance = distsq(instPos.x, instPos.z, pos.x, pos.z)
+		local speed = self.speed
+
+		-- 如果超出最小速度的范围就需要进行加速飞行
+		if self.oriDistance > self.speedUpRange * 2 then
+			local passedDist = self.oriDistance - distance
+
+			if passedDist < self.speedUpRange then
+				-- 加速
+				speed = Remap(passedDist, 0, self.speedUpRange, self.speed, self.maxSpeed)
+			elseif distance > self.speedUpRange then
+				-- 匀速
+				speed = self.maxSpeed
+			else
+				-- 减速
+				speed = Remap(distance, 0, self.speedUpRange, self.speed, self.maxSpeed)
+			end
+		end
+		aipPrint(self.oriDistance, distance, speed)
+
+		self.inst.Physics:SetMotorVel(speed,(self.height - instPos.y) * 9,0)
+
 		if distance < 4 then
-			-- self.inst.Transform:SetPosition(pos.x, pos.y, pos.z)
 			self:End()
 		else
 			self:RotateToTarget(pos)

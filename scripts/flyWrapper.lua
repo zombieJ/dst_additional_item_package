@@ -97,7 +97,7 @@ end
 
 -- 镜头锁定
 AddClassPostConstruct("cameras/followcamera", function(inst)
-	local dist = 16 -- 8
+	local dist = 32 -- 16 -- 8
 
 	function inst:SetFlyView(flying)
 		if flying then

@@ -11,8 +11,8 @@ local LANG_MAP = {
 		DESC = "Seems magic somewhere",
         TALK_WELCOME = "Are you ready?",
         TALK_FIRST = "Start your challenge",
-        TOTEM_POS = "First Totem",
-        TOTEM_PROTECT = "Ah Wow",
+        TOTEM_POS = "First Place",
+        TOTEM_BALLOON = "Cryer",
 	},
 	chinese = {
         BROEKN_NAME = "一片残骸",
@@ -23,8 +23,8 @@ local LANG_MAP = {
         DESC = "有一丝魔法气息",
         TALK_WELCOME = "想得到我的秘密，你做好准备了吗？",
         TALK_FIRST = "开始你的挑战！",
-        TOTEM_POS = "伊始图腾",
-        TOTEM_PROTECT = "啊呜啊哦",
+        TOTEM_POS = "伊始之地",
+        TOTEM_BALLOON = "号哭之人",
 	},
 }
 
@@ -73,7 +73,7 @@ local function createFlyTotem(pt, name, markType)
 end
 
 local function createFlyTotems(inst)
-    local flyTotem = FindEntity(inst, 5, nil, { "aip_fly_totem" })
+    local flyTotem = FindEntity(inst, 10, nil, { "aip_fly_totem" })
 
     -- 初始化一个游戏元素
     if flyTotem == nil then
@@ -89,7 +89,7 @@ local function createFlyTotems(inst)
         if pigking then
             createFlyTotem(
                 aipGetSpawnPoint(pigking:GetPosition(), 100),
-                LANG.TOTEM_PROTECT,
+                LANG.TOTEM_BALLOON,
                 "PROTECT"
             )
         end
@@ -183,7 +183,7 @@ local function makeTotemFn(name, animation, nextPrefab, nextPrefabAnimation)
             inst.components.constructionsite:SetOnConstructedFn(OnConstructed)
         else
             -- 5s 后会检查附近有没有图腾，并且创造一个
-            inst:DoTaskInTime(5, createFlyTotems)
+            inst:DoTaskInTime(3, createFlyTotems)
         end
 
         MakeSnowCovered(inst)

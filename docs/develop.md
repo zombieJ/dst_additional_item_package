@@ -77,3 +77,16 @@ FindEntities(x, y, z, radius, musthavetags, nottags, hasoneoftags)
 # 坐标
 
 local pt = inst:GetPosition()
+
+# 物理的一些知识
+
+https://forums.kleientertainment.com/forums/topic/34074-the-physics-of-the-dont-starve-world/
+https://forums.kleientertainment.com/forums/topic/76982-solved-i-need-help-with-physicsknockback-thing/
+https://forums.kleientertainment.com/forums/topic/123069-bizarre-physics-velocity-bug-that-only-happens-when-no-ones-watching/
+
+MASS 质量
+
+### mathutil.lua
+
+* Lerp(min, max, ptg)：取 min ~ max 的范围值
+* Remap(currentValue, currentMin, currentMax, targetMin, targetMax)：把一个范围转成另一个范围
