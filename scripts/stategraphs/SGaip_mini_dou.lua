@@ -1,7 +1,13 @@
 require("stategraphs/commonstates")
 
 local events = {
-    CommonHandlers.OnLocomote(false, true),
+    CommonHandlers.OnLocomote(true, true),
+    EventHandler("talk", function(inst)
+        inst.components.locomotor:Stop()
+        inst:ClearBufferedAction()
+
+        inst.sg:GoToState("talk")
+    end),
 }
 
 local states = {
@@ -16,6 +22,27 @@ local states = {
 
         events = {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end)
+        },
+    },
+
+    State{  -- 说话
+        name = "talk",
+        tags = { "idle", "talking", "busy" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("dial_loop", true)
+            inst.sg:SetTimeout(2 + math.random())
+        end,
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("idle")
+        end,
+
+        events = {
+            EventHandler("donetalking", function(inst)
+                inst.sg:GoToState("idle")
+            end),
         },
     },
 

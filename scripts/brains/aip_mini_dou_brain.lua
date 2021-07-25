@@ -1,4 +1,5 @@
 require "behaviours/wander"
+require "behaviours/standstill"
 
 local MAX_CHASE_TIME = 30
 local MAX_CHASE_DIST = 35
@@ -16,17 +17,20 @@ end
 
 function MiniDouBrain:OnStart()
 	local root = PriorityNode({
-		-- 击球
-		Wander(
-			self.inst,
-			function() return self.inst.components.knownlocations:GetLocation("home") end,
-			10
+		-- 说话时就乖乖说话
+		WhileNode(
+			function()
+				return self.inst.sg:HasStateTag("talking")
+			end,
+			"StandTalking",
+			StandStill(self.inst)
 		),
+
 		-- 漫步
 		Wander(
 			self.inst,
 			function() return self.inst.components.knownlocations:GetLocation("home") end,
-			10
+			3
 		),
 	}, .25)
 	

@@ -95,8 +95,6 @@ local function fn()
 	inst.entity:AddDynamicShadow()
 	inst.DynamicShadow:SetSize(1.5, .5)
 
-	-- 遇到非人类攻击需要被打破
-
 	inst.AnimState:SetBank("aip_score_ball")
 	inst.AnimState:SetBuild("aip_score_ball")
 	inst.AnimState:PlayAnimation("circle")
@@ -113,6 +111,10 @@ local function fn()
 	inst:AddComponent("combat")
 	inst.components.combat.hiteffectsymbol = "ball"
 	inst.components.combat:SetOnHit(onHit)
+
+	inst:AddComponent("inventoryitem")
+	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_score_ball.xml"
+	inst.components.inventoryitem.imagename = "aip_score_ball"
 
 	-- 球体马甲
 	local ball = SpawnPrefab("aip_score_ball_ball")

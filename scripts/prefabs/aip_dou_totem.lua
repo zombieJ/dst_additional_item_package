@@ -88,7 +88,7 @@ local function createFlyTotems(inst)
         local pigking = aipFindEnt("pigking")
         if pigking then
             createFlyTotem(
-                aipGetSpawnPoint(pigking:GetPosition(), 100),
+                aipGetSpawnPoint(pigking:GetPosition(), 100, 5),
                 LANG.TOTEM_BALLOON,
                 "BALLOON"
             )
