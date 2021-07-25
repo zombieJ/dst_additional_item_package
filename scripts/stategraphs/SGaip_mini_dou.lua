@@ -8,17 +8,32 @@ local events = {
 
         inst.sg:GoToState("talk")
     end),
+    EventHandler("throw", function(inst, data)
+        if not inst.sg:HasStateTag("busy") then
+            inst.components.locomotor:Stop()
+            inst:ClearBufferedAction()
+
+            inst.sg:GoToState("throw", data.target)
+        end
+    end),
 }
 
 local states = {
     State{ -- 击球
         name = "throw",
-        tags = { "busy" },
+        tags = { "throw", "busy" },
 
-        onenter = function(inst)
+        onenter = function(inst, target)
+            inst.sg.statemem.target = target
             inst.AnimState:PlayAnimation("throw")
             inst.Physics:Stop()
         end,
+
+        timeline = {-- 30*360/1000
+            TimeEvent(10.8*FRAMES, function(inst)
+                inst.aipThrowBallBack(inst, inst.sg.statemem.target)
+            end),
+        },
 
         events = {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end)

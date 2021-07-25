@@ -23,6 +23,14 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 -- 文字描述
 STRINGS.NAMES.AIP_SCORE_BALL = LANG.NAME
 
+---------------------------------- 事件 ----------------------------------
+local function onDeath(inst)
+	local fx = aipReplacePrefab(inst, "collapse_small")
+	fx:SetMaterial("straw")
+end
+
+---------------------------------- 实体 ----------------------------------
+
 -- 阴影
 function shadowFn()
 	local inst = CreateEntity()
@@ -73,8 +81,8 @@ local function onHit(inst, attacker)
 	if inst.components.aipc_score_ball ~= nil then
 		inst.components.aipc_score_ball:Kick(
 			attacker,
-			3 + math.random() * 2,
-			10 + math.random() * 5
+			3 + math.random(),
+			13 + math.random() * 2
 		)
 	end
 end
@@ -95,6 +103,9 @@ local function fn()
 	inst.entity:AddDynamicShadow()
 	inst.DynamicShadow:SetSize(1.5, .5)
 
+	inst:AddTag("aip_score_ball")
+	inst:AddTag("hostile") -- 加一个敌对标签，让玩家可以默认攻击
+
 	inst.AnimState:SetBank("aip_score_ball")
 	inst.AnimState:SetBuild("aip_score_ball")
 	inst.AnimState:PlayAnimation("circle")
@@ -106,7 +117,8 @@ local function fn()
 	end
 
 	inst:AddComponent("health")
-	inst.components.health:SetMaxHealth(9999999)
+	inst.components.health:SetMaxHealth(500)
+	inst.components.health.canmurder = false
 
 	inst:AddComponent("combat")
 	inst.components.combat.hiteffectsymbol = "ball"
@@ -122,6 +134,8 @@ local function fn()
 
 	inst:AddComponent("aipc_score_ball")
 	inst.components.aipc_score_ball:BindVest(ball)
+
+	inst:ListenForEvent("death", onDeath)
 
 	return inst
 end

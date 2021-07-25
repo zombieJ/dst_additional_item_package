@@ -13,6 +13,7 @@ local LANG_MAP = {
         TALK_FIRST = "Start your challenge",
         TOTEM_POS = "First Place",
         TOTEM_BALLOON = "Cryer",
+        TOTEM_SNAKE = "", -- 抓捕玩具蛇
 	},
 	chinese = {
         BROEKN_NAME = "一片残骸",

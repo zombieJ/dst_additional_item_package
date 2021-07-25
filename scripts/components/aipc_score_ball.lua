@@ -8,6 +8,8 @@ local ScoreBall = Class(function(self, inst)
 	self.yRecordSpeed = 0 -- 启动时的 y 速度，每次落地都会减少一些
 	self.fullTime = 0
 	self.walkTime = 0
+	self.downTimes = 0
+	self.startTimes = 0
 end)
 
 function ScoreBall:BindVest(ball)
@@ -25,6 +27,7 @@ end
 function ScoreBall:Launch(speed, ySpeed)
 	-- 初始化马甲
 	self:ResetMotion()
+	self.startTimes = self.startTimes + 1
 
 	-- 初始化速度
 	self.speed = speed
@@ -43,24 +46,52 @@ function ScoreBall:Launch(speed, ySpeed)
 	self.inst.components.health:SetInvincible(true)
 end
 
+function ScoreBall:Throw(tgtPos, speed, ySpeed) -- 朝着方向扔球
+	local srcPos = self.inst:GetPosition()
+	local angle = aipGetAngle(tgtPos, srcPos)
+	self.inst.Transform:SetRotation(angle)
+	self.inst:FacePoint(tgtPos)
+
+	self.startTimes = 0
+	self.downTimes = 0
+
+	self:Launch(speed, ySpeed)
+end
+
 function ScoreBall:Kick(attacker, speed, ySpeed) -- 攻击球
 	local srcPos = self.inst:GetPosition()
 	local angle = aipGetAngle(attacker:GetPosition(), srcPos)
 	local radius = angle / 180 * PI
 	local tgtPos = Vector3(srcPos.x + math.cos(radius), 0, srcPos.z + math.sin(radius))
-	self.inst.Transform:SetRotation(angle)
-	self.inst:FacePoint(tgtPos)
 
-	self:Launch(speed, ySpeed)
+	self:Throw(tgtPos, speed, ySpeed)
+end
+
+-- 若光可以跟着球跑
+function ScoreBall:CanFollow()
+	local x, y, z = self.ball.Transform:GetWorldPosition()
+	-- 球下落中 或者 飞起一段距离后
+	return self.startTimes == 1 and (self.downTimes > 0 or y > 7)
+end
+
+-- 若光可以击球
+function ScoreBall:CanThrow()
+	local x, y, z = self.ball.Transform:GetWorldPosition()
+	return self:CanFollow() and y < 2.5
 end
 
 function ScoreBall:OnUpdate(dt)
+	local prevWalkTime = self.walkTime
 	self.walkTime = self.walkTime + dt
 
 	local ySpeed = (self.fullTime - self.walkTime) / self.fullTime * self.ySpeed
 
 	self.inst.Physics:SetMotorVel(self.speed, 0, 0)
 	self.ball.Physics:SetMotorVel(0, ySpeed, 0)
+
+	if prevWalkTime <= self.fullTime and self.fullTime < self.walkTime then
+		self.downTimes = self.downTimes + 1
+	end
 
 	-- 退出判断
 	local x, y, z = self.ball.Transform:GetWorldPosition()

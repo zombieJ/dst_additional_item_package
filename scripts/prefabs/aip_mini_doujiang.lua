@@ -17,7 +17,7 @@ local LANG_MAP = {
 		NAME = "Likeght",
 		DESC = "It's cute!",
         NEED_RECIPE = "Are you ingenuity?",
-        REQUIRE_PLAY = "Let's play the B'all~",
+        REQUIRE_PLAY = "Throw it to me~",
         BYE = "Bye~",
         YOU_FIRST = "You first~",
 	},
@@ -25,7 +25,7 @@ local LANG_MAP = {
 		NAME = "若光",
 		DESC = "可爱的小家伙",
         NEED_RECIPE = "你会做豆豆球吗？",
-        REQUIRE_PLAY = "来和我拍球把~",
+        REQUIRE_PLAY = "把球打给我吧~",
         BYE = "要走了吗？",
         YOU_FIRST = "你先来~",
 	},
@@ -42,6 +42,7 @@ STRINGS.AIP_MINI_DOUJIANG_BYE = LANG.BYE
 STRINGS.AIP_MINI_DOUJIANG_YOU_FIRST = LANG.YOU_FIRST
 
 ------------------------------- 方法 -------------------------------
+-- 玩家靠近
 local function onNear(inst, player)
     inst:DoTaskInTime(1, function()
         if
@@ -59,6 +60,7 @@ local function onNear(inst, player)
     end)
 end
 
+-- 玩家远离
 local function onFar(inst)
     if not inst.components.timer:TimerExists("aip_mini_dou_dall_88") then
         inst.components.talker:Say(STRINGS.AIP_MINI_DOUJIANG_BYE)
@@ -71,17 +73,33 @@ local function onFar(inst)
     inst.components.timer:StartTimer("aip_mini_dou_dall_disapper", 60)
 end
 
+-- 击球
+local function aipThrowBallBack(inst, ball)
+    local players = aipFindNearPlayers(inst, 20)
+    local tgtEnt = players[1] or inst
+    local tgtPos = aipGetSpawnPoint(tgtEnt:GetPosition(), 2)
+
+    ball.components.aipc_score_ball:Throw(
+        tgtPos,
+        3 + math.random(),
+        13 + math.random() * 2
+    )
+end
+
 ------------------------------- 实体 -------------------------------
 local function fn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst, 50, .5)
 
     inst.Transform:SetFourFaced()
+
+    inst:AddTag("aip_mini_doujiang")
 
     inst.AnimState:SetBank("aip_mini_doujiang")
     inst.AnimState:SetBuild("aip_mini_doujiang")
@@ -104,8 +122,8 @@ local function fn()
     inst:AddComponent("locomotor")
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
     inst.components.locomotor:SetTriggersCreep(false)
-    inst.components.locomotor.walkspeed = TUNING.PIG_ELITE_WALK_SPEED
-    inst.components.locomotor.runspeed = TUNING.PIG_ELITE_RUN_SPEED
+    inst.components.locomotor.walkspeed = 2
+    inst.components.locomotor.runspeed = 4
     inst.components.locomotor.pathcaps = { allowocean = true }
 
     inst:SetStateGraph("SGaip_mini_dou")
@@ -135,6 +153,8 @@ local function fn()
 	        effect.DoShow()
         end
     end)
+
+    inst.aipThrowBallBack = aipThrowBallBack
 
     return inst
 end

@@ -1,5 +1,6 @@
 require "behaviours/wander"
 require "behaviours/standstill"
+require "behaviours/aipThrowBall"
 
 local MAX_CHASE_TIME = 30
 local MAX_CHASE_DIST = 35
@@ -17,11 +18,12 @@ end
 
 function MiniDouBrain:OnStart()
 	local root = PriorityNode({
+		-- 打球
+		ThrowBall(self.inst),
+
 		-- 说话时就乖乖说话
 		WhileNode(
-			function()
-				return self.inst.sg:HasStateTag("talking")
-			end,
+			function() return self.inst.sg:HasStateTag("talking") end,
 			"StandTalking",
 			StandStill(self.inst)
 		),
