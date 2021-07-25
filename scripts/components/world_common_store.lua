@@ -34,11 +34,11 @@ function CommonStore:PostWorld()
 				local tgt = aipGetSpawnPoint(fissurePT, 10)
 				aipSpawnPrefab(nil, "aip_dou_totem_broken", tgt.x, tgt.y, tgt.z)
 
-				if dev_mode then
-					for i, player in pairs(AllPlayers) do
-						player.Physics:Teleport(fissurePT.x, fissurePT.y, fissurePT.z)
-					end
-				end
+				-- if dev_mode then
+				-- 	for i, player in pairs(AllPlayers) do
+				-- 		player.Physics:Teleport(fissurePT.x, fissurePT.y, fissurePT.z)
+				-- 	end
+				-- end
 			end
 		end
 	end)

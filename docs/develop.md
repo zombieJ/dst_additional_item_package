@@ -90,3 +90,6 @@ MASS 质量
 
 * Lerp(min, max, ptg)：取 min ~ max 的范围值
 * Remap(currentValue, currentMin, currentMax, targetMin, targetMax)：把一个范围转成另一个范围
+
+
+inst.AnimState:SetRayTestOnBB(true) 小物体会直接用盒装模型碰撞检测

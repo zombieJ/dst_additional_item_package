@@ -88,6 +88,16 @@ local function onLoad(inst, data)
 	end
 end
 
+---------------------------------- 方法 ----------------------------------
+-- 玩家靠近时创建一个小豆酱
+local function onnear(inst, player)
+    if inst.markType == "BALLOON" and inst._aipMiniDou == nil then
+        local pos = aipGetSpawnPoint(inst:GetPosition(), 1)
+        inst._aipMiniDou = SpawnPrefab("aip_mini_doujiang")
+        inst._aipMiniDou.Transform:SetPosition(pos.x, pos.y, pos.z)
+    end
+end
+
 ---------------------------------- 实体 ----------------------------------
 local function fn()
     local inst = CreateEntity()
@@ -135,6 +145,11 @@ local function fn()
     inst.components.workable:SetWorkLeft(4)
     inst.components.workable:SetOnFinishCallback(onhammered)
     inst.components.workable:SetOnWorkCallback(onhit)
+
+    -- 玩家靠近
+    inst:AddComponent("playerprox")
+    inst.components.playerprox:SetDist(10, 13)
+    inst.components.playerprox:SetOnPlayerNear(onnear)
 
     MakeSnowCovered(inst)
 

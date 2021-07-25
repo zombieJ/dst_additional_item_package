@@ -217,7 +217,11 @@ function Flyer:OnUpdate(dt)
 				speed = Remap(distance, 0, self.speedUpRange, self.speed, self.maxSpeed)
 			end
 		end
-		aipPrint(self.oriDistance, distance, speed)
+
+		-- 添加一个变量来强制引擎更新
+		if math.random() > 0.5 then
+			speed = speed + 0.001
+		end
 
 		self.inst.Physics:SetMotorVel(speed,(self.height - instPos.y) * 9,0)
 

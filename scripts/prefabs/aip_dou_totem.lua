@@ -90,7 +90,7 @@ local function createFlyTotems(inst)
             createFlyTotem(
                 aipGetSpawnPoint(pigking:GetPosition(), 100),
                 LANG.TOTEM_BALLOON,
-                "PROTECT"
+                "BALLOON"
             )
         end
     end
