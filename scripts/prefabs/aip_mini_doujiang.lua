@@ -70,6 +70,8 @@ local function fn()
 
     inst:AddComponent("inspectable")
 
+    inst:AddComponent("knownlocations")
+
 	-- 闪烁特效
 	inst.AnimState:SetErosionParams(0, -0.125, -1.0)
 

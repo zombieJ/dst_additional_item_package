@@ -17,10 +17,18 @@ end
 function MiniDouBrain:OnStart()
 	local root = PriorityNode({
 		-- 漫步
-		Wander(self.inst, function() return nil end, 40),
+		Wander(
+			self.inst,
+			function() return self.inst.components.knownlocations:GetLocation("home") end,
+			20
+		)
 	}, .25)
 	
 	self.bt = BT(self.inst, root)
+end
+
+function MiniDouBrain:OnInitializationComplete()
+    self.inst.components.knownlocations:RememberLocation("home", self.inst:GetPosition())
 end
 
 return MiniDouBrain
