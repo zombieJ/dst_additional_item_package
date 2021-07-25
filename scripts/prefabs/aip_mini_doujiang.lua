@@ -13,12 +13,14 @@ local LANG_MAP = {
 	english = {
 		NAME = "Likeght",
 		DESC = "It's cute!",
-		ALONE = "Play with me?",
+        NEED_RECIPE = "Are you ingenuity?",
+        REQUIRE_PLAY = "Let's play the B'all~",
 	},
 	chinese = {
 		NAME = "若光",
 		DESC = "可爱的小家伙",
-		ALONE = "你要陪我玩吗？",
+        NEED_RECIPE = "你会做豆豆球吗？",
+        REQUIRE_PLAY = "来和我拍球把~",
 	},
 }
 
@@ -27,8 +29,24 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 -- 文字描述
 STRINGS.NAMES.AIP_MINI_DOUJIANG = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_MINI_DOUJIANG = LANG.DESC
-STRINGS.AIP_MINI_DOUJIANG_ALONE = LANG.ALONE
+STRINGS.AIP_MINI_DOUJIANG_NEED_RECIPE = LANG.NEED_RECIPE
+STRINGS.AIP_MINI_DOUJIANG_REQUIRE_PLAY = LANG.REQUIRE_PLAY
 
+------------------------------- 方法 -------------------------------
+local function onNear(inst, player)
+    if
+        player and not player.components.builder:KnowsRecipe("aip_score_ball") and
+        not player.components.timer:TimerExists("aip_mini_dou_dall_blueprints")
+    then
+        player.components.timer:StartTimer("aip_mini_dou_dall_blueprints", 300)
+        inst.components.lootdropper:SpawnLootPrefab("aip_score_ball_blueprint")
+        inst.components.talker:Say(STRINGS.AIP_MINI_DOUJIANG_NEED_RECIPE)
+    else
+        inst.components.talker:Say(STRINGS.AIP_MINI_DOUJIANG_REQUIRE_PLAY)
+    end
+end
+
+------------------------------- 实体 -------------------------------
 local function fn()
     local inst = CreateEntity()
 
@@ -58,6 +76,8 @@ local function fn()
         return inst
     end
 
+    inst:AddComponent("timer")
+
     inst:AddComponent("locomotor")
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
     inst.components.locomotor:SetTriggersCreep(false)
@@ -72,12 +92,16 @@ local function fn()
 
     inst:AddComponent("knownlocations")
 
+    inst:AddComponent("lootdropper")
+    inst.components.lootdropper:SetLoot({})
+
+    -- 玩家靠近，提供一个皮球配方
+    inst:AddComponent("playerprox")
+    inst.components.playerprox:SetDist(7, 9)
+    inst.components.playerprox:SetOnPlayerNear(onNear)
+
 	-- 闪烁特效
 	inst.AnimState:SetErosionParams(0, -0.125, -1.0)
-
-	inst:DoPeriodicTask(5, function()
-		inst.components.talker:Say(STRINGS.AIP_MINI_DOUJIANG_ALONE)
-	end)
 
     inst.persists = false
 

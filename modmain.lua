@@ -26,8 +26,7 @@ Assets =
 }
 
 -- 物品列表
-PrefabFiles =
-{
+PrefabFiles = {
 	-- vest
 	"aip_vest",
 	"aip_projectile",
@@ -162,6 +161,8 @@ if GetModConfigData("additional_orbit") == "open" then
 	modimport("scripts/mineCarAction.lua")
 end
 
+------------------------------------- 配方钩子 -------------------------------------
+modimport("scripts/recpiesHooker.lua")
 
 ------------------------------------- 对象钩子 -------------------------------------
 modimport("scripts/prefabsHooker.lua")

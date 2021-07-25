@@ -5,6 +5,20 @@ local events = {
 }
 
 local states = {
+    State{ -- 击球
+        name = "throw",
+        tags = { "busy" },
+
+        onenter = function(inst)
+            inst.AnimState:PlayAnimation("throw")
+            inst.Physics:Stop()
+        end,
+
+        events = {
+            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end)
+        },
+    },
+
     State{
         name = "idle",
         tags = { "idle", "canrotate" },

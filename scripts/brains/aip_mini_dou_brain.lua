@@ -16,12 +16,18 @@ end
 
 function MiniDouBrain:OnStart()
 	local root = PriorityNode({
+		-- 击球
+		Wander(
+			self.inst,
+			function() return self.inst.components.knownlocations:GetLocation("home") end,
+			10
+		),
 		-- 漫步
 		Wander(
 			self.inst,
 			function() return self.inst.components.knownlocations:GetLocation("home") end,
-			20
-		)
+			10
+		),
 	}, .25)
 	
 	self.bt = BT(self.inst, root)

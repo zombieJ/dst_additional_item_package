@@ -3,6 +3,7 @@ local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 local assets = {
     Asset("ANIM", "anim/aip_score_ball.zip"),
+	Asset("ATLAS", "images/inventoryimages/aip_score_ball.xml"),
 }
 
 
@@ -10,7 +11,7 @@ local language = aipGetModConfig("language")
 
 local LANG_MAP = {
 	english = {
-		NAME = "'D'all",
+		NAME = "D'all",
 	},
 	chinese = {
 		NAME = "豆豆球",
