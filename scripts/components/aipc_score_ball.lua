@@ -83,15 +83,19 @@ end
 function ScoreBall:CanFollow()
 	local x, y, z = self.ball.Transform:GetWorldPosition()
 	-- 球下落中 或者 飞起一段距离后
-	return (self.startTimes == 1 and (self.downTimes == 1 or y > 7)) or (
-		self.startTimes == 2 and self.downTimes == 1
+	return (
+		(self.startTimes == 1 and (self.downTimes == 1 or y > 7)) or -- 第一次飞起 7 高度或下落中
+		(self.startTimes == 2 and self.downTimes == 1) -- 第二次飞起
 	)
 end
 
 -- 若光可以击球
 function ScoreBall:CanThrow()
 	local x, y, z = self.ball.Transform:GetWorldPosition()
-	return self:CanFollow() and y < 2
+	return self:CanFollow() and (
+		(self.downTimes == 1 and y < 1.5) or -- 第一次下落至 1.5 高度
+		(self.startTimes == 2 and y < 1.5) -- 第二次 1.5 高度内
+	)
 end
 
 function ScoreBall:OnUpdate(dt)

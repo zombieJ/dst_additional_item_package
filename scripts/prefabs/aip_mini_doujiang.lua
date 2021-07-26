@@ -19,7 +19,7 @@ local LANG_MAP = {
         NEED_RECIPE = "Are you ingenuity?",
         REQUIRE_PLAY = "Throw it to me~",
         BYE = "Bye~",
-        YOU_FIRST = "You first~",
+        THROW_BALL = "I got it！",
 	},
 	chinese = {
 		NAME = "若光",
@@ -27,7 +27,7 @@ local LANG_MAP = {
         NEED_RECIPE = "你会做豆豆球吗？",
         REQUIRE_PLAY = "把球打给我吧~",
         BYE = "要走了吗？",
-        YOU_FIRST = "你先来~",
+        THROW_BALL = "嗷呜！",
 	},
 }
 
@@ -39,16 +39,24 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_MINI_DOUJIANG = LANG.DESC
 STRINGS.AIP_MINI_DOUJIANG_NEED_RECIPE = LANG.NEED_RECIPE
 STRINGS.AIP_MINI_DOUJIANG_REQUIRE_PLAY = LANG.REQUIRE_PLAY
 STRINGS.AIP_MINI_DOUJIANG_BYE = LANG.BYE
-STRINGS.AIP_MINI_DOUJIANG_YOU_FIRST = LANG.YOU_FIRST
+STRINGS.AIP_MINI_DOUJIANG_THROW_BALL = LANG.THROW_BALL
 
 ------------------------------- 方法 -------------------------------
 -- 玩家靠近
 local function onNear(inst, player)
+    -- 如果附近有球就不提示了
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local balls = TheSim:FindEntities(x, 0, z, 10, { "aip_score_ball" })
+    if #balls > 0 then
+        return
+    end
+
     inst:DoTaskInTime(1, function()
         if
             player and not player.components.builder:KnowsRecipe("aip_score_ball") and
             not inst.components.timer:TimerExists("aip_mini_dou_dall_blueprints")
         then
+            -- 如果玩家不会制作球就提供一个图纸
             inst.components.timer:StartTimer("aip_mini_dou_dall_blueprints", 300)
             inst.components.lootdropper:SpawnLootPrefab("aip_score_ball_blueprint")
             inst.components.talker:Say(STRINGS.AIP_MINI_DOUJIANG_NEED_RECIPE)
