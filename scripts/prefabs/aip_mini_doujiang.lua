@@ -53,17 +53,14 @@ STRINGS.AIP_MINI_DOUJIANG_THROW_BALL_REWARD = LANG.THROW_BALL_REWARD
 ------------------------------- 方法 -------------------------------
 -- 玩家靠近
 local function onNear(inst, player)
-    -- 如果附近有球就不提示了
-    local x, y, z = inst.Transform:GetWorldPosition()
-    local balls = TheSim:FindEntities(x, 0, z, 10, { "aip_score_ball" })
-    if #balls > 0 then
-        return
-    end
-
     inst:DoTaskInTime(1, function()
+        local x, y, z = inst.Transform:GetWorldPosition()
+        local balls = TheSim:FindEntities(x, 0, z, 10, { "aip_score_ball" })
+
         if
             player and not player.components.builder:KnowsRecipe("aip_score_ball") and
-            not inst.components.timer:TimerExists("aip_mini_dou_dall_blueprints")
+            not inst.components.timer:TimerExists("aip_mini_dou_dall_blueprints") and
+            #balls == 0 -- 附近有球也不提供图纸
         then
             -- 如果玩家不会制作球就提供一个图纸
             inst.components.timer:StartTimer("aip_mini_dou_dall_blueprints", 300)
@@ -77,6 +74,11 @@ local function onNear(inst, player)
     end)
 end
 
+local function resetDisapper(inst)
+    inst.components.timer:StopTimer("aip_mini_dou_dall_disapper")
+    inst.components.timer:StartTimer("aip_mini_dou_dall_disapper", dev_mode and 10 or 60)
+end
+
 -- 玩家远离
 local function onFar(inst)
     if not inst.components.timer:TimerExists("aip_mini_dou_dall_88") then
@@ -86,8 +88,7 @@ local function onFar(inst)
     -- 总是重置计时器
     inst.components.timer:StopTimer("aip_mini_dou_dall_88")
     inst.components.timer:StartTimer("aip_mini_dou_dall_88", 30)
-    inst.components.timer:StopTimer("aip_mini_dou_dall_disapper")
-    inst.components.timer:StartTimer("aip_mini_dou_dall_disapper", 60)
+    resetDisapper(inst)
 end
 
 -- 击球
@@ -101,6 +102,11 @@ local function aipThrowBallBack(inst, ball)
         3 + math.random(),
         13 + math.random() * 2
     )
+
+    -- 击球时重置消失时间，防止玩到一半消失了
+    if inst.components.timer:TimerExists("aip_mini_dou_dall_disapper") then
+        resetDisapper(inst)
+    end
 end
 
 -- 判断是否要给奖励
@@ -112,8 +118,11 @@ local function aipPlayEnd(inst, throwTimes)
         inst.components.talker:Say(STRINGS.AIP_MINI_DOUJIANG_THROW_BALL_FAIL)
         inst:PushEvent("talk")
     else
-        -- 奖励物品
-        inst.components.lootdropper:SpawnLootPrefab("aip_score_ball_blueprint")
+        -- 奖励物品 1 ~ 3 个葡萄
+        local cnt = 1 + math.random() * 3
+        for i = 1, cnt do
+            inst.components.lootdropper:SpawnLootPrefab("aip_veggie_grape")
+        end
         inst.components.talker:Say(STRINGS.AIP_MINI_DOUJIANG_THROW_BALL_REWARD)
         inst:PushEvent("talk")
     end
@@ -136,7 +145,7 @@ local function fn()
 
     inst.AnimState:SetBank("aip_mini_doujiang")
     inst.AnimState:SetBuild("aip_mini_doujiang")
-    inst.AnimState:PlayAnimation("idle", true)
+    inst.AnimState:PlayAnimation("idle_loop", true)
 
     inst.entity:SetPristine()
 
@@ -184,6 +193,10 @@ local function fn()
         if data.name == "aip_mini_dou_dall_disapper" then
             local effect = aipReplacePrefab(inst, "aip_shadow_wrapper")
 	        effect.DoShow()
+
+            if inst._aipTotem ~= nil then
+                inst._aipTotem._aipMiniDou = nil
+            end
         end
     end)
 

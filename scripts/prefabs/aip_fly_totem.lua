@@ -45,7 +45,10 @@ local assets = {
 	Asset("ATLAS", "images/inventoryimages/aip_fly_totem.xml"),
 }
 
-local prefabs = {}
+local prefabs = {
+    "aip_shadow_wrapper",
+    "aip_mini_doujiang",
+}
 
 ---------------------------------- 事件 ----------------------------------
 local function onhammered(inst, worker)
@@ -95,6 +98,10 @@ local function onnear(inst, player)
         local pos = aipGetSpawnPoint(inst:GetPosition(), 1)
         inst._aipMiniDou = SpawnPrefab("aip_mini_doujiang")
         inst._aipMiniDou.Transform:SetPosition(pos.x, pos.y, pos.z)
+
+        aipSpawnPrefab(inst, "aip_shadow_wrapper").DoShow()
+
+        inst._aipMiniDou._aipTotem = inst
     end
 end
 
