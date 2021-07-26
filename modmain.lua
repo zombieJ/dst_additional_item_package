@@ -141,13 +141,13 @@ AddMinimapAtlas("minimap/dark_observer_vest.xml")
 AddMinimapAtlas("minimap/aip_dou_totem.xml")
 
 --------------------------------------- 封装 ---------------------------------------
-modimport("scripts/recipeWrapper.lua")
 modimport("scripts/containersWrapper.lua")
 modimport("scripts/writeablesWrapper.lua")
 modimport("scripts/itemTileWrapper.lua")
 modimport("scripts/hudWrapper.lua")
 modimport("scripts/shadowPackageAction.lua")
 modimport("scripts/widgetHooker.lua")
+modimport("scripts/recpiesHooker.lua")
 modimport("scripts/flyWrapper.lua")
 
 ------------------------------------- 测试专用 -------------------------------------
@@ -159,9 +159,6 @@ end
 if GetModConfigData("additional_orbit") == "open" then
 	modimport("scripts/mineCarAction.lua")
 end
-
-------------------------------------- 配方钩子 -------------------------------------
-modimport("scripts/recpiesHooker.lua")
 
 ------------------------------------- 对象钩子 -------------------------------------
 modimport("scripts/prefabsHooker.lua")

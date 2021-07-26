@@ -12,7 +12,16 @@ local MUST_TAGS = { "aip_score_ball" }
 function ThrowBall:Visit()
     if self.status == READY then
 		local x, y, z = self.inst.Transform:GetWorldPosition()
-        self.target = TheSim:FindEntities(x, 0, z, 10, MUST_TAGS)[1]
+        local balls = TheSim:FindEntities(x, 0, z, 10, MUST_TAGS)
+
+        self.target = nil
+
+        for i, ball in ipairs(tbl) do
+            if ball.components.aipc_score_ball:CanThrow() then
+                self.target = ball
+                break
+            end
+        end
 
         if self.target ~= nil then
             self.status = RUNNING
