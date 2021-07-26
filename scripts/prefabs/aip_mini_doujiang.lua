@@ -1,3 +1,6 @@
+-- 开发模式
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
+
 local brain = require "brains/aip_mini_dou_brain"
 
 local assets = {
@@ -20,6 +23,8 @@ local LANG_MAP = {
         REQUIRE_PLAY = "Throw it to me~",
         BYE = "Bye~",
         THROW_BALL = "I got it！",
+        THROW_BALL_FAIL = "T_T",
+        THROW_BALL_REWARD = "Nice play~",
 	},
 	chinese = {
 		NAME = "若光",
@@ -28,6 +33,8 @@ local LANG_MAP = {
         REQUIRE_PLAY = "把球打给我吧~",
         BYE = "要走了吗？",
         THROW_BALL = "嗷呜！",
+        THROW_BALL_FAIL = "哼，接不住了",
+        THROW_BALL_REWARD = "和你玩的真开心，谢谢",
 	},
 }
 
@@ -40,6 +47,8 @@ STRINGS.AIP_MINI_DOUJIANG_NEED_RECIPE = LANG.NEED_RECIPE
 STRINGS.AIP_MINI_DOUJIANG_REQUIRE_PLAY = LANG.REQUIRE_PLAY
 STRINGS.AIP_MINI_DOUJIANG_BYE = LANG.BYE
 STRINGS.AIP_MINI_DOUJIANG_THROW_BALL = LANG.THROW_BALL
+STRINGS.AIP_MINI_DOUJIANG_THROW_BALL_FAIL = LANG.THROW_BALL_FAIL
+STRINGS.AIP_MINI_DOUJIANG_THROW_BALL_REWARD = LANG.THROW_BALL_REWARD
 
 ------------------------------- 方法 -------------------------------
 -- 玩家靠近
@@ -92,6 +101,22 @@ local function aipThrowBallBack(inst, ball)
         3 + math.random(),
         13 + math.random() * 2
     )
+end
+
+-- 判断是否要给奖励
+local function aipPlayEnd(inst, throwTimes)
+    local rewardTimes = dev_mode and 4 or 15
+
+    if throwTimes < rewardTimes then
+        -- 得分太低
+        inst.components.talker:Say(STRINGS.AIP_MINI_DOUJIANG_THROW_BALL_FAIL)
+        inst:PushEvent("talk")
+    else
+        -- 奖励物品
+        inst.components.lootdropper:SpawnLootPrefab("aip_score_ball_blueprint")
+        inst.components.talker:Say(STRINGS.AIP_MINI_DOUJIANG_THROW_BALL_REWARD)
+        inst:PushEvent("talk")
+    end
 end
 
 ------------------------------- 实体 -------------------------------
@@ -163,6 +188,7 @@ local function fn()
     end)
 
     inst.aipThrowBallBack = aipThrowBallBack
+    inst.aipPlayEnd = aipPlayEnd
 
     return inst
 end

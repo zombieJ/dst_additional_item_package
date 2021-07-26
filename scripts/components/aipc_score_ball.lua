@@ -10,6 +10,7 @@ local ScoreBall = Class(function(self, inst)
 	self.walkTime = 0
 	self.downTimes = 0
 	self.startTimes = 0
+	self.throwTimes = 0
 end)
 
 function ScoreBall:BindVest(ball)
@@ -46,6 +47,15 @@ function ScoreBall:Launch(speed, ySpeed)
 	self.inst.components.health:SetInvincible(true)
 end
 
+function ScoreBall:ResetThrowCount()
+	local miniDou = FindEntity(self.inst, 15, nil, { "aip_mini_doujiang" })
+	if miniDou ~= nil and miniDou.aipPlayEnd ~= nil and self.throwTimes ~= 0 then
+		miniDou.aipPlayEnd(miniDou, self.throwTimes)
+	end
+
+	self.throwTimes = 0
+end
+
 function ScoreBall:Throw(tgtPos, speed, ySpeed) -- 朝着方向扔球
 	local srcPos = self.inst:GetPosition()
 	local angle = aipGetAngle(tgtPos, srcPos)
@@ -54,6 +64,8 @@ function ScoreBall:Throw(tgtPos, speed, ySpeed) -- 朝着方向扔球
 
 	self.startTimes = 0
 	self.downTimes = 0
+
+	self.throwTimes = self.throwTimes + 1
 
 	self:Launch(speed, ySpeed)
 end
@@ -65,18 +77,6 @@ function ScoreBall:Kick(attacker, speed, ySpeed) -- 攻击球
 	local tgtPos = Vector3(srcPos.x + math.cos(radius), 0, srcPos.z + math.sin(radius))
 
 	self:Throw(tgtPos, speed, ySpeed)
-end
-
-function ScoreBall:PredictPoint(second) -- 落球点预测
-	local srcPos = self.inst:GetPosition()
-	local rotation = self.inst.Transform:GetRotation()
-	local radius = rotation / 180 * PI
-	local tgtPos = Vector3(
-		srcPos.x + math.cos(radius) * self.speed * second,
-		0,
-		srcPos.z + math.sin(radius) * self.speed * second
-	)
-	return tgtPos
 end
 
 -- 若光可以跟着球跑
@@ -94,7 +94,7 @@ function ScoreBall:CanThrow()
 	local x, y, z = self.ball.Transform:GetWorldPosition()
 	return self:CanFollow() and (
 		(self.downTimes == 1 and y < 1.5) or -- 第一次下落至 1.5 高度
-		(self.startTimes == 2 and y < 1.5) -- 第二次 1.5 高度内
+		(self.startTimes == 2 and y < 1) -- 第二次 1.5 高度内
 	)
 end
 
@@ -128,9 +128,16 @@ function ScoreBall:OnUpdate(dt)
 		-- 如果还有一些速度，我们就弹起来
 		self.recordSpeed = self.recordSpeed / 2
 		self.yRecordSpeed = self.yRecordSpeed / 3 * 2
-		aipTypePrint(self.yRecordSpeed)
-		if self.recordSpeed > .5 and self.yRecordSpeed >= 1 then
+
+		if self.recordSpeed > .2 and self.yRecordSpeed >= 1 then
 			self:Launch(self.recordSpeed, self.yRecordSpeed)
+
+			-- 如果弹了两次就重置扔球时间
+			if self.downTimes >= 2 then
+				self:ResetThrowCount()
+			end
+		else
+			self:ResetThrowCount() -- 不弹起则重置扔球时间
 		end
 	end
 end

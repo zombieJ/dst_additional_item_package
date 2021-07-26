@@ -41,7 +41,6 @@ function ThrowBall:Visit()
         else
 			local target_position = Point(self.target.Transform:GetWorldPosition())
 			self.inst.components.locomotor:GoToPoint(
-                -- self.target.components.aipc_score_ball:PredictPoint(0.3),
                 target_position,
                 nil,
                 true
@@ -50,7 +49,7 @@ function ThrowBall:Visit()
 			local me = Point(self.inst.Transform:GetWorldPosition())
 			if self.target.components.aipc_score_ball:CanThrow() and distsq(target_position, me) < 1 then
 				self.inst:PushEvent("throw", {target = self.target})
-                self.inst.components.timer:StartTimer("aip_mini_dou_dall_throw", 2)
+                self.inst.components.timer:StartTimer("aip_mini_dou_dall_throw", 2.5)
 
                 if self.inst.components.talker ~= nil then
                     self.inst.components.talker:Say(STRINGS.AIP_MINI_DOUJIANG_THROW_BALL)

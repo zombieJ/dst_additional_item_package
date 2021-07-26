@@ -29,8 +29,8 @@ local states = {
             inst.Physics:Stop()
         end,
 
-        timeline = {-- 30*360/1000
-            TimeEvent(10.8*FRAMES, function(inst)
+        timeline = {-- 30*100/1000
+            TimeEvent(3*FRAMES, function(inst)
                 inst.aipThrowBallBack(inst, inst.sg.statemem.target)
             end),
         },
