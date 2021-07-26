@@ -11,13 +11,12 @@ local MUST_TAGS = { "aip_score_ball" }
 
 function ThrowBall:Visit()
     if self.status == READY then
-		local x, y, z = self.inst.Transform:GetWorldPosition()
-        local balls = TheSim:FindEntities(x, 0, z, 10, MUST_TAGS)
-
         self.target = nil
+		local x, y, z = self.inst.Transform:GetWorldPosition()
 
-        for i, ball in ipairs(tbl) do
-            if ball.components.aipc_score_ball:CanThrow() then
+        local balls = TheSim:FindEntities(x, 0, z, 15, MUST_TAGS)
+        for i, ball in ipairs(balls) do
+            if ball.components.aipc_score_ball:CanFollow() then
                 self.target = ball
                 break
             end
@@ -43,7 +42,12 @@ function ThrowBall:Visit()
             self.inst.components.locomotor:Stop()
         else
 			local target_position = Point(self.target.Transform:GetWorldPosition())
-			self.inst.components.locomotor:GoToPoint(target_position, nil, true)
+			self.inst.components.locomotor:GoToPoint(
+                self.target.components.aipc_score_ball:PredictPoint(0.1),
+                -- target_position,
+                nil,
+                true
+            )
 
 			local me = Point(self.inst.Transform:GetWorldPosition())
 			if self.target.components.aipc_score_ball:CanThrow() and distsq(target_position, me) < 1 then

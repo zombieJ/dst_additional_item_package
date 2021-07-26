@@ -67,6 +67,18 @@ function ScoreBall:Kick(attacker, speed, ySpeed) -- 攻击球
 	self:Throw(tgtPos, speed, ySpeed)
 end
 
+function ScoreBall:PredictPoint(second) -- 落球点预测
+	local srcPos = self.inst:GetPosition()
+	local rotation = self.inst.Transform:GetRotation()
+	local radius = rotation / 180 * PI
+	local tgtPos = Vector3(
+		srcPos.x + math.cos(radius) * self.speed * second,
+		0,
+		srcPos.z + math.sin(radius) * self.speed * second
+	)
+	return tgtPos
+end
+
 -- 若光可以跟着球跑
 function ScoreBall:CanFollow()
 	local x, y, z = self.ball.Transform:GetWorldPosition()
