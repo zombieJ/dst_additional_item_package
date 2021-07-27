@@ -22,6 +22,11 @@ local LANG_MAP = {
 		DESC = "可以获取地上和其他暗影宝箱内的物品",
 		DESCRIBE = "这个魔法正适合自动化",
 	},
+	russian = {
+		NAME = "Теневой сундук",
+		DESC = "Поднимает предметы стаками или из другого теневого сундука",
+		DESCRIBE = "Это волшебство для автоматизации",
+	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
