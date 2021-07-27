@@ -31,6 +31,14 @@ local LANG_MAP = {
 		PAPER_NAME = "暗影打包符文",
 		PAPER_DESCRIBE = "把它放到建筑上",
 	},
+	russian = {
+		NAME = "Теневой пакет",
+		DESC = "Упакуйте свое строение",
+		DESCRIBE = "Он чем-то обернут!",
+
+		PAPER_NAME = "Руна Теневого пакета",
+		PAPER_DESCRIBE = "Повесьте её на строение",
+	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
