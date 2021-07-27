@@ -20,6 +20,12 @@ local LANG_MAP = {
         COLD = "冻得结结实实的",
         MELT = "有些融化了",
 	},
+	russian = {
+		NAME = "Иглу",
+        DESC = "Зимой не сломается",
+        COLD = "Оно замерзло!",
+        MELT = "Оно тает",
+	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
