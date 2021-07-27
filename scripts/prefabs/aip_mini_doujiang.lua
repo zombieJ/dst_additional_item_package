@@ -25,6 +25,7 @@ local LANG_MAP = {
         THROW_BALL = "I got it！",
         THROW_BALL_FAIL = "T_T",
         THROW_BALL_REWARD = "Nice play~",
+        WAIT_NEXT = "Next challenage is in developing",
 	},
 	chinese = {
 		NAME = "若光",
@@ -35,6 +36,7 @@ local LANG_MAP = {
         THROW_BALL = "嗷呜！",
         THROW_BALL_FAIL = "哼，接不住了",
         THROW_BALL_REWARD = "和你玩的真开心，谢谢",
+        WAIT_NEXT = "下一个挑战还在开发中",
 	},
 }
 
@@ -49,8 +51,35 @@ STRINGS.AIP_MINI_DOUJIANG_BYE = LANG.BYE
 STRINGS.AIP_MINI_DOUJIANG_THROW_BALL = LANG.THROW_BALL
 STRINGS.AIP_MINI_DOUJIANG_THROW_BALL_FAIL = LANG.THROW_BALL_FAIL
 STRINGS.AIP_MINI_DOUJIANG_THROW_BALL_REWARD = LANG.THROW_BALL_REWARD
+STRINGS.AIP_MINI_DOUJIANG_WAIT_NEXT = LANG.WAIT_NEXT
 
 ------------------------------- 方法 -------------------------------
+-- 按队列说话
+local function say(inst, talkList, notLockSG)
+    if inst.talkTask ~= nil then
+        inst.talkTask:Cancel()
+    end
+
+    inst.talkList = talkList
+    inst.talkIndex = 1
+    inst.talkNotLockSG = notLockSG
+
+    inst.talkTask = inst:DoPeriodicTask(2, function(inst)
+        local talk = inst.talkList[inst.talkIndex]
+
+        if talk ~= nil then
+            inst.components.talker:Say(talk)
+            if inst.talkNotLockSG ~= true then
+                inst:PushEvent("talk")
+            end
+
+            inst.talkIndex = inst.talkIndex + 1
+        else
+            inst.talkTask:Cancel()
+        end
+    end,0)
+end
+
 -- 玩家靠近
 local function onNear(inst, player)
     inst:DoTaskInTime(1, function()
@@ -65,11 +94,9 @@ local function onNear(inst, player)
             -- 如果玩家不会制作球就提供一个图纸
             inst.components.timer:StartTimer("aip_mini_dou_dall_blueprints", 300)
             inst.components.lootdropper:SpawnLootPrefab("aip_score_ball_blueprint")
-            inst.components.talker:Say(STRINGS.AIP_MINI_DOUJIANG_NEED_RECIPE)
-            inst:PushEvent("talk")
+            say(inst, { STRINGS.AIP_MINI_DOUJIANG_NEED_RECIPE })
         else
-            inst.components.talker:Say(STRINGS.AIP_MINI_DOUJIANG_REQUIRE_PLAY)
-            inst:PushEvent("talk")
+            say(inst, { STRINGS.AIP_MINI_DOUJIANG_REQUIRE_PLAY })
         end
     end)
 end
@@ -82,7 +109,7 @@ end
 -- 玩家远离
 local function onFar(inst)
     if not inst.components.timer:TimerExists("aip_mini_dou_dall_88") then
-        inst.components.talker:Say(STRINGS.AIP_MINI_DOUJIANG_BYE)
+        say(inst, { STRINGS.AIP_MINI_DOUJIANG_BYE }, true)
     end
 
     -- 总是重置计时器
@@ -115,16 +142,14 @@ local function aipPlayEnd(inst, throwTimes)
 
     if throwTimes < rewardTimes then
         -- 得分太低
-        inst.components.talker:Say(STRINGS.AIP_MINI_DOUJIANG_THROW_BALL_FAIL)
-        inst:PushEvent("talk")
+        say(inst, { STRINGS.AIP_MINI_DOUJIANG_THROW_BALL_FAIL })
     else
         -- 奖励物品 1 ~ 3 个葡萄
         local cnt = 1 + math.random() * 3
         for i = 1, cnt do
             inst.components.lootdropper:SpawnLootPrefab("aip_veggie_grape")
         end
-        inst.components.talker:Say(STRINGS.AIP_MINI_DOUJIANG_THROW_BALL_REWARD)
-        inst:PushEvent("talk")
+        say(inst, { STRINGS.AIP_MINI_DOUJIANG_THROW_BALL_REWARD, STRINGS.AIP_MINI_DOUJIANG_WAIT_NEXT })
     end
 end
 

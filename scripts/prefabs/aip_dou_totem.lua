@@ -12,7 +12,7 @@ local LANG_MAP = {
         TALK_WELCOME = "Are you ready?",
         TALK_FIRST = "Start your challenge",
         TOTEM_POS = "First Place",
-        TOTEM_BALLOON = "Cryer",
+        TOTEM_BALLOON = "Ruo Guang",
         TOTEM_SNAKE = "", -- 抓捕玩具蛇
 	},
 	chinese = {
@@ -25,7 +25,7 @@ local LANG_MAP = {
         TALK_WELCOME = "想得到我的秘密，你做好准备了吗？",
         TALK_FIRST = "开始你的挑战！",
         TOTEM_POS = "伊始之地",
-        TOTEM_BALLOON = "号哭之人",
+        TOTEM_BALLOON = "若光小驻",
 	},
 }
 
@@ -74,22 +74,32 @@ local function createFlyTotem(pt, name, markType)
 end
 
 local function createFlyTotems(inst)
-    local flyTotem = FindEntity(inst, 10, nil, { "aip_fly_totem" })
+    local startTotem = false
+    local balloonTotem = false
 
-    -- 初始化一个游戏元素
-    if flyTotem == nil then
-        -- 创建起点
+    for i, totem in ipairs(TheWorld.components.world_common_store.flyTotems) do
+        if totem.markType == "START" then
+            startTotem = true
+        elseif totem.markType == "BALLOON" then
+            balloonTotem = true
+        end
+    end
+
+    -- 创建起点
+    if startTotem == false then
         createFlyTotem(
-            aipGetSpawnPoint(inst:GetPosition(), 3),
+            aipGetSpawnPoint(inst:GetPosition(), 3, 10),
             LANG.TOTEM_POS,
             "START"
         )
+    end
 
-        -- 创造猪王附近的图腾
+    -- 创造猪王附近的图腾
+    if balloonTotem == false then
         local pigking = aipFindEnt("pigking")
         if pigking then
             createFlyTotem(
-                aipGetSpawnPoint(pigking:GetPosition(), 100, 5),
+                aipGetSpawnPoint(pigking:GetPosition(), 100, 10),
                 LANG.TOTEM_BALLOON,
                 "BALLOON"
             )
@@ -200,32 +210,3 @@ end
 return makeTotemFn("aip_dou_totem_broken", "broken", "aip_dou_totem_powerless"),
     makeTotemFn("aip_dou_totem_powerless", "powerless", "aip_dou_totem", "idle"),
     makeTotemFn("aip_dou_totem", "idle")
-
---[[
-
-
-
-
-c_give"aip_dou_totem_broken"
-
-
-
-c_give("moonrocknugget", 10)
-c_give("phlegm", 1)
-c_give("moonglass", 5)
-
-
-
-c_give"aip_dou_totem_powerless"
-
-
-c_give("boneshard", 1)
-c_give("monstermeat", 1)
-c_give("aip_blood_package", 1)
-
-
-
-c_give"aip_dou_totem"
-
-
-]]
