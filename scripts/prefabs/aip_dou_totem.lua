@@ -1,6 +1,8 @@
 -- 配置
 local language = aipGetModConfig("language")
 
+local additional_survival = aipGetModConfig("additional_survival") == "open"
+
 local LANG_MAP = {
 	english = {
         BROEKN_NAME = "Wreckage",
@@ -59,11 +61,20 @@ CONSTRUCTION_PLANS["aip_dou_totem_broken"] = {
     Ingredient("moonglass", 5),
 }
 
-CONSTRUCTION_PLANS["aip_dou_totem_powerless"] = {
+-- 没有开启额外生命物品时不启用血包配方
+local aip_dou_totem_powerless_plans = {
     Ingredient("boneshard", 1),
     Ingredient("monstermeat", 1),
-    Ingredient("aip_blood_package", 1, "images/inventoryimages/aip_blood_package.xml"),
 }
+
+if additional_survival then
+    table.insert(
+        aip_dou_totem_powerless_plans,
+        Ingredient("aip_blood_package", 1, "images/inventoryimages/aip_blood_package.xml")
+    )
+end
+
+CONSTRUCTION_PLANS["aip_dou_totem_powerless"] = aip_dou_totem_powerless_plans
 
 ---------------------------------- 事件 ----------------------------------
 local function createFlyTotem(pt, name, markType)
@@ -99,7 +110,7 @@ local function createFlyTotems(inst)
         local pigking = aipFindEnt("pigking")
         if pigking then
             createFlyTotem(
-                aipGetSpawnPoint(pigking:GetPosition(), 100, 10),
+                aipGetSpawnPoint(pigking:GetPosition(), 50, 10),
                 LANG.TOTEM_BALLOON,
                 "BALLOON"
             )

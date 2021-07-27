@@ -104,3 +104,7 @@ inst.AnimState:SetRayTestOnBB(true) 小物体会直接用盒装模型碰撞检�
 * CHARACTER_INGREDIENT.MAX_SANITY
 * TECH_INGREDIENT.SCULPTING
 * CHARACTER_INGREDIENT.SANITY
+
+### 瞬移
+
+c_goto(c_find("aip_dou_totem_broken"))
