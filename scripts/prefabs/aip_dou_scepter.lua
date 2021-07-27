@@ -45,6 +45,19 @@ local LANG_MAP = {
         POWER = "赋能",     -- 更多伤害
         VAMPIRE = "嗜血",   -- 伤害吸血
 	},
+	russian = {
+        NAME = "Мистический Cкипетр",
+        REC_DESC = "Настройте свою магию!",
+        DESC = "Похоже на ключ?",
+        EMPOWER_DESC = "Полный ключ!",
+        EMPTY = "Маны нет!",
+
+        HUGE = "Расширение",
+        SAVING = "Сохранение",
+        RUNNER = "Бегун",
+        POWER = "Сила",
+        VAMPIRE = "Вампир",
+	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
