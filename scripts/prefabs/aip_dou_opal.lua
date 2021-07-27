@@ -18,6 +18,11 @@ local LANG_MAP = {
 		["REC_DESC"] = "天外来物",
 		["DESC"] = "它似乎可以嵌入步行手杖",
 	},
+	["russian"] = {
+		["NAME"] = "Таинственный Опал",
+		["REC_DESC"] = "Пришелец с неба",
+		["DESC"] = "Укрась им свою трость",
+	},	
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
