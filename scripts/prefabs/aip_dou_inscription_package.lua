@@ -20,6 +20,11 @@ local LANG_MAP = {
 		["REC_DESC"] = "装下你的符文！",
 		["DESC"] = "符文的好去处",
 	},
+	["russian"] = {
+		["NAME"] = "Сумка для надписей",
+		["REC_DESC"] = "Храни свои надписи!",
+		["DESC"] = "Дом надписей",
+	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
