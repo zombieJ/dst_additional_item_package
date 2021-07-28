@@ -56,6 +56,10 @@ STRINGS.AIP_MINI_DOUJIANG_WAIT_NEXT = LANG.WAIT_NEXT
 ------------------------------- 方法 -------------------------------
 -- 按队列说话
 local function say(inst, talkList, notLockSG)
+    if inst.components.timer:TimerExists("aip_mini_dou_no_talk") then
+        return
+    end
+
     if inst.talkTask ~= nil then
         inst.talkTask:Cancel()
     end
@@ -122,7 +126,7 @@ end
 local function aipThrowBallBack(inst, ball)
     local players = aipFindNearPlayers(inst, 20)
     local tgtEnt = players[1] or inst
-    local tgtPos = aipGetSpawnPoint(tgtEnt:GetPosition(), 2)
+    local tgtPos = aipGetSpawnPoint(tgtEnt:GetPosition(), 3)
 
     ball.components.aipc_score_ball:Throw(
         tgtPos,
@@ -134,11 +138,15 @@ local function aipThrowBallBack(inst, ball)
     if inst.components.timer:TimerExists("aip_mini_dou_dall_disapper") then
         resetDisapper(inst)
     end
+
+    -- 游戏时间内不允许说话
+    inst.components.timer:StopTimer("aip_mini_dou_no_talk")
+    inst.components.timer:StartTimer("aip_mini_dou_no_talk", 5)
 end
 
 -- 判断是否要给奖励
 local function aipPlayEnd(inst, throwTimes)
-    local rewardTimes = dev_mode and 4 or 15
+    local rewardTimes = dev_mode and 4 or 10
 
     if throwTimes < rewardTimes then
         -- 得分太低
@@ -150,6 +158,10 @@ local function aipPlayEnd(inst, throwTimes)
             inst.components.lootdropper:SpawnLootPrefab("aip_veggie_grape")
         end
         say(inst, { STRINGS.AIP_MINI_DOUJIANG_THROW_BALL_REWARD, STRINGS.AIP_MINI_DOUJIANG_WAIT_NEXT })
+
+        -- 提示信息时不允许打断说话
+        inst.components.timer:StopTimer("aip_mini_dou_no_talk")
+        inst.components.timer:StartTimer("aip_mini_dou_no_talk", 10)
     end
 end
 

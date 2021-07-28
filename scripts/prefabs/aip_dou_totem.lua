@@ -99,7 +99,7 @@ local function createFlyTotems(inst)
     -- 创建起点
     if startTotem == false then
         createFlyTotem(
-            aipGetSpawnPoint(inst:GetPosition(), 3, 10),
+            aipGetSecretSpawnPoint(inst:GetPosition(), 2, 5, 5),
             LANG.TOTEM_POS,
             "START"
         )
@@ -110,7 +110,7 @@ local function createFlyTotems(inst)
         local pigking = aipFindEnt("pigking")
         if pigking then
             createFlyTotem(
-                aipGetSpawnPoint(pigking:GetPosition(), 50, 10),
+                aipGetSecretSpawnPoint(pigking:GetPosition(), 50, 100, 5),
                 LANG.TOTEM_BALLOON,
                 "BALLOON"
             )

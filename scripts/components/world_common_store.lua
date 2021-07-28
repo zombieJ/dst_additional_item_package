@@ -31,7 +31,7 @@ function CommonStore:PostWorld()
 		if dou_totem == nil then
 			local fissurePT = aipGetTopologyPoint("lunacyarea", "moon_fissure")
 			if fissurePT then
-				local tgt = aipGetSpawnPoint(fissurePT, 10, 10)
+				local tgt = aipGetSecretSpawnPoint(fissurePT, 0, 50, 5)
 				aipSpawnPrefab(nil, "aip_dou_totem_broken", tgt.x, tgt.y, tgt.z)
 
 				-- if dev_mode then

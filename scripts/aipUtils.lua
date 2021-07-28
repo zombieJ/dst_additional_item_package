@@ -293,7 +293,7 @@ function _G.aipReplacePrefab(inst, prefab, tx, ty, tz)
 end
 
 -- 获取一个可访达的路径，默认 40。TODO：优化一下避免在建筑附近生成
-local function aipGetSpawnPoint(pt, distance)
+function _G.aipGetSpawnPoint(pt, distance)
 	-- 不在陆地就随便找一个陆地
     if not _G.TheWorld.Map:IsAboveGroundAtPoint(pt:Get()) then
         pt = _G.FindNearbyLand(pt) or pt
@@ -327,14 +327,21 @@ local function aipGetSpawnPoint(pt, distance)
 	end
 end
 
-function _G.aipGetSpawnPoint(pt, distance, emptyDistance)
+function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
 	-- 如果范围内存在物体，我们就找数量最少的地方
 	if emptyDistance ~= nil then
 		local tgtPT = nil
 		local tgtEntCnt = 99999999
 
-		for i = 1, 10 do
-			local pos = aipGetSpawnPoint(pt, distance)
+		local mergedMaxDistance = maxDistance
+		if minDistance == maxDistance then
+			mergedMaxDistance = minDistance + 1
+		end
+
+		local step = 20 / (mergedMaxDistance - minDistance)
+
+		for distance = minDistance, maxDistance, step do
+			local pos = _G.aipGetSpawnPoint(pt, distance)
 			local ents = TheSim:FindEntities(pos.x, 0, pos.z, emptyDistance)
 			if #ents < tgtEntCnt then
 				tgtPT = pos
@@ -347,7 +354,7 @@ function _G.aipGetSpawnPoint(pt, distance, emptyDistance)
 		end
 	end
 
-	return aipGetSpawnPoint(pt, distance)
+	return aipGetSpawnPoint(pt, minDistance)
 end
 
 -- 在符合 tag 的地形上，且存在匹配的物品，在改物品附近找一个点

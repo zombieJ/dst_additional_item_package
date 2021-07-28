@@ -1,3 +1,10 @@
+local function onReset(inst)
+	local asb = inst.components.aipc_score_ball
+	if asb ~= nil then
+		asb:ResetAll()
+	end
+end
+
 -- 一个只会飞行到目标地点的投掷物
 local ScoreBall = Class(function(self, inst)
 	self.inst = inst
@@ -25,6 +32,14 @@ function ScoreBall:ResetMotion()
 	self.inst.Physics:Stop()
 end
 
+function ScoreBall:ResetAll()
+	self:ResetMotion()
+
+	self:ResetMotion()
+	self.ball.Physics:Teleport(0, 0, 0)
+	self.inst:StopUpdatingComponent(self)
+end
+
 function ScoreBall:Launch(speed, ySpeed)
 	-- 初始化马甲
 	self:ResetMotion()
@@ -45,6 +60,10 @@ function ScoreBall:Launch(speed, ySpeed)
 	self.inst:StartUpdatingComponent(self)
 
 	self.inst.components.health:SetInvincible(true)
+	self.inst.components.inventoryitem.canbepickedup = false
+
+	self.inst:ListenForEvent("ondropped", onReset)
+	self.inst:ListenForEvent("onpickup", onReset)
 end
 
 function ScoreBall:ResetThrowCount()
@@ -114,16 +133,14 @@ function ScoreBall:OnUpdate(dt)
 	-- 退出判断
 	local x, y, z = self.ball.Transform:GetWorldPosition()
 
-	-- 超过 2 格时不允许被攻击
-	if y <= 2 then
-		self.inst.components.health:SetInvincible(false)
-	end
+	-- 超过 2.5 格时不允许被攻击
+	local canInteractive = y <= 2.5
+	self.inst.components.health:SetInvincible(not canInteractive)
+	self.inst.components.inventoryitem.canbepickedup = canInteractive
 
 	-- 落地判断
 	if self.walkTime >= self.fullTime and y < 0.05 then
-		self:ResetMotion()
-		self.ball.Physics:Teleport(0, 0, 0)
-		self.inst:StopUpdatingComponent(self)
+		self:ResetAll()
 
 		-- 如果还有一些速度，我们就弹起来
 		self.recordSpeed = self.recordSpeed / 2
