@@ -62,7 +62,9 @@ function ballFn()
 	inst.entity:AddAnimState()
 	inst.entity:AddNetwork()
 
-	MakeFlyingCharacterPhysics(inst, 1, .5)
+	-- MakeFlyingCharacterPhysics(inst, 1, .5)
+	MakeInventoryPhysics(inst)
+	RemovePhysicsColliders(inst)
 
 	inst:AddTag("FX")
 	inst:AddTag("NOCLICK")

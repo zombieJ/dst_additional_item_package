@@ -34,8 +34,6 @@ end
 
 function ScoreBall:ResetAll()
 	self:ResetMotion()
-
-	self:ResetMotion()
 	self.ball.Physics:Teleport(0, 0, 0)
 	self.inst:StopUpdatingComponent(self)
 end
@@ -140,8 +138,6 @@ function ScoreBall:OnUpdate(dt)
 
 	-- 落地判断
 	if self.walkTime >= self.fullTime and y < 0.05 then
-		self:ResetAll()
-
 		-- 如果还有一些速度，我们就弹起来
 		self.recordSpeed = self.recordSpeed / 2
 		self.yRecordSpeed = self.yRecordSpeed / 3 * 2
@@ -154,6 +150,7 @@ function ScoreBall:OnUpdate(dt)
 				self:ResetThrowCount()
 			end
 		else
+			self:ResetAll()
 			self:ResetThrowCount() -- 不弹起则重置扔球时间
 		end
 	end
