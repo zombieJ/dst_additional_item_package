@@ -20,6 +20,13 @@ function Action:CanActOn(doer, target)
 	return false
 end
 
+function Action:CanBeActOn(doer)
+	if self.canBeActOn then
+		return self.canBeActOn(self.inst, doer)
+	end
+	return false
+end
+
 function Action:CanActOnPoint(doer, pos)
 	if self.canActOnPoint then
 		return self.canActOnPoint(self.inst, doer, pos)

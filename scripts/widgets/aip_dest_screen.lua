@@ -6,18 +6,18 @@ local Menu = require "widgets/menu"
 local UIAnim = require "widgets/uianim"
 local ImageButton = require "widgets/imagebutton"
 
-local function onselect(doer, widget, index, triggerIndex)
+local function onselect(doer, widget, totemId, triggerTotemId)
     if not widget.isopen then
         return
     end
 
-    if index == triggerIndex then
+    if totemId == triggerTotemId then
         -- 提示玩家不能去了
         if doer.components.talker then
             doer.components.talker:Say(STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_CURRENT)
         end
     else
-        _G.aipRPC("aipFlyToTotem", index)
+        aipRPC("aipFlyToTotem", totemId)
     end
 
     doer.HUD:CloseAIPDestination()
@@ -31,20 +31,23 @@ local function oncancel(doer, widget)
     doer.HUD:CloseAIPDestination()
 end
 
-local DestinationScreen = Class(Screen, function(self, owner, triggerIndex)
+local DestinationScreen = Class(Screen, function(self, owner, triggerTotemId)
     Screen._ctor(self, "AIP_DestinationScreen")
 
     self.owner = owner
 
-    self.triggerIndex = triggerIndex
+    self.triggerTotemId = triggerTotemId
 
     self.totemNames = {}
+    self.totemIds = {}
 
     self.isopen = false
 
     ----------------------------------- RPC 调用获取图腾列表 -----------------------------------
-    ThePlayer.aipOnTotemFetch = function(names)
+    ThePlayer.aipOnTotemFetch = function(names, ids)
         self.totemNames = names
+        self.totemIds = ids
+
         self:RenderDestinations()
 
         ThePlayer.aipOnTotemFetch = nil
@@ -138,8 +141,10 @@ function DestinationScreen:RenderDestinations()
         local idx = startIndex + i
         if self.totemNames[idx] ~= nil then
             table.insert(self.destLeft, {
-                text = self.totemNames[idx],
-                cb = function() onselect(self.owner, self, idx, self.triggerIndex) end,
+                text = self.totemNames[idx] or '-',
+                cb = function()
+                    onselect(self.owner, self, self.totemIds[idx], self.triggerTotemId)
+                end,
             })
         end
     end
@@ -154,7 +159,9 @@ function DestinationScreen:RenderDestinations()
         if self.totemNames[idx] ~= nil then
             table.insert(self.destRight, {
                 text = self.totemNames[idx] or "-",
-                cb = function() onselect(self.owner, self, idx, self.triggerIndex) end,
+                cb = function()
+                    onselect(self.owner, self, self.totemIds[idx], self.triggerTotemId)
+                end,
             })
         end
     end

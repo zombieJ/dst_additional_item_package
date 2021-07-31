@@ -37,7 +37,7 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 _G.STRINGS.ACTIONS.AIP_USE = LANG.USE
 
--- 注册一个 action
+-------------------- 对目标使用的技能 --------------------
 local AIPC_ACTION = env.AddAction("AIPC_ACTION", LANG.GIVE, function(act)
 	local doer = act.doer
 	local item = act.invobject
@@ -66,6 +66,36 @@ env.AddComponentAction("USEITEM", "aipc_action_client", function(inst, doer, tar
 		table.insert(actions, _G.ACTIONS.AIPC_ACTION)
 	end
 end)
+
+---------------------- 被使用的技能 ----------------------
+local AIPC_BE_ACTION = env.AddAction("AIPC_BE_ACTION", LANG.USE, function(act)
+	local doer = act.doer
+	local target = act.target
+
+	if _G.TheNet:GetIsServer() then
+		-- server
+		triggerComponentAction(doer, target, nil, nil)
+	else
+		-- client
+		_G.aipRPC("aipComponentAction", target, nil, nil)
+	end
+
+	return true
+end)
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_BE_ACTION, "doshortaction"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_BE_ACTION, "doshortaction"))
+
+-- 角色对某物使用 aipc_action_client
+env.AddComponentAction("SCENE", "aipc_action_client", function(inst, doer, actions, right)
+	if not inst or not right then
+		return
+	end
+
+	if inst.components.aipc_action_client:CanBeActOn(doer) then
+		table.insert(actions, _G.ACTIONS.AIPC_BE_ACTION)
+	end
+end)
+
 
 -------------------- 施法行为 https://www.zybuluo.com/longfei/note/600841
 local function getActionableItem(doer)

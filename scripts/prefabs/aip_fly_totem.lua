@@ -8,6 +8,7 @@ local LANG_MAP = {
         DESC = "To Infinity... and Beyond",
         UNNAMED = "[UNNAMED]",
         CURRENT = "I'm already here!",
+        INVLIDATE = "Target seems disappeared",
         IN_DANGER = "It's not safe time to travel!",
         CRAZY = "It's too crazy...",
 	},
@@ -17,6 +18,7 @@ local LANG_MAP = {
         DESC = "飞向宇宙，浩瀚无垠！",
         UNNAMED = "[未命名]",
         CURRENT = "我就在这里！",
+        INVLIDATE = "目的地不见了",
         IN_DANGER = "这不是一个安全旅行的时机",
         CRAZY = "你觉得我还不够疯狂吗？",
 	},
@@ -30,6 +32,7 @@ STRINGS.RECIPE_DESC.AIP_FLY_TOTEM = LANG.RECDESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_UNNAMED = LANG.UNNAMED
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_CURRENT = LANG.CURRENT
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_INVLIDATE = LANG.INVLIDATE
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_IN_DANGER = LANG.IN_DANGER
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_CRAZY = LANG.CRAZY
 
@@ -69,8 +72,16 @@ local function onbuilt(inst)
     inst.SoundEmitter:PlaySound("dontstarve/common/sign_craft")
 end
 
+local function onRemove(inst)
+    aipTableRemove(TheWorld.components.world_common_store.flyTotems, inst)
+end
+
 local function canBeActOn(inst, doer)
 	return not inst:HasTag("writeable")
+end
+
+local function onOpenPicker(inst, doer)
+    doer.player_classified.aip_fly_picker:set(inst.aipId)
 end
 
 --[[
@@ -79,11 +90,13 @@ markType 是用于豆酱图腾的标记，
 ]]
 local function onSave(inst, data)
 	data.markType = inst.markType
+    data.aipId = inst.aipId
 end
 
 local function onLoad(inst, data)
 	if data ~= nil then
 		inst.markType = data.markType
+        inst.aipId = data.aipId
 	end
 end
 
@@ -128,7 +141,8 @@ local function fn()
     inst:AddTag("_writeable")
 
     -- 添加飞行图腾
-    inst:AddComponent("aipc_fly_picker_client")
+    inst:AddComponent("aipc_action_client")
+    inst.components.aipc_action_client.canBeActOn = canBeActOn
 
 	inst.entity:SetPristine()
 
@@ -138,6 +152,9 @@ local function fn()
 
     --Remove these tags so that they can be added properly when replicating components below
     inst:RemoveTag("_writeable")
+
+    inst:AddComponent("aipc_action")
+    inst.components.aipc_action.onDoAction = onOpenPicker
 
     inst:AddComponent("inspectable")
     inst:AddComponent("writeable")
@@ -159,11 +176,17 @@ local function fn()
     MakeSmallBurnable(inst, TUNING.LARGE_BURNTIME)
     MakeSmallPropagator(inst)
 
+    inst.aipId = tostring(os.time())..tostring(math.random())
+
     inst.OnSave = onSave
     inst.OnLoad = onLoad
 
     MakeHauntableWork(inst)
     inst:ListenForEvent("onbuilt", onbuilt)
+
+    -- 全局注册飞行图腾
+    table.insert(TheWorld.components.world_common_store.flyTotems, inst)
+    inst:ListenForEvent("onremove", onRemove)
 
     return inst
 end
