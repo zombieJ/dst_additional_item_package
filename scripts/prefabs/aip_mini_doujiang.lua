@@ -89,11 +89,13 @@ local function onNear(inst, player)
     inst:DoTaskInTime(1, function()
         local x, y, z = inst.Transform:GetWorldPosition()
         local balls = TheSim:FindEntities(x, 0, z, 10, { "aip_score_ball" })
+        local blueprints = aipFindNearEnts(inst, {"aip_mini_dou_dall_blueprints"})
 
         if
             player and not player.components.builder:KnowsRecipe("aip_score_ball") and
             not inst.components.timer:TimerExists("aip_mini_dou_dall_blueprints") and
-            #balls == 0 -- 附近有球也不提供图纸
+            #balls == 0 and -- 附近有球也不提供图纸
+            #blueprints == 0 -- 附近有图纸了
         then
             -- 如果玩家不会制作球就提供一个图纸
             inst.components.timer:StartTimer("aip_mini_dou_dall_blueprints", 300)

@@ -245,6 +245,21 @@ function _G.aipRandomEnt(ents)
 end
 
 --------------------------------------- 辅助 ---------------------------------------
+function _G.aipFindNearEnts(inst, prefabNames, distance)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local ents = TheSim:FindEntities(x, 0, z, distance or 10)
+	local prefabs = {}
+
+	for _, ent in pairs(ents) do
+		-- 检测图腾
+		if ent:IsValid() and table.contains(prefabNames, ent.prefab) then
+			table.insert(prefabs, ent)
+		end
+	end
+
+	return prefabs
+end
+
 function _G.aipFindNearPlayers(inst, dist)
 	local NOTAGS = { "FX", "NOCLICK", "DECOR", "playerghost", "INLIMBO" }
 	local x, y, z = inst.Transform:GetWorldPosition()
