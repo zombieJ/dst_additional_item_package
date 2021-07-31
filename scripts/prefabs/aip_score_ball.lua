@@ -30,30 +30,6 @@ local function onDeath(inst)
 end
 
 ---------------------------------- 实体 ----------------------------------
-
--- 阴影
-function shadowFn()
-	local inst = CreateEntity()
-
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddNetwork()
-
-	inst:AddTag("FX")
-
-	inst.entity:SetCanSleep(false)
-	inst.persists = false
-
-	inst.AnimState:SetBank("aip_score_ball")
-	inst.AnimState:SetBuild("aip_score_ball")
-	inst.AnimState:PlayAnimation("shadow")
-
-	inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
-	inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
-
-	return inst
-end
-
 -- 球体
 function ballFn()
 	local inst = CreateEntity()
@@ -143,5 +119,4 @@ local function fn()
 end
 
 return	Prefab("aip_score_ball", fn, assets),
-		Prefab("aip_score_ball_shadow", shadowFn, assets),
 		Prefab("aip_score_ball_ball", ballFn, assets)

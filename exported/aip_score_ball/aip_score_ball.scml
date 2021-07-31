@@ -11,14 +11,68 @@
                 <key id="0">
                     <object_ref id="0" name="ball" folder="0" file="0" abs_x="0" abs_y="108" abs_pivot_x="0.499386" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
             </mainline>
             <timeline id="0" name="ball">
                 <key id="0" spin="0">
                     <object folder="0" file="0" y="108" pivot_x="0.499386" pivot_y="0.5" angle="0"/>
                 </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="0" file="0" y="108" pivot_x="0.499386" pivot_y="0.5" angle="0"/>
+                </key>
             </timeline>
         </animation>
-        <animation id="1" name="shadow" length="100">
+        <animation id="1" name="runLeft" length="6000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="ball" folder="0" file="0" abs_x="0" abs_y="108" abs_pivot_x="0.499386" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="1998">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+                <key id="2" time="3997">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="ball">
+                <key id="0">
+                    <object folder="0" file="0" y="108" pivot_x="0.499386" pivot_y="0.5" angle="0"/>
+                </key>
+                <key id="1" time="1998">
+                    <object folder="0" file="0" y="108" pivot_x="0.499386" pivot_y="0.5" angle="120"/>
+                </key>
+                <key id="2" time="3997">
+                    <object folder="0" file="0" y="108" pivot_x="0.499386" pivot_y="0.5" angle="240"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="runRight" length="6000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="ball" folder="0" file="0" abs_x="0" abs_y="108" abs_pivot_x="0.499386" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="1998">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+                <key id="2" time="4002">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="ball">
+                <key id="0" spin="-1">
+                    <object folder="0" file="0" y="108" pivot_x="0.499386" pivot_y="0.5" angle="0"/>
+                </key>
+                <key id="1" time="1998" spin="-1">
+                    <object folder="0" file="0" y="108" pivot_x="0.499386" pivot_y="0.5" angle="240"/>
+                </key>
+                <key id="2" time="4002" spin="-1">
+                    <object folder="0" file="0" y="108" pivot_x="0.499386" pivot_y="0.5" angle="120"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="3" name="shadow" length="100">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="shadow" folder="0" file="1" abs_x="0.000234" abs_y="-0.00026" abs_pivot_x="0.499766" abs_pivot_y="0.50026" abs_angle="0" abs_scale_x="11" abs_scale_y="11" abs_a="1" timeline="0" key="0" z_index="0"/>
@@ -30,7 +84,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="2" name="circle" length="100">
+        <animation id="4" name="circle" length="100">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="circle" folder="0" file="2" abs_x="0.000273" abs_y="-0.000918" abs_pivot_x="0.499727" abs_pivot_y="0.500918" abs_angle="0" abs_scale_x="15" abs_scale_y="15" abs_a="1" timeline="0" key="0" z_index="0"/>

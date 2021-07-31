@@ -35,10 +35,28 @@ end
 function ScoreBall:ResetAll()
 	self:ResetMotion()
 	self.ball.Physics:Teleport(0, 0, 0)
+	self.ball.AnimState:Pause()
 	self.inst:StopUpdatingComponent(self)
 end
 
-function ScoreBall:Launch(speed, ySpeed)
+function ScoreBall:Launch(speed, ySpeed, continueBump)
+	-- 播放动画
+	if continueBump ~= true then
+		local anim = math.random() > .5 and "runLeft" or "runRight"
+
+		if self.ball.AnimState:IsCurrentAnimation("idle") then
+			self.ball.AnimState:PlayAnimation(anim, true)
+		elseif not self.ball.AnimState:IsCurrentAnimation(anim) then
+			local len = self.ball.AnimState:GetCurrentAnimationLength() / FRAMES
+			local time = self.ball.AnimState:GetCurrentAnimationTime()
+			local reverseTime = len - time
+			self.ball.AnimState:PlayAnimation(anim, true)
+			self.ball.AnimState:SetTime(math.max(reverseTime, 1))
+		end
+	end
+	self.ball.AnimState:SetDeltaTimeMultiplier(0.5 + speed * 2)
+	self.ball.AnimState:Resume()
+
 	-- 初始化马甲
 	self:ResetMotion()
 	self.startTimes = self.startTimes + 1
@@ -143,7 +161,7 @@ function ScoreBall:OnUpdate(dt)
 		self.yRecordSpeed = self.yRecordSpeed / 3 * 2
 
 		if self.recordSpeed > .2 and self.yRecordSpeed >= 1 then
-			self:Launch(self.recordSpeed, self.yRecordSpeed)
+			self:Launch(self.recordSpeed, self.yRecordSpeed, true)
 
 			-- 如果弹了两次就重置扔球时间
 			if self.downTimes >= 2 then

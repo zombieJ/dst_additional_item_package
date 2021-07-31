@@ -30,7 +30,8 @@ function FlyPicker:ShowPicker(doer)
 	local index = aipTableIndex(TheWorld.components.world_common_store.flyTotems, self.inst)
 
 	-- 加一个时间戳以便于玩家反复打开时强制触发
-	self.trigger:set(doer.userid.."|"..index.."|"..os.time())
+	local msg = doer.userid.."|"..index.."|"..os.time()
+	self.trigger:set(msg)
 end
 
 return FlyPicker
