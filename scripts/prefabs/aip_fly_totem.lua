@@ -192,7 +192,7 @@ local function fn()
     return inst
 end
 
----------------------------------- 特效 ----------------------------------
+-------------------------------- 起飞特效 --------------------------------
 local function effectFn()
     local inst = CreateEntity()
     local opacity = .5
@@ -232,7 +232,39 @@ local function effectFn()
     return inst
 end
 
+-------------------------------- 飞行特效 --------------------------------
+local function flyEffectFn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddNetwork()
+
+    MakeTinyFlyingCharacterPhysics(inst, 0, 0.2)
+
+    inst.AnimState:SetBank("aip_fly_totem_effect")
+    inst.AnimState:SetBuild("aip_fly_totem_effect")
+    inst.AnimState:PlayAnimation("disappear")
+
+    inst:AddTag("NOCLICK")
+    inst:AddTag("FX")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.persists = false
+
+    inst:ListenForEvent("animover", inst.Remove)
+
+    return inst
+end
+
 
 return Prefab("aip_fly_totem", fn, assets, prefabs),
         MakePlacer("aip_fly_totem_placer", "aip_fly_totem", "aip_fly_totem", "idle"),
-        Prefab("aip_fly_totem_effect", effectFn, { Asset("ANIM", "anim/lavaarena_attack_buff_effect.zip") })
+        Prefab("aip_eagle_effect", effectFn, { Asset("ANIM", "anim/lavaarena_attack_buff_effect.zip") }),
+        Prefab("aip_fly_totem_effect", flyEffectFn, { Asset("ANIM", "anim/aip_fly_totem_effect.zip") })

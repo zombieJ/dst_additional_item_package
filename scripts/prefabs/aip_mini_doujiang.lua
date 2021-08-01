@@ -89,7 +89,7 @@ local function onNear(inst, player)
     inst:DoTaskInTime(1, function()
         local x, y, z = inst.Transform:GetWorldPosition()
         local balls = TheSim:FindEntities(x, 0, z, 10, { "aip_score_ball" })
-        local blueprints = aipFindNearEnts(inst, {"aip_mini_dou_dall_blueprints"})
+        local blueprints = aipFindNearEnts(inst, {"blueprint"})
 
         if
             player and not player.components.builder:KnowsRecipe("aip_score_ball") and

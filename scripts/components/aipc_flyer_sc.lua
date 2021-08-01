@@ -51,22 +51,22 @@ local Flyer = Class(function(self, inst)
 	self.target = nil
 	self.targetPos = nil
 
-	self.speed = dev_mode and 5 or 20
-	self.maxSpeed = dev_mode and 20 or 40
-	self.speedUpRange = 30000
-	self.oriDistance = nil
+	self.speed = dev_mode and 5 or 25
+	self.maxSpeed = dev_mode and 20 or 100
+	self.speedUpRange = 300
+	self.oriDistance = 0
+	self.lastDistance = 0
 
-	self.height = 3
-	self.cloud = nil
+	self.height = 1
+
+	self.color = {}
 
 	-- 网络通讯相关数据
-	self.netXSpeed = net_float(inst.GUID, "aipc_flyer_x_speed")
-	self.netYSpeed = net_float(inst.GUID, "aipc_flyer_y_speed")
+	self.syncSpeed = net_float(inst.GUID, "aipc_flyer_height")
 	self.isFlying = net_bool(inst.GUID, "aipc_flyer_flying", "aipc_flyer_flying_dirty")
 
 	if TheWorld.ismastersim then
-		self.netXSpeed:set(0)
-		self.netYSpeed:set(0)
+		self.syncSpeed:set(0)
 		self.isFlying:set(false)
 	end
 
@@ -75,10 +75,10 @@ local Flyer = Class(function(self, inst)
 		if self.inst == ThePlayer then
 			if self:IsFlying() then
 				TheCamera:SetFlyView(true)
-				-- self.inst:StartUpdatingComponent(self)
+				self.inst:StartUpdatingComponent(self)
 			else
 				TheCamera:SetFlyView(false)
-				-- self.inst:StopUpdatingComponent(self)
+				self.inst:StopUpdatingComponent(self)
 			end
 		end
 	end)
@@ -97,8 +97,9 @@ end
 function Flyer:FlyTo(target)
 	local instPos = self.inst:GetPosition()
 	self.target = target
-	self.targetPos = aipGetSpawnPoint(target:GetPosition(), 1)
-	self.oriDistance = distsq(instPos.x, instPos.z, self.targetPos.x, self.targetPos.z)
+	self.targetPos = aipGetSpawnPoint(target:GetPosition(), 0.1)
+	self.oriDistance = instPos:Dist(self.targetPos)
+	self.lastDistance = self.oriDistance
 
 	-- 危险的时候不能飞
 	if fly_totem == 'teleport' or fly_totem == 'fly' then
@@ -117,7 +118,7 @@ function Flyer:FlyTo(target)
 	------------------ 开始飞行 ------------------
 
 	-- 创建特效
-	local effect = SpawnPrefab("aip_fly_totem_effect")
+	local effect = SpawnPrefab("aip_eagle_effect")
 	effect.Transform:SetPosition(self.inst.Transform:GetWorldPosition())
 
 	-- 扣除理智
@@ -133,8 +134,6 @@ function Flyer:FlyTo(target)
 
 	-- 移除物理碰撞
 	RemovePhysicsColliders(self.inst)
-	-- self.inst.Physics:ClearCollisionMask()
-	-- self.inst.Physics:ClearCollidesWith(COLLISION.LIMITS)
 	self.inst.Physics:Stop()
 	self.inst.Physics:SetVel(0, 0, 0)
 	self.inst.Physics:SetMotorVel(0, 0, 0)
@@ -154,8 +153,10 @@ function Flyer:FlyTo(target)
 		self.inst.components.playeractionpicker:PushActionFilter(FlyActionFilter, 999)
 	end
 
-	-- 添加云
-	self.cloud = self.inst:SpawnChild('aip_fly_totem_cloud')
+	-- 记录当前颜色
+	self.color[1], self.color[2], self.color[3], self.color[4] = self.inst.AnimState:GetMultColour()
+	self.inst.AnimState:SetMultColour(0, 0, 0, 0)
+	self.inst.DynamicShadow:Enable(false)
 
 	-- 开始更新
 	self.inst:StartUpdatingComponent(self)
@@ -164,8 +165,6 @@ function Flyer:FlyTo(target)
 end
 
 function Flyer:End(target)
-	ChangeToCharacterPhysics(self.inst)
-
 	self.inst:StopUpdatingComponent(self)
 
 	if self.inst.components.drownable then
@@ -185,13 +184,26 @@ function Flyer:End(target)
 		self.inst.components.locomotor:Stop()
 	end
 
-	-- 删除云
-	if self.cloud then
-		self.cloud:DeCloud(self.inst)
-		self.cloud = nil
-	end
+	-- 恢复颜色
+	local r, g, b = self.inst.AnimState:GetMultColour()
+	self.inst.AnimState:SetMultColour(
+		self.color[1] or 1,
+		self.color[2] or 1,
+		self.color[3] or 1,
+		self.color[4] or 1
+	)
+	self.inst.DynamicShadow:Enable(true)
+
+	-- 恢复时炸一下
+	local effect = aipSpawnPrefab(self.inst, "aip_shadow_wrapper")
+	effect.DoShow()
 
 	self.inst.Physics:SetMotorVel(0, -5, 0)
+
+	-- 恢复碰撞
+	self.inst:DoTaskInTime(1, function()
+		ChangeToCharacterPhysics(self.inst)
+	end)
 
 	self.isFlying:set(false)
 end
@@ -209,9 +221,9 @@ function Flyer:OnServerUpdate(dt)
 
 		-- 调整速度
 		self:RotateToTarget(pos)
-
-		local distance = distsq(instPos.x, instPos.z, pos.x, pos.z)
 		local speed = self.speed
+
+		local distance = instPos:Dist(pos)
 
 		-- 如果超出最小速度的范围就需要进行加速飞行
 		if self.oriDistance > self.speedUpRange * 2 then
@@ -219,7 +231,10 @@ function Flyer:OnServerUpdate(dt)
 
 			if passedDist < self.speedUpRange then
 				-- 加速
-				speed = Remap(passedDist, 0, self.speedUpRange, self.speed, self.maxSpeed)
+				speed = Remap(
+					passedDist,
+					0, self.speedUpRange, self.speed, self.maxSpeed
+				)
 			elseif distance > self.speedUpRange then
 				-- 匀速
 				speed = self.maxSpeed
@@ -229,28 +244,39 @@ function Flyer:OnServerUpdate(dt)
 			end
 		end
 
-		local ySpeed = (self.height - instPos.y) * 1 + 1
+		local ySpeed = (self.height - instPos.y) * 10 + 1
+		self.syncSpeed:set(speed)
 
 		self.inst.Physics:SetMotorVel(speed,ySpeed,0)
-		-- self.netXSpeed:set(speed)
-		-- self.netYSpeed:set(ySpeed)
 
-		if distance < 4 then
+		if distance < 4 or self.lastDistance < distance then
 			self:End()
 		else
 			self:RotateToTarget(pos)
 		end
+
+		self.lastDistance = distance
 	end
 end
 
--- 客户端：看起来不需要了
+-- 客户端
+
 function Flyer:OnClientUpdate(dt)
 	if self:IsFlying() then
-		self.inst.Physics:SetMotorVel(
-			self.netXSpeed:value(),
-			self.netYSpeed:value(),
-			0
-		)
+		local x, y, z = self.inst.Transform:GetWorldPosition()
+
+		for i = 1, 3 do
+			local effect = SpawnPrefab("aip_fly_totem_effect")
+			effect.Transform:SetScale(0.5, 0.5, 0.5)
+			effect.Transform:SetPosition(
+				x + .5 - math.random() * 1,
+				y + .5 - math.random() * 1,
+				z + .5 - math.random() * 1
+			)
+		end
+		
+		-- effect.Transform:SetRotation(self.inst.Transform:GetRotation())
+		-- effect.Physics:SetMotorVel(self.syncSpeed:value() - 1, 0, 0)
 	end
 end
 
@@ -259,7 +285,9 @@ function Flyer:OnUpdate(dt)
 		self:OnServerUpdate(dt)
 	end
 
-	-- self:OnClientUpdate(dt)
+	if not TheNet:IsDedicated() then
+		self:OnClientUpdate(dt)
+	end
 end
 
 return Flyer

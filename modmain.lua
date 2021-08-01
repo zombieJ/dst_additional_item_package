@@ -76,7 +76,6 @@ PrefabFiles = {
 	-- 诡影迷踪
 	"aip_dou_totem",
 	"aip_fly_totem",
-	"aip_fly_totem_cloud",
 	"aip_score_ball",
 	"aip_mini_doujiang",
 
