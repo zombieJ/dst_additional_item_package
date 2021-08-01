@@ -17,7 +17,7 @@ local function onselect(doer, widget, totemId, triggerTotemId)
             doer.components.talker:Say(STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_CURRENT)
         end
     else
-        aipRPC("aipFlyToTotem", totemId)
+        aipRPC("aipFlyToTotem", triggerTotemId, totemId)
     end
 
     doer.HUD:CloseAIPDestination()

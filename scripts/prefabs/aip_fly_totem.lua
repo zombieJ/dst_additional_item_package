@@ -115,6 +115,47 @@ local function onnear(inst, player)
     end
 end
 
+-- 传输范围玩家
+local function startTranslate(inst, targetTotem)
+    local pt = inst:GetPosition()
+    local dist = 3
+    local count = 20
+    local scale = 0.2
+
+    for i = 1, count do
+        local angle = 2 * PI / count * i
+
+        local effect = SpawnPrefab("aip_shadow_wrapper")
+        effect.Transform:SetScale(scale, scale, scale)
+        effect.DoShow()
+
+        effect.Transform:SetPosition(
+            pt.x + math.cos(angle) * dist, 0,
+            pt.z + math.sin(angle) * dist
+        )
+    end
+
+    -- 传送玩家
+    local players = aipFindNearPlayers(inst, 3)
+    for i, player in ipairs(players) do
+        if player.components.aipc_flyer_sc ~= nil then
+            player.components.aipc_flyer_sc:FlyTo(targetTotem)
+        end
+    end
+end
+
+-- 启动光环施法
+local function startSpell(inst, targetTotem)
+    inst:DoTaskInTime(.5, function()
+        inst.SoundEmitter:PlaySound("dontstarve/forest/treeGrowFromWilt")
+    end)
+
+    local aura = aipSpawnPrefab(inst, "aip_aura_send")
+    aura.OnRemoveEntity = function()
+        startTranslate(inst, targetTotem)
+    end
+end
+
 ---------------------------------- 实体 ----------------------------------
 local function fn()
     local inst = CreateEntity()
@@ -178,6 +219,8 @@ local function fn()
     MakeSmallPropagator(inst)
 
     inst.aipId = tostring(os.time())..tostring(math.random())
+
+    inst.aipStartSpell = startSpell
 
     inst.OnSave = onSave
     inst.OnLoad = onLoad

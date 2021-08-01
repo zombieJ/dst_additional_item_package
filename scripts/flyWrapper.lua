@@ -74,22 +74,26 @@ AddPrefabPostInit("player_classified", function(inst)
 end)
 
 ----------------------------------- 添加动作 -----------------------------------
--- 服务端组件
-local function flyToTotem(player, totemId)
-	if player.components.aipc_flyer_sc then
-		local totems = _G.aipFilterTable(_G.TheWorld.components.world_common_store.flyTotems, function(t)
-			return t.aipId == totemId
-		end)
+local function findTotem(aipId)
+	local totems = _G.aipFilterTable(_G.TheWorld.components.world_common_store.flyTotems, function(t)
+		return t.aipId == aipId
+	end)
 
-		local totem = totems[1]
-		if totem ~= nil then
-			player.components.aipc_flyer_sc:FlyTo(totem)
-		end
+	return totems[1]
+end
+
+-- 服务端组件
+local function flyToTotem(player, triggerId, targetId)
+	local triggerTotem = findTotem(triggerId)
+	local targetTotem = findTotem(targetId)
+
+	if triggerTotem ~= nil and targetTotem ~= nil then
+		triggerTotem.aipStartSpell(triggerTotem, targetTotem)
 	end
 end
 
-env.AddModRPCHandler(env.modname, "aipFlyToTotem", function(player, index)
-	flyToTotem(player, index)
+env.AddModRPCHandler(env.modname, "aipFlyToTotem", function(player, triggerId, targetId)
+	flyToTotem(player, triggerId, targetId)
 end)
 
 ----------------------------------- 添加动作 -----------------------------------
