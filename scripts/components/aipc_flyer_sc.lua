@@ -225,19 +225,26 @@ function Flyer:OnServerUpdate(dt)
 
 		local distance = instPos:Dist(pos)
 
-		-- 如果超出最小速度的范围就需要进行加速飞行
 		if self.oriDistance > self.speedUpRange * 2 then
+			-- 如果超出最小速度的范围就需要进行加速飞行
 			local passedDist = self.oriDistance - distance
 
 			if passedDist < self.speedUpRange then
 				-- 加速
-				speed = Remap(
-					passedDist,
-					0, self.speedUpRange, self.speed, self.maxSpeed
-				)
+				speed = Remap(passedDist,0, self.speedUpRange, self.speed, self.maxSpeed)
 			elseif distance > self.speedUpRange then
 				-- 匀速
 				speed = self.maxSpeed
+			else
+				-- 减速
+				speed = Remap(distance, 0, self.speedUpRange, self.speed, self.maxSpeed)
+			end
+		else
+			-- 如果在范围内，我们就相对加速
+			local halfDistance = self.oriDistance / 2
+			if passedDist < halfDistance then
+				-- 加速
+				speed = Remap(passedDist,0, self.speedUpRange, self.speed, self.maxSpeed)
 			else
 				-- 减速
 				speed = Remap(distance, 0, self.speedUpRange, self.speed, self.maxSpeed)
@@ -274,9 +281,6 @@ function Flyer:OnClientUpdate(dt)
 				z + .5 - math.random() * 1
 			)
 		end
-		
-		-- effect.Transform:SetRotation(self.inst.Transform:GetRotation())
-		-- effect.Physics:SetMotorVel(self.syncSpeed:value() - 1, 0, 0)
 	end
 end
 
