@@ -81,7 +81,8 @@ local function canBeActOn(inst, doer)
 end
 
 local function onOpenPicker(inst, doer)
-    doer.player_classified.aip_fly_picker:set(inst.aipId)
+    -- 加一个切割前缀强制服务器触发
+    doer.player_classified.aip_fly_picker:set(tostring(os.time()).."|"..inst.aipId)
 end
 
 --[[

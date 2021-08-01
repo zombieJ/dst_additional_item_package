@@ -14,7 +14,4 @@ function PlayerHud:CloseAIPDestination()
 		self.aipDestScreen:Close()
 		self.aipDestScreen = nil
 	end
-
-	-- 告诉服务器关掉了
-	_G.ThePlayer.player_classified.aip_fly_picker:set("")
 end

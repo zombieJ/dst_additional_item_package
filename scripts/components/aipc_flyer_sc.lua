@@ -51,24 +51,34 @@ local Flyer = Class(function(self, inst)
 	self.target = nil
 	self.targetPos = nil
 
-	self.speed = 75 -- dev_mode and 5 or 75
-	self.maxSpeed = 200
+	self.speed = dev_mode and 5 or 20
+	self.maxSpeed = dev_mode and 20 or 100
 	self.speedUpRange = 30000
 	self.oriDistance = nil
 
 	self.height = 3
 	self.cloud = nil
 
+	-- 网络通讯相关数据
+	self.netXSpeed = net_float(inst.GUID, "aipc_flyer_x_speed")
+	self.netYSpeed = net_float(inst.GUID, "aipc_flyer_y_speed")
 	self.isFlying = net_bool(inst.GUID, "aipc_flyer_flying", "aipc_flyer_flying_dirty")
-	self.isFlying:set(false)
+
+	if TheWorld.ismastersim then
+		self.netXSpeed:set(0)
+		self.netYSpeed:set(0)
+		self.isFlying:set(false)
+	end
 
 	self.inst:ListenForEvent("aipc_flyer_flying_dirty", function()
-		-- 仅对当前玩家锁定屏幕
+		-- 仅对当前玩家锁定屏幕 & 同步更新速度保持稳定
 		if self.inst == ThePlayer then
 			if self:IsFlying() then
 				TheCamera:SetFlyView(true)
+				-- self.inst:StartUpdatingComponent(self)
 			else
 				TheCamera:SetFlyView(false)
+				-- self.inst:StopUpdatingComponent(self)
 			end
 		end
 	end)
@@ -123,8 +133,8 @@ function Flyer:FlyTo(target)
 
 	-- 移除物理碰撞
 	RemovePhysicsColliders(self.inst)
-	self.inst.Physics:ClearCollisionMask()
-	self.inst.Physics:ClearCollidesWith(COLLISION.LIMITS)
+	-- self.inst.Physics:ClearCollisionMask()
+	-- self.inst.Physics:ClearCollidesWith(COLLISION.LIMITS)
 	self.inst.Physics:Stop()
 	self.inst.Physics:SetVel(0, 0, 0)
 	self.inst.Physics:SetMotorVel(0, 0, 0)
@@ -186,10 +196,11 @@ function Flyer:End(target)
 	self.isFlying:set(false)
 end
 
-function Flyer:OnUpdate(dt)
+-------------------------------- 更新 --------------------------------
+-- 服务端
+function Flyer:OnServerUpdate(dt)
 	if self.target == nil or (self.inst.components.health and self.inst.components.health:IsDead()) then
 		-- 目标没了 or 玩家死了，结束飞行
-		aipPrint("no target")
 		self:End()
 	else
 		-- 飞过去
@@ -218,12 +229,11 @@ function Flyer:OnUpdate(dt)
 			end
 		end
 
-		-- 添加一个变量来强制引擎更新
-		if math.random() > 0.5 then
-			speed = speed + 0.001
-		end
+		local ySpeed = (self.height - instPos.y) * 1 + 1
 
-		self.inst.Physics:SetMotorVel(speed,(self.height - instPos.y) * 9,0)
+		self.inst.Physics:SetMotorVel(speed,ySpeed,0)
+		-- self.netXSpeed:set(speed)
+		-- self.netYSpeed:set(ySpeed)
 
 		if distance < 4 then
 			self:End()
@@ -231,8 +241,25 @@ function Flyer:OnUpdate(dt)
 			self:RotateToTarget(pos)
 		end
 	end
+end
 
-	
+-- 客户端：看起来不需要了
+function Flyer:OnClientUpdate(dt)
+	if self:IsFlying() then
+		self.inst.Physics:SetMotorVel(
+			self.netXSpeed:value(),
+			self.netYSpeed:value(),
+			0
+		)
+	end
+end
+
+function Flyer:OnUpdate(dt)
+	if TheWorld.ismastersim then
+		self:OnServerUpdate(dt)
+	end
+
+	-- self:OnClientUpdate(dt)
 end
 
 return Flyer

@@ -14,7 +14,8 @@ AddPrefabPostInit("player_classified", function(inst)
 
 	-- 根据事件打开窗口
 	inst:ListenForEvent("aip_fly_picker_dirty", function()
-		local flyTotemId = inst.aip_fly_picker:value()
+		local flyTotemId = _G.aipSplit(inst.aip_fly_picker:value(), "|")[2]
+
 		if _G.ThePlayer ~= nil and inst == _G.ThePlayer.player_classified and flyTotemId ~= "" then
 			_G.ThePlayer.HUD:OpenAIPDestination(inst, flyTotemId)
 		end
@@ -90,30 +91,6 @@ end
 env.AddModRPCHandler(env.modname, "aipFlyToTotem", function(player, index)
 	flyToTotem(player, index)
 end)
-
--- -- 添加飞行动作
--- local AIPC_FLY_ACTION = env.AddAction("AIPC_FLY_ACTION", _G.STRINGS.ACTIONS.AIP_USE, function(act)
--- 	local doer = act.doer
--- 	local target = act.target
-
--- 	if target and target.components.aipc_fly_picker_client ~= nil then
--- 		target.components.aipc_fly_picker_client:ShowPicker(doer)
--- 	end
-
--- 	return true
--- end)
-
--- AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_FLY_ACTION, "doshortaction"))
--- AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_FLY_ACTION, "doshortaction"))
-
--- -- 未飞行选择器
--- env.AddComponentAction("SCENE", "aipc_fly_picker_client", function(inst, doer, actions, right)
--- 	if not inst or not right then
--- 		return
--- 	end
-
--- 	table.insert(actions, _G.ACTIONS.AIPC_FLY_ACTION)
--- end)
 
 ----------------------------------- 添加动作 -----------------------------------
 -- -- 监听玩家状态
