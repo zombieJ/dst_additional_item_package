@@ -2,6 +2,7 @@ local _G = GLOBAL
 local language = _G.aipGetModConfig("language")
 
 ----------------------------------- 通用组件行为 -----------------------------------
+-- 服务端组件
 local function triggerComponentAction(player, item, target, targetPoint)
 	if item.components.aipc_action ~= nil then
 		-- trigger action
@@ -9,6 +10,8 @@ local function triggerComponentAction(player, item, target, targetPoint)
 			item.components.aipc_action:DoTargetAction(player, target)
 		elseif targetPoint ~= nil then
 			item.components.aipc_action:DoPointAction(player, targetPoint)
+		else
+			item.components.aipc_action:DoAction(player)
 		end
 	end
 end
@@ -21,16 +24,20 @@ end)
 local LANG_MAP = {
 	english = {
 		GIVE = "Give",
+		USE = "Use",
 		CAST = "Cast",
 	},
 	chinese = {
 		GIVE = "给予",
+		USE = "使用",
 		CAST = "释放",
 	},
 }
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
--- 注册一个 action
+_G.STRINGS.ACTIONS.AIP_USE = LANG.USE
+
+-------------------- 对目标使用的技能 --------------------
 local AIPC_ACTION = env.AddAction("AIPC_ACTION", LANG.GIVE, function(act)
 	local doer = act.doer
 	local item = act.invobject
@@ -41,7 +48,7 @@ local AIPC_ACTION = env.AddAction("AIPC_ACTION", LANG.GIVE, function(act)
 		triggerComponentAction(doer, item, target, nil)
 	else
 		-- client
-		SendModRPCToServer(MOD_RPC[env.modname]["aipComponentAction"], doer, item, target, nil)
+		_G.aipRPC("aipComponentAction", item, target, nil)
 	end
 
 	return true
@@ -49,7 +56,7 @@ end)
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_ACTION, "dolongaction"))
 AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_ACTION, "dolongaction"))
 
--- 为组件绑定 action
+-- 角色使用 aipc_action_client 对某物使用
 env.AddComponentAction("USEITEM", "aipc_action_client", function(inst, doer, target, actions, right)
 	if not inst or not target then
 		return
@@ -59,6 +66,36 @@ env.AddComponentAction("USEITEM", "aipc_action_client", function(inst, doer, tar
 		table.insert(actions, _G.ACTIONS.AIPC_ACTION)
 	end
 end)
+
+---------------------- 被使用的技能 ----------------------
+local AIPC_BE_ACTION = env.AddAction("AIPC_BE_ACTION", LANG.USE, function(act)
+	local doer = act.doer
+	local target = act.target
+
+	if _G.TheNet:GetIsServer() then
+		-- server
+		triggerComponentAction(doer, target, nil, nil)
+	else
+		-- client
+		_G.aipRPC("aipComponentAction", target, nil, nil)
+	end
+
+	return true
+end)
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_BE_ACTION, "doshortaction"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_BE_ACTION, "doshortaction"))
+
+-- 角色对某物使用 aipc_action_client
+env.AddComponentAction("SCENE", "aipc_action_client", function(inst, doer, actions, right)
+	if not inst or not right then
+		return
+	end
+
+	if inst.components.aipc_action_client:CanBeActOn(doer) then
+		table.insert(actions, _G.ACTIONS.AIPC_BE_ACTION)
+	end
+end)
+
 
 -------------------- 施法行为 https://www.zybuluo.com/longfei/note/600841
 local function getActionableItem(doer)
@@ -85,7 +122,7 @@ local AIPC_CASTER_ACTION = env.AddAction("AIPC_CASTER_ACTION", LANG.CAST, functi
 		triggerComponentAction(doer, item, target, pos ~= nil and act:GetActionPoint())
 	else
 		-- client
-		SendModRPCToServer(MOD_RPC[env.modname]["aipComponentAction"], doer, item, target, pos)
+		_G.aipRPC("aipComponentAction", item, target, pos)
 	end
 
 	return true
@@ -157,14 +194,11 @@ env.AddComponentAction("SCENE", "combat", function(inst, doer, actions, right)
 	end
 end)
 
-
-
-
 ------------------------------------- 特殊处理 -------------------------------------
 -- 额外触发一个生命值时间出来
 AddComponentPostInit("health", function(self)
 	-- 生命变化钩子
-	local origiDoDelta = self.DoDelta
+	local originDoDelta = self.DoDelta
 
 	function self:DoDelta(amount, ...)
 		-- healthCost buffer 的对象会受到更多伤害
@@ -175,7 +209,7 @@ AddComponentPostInit("health", function(self)
 		local data = { amount = amount }
 		self.inst:PushEvent("aip_healthdelta", data)
 
-		origiDoDelta(self, data.amount, _G.unpack(arg))
+		originDoDelta(self, data.amount, _G.unpack(arg))
 	end
 
 	-- 锁定无敌，锁定后无法再更改无敌状态
@@ -203,6 +237,19 @@ AddComponentPostInit("fueled", function(self)
 			return self.canAcceptFuelFn(self.inst, item)
 		end
 		return originCanAcceptFuelItem(self, item)
+	end
+end)
+
+-- writeable 完成时额外触发一个事件
+AddComponentPostInit("writeable", function(self)
+	local originEndWriting = self.EndWriting
+
+	function self:EndWriting(...)
+		if self.onAipEndWriting ~= nil then
+			self.onAipEndWriting()
+		end
+
+		originEndWriting(self, _G.unpack(arg))
 	end
 end)
 

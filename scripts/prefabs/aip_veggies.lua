@@ -104,6 +104,7 @@ local function MakeVeggie(name, has_seeds)
 		inst.entity:AddNetwork()
 
 		MakeInventoryPhysics(inst)
+		MakeInventoryFloatable(inst, "small", 0.15, 0.9)
 
 		inst.AnimState:SetBank("seeds")
 		inst.AnimState:SetBuild("seeds")
@@ -159,6 +160,7 @@ local function MakeVeggie(name, has_seeds)
 		inst.entity:AddNetwork()
 
 		MakeInventoryPhysics(inst)
+		MakeInventoryFloatable(inst, "small", 0.15, 0.9)
 
 		inst.AnimState:SetBank(name)
 		inst.AnimState:SetBuild(name)
@@ -232,6 +234,7 @@ local function MakeVeggie(name, has_seeds)
 		inst.entity:AddNetwork()
 
 		MakeInventoryPhysics(inst)
+		MakeInventoryFloatable(inst, "small", 0.15, 0.9)
 
 		inst.AnimState:SetBank(name)
 		inst.AnimState:SetBuild(name)

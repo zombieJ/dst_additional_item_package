@@ -44,6 +44,28 @@ animqueueover
 
 redlanternbody.lua
 
+## 地图区块数据
+
+TheWorld.topology.nodes
+- type: NODE_TYPE.x
+- poly
+- tags
+- cent [x, z]
+- x
+- y
+- c
+- neighbours
+- area
+- validedges: TheWorld.topology.edgeToNodes
+
+TheWorld.topology.ids
+
+## 找对象
+
+simutil.lua
+
+FindEntities(x, y, z, radius, musthavetags, nottags, hasoneoftags)
+
 # apiUtils
 
 提供了一些辅助方法
@@ -51,3 +73,38 @@ redlanternbody.lua
 - aipPrint(...) 打印内容
 - aipTypePrint(...) 打印内容，同时打印出类别
 - aipGetModConfig(configName: string) 获取全局的 mod 配置信息
+
+# 坐标
+
+local pt = inst:GetPosition()
+
+# 物理的一些知识
+
+https://forums.kleientertainment.com/forums/topic/34074-the-physics-of-the-dont-starve-world/
+https://forums.kleientertainment.com/forums/topic/76982-solved-i-need-help-with-physicsknockback-thing/
+https://forums.kleientertainment.com/forums/topic/123069-bizarre-physics-velocity-bug-that-only-happens-when-no-ones-watching/
+
+https://forums.kleientertainment.com/forums/topic/126774-documentation-list-of-all-engine-functions/?tab=comments#comment-1477045
+
+MASS 质量
+
+### mathutil.lua
+
+* Lerp(min, max, ptg)：取 min ~ max 的范围值
+* Remap(currentValue, currentMin, currentMax, targetMin, targetMax)：把一个范围转成另一个范围
+
+
+inst.AnimState:SetRayTestOnBB(true) 小物体会直接用盒装模型碰撞检测
+
+### 配方特殊物品
+
+例如 Ingredient(CHARACTER_INGREDIENT.HEALTH, 40)
+
+* CHARACTER_INGREDIENT.HEALTH
+* CHARACTER_INGREDIENT.MAX_SANITY
+* TECH_INGREDIENT.SCULPTING
+* CHARACTER_INGREDIENT.SANITY
+
+### 瞬移
+
+c_goto(c_find("aip_dou_totem_broken"))

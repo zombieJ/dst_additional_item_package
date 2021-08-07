@@ -23,14 +23,18 @@ local function getFn(data)
 		inst.AnimState:SetBank(data.name)
 		inst.AnimState:SetBuild(data.name)
 
-		inst.AnimState:PlayAnimation("idle", true)
+		inst.AnimState:PlayAnimation("idle", data.onAnimOver == nil)
 
 		inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
 		inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
 		inst.AnimState:SetSortOrder(2)
 
+		if data.scale ~= nil then
+			inst.Transform:SetScale(data.scale, data.scale, data.scale)
+		end
+
 		-- 客户端的特效
-		if not TheNet:IsDedicated() then
+		if data.fade ~= false and not TheNet:IsDedicated() then
 			inst._fade = 1
 			inst._fadeIn = -FADE_DES
 			inst.periodTask = inst:DoPeriodicTask(0.1, onFade)
@@ -42,13 +46,23 @@ local function getFn(data)
 			return inst
 		end
 
-		inst:AddComponent("aipc_aura")
-		inst.components.aipc_aura.range = data.range or 15
-		inst.components.aipc_aura.bufferName = data.bufferName
-		inst.components.aipc_aura.bufferDuration = data.bufferDuration or 3
-		inst.components.aipc_aura.bufferFn = data.bufferFn
-		inst.components.aipc_aura.mustTags = data.mustTags
-		inst.components.aipc_aura.noTags = data.noTags
+		if data.range ~= false then
+			inst:AddComponent("aipc_aura")
+			inst.components.aipc_aura.range = data.range or 15
+			inst.components.aipc_aura.bufferName = data.bufferName
+			inst.components.aipc_aura.bufferDuration = data.bufferDuration or 3
+			inst.components.aipc_aura.bufferFn = data.bufferFn
+			inst.components.aipc_aura.mustTags = data.mustTags
+			inst.components.aipc_aura.noTags = data.noTags
+		end
+
+		if data.onAnimOver ~= nil then
+			inst:ListenForEvent("animover", data.onAnimOver)
+		end
+
+		if data.postFn ~= nil then
+			data.postFn(inst)
+		end
 
 		return inst
 	end
@@ -64,6 +78,16 @@ local list = {
 		bufferName = "healthCost",
 		mustTags = { "_health" },
 		noTags = { "INLIMBO", "NOCLICK", "ghost" },
+	},
+	{	-- 传送光环：并非真实的光环，动画完毕后会发送一个传送效果
+		name = "aip_aura_send",
+		assets = { Asset("ANIM", "anim/aip_aura_send.zip") },
+		range = false, -- 不安装光环组件
+		fade = false,
+		scale = 1.7,
+		onAnimOver = function(inst)
+			inst:Remove()
+		end,
 	},
 }
 

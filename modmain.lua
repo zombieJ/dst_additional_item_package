@@ -1,4 +1,6 @@
-GLOBAL.STRINGS.AIP = {}
+local _G = GLOBAL
+
+_G.STRINGS.AIP = {}
 
 -- 资源
 Assets =
@@ -18,11 +20,13 @@ Assets =
 	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_plant_bg.xml"),
 	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_water_bg.xml"),
 	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_wind_bg.xml"),
+
+	-- 添加一个动作
+	-- Asset( "ANIM", "anim/aip_player_surf.zip"),
 }
 
 -- 物品列表
-PrefabFiles =
-{
+PrefabFiles = {
 	-- vest
 	"aip_vest",
 	"aip_projectile",
@@ -69,6 +73,12 @@ PrefabFiles =
 	"aip_woodener",
 	"aip_glass_chest",
 
+	-- 诡影迷踪
+	"aip_dou_totem",
+	"aip_fly_totem",
+	"aip_score_ball",
+	"aip_mini_doujiang",
+
 	-- Orbit
 	"aip_orbit",
 	"aip_mine_car",
@@ -94,7 +104,6 @@ local language = GetModConfigData("language")
 modimport("scripts/aipUtils.lua")
 
 --------------------------------------- 科技 ---------------------------------------
-
 -- 添加对应标签
 local AIP_DOU_SCEPTER = AddRecipeTab(
 	"AIP_DOU_SCEPTER",
@@ -110,14 +119,14 @@ local TECH_LANG = {
 	chinese = "神秘魔法",
 }
 
-GLOBAL.STRINGS.TABS.AIP_DOU_SCEPTER = TECH_LANG[language]
+_G.STRINGS.TABS.AIP_DOU_SCEPTER = TECH_LANG[language]
 
 modimport("scripts/techHooker.lua")
 
 local inscriptions = require("utils/aip_scepter_util").inscriptions
 for name, info in pairs(inscriptions) do
 	AddRecipe(
-		name, info.recipes, AIP_DOU_SCEPTER, GLOBAL.TECH.AIP_DOU_SCEPTER,
+		name, info.recipes, AIP_DOU_SCEPTER, _G.TECH.AIP_DOU_SCEPTER,
 		nil, nil, true, nil, nil,
 		"images/inventoryimages/"..name..".xml", name..".tex"
 	)
@@ -128,13 +137,17 @@ modimport("scripts/componentsHooker.lua")
 
 --------------------------------------- 图标 ---------------------------------------
 AddMinimapAtlas("minimap/dark_observer_vest.xml")
+AddMinimapAtlas("minimap/aip_dou_totem.xml")
 
 --------------------------------------- 封装 ---------------------------------------
-modimport("scripts/recipeWrapper.lua")
 modimport("scripts/containersWrapper.lua")
+modimport("scripts/writeablesWrapper.lua")
 modimport("scripts/itemTileWrapper.lua")
 modimport("scripts/hudWrapper.lua")
 modimport("scripts/shadowPackageAction.lua")
+modimport("scripts/widgetHooker.lua")
+modimport("scripts/recpiesHooker.lua")
+modimport("scripts/flyWrapper.lua")
 
 ------------------------------------- 测试专用 -------------------------------------
 if GetModConfigData("dev_mode") == "enabled" then
@@ -146,19 +159,15 @@ if GetModConfigData("additional_orbit") == "open" then
 	modimport("scripts/mineCarAction.lua")
 end
 
-
 ------------------------------------- 对象钩子 -------------------------------------
 modimport("scripts/prefabsHooker.lua")
 
-
 -- 世界追踪
-function WorldPrefabPostInit(inst)
-	inst:AddComponent("world_common_store")
-end
-
-if GLOBAL.TheNet:GetIsServer() or GLOBAL.TheNet:IsDedicated() then
-	AddPrefabPostInit("world", WorldPrefabPostInit)
-end
+AddPrefabPostInit("world", function(inst)
+	if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
+		inst:AddComponent("world_common_store")
+	end
+end)
 
 ------------------------------------- 玩家钩子 -------------------------------------
 function PlayerPrefabPostInit(inst)
@@ -166,7 +175,23 @@ function PlayerPrefabPostInit(inst)
 		inst:AddComponent("aipc_player_client")
 	end
 
-	if not GLOBAL.TheWorld.ismastersim then
+	-- inst:ListenForEvent("setowner", function()
+	-- 	-- 禁止除了键盘外的所有行为
+	-- 	if inst.components.playercontroller ~= nil then
+	-- 		inst.components.playercontroller.DoAction = function() end
+	-- 	end
+	-- end)
+
+	-- 黏住目标
+	-- inst.components.pinnable:Stick()
+
+	-- 不让走路
+	-- inst.components.locomotor.WalkForward = function() end
+	-- inst.components.locomotor.RunForward = function()
+	-- 	GLOABLa.test()
+	-- end
+
+	if not _G.TheWorld.ismastersim then
 		return
 	end
 	
@@ -176,3 +201,76 @@ function PlayerPrefabPostInit(inst)
 end
 
 AddPlayerPostInit(PlayerPrefabPostInit)
+
+
+
+
+-- AddPlayerSgPostInit(function(self)
+-- 	-- local run_start = self.states.run_start
+-- 	-- if run_start then
+-- 	-- 	function run_start.onenter(inst, ...)
+-- 	-- 	end
+
+-- 	-- 	function run_start.onupdate(inst, ...)
+-- 	-- 	end
+-- 	-- end
+
+-- 	-- _G.aipTypePrint(self.events)
+
+-- 	-- 移除动画能力
+-- 	-- local originLocomoteFn = self.events.locomote.fn
+
+-- 	-- self.events.locomote.fn = function(...)
+-- 	-- 	originLocomoteFn(_G.unpack(arg))
+-- 	-- end
+
+-- 	-- 修改走路动画
+-- 	local run = self.states.run 
+-- 	if run then
+-- 		local old_enter = run.onenter
+-- 		function run.onenter(inst, ...)
+-- 			if old_enter then 
+-- 				old_enter(inst, ...)
+-- 			end
+-- 			-- if IsFlying(inst) then
+-- 				if not inst.AnimState:IsCurrentAnimation("fall_off") then
+-- 					inst.AnimState:PlayAnimation("sand_idle_loop", true)
+-- 				end
+-- 				inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + .5 * FRAMES)
+-- 			-- end
+-- 		end
+-- 	end
+-- end)
+
+-- 添加一个状态
+-- AddStategraphState("wilson", JumpState(false, true))
+-- AddStategraphState("wilson_client", JumpState(true, true))
+
+-- MakeFlyingCharacterPhysics(inst, 1, .5)
+
+-- 船是一个平台，理论上来说，我们可以让玩家坐飞机
+-- AddPrefabPostInit("boat", function(inst)
+-- 	-- _G.MakeTinyFlyingCharacterPhysics(inst, 1, .5)
+
+-- 	-- -- 边界变大后就会提前跳，然后淹死
+-- 	-- inst.components.walkableplatform.radius = 5
+
+-- 	-- 改变物理可以让它飞起来
+-- 	-- inst.Physics:SetMass(500)
+--     -- inst.Physics:SetFriction(0)
+--     -- inst.Physics:SetDamping(5)
+--     -- inst.Physics:SetCollisionGroup(_G.COLLISION.FLYERS)
+--     -- inst.Physics:ClearCollisionMask()
+--     -- inst.Physics:CollidesWith((_G.TheWorld.has_ocean and _G.COLLISION.GROUND) or _G.COLLISION.WORLD)
+--     -- inst.Physics:CollidesWith(_G.COLLISION.FLYERS)
+--     -- inst.Physics:SetCapsule(.5, 1)
+-- end)
+
+-- AddComponentPostInit("drownable", function(self)
+-- 	-- 淹不死
+-- 	function self:ShouldDrown()
+-- 		-- Map:GetPlatformAtPoint(pos_x, pos_y, pos_z, extra_radius) 获取站着的平台
+-- 		_G.aipTypePrint("Platform:", self.inst:GetCurrentPlatform())
+-- 		return false
+-- 	end
+-- end)

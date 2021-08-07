@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="body">
+        <file id="0" name="body/aip_aura_send.png" width="600" height="600" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_aura_send">
+        <animation id="0" name="idle" length="2400">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="aip_aura_send" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.009983" abs_scale_y="0.009983" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="aip_aura_send_000" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.009983" abs_scale_y="0.009983" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="382">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+                <key id="2" time="1280">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="2" z_index="1"/>
+                </key>
+                <key id="3" time="2100">
+                    <object_ref id="0" timeline="0" key="3" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="3" z_index="1"/>
+                </key>
+                <key id="4" time="2274">
+                    <object_ref id="0" timeline="0" key="4" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="4" z_index="1"/>
+                </key>
+                <key id="5" time="2399">
+                    <object_ref id="0" timeline="0" key="5" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="5" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="aip_aura_send">
+                <key id="0" spin="-1">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.009983" scale_y="0.009983"/>
+                </key>
+                <key id="1" time="382" spin="-1">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="240" scale_x="0.173159" scale_y="0.173159"/>
+                </key>
+                <key id="2" time="1280" spin="-1">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="120" scale_x="0.336661" scale_y="0.336661"/>
+                </key>
+                <key id="3" time="2100" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.5" scale_y="0.5"/>
+                </key>
+                <key id="4" time="2274" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.5" scale_y="0.5"/>
+                </key>
+                <key id="5" time="2399" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.5" scale_y="0.5"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="aip_aura_send_000">
+                <key id="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.009983" scale_y="0.009983"/>
+                </key>
+                <key id="1" time="382">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="120" scale_x="0.173159" scale_y="0.173159"/>
+                </key>
+                <key id="2" time="1280">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="240" scale_x="0.336661" scale_y="0.336661"/>
+                </key>
+                <key id="3" time="2100" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.5" scale_y="0.5"/>
+                </key>
+                <key id="4" time="2274" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.55" scale_y="0.55"/>
+                </key>
+                <key id="5" time="2399" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.5" scale_y="0.5"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

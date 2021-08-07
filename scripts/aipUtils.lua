@@ -1,5 +1,6 @@
 local _G = GLOBAL
 
+--------------------------------------- 表格 ---------------------------------------
 function _G.aipCountTable(tbl)
 	local count = 0
 	local lastKey = nil
@@ -51,6 +52,33 @@ function _G.aipFlattenTable(originTbl)
 	return targetTbl
 end
 
+function _G.aipTableRemove(tbl, item)
+	for i, v in ipairs(tbl) do
+		if v == item then
+			table.remove(tbl, i)
+		end
+	end
+end
+
+function _G.aipTableSlice(tbl, start, len)
+	local list = {}
+
+	for i = start, math.min(len + start - 1, #tbl) do
+		table.insert(list, tbl[i])
+	end
+	return list
+end
+
+function _G.aipTableIndex(tbl, item)
+	for i, v in ipairs(tbl) do
+		if v == item then
+			return i
+		end
+	end
+
+	return nil
+end
+
 -- 过滤表格
 function _G.aipFilterTable(originTbl, filterFn)
 	local tbl = {}
@@ -76,6 +104,7 @@ function _G.aipFilterKeysTable(originTbl, keys)
 	return tbl
 end
 
+--------------------------------------- 调试 ---------------------------------------
 function _G.aipCommonStr(showType, split, ...)
 	local count = _G.aipCountTable(arg)
 	local str = ""
@@ -169,6 +198,17 @@ function _G.aipGetAnimState(inst)
 	return match and data or nil
 end
 
+--------------------------------------- 文本 ---------------------------------------
+function _G.aipSplit(str, spliter)
+	local list = {}
+	local str = str..spliter
+	for i in str:gmatch("(.-)"..spliter) do
+		table.insert(list, i)
+	 end
+	 return list
+end
+
+--------------------------------------- 角度 ---------------------------------------
 -- 返回角度：0 ~ 360
 function _G.aipGetAngle(src, tgt)
 	local direction = (tgt - src):GetNormalized()
@@ -205,6 +245,21 @@ function _G.aipRandomEnt(ents)
 end
 
 --------------------------------------- 辅助 ---------------------------------------
+function _G.aipFindNearEnts(inst, prefabNames, distance)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local ents = TheSim:FindEntities(x, 0, z, distance or 10)
+	local prefabs = {}
+
+	for _, ent in pairs(ents) do
+		-- 检测图腾
+		if ent:IsValid() and table.contains(prefabNames, ent.prefab) then
+			table.insert(prefabs, ent)
+		end
+	end
+
+	return prefabs
+end
+
 function _G.aipFindNearPlayers(inst, dist)
 	local NOTAGS = { "FX", "NOCLICK", "DECOR", "playerghost", "INLIMBO" }
 	local x, y, z = inst.Transform:GetWorldPosition()
@@ -223,12 +278,16 @@ end
 -- 在目标位置创建
 function _G.aipSpawnPrefab(inst, prefab, tx, ty, tz)
 	local tgt = _G.SpawnPrefab(prefab)
-	local x, y, z = inst.Transform:GetWorldPosition()
-	tgt.Transform:SetPosition(fb(tx, x), fb(ty, y), fb(tz, z))
+	if inst ~= nil then
+		local x, y, z = inst.Transform:GetWorldPosition()
+		tgt.Transform:SetPosition(fb(tx, x), fb(ty, y), fb(tz, z))
+	else
+		tgt.Transform:SetPosition(fb(tx, 0), fb(ty, 0), fb(tz, 0))
+	end
 	return tgt
 end
 
--- 替换单位（如果是物品则替换对应物品栏）
+-- 替换单位（如果是物品则替换对应物品栏），原生也有一个 ReplacePrefab
 function _G.aipReplacePrefab(inst, prefab, tx, ty, tz)
 	local tgt = _G.aipSpawnPrefab(inst, prefab, tx, ty, tz)
 
@@ -250,15 +309,103 @@ end
 
 -- 获取一个可访达的路径，默认 40。TODO：优化一下避免在建筑附近生成
 function _G.aipGetSpawnPoint(pt, distance)
+	-- 不在陆地就随便找一个陆地
     if not _G.TheWorld.Map:IsAboveGroundAtPoint(pt:Get()) then
-        pt = _G.FindNearbyLand(pt, 1) or pt
+        pt = _G.FindNearbyLand(pt) or pt
     end
-    local offset = _G.FindWalkableOffset(pt, math.random() * 2 * _G.PI, distance or 40, 12, true)
-    if offset ~= nil then
-        offset.x = offset.x + pt.x
-        offset.z = offset.z + pt.z
-        return offset
-    end
+
+	-- 找范围内可以走到的路径
+	local offset = _G.FindWalkableOffset(pt, math.random() * 2 * _G.PI, distance or 40, 12, true)
+	if offset ~= nil then
+		offset.x = offset.x + pt.x
+		offset.z = offset.z + pt.z
+		return offset
+	end
+
+	-- 随机找一个附近的点
+	for i = distance, distance + 100, 10 do
+		local nextOffset = _G.FindValidPositionByFan(
+			math.random() * 2 * _G.PI, distance, nil,
+			function(offset)
+				local x = pt.x + offset.x
+				local y = pt.y + offset.y
+				local z = pt.z + offset.z
+				return _G.TheWorld.Map:IsAboveGroundAtPoint(x, y, z)
+			end
+		)
+
+		if nextOffset ~= nil then
+			nextOffset.x = nextOffset.x + pt.x
+			nextOffset.z = nextOffset.z + pt.z
+			return nextOffset
+		end
+	end
+end
+
+function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
+	-- 如果范围内存在物体，我们就找数量最少的地方
+	if emptyDistance ~= nil then
+		local tgtPT = nil
+		local tgtEntCnt = 99999999
+
+		local mergedMaxDistance = maxDistance
+		if minDistance == maxDistance then
+			mergedMaxDistance = minDistance + 1
+		end
+
+		local step = 20 / (mergedMaxDistance - minDistance)
+
+		for distance = minDistance, maxDistance, step do
+			local pos = _G.aipGetSpawnPoint(pt, distance)
+			local ents = TheSim:FindEntities(pos.x, 0, pos.z, emptyDistance)
+			if #ents < tgtEntCnt then
+				tgtPT = pos
+				tgtEntCnt = #ents
+			end
+		end
+
+		if tgtPT ~= nil then
+			return tgtPT
+		end
+	end
+
+	return aipGetSpawnPoint(pt, minDistance)
+end
+
+-- 在符合 tag 的地形上，且存在匹配的物品，在改物品附近找一个点
+function _G.aipGetTopologyPoint(tag, prefab, dist)
+	for i, node in ipairs(_G.TheWorld.topology.nodes) do
+		if table.contains(node.tags, tag) then
+			local x = node.cent[1]
+			local z = node.cent[2]
+
+			-- 找到 匹配的物品
+			local ents = TheSim:FindEntities(x, 0, z, 40)
+			local fissures = _G.aipFilterTable(ents, function(inst)
+				return inst.prefab == prefab
+			end)
+
+			-- 使用第一个匹配的物品
+			local first = fissures[1]
+			if first ~= nil then
+				return first:GetPosition()
+			end
+		end
+	end
+
+	return nil
+end
+
+-- 按照参数找到所有符合名字列表的 prefab
+function _G.aipFindEnt(...)
+	for _, ent in pairs(_G.Ents) do
+		-- 检测图腾
+		if ent:IsValid() and table.contains(arg, ent.prefab) then
+			return ent
+		end
+	end
+
+	return nil
 end
 
 -- 是暗影生物
@@ -271,6 +418,12 @@ function _G.aipIsShadowCreature(inst)
 		end
 	end
 	return false
+end
+
+--------------------------------------- RPC ---------------------------------------
+-- RPC 发送时自动会带上 player 作为第一个参数
+function _G.aipRPC(funcName, ...)
+	SendModRPCToServer(MOD_RPC[env.modname][funcName], _G.unpack(arg))
 end
 
 -- 添加 aipc_buffer

@@ -25,6 +25,7 @@ local LANG_MAP = {
         DESC = "Looks like a key?",
         EMPOWER_DESC = "A fully key!",
         EMPTY = "No more mana!",
+        NOT_KEY = "No a real key",
 
         HUGE = "Expansion",
         SAVING = "Saving",
@@ -38,6 +39,7 @@ local LANG_MAP = {
         DESC = "看起来像一把钥匙？",
         EMPOWER_DESC = "一把完整的钥匙！",
         EMPTY = "权杖需要充能了",
+        NOT_KEY = "不是一把完整的钥匙",
 
         HUGE = "扩容",      -- 更大容量
         SAVING = "节能",    -- 更少消耗
@@ -57,6 +59,7 @@ end
 STRINGS.NAMES.AIP_DOU_SCEPTER = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_DOU_SCEPTER = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_SCEPTER = LANG.DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_SCEPTER_NOT_KEY = LANG.NOT_KEY
 
 STRINGS.NAMES.AIP_DOU_EMPOWER_SCEPTER = LANG.NAME
 STRINGS.NAMES.AIP_DOU_HUGE_SCEPTER = LANG.NAME
