@@ -13,25 +13,36 @@ const MAX_WIDTH_COUNT = 9;
 
 const IMAGES = [
 	['aip_blood_package', 'aip_plaster', 'aip_mine_car', 'aip_dou_tooth'],
+
 	['incinerator', 'aip_orbit_item', 'aip_nectar_maker', 'aip_woodener', 'aip_igloo'],
-	['dark_observer', 'aip_shadow_paper_package', 'aip_shadow_package', 'aip_dou_inscription_package', 'aip_dou_opal', 'aip_leaf_note', 'aip_glass_chest'],
+
+	[
+		'aip_dou_totem/totem/head', 'aip_fly_totem',
+		'dark_observer', 'aip_shadow_paper_package', 'aip_shadow_package',
+		'aip_dou_inscription_package', 'aip_dou_opal', 'aip_leaf_note', 'aip_glass_chest',
+	],
+
 	[
 		'popcorngun', 'aip_fish_sword', 'aip_beehave', 'aip_oar_woodead', 'aip_armor_gambler',
-		'aip_dou_scepter', 'aip_dou_empower_scepter', 'aip_xinyue_hoe',
+		'aip_dou_scepter', 'aip_dou_empower_scepter', 'aip_xinyue_hoe', "aip_score_ball",
 	],
+
 	[
 		'aip_dou_cost_inscription', 'aip_dou_fire_inscription', 'aip_dou_heal_inscription',
-		'aip_dou_ice_inscription', 'aip_dou_sand_inscription', "aip_dou_dawn_inscription",
-		"aip_dou_rock_inscription",
+		'aip_dou_ice_inscription', 'aip_dou_sand_inscription', 'aip_dou_dawn_inscription',
+		'aip_dou_rock_inscription',
 		'aip_dou_area_inscription', 'aip_dou_follow_inscription', 'aip_dou_split_inscription', 
 		'aip_dou_through_inscription',
 	],
+
 	['aip_blue_glasses', 'aip_horse_head', 'aip_som', 'aip_joker_face'],
+
 	[
 		'chesspiece_aip_doujiang_marble', 'chesspiece_aip_doujiang_stone', 'chesspiece_aip_doujiang_moonglass',
 		'chesspiece_aip_deer', 'chesspiece_aip_deer_stone', 'chesspiece_aip_deer_moonglass',
 		'chesspiece_aip_moon_marble', 'chesspiece_aip_moon_stone', 'chesspiece_aip_moon_moonglass',
 	],
+
 	[
 		'aip_veggie_wheat', 'aip_veggie_wheat_cooked',
 		'aip_veggie_sunflower', 'aip_veggie_sunflower_cooked',
@@ -45,10 +56,28 @@ const __STEAM__PATH = path.join(rootPath, '__STEAM__');
 
 // 获取图片文件路径
 function getImagePath(name) {
+	// 实体目录
+	if (name.includes('/')) {
+		// 当前
+		const modExeportPath = path.join(rootPath, 'exported', `${name}.png`);
+		if (fs.existsSync(modExeportPath)) {
+			return modExeportPath;
+		}
+
+		// 备份
+		const modExeportDonePath = path.join(rootPath, 'exported', `${name}.png`);
+		if (fs.existsSync(modExeportDonePath)) {
+			return modExeportDonePath;
+		}
+	}
+
+	// 当前 Image 目录
 	const modItemPath = path.join(rootPath, 'images', 'inventoryimages', `${name}.png`);
 	if (fs.existsSync(modItemPath)) {
 		return modItemPath;
 	}
+
+	// 备份 Image 目录
 	return  path.join(rootPath, 'images_done', `${name}.png`);
 }
 
@@ -84,6 +113,11 @@ function getImagePath(name) {
 		for (let x = 0; x < images.length; x += 1) {
 			const imagePath = getImagePath(images[x]);
 			const img = await jimp.read(imagePath);
+			img.scaleToFit(
+				IMG_SIZE,
+				IMG_SIZE,
+				jimp.HORIZONTAL_ALIGN_CENTER | jimp.VERTICAL_ALIGN_MIDDLE
+			);
 
 			descImg.composite(img, x * IMG_SIZE, y * IMG_SIZE);
 		}
