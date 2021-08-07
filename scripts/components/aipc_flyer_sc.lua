@@ -224,10 +224,10 @@ function Flyer:OnServerUpdate(dt)
 		local speed = self.speed
 
 		local distance = instPos:Dist(pos)
+		local passedDist = self.oriDistance - distance
 
 		if self.oriDistance > self.speedUpRange * 2 then
 			-- 如果超出最小速度的范围就需要进行加速飞行
-			local passedDist = self.oriDistance - distance
 
 			if passedDist < self.speedUpRange then
 				-- 加速

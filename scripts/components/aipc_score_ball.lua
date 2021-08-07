@@ -34,6 +34,11 @@ end
 
 function ScoreBall:ResetAll()
 	self:ResetMotion()
+	self.startTimes = 0
+	self.downTimes = 0
+	self.throwTimes = 0 -- 仅仅计算若光的次数
+	self.playerThrow = false -- 玩家丢起的球？
+
 	self.ball.Physics:Teleport(0, 0, 0)
 	self.ball.AnimState:Pause()
 	self.inst:StopUpdatingComponent(self)
@@ -91,7 +96,13 @@ function ScoreBall:ResetThrowCount()
 	self.throwTimes = 0
 end
 
-function ScoreBall:Throw(tgtPos, speed, ySpeed) -- 朝着方向扔球
+function ScoreBall:Throw(tgtPos, speed, ySpeed) -- 若光技能
+	self.throwTimes = self.throwTimes + 1
+	self.playerThrow = false
+	self:InternalThrow(tgtPos, speed, ySpeed)
+end
+
+function ScoreBall:InternalThrow(tgtPos, speed, ySpeed) -- 朝着方向扔球
 	local srcPos = self.inst:GetPosition()
 	local angle = aipGetAngle(tgtPos, srcPos)
 	self.inst.Transform:SetRotation(angle)
@@ -99,8 +110,6 @@ function ScoreBall:Throw(tgtPos, speed, ySpeed) -- 朝着方向扔球
 
 	self.startTimes = 0
 	self.downTimes = 0
-
-	self.throwTimes = self.throwTimes + 1
 
 	self:Launch(speed, ySpeed)
 end
@@ -111,14 +120,16 @@ function ScoreBall:Kick(attacker, speed, ySpeed) -- 攻击球
 	local radius = angle / 180 * PI
 	local tgtPos = Vector3(srcPos.x + math.cos(radius), 0, srcPos.z + math.sin(radius))
 
-	self:Throw(tgtPos, speed, ySpeed)
+	self.playerThrow = true
+
+	self:InternalThrow(tgtPos, speed, ySpeed)
 end
 
 -- 若光可以跟着球跑
 function ScoreBall:CanFollow()
 	local x, y, z = self.ball.Transform:GetWorldPosition()
 	-- 球下落中 或者 飞起一段距离后
-	return (
+	return self.playerThrow and (
 		(self.startTimes == 1 and (self.downTimes == 1 or y > 7)) or -- 第一次飞起 7 高度或下落中
 		(self.startTimes == 2) -- 第二次飞起
 	)
@@ -144,6 +155,11 @@ function ScoreBall:OnUpdate(dt)
 
 	if prevWalkTime <= self.fullTime and self.fullTime < self.walkTime then
 		self.downTimes = self.downTimes + 1
+
+		-- 如果弹了三次就重置扔球时间
+		if self.downTimes >= 3 then
+			self:ResetThrowCount()
+		end
 	end
 
 	-- 退出判断
@@ -162,11 +178,6 @@ function ScoreBall:OnUpdate(dt)
 
 		if self.recordSpeed > .2 and self.yRecordSpeed >= 1 then
 			self:Launch(self.recordSpeed, self.yRecordSpeed, true)
-
-			-- 如果弹了两次就重置扔球时间
-			if self.downTimes >= 2 then
-				self:ResetThrowCount()
-			end
 		else
 			self:ResetAll()
 			self:ResetThrowCount() -- 不弹起则重置扔球时间

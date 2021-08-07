@@ -23,7 +23,7 @@ local LANG_MAP = {
         REQUIRE_PLAY = "Throw it to me~",
         BYE = "Bye~",
         THROW_BALL = "I got it！",
-        THROW_BALL_FAIL = "T_T",
+        THROW_BALL_FAIL = "2 times to fall",
         THROW_BALL_REWARD = "Nice play~",
         WAIT_NEXT = "Next challenage is in developing",
 	},
@@ -34,7 +34,7 @@ local LANG_MAP = {
         REQUIRE_PLAY = "把球打给我吧~",
         BYE = "要走了吗？",
         THROW_BALL = "嗷呜！",
-        THROW_BALL_FAIL = "哼，接不住了",
+        THROW_BALL_FAIL = "落地两次不能算分啦",
         THROW_BALL_REWARD = "和你玩的真开心，谢谢",
         WAIT_NEXT = "下一个挑战还在开发中",
 	},
@@ -148,14 +148,14 @@ end
 
 -- 判断是否要给奖励
 local function aipPlayEnd(inst, throwTimes)
-    local rewardTimes = dev_mode and 4 or 10
+    local rewardTimes = dev_mode and 2 or 4
 
     if throwTimes < rewardTimes then
         -- 得分太低
         say(inst, { STRINGS.AIP_MINI_DOUJIANG_THROW_BALL_FAIL })
     else
         -- 奖励物品 1 ~ 3 个葡萄
-        local cnt = 1 + math.random() * 3
+        local cnt = 2 + math.random() * 2
         for i = 1, cnt do
             inst.components.lootdropper:SpawnLootPrefab("aip_veggie_grape")
         end
@@ -203,8 +203,8 @@ local function fn()
     inst:AddComponent("locomotor")
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
     inst.components.locomotor:SetTriggersCreep(false)
-    inst.components.locomotor.walkspeed = 2
-    inst.components.locomotor.runspeed = 4
+    inst.components.locomotor.walkspeed = 1
+    inst.components.locomotor.runspeed = 4.5
     inst.components.locomotor.pathcaps = { allowocean = true }
 
     inst:SetStateGraph("SGaip_mini_dou")
