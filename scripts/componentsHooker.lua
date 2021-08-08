@@ -72,14 +72,17 @@ end)
 ---------------------- 被使用的技能 ----------------------
 local AIPC_BE_ACTION = env.AddAction("AIPC_BE_ACTION", LANG.USE, function(act)
 	local doer = act.doer
-	local target = act.target
+	local item = act.invobject	-- INVENTORY
+	local target = act.target	-- SCENE
+
+	local mergedTarget = target or item
 
 	if _G.TheNet:GetIsServer() then
 		-- server
-		triggerComponentAction(doer, target, nil, nil)
+		triggerComponentAction(doer, mergedTarget, nil, nil)
 	else
 		-- client
-		_G.aipRPC("aipComponentAction", target, nil, nil)
+		_G.aipRPC("aipComponentAction", mergedTarget, nil, nil)
 	end
 
 	return true
@@ -87,7 +90,7 @@ end)
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_BE_ACTION, "doshortaction"))
 AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_BE_ACTION, "doshortaction"))
 
--- 角色对某物使用 aipc_action_client
+-- 角色对场景上的某物使用 aipc_action_client
 env.AddComponentAction("SCENE", "aipc_action_client", function(inst, doer, actions, right)
 	if not inst or not right then
 		return
@@ -118,7 +121,12 @@ end)
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_READ_ACTION, "book"))
 AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_READ_ACTION, "book"))
 
+-- 判断使用 和 阅读，因为重复注册会被覆盖
 env.AddComponentAction("INVENTORY", "aipc_action_client", function(inst, doer, actions, right)
+	if inst.components.aipc_action_client:CanBeActOn(doer) then
+		table.insert(actions, _G.ACTIONS.AIPC_BE_ACTION)
+	end
+
 	if inst.components.aipc_action_client:CanBeRead(doer) then
 		table.insert(actions, _G.ACTIONS.AIPC_READ_ACTION)
 	end

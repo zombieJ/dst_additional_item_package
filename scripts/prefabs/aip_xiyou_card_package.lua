@@ -35,15 +35,13 @@ local function canBeActOn(inst, doer)
 	return true
 end
 
-local function onDoAction(inst)
-	local pt = inst:GetPosition()
-
+local function onDoAction(inst, doer)
 	local cnt = 1 + math.random() * 3
 	for i = 1, cnt do
-		inst.components.lootdropper:DropLoot(pt)
+		inst.components.lootdropper:DropLoot()
 	end
 
-	inst:Remove()
+	inst.components.stackable:Get():Remove()
 end
 
 ----------------------------------- 实体 -----------------------------------
@@ -71,7 +69,10 @@ function fn()
 	end
 
 	inst:AddComponent("lootdropper")
-	inst.components.lootdropper:SetLoot(charactersChance)
+	for name, chance in pairs(charactersChance) do
+		inst.components.lootdropper:AddRandomLoot(name, chance)
+	end
+	inst.components.lootdropper.numrandomloot = 1
 
 	inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM

@@ -10,10 +10,10 @@ local charactersList = {
 -- 抽奖概率
 local charactersChance = {}
 for i, name in ipairs(charactersList) do
-	charactersChance[name] = 1
+	charactersChance["aip_xiyou_card_"..name] = 1
 end
-charactersChance.neza = 0.1
-charactersChance.yangjian = 0.1
+charactersChance.aip_xiyou_card_neza = 0.1
+charactersChance.aip_xiyou_card_yangjian = 0.1
 
 return {
 	charactersList = charactersList,
