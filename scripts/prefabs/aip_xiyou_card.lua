@@ -221,14 +221,6 @@ function fn()
 end
 
 --------------------------------- 角色卡片 ---------------------------------
--- 给卡片计数
-local function onReplaced(inst, replacement)
-	local cnt = replacement.aipCats[inst.aipName] or 0
-	replacement.aipCats[inst.aipName] = cnt + 1
-
-	refreshStatus(replacement)
-end
-
 local function makeCardFn(name)
 	return function()
 		local inst = fn()
@@ -237,13 +229,13 @@ local function makeCardFn(name)
 			return inst
 		end
 
-		inst.aipName = name
+		inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_xiyou_card_single.xml"
+		inst.components.inventoryitem.imagename = "aip_xiyou_card_single"
 
-		inst:AddComponent("perishable")
-		inst.components.perishable:SetPerishTime(0)
-		inst.components.perishable:StartPerishing()
-		inst.components.perishable.onreplacedfn = onReplaced
-		inst.components.perishable.onperishreplacement = "aip_xiyou_card"
+		inst:DoTaskInTime(0, function()
+			local replacement = aipReplacePrefab(inst, "aip_xiyou_card")
+			replacement.aipCats[name] = 1
+		end)
 
 		return inst
 	end
