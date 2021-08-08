@@ -124,23 +124,33 @@ end
 
 -- 是否可以合并
 local function canActOn(inst, doer, target)
-	return target.prefab == "aip_xiyou_card"
+	return target:HasTag("aip_xiyou_card")
 end
 
 -- 合并数据
-local function onDoTargetAction(inst, doer, target)
-	if not TheWorld.ismastersim then
-		return inst
-	end
-
-	for name, cnt in pairs(inst.aipCats or {}) do
+local function mergeCats(target, catData)
+	for name, cnt in pairs(catData or {}) do
 		local tgtCnt = target.aipCats[name] or 0
 		target.aipCats[name] = cnt + tgtCnt
 	end
 
 	refreshStatus(target)
+end
 
+local function onDoTargetAction(inst, doer, target)
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
+	local data1 = inst.aipCats
+	local data2 = target.aipCats
+
+	local replacement = aipReplacePrefab(target, "aip_xiyou_card")
+	mergeCats(replacement, data1)
+	mergeCats(replacement, data2)
 	inst:Remove()
+
+	refreshStatus(replacement)
 end
 
 
@@ -156,7 +166,7 @@ local function onLoad(inst, data)
 end
 
 ----------------------------------- 实体 -----------------------------------
-function fn()
+local function fn()
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()
@@ -174,6 +184,8 @@ function fn()
 
 	-- 游戏里这么做，不知道为什么
 	inst:AddTag("_named")
+
+	inst:AddTag("aip_xiyou_card")
 
 	inst:AddComponent("aipc_action_client")
 	inst.components.aipc_action_client.canActOn = canActOn
@@ -215,23 +227,22 @@ end
 
 --------------------------------- 角色卡片 ---------------------------------
 local function makeCardFn(name)
-	return function()
+	local function tmpFn()
 		local inst = fn()
 
 		if not TheWorld.ismastersim then
 			return inst
 		end
 
-		inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_xiyou_card_single.xml"
-		inst.components.inventoryitem.imagename = "aip_xiyou_card_single"
+		inst:AddComponent("stackable")
+		inst.components.stackable.maxsize = TUNING.STACK_SIZE_TINYITEM
 
-		inst:DoTaskInTime(0, function()
-			local replacement = aipReplacePrefab(inst, "aip_xiyou_card")
-			replacement.aipCats[name] = 1
-		end)
+		inst.aipCats[name] = 1
 
 		return inst
 	end
+
+	return tmpFn
 end
 
 ----------------------------------- 组装 -----------------------------------

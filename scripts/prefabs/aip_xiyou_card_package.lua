@@ -36,7 +36,7 @@ local function canBeActOn(inst, doer)
 end
 
 local function onDoAction(inst, doer)
-	local cnt = 1 + math.random() * 3
+	local cnt = 2 + math.random() * 2
 	for i = 1, cnt do
 		inst.components.lootdropper:DropLoot()
 	end
