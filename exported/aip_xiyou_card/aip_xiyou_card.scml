@@ -4,6 +4,11 @@
         <file id="0" name="card/single.png" width="200" height="200" pivot_x="0" pivot_y="1"/>
         <file id="1" name="card/multiple.png" width="200" height="200" pivot_x="0" pivot_y="1"/>
     </folder>
+    <folder id="1" name="book">
+        <file id="0" name="book/xiyou_book.png" width="418" height="278" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="book/xiyou_book_full.png" width="418" height="278" pivot_x="0" pivot_y="1"/>
+        <file id="2" name="book/effect.png" width="30" height="60" pivot_x="0" pivot_y="1"/>
+    </folder>
     <entity id="0" name="aip_xiyou_card">
         <animation id="0" name="single" length="1000">
             <mainline>
@@ -26,6 +31,71 @@
             <timeline id="0" name="single">
                 <key id="0" spin="0">
                     <object folder="0" file="1" x="0.001658" pivot_x="0.498342" pivot_y="0.5" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="book" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="xiyou_book" folder="1" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.5" abs_scale_y="0.5" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="xiyou_book">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.5" scale_y="0.5"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="3" name="book_charge" length="1800">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="xiyou_book" folder="1" file="1" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.5" abs_scale_y="0.5" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="effect" folder="1" file="2" abs_x="68.386355" abs_y="-29.414924" abs_pivot_x="0.504449" abs_pivot_y="0.891935" abs_angle="0" abs_scale_x="2.281707" abs_scale_y="0.157659" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="595">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+                <key id="2" time="602">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="2" z_index="1"/>
+                </key>
+                <key id="3" time="1195">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="3" z_index="1"/>
+                </key>
+                <key id="4" time="1201">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="4" z_index="1"/>
+                </key>
+                <key id="5" time="1799">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="5" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="xiyou_book">
+                <key id="0" spin="0">
+                    <object folder="1" file="1" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.5" scale_y="0.5"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="effect">
+                <key id="0" spin="0">
+                    <object folder="1" file="2" x="68.386355" y="-29.414924" pivot_x="0.504449" pivot_y="0.891935" angle="0" scale_x="2.281707" scale_y="0.157659"/>
+                </key>
+                <key id="1" time="595" spin="0">
+                    <object folder="1" file="2" x="68.386355" y="76.585076" pivot_x="0.504449" pivot_y="0.891935" angle="0" scale_x="0.205991" scale_y="1.066711"/>
+                </key>
+                <key id="2" time="602" spin="0">
+                    <object folder="1" file="2" x="-52.3033" y="5.743993" pivot_x="0.504449" pivot_y="0.891935" angle="0" scale_x="2.225607" scale_y="0.07442"/>
+                </key>
+                <key id="3" time="1195" spin="0">
+                    <object folder="1" file="2" x="-52.3033" y="125.743993" pivot_x="0.504449" pivot_y="0.891935" angle="0" scale_x="0.149891" scale_y="1.191583"/>
+                </key>
+                <key id="4" time="1201" spin="0">
+                    <object folder="1" file="2" x="18.788654" y="41.606107" pivot_x="0.504449" pivot_y="0.891935" angle="0" scale_x="2.70433" scale_y="0.099956"/>
+                </key>
+                <key id="5" time="1799" spin="0">
+                    <object folder="1" file="2" x="18.788654" y="142.813003" pivot_x="0.504449" pivot_y="0.891935" angle="0" scale_x="0.123711" scale_y="1.233079"/>
                 </key>
             </timeline>
         </animation>

@@ -8,6 +8,7 @@ local Action = Class(function(self, inst)
 	self.canActOnPoint = nil
 	self.canActOnTarget = nil
 	self.canBeActOn = nil
+	self.canBeRead = nil
 
 	-- 是否是带网格纹理的
 	self.gridplacer = false
@@ -23,6 +24,13 @@ end
 function Action:CanBeActOn(doer)
 	if self.canBeActOn then
 		return self.canBeActOn(self.inst, doer)
+	end
+	return false
+end
+
+function Action:CanBeRead(doer)
+	if self.canBeRead then
+		return self.canBeRead(self.inst, doer)
 	end
 	return false
 end

@@ -26,11 +26,13 @@ local LANG_MAP = {
 		GIVE = "Give",
 		USE = "Use",
 		CAST = "Cast",
+		READ = "Read",
 	},
 	chinese = {
 		GIVE = "给予",
 		USE = "使用",
 		CAST = "释放",
+		READ = "阅读",
 	},
 }
 local LANG = LANG_MAP[language] or LANG_MAP.english
@@ -96,6 +98,31 @@ env.AddComponentAction("SCENE", "aipc_action_client", function(inst, doer, actio
 	end
 end)
 
+---------------------- 类读书的技能 ----------------------
+local AIPC_READ_ACTION = env.AddAction("AIPC_READ_ACTION", LANG.READ, function(act)
+	local doer = act.doer
+	local item = act.invobject
+	local target = act.target
+
+	if _G.TheNet:GetIsServer() then
+		-- server
+		triggerComponentAction(doer, item, target, nil)
+	else
+		-- client
+		_G.aipRPC("aipComponentAction", item, target, nil)
+	end
+
+	return true
+end)
+
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_READ_ACTION, "book"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_READ_ACTION, "book"))
+
+env.AddComponentAction("INVENTORY", "aipc_action_client", function(inst, doer, actions, right)
+	if inst.components.aipc_action_client:CanBeRead(doer) then
+		table.insert(actions, _G.ACTIONS.AIPC_READ_ACTION)
+	end
+end)
 
 -------------------- 施法行为 https://www.zybuluo.com/longfei/note/600841
 local function getActionableItem(doer)

@@ -1,17 +1,4 @@
-local additional_magic = aipGetModConfig("additional_magic")
-if additional_magic ~= "open" then
-	return nil
-end
-
-local weapon_damage = aipGetModConfig("weapon_damage")
 local language = aipGetModConfig("language")
-
--- 默认参数
-local DIGEST_SPEED = {
-	["less"] = 10,
-	["normal"] = 60,
-	["large"] = 120,
-}
 
 -- 资源
 local assets = {
@@ -90,7 +77,6 @@ end
 
 -- 获取描述
 local function getDesc(inst, viewer)
-
 	local desc = STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_XIYOU_CARD
 
 	if inst.aipCats[viewer.prefab] ~= nil and inst.aipCats[viewer.prefab] > 0 then
@@ -104,6 +90,14 @@ end
 
 -- 更新状态
 local function refreshStatus(inst)
+	local total = getTotal(inst)
+
+	-- 替换卡片
+	if total >= #charactersList - 1 then
+		aipReplacePrefab(inst, "aip_xiyou_cards")
+		return
+	end
+
 	-- 更新名称
 	local first = true
 	local str = ""
@@ -124,7 +118,7 @@ local function refreshStatus(inst)
 	)
 
 	-- 更新贴图
-	if getTotal(inst) > 1 then
+	if total > 1 then
 		inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_xiyou_card_multiple.xml"
 		inst.components.inventoryitem:ChangeImageName("aip_xiyou_card_multiple")
 		inst.AnimState:PlayAnimation("multiple")
@@ -177,6 +171,7 @@ function fn()
 	inst.entity:AddNetwork()
 	
 	MakeInventoryPhysics(inst)
+	MakeInventoryFloatable(inst, "med", nil, 0.75)
 	
 	inst.AnimState:SetBank("aip_xiyou_card")
 	inst.AnimState:SetBuild("aip_xiyou_card")
