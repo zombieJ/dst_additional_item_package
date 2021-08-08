@@ -51,8 +51,8 @@ local Flyer = Class(function(self, inst)
 	self.target = nil
 	self.targetPos = nil
 
-	self.speed = dev_mode and 5 or 25
-	self.maxSpeed = dev_mode and 20 or 100
+	self.speed = dev_mode and 10 or 25
+	self.maxSpeed = dev_mode and 30 or 100
 	self.speedUpRange = 300
 	self.oriDistance = 0
 	self.lastDistance = 0

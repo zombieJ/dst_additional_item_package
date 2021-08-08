@@ -357,6 +357,7 @@ local food_recipes = {
 		perishtime = PER * 30,
 		cooktime = CO * 15,
 		tags = {"honeyed"},
+		goldvalue = 0, -- 加一个数值，让其可以给若光交易
 	},
 	aip_food_cube_sugar = {
 		test = function(cooker, names, tags)
@@ -461,7 +462,7 @@ for name,data in pairs(food_recipes) do
 			inst.wet_prefix = data.wet_prefix
 
 			-- 是否可以交易
-			if data.goldvalue then
+			if data.goldvalue ~= nil then
 				inst:AddComponent("tradable")
 				inst.components.tradable.goldvalue = data.goldvalue
 			end
