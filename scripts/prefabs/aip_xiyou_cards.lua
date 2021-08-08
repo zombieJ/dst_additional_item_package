@@ -1,5 +1,8 @@
 local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
+local characterData = require("prefabs/aip_xiyou_card_data")
+local charactersList = characterData.charactersList
+
 local weapon_damage = aipGetModConfig("weapon_damage")
 local language = aipGetModConfig("language")
 
@@ -48,16 +51,6 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_XIYOU_CARDS_MYTH = LANG.DESC_MYTH
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_XIYOU_CARDS_SPEACH = LANG.SPEACH
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_XIYOU_CARDS_FULL = LANG.FULL
 
------------------------------------ 列表 -----------------------------------
-local characters = {
-	monkey_king = 1,
-	neza = 1,
-	white_bone = 1,
-	pigsy = 1,
-	yangjian = 1,
-	myth_yutu = 1,
-}
-
 ----------------------------------- 方法 -----------------------------------
 -- 更新充能状态
 local function refreshStatus(inst)
@@ -75,7 +68,7 @@ end
 
 -- 获取描述
 local function getDesc(inst, viewer)
-	if characters[viewer.prefab] then
+	if aipInTable(charactersList, viewer.prefab) then
 		return STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_XIYOU_CARDS_MYTH
 	end
 

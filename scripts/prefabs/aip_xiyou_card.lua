@@ -1,5 +1,9 @@
 local language = aipGetModConfig("language")
 
+local characterData = require("prefabs/aip_xiyou_card_data")
+local charactersList = characterData.charactersList
+local characterCount = characterData.characterCount
+
 -- 资源
 local assets = {
 	Asset("ATLAS", "images/inventoryimages/aip_xiyou_card_single.xml"),
@@ -51,17 +55,6 @@ STRINGS.NAMES.AIP_XIYOU_CARD = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_XIYOU_CARD = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_XIYOU_CARD_LEFT = LANG.LEFT
 
------------------------------------ 列表 -----------------------------------
-local charactersList = {
-	"wickerbottom",
-	"monkey_king",
-	"neza",
-	"white_bone",
-	"pigsy",
-	"yangjian",
-	"myth_yutu",
-}
-
 ----------------------------------- 方法 -----------------------------------
 -- 获取总数
 local function getTotal(inst)
@@ -84,7 +77,7 @@ local function getDesc(inst, viewer)
 	end
 	return desc..string.format(
 		STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_XIYOU_CARD_LEFT,
-		#charactersList - getTotal(inst) - 1
+		characterCount - getTotal(inst)
 	)
 end
 
@@ -93,7 +86,7 @@ local function refreshStatus(inst)
 	local total = getTotal(inst)
 
 	-- 替换卡片
-	if total >= #charactersList - 1 then
+	if total >= characterCount then
 		aipReplacePrefab(inst, "aip_xiyou_cards")
 		return
 	end

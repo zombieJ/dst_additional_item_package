@@ -164,8 +164,8 @@ local function aipPlayEnd(inst, throwTimes)
         -- 得分太低
         say(inst, { STRINGS.AIP_MINI_DOUJIANG_THROW_BALL_FAIL })
     else
-        -- 奖励物品 1 ~ 3 个葡萄
-        local cnt = 2 + math.random() * 2
+        -- 奖励物品 1 ~ 2 个葡萄
+        local cnt = 1 + math.random() * 2
         for i = 1, cnt do
             inst.components.lootdropper:SpawnLootPrefab("aip_veggie_grape")
         end
@@ -189,7 +189,7 @@ end
 local function OnGetItemFromPlayer(inst, giver, item)
     inst.sg:GoToState("throw")
     inst:DoTaskInTime(0.3, function()
-        inst.components.lootdropper:SpawnLootPrefab("goldnugget")
+        inst.components.lootdropper:SpawnLootPrefab("aip_xiyou_card_package")
         say(inst, { STRINGS.AIP_MINI_DOUJIANG_CARDS }, true)
     end)
 end

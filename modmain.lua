@@ -98,6 +98,7 @@ PrefabFiles = {
 	"aip_shadow_wrapper",
 	"aip_xiyou_card",
 	"aip_xiyou_cards",
+	"aip_xiyou_card_package",
 }
 
 local language = GetModConfigData("language")

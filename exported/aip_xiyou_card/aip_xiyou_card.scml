@@ -3,6 +3,7 @@
     <folder id="0" name="card">
         <file id="0" name="card/single.png" width="200" height="200" pivot_x="0" pivot_y="1"/>
         <file id="1" name="card/multiple.png" width="200" height="200" pivot_x="0" pivot_y="1"/>
+        <file id="2" name="card/package.png" width="200" height="200" pivot_x="0" pivot_y="1"/>
     </folder>
     <folder id="1" name="book">
         <file id="0" name="book/xiyou_book.png" width="418" height="278" pivot_x="0" pivot_y="1"/>
@@ -34,7 +35,19 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="2" name="book" length="1000">
+        <animation id="2" name="package" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="single" folder="0" file="2" abs_x="0.001658" abs_y="0" abs_pivot_x="0.498342" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="single">
+                <key id="0" spin="0">
+                    <object folder="0" file="2" x="0.001658" pivot_x="0.498342" pivot_y="0.5" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="3" name="book" length="1000">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="xiyou_book" folder="1" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.5" abs_scale_y="0.5" abs_a="1" timeline="0" key="0" z_index="0"/>
@@ -46,7 +59,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="3" name="book_charge" length="1800">
+        <animation id="4" name="book_charge" length="1800">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="xiyou_book" folder="1" file="1" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.5" abs_scale_y="0.5" abs_a="1" timeline="0" key="0" z_index="0"/>
