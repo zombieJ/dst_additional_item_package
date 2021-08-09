@@ -451,7 +451,7 @@ local LANG_MAP = {
 			["DESC"] = "这是鸡蛋面包",
 		},
 		["AIP_FOOD_GRAPE_SUGER"] = {
-			["NAME"] = "葡萄棍",
+			["NAME"] = "葡果棒",
 			["DESC"] = "这可会蛀牙",
 		},
 		["AIP_FOOD_CUBE_SUGAR"] = {

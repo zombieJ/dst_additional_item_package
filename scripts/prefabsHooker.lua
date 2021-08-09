@@ -121,6 +121,46 @@ AddPrefabPostInit("goldnugget", function(inst)
 	inst.components.aipc_action.onDoTargetAction = onDoGoldTargetAction
 end)
 
+------------------------------------------ 猪人 ------------------------------------------
+AddPrefabPostInit("pigman", function(inst)
+	-- 猪人会概率掉落西游人物卡
+	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
+		inst.components.lootdropper:AddChanceLoot("aip_xiyou_card_pigsy", dev_mode and 1 or 0.01)
+	end
+end)
+
+------------------------------------------ 兔人 ------------------------------------------
+AddPrefabPostInit("bunnyman", function(inst)
+	-- 兔人会概率掉落西游人物卡
+	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
+		inst.components.lootdropper:AddChanceLoot("aip_xiyou_card_myth_yutu", dev_mode and 1 or 0.01)
+	end
+end)
+
+------------------------------------------ 兔子 ------------------------------------------
+AddPrefabPostInit("rabbit", function(inst)
+	-- 兔子会极低概率掉落西游人物卡
+	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
+		inst.components.lootdropper:AddChanceLoot("aip_xiyou_card_myth_yutu", dev_mode and 1 or 0.001)
+	end
+end)
+
+------------------------------------------ 猴子 ------------------------------------------
+AddPrefabPostInit("monkey", function(inst)
+	-- 猴子会概率掉落西游人物卡
+	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
+		inst.components.lootdropper:AddChanceLoot("aip_xiyou_card_monkey_king", dev_mode and 1 or 0.01)
+	end
+end)
+
+------------------------------------------ 骨骸 ------------------------------------------
+AddPrefabPostInit("stalker", function(inst)
+	-- 骨骸会概率掉落西游人物卡
+	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
+		inst.components.lootdropper:AddChanceLoot("aip_xiyou_card_white_bone", dev_mode and 1 or 0.01)
+	end
+end)
+
 ------------------------------------------ 食物 ------------------------------------------
 AddPrefabPostInit("grass", function(inst)
 	if not _G.TheWorld.ismastersim then

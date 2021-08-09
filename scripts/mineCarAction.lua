@@ -1,3 +1,5 @@
+local _G = GLOBAL
+
 ---------------------------------------- 驾驶 ----------------------------------------
 local AIP_DRIVE = env.AddAction("AIP_DRIVE", "Drive", function(act)
 	-- Client Only Code

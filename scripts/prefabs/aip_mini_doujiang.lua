@@ -21,22 +21,26 @@ local LANG_MAP = {
 		DESC = "It's cute!",
         NEED_RECIPE = "Are you ingenuity?",
         REQUIRE_PLAY = "Throw it to me~",
-        BYE = "Bye~",
+        BYE = "Want to eat Grape Sugar~",
         THROW_BALL = "I got it！",
         THROW_BALL_FAIL = "2 times to fall",
         THROW_BALL_REWARD = "Nice play~",
         WAIT_NEXT = "Next challenage is in developing",
+        CARDS = "Reciprocity~",
+        WRONG_GIFT = "It's meaningless",
 	},
 	chinese = {
 		NAME = "若光",
 		DESC = "可爱的小家伙",
         NEED_RECIPE = "你会做豆豆球吗？",
         REQUIRE_PLAY = "把球打给我吧~",
-        BYE = "要走了吗？",
+        BYE = "想吃葡果棒~",
         THROW_BALL = "嗷呜！",
         THROW_BALL_FAIL = "落地两次不能算分啦",
         THROW_BALL_REWARD = "和你玩的真开心，谢谢",
         WAIT_NEXT = "下一个挑战还在开发中",
+        CARDS = "礼尚往来~",
+        WRONG_GIFT = "我不需要它！",
 	},
 }
 
@@ -52,6 +56,8 @@ STRINGS.AIP_MINI_DOUJIANG_THROW_BALL = LANG.THROW_BALL
 STRINGS.AIP_MINI_DOUJIANG_THROW_BALL_FAIL = LANG.THROW_BALL_FAIL
 STRINGS.AIP_MINI_DOUJIANG_THROW_BALL_REWARD = LANG.THROW_BALL_REWARD
 STRINGS.AIP_MINI_DOUJIANG_WAIT_NEXT = LANG.WAIT_NEXT
+STRINGS.AIP_MINI_DOUJIANG_CARDS = LANG.CARDS
+STRINGS.AIP_MINI_DOUJIANG_WRONG_GIFT = LANG.WRONG_GIFT
 
 ------------------------------- 方法 -------------------------------
 -- 按队列说话
@@ -126,6 +132,10 @@ end
 
 -- 击球
 local function aipThrowBallBack(inst, ball)
+    if ball == nil or not ball:IsValid() then
+        return
+    end
+
     local players = aipFindNearPlayers(inst, 20)
     local tgtEnt = players[1] or inst
     local tgtPos = aipGetSpawnPoint(tgtEnt:GetPosition(), 3)
@@ -154,8 +164,8 @@ local function aipPlayEnd(inst, throwTimes)
         -- 得分太低
         say(inst, { STRINGS.AIP_MINI_DOUJIANG_THROW_BALL_FAIL })
     else
-        -- 奖励物品 1 ~ 3 个葡萄
-        local cnt = 2 + math.random() * 2
+        -- 奖励物品 1 ~ 2 个葡萄
+        local cnt = 1 + math.random() * 2
         for i = 1, cnt do
             inst.components.lootdropper:SpawnLootPrefab("aip_veggie_grape")
         end
@@ -165,6 +175,27 @@ local function aipPlayEnd(inst, throwTimes)
         inst.components.timer:StopTimer("aip_mini_dou_no_talk")
         inst.components.timer:StartTimer("aip_mini_dou_no_talk", 10)
     end
+end
+
+-- >>>>>>>>>>>>>>>>> 交易
+local function AbleToAcceptTest(inst, item, giver)
+	return true
+end
+
+local function AcceptTest(inst, item, giver)
+    return item.prefab == "aip_food_grape_suger"
+end
+
+local function OnGetItemFromPlayer(inst, giver, item)
+    inst.sg:GoToState("throw")
+    inst:DoTaskInTime(0.3, function()
+        inst.components.lootdropper:SpawnLootPrefab("aip_xiyou_card_package")
+        say(inst, { STRINGS.AIP_MINI_DOUJIANG_CARDS }, true)
+    end)
+end
+
+local function OnRefuseItem(inst, giver, item)
+    say(inst, { STRINGS.AIP_MINI_DOUJIANG_WRONG_GIFT })
 end
 
 ------------------------------- 实体 -------------------------------
@@ -222,6 +253,13 @@ local function fn()
     inst.components.playerprox:SetDist(5, 10)
     inst.components.playerprox:SetOnPlayerNear(onNear)
     inst.components.playerprox:SetOnPlayerFar(onFar)
+
+    -- 接受葡果棒
+    inst:AddComponent("trader")
+    inst.components.trader:SetAbleToAcceptTest(AbleToAcceptTest)
+    inst.components.trader:SetAcceptTest(AcceptTest)
+    inst.components.trader.onaccept = OnGetItemFromPlayer
+    inst.components.trader.onrefuse = OnRefuseItem
 
 	-- 闪烁特效
 	inst.AnimState:SetErosionParams(0, -0.125, -1.0)
