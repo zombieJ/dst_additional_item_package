@@ -29,14 +29,14 @@ local prefabs = {
 -- 文字描述
 local LANG_MAP = {
 	english = {
-		NAME = "Character Cards",
+		NAME = "Myth Cards",
 		DESC = "Exquisite card",
 		SPEACH = "Shadow go away!",
 		FULL = "It's full!",
 	},
 	chinese = {
-		NAME = "西游人物卡组",
-		DESC = "装订成册的卡组",
+		NAME = "神话书说卡组",
+		DESC = "装订成册的精致卡组",
 		DESC_MYTH = "这样就把我们都集齐啦",
 		SPEACH = "邪魅退散!",
 		FULL = "它还没消化完",
