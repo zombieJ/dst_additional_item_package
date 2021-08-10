@@ -12,7 +12,13 @@ const IMG_SIZE = 64;
 const MAX_WIDTH_COUNT = 9;
 
 const IMAGES = [
-	['aip_blood_package', 'aip_plaster', 'aip_mine_car', 'aip_dou_tooth'],
+	[
+		'aip_blood_package', 'aip_plaster', 'aip_mine_car', 'aip_dou_tooth',
+	],
+
+	[
+		'aip_xiyou_card_single', 'aip_xiyou_card_multiple', 'aip_xiyou_card_package', 'aip_xiyou_cards',
+	],
 
 	['incinerator', 'aip_orbit_item', 'aip_nectar_maker', 'aip_woodener', 'aip_igloo'],
 
@@ -101,6 +107,8 @@ function getImagePath(name) {
 			imageLines.push(fitLine);
 		}
 	});
+
+	console.log('Image Lines:');
 	console.log(imageLines);
 
 	// Generate images
@@ -113,10 +121,9 @@ function getImagePath(name) {
 		for (let x = 0; x < images.length; x += 1) {
 			const imagePath = getImagePath(images[x]);
 			const img = await jimp.read(imagePath);
-			img.scaleToFit(
+			img.contain(
 				IMG_SIZE,
 				IMG_SIZE,
-				jimp.HORIZONTAL_ALIGN_CENTER | jimp.VERTICAL_ALIGN_MIDDLE
 			);
 
 			descImg.composite(img, x * IMG_SIZE, y * IMG_SIZE);
