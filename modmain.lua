@@ -78,6 +78,7 @@ PrefabFiles = {
 	"aip_fly_totem",
 	"aip_score_ball",
 	"aip_mini_doujiang",
+	"aip_mud_crab",
 
 	-- Orbit
 	"aip_orbit",
