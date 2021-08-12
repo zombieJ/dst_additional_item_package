@@ -40,6 +40,10 @@ local function onFar(inst, player)
 	end
 end
 
+local function onDrop(inst)
+	inst.sg:GoToState("anger")
+end
+
 ------------------------------- 实体 -------------------------------
 local function fn()
 	local inst = CreateEntity()
@@ -67,8 +71,15 @@ local function fn()
 		return inst
 	end
 
+	inst:AddComponent("inventoryitem")
+	inst.components.inventoryitem.nobounce = true
+	inst.components.inventoryitem.canbepickedup = false
+	inst.components.inventoryitem.canbepickedupalive = true
+	inst.components.inventoryitem.imagename = "poop"
+	inst.components.inventoryitem:SetOnDroppedFn(onDrop)
+
 	inst:AddComponent("playerprox")
-	inst.components.playerprox:SetDist(10, 12)
+	inst.components.playerprox:SetDist(5, 10)
 	inst.components.playerprox:SetOnPlayerNear(onNear)
     inst.components.playerprox:SetOnPlayerFar(onFar)
 

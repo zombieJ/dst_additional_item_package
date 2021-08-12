@@ -20,6 +20,27 @@ local states = {
     },
 
     State{
+        name = "anger",
+        tags = { "busy" },
+
+        onenter = function(inst)
+            if inst.components.inventoryitem then
+                inst.components.inventoryitem.canbepickedup = true
+            end
+
+            inst.Physics:Stop()
+            inst.AnimState:PushAnimation("anger_loop", true)
+            inst.sg:SetTimeout(GetRandomWithVariance(4, 1) )
+        end,
+        onexit = function(inst)
+            if inst.components.inventoryitem then
+                inst.components.inventoryitem.canbepickedup = false
+            end
+        end,
+        ontimeout = function(inst) inst.sg:GoToState("idle") end,
+    },
+
+    State{
         name = "idle",
         tags = { "idle", "canrotate" },
 

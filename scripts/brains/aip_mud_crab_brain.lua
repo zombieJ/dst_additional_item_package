@@ -1,8 +1,8 @@
 require "behaviours/wander"
 require "behaviours/runaway"
 
-local SEE_PLAYER_DIST = 6
-local STOP_RUN_DIST = 10
+local SEE_PLAYER_DIST = 4
+local STOP_RUN_DIST = 8
 local MAX_WANDER_DIST = 80
 
 local MudCrabBrain = Class(Brain, function(self, inst)
