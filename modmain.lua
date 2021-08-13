@@ -79,6 +79,7 @@ PrefabFiles = {
 	"aip_score_ball",
 	"aip_mini_doujiang",
 	"aip_mud_crab",
+	"aip_cookiecutter_king",
 
 	-- Orbit
 	"aip_orbit",

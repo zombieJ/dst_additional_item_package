@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="body">
+        <file id="0" name="body/bac.png" width="1000" height="1000" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="body/face.png" width="944" height="802" pivot_x="0" pivot_y="1"/>
+        <file id="2" name="body/neck_up.png" width="752" height="295" pivot_x="0" pivot_y="1"/>
+        <file id="3" name="body/neck_down.png" width="829" height="471" pivot_x="0" pivot_y="1"/>
+        <file id="4" name="body/mouse.png" width="739" height="188" pivot_x="0" pivot_y="1"/>
+        <file id="5" name="body/eye_right.png" width="383" height="274" pivot_x="0" pivot_y="1"/>
+        <file id="6" name="body/eye_left.png" width="335" height="276" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_cookiecutter_king">
+        <animation id="0" name="idle" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="neck_down" folder="0" file="3" abs_x="4.99739" abs_y="-210.03637" abs_pivot_x="0.50261" abs_pivot_y="0.53637" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="0"/>
+                    <object_ref id="1" name="neck_up" folder="0" file="2" abs_x="4.999115" abs_y="-111.990428" abs_pivot_x="0.500885" abs_pivot_y="0.823761" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="2" name="face" folder="0" file="1" abs_x="0.001092" abs_y="91.756143" abs_pivot_x="0.498908" abs_pivot_y="0.410524" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="2"/>
+                    <object_ref id="3" name="mouse" folder="0" file="4" abs_x="16.670495" abs_y="-3.319224" abs_pivot_x="0.496171" abs_pivot_y="0.485891" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3"/>
+                    <object_ref id="4" name="eye_right" folder="0" file="5" abs_x="228.34592" abs_y="243.447273" abs_pivot_x="0.487413" abs_pivot_y="0.386061" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="0" z_index="4"/>
+                    <object_ref id="5" name="eye_left" folder="0" file="6" abs_x="-195.017361" abs_y="263.334537" abs_pivot_x="0.517361" abs_pivot_y="0.498797" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="0" z_index="5"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="face">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="0.001092" y="91.756143" pivot_x="0.498908" pivot_y="0.410524" a="1"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="neck_up">
+                <key id="0" spin="0">
+                    <object folder="0" file="2" x="4.999115" y="-111.990428" pivot_x="0.500885" pivot_y="0.823761"/>
+                </key>
+            </timeline>
+            <timeline id="2" name="neck_down">
+                <key id="0" spin="0">
+                    <object folder="0" file="3" x="4.99739" y="-210.03637" pivot_x="0.50261" pivot_y="0.53637"/>
+                </key>
+            </timeline>
+            <timeline id="3" name="mouse">
+                <key id="0" spin="0">
+                    <object folder="0" file="4" x="16.670495" y="-3.319224" pivot_x="0.496171" pivot_y="0.485891"/>
+                </key>
+            </timeline>
+            <timeline id="4" name="eye_right">
+                <key id="0" spin="0">
+                    <object folder="0" file="5" x="228.34592" y="243.447273" pivot_x="0.487413" pivot_y="0.386061"/>
+                </key>
+            </timeline>
+            <timeline id="5" name="eye_left">
+                <key id="0" spin="0">
+                    <object folder="0" file="6" x="-195.017361" y="263.334537" pivot_x="0.517361" pivot_y="0.498797"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

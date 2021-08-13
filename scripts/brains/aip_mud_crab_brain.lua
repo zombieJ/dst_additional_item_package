@@ -14,7 +14,10 @@ function MudCrabBrain:OnStart()
     {
         RunAway(
 			self.inst,
-			"scarytoprey",
+			{	-- 恐惧类型，不怕玉兔
+				tags = { "scarytoprey" },
+				notags = { "NOCLICK", "myth_yutu" },
+			},
 			SEE_PLAYER_DIST,
 			STOP_RUN_DIST,
 			nil,
