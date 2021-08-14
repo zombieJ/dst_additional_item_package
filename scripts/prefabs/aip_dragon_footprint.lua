@@ -10,7 +10,7 @@ local prefabs = {
 	"aip_shadow_wrapper"
 }
 
-local createGroupVest = require("utils/aip_vest_util").createGroupVest
+local createGroudVest = require("utils/aip_vest_util").createGroudVest
 
 local brain = require "brains/aip_dragon_footprint_brain"
 

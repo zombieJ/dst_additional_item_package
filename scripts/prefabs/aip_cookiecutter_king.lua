@@ -5,10 +5,12 @@ local LANG_MAP = {
 	english = {
 		NAME = "Cookie Breaker",
 		DESC = "How long has it grown?",
+		TOTEM_NAME = "Exchanger",
 	},
 	chinese = {
 		NAME = "饼干碎裂机",
 		DESC = "到底长了多久？",
+		TOTEM_NAME = "交易切割",
 	},
 }
 
@@ -25,7 +27,12 @@ local assets = {
 local prefabs = {
     "boat_item_collision",
 	"boat_player_collision",
+	"aip_cookiecutter_king_lip",
 }
+
+--------------------------------------------------------------------------------
+--                                    主体                                    --
+--------------------------------------------------------------------------------
 
 -------------------------- 物理 --------------------------
 local function RemoveConstrainedPhysicsObj(physics_obj)
@@ -47,6 +54,21 @@ local function AddConstrainedPhysicsObj(boat, physics_obj)
 end
 
 -------------------------- 事件 --------------------------
+local function createTotem(inst)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local ents = TheSim:FindEntities(x, 0, z, 10, {"aip_fly_totem"})
+
+	for i, totem in ipairs(ents) do
+		if totem.markType == "COOKIE" then
+			return
+		end
+	end
+
+	-- 创建一个飞行图腾
+	local flyTotem = aipSpawnPrefab(inst, "aip_fly_totem")
+	flyTotem.components.writeable:SetText(LANG.TOTEM_NAME)
+    flyTotem.markType = "COOKIE"
+end
 
 -------------------------- 实体 --------------------------
 local function fn()
@@ -108,7 +130,7 @@ local function fn()
 	-- 船体？
 	inst:AddComponent("hull")
     inst.components.hull:SetRadius(radius)
-    -- inst.components.hull:SetBoatLip(SpawnPrefab('boatlip')) -- 让船看起来立体的船沿下半部分
+    inst.components.hull:SetBoatLip(SpawnPrefab('aip_cookiecutter_king_lip')) -- 让船看起来立体的船沿下半部分
     local playercollision = SpawnPrefab("boat_player_collision") -- 船手碰撞？似乎是让玩家站上面？
 	inst.components.hull:AttachEntityToBoat(playercollision, 0, 0)
     playercollision.collisionboat = inst
@@ -116,7 +138,47 @@ local function fn()
 	-- 船体移动的物理组件？
 	inst:AddComponent("boatphysics")
 
+	inst:DoTaskInTime(0, createTotem)
+
 	return inst
 end
 
-return Prefab("aip_cookiecutter_king", fn, assets, prefabs)
+--------------------------------------------------------------------------------
+--                                    尾巴                                    --
+--------------------------------------------------------------------------------
+local function tailFn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddNetwork()
+
+    inst:AddTag("NOBLOCK")
+    inst:AddTag("DECOR")
+
+    inst.AnimState:SetBank("aip_cookiecutter_king")
+    inst.AnimState:SetBuild("aip_cookiecutter_king")
+    inst.AnimState:PlayAnimation("lip", true)
+    inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGroundFixed)
+    inst.AnimState:SetLayer(LAYER_BELOW_GROUND)
+    inst.AnimState:SetSortOrder(ANIM_SORT_ORDER_BELOW_GROUND.UNDERWATER)
+    inst.AnimState:SetFinalOffset(0)
+    inst.AnimState:SetOceanBlendParams(TUNING.OCEAN_SHADER.EFFECT_TINT_AMOUNT)
+    inst.AnimState:SetInheritsSortKey(false)
+
+    inst.Transform:SetRotation(90)
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.persists = false
+
+    return inst
+end
+
+return Prefab("aip_cookiecutter_king_lip", tailFn, assets),
+		Prefab("aip_cookiecutter_king", fn, assets, prefabs)

@@ -15,30 +15,7 @@ function createClientVest(bank, build, animate, sound)
 		inst.entity:AddSoundEmitter()
 	end
 
-	-- MakeFlyingCharacterPhysics(inst, 1, .1)
 	MakeProjectilePhysics(inst)
-
-	-- MakeFlyingCharacterPhysics
-	-- local phys = inst.entity:AddPhysics()
-    -- phys:SetMass(mass)
-    -- phys:SetFriction(0)
-    -- phys:SetDamping(5)
-    -- phys:SetCollisionGroup(COLLISION.FLYERS)
-    -- phys:ClearCollisionMask()
-    -- phys:CollidesWith((TheWorld.has_ocean and COLLISION.GROUND) or COLLISION.WORLD)
-    -- phys:CollidesWith(COLLISION.FLYERS)
-    -- phys:SetCapsule(rad, 1)
-
-	-- MakeProjectilePhysics
-	-- local phys = inst.entity:AddPhysics()
-	-- phys:SetMass(mass or 1)
-	-- phys:SetFriction(.1)
-	-- phys:SetDamping(0)
-	-- phys:SetRestitution(.5)
-	-- phys:SetCollisionGroup(COLLISION.ITEMS)
-	-- phys:ClearCollisionMask()
-	-- phys:CollidesWith(COLLISION.GROUND)
-	-- phys:SetSphere(rad or 0.5)
 
 	inst.Physics:ClearCollisionMask()
 
@@ -63,7 +40,8 @@ function createEffectVest(bank, build, animate, sound)
 	return inst
 end
 
-function createGroupVest(bank, build, animate)
+-- 创建地面马甲
+function createGroudVest(bank, build, animate)
 	local inst = CreateEntity()
 
 	inst:AddTag("FX")
@@ -94,5 +72,5 @@ end
 return {
 	createClientVest = createClientVest,
 	createEffectVest = createEffectVest,
-	createGroupVest = createGroupVest,
+	createGroudVest = createGroudVest,
 }
