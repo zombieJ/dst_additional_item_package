@@ -108,7 +108,7 @@ local function fn()
 	-- 船体？
 	inst:AddComponent("hull")
     inst.components.hull:SetRadius(radius)
-    inst.components.hull:SetBoatLip(SpawnPrefab('boatlip')) -- 让船看起来立体的船沿下半部分
+    -- inst.components.hull:SetBoatLip(SpawnPrefab('boatlip')) -- 让船看起来立体的船沿下半部分
     local playercollision = SpawnPrefab("boat_player_collision") -- 船手碰撞？似乎是让玩家站上面？
 	inst.components.hull:AttachEntityToBoat(playercollision, 0, 0)
     playercollision.collisionboat = inst

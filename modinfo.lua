@@ -154,8 +154,8 @@ configuration_options =
 	{
 		name = "food_effect",
 		label = "Food Recipes Effect",
-		options =
-		{
+		options = {
+			{description = "Shortage", data = "shortage"},
 			{description = "Less", data = "less"},
 			{description = "Default", data = "normal"},
 			{description = "Large", data = "large"},

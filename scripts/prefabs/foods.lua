@@ -11,6 +11,7 @@ local language = aipGetModConfig("language")
 
 -- 默认参数
 local EFFECT_MAP = {
+	["shortage"] = 0.2,
 	["less"] = 0.6,
 	["normal"] = 1,
 	["large"] = 1.5,
