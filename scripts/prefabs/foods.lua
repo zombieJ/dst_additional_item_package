@@ -263,7 +263,7 @@ local food_recipes = {
 		test = function(cooker, names, tags)
 			return tags.frozen and tags.frozen > 3
 		end,
-		priority = -1,
+		priority = 0.5,
 		weight = 1,
 		foodtype = FOODTYPE.VEGGIE,
 		health = HP * 0,

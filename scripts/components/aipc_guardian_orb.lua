@@ -19,7 +19,7 @@ local function getTargetPoint(angle, pos, offset)
 end
 
 -- 寻找附近的敌对玩家
-local function findNearEnemy(inst)
+local function findNearEnemy(inst, owner)
 	local x, y, z = inst.Transform:GetWorldPosition()
 	local ents = TheSim:FindEntities(x, y, z, TUNING.AIP_JOKER_FACE_MAX_RANGE, RETARGET_MUST_TAGS, RETARGET_CANT_TAGS)
 
@@ -32,7 +32,16 @@ local function findNearEnemy(inst)
 			local vx, vy, vz = v.Transform:GetWorldPosition()
 			local sq = distsq(x, z, vx, vz)
 
-			if v:HasTag("hostile") and sq < distance then
+			if 
+				v:HasTag("hostile") and
+				sq < distance and
+				-- 要玩家可以攻击的目标才行
+				(
+					owner == nil or
+					owner.components.combat == nil or
+					owner.components.combat:CanTarget(enemy)
+				)
+			then
 				-- 总是寻找最近的
 				enemy = v
 				distance = sq
@@ -125,7 +134,7 @@ function GuardianOrb:OnUpdate(dt)
 	local target = nil
 	local targetPos = nil
 	if self.projectileTimeout > PROJECTILE_INTERVAL then
-		target = findNearEnemy(self.inst)
+		target = findNearEnemy(self.inst, self.owner)
 		if target ~= nil then
 			targetPos = target:GetPosition()
 		end
