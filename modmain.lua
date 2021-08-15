@@ -144,6 +144,7 @@ modimport("scripts/componentsHooker.lua")
 --------------------------------------- 图标 ---------------------------------------
 AddMinimapAtlas("minimap/dark_observer_vest.xml")
 AddMinimapAtlas("minimap/aip_dou_totem.xml")
+AddMinimapAtlas("minimap/aip_cookiecutter_king.xml")
 
 --------------------------------------- 封装 ---------------------------------------
 modimport("scripts/containersWrapper.lua")

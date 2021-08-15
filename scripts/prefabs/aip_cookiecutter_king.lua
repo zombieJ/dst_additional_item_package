@@ -22,6 +22,8 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING = LANG.DESC
 -- 资源
 local assets = {
     Asset("ANIM", "anim/aip_cookiecutter_king.zip"),
+	Asset("ATLAS", "minimap/aip_cookiecutter_king.xml"),
+	Asset("IMAGE", "minimap/aip_cookiecutter_king.tex"),
 }
 
 local prefabs = {
@@ -63,7 +65,8 @@ local function fn()
 	inst.entity:AddAnimState()
 	inst.entity:AddSoundEmitter()
 	inst.entity:AddMiniMapEntity()
-	inst.MiniMapEntity:SetIcon("boat.png")
+	inst.MiniMapEntity:SetIcon("aip_cookiecutter_king.tex")
+	inst.MiniMapEntity:SetPriority(10)
 	inst.entity:AddNetwork()
 
 	inst:AddTag("ignorewalkableplatforms")
