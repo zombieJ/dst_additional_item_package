@@ -108,3 +108,8 @@ inst.AnimState:SetRayTestOnBB(true) 小物体会直接用盒装模型碰撞检�
 ### 瞬移
 
 c_goto(c_find("aip_dou_totem_broken"))
+
+### 改变季节
+
+TheWorld:PushEvent("ms_setseason", "summer")
+TheWorld:PushEvent("ms_setseason", "winter")
