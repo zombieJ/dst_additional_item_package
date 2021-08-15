@@ -157,6 +157,9 @@ function fn()
 		return inst
 	end
 
+	inst:AddComponent("fuel")
+	inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
+
 	inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetLoot({})
 

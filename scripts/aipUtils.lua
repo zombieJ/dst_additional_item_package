@@ -396,7 +396,7 @@ function _G.aipGetTopologyPoint(tag, prefab, dist)
 	return nil
 end
 
--- 按照参数找到所有符合名字列表的 prefab
+-- 按照参数找到所有符合名字列表的 prefab（TheSim:FindFirstEntityWithTag("malbatross")）
 function _G.aipFindEnt(...)
 	for _, ent in pairs(_G.Ents) do
 		-- 检测图腾

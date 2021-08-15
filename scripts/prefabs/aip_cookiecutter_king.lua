@@ -54,21 +54,6 @@ local function AddConstrainedPhysicsObj(boat, physics_obj)
 end
 
 -------------------------- 事件 --------------------------
-local function createTotem(inst)
-	local x, y, z = inst.Transform:GetWorldPosition()
-	local ents = TheSim:FindEntities(x, 0, z, 10, {"aip_fly_totem"})
-
-	for i, totem in ipairs(ents) do
-		if totem.markType == "COOKIE" then
-			return
-		end
-	end
-
-	-- 创建一个飞行图腾
-	local flyTotem = aipSpawnPrefab(inst, "aip_fly_totem")
-	flyTotem.components.writeable:SetText(LANG.TOTEM_NAME)
-    flyTotem.markType = "COOKIE"
-end
 
 -------------------------- 实体 --------------------------
 local function fn()
@@ -83,6 +68,7 @@ local function fn()
 
 	inst:AddTag("ignorewalkableplatforms")
 	inst:AddTag("antlion_sinkhole_blocker")
+	inst:AddTag("aip_cookiecutter_king")
 	inst:AddTag("boat")
 
 	local radius = 4
@@ -137,8 +123,6 @@ local function fn()
 
 	-- 船体移动的物理组件？
 	inst:AddComponent("boatphysics")
-
-	inst:DoTaskInTime(0, createTotem)
 
 	return inst
 end

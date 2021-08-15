@@ -1,5 +1,14 @@
 local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
+local function onFishShoalAdded(inst)
+	if TheWorld.components.world_common_store ~= nil then
+		table.insert(
+			TheWorld.components.world_common_store.fishShoals,
+			inst
+		)
+	end
+end
+
 local CommonStore = Class(function(self, inst)
 	self.inst = inst
 	self.shadow_follower_count = 0
@@ -14,12 +23,35 @@ local CommonStore = Class(function(self, inst)
 	-- 记录所有的飞行点
 	self.flyTotems = {}
 
+	-- 记录所有的鱼点
+	self.fishShoals = {}
+
 	-- 后置世界计算
 	self:PostWorld()
+
+	self.inst:ListenForEvent("ms_registerfishshoal", onFishShoalAdded)
 end)
 
 function CommonStore:isShadowFollowing()
 	return self.shadow_follower_count > 0
+end
+
+-- 创建 饼干粉碎机
+function CommonStore:CreateCoookieKing()
+	-- 存在就跳过
+	local ent = TheSim:FindFirstEntityWithTag("aip_cookiecutter_king")
+	if ent ~= nil then
+		return ent
+	end
+
+	if #self.fishShoals then
+		local fishShoal = self.fishShoals[math.random(#self.fishShoals)]
+		local pt = FindSwimmableOffset(fishShoal:GetPosition(), math.random()*360, 10, nil, nil, nil, nil, false)
+		return aipSpawnPrefab(nil, "aip_cookiecutter_king", pt.x, pt.y, pt.z)
+	end
+
+	local opt = FindNearbyOcean(Vector3(0,0,0))
+	return aipSpawnPrefab(nil, "aip_cookiecutter_king", opt.x, opt.y, opt.z)
 end
 
 function CommonStore:PostWorld()
@@ -33,13 +65,11 @@ function CommonStore:PostWorld()
 			if fissurePT then
 				local tgt = aipGetSecretSpawnPoint(fissurePT, 0, 50, 5)
 				aipSpawnPrefab(nil, "aip_dou_totem_broken", tgt.x, tgt.y, tgt.z)
-
-				-- if dev_mode then
-				-- 	for i, player in pairs(AllPlayers) do
-				-- 		player.Physics:Teleport(fissurePT.x, fissurePT.y, fissurePT.z)
-				-- 	end
-				-- end
 			end
+		end
+
+		if dev_mode then
+			self:CreateCoookieKing()
 		end
 	end)
 end
