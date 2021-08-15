@@ -35,7 +35,7 @@ local LANG_MAP = {
 		FULL = "It's full!",
 	},
 	chinese = {
-		NAME = "西游人物卡组",
+		NAME = "神话书说卡组",
 		DESC = "装订成册的卡组",
 		DESC_MYTH = "这样就把我们都集齐啦",
 		SPEACH = "邪魅退散!",
