@@ -23,14 +23,7 @@ local ScoreBall = Class(function(self, inst)
 	self.throwTimes = 0
 end)
 
--- function ScoreBall:BindVest(ball)
--- 	self.ball = ball
--- end
-
 function ScoreBall:ResetMotion()
-	-- self.ball.Physics:SetMotorVel(0, 0, 0)
-	-- self.ball.Physics:Stop()
-
 	self.inst.Physics:SetMotorVel(0, 0, 0)
 	self.inst.Physics:Stop()
 end
@@ -43,8 +36,6 @@ function ScoreBall:ResetAll()
 	self.playerThrow = false -- 玩家丢起的球？
 	self.y = 0
 
-	-- self.ball.Physics:Teleport(0, 0, 0)
-	-- self.ball.AnimState:Pause()
 	self.inst.components.aipc_score_ball_effect:StopPlay()
 
 	self.inst:StopUpdatingComponent(self)
@@ -52,21 +43,6 @@ end
 
 function ScoreBall:Launch(speed, ySpeed, continueBump)
 	-- -- 播放动画
-	-- if continueBump ~= true then
-	-- 	local anim = math.random() > .5 and "runLeft" or "runRight"
-
-	-- 	if self.ball.AnimState:IsCurrentAnimation("idle") then
-	-- 		self.ball.AnimState:PlayAnimation(anim, true)
-	-- 	elseif not self.ball.AnimState:IsCurrentAnimation(anim) then
-	-- 		local len = self.ball.AnimState:GetCurrentAnimationLength() / FRAMES
-	-- 		local time = self.ball.AnimState:GetCurrentAnimationTime()
-	-- 		local reverseTime = len - time
-	-- 		self.ball.AnimState:PlayAnimation(anim, true)
-	-- 		self.ball.AnimState:SetTime(math.max(reverseTime, 1))
-	-- 	end
-	-- end
-	-- self.ball.AnimState:SetDeltaTimeMultiplier(0.5 + speed * 2)
-	-- self.ball.AnimState:Resume()
 	self.inst.components.aipc_score_ball_effect:StartPlay(continueBump, speed, self.y)
 
 	-- 初始化马甲
@@ -83,7 +59,6 @@ function ScoreBall:Launch(speed, ySpeed, continueBump)
 	self.walkTime = 0
 
 	self.inst.Physics:SetMotorVel(self.speed, 0, 0)
-	-- self.ball.Physics:SetMotorVel(0, self.ySpeed, 0)
 
 	self.inst:StartUpdatingComponent(self)
 
@@ -134,7 +109,6 @@ end
 
 -- 若光可以跟着球跑
 function ScoreBall:CanFollow()
-	-- local x, y, z = self.ball.Transform:GetWorldPosition()
 	-- 球下落中 或者 飞起一段距离后
 	return self.playerThrow and (
 		(self.startTimes == 1 and (self.downTimes == 1 or self.y > 7)) or -- 第一次飞起 7 高度或下落中
@@ -144,7 +118,6 @@ end
 
 -- 若光可以击球
 function ScoreBall:CanThrow()
-	-- local x, y, z = self.ball.Transform:GetWorldPosition()
 	return self:CanFollow() and (
 		(self.downTimes == 1 and self.y < 1.5) or -- 第一次下落至 1.5 高度
 		(self.startTimes == 2 and self.y < 1) -- 第二次 1.3 高度内
@@ -155,15 +128,11 @@ function ScoreBall:OnUpdate(dt)
 	local prevWalkTime = self.walkTime
 	self.walkTime = self.walkTime + dt
 
-	-- local x, y, z = self.ball.Transform:GetWorldPosition()
-
 	local ySpeed = (self.fullTime - self.walkTime) / self.fullTime * self.ySpeed
 
 	self.inst.Physics:SetMotorVel(self.speed, 0, 0)
-	-- self.ball.Physics:SetMotorVel(0, ySpeed, 0)
 	self.y = self.y + ySpeed * dt
-	self.inst.components.aipc_score_ball_effect:SyncYSpeed(ySpeed)
-	-- self.ball.Physics:Teleport(0, y + ySpeed * dt, 0)
+	self.inst.components.aipc_score_ball_effect:SyncY(self.y, ySpeed)
 
 	if prevWalkTime <= self.fullTime and self.fullTime < self.walkTime then
 		self.downTimes = self.downTimes + 1

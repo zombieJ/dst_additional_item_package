@@ -118,7 +118,6 @@ local function fn()
 	inst.components.inventoryitem.imagename = "aip_score_ball"
 
 	inst:AddComponent("aipc_score_ball")
-	-- inst.components.aipc_score_ball:BindVest(ball)
 
 	inst:ListenForEvent("death", onDeath)
 
