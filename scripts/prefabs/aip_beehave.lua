@@ -57,8 +57,7 @@ TUNING.AIP_BEEHAVE_USES = USES_MAP[weapon_uses]
 TUNING.AIP_BEEHAVE_DAMAGE =  DAMAGE_MAP[weapon_damage]
 
 -- 资源
-local assets =
-{
+local assets = {
 	Asset("ATLAS", "images/inventoryimages/aip_beehave.xml"),
 	Asset("ANIM", "anim/aip_beehave.zip"),
 	Asset("ANIM", "anim/aip_beehave_swap.zip"),
@@ -76,6 +75,13 @@ local aip_beehave = Recipe("aip_beehave", {Ingredient("tentaclespike", 1),Ingred
 aip_beehave.atlas = "images/inventoryimages/aip_beehave.xml"
 
 -----------------------------------------------------------
+local function calcDamage(inst, attacker, target)
+	local dmg = TUNING.AIP_BEEHAVE_DAMAGE
+	if target ~= nil and target:HasTag("bee") then
+		dmg = dmg * 2
+	end
+	return dmg
+end
 
 local function onAttack(inst, owner, target)
 	if inst.components.finiteuses:GetUses() % 5 == 0 then
@@ -146,7 +152,7 @@ function fn()
 	inst.components.finiteuses:SetOnFinished(inst.Remove)
 
 	inst:AddComponent("weapon")
-	inst.components.weapon:SetDamage(TUNING.AIP_BEEHAVE_DAMAGE)
+	inst.components.weapon:SetDamage(calcDamage)
 	inst.components.weapon:SetOnAttack(onAttack)
 
 	inst:AddComponent("inspectable")
