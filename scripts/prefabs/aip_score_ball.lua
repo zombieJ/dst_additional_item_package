@@ -91,6 +91,16 @@ local function fn()
 
 	inst.entity:SetPristine()
 
+	-- 客户端同步球体
+	inst:AddComponent("aipc_score_ball_effect")
+
+	if not TheNet:IsDedicated() then
+		-- 球体马甲
+		local ball = SpawnPrefab("aip_score_ball_ball")
+		inst:AddChild(ball)
+		inst.components.aipc_score_ball_effect.ball = ball
+	end
+
 	if not TheWorld.ismastersim then
 		return inst
 	end
@@ -107,12 +117,8 @@ local function fn()
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_score_ball.xml"
 	inst.components.inventoryitem.imagename = "aip_score_ball"
 
-	-- 球体马甲
-	local ball = SpawnPrefab("aip_score_ball_ball")
-	inst:AddChild(ball)
-
 	inst:AddComponent("aipc_score_ball")
-	inst.components.aipc_score_ball:BindVest(ball)
+	-- inst.components.aipc_score_ball:BindVest(ball)
 
 	inst:ListenForEvent("death", onDeath)
 
