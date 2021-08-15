@@ -148,10 +148,13 @@ function ScoreBall:OnUpdate(dt)
 	local prevWalkTime = self.walkTime
 	self.walkTime = self.walkTime + dt
 
+	local x, y, z = self.ball.Transform:GetWorldPosition()
+
 	local ySpeed = (self.fullTime - self.walkTime) / self.fullTime * self.ySpeed
 
 	self.inst.Physics:SetMotorVel(self.speed, 0, 0)
 	self.ball.Physics:SetMotorVel(0, ySpeed, 0)
+	-- self.ball.Physics:Teleport(0, y + ySpeed * dt, 0)
 
 	if prevWalkTime <= self.fullTime and self.fullTime < self.walkTime then
 		self.downTimes = self.downTimes + 1
@@ -161,9 +164,6 @@ function ScoreBall:OnUpdate(dt)
 			self:ResetThrowCount()
 		end
 	end
-
-	-- 退出判断
-	local x, y, z = self.ball.Transform:GetWorldPosition()
 
 	-- 超过 2.5 格时不允许被攻击
 	local canInteractive = y <= 2.5

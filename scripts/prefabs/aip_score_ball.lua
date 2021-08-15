@@ -39,7 +39,8 @@ function ballFn()
 	inst.entity:AddNetwork()
 
 	-- MakeFlyingCharacterPhysics(inst, 1, .5)
-	MakeInventoryPhysics(inst)
+	-- MakeInventoryPhysics(inst)
+	MakeInventoryPhysics(inst, 1, .5)
 	RemovePhysicsColliders(inst)
 
 	inst:AddTag("FX")
