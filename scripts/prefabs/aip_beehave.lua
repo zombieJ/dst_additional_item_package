@@ -64,9 +64,7 @@ local assets =
 	Asset("ANIM", "anim/aip_beehave_swap.zip"),
 }
 
-local prefabs =
-{
-}
+local prefabs = {}
 
 -- 文字描述
 STRINGS.NAMES.AIP_BEEHAVE = LANG.NAME

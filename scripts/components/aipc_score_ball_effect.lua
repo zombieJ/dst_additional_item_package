@@ -91,7 +91,7 @@ function ScoreBallEffect:OnUpdate(dt)
 	local targetY = y + self.ySpeed:value() * dt
 
 	-- 努力往服务端的 y 坐标追去
-	local diffY = targetY * 0.9 + realY * 0.1
+	local diffY = targetY * 0.95 + realY * 0.05
 
 	self.ball.Physics:Teleport(0, diffY, 0)
 end
