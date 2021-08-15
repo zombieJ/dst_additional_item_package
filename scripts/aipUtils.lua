@@ -309,13 +309,15 @@ end
 
 -- 获取一个可访达的路径，默认 40。TODO：优化一下避免在建筑附近生成
 function _G.aipGetSpawnPoint(pt, distance)
+	local dist = distance or 40
+
 	-- 不在陆地就随便找一个陆地
     if not _G.TheWorld.Map:IsAboveGroundAtPoint(pt:Get()) then
         pt = _G.FindNearbyLand(pt) or pt
     end
 
 	-- 找范围内可以走到的路径
-	local offset = _G.FindWalkableOffset(pt, math.random() * 2 * _G.PI, distance or 40, 12, true)
+	local offset = _G.FindWalkableOffset(pt, math.random() * 2 * _G.PI, dist, 12, true)
 	if offset ~= nil then
 		offset.x = offset.x + pt.x
 		offset.z = offset.z + pt.z
@@ -323,9 +325,9 @@ function _G.aipGetSpawnPoint(pt, distance)
 	end
 
 	-- 随机找一个附近的点
-	for i = distance, distance + 100, 10 do
+	for i = dist, dist + 100, 10 do
 		local nextOffset = _G.FindValidPositionByFan(
-			math.random() * 2 * _G.PI, distance, nil,
+			math.random() * 2 * _G.PI, dist, nil,
 			function(offset)
 				local x = pt.x + offset.x
 				local y = pt.y + offset.y
