@@ -13,10 +13,12 @@ local LANG_MAP = {
 	english = {
 		NAME = "Mud Crab",
 		DESC = "So weak...",
+		WICKERBOTTOM_DESC = "Symbiosis of mimetic organisms",
 	},
 	chinese = {
 		NAME = "泥蟹",
 		DESC = "脆弱的小东西",
+		WICKERBOTTOM_DESC = "拟态生物的共生关系",
 	},
 }
 
@@ -25,6 +27,7 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 -- 文字描述
 STRINGS.NAMES.AIP_MUD_CRAB = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_MUD_CRAB = LANG.DESC
+STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.AIP_MUD_CRAB = LANG.WICKERBOTTOM_DESC
 
 ------------------------------- 方法 -------------------------------
 local function onNear(inst, player)

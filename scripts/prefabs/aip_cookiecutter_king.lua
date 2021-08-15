@@ -5,12 +5,14 @@ local LANG_MAP = {
 	english = {
 		NAME = "Cookie Breaker",
 		DESC = "How long has it grown?",
-		TOTEM_NAME = "Exchanger",
+		TALK_KING_SECRET = "Bo bo bo...",
+		TALK_PLATER_SECRET = "What do you say?",
 	},
 	chinese = {
 		NAME = "饼干碎裂机",
 		DESC = "到底长了多久？",
-		TOTEM_NAME = "交易切割",
+		TALK_KING_SECRET = "咕咚咕咚咕咚...",
+		TALK_PLATER_SECRET = "不知道它在说什么",
 	},
 }
 
@@ -18,6 +20,8 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 STRINGS.NAMES.AIP_COOKIECUTTER_KING = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING = LANG.DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET = LANG.TALK_KING_SECRET
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_PLATER_SECRET = LANG.TALK_PLATER_SECRET
 
 -- 资源
 local assets = {
@@ -31,6 +35,35 @@ local prefabs = {
 	"boat_player_collision",
 	"aip_cookiecutter_king_lip",
 }
+
+--------------------------------------------------------------------------------
+--                                    马甲                                    --
+--------------------------------------------------------------------------------
+local function vestFn()
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddNetwork()
+
+	inst:AddTag("NOBLOCK")
+
+	inst:AddComponent("talker")
+	inst.components.talker.fontsize = 30
+	inst.components.talker.font = TALKINGFONT
+	inst.components.talker.colour = Vector3(.9, 1, .9)
+	inst.components.talker.offset = Vector3(0, -500, 0)
+
+	inst.entity:SetPristine()
+
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
+	inst.persists = false
+
+	return inst
+end
 
 --------------------------------------------------------------------------------
 --                                    主体                                    --
@@ -56,6 +89,25 @@ local function AddConstrainedPhysicsObj(boat, physics_obj)
 end
 
 -------------------------- 事件 --------------------------
+local function delayTalk(delay, inst, speech)
+	inst:DoTaskInTime(delay or 0, function()
+		if inst and inst.components.talker ~= nil then
+			inst.components.talker:Say(speech)
+		end
+	end)
+end
+
+local function onNear(inst, player)
+	-- 鱼吐泡泡
+	delayTalk(2, inst.aipVest,
+		STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET
+	)
+
+	-- 玩家表示听不懂
+	delayTalk(5, player,
+		STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_PLATER_SECRET
+	)
+end
 
 -------------------------- 实体 --------------------------
 local function fn()
@@ -116,6 +168,10 @@ local function fn()
 		return inst
 	end
 
+	inst:AddComponent("playerprox")
+	inst.components.playerprox:SetDist(6, 10)
+	inst.components.playerprox:SetOnPlayerNear(onNear)
+
 	-- 船体？
 	inst:AddComponent("hull")
     inst.components.hull:SetRadius(radius)
@@ -126,6 +182,8 @@ local function fn()
 
 	-- 船体移动的物理组件？
 	inst:AddComponent("boatphysics")
+
+	inst.aipVest = inst:SpawnChild("aip_cookiecutter_king_vest")
 
 	return inst
 end
@@ -167,5 +225,6 @@ local function tailFn()
     return inst
 end
 
-return Prefab("aip_cookiecutter_king_lip", tailFn, assets),
+return Prefab("aip_cookiecutter_king_vest", vestFn, {}),
+		Prefab("aip_cookiecutter_king_lip", tailFn, assets),
 		Prefab("aip_cookiecutter_king", fn, assets, prefabs)

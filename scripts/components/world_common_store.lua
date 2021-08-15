@@ -45,8 +45,11 @@ function CommonStore:CreateCoookieKing()
 	end
 
 	if #self.fishShoals then
-		local fishShoal = self.fishShoals[math.random(#self.fishShoals)]
-		local pt = FindSwimmableOffset(fishShoal:GetPosition(), math.random()*360, 10, nil, nil, nil, nil, false)
+		local idx = math.random(#self.fishShoals)
+		local fishShoal = self.fishShoals[idx]
+		aipPrint("Pick King Pos:", #self.fishShoals, idx)
+
+		local pt = FindSwimmableOffset(fishShoal:GetPosition(), math.random()*360, 20, nil, nil, nil, nil, false)
 		return aipSpawnPrefab(nil, "aip_cookiecutter_king", pt.x, pt.y, pt.z)
 	end
 
@@ -68,9 +71,9 @@ function CommonStore:PostWorld()
 			end
 		end
 
-		if dev_mode then
-			self:CreateCoookieKing()
-		end
+		-- if dev_mode then
+		-- 	self:CreateCoookieKing()
+		-- end
 	end)
 end
 

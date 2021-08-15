@@ -67,6 +67,7 @@ function fn()
 
 	inst:AddComponent("mapspotrevealer")
 	inst.components.mapspotrevealer:SetGetTargetFn(getRevealTargetPos)
+	inst:ListenForEvent("on_reveal_map_spot_pst", inst.Remove)
 
 	MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
 	MakeSmallPropagator(inst)

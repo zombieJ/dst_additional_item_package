@@ -161,6 +161,36 @@ AddPrefabPostInit("stalker", function(inst)
 	end
 end)
 
+------------------------------------------ 牛牛 ------------------------------------------
+AddPrefabPostInit("beefalo", function(inst)
+	-- 概率性替换成螃蟹
+	if _G.TheWorld.ismastersim and inst.components.periodicspawner ~= nil then
+		local originOnSpawn = inst.components.periodicspawner.onspawn
+
+		inst.components.periodicspawner.onspawn = function(inst, prefab, ...)
+			prefab:DoTaskInTime(dev_mode and 2 or 60, function()
+				local chance = dev_mode and 1 or 0.1
+				if
+					prefab:IsValid() and
+					prefab.prefab == "poop" and
+					math.random() <= chance and
+					(
+						prefab.components.inventoryitem == nil or
+						prefab.components.inventoryitem:GetContainer() == nil
+					) and
+					#_G.aipFindNearEnts(prefab, { "aip_mud_crab" }, 20) <= 2
+				then
+					_G.ReplacePrefab(prefab, "aip_mud_crab")
+				end
+			end)
+
+			if originOnSpawn ~= nil then
+				return originOnSpawn(inst, prefab, _G.unpack(arg))
+			end
+		end
+	end
+end)
+
 ------------------------------------------ 食物 ------------------------------------------
 AddPrefabPostInit("grass", function(inst)
 	if not _G.TheWorld.ismastersim then
