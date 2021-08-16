@@ -157,6 +157,20 @@ end)
 AddPrefabPostInit("stalker", function(inst)
 	-- 骨骸会概率掉落西游人物卡
 	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
+		inst.components.lootdropper:AddChanceLoot("aip_xiyou_card_white_bone", dev_mode and 1 or 0.1)
+	end
+end)
+
+AddPrefabPostInit("skeleton", function(inst)
+	-- 骨骸会概率掉落西游人物卡
+	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
+		inst.components.lootdropper:AddChanceLoot("aip_xiyou_card_white_bone", dev_mode and 1 or 0.01)
+	end
+end)
+
+AddPrefabPostInit("skeleton_player", function(inst)
+	-- 骨骸会概率掉落西游人物卡
+	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
 		inst.components.lootdropper:AddChanceLoot("aip_xiyou_card_white_bone", dev_mode and 1 or 0.01)
 	end
 end)
