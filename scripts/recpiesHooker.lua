@@ -28,3 +28,13 @@ AddRecipe(
 	"images/inventoryimages/aip_fly_totem.xml",
 	"aip_fly_totem.tex"
 )
+
+-- 只有蓝图可以做出来，现在不提供
+AddRecipe(
+	"aip_olden_tea",
+	{ Ingredient("messagebottleempty", 1), Ingredient("sweettea", 1), Ingredient("cutreeds", 3) },
+	_G.RECIPETABS.SURVIVAL, _G.TECH.LOST,
+	nil, nil, nil, nil, nil,
+	"images/inventoryimages/aip_olden_tea.xml",
+	"aip_olden_tea.tex"
+)

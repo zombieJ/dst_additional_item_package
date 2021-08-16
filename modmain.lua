@@ -81,6 +81,7 @@ PrefabFiles = {
 	"aip_mud_crab",
 	"aip_cookiecutter_king",
 	"aip_map",
+	"aip_olden_tea",
 
 	-- Orbit
 	"aip_orbit",
