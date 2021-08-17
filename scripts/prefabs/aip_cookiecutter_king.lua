@@ -6,13 +6,15 @@ local LANG_MAP = {
 		NAME = "Cookie Breaker",
 		DESC = "How long has it grown?",
 		TALK_KING_SECRET = "Bo bo bo...",
-		TALK_PLATER_SECRET = "What do you say?",
+		TALK_PLAYER_SECRET = "What do you say?",
+		TALK_KING_HUNGER = "BoBo(mud crab!)",
 	},
 	chinese = {
 		NAME = "饼干碎裂机",
 		DESC = "到底长了多久？",
-		TALK_KING_SECRET = "咕咚咕咚咕咚...",
-		TALK_PLATER_SECRET = "不知道它在说什么",
+		TALK_KING_SECRET = "咕噜咕噜咕噜...",
+		TALK_PLAYER_SECRET = "不知道它在说什么",
+		TALK_KING_HUNGER = "咕噜(想吃泥蟹)",
 	},
 }
 
@@ -21,7 +23,8 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 STRINGS.NAMES.AIP_COOKIECUTTER_KING = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET = LANG.TALK_KING_SECRET
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_PLATER_SECRET = LANG.TALK_PLATER_SECRET
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_PLAYER_SECRET = LANG.TALK_PLAYER_SECRET
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER = LANG.TALK_KING_HUNGER
 
 -- 资源
 local assets = {
@@ -89,23 +92,35 @@ local function AddConstrainedPhysicsObj(boat, physics_obj)
 end
 
 -------------------------- 事件 --------------------------
-local function delayTalk(delay, inst, speech)
-	inst:DoTaskInTime(delay or 0, function()
-		if inst and inst.components.talker ~= nil then
-			inst.components.talker:Say(speech)
+local function delayTalk(delay, talker, king, speech, knownSpeech)
+	talker:DoTaskInTime(delay or 0, function()
+		if talker and talker.components.talker ~= nil then
+			-- 寻找附近的玩家
+			local players = aipFindNearPlayers(king, 30)
+			local teaDrinkers = aipFilterTable(players, function(player)
+				return player.components.timer ~= nil and player.components.timer:TimerExists("aip_olden_tea")
+			end)
+
+			local finalSpeech = #teaDrinkers > 0 and knownSpeech or speech
+
+			if finalSpeech then
+				talker.components.talker:Say(finalSpeech)
+			end
 		end
 	end)
 end
 
 local function onNear(inst, player)
 	-- 鱼吐泡泡
-	delayTalk(2, inst.aipVest,
-		STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET
+	delayTalk(2, inst.aipVest, inst,
+		STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET,
+		STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER
 	)
 
 	-- 玩家表示听不懂
-	delayTalk(5, player,
-		STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_PLATER_SECRET
+	delayTalk(5, player, inst,
+		STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_PLAYER_SECRET,
+		""
 	)
 end
 
