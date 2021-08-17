@@ -205,6 +205,34 @@ AddPrefabPostInit("beefalo", function(inst)
 	end
 end)
 
+----------------------------------------- 漂流瓶 -----------------------------------------
+AddPrefabPostInit("messagebottle", function(inst)
+	if additional_food and _G.TheWorld.ismastersim and inst.components.mapspotrevealer ~= nil then
+		local originPrereveal = inst.components.mapspotrevealer.prerevealfn
+
+		inst.components.mapspotrevealer.prerevealfn = function(inst, doer, ...)
+			local chance = dev_mode and 1 or 0.1
+			if math.random() <= chance then
+				local blueprint = _G.aipSpawnPrefab(inst, "aip_olden_tea_blueprint")
+				local bottle = _G.aipSpawnPrefab(inst, "messagebottleempty")
+
+				-- 尝试给予
+				local container = inst.components.inventoryitem:GetContainer()
+				inst:Remove()
+
+				if container ~= nil then
+					container:GiveItem(bottle)
+					container:GiveItem(blueprint)
+				end
+
+				return false
+			end
+
+			return originPrereveal(inst, doer, _G.unpack(arg))
+		end
+	end
+end)
+
 ------------------------------------------ 食物 ------------------------------------------
 AddPrefabPostInit("grass", function(inst)
 	if not _G.TheWorld.ismastersim then
