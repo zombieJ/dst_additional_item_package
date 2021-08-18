@@ -110,6 +110,22 @@ local function delayTalk(delay, talker, king, speech, knownSpeech)
 	end)
 end
 
+local function clearChecker(inst)
+	if inst.aipLoopCheckerTask ~= nil then
+		inst.aipLoopCheckerTask:Cancel()
+		inst.aipLoopCheckerTask = nil
+	end
+end
+
+local function findCrabs(inst)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local ents = TheSim:FindEntities(x, 0, z, 4, { "aip_mud_crab" })
+
+	return aipFilterTable(ents, function(ent)
+		return ent.components.inventoryitem == nil or ent.components.inventoryitem:GetGrandOwner() == nil
+	end)
+end
+
 local function onNear(inst, player)
 	-- 鱼吐泡泡
 	delayTalk(2, inst.aipVest, inst,
@@ -122,6 +138,27 @@ local function onNear(inst, player)
 		STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_PLAYER_SECRET,
 		""
 	)
+
+	clearChecker(inst)
+	inst.aipLoopCheckerTask = inst:DoPeriodicTask(1, function()
+		local ents = findCrabs(inst)
+		
+		if #ents > 0 then
+			inst.AnimState:PlayAnimation("eat")
+			inst.AnimState:PushAnimation("idle", true)
+
+			inst:DoTaskInTime(.3, function()
+				local ents = findCrabs(inst)
+				for i, ent in ipairs(ents) do
+					aipReplacePrefab(ent, "small_puff")
+				end
+			end)
+		end
+	end)
+end
+
+local function onFar(inst)
+	clearChecker(inst)
 end
 
 -------------------------- 实体 --------------------------
@@ -186,6 +223,7 @@ local function fn()
 	inst:AddComponent("playerprox")
 	inst.components.playerprox:SetDist(6, 10)
 	inst.components.playerprox:SetOnPlayerNear(onNear)
+	inst.components.playerprox:SetOnPlayerFar(onFar)
 
 	-- 船体？
 	inst:AddComponent("hull")

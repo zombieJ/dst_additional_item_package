@@ -207,12 +207,20 @@ end)
 
 ----------------------------------------- 漂流瓶 -----------------------------------------
 AddPrefabPostInit("messagebottle", function(inst)
+	-- 不开启食物就不能赠送了
 	if additional_food and _G.TheWorld.ismastersim and inst.components.mapspotrevealer ~= nil then
 		local originPrereveal = inst.components.mapspotrevealer.prerevealfn
 
 		inst.components.mapspotrevealer.prerevealfn = function(inst, doer, ...)
-			local chance = dev_mode and 1 or 0.1
-			if math.random() <= chance then
+			local chance = dev_mode and 1 or 0.05
+
+			-- 如果玩家不会，我们就概率送蓝图
+			if
+				doer ~= nil and
+				doer.components.builder ~= nil and
+				not doer.components.builder:KnowsRecipe("aip_olden_tea") and
+				math.random() <= chance
+			then
 				local blueprint = _G.aipSpawnPrefab(inst, "aip_olden_tea_blueprint")
 				local bottle = _G.aipSpawnPrefab(inst, "messagebottleempty")
 

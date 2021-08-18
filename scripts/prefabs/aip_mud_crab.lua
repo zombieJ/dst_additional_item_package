@@ -12,12 +12,12 @@ local language = aipGetModConfig("language")
 local LANG_MAP = {
 	english = {
 		NAME = "Mud Crab",
-		DESC = "So weak...",
+		DESC = "How to catch it?",
 		WICKERBOTTOM_DESC = "Symbiosis of mimetic organisms",
 	},
 	chinese = {
 		NAME = "泥蟹",
-		DESC = "脆弱的小东西",
+		DESC = "怎么抓住这个脆弱的小东西",
 		WICKERBOTTOM_DESC = "拟态生物的共生关系",
 	},
 }
@@ -56,13 +56,14 @@ local function fn()
 	inst.entity:AddSoundEmitter()
 	inst.entity:AddNetwork()
 
-	MakeFlyingCharacterPhysics(inst, 1, .5)
+	MakeCharacterPhysics(inst, 50, .5)
 
 	inst.Transform:SetTwoFaced()
 
 	inst:AddTag("animal")
 	inst:AddTag("prey")
 	inst:AddTag("smallcreature")
+	inst:AddTag("aip_mud_crab")
 
 	inst.AnimState:SetBank("aip_mud_crab")
 	inst.AnimState:SetBuild("aip_mud_crab")
@@ -80,6 +81,7 @@ local function fn()
 	inst.components.inventoryitem.canbepickedupalive = true
 	inst.components.inventoryitem.imagename = "poop"
 	inst.components.inventoryitem:SetOnDroppedFn(onDrop)
+	inst.components.inventoryitem:SetSinks(true)
 
 	inst:AddComponent("playerprox")
 	inst.components.playerprox:SetDist(5, 10)
