@@ -5,16 +5,21 @@ local LANG_MAP = {
 	english = {
 		NAME = "Cookie Breaker",
 		DESC = "How long has it grown?",
-		TALK_KING_SECRET = "Bo bo bo...",
 		TALK_PLAYER_SECRET = "What do you say?",
-		TALK_KING_HUNGER = "BoBo(mud crab!)",
+		TALK_KING_SECRET = "Bo bo bo...",
+		TALK_KING_HUNGER = "(Mud crab!)",
+		TALK_KING_HUNGER_AGAIN = "(More mud crab!)",
+		TALK_KING_GIVE_TOOL = "(Use this to find me~)",
 	},
 	chinese = {
 		NAME = "饼干碎裂机",
 		DESC = "到底长了多久？",
-		TALK_KING_SECRET = "咕噜咕噜咕噜...",
 		TALK_PLAYER_SECRET = "不知道它在说什么",
-		TALK_KING_HUNGER = "咕噜(想吃泥蟹)",
+		TALK_KING_SECRET = "咕噜咕噜咕噜...",
+		TALK_KING_HUNGER = "(想吃泥蟹)",
+		TALK_KING_HUNGER_AGAIN = "(还想吃泥蟹)",
+		TALK_KING_FIND_ME = "(我们玩个游戏，找找我去哪儿了)",
+		TALK_KING_GIVE_TOOL = "(来吧，用它们投石问路)",
 	},
 }
 
@@ -25,6 +30,9 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET = LANG.TALK_KING_SECRET
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_PLAYER_SECRET = LANG.TALK_PLAYER_SECRET
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER = LANG.TALK_KING_HUNGER
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_AGAIN = LANG.TALK_KING_HUNGER_AGAIN
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_FIND_ME = LANG.TALK_KING_FIND_ME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_GIVE_TOOL = LANG.TALK_KING_GIVE_TOOL
 
 -- 资源
 local assets = {
@@ -91,6 +99,17 @@ local function AddConstrainedPhysicsObj(boat, physics_obj)
 	end)
 end
 
+-------------------------- 存取 --------------------------
+local function onSave(inst, data)
+	data.aipStatus = inst.aipStatus
+end
+
+local function onLoad(inst, data)
+	if data ~= nil then
+		inst.aipStatus = data.aipStatus
+	end
+end
+
 -------------------------- 事件 --------------------------
 local function delayTalk(delay, talker, king, speech, knownSpeech)
 	talker:DoTaskInTime(delay or 0, function()
@@ -127,34 +146,69 @@ local function findCrabs(inst)
 end
 
 local function onNear(inst, player)
-	-- 鱼吐泡泡
-	delayTalk(2, inst.aipVest, inst,
-		STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET,
-		STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER
-	)
-
-	-- 玩家表示听不懂
-	delayTalk(5, player, inst,
-		STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_PLAYER_SECRET,
-		""
-	)
-
 	clearChecker(inst)
-	inst.aipLoopCheckerTask = inst:DoPeriodicTask(1, function()
-		local ents = findCrabs(inst)
-		
-		if #ents > 0 then
-			inst.AnimState:PlayAnimation("eat")
-			inst.AnimState:PushAnimation("idle", true)
 
-			inst:DoTaskInTime(.3, function()
-				local ents = findCrabs(inst)
-				for i, ent in ipairs(ents) do
-					aipReplacePrefab(ent, "small_puff")
-				end
-			end)
-		end
-	end)
+	-- 如果没吃过泥蟹就要求吃一些
+	if inst.aipStatus == nil then
+		-- 鱼吐泡泡
+		delayTalk(2, inst.aipVest, inst,
+			STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET,
+			STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER
+		)
+
+		-- 玩家表示听不懂
+		delayTalk(5, player, inst,
+			STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_PLAYER_SECRET,
+			""
+		)
+
+		-- 寻找附近泥蟹吃掉
+		inst.aipLoopCheckerTask = inst:DoPeriodicTask(1, function()
+			local ents = findCrabs(inst)
+
+			if #ents > 0 then
+				inst.AnimState:PlayAnimation("eat")
+				inst.AnimState:PushAnimation("idle", true)
+
+				inst:DoTaskInTime(.3, function()
+					local ents = findCrabs(inst)
+
+					-- 吃完开始游戏
+					if #ents > 0 then
+						for i, ent in ipairs(ents) do
+							aipReplacePrefab(ent, "small_puff")
+						end
+
+						clearChecker(inst)
+						inst.aipStatus = "play"
+
+						-- 鱼很开心，开始游戏
+						delayTalk(2, inst.aipVest, inst,
+							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET,
+							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_FIND_ME
+						)
+
+						-- 给予物品
+						delayTalk(5, inst.aipVest, inst,
+							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET,
+							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_GIVE_TOOL
+						)
+
+						-- TODO: 立刻创建一个副本，然后删除自己
+						inst.persists = false
+
+						inst:DoTaskInTime(5, function()
+							inst.AnimState:SetMultColour(0,0,0,0)
+							inst.components.hull.boat_lip.AnimState:PlayAnimation("hide", false)
+							inst.components.hull.boat_lip:ListenForEvent("animover", function()
+								inst:Remove()
+							end)
+						end)
+					end
+				end)
+			end
+		end)
+	end
 end
 
 local function onFar(inst)
@@ -237,6 +291,11 @@ local function fn()
 	inst:AddComponent("boatphysics")
 
 	inst.aipVest = inst:SpawnChild("aip_cookiecutter_king_vest")
+
+	inst.aipStatus = nil
+
+	inst.OnLoad = onLoad
+	inst.OnSave = onSave
 
 	return inst
 end
