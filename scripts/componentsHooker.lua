@@ -72,7 +72,7 @@ env.AddComponentAction("USEITEM", "aipc_action_client", function(inst, doer, tar
 end)
 
 ---------------------- 被使用的技能 ----------------------
-local AIPC_BE_ACTION = env.AddAction("AIPC_BE_ACTION", LANG.USE, function(act)
+local function beAction(act)
 	local doer = act.doer
 	local item = act.invobject	-- INVENTORY
 	local target = act.target	-- SCENE
@@ -88,9 +88,14 @@ local AIPC_BE_ACTION = env.AddAction("AIPC_BE_ACTION", LANG.USE, function(act)
 	end
 
 	return true
-end)
+end
+
+local AIPC_BE_ACTION = env.AddAction("AIPC_BE_ACTION", LANG.USE, beAction)
+local AIPC_BE_CAST_ACTION = env.AddAction("AIPC_BE_CAST_ACTION", LANG.CAST, beAction)
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_BE_ACTION, "doshortaction"))
 AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_BE_ACTION, "doshortaction"))
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_BE_CAST_ACTION, "quicktele"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_BE_CAST_ACTION, "quicktele"))
 
 -- 角色对场景上的某物使用 aipc_action_client
 env.AddComponentAction("SCENE", "aipc_action_client", function(inst, doer, actions, right)
@@ -147,6 +152,10 @@ AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_READ_ACTION, "
 env.AddComponentAction("INVENTORY", "aipc_action_client", function(inst, doer, actions, right)
 	if inst.components.aipc_action_client:CanBeActOn(doer) then
 		table.insert(actions, _G.ACTIONS.AIPC_BE_ACTION)
+	end
+
+	if inst.components.aipc_action_client:CanBeCastOn(doer) then
+		table.insert(actions, _G.ACTIONS.AIPC_BE_CAST_ACTION)
 	end
 
 	if inst.components.aipc_action_client:CanBeRead(doer) then

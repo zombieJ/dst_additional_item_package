@@ -8,6 +8,7 @@ local Action = Class(function(self, inst)
 	self.canActOnPoint = nil
 	self.canActOnTarget = nil
 	self.canBeActOn = nil
+	self.canBeCastOn = nil
 	self.canBeRead = nil
 	self.canBeEat = nil
 
@@ -25,6 +26,13 @@ end
 function Action:CanBeActOn(doer)
 	if self.canBeActOn then
 		return self.canBeActOn(self.inst, doer)
+	end
+	return false
+end
+
+function Action:CanBeCastOn(doer)
+	if self.canBeCastOn then
+		return self.canBeCastOn(self.inst, doer)
 	end
 	return false
 end
