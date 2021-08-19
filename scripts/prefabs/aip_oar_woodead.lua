@@ -21,12 +21,14 @@ end
 -- 树精木浆，使用量和投入的木头数量相关
 local woodead_info = {
     FORCE = 0.5,
+    MAX_VELOCITY = 3.5,
     DAMAGE = TUNING.NIGHTSWORD_DAMAGE / 68 * 3 * damageTimes,
     DAMAGE_STEP = TUNING.NIGHTSWORD_DAMAGE / 68 * 3 * damageTimes, -- 每次递增的伤害量
     DAMAGE_MAX = TUNING.NIGHTSWORD_DAMAGE / 68 * 100 * damageTimes, -- 最大造成伤害量
+    ROW_WEAR = -1,
     ROW_FAIL_WEAR = 6 / usageTimes,
     ATTACKWEAR = 57 / usageTimes,
-    USES = -1,
+    USES = 5,
 }
 
 local assets = {
@@ -152,6 +154,7 @@ local function makeOar(data, build, swap_build, fuel_value, is_wooden)
 
     inst:AddComponent("oar")
     inst.components.oar.force = data.FORCE
+    inst.components.oar.max_velocity = data.MAX_VELOCITY
     inst:AddComponent("inspectable")
 
     if additional_weapon == "open" then
@@ -182,7 +185,7 @@ local function makeOar(data, build, swap_build, fuel_value, is_wooden)
     inst.components.finiteuses:SetMaxUses(data.USES)
     inst.components.finiteuses:SetUses(data.USES)
     inst.components.finiteuses:SetOnFinished(onfiniteusesfinished)
-    inst.components.finiteuses:SetConsumption(ACTIONS.ROW, 1)
+    inst.components.finiteuses:SetConsumption(ACTIONS.ROW, data.ROW_WEAR)
     inst.components.finiteuses:SetConsumption(ACTIONS.ROW_FAIL, data.ROW_FAIL_WEAR)
 
     MakeHauntableLaunch(inst)
