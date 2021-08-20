@@ -83,6 +83,7 @@ PrefabFiles = {
 	"aip_map",
 	"aip_olden_tea",
 	"aip_shell_stone",
+	"aip_suwu",
 
 	-- Orbit
 	"aip_orbit",

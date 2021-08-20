@@ -29,7 +29,10 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_MAP = LANG.DESC
 local function getRevealTargetPos(inst, doer)
 	if TheWorld.components.world_common_store ~= nil then
 		local king = TheWorld.components.world_common_store:CreateCoookieKing()
-		return king:GetPosition()
+
+		if king ~= nil then
+			return king:GetPosition()
+		end
 	end
 
 	return nil, "NO_TARGET"

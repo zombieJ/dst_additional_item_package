@@ -374,6 +374,25 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
 	return aipGetSpawnPoint(pt, minDistance)
 end
 
+function _G.aipValidateOceanPoint(pt, raidus)
+	local r = raidus or 5
+
+	for x = -1, 1 do
+		for z = -1, 1 do
+			if _G.TheWorld.Map:IsOceanAtPoint(pt.x + x * r, 0, pt.z + z * r) then
+				return false
+			end
+		end
+	end
+
+	local ents = TheSim:FindEntities(pt.x, 0, pt.z, r)
+	if #ents > 0 then
+		return false
+	end
+
+	return true
+end
+
 -- 在符合 tag 的地形上，且存在匹配的物品，在改物品附近找一个点
 function _G.aipGetTopologyPoint(tag, prefab, dist)
 	for i, node in ipairs(_G.TheWorld.topology.nodes) do

@@ -32,7 +32,18 @@ local function canBeActOn()
 end
 
 local function onDoAction(inst, doer)
-	inst:Remove()
+	if doer.components.inventory ~= nil then
+		doer.components.inventory:DropItem(inst, false)
+	end
+
+	inst:AddComponent("complexprojectile")
+	inst.components.complexprojectile:SetHorizontalSpeed(15)
+	inst.components.complexprojectile:SetGravity(-25)
+	inst.components.complexprojectile:SetLaunchOffset(Vector3(.25, 1, 0))
+	-- inst.components.complexprojectile:SetOnHit(OnHitSnow)
+
+	local targetpos = aipGetSpawnPoint(doer:GetPosition(), 5)
+	inst.components.complexprojectile:Launch(targetpos, doer)
 end
 
 ----------------------------------- 实体 -----------------------------------
@@ -52,7 +63,8 @@ local function fn()
 
 	inst.entity:SetPristine()
 
-	inst:AddTag("aip_xiyou_card")
+	inst:AddTag("molebait")
+	inst:AddTag("projectile")
 
 	inst:AddComponent("aipc_action_client")
 	inst.components.aipc_action_client.canBeCastOn = canBeActOn
@@ -61,10 +73,15 @@ local function fn()
 		return inst
 	end
 
+	inst:AddComponent("locomotor")
+
 	inst:AddComponent("aipc_action")
 	inst.components.aipc_action.onDoAction = onDoAction
 
 	inst:AddComponent("inspectable")
+
+	inst:AddComponent("stackable")
+	inst.components.stackable.maxsize = TUNING.STACK_SIZE_MEDITEM
 
 	inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_shell_stone.xml"

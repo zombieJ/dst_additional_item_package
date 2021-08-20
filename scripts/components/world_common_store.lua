@@ -36,25 +36,60 @@ function CommonStore:isShadowFollowing()
 	return self.shadow_follower_count > 0
 end
 
--- 创建 饼干粉碎机
-function CommonStore:CreateCoookieKing()
-	-- 存在就跳过
+-- 创建 饼干粉碎机: 如果给了坐标，就找一个尽量远的坐标
+function CommonStore:CreateCoookieKing(pos)
+	-- 存在且没有坐标就跳过
 	local ent = TheSim:FindFirstEntityWithTag("aip_cookiecutter_king")
-	if ent ~= nil then
+	if ent ~= nil and pos == nil then
 		return ent
 	end
 
-	if #self.fishShoals then
-		local idx = math.random(#self.fishShoals)
-		local fishShoal = self.fishShoals[idx]
-		aipPrint("Pick King Pos:", #self.fishShoals, idx)
+	-- 第一次生成一定在鱼群位置
+	-- local idx = math.random(#self.fishShoals)
+	-- local fishShoal = self.fishShoals[idx]
+	-- ocean_pos = fishShoal:GetPosition()
 
-		local pt = FindSwimmableOffset(fishShoal:GetPosition(), math.random()*360, 20, nil, nil, nil, nil, false)
-		return aipSpawnPrefab(nil, "aip_cookiecutter_king", pt.x, pt.y, pt.z)
+	local ocean_pos = nil
+	local longestDist = -1
+
+	-- 随机一个附近没有物体的海洋点
+	for i = 1, 30 do
+		local rndPos = TheWorld.Map:FindRandomPointInOcean(100)
+		local dist = (rndPos ~= nil and pos ~= nil) and aipDist(rndPos, pos) or 0
+
+		-- 尽量远
+		if dist > longestDist and aipValidateOceanPoint(rndPos) then
+			longestDist = dist
+			ocean_pos = rndPos
+		end
 	end
 
-	local opt = FindNearbyOcean(Vector3(0,0,0))
-	return aipSpawnPrefab(nil, "aip_cookiecutter_king", opt.x, opt.y, opt.z)
+	-- 如果没有找到适合的点，降级就找远一点的点
+	if ocean_pos == nil then
+		longestDist = -1
+
+		for i = 1, 10 do
+			local rndPos = TheWorld.Map:FindRandomPointInOcean(100)
+			local dist = (rndPos ~= nil and pos ~= nil) and aipDist(rndPos, pos) or 0
+	
+			-- 尽量远
+			if dist > longestDist then
+				longestDist = dist
+				ocean_pos = rndPos
+			end
+		end
+	end
+
+	-- 随便找一个附近的点
+	if ocean_pos == nil then
+		ocean_pos = FindNearbyOcean(Vector3(0,0,0))
+	end
+
+	if ocean_pos ~= nil then
+		return aipSpawnPrefab(nil, "aip_cookiecutter_king", ocean_pos.x, ocean_pos.y, ocean_pos.z)
+	end
+
+	return nil
 end
 
 function CommonStore:PostWorld()
@@ -71,9 +106,9 @@ function CommonStore:PostWorld()
 			end
 		end
 
-		-- if dev_mode then
-		-- 	self:CreateCoookieKing()
-		-- end
+		if dev_mode then
+			self:CreateCoookieKing()
+		end
 	end)
 end
 

@@ -196,6 +196,8 @@ local function onNear(inst, player)
 
 						-- TODO: 立刻创建一个副本，然后删除自己
 						inst.persists = false
+						local kingPos = inst:GetPosition()
+						local nextKing = TheWorld.components.world_common_store:CreateCoookieKing(kingPos)
 
 						inst:DoTaskInTime(5, function()
 							inst.AnimState:SetMultColour(0,0,0,0)
