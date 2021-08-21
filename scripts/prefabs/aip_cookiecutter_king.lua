@@ -111,6 +111,12 @@ local function onLoad(inst, data)
 end
 
 -------------------------- 事件 --------------------------
+local function refreshIcon(inst)
+	inst:DoTaskInTime(0.1, function()
+		inst.MiniMapEntity:SetEnabled(inst.aipStatus ~= "peekaboo")
+	end)
+end
+
 local function delayTalk(delay, talker, king, speech, knownSpeech)
 	talker:DoTaskInTime(delay or 0, function()
 		if talker and talker.components.talker ~= nil then
@@ -194,10 +200,11 @@ local function onNear(inst, player)
 							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_GIVE_TOOL
 						)
 
-						-- TODO: 立刻创建一个副本，然后删除自己
+						-- 创建一个副本，然后删除自己
 						inst.persists = false
 						local kingPos = inst:GetPosition()
 						local nextKing = TheWorld.components.world_common_store:CreateCoookieKing(kingPos)
+						nextKing.aipStatus = "peekaboo"
 
 						inst:DoTaskInTime(5, function()
 							inst.AnimState:SetMultColour(0,0,0,0)
@@ -295,6 +302,10 @@ local function fn()
 	inst.aipVest = inst:SpawnChild("aip_cookiecutter_king_vest")
 
 	inst.aipStatus = nil
+
+	refreshIcon(inst)
+
+	inst.Transform:SetRotation(math.random() * 360)
 
 	inst.OnLoad = onLoad
 	inst.OnSave = onSave

@@ -219,6 +219,12 @@ function _G.aipGetAngle(src, tgt)
 	return angle
 end
 
+-- 从点起按照设定角度前进一段距离
+function _G.aipAngleDist(sourcePos, angle, distance)
+	local radius = angle / 180 * _G.PI
+	return _G.Vector3(sourcePos.x + math.cos(radius) * distance, sourcePos.y, sourcePos.z + math.sin(radius) * distance)
+end
+
 -- 返回(0 ~ 360)两个角度的偏差值
 function _G.aipDiffAngle(a1, a2)
 	local min = math.min(a1, a2)

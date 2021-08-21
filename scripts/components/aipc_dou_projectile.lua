@@ -276,9 +276,8 @@ function Projectile:StartBy(doer, queue, target, targetPos, replaceSourcePos)
 			-- 方向性技能四散而去
 			local sourcePos = replaceSourcePos or doer:GetPosition()
 			local angle = (aipGetAngle(sourcePos, targetPos) + ((i - 1) - (splitCount - 1) / 2) * 30)
-			local radius = angle / 180 * PI
 			local distance = math.pow(distsq(sourcePos.x, sourcePos.z, targetPos.x, targetPos.z), 0.5)
-			local newTargetPos = Vector3(sourcePos.x + math.cos(radius) * distance, sourcePos.y, sourcePos.z + math.sin(radius) * distance)
+			local newTargetPos = aipAngleDist(sourcePos, angle, distance)
 
 			effectProjectile.components.aipc_dou_projectile:StartEffectTask(doer, queue, target, newTargetPos, replaceSourcePos)
 		end

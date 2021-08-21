@@ -32,6 +32,11 @@ local function canBeActOn()
 end
 
 local function onDoAction(inst, doer)
+	local king = TheSim:FindFirstEntityWithTag("aip_cookiecutter_king")
+	if king == nil then
+		return
+	end
+
 	if doer.components.inventory ~= nil then
 		doer.components.inventory:DropItem(inst, false)
 	end
@@ -42,8 +47,10 @@ local function onDoAction(inst, doer)
 	inst.components.complexprojectile:SetLaunchOffset(Vector3(.25, 1, 0))
 	-- inst.components.complexprojectile:SetOnHit(OnHitSnow)
 
-	local targetpos = aipGetSpawnPoint(doer:GetPosition(), 5)
-	inst.components.complexprojectile:Launch(targetpos, doer)
+	local doerPos = doer:GetPosition()
+	local angle = aipGetAngle(doerPos, king:GetPosition())
+	local targetPos = aipAngleDist(doerPos, angle, 5)
+	inst.components.complexprojectile:Launch(targetPos, doer)
 end
 
 ----------------------------------- 实体 -----------------------------------
