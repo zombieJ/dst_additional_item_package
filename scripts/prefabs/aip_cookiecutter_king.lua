@@ -71,6 +71,9 @@ local function vestFn()
 		return inst
 	end
 
+	inst:AddComponent("lootdropper")
+	inst.components.lootdropper:SetLoot({})
+
 	inst.persists = false
 
 	return inst
@@ -117,7 +120,7 @@ local function refreshIcon(inst)
 	end)
 end
 
-local function delayTalk(delay, talker, king, speech, knownSpeech)
+local function delayTalk(delay, talker, king, speech, knownSpeech, callback)
 	talker:DoTaskInTime(delay or 0, function()
 		if talker and talker.components.talker ~= nil then
 			-- 寻找附近的玩家
@@ -130,6 +133,10 @@ local function delayTalk(delay, talker, king, speech, knownSpeech)
 
 			if finalSpeech then
 				talker.components.talker:Say(finalSpeech)
+			end
+
+			if callback ~= nil then
+				callback()
 			end
 		end
 	end)
@@ -154,7 +161,7 @@ end
 local function onNear(inst, player)
 	clearChecker(inst)
 
-	-- 如果没吃过泥蟹就要求吃一些
+	-------------------- 如果没吃过泥蟹就要求吃一些 --------------------
 	if inst.aipStatus == nil then
 		-- 鱼吐泡泡
 		delayTalk(2, inst.aipVest, inst,
@@ -195,9 +202,15 @@ local function onNear(inst, player)
 						)
 
 						-- 给予物品
-						delayTalk(5, inst.aipVest, inst,
+						delayTalk(4, inst.aipVest, inst,
 							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET,
-							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_GIVE_TOOL
+							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_GIVE_TOOL,
+							function()
+								inst.aipVest.components.lootdropper:SpawnLootPrefab("aip_shell_stone_blueprint")
+								for i = 1, 3 do
+									inst.aipVest.components.lootdropper:SpawnLootPrefab("aip_shell_stone")
+								end
+							end
 						)
 
 						-- 创建一个副本，然后删除自己
@@ -217,6 +230,11 @@ local function onNear(inst, player)
 				end)
 			end
 		end)
+
+	-------------------- 如果没吃过泥蟹就要求吃一些 --------------------
+	-------------------- 再次被玩家找到， --------------------
+	elseif inst.aipStatus == "peekaboo" then
+
 	end
 end
 
@@ -296,8 +314,8 @@ local function fn()
 	inst.components.hull:AttachEntityToBoat(playercollision, 0, 0)
     playercollision.collisionboat = inst
 
-	-- 船体移动的物理组件？
-	inst:AddComponent("boatphysics")
+	-- 船体移动
+	-- inst:AddComponent("boatphysics")
 
 	inst.aipVest = inst:SpawnChild("aip_cookiecutter_king_vest")
 
