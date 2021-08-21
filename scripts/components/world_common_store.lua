@@ -52,15 +52,29 @@ function CommonStore:CreateCoookieKing(pos)
 	local ocean_pos = nil
 	local longestDist = -1
 
-	-- 随机一个附近没有物体的海洋点
-	for i = 1, 30 do
-		local rndPos = TheWorld.Map:FindRandomPointInOcean(100)
+	-- 随机一个附近没有物体的海洋点（20 范围内没有陆地， 10 范围内没物体）
+	for i = 1, 20 do
+		local rndPos = TheWorld.Map:FindRandomPointInOcean(50)
 		local dist = (rndPos ~= nil and pos ~= nil) and aipDist(rndPos, pos) or 0
 
 		-- 尽量远
-		if dist > longestDist and aipValidateOceanPoint(rndPos) then
+		if dist > longestDist and aipValidateOceanPoint(rndPos, 20, 10) then
 			longestDist = dist
 			ocean_pos = rndPos
+		end
+	end
+
+	-- 随机一个附近没有物体的海洋点（5 范围内没有陆地、物体）
+	if ocean_pos == nil then
+		for i = 1, 10 do
+			local rndPos = TheWorld.Map:FindRandomPointInOcean(100)
+			local dist = (rndPos ~= nil and pos ~= nil) and aipDist(rndPos, pos) or 0
+
+			-- 尽量远
+			if dist > longestDist and aipValidateOceanPoint(rndPos, 5) then
+				longestDist = dist
+				ocean_pos = rndPos
+			end
 		end
 	end
 

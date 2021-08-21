@@ -278,6 +278,11 @@ end
 -- 在目标位置创建
 function _G.aipSpawnPrefab(inst, prefab, tx, ty, tz)
 	local tgt = _G.SpawnPrefab(prefab)
+
+	if tgt == nil then
+		return nil
+	end
+
 	if inst ~= nil then
 		local x, y, z = inst.Transform:GetWorldPosition()
 		tgt.Transform:SetPosition(fb(tx, x), fb(ty, y), fb(tz, z))
@@ -290,6 +295,10 @@ end
 -- 替换单位（如果是物品则替换对应物品栏），原生也有一个 ReplacePrefab
 function _G.aipReplacePrefab(inst, prefab, tx, ty, tz)
 	local tgt = _G.aipSpawnPrefab(inst, prefab, tx, ty, tz)
+
+	if tgt == nil then
+		return nil
+	end
 
 	if inst.components.inventoryitem ~= nil then
 		local container = inst.components.inventoryitem:GetContainer()
@@ -374,18 +383,19 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
 	return aipGetSpawnPoint(pt, minDistance)
 end
 
-function _G.aipValidateOceanPoint(pt, raidus)
-	local r = raidus or 5
+function _G.aipValidateOceanPoint(pt, oceanRaidus, prefabRaidus)
+	oceanRaidus = oceanRaidus or 5
+	prefabRaidus = prefabRaidus or oceanRaidus
 
 	for x = -1, 1 do
 		for z = -1, 1 do
-			if _G.TheWorld.Map:IsOceanAtPoint(pt.x + x * r, 0, pt.z + z * r) then
+			if _G.TheWorld.Map:IsOceanAtPoint(pt.x + x * oceanRaidus, 0, pt.z + z * oceanRaidus) then
 				return false
 			end
 		end
 	end
 
-	local ents = TheSim:FindEntities(pt.x, 0, pt.z, r)
+	local ents = TheSim:FindEntities(pt.x, 0, pt.z, prefabRaidus)
 	if #ents > 0 then
 		return false
 	end

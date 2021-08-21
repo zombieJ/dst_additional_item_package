@@ -15,18 +15,18 @@ local USES_MAP = {
 	much = 150,
 }
 local DAMAGE_MAP = {
-	less = TUNING.NIGHTSWORD_DAMAGE * 0.8,
-	normal = TUNING.NIGHTSWORD_DAMAGE,
-	large = TUNING.NIGHTSWORD_DAMAGE * 1.5,
+	less = TUNING.SPIKE_DAMAGE * 0.8,
+	normal = TUNING.SPIKE_DAMAGE,
+	large = TUNING.SPIKE_DAMAGE * 1.5,
 }
 
 local LANG_MAP = {
 	english = {
-		NAME = "Su Wu",
+		NAME = "Zi Qing",
 		DESC = "Hero",
 	},
 	chinese = {
-		NAME = "苏武",
+		NAME = "子卿",
 		DESC = "渴饮月窟冰，饥餐天上雪",
 	},
 }
@@ -49,7 +49,7 @@ local prefabs = {}
 STRINGS.NAMES.AIP_SUWU = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SUWU = LANG.DESC
 
------------------------------------------------------------
+------------------------------- 事件 -------------------------------
 local function calcDamage(inst, attacker, target)
 	local dmg = TUNING.AIP_SUWU_DAMAGE
 
@@ -66,6 +66,18 @@ local function calcDamage(inst, attacker, target)
 	return dmg
 end
 
+local function encharge(inst)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	if
+		inst.components.inventoryitem:GetGrandOwner() == nil and
+		TheWorld.Map:IsOceanAtPoint(x, 0, z) and
+		inst.components.finiteuses:GetPercent() < 1
+	then
+		inst.components.finiteuses:Use(-1)
+	end
+end
+
+------------------------------- 装备 -------------------------------
 local function onequip(inst, owner)
 	owner.AnimState:OverrideSymbol("swap_object", "aip_suwu_swap", "aip_suwu_swap")
 	owner.SoundEmitter:PlaySound("dontstarve/wilson/equip_item_gold")
@@ -79,6 +91,7 @@ local function onunequip(inst, owner)
 	owner.AnimState:Show("ARM_normal")
 end
 
+------------------------------- 实体 -------------------------------
 function fn()
 	local inst = CreateEntity()
 
@@ -89,8 +102,9 @@ function fn()
 	MakeInventoryPhysics(inst)
 	MakeInventoryFloatable(inst, "small", 0.05, {1.2, 0.75, 1.2})
 
+	-- 苏武只有一把
 	inst:AddTag("irreplaceable")
-	inst:AddTag("nonpotatable") -- 苏武只有一把
+	inst:AddTag("nonpotatable")
 	
 	inst.AnimState:SetBank("aip_suwu")
 	inst.AnimState:SetBuild("aip_suwu")
@@ -120,6 +134,8 @@ function fn()
 	inst:AddComponent("equippable")
 	inst.components.equippable:SetOnEquip(onequip)
 	inst.components.equippable:SetOnUnequip(onunequip)
+
+	inst.aipRefreshTask = inst:DoPeriodicTask(19, encharge)
 
 	return inst
 end
