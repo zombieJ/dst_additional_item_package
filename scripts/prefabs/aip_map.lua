@@ -35,7 +35,7 @@ local function getRevealTargetPos(inst, doer)
 				return king:GetPosition()
 			else
 				inst:PushEvent("aip_give_instead")
-				return nil, "NO_TARGET"
+				return nil
 			end
 		end
 	end

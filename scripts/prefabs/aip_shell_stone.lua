@@ -64,20 +64,23 @@ local function onDoAction(inst, doer)
 		return
 	end
 
+	local current = inst
 	if doer.components.inventory ~= nil then
-		doer.components.inventory:DropItem(inst, false)
+		current = doer.components.inventory:DropItem(inst, false)
 	end
 
-	inst:AddComponent("complexprojectile")
-	inst.components.complexprojectile:SetHorizontalSpeed(15)
-	inst.components.complexprojectile:SetGravity(-25)
-	inst.components.complexprojectile:SetLaunchOffset(Vector3(.25, 1, 0))
-	inst.components.complexprojectile:SetOnHit(onHit)
+	current:AddComponent("complexprojectile")
+	current.components.complexprojectile:SetHorizontalSpeed(15)
+	current.components.complexprojectile:SetGravity(-25)
+	current.components.complexprojectile:SetLaunchOffset(Vector3(.25, 1, 0))
+	current.components.complexprojectile:SetOnHit(onHit)
+
+	current.Physics:Stop()
 
 	local doerPos = doer:GetPosition()
 	local angle = aipGetAngle(doerPos, king:GetPosition())
 	local targetPos = aipAngleDist(doerPos, angle, 5)
-	inst.components.complexprojectile:Launch(targetPos, doer)
+	current.components.complexprojectile:Launch(targetPos, doer)
 end
 
 ----------------------------------- 实体 -----------------------------------
