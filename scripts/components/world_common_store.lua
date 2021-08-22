@@ -1,62 +1,25 @@
 local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 local function findFarAwayOcean(pos)
-	aipPrint("最优解!!!") -- 445, 546
 	local ocean_pos = nil
 	local longestDist = -1
 
-	-- 随机一个附近没有物体的海洋点（20 范围内没有陆地， 10 范围内没物体）
-	for i = 1, 50 do
-		local rndPos = aipFindRandomPointInOcean(50)
+	for i = 1, 30 do
+		local rndPos = aipFindRandomPointInOcean(20)
+		-- rndPos = FindSwimmableOffset(rndPos, math.random()*PI*2, 10)
+
 		local dist = (rndPos ~= nil and pos ~= nil) and aipDist(rndPos, pos) or 0
 
 		-- 尽量远
-		if dist >= longestDist and aipValidateOceanPoint(rndPos, 10, 4) then
+		if dist >= longestDist then
 			longestDist = dist
 			ocean_pos = rndPos
 		end
-	end
-	aipTypePrint(ocean_pos)
-
-	-- 随机一个附近没有物体的海洋点（5 范围内没有陆地、物体）
-	if ocean_pos == nil then
-		aipPrint("次优解!!!")
-
-		for i = 1, 50 do
-			local rndPos = aipFindRandomPointInOcean(100)
-			local dist = (rndPos ~= nil and pos ~= nil) and aipDist(rndPos, pos) or 0
-
-			-- 尽量远
-			if dist > longestDist and aipValidateOceanPoint(rndPos, 2) then
-				longestDist = dist
-				ocean_pos = rndPos
-			end
-		end
-		aipTypePrint(ocean_pos)
-	end
-
-	-- 如果没有找到适合的点，降级就找远一点的点
-	if ocean_pos == nil then
-		aipPrint("最坏解!!!")
-		longestDist = -1
-
-		for i = 1, 10 do
-			local rndPos = aipFindRandomPointInOcean(100)
-			local dist = (rndPos ~= nil and pos ~= nil) and aipDist(rndPos, pos) or 0
-	
-			-- 尽量远
-			if dist >= longestDist then
-				longestDist = dist
-				ocean_pos = rndPos
-			end
-		end
-		aipTypePrint(ocean_pos)
 	end
 
 	-- 随便找一个附近的点
 	if ocean_pos == nil then
 		ocean_pos = FindNearbyOcean(Vector3(0,0,0))
-		aipPrint("兜底解!!!")
 		aipTypePrint(ocean_pos)
 	end
 

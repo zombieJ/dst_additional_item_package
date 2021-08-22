@@ -389,39 +389,37 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
 	return aipGetSpawnPoint(pt, minDistance)
 end
 
--- 和 TheMap:FindRandomPointInOcean 相似，但是不会贴边生成
-function _G.aipFindRandomPointInOcean(max_tries)
+-- 和 TheMap:FindRandomPointInOcean 相似，但是通过地图上的岩石附近创造
+function _G.aipFindRandomPointInOcean(radius)
 	local w, h = _G.TheWorld.Map:GetSize()
-	local half_w = w/2 * _G.TILE_SCALE - 20 -- 边缘不要
-	local half_h = h/2 * _G.TILE_SCALE - 20 -- 边缘不要
-	while (max_tries > 0) do
-		max_tries = max_tries - 1
+	local halfW = w/2 * _G.TILE_SCALE - 50 -- 裁剪边缘
+	local halfH = h/2 * _G.TILE_SCALE - 50 -- 裁剪边缘
+	
+	local pos = nil
+	for i = 1, 100 do
+		local x = math.random(-halfW, halfW)
+		local z = math.random(-halfH, halfH)
+		local rndPos = _G.Vector3(x, 0, z)
 
-		local x = math.random(-half_w, half_w)
-		local z = math.random(-half_h, half_h)
-
-		if _G.TheWorld.Map:IsOceanAtPoint(x, 0, z)	then
-			return _G.Vector3(x, 0, z)
+		if _G.aipValidateOceanPoint(rndPos, radius) then
+			pos = rndPos
+			break
 		end
 	end
+
+	return pos
 end
 
-function _G.aipValidateOceanPoint(pt, oceanRaidus, prefabRaidus)
-	oceanRaidus = oceanRaidus or 5
-	prefabRaidus = prefabRaidus or oceanRaidus
+function _G.aipValidateOceanPoint(pt, radius)
+	radius = radius or 0
 
-	for x = -oceanRaidus, oceanRaidus do
-		for z = -oceanRaidus, oceanRaidus do
-			local comparePos = _G.Vector3(pt.x + x, 0, pt.z + z)
-			if _G.TheWorld.Map:IsOceanAtPoint(comparePos.x, 0, comparePos.z) then
+	-- 间隔一段地皮判断一次
+	for rx = pt.x - radius, pt.x + radius, _G.TILE_SCALE * 0.8 do
+		for rz = pt.z - radius, pt.z + radius, _G.TILE_SCALE * 0.8 do
+			if not _G.TheWorld.Map:IsOceanAtPoint(rx, 0, rz) then
 				return false
 			end
 		end
-	end
-
-	local ents = TheSim:FindEntities(pt.x, 0, pt.z, prefabRaidus)
-	if #ents > 5 then
-		return false
 	end
 
 	return true
