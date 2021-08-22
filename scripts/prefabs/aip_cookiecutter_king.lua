@@ -10,8 +10,8 @@ local LANG_MAP = {
 		TALK_KING_HUNGER_1 = "(Koalefant Trunk Steak!)",
 		TALK_KING_HUNGER_2 = "(Live Rabbit!)",
 		TALK_KING_HUNGER_3 = "(Live Mud crab!)",
-		TALK_KING_FIND_ME = "(Keep! touch!)",
-		TALK_KING_GIVE_TOOL = "(Use this to find me~)",
+		TALK_KING_FIND_ME = "(Keep in touch!)",
+		TALK_KING_FINISH = "(Nice food. Thx!)",
 		TALK_KING_88 = "(Bye!)",
 	},
 	chinese = {
@@ -22,8 +22,8 @@ local LANG_MAP = {
 		TALK_KING_HUNGER_1 = "(烤象鼻排!)",
 		TALK_KING_HUNGER_2 = "(活兔子!)",
 		TALK_KING_HUNGER_3 = "(活泥蟹!)",
-		TALK_KING_FIND_ME = "(保持联系)",
-		TALK_KING_GIVE_TOOL = "(来吧，用它们投石问路)",
+		TALK_KING_FIND_ME = "(保持联系，投石问路)",
+		TALK_KING_FINISH = "(多谢招待，给你个小礼物)",
 		TALK_KING_88 = "(再见)",
 	},
 }
@@ -35,7 +35,7 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET = LANG.TALK_KING_SECRET
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_PLAYER_SECRET = LANG.TALK_PLAYER_SECRET
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_FIND_ME = LANG.TALK_KING_FIND_ME
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_GIVE_TOOL = LANG.TALK_KING_GIVE_TOOL
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_FINISH = LANG.TALK_KING_FINISH
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_88 = LANG.TALK_KING_88
 
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_1 = LANG.TALK_KING_HUNGER_1
@@ -121,13 +121,15 @@ local function onLoad(inst, data)
 	end
 end
 
--------------------------- 事件 --------------------------
+-------------------------- 辅助 --------------------------
+-- 更新图标
 local function refreshIcon(inst)
 	inst:DoTaskInTime(0.1, function()
 		inst.MiniMapEntity:SetEnabled(inst.aipStatus == "hunger_1")
 	end)
 end
 
+-- 延迟说话
 local function delayTalk(delay, talker, king, speech, knownSpeech, callback)
 	talker:DoTaskInTime(delay or 0, function()
 		if talker and talker.components.talker ~= nil then
@@ -155,31 +157,135 @@ local function delayTalk(delay, talker, king, speech, knownSpeech, callback)
 	end)
 end
 
-local function clearChecker(inst)
+-------------------------- 吃货 --------------------------
+local foods = {
+	hunger_1 = "trunk_cooked",
+	hunger_2 = "rabbit",
+	hunger_3 = "aip_mud_crab",
+}
+
+local foodSpeaks = {
+	hunger_1 = STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_1,
+	hunger_2 = STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_2,
+	hunger_3 = STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_3,
+}
+
+local nextStatus = {
+	hunger_1 = "hunger_2",
+	hunger_2 = "hunger_3",
+}
+
+-- 停止监听吃货
+local function stopEater(inst)
 	if inst.aipLoopCheckerTask ~= nil then
 		inst.aipLoopCheckerTask:Cancel()
 		inst.aipLoopCheckerTask = nil
 	end
 end
 
-local function findCrabs(inst)
-	local x, y, z = inst.Transform:GetWorldPosition()
-	local ents = TheSim:FindEntities(x, 0, z, 4, { "aip_mud_crab" })
+-- 寻找匹配物
+local function findFoods(inst, prefab)
+	local ents = aipFindNearEnts(inst, { prefab }, 4)
 
 	return aipFilterTable(ents, function(ent)
 		return ent.components.inventoryitem == nil or ent.components.inventoryitem:GetGrandOwner() == nil
 	end)
 end
 
-local function onNear(inst, player)
-	clearChecker(inst)
+-- 开始监听吃货
+local function startEater(inst)
+	stopEater(inst)
 
-	-------------------- 如果没吃过泥蟹就要求吃一些 --------------------
-	if inst.aipStatus == "hunger_1" then
+	inst.aipLoopCheckerTask = inst:DoPeriodicTask(1, function()
+		local food = foods[inst.aipStatus]
+
+		-- 没有匹配食物就不吃了
+		if food == nil then
+			return
+		end
+
+		local ents = findFoods(inst, food)
+
+		if #ents > 0 then
+			inst.AnimState:PlayAnimation("eat")
+			inst.AnimState:PushAnimation("idle", true)
+
+			-- 张嘴动画结束后再检测一次吃掉食物
+			inst:DoTaskInTime(.3, function()
+				local ents = findFoods(inst, food)
+
+				if #ents > 0 then
+					for i, ent in ipairs(ents) do
+						aipReplacePrefab(ent, "small_puff")
+					end
+
+					-- 如果有下一个状态就创建一个新的副本
+					local nextKingStatus = nextStatus[inst.aipStatus]
+					if nextKingStatus ~= nil then
+						local kingPos = inst:GetPosition()
+						local nextKing = TheWorld.components.world_common_store:CreateCoookieKing(kingPos)
+						nextKing.aipStatus = nextKingStatus
+
+						-- 感谢 并给予 油纸包
+						delayTalk(2, inst.aipVest, inst,
+							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET,
+							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_FIND_ME,
+							function()
+								for i = 1, 5 do
+									inst.aipVest.components.lootdropper:SpawnLootPrefab("aip_map")
+								end
+							end
+						)
+
+					-- 没下一个状态了，给予子卿
+					else
+						delayTalk(2, inst.aipVest, inst,
+							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET,
+							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_FINISH,
+							function()
+								inst.aipVest.components.lootdropper:SpawnLootPrefab("aip_suwu")
+							end
+						)
+					end
+
+					-- 本身已经没用了
+					stopEater(inst)
+					inst.aipStatus = "disabled"
+					refreshIcon(inst)
+					inst.persists = false
+
+					-- 鱼很开心，开始游戏
+					delayTalk(4, inst.aipVest, inst,
+						STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET,
+						STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_88
+					)
+
+					inst:DoTaskInTime(4.1, function()
+						inst.AnimState:OverrideMultColour(0,0,0,0)
+						inst.components.hull.boat_lip.AnimState:PlayAnimation("hide", false)
+						inst.components.hull.boat_lip:ListenForEvent("animover", function()
+							inst:Remove()
+						end)
+					end)
+				end
+			end)
+		end
+	end)
+end
+
+-------------------------- 事件 --------------------------
+local function onNear(inst, player)
+	startEater(inst)
+
+	---------------------- 需求食物 ----------------------
+	local food = foods[inst.aipStatus]
+	if food ~= nil then
+		local speak = foodSpeaks[inst.aipStatus]
+
 		-- 鱼吐泡泡
 		delayTalk(2, inst.aipVest, inst,
 			STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET,
-			STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_1
+			speak
 		)
 
 		-- 玩家表示听不懂
@@ -187,81 +293,11 @@ local function onNear(inst, player)
 			STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_PLAYER_SECRET,
 			""
 		)
-
-		-- 寻找附近泥蟹吃掉
-		inst.aipLoopCheckerTask = inst:DoPeriodicTask(1, function()
-			local ents = findCrabs(inst)
-
-			if #ents > 0 then
-				inst.AnimState:PlayAnimation("eat")
-				inst.AnimState:PushAnimation("idle", true)
-
-				inst:DoTaskInTime(.3, function()
-					local ents = findCrabs(inst)
-
-					-- 吃完开始游戏
-					if #ents > 0 then
-						for i, ent in ipairs(ents) do
-							aipReplacePrefab(ent, "small_puff")
-						end
-
-						clearChecker(inst)
-						inst.aipStatus = "disabled"
-
-						-- 鱼很开心，开始游戏
-						delayTalk(2, inst.aipVest, inst,
-							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET,
-							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_FIND_ME
-						)
-
-						-- 给予物品
-						delayTalk(4, inst.aipVest, inst,
-							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET,
-							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_GIVE_TOOL,
-							function()
-								inst.aipVest.components.lootdropper:SpawnLootPrefab("aip_shell_stone_blueprint")
-								for i = 1, 3 do
-									inst.aipVest.components.lootdropper:SpawnLootPrefab("aip_shell_stone")
-								end
-							end
-						)
-
-						-- 创建一个副本，然后删除自己
-						inst.persists = false
-						local kingPos = inst:GetPosition()
-						local nextKing = TheWorld.components.world_common_store:CreateCoookieKing(kingPos)
-						nextKing.aipStatus = "hunger_2"
-
-						-- 鱼很开心，开始游戏
-						delayTalk(6, inst.aipVest, inst,
-							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET,
-							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_88
-						)
-
-						inst:DoTaskInTime(7, function()
-							inst.AnimState:SetMultColour(0,0,0,0)
-							inst.components.hull.boat_lip.AnimState:PlayAnimation("hide", false)
-							inst.components.hull.boat_lip:ListenForEvent("animover", function()
-								inst:Remove()
-							end)
-						end)
-					end
-				end)
-			end
-		end)
-
-	--------------------- 再次被玩家找到，下一阶段 ---------------------
-	elseif inst.aipStatus == "hunger_2" then
-		-- 鱼很开心，开始游戏
-		delayTalk(2, inst.aipVest, inst,
-			STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET,
-			STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_FIND_ME
-		)
 	end
 end
 
 local function onFar(inst)
-	clearChecker(inst)
+	stopEater(inst)
 end
 
 -------------------------- 实体 --------------------------
