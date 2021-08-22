@@ -5,8 +5,7 @@ local function findFarAwayOcean(pos)
 	local longestDist = -1
 
 	for i = 1, 30 do
-		local rndPos = aipFindRandomPointInOcean(20)
-		-- rndPos = FindSwimmableOffset(rndPos, math.random()*PI*2, 10)
+		local rndPos = aipFindRandomPointInOcean(20, 4)
 
 		local dist = (rndPos ~= nil and pos ~= nil) and aipDist(rndPos, pos) or 0
 
@@ -20,7 +19,19 @@ local function findFarAwayOcean(pos)
 	-- 随便找一个附近的点
 	if ocean_pos == nil then
 		ocean_pos = FindNearbyOcean(Vector3(0,0,0))
-		aipTypePrint(ocean_pos)
+
+	-- 删除附近的障碍物
+	else
+		local ents = aipFindNearEnts(
+			ocean_pos,
+			{"seastack", "messagebottle","driftwood_log"}, 
+			dev_mode and 20 or 5
+		)
+		for i,ent in ipairs(ents) do
+			if ent:IsValid() then
+				ent:Remove()
+			end
+		end
 	end
 
 	return ocean_pos
@@ -66,7 +77,7 @@ end
 function CommonStore:CreateCoookieKing(pos)
 	-- 存在且没有坐标就跳过
 	local ent = TheSim:FindFirstEntityWithTag("aip_cookiecutter_king")
-	if ent ~= nil and pos == nil and not dev_mode then
+	if ent ~= nil and pos == nil then
 		return ent
 	end
 
@@ -82,7 +93,7 @@ end
 function CommonStore:CreateSuWuMound(pos)
 	-- 存在且没有坐标就跳过
 	local ent = TheSim:FindFirstEntityWithTag("aip_suwu_mound")
-	if ent ~= nil and pos == nil and not dev_mode then
+	if ent ~= nil and pos == nil then
 		return ent
 	end
 
@@ -109,9 +120,9 @@ function CommonStore:PostWorld()
 			end
 		end
 
-		if dev_mode then
-			self:CreateCoookieKing()
-		end
+		-- if dev_mode then
+		-- 	self:CreateCoookieKing()
+		-- end
 	end)
 end
 
@@ -124,3 +135,36 @@ return CommonStore
 
 -- inst:ListenForEvent("ms_playerjoined", OnPlayerJoined, TheWorld)
 -- inst:ListenForEvent("ms_playerleft", OnPlayerLeft, TheWorld)
+
+
+
+-- 水中物品
+-- 0: "boatfragment03"
+-- 1: "boatfragment04"
+-- 2: "boatfragment05"
+-- 3: "bullkelp_plant"
+-- 4: "bullkelp_plant_leaves"
+-- 5: "crabking"
+-- 6: "dark_observer_vest"
+-- 7: "driftwood_log"
+-- 8: "fireflies"
+-- 9: "float_fx_back"
+-- 10: "float_fx_front"
+-- 11: "lightrays_canopy"
+-- 12: "messagebottle"
+-- 13: "moonglass_wobster_den"
+-- 14: "oceanfish_shoalspawner"
+-- 15: "oceantree"
+-- 16: "oceantree_ripples_short"
+-- 17: "oceantree_roots_short"
+-- 18: "oceanvine"
+-- 19: "oceanvine_cocoon"
+-- 20: "oceanvine_deco"
+-- 21: "saltstack"
+-- 22: "seastack"
+-- 23: "waterplant"
+-- 24: "waterplant_base"
+-- 25: "watertree_pillar"
+-- 26: "watertree_pillar_ripples"
+-- 27: "watertree_pillar_roots"
+-- 28: "watertree_root"

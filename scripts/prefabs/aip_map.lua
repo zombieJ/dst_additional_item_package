@@ -34,6 +34,7 @@ local function getRevealTargetPos(inst, doer)
 			if king.aipStatus == "hunger_1" then
 				return king:GetPosition()
 			else
+				inst:PushEvent("aip_give_instead")
 				return nil, "NO_TARGET"
 			end
 		end
@@ -42,8 +43,13 @@ local function getRevealTargetPos(inst, doer)
 	return nil, "NO_TARGET"
 end
 
-local function onReveal(inst)
+local function onRemove(inst)
 	inst.components.stackable:Get():Remove()
+end
+
+local function onGive(inst)
+	inst.components.lootdropper:SpawnLootPrefab("aip_shell_stone")
+	onRemove(inst)
 end
 
 ----------------------------------- 实体 -----------------------------------
@@ -73,6 +79,8 @@ function fn()
 
 	inst:AddComponent("inspectable")
 
+	inst:AddComponent("lootdropper")
+
 	inst:AddComponent("stackable")
 	inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM
 
@@ -81,7 +89,8 @@ function fn()
 
 	inst:AddComponent("mapspotrevealer")
 	inst.components.mapspotrevealer:SetGetTargetFn(getRevealTargetPos)
-	inst:ListenForEvent("on_reveal_map_spot_pst", onReveal)
+	inst:ListenForEvent("on_reveal_map_spot_pst", onRemove)
+	inst:ListenForEvent("aip_give_instead", onGive)
 
 	MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
 	MakeSmallPropagator(inst)

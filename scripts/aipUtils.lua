@@ -251,13 +251,20 @@ function _G.aipRandomEnt(ents)
 end
 
 --------------------------------------- 辅助 ---------------------------------------
+-- 找到附近符合名字的物品，可以是一个对象 或者 是一个 点
 function _G.aipFindNearEnts(inst, prefabNames, distance)
-	local x, y, z = inst.Transform:GetWorldPosition()
+	local x, y, z = 0, 0, 0
+	if inst.Transform ~= nil then
+		x, y, z = inst.Transform:GetWorldPosition()
+	elseif inst.x ~= nil and inst.y ~= nil and inst.z ~= nil then
+		x = inst.x
+		y = inst.y
+		z = inst.z
+	end
 	local ents = TheSim:FindEntities(x, 0, z, distance or 10)
 	local prefabs = {}
 
 	for _, ent in pairs(ents) do
-		-- 检测图腾
 		if ent:IsValid() and table.contains(prefabNames, ent.prefab) then
 			table.insert(prefabs, ent)
 		end
@@ -390,7 +397,7 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
 end
 
 -- 和 TheMap:FindRandomPointInOcean 相似，但是通过地图上的岩石附近创造
-function _G.aipFindRandomPointInOcean(radius)
+function _G.aipFindRandomPointInOcean(radius, prefabRadius)
 	local w, h = _G.TheWorld.Map:GetSize()
 	local halfW = w/2 * _G.TILE_SCALE - 50 -- 裁剪边缘
 	local halfH = h/2 * _G.TILE_SCALE - 50 -- 裁剪边缘
@@ -410,8 +417,9 @@ function _G.aipFindRandomPointInOcean(radius)
 	return pos
 end
 
-function _G.aipValidateOceanPoint(pt, radius)
+function _G.aipValidateOceanPoint(pt, radius, prefabRadius)
 	radius = radius or 0
+	prefabRadius = prefabRadius or radius or 0
 
 	-- 间隔一段地皮判断一次
 	for rx = pt.x - radius, pt.x + radius, _G.TILE_SCALE * 0.8 do
@@ -419,6 +427,21 @@ function _G.aipValidateOceanPoint(pt, radius)
 			if not _G.TheWorld.Map:IsOceanAtPoint(rx, 0, rz) then
 				return false
 			end
+		end
+	end
+
+	-- 附近允许石头、漂流瓶
+	local ents = TheSim:FindEntities(pt.x, 0, pt.z, prefabRadius)
+	for i, ent in ipairs(ents) do
+		if not table.contains({
+			"seastack",
+			"messagebottle",
+			"float_fx_back",
+			"float_fx_front",
+			"fireflies",
+			"driftwood_log",
+		}, ent.prefab) then
+			return false
 		end
 	end
 
