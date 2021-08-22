@@ -2,12 +2,12 @@ local language = aipGetModConfig("language")
 
 local LANG_MAP = {
 	english = {
-    	NAME = "Unverified Map",
-		DESC = "Very scribbled",
+    	NAME = "Paper Bag",
+		DESC = "About a big guy",
 	},
 	chinese = {
-		NAME = "不保真的地图",
-		DESC = "画的十分潦草",
+		NAME = "油纸包",
+		DESC = "一个关于大家伙的秘密",
 	},
 }
 
@@ -33,11 +33,17 @@ local function getRevealTargetPos(inst, doer)
 		if king ~= nil then
 			if king.aipStatus == "hunger_1" then
 				return king:GetPosition()
+			else
+				return nil, "NO_TARGET"
 			end
 		end
 	end
 
 	return nil, "NO_TARGET"
+end
+
+local function onReveal(inst)
+	inst.components.stackable:Get():Remove()
 end
 
 ----------------------------------- 实体 -----------------------------------
@@ -67,12 +73,15 @@ function fn()
 
 	inst:AddComponent("inspectable")
 
+	inst:AddComponent("stackable")
+	inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM
+
 	inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_map.xml"
 
 	inst:AddComponent("mapspotrevealer")
 	inst.components.mapspotrevealer:SetGetTargetFn(getRevealTargetPos)
-	inst:ListenForEvent("on_reveal_map_spot_pst", inst.Remove)
+	inst:ListenForEvent("on_reveal_map_spot_pst", onReveal)
 
 	MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
 	MakeSmallPropagator(inst)
