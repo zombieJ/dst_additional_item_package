@@ -7,19 +7,24 @@ local LANG_MAP = {
 		DESC = "How long has it grown?",
 		TALK_PLAYER_SECRET = "What do you say?",
 		TALK_KING_SECRET = "Bo bo bo...",
-		TALK_KING_HUNGER = "(Mud crab!)",
-		TALK_KING_HUNGER_AGAIN = "(More mud crab!)",
+		TALK_KING_HUNGER_1 = "(Koalefant Trunk Steak!)",
+		TALK_KING_HUNGER_2 = "(Live Rabbit!)",
+		TALK_KING_HUNGER_3 = "(Live Mud crab!)",
+		TALK_KING_FIND_ME = "(Keep! touch!)",
 		TALK_KING_GIVE_TOOL = "(Use this to find me~)",
+		TALK_KING_88 = "(Bye!)",
 	},
 	chinese = {
 		NAME = "饼干碎裂机",
 		DESC = "到底长了多久？",
 		TALK_PLAYER_SECRET = "不知道它在说什么",
 		TALK_KING_SECRET = "咕噜咕噜咕噜...",
-		TALK_KING_HUNGER = "(想吃泥蟹)",
-		TALK_KING_HUNGER_AGAIN = "(还想吃泥蟹)",
-		TALK_KING_FIND_ME = "(我们玩个游戏，找找我去哪儿了)",
+		TALK_KING_HUNGER_1 = "(烤象鼻排!)",
+		TALK_KING_HUNGER_2 = "(活兔子!)",
+		TALK_KING_HUNGER_3 = "(活泥蟹!)",
+		TALK_KING_FIND_ME = "(保持联系)",
 		TALK_KING_GIVE_TOOL = "(来吧，用它们投石问路)",
+		TALK_KING_88 = "(再见)",
 	},
 }
 
@@ -29,10 +34,13 @@ STRINGS.NAMES.AIP_COOKIECUTTER_KING = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET = LANG.TALK_KING_SECRET
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_PLAYER_SECRET = LANG.TALK_PLAYER_SECRET
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER = LANG.TALK_KING_HUNGER
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_AGAIN = LANG.TALK_KING_HUNGER_AGAIN
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_FIND_ME = LANG.TALK_KING_FIND_ME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_GIVE_TOOL = LANG.TALK_KING_GIVE_TOOL
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_88 = LANG.TALK_KING_88
+
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_1 = LANG.TALK_KING_HUNGER_1
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_2 = LANG.TALK_KING_HUNGER_2
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_3 = LANG.TALK_KING_HUNGER_3
 
 -- 资源
 local assets = {
@@ -116,7 +124,7 @@ end
 -------------------------- 事件 --------------------------
 local function refreshIcon(inst)
 	inst:DoTaskInTime(0.1, function()
-		inst.MiniMapEntity:SetEnabled(inst.aipStatus ~= "peekaboo")
+		inst.MiniMapEntity:SetEnabled(inst.aipStatus == "hunger_1")
 	end)
 end
 
@@ -133,6 +141,11 @@ local function delayTalk(delay, talker, king, speech, knownSpeech, callback)
 
 			if finalSpeech then
 				talker.components.talker:Say(finalSpeech)
+
+				if king.aipVest == talker then
+					king.AnimState:PlayAnimation("talk")
+					king.AnimState:PushAnimation("idle", true)
+				end
 			end
 
 			if callback ~= nil then
@@ -162,11 +175,11 @@ local function onNear(inst, player)
 	clearChecker(inst)
 
 	-------------------- 如果没吃过泥蟹就要求吃一些 --------------------
-	if inst.aipStatus == nil then
+	if inst.aipStatus == "hunger_1" then
 		-- 鱼吐泡泡
 		delayTalk(2, inst.aipVest, inst,
 			STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET,
-			STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER
+			STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_1
 		)
 
 		-- 玩家表示听不懂
@@ -193,7 +206,7 @@ local function onNear(inst, player)
 						end
 
 						clearChecker(inst)
-						inst.aipStatus = "play"
+						inst.aipStatus = "disabled"
 
 						-- 鱼很开心，开始游戏
 						delayTalk(2, inst.aipVest, inst,
@@ -217,9 +230,15 @@ local function onNear(inst, player)
 						inst.persists = false
 						local kingPos = inst:GetPosition()
 						local nextKing = TheWorld.components.world_common_store:CreateCoookieKing(kingPos)
-						nextKing.aipStatus = "peekaboo"
+						nextKing.aipStatus = "hunger_2"
 
-						inst:DoTaskInTime(5, function()
+						-- 鱼很开心，开始游戏
+						delayTalk(6, inst.aipVest, inst,
+							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET,
+							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_88
+						)
+
+						inst:DoTaskInTime(7, function()
 							inst.AnimState:SetMultColour(0,0,0,0)
 							inst.components.hull.boat_lip.AnimState:PlayAnimation("hide", false)
 							inst.components.hull.boat_lip:ListenForEvent("animover", function()
@@ -231,10 +250,13 @@ local function onNear(inst, player)
 			end
 		end)
 
-	-------------------- 如果没吃过泥蟹就要求吃一些 --------------------
-	-------------------- 再次被玩家找到， --------------------
-	elseif inst.aipStatus == "peekaboo" then
-
+	--------------------- 再次被玩家找到，下一阶段 ---------------------
+	elseif inst.aipStatus == "hunger_2" then
+		-- 鱼很开心，开始游戏
+		delayTalk(2, inst.aipVest, inst,
+			STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET,
+			STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_FIND_ME
+		)
 	end
 end
 
@@ -287,7 +309,7 @@ local function fn()
 
 	-- 水之物理？看起来是缓慢减少速度用的
 	inst:AddComponent("waterphysics")
-	inst.components.waterphysics.restitution = 0.75
+	inst.components.waterphysics.restitution = 0.75 -- 推回撞击的船只
 
 	inst.doplatformcamerazoom = net_bool(inst.GUID, "doplatformcamerazoom", "doplatformcamerazoomdirty")
 
@@ -319,7 +341,7 @@ local function fn()
 
 	inst.aipVest = inst:SpawnChild("aip_cookiecutter_king_vest")
 
-	inst.aipStatus = nil
+	inst.aipStatus = "hunger_1"
 
 	refreshIcon(inst)
 

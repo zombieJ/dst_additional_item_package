@@ -1,54 +1,6 @@
 local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
-local function onFishShoalAdded(inst)
-	if TheWorld.components.world_common_store ~= nil then
-		table.insert(
-			TheWorld.components.world_common_store.fishShoals,
-			inst
-		)
-	end
-end
-
-local CommonStore = Class(function(self, inst)
-	self.inst = inst
-	self.shadow_follower_count = 0
-
-	-- 当前管理物品的箱子
-	self.chestOpened = false
-	-- 记录目前哪个箱子被打开了
-	self.holderChest = nil
-	-- 记录所有的箱子
-	self.chests = {}
-
-	-- 记录所有的飞行点
-	self.flyTotems = {}
-
-	-- 记录所有的鱼点
-	self.fishShoals = {}
-
-	-- 后置世界计算
-	self:PostWorld()
-
-	self.inst:ListenForEvent("ms_registerfishshoal", onFishShoalAdded)
-end)
-
-function CommonStore:isShadowFollowing()
-	return self.shadow_follower_count > 0
-end
-
--- 创建 饼干粉碎机: 如果给了坐标，就找一个尽量远的坐标
-function CommonStore:CreateCoookieKing(pos)
-	-- 存在且没有坐标就跳过
-	local ent = TheSim:FindFirstEntityWithTag("aip_cookiecutter_king")
-	if ent ~= nil and pos == nil then
-		return ent
-	end
-
-	-- 第一次生成一定在鱼群位置
-	-- local idx = math.random(#self.fishShoals)
-	-- local fishShoal = self.fishShoals[idx]
-	-- ocean_pos = fishShoal:GetPosition()
-
+local function findFarAwayOcean(pos)
 	local ocean_pos = nil
 	local longestDist = -1
 
@@ -99,8 +51,73 @@ function CommonStore:CreateCoookieKing(pos)
 		ocean_pos = FindNearbyOcean(Vector3(0,0,0))
 	end
 
+	return ocean_pos
+end
+
+local function onFishShoalAdded(inst)
+	if TheWorld.components.world_common_store ~= nil then
+		table.insert(
+			TheWorld.components.world_common_store.fishShoals,
+			inst
+		)
+	end
+end
+
+local CommonStore = Class(function(self, inst)
+	self.inst = inst
+	self.shadow_follower_count = 0
+
+	-- 当前管理物品的箱子
+	self.chestOpened = false
+	-- 记录目前哪个箱子被打开了
+	self.holderChest = nil
+	-- 记录所有的箱子
+	self.chests = {}
+
+	-- 记录所有的飞行点
+	self.flyTotems = {}
+
+	-- 记录所有的鱼点
+	self.fishShoals = {}
+
+	-- 后置世界计算
+	self:PostWorld()
+
+	self.inst:ListenForEvent("ms_registerfishshoal", onFishShoalAdded)
+end)
+
+function CommonStore:isShadowFollowing()
+	return self.shadow_follower_count > 0
+end
+
+-- 创建 饼干粉碎机: 如果给了坐标，就找一个尽量远的坐标
+function CommonStore:CreateCoookieKing(pos)
+	-- 存在且没有坐标就跳过
+	local ent = TheSim:FindFirstEntityWithTag("aip_cookiecutter_king")
+	if ent ~= nil and pos == nil then
+		return ent
+	end
+
+	local ocean_pos = findFarAwayOcean(pos)
+
 	if ocean_pos ~= nil then
 		return aipSpawnPrefab(nil, "aip_cookiecutter_king", ocean_pos.x, ocean_pos.y, ocean_pos.z)
+	end
+
+	return nil
+end
+
+function CommonStore:CreateSuWuMound(pos)
+	-- 存在且没有坐标就跳过
+	local ent = TheSim:FindFirstEntityWithTag("aip_suwu_mound")
+	if ent ~= nil and pos == nil then
+		return ent
+	end
+
+	local ocean_pos = findFarAwayOcean(pos)
+
+	if ocean_pos ~= nil then
+		return aipSpawnPrefab(nil, "aip_suwu_mound", ocean_pos.x, ocean_pos.y, ocean_pos.z)
 	end
 
 	return nil

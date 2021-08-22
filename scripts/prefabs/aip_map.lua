@@ -28,10 +28,12 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_MAP = LANG.DESC
 ----------------------------------- 事件 -----------------------------------
 local function getRevealTargetPos(inst, doer)
 	if TheWorld.components.world_common_store ~= nil then
-		local king = TheWorld.components.world_common_store:CreateCoookieKing()
+		local king, exist = TheWorld.components.world_common_store:CreateCoookieKing()
 
 		if king ~= nil then
-			return king:GetPosition()
+			if king.aipStatus == "hunger_1" then
+				return king:GetPosition()
+			end
 		end
 	end
 

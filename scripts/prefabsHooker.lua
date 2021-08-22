@@ -270,6 +270,7 @@ end)
 
 if additional_food and (_G.TheNet:GetIsServer() or _G.TheNet:IsDedicated()) then
 	AddPrefabPostInit("world", function (inst)
+		-- 季节变换时，生成向日葵
 		inst:WatchWorldState("season", function ()
 			for i, player in ipairs(_G.AllPlayers) do
 				if not player:HasTag("playerghost") and player.entity:IsVisible() then
