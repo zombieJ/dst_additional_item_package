@@ -5,18 +5,22 @@ if additional_chesspieces ~= "open" then
 	return nil
 end
 
+local disabled_weapon = aipGetModConfig("additional_weapon") ~= "open"
+
 local language = aipGetModConfig("language")
 
 local LANG_MAP = {
-	["english"] = {
-		["NAME"] = "Mysterious Opal",
-		["REC_DESC"] = "Alien from the sky",
-		["DESC"] = "Decorate your Walking Cane",
+	english = {
+		NAME = "Mysterious Opal",
+		REC_DESC = "Alien from the sky",
+		DESC = "Decorate your Walking Cane",
+		DESC_DISABLED = "The creator disabled its magic",
 	},
-	["chinese"] = {
-		["NAME"] = "神秘猫眼石",
-		["REC_DESC"] = "天外来物",
-		["DESC"] = "它似乎可以嵌入步行手杖",
+	chinese = {
+		NAME = "神秘猫眼石",
+		REC_DESC = "天外来物",
+		DESC = "它似乎可以嵌入步行手杖",
+		DESC_DISABLED = "创世者禁用了它的魔力",
 	},
 }
 
@@ -39,6 +43,7 @@ local prefabs =
 STRINGS.NAMES.AIP_DOU_OPAL = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_DOU_OPAL = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_OPAL = LANG.DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_OPAL_DISABLED = LANG.DESC_DISABLED
 
 -----------------------------------------------------------
 local function onLightning(inst)
@@ -59,6 +64,15 @@ local function onDoTargetAction(inst, doer, target)
 	-- server only
 	if not TheWorld.ismastersim then
 		return inst
+	end
+
+	if disabled_weapon then
+		if doer.components.talker ~= nil then
+			doer.components.talker:Say(
+				STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_OPAL_DISABLED
+			)
+		end
+		return
 	end
 
 	local cepter = aipReplacePrefab(target, "aip_dou_scepter")
