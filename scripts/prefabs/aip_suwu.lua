@@ -14,10 +14,12 @@ local USES_MAP = {
 	normal = 100,
 	much = 150,
 }
+
+local BASE_DMG = TUNING.SPIKE_DAMAGE / 51 * 40
 local DAMAGE_MAP = {
-	less = TUNING.SPIKE_DAMAGE * 0.8,
-	normal = TUNING.SPIKE_DAMAGE,
-	large = TUNING.SPIKE_DAMAGE * 1.5,
+	less = BASE_DMG * 0.8,
+	normal = BASE_DMG,
+	large = BASE_DMG * 1.5,
 }
 
 local LANG_MAP = {
@@ -98,13 +100,15 @@ function fn()
 	inst.entity:AddTransform()
 	inst.entity:AddAnimState()
 	inst.entity:AddNetwork()
+
+	inst.AnimState:SetRayTestOnBB(true)
 	
 	MakeInventoryPhysics(inst)
 	MakeInventoryFloatable(inst, "small", 0.05, {1.2, 0.75, 1.2})
 
-	-- 苏武只有一把
-	inst:AddTag("irreplaceable")
-	inst:AddTag("nonpotatable")
+	-- -- 苏武只有一把
+	-- inst:AddTag("irreplaceable")
+	-- inst:AddTag("nonpotatable")
 	
 	inst.AnimState:SetBank("aip_suwu")
 	inst.AnimState:SetBuild("aip_suwu")

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
     <folder id="0" name="aip_suwu_swap">
-        <file id="0" name="aip_suwu_swap/output.png" width="160" height="448" pivot_x="0.471727" pivot_y="0.381618"/>
+        <file id="0" name="aip_suwu_swap/output.png" width="180" height="504" pivot_x="0.520698" pivot_y="0.315568"/>
     </folder>
     <entity id="0" name="aip_suwu_swap">
         <animation id="0" name="BUILD" length="1000">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="output" folder="0" file="0" abs_x="7.92301" abs_y="0.434171" abs_pivot_x="0.471727" abs_pivot_y="0.381618" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="0" name="output" folder="0" file="0" abs_x="15.979302" abs_y="-32.815568" abs_pivot_x="0.520698" abs_pivot_y="0.315568" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
             </mainline>
             <timeline id="0" name="output">
                 <key id="0" spin="0">
-                    <object folder="0" file="0" x="7.92301" y="0.434171" angle="0"/>
+                    <object folder="0" file="0" x="15.979302" y="-32.815568" angle="0"/>
                 </key>
             </timeline>
         </animation>

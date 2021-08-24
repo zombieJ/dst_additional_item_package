@@ -1,3 +1,5 @@
+local disable_weapon = aipGetModConfig("additional_weapon") ~= "open"
+
 -- 文字描述
 local language = aipGetModConfig("language")
 
@@ -243,7 +245,13 @@ local function startEater(inst)
 							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET,
 							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_FINISH,
 							function()
-								inst.aipVest.components.lootdropper:SpawnLootPrefab("aip_suwu")
+								if disable_weapon then
+									-- 禁用武器，给予小树枝
+									inst.aipVest.components.lootdropper:SpawnLootPrefab("twigs")
+								else
+									-- 给予子卿
+									inst.aipVest.components.lootdropper:SpawnLootPrefab("aip_suwu")
+								end
 							end
 						)
 					end

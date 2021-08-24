@@ -37,7 +37,7 @@ local function PrintFootPrint(inst)
 		local deg = inst._footStep == 1 and (rot - 90) or (rot + 90)
 		deg = deg / 180 * PI
 
-		local vest = createGroupVest("aip_dragon_footprint", "aip_dragon_footprint", "disappear")
+		local vest = createGroudVest("aip_dragon_footprint", "aip_dragon_footprint", "disappear")
 		vest.Transform:SetPosition(
 			curPos.x + FP_OFFSET * math.cos(deg),
 			0,
