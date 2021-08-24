@@ -9,11 +9,16 @@ local LANG_MAP = {
 		DESC = "How long has it grown?",
 		TALK_PLAYER_SECRET = "What do you say?",
 		TALK_KING_SECRET = "Bo bo bo...",
-		TALK_KING_HUNGER_1 = "(Koalefant Trunk Steak!)",
-		TALK_KING_HUNGER_2 = "(Live Rabbit!)",
-		TALK_KING_HUNGER_3 = "(Live Mud crab!)",
+
+		TALK_KING_HUNGER_TRUNK_COOKED = "(Koalefant Trunk Steak!)",
+		TALK_KING_HUNGER_RABBIT = "(Live Rabbit!)",
+		TALK_KING_HUNGER_KILLERBEE = "(Live Killer Bee!)",
+		TALK_KING_HUNGER_BUTTERFLY = "(Live Butterfly!)",
+		TALK_KING_HUNGER_MOLE = "(Live Mole!)",
+		TALK_KING_HUNGER_AIP_MUD_CRAB = "(Live Mud crab!)",
+
 		TALK_KING_FIND_ME = "(Keep in touch!)",
-		TALK_KING_FINISH = "(Nice food. Thx!)",
+		TALK_KING_FINISH = "(Nice food. Next challenge is in dev)",
 		TALK_KING_88 = "(Bye!)",
 	},
 	chinese = {
@@ -21,11 +26,16 @@ local LANG_MAP = {
 		DESC = "到底长了多久？",
 		TALK_PLAYER_SECRET = "不知道它在说什么",
 		TALK_KING_SECRET = "咕噜咕噜咕噜...",
-		TALK_KING_HUNGER_1 = "(烤象鼻排!)",
-		TALK_KING_HUNGER_2 = "(活兔子!)",
-		TALK_KING_HUNGER_3 = "(活泥蟹!)",
+
+		TALK_KING_HUNGER_TRUNK_COOKED = "(烤象鼻排!)",
+		TALK_KING_HUNGER_RABBIT = "(活兔子!)",
+		TALK_KING_HUNGER_KILLERBEE = "(活杀人蜂!)",
+		TALK_KING_HUNGER_BUTTERFLY = "(活蝴蝶!)",
+		TALK_KING_HUNGER_MOLE = "(活鼹鼠!)",
+		TALK_KING_HUNGER_AIP_MUD_CRAB = "(活泥蟹!)",
+
 		TALK_KING_FIND_ME = "(保持联系，投石问路)",
-		TALK_KING_FINISH = "(多谢招待，给你个小礼物)",
+		TALK_KING_FINISH = "(多谢招待，下一个挑战还在开发中)",
 		TALK_KING_88 = "(再见)",
 	},
 }
@@ -40,9 +50,12 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_FIND_ME = LA
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_FINISH = LANG.TALK_KING_FINISH
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_88 = LANG.TALK_KING_88
 
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_1 = LANG.TALK_KING_HUNGER_1
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_2 = LANG.TALK_KING_HUNGER_2
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_3 = LANG.TALK_KING_HUNGER_3
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_TRUNK_COOKED = LANG.TALK_KING_HUNGER_TRUNK_COOKED
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_RABBIT = LANG.TALK_KING_HUNGER_RABBIT
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_KILLERBEE = LANG.TALK_KING_HUNGER_KILLERBEE
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_BUTTERFLY = LANG.TALK_KING_HUNGER_BUTTERFLY
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_MOLE = LANG.TALK_KING_HUNGER_MOLE
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_AIP_MUD_CRAB = LANG.TALK_KING_HUNGER_AIP_MUD_CRAB
 
 -- 资源
 local assets = {
@@ -115,11 +128,13 @@ end
 -------------------------- 存取 --------------------------
 local function onSave(inst, data)
 	data.aipStatus = inst.aipStatus
+	data.aipFood = inst.aipFood
 end
 
 local function onLoad(inst, data)
 	if data ~= nil then
 		inst.aipStatus = data.aipStatus
+		inst.aipFood = data.aipFood
 	end
 end
 
@@ -143,7 +158,7 @@ local function delayTalk(delay, talker, king, speech, knownSpeech, callback)
 
 			local finalSpeech = #teaDrinkers > 0 and knownSpeech or speech
 
-			if finalSpeech then
+			if finalSpeech and finalSpeech ~= "" then
 				talker.components.talker:Say(finalSpeech)
 
 				if king.aipVest == talker then
@@ -161,21 +176,24 @@ end
 
 -------------------------- 吃货 --------------------------
 local foods = {
-	hunger_1 = "trunk_cooked",
-	hunger_2 = "rabbit",
-	hunger_3 = "aip_mud_crab",
-}
-
-local foodSpeaks = {
-	hunger_1 = STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_1,
-	hunger_2 = STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_2,
-	hunger_3 = STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_3,
+	hunger_1 = { "trunk_cooked" },
+	hunger_2 = { "rabbit", "killerbee", "butterfly", "mole" },
+	hunger_3 = { "aip_mud_crab" },
 }
 
 local nextStatus = {
 	hunger_1 = "hunger_2",
 	hunger_2 = "hunger_3",
 }
+
+-- 随机一个食物种类
+local function pickFood(inst)
+	local foodList = foods[inst.aipStatus]
+
+	if foodList and not aipInTable(foodList, inst.aipFood) then
+		inst.aipFood = foodList[math.random(#foodList)]
+	end
+end
 
 -- 停止监听吃货
 local function stopEater(inst)
@@ -199,7 +217,7 @@ local function startEater(inst)
 	stopEater(inst)
 
 	inst.aipLoopCheckerTask = inst:DoPeriodicTask(1, function()
-		local food = foods[inst.aipStatus]
+		local food = inst.aipFood
 
 		-- 没有匹配食物就不吃了
 		if food == nil then
@@ -288,12 +306,16 @@ local function onNear(inst, player)
 	---------------------- 需求食物 ----------------------
 	local food = foods[inst.aipStatus]
 	if food ~= nil then
-		local speak = foodSpeaks[inst.aipStatus]
+		-- 选择一下食物
+		pickFood(inst)
+
+		local upperCase = string.upper(inst.aipFood)
+		local foodSpeak = STRINGS.CHARACTERS.GENERIC.DESCRIBE["AIP_COOKIECUTTER_KING_TALK_KING_HUNGER_"..upperCase]
 
 		-- 鱼吐泡泡
 		delayTalk(2, inst.aipVest, inst,
 			STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COOKIECUTTER_KING_TALK_KING_SECRET,
-			speak
+			foodSpeak
 		)
 
 		-- 玩家表示听不懂
@@ -380,12 +402,13 @@ local function fn()
 	inst.components.hull:AttachEntityToBoat(playercollision, 0, 0)
     playercollision.collisionboat = inst
 
-	-- 船体移动
-	-- inst:AddComponent("boatphysics")
+	-- 船体移动：移除就会掉水里
+	inst:AddComponent("boatphysics")
 
 	inst.aipVest = inst:SpawnChild("aip_cookiecutter_king_vest")
 
 	inst.aipStatus = "hunger_1"
+	inst.aipFood = nil
 
 	refreshIcon(inst)
 
