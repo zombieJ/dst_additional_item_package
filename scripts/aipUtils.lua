@@ -364,6 +364,18 @@ function _G.aipGetSpawnPoint(pt, distance)
 			return nextOffset
 		end
 	end
+
+	-- 继续降级往回找
+	for i = dist, 0, -1 do
+		local offset = _G.FindWalkableOffset(pt, math.random() * 2 * _G.PI, i, 12, true)
+		if offset ~= nil then
+			offset.x = offset.x + pt.x
+			offset.z = offset.z + pt.z
+			return offset
+		end
+	end
+
+	return pt
 end
 
 function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
@@ -381,10 +393,13 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
 
 		for distance = minDistance, maxDistance, step do
 			local pos = _G.aipGetSpawnPoint(pt, distance)
-			local ents = TheSim:FindEntities(pos.x, 0, pos.z, emptyDistance)
-			if #ents < tgtEntCnt then
-				tgtPT = pos
-				tgtEntCnt = #ents
+
+			if pos ~= nil then
+				local ents = TheSim:FindEntities(pos.x, 0, pos.z, emptyDistance)
+				if #ents < tgtEntCnt then
+					tgtPT = pos
+					tgtEntCnt = #ents
+				end
 			end
 		end
 
