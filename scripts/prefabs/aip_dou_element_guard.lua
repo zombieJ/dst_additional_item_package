@@ -255,7 +255,7 @@ local list = {
 			-- 每隔 1 秒召唤一个沙刺
 			inst:DoPeriodicTask(1, function()
 				local x, y, z = inst.Transform:GetWorldPosition()
-				local NOTAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "burnt", "monster", "structure" }
+				local NOTAGS = { "FX", "NOCLICK", "DECOR", "INLIMBO", "burnt", "monster", "structure", "player", "groundspike" }
 
 				local ents = TheSim:FindEntities(x, 0, z, TUNING.FIRE_DETECTOR_RANGE, { "_combat", "_health" }, NOTAGS)
 				ents = aipFilterTable(ents, function(ent)
@@ -263,10 +263,19 @@ local list = {
 				end)
 				local target = aipRandomEnt(ents) -- 随机选一个目标召唤沙刺
 
+				local targetPos = nil
 				if target ~= nil then
+					targetPos = target:GetPosition()
+				else
+					targetPos = aipGetSpawnPoint(
+						inst:GetPosition(),
+						math.random(TUNING.FIRE_DETECTOR_RANGE / 5, TUNING.FIRE_DETECTOR_RANGE / 2)
+					)
+				end
+
+				if targetPos ~= nil then
 					local prefab = SpawnPrefab("sandspike_short")
-					local nx, ny, nz = target.Transform:GetWorldPosition()
-					prefab.Transform:SetPosition(nx + (0.5 - math.random()) / 2, 0, nz + (0.5 - math.random()) / 2)
+					prefab.Transform:SetPosition(targetPos.x + (0.5 - math.random()) / 2, 0, targetPos.z + (0.5 - math.random()) / 2)
 
 					-- 重置一下伤害
 					if prefab.components.combat ~= nil then
@@ -286,7 +295,7 @@ local list = {
 				end
 			end)
 		end,
-		duration = 7,
+		duration = 10,
 	},
 	{	-- 治疗守卫：治疗球
 		name = "aip_dou_element_heal_guard",
