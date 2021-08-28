@@ -107,11 +107,12 @@ function CommonStore:CreateSuWuMound(pos)
 end
 
 function CommonStore:PostWorld()
-	-- 我们在世界启动后 5 做操作以防止世界没有准备好
+	-- 我们在世界启动后做操作以防止世界没有准备好
+
+	--------------------------- 创建图腾 ---------------------------
 	self.inst:DoTaskInTime(5, function()
 		local dou_totem = aipFindEnt("aip_dou_totem_broken", "aip_dou_totem_powerless", "aip_dou_totem")
 
-		--------------------------- 创建图腾 ---------------------------
 		if dou_totem == nil then
 			local fissurePT = aipGetTopologyPoint("lunacyarea", "moon_fissure")
 			if fissurePT then
@@ -120,9 +121,12 @@ function CommonStore:PostWorld()
 			end
 		end
 
-		-- if dev_mode then
-		-- 	self:CreateCoookieKing()
-		-- end
+		
+	end)
+
+	--------------------------- 创建饼干 ---------------------------
+	self.inst:DoTaskInTime(10, function()
+		self:CreateCoookieKing()
 	end)
 end
 
