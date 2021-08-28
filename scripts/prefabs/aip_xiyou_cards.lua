@@ -29,14 +29,14 @@ local prefabs = {
 -- 文字描述
 local LANG_MAP = {
 	english = {
-		NAME = "Character Cards",
+		NAME = "Myth Cards",
 		DESC = "Exquisite card",
 		SPEACH = "Shadow go away!",
 		FULL = "It's full!",
 	},
 	chinese = {
 		NAME = "神话书说卡组",
-		DESC = "装订成册的卡组",
+		DESC = "装订成册的精致卡组",
 		DESC_MYTH = "这样就把我们都集齐啦",
 		SPEACH = "邪魅退散!",
 		FULL = "它还没消化完",
@@ -156,6 +156,9 @@ function fn()
 	if not TheWorld.ismastersim then
 		return inst
 	end
+
+	inst:AddComponent("fuel")
+	inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
 
 	inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetLoot({})

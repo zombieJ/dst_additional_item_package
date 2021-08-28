@@ -78,6 +78,13 @@ PrefabFiles = {
 	"aip_fly_totem",
 	"aip_score_ball",
 	"aip_mini_doujiang",
+	"aip_mud_crab",
+	"aip_cookiecutter_king",
+	"aip_map",
+	"aip_olden_tea",
+	"aip_shell_stone",
+	"aip_suwu",
+	"aip_suwu_mound",
 
 	-- Orbit
 	"aip_orbit",
@@ -141,6 +148,7 @@ modimport("scripts/componentsHooker.lua")
 --------------------------------------- 图标 ---------------------------------------
 AddMinimapAtlas("minimap/dark_observer_vest.xml")
 AddMinimapAtlas("minimap/aip_dou_totem.xml")
+AddMinimapAtlas("minimap/aip_cookiecutter_king.xml")
 
 --------------------------------------- 封装 ---------------------------------------
 modimport("scripts/containersWrapper.lua")

@@ -10,7 +10,7 @@ local prefabs = {
 	"aip_shadow_wrapper"
 }
 
-local createGroupVest = require("utils/aip_vest_util").createGroupVest
+local createGroudVest = require("utils/aip_vest_util").createGroudVest
 
 local brain = require "brains/aip_dragon_footprint_brain"
 
@@ -37,7 +37,7 @@ local function PrintFootPrint(inst)
 		local deg = inst._footStep == 1 and (rot - 90) or (rot + 90)
 		deg = deg / 180 * PI
 
-		local vest = createGroupVest("aip_dragon_footprint", "aip_dragon_footprint", "disappear")
+		local vest = createGroudVest("aip_dragon_footprint", "aip_dragon_footprint", "disappear")
 		vest.Transform:SetPosition(
 			curPos.x + FP_OFFSET * math.cos(deg),
 			0,

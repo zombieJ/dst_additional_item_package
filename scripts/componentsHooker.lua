@@ -27,12 +27,14 @@ local LANG_MAP = {
 		USE = "Use",
 		CAST = "Cast",
 		READ = "Read",
+		EAT = "Eat",
 	},
 	chinese = {
 		GIVE = "给予",
 		USE = "使用",
 		CAST = "释放",
 		READ = "阅读",
+		EAT = "吃",
 	},
 }
 local LANG = LANG_MAP[language] or LANG_MAP.english
@@ -70,7 +72,7 @@ env.AddComponentAction("USEITEM", "aipc_action_client", function(inst, doer, tar
 end)
 
 ---------------------- 被使用的技能 ----------------------
-local AIPC_BE_ACTION = env.AddAction("AIPC_BE_ACTION", LANG.USE, function(act)
+local function beAction(act)
 	local doer = act.doer
 	local item = act.invobject	-- INVENTORY
 	local target = act.target	-- SCENE
@@ -86,9 +88,14 @@ local AIPC_BE_ACTION = env.AddAction("AIPC_BE_ACTION", LANG.USE, function(act)
 	end
 
 	return true
-end)
+end
+
+local AIPC_BE_ACTION = env.AddAction("AIPC_BE_ACTION", LANG.USE, beAction)
+local AIPC_BE_CAST_ACTION = env.AddAction("AIPC_BE_CAST_ACTION", LANG.CAST, beAction)
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_BE_ACTION, "doshortaction"))
 AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_BE_ACTION, "doshortaction"))
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_BE_CAST_ACTION, "quicktele"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_BE_CAST_ACTION, "quicktele"))
 
 -- 角色对场景上的某物使用 aipc_action_client
 env.AddComponentAction("SCENE", "aipc_action_client", function(inst, doer, actions, right)
@@ -100,6 +107,26 @@ env.AddComponentAction("SCENE", "aipc_action_client", function(inst, doer, actio
 		table.insert(actions, _G.ACTIONS.AIPC_BE_ACTION)
 	end
 end)
+
+---------------------- 吃食物的技能 ----------------------
+local AIPC_EAT_ACTION = env.AddAction("AIPC_EAT_ACTION", LANG.EAT, function(act)
+	local doer = act.doer
+	local item = act.invobject
+	local target = act.target
+
+	if _G.TheNet:GetIsServer() then
+		-- server
+		triggerComponentAction(doer, item, target, nil)
+	else
+		-- client
+		_G.aipRPC("aipComponentAction", item, target, nil)
+	end
+
+	return true
+end)
+
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_EAT_ACTION, "eat"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_EAT_ACTION, "eat"))
 
 ---------------------- 类读书的技能 ----------------------
 local AIPC_READ_ACTION = env.AddAction("AIPC_READ_ACTION", LANG.READ, function(act)
@@ -121,14 +148,22 @@ end)
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_READ_ACTION, "book"))
 AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_READ_ACTION, "book"))
 
--- 判断使用 和 阅读，因为重复注册会被覆盖
+-- 判断使用 和 阅读 和 吃，因为重复注册会被覆盖
 env.AddComponentAction("INVENTORY", "aipc_action_client", function(inst, doer, actions, right)
 	if inst.components.aipc_action_client:CanBeActOn(doer) then
 		table.insert(actions, _G.ACTIONS.AIPC_BE_ACTION)
 	end
 
+	if inst.components.aipc_action_client:CanBeCastOn(doer) then
+		table.insert(actions, _G.ACTIONS.AIPC_BE_CAST_ACTION)
+	end
+
 	if inst.components.aipc_action_client:CanBeRead(doer) then
 		table.insert(actions, _G.ACTIONS.AIPC_READ_ACTION)
+	end
+
+	if inst.components.aipc_action_client:CanBeEat(doer) then
+		table.insert(actions, _G.ACTIONS.AIPC_EAT_ACTION)
 	end
 end)
 

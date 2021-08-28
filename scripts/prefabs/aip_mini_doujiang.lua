@@ -25,7 +25,7 @@ local LANG_MAP = {
         THROW_BALL = "I got it！",
         THROW_BALL_FAIL = "2 times to fall",
         THROW_BALL_REWARD = "Nice play~",
-        WAIT_NEXT = "Next challenage is in developing",
+        WAIT_NEXT = "I've seen an Gaint. Maybe you have interested",
         CARDS = "Reciprocity~",
         WRONG_GIFT = "It's meaningless",
 	},
@@ -38,7 +38,7 @@ local LANG_MAP = {
         THROW_BALL = "嗷呜！",
         THROW_BALL_FAIL = "落地两次不能算分啦",
         THROW_BALL_REWARD = "和你玩的真开心，谢谢",
-        WAIT_NEXT = "下一个挑战还在开发中",
+        WAIT_NEXT = "我看到过一个大家伙，你也去看看吧",
         CARDS = "礼尚往来~",
         WRONG_GIFT = "我不需要它！",
 	},
@@ -169,6 +169,10 @@ local function aipPlayEnd(inst, throwTimes)
         for i = 1, cnt do
             inst.components.lootdropper:SpawnLootPrefab("aip_veggie_grape")
         end
+
+        -- 奖励一张地图
+        inst.components.lootdropper:SpawnLootPrefab("aip_map")
+
         say(inst, { STRINGS.AIP_MINI_DOUJIANG_THROW_BALL_REWARD, STRINGS.AIP_MINI_DOUJIANG_WAIT_NEXT })
 
         -- 提示信息时不允许打断说话

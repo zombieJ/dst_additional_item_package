@@ -219,6 +219,12 @@ function _G.aipGetAngle(src, tgt)
 	return angle
 end
 
+-- 从点起按照设定角度前进一段距离
+function _G.aipAngleDist(sourcePos, angle, distance)
+	local radius = angle / 180 * _G.PI
+	return _G.Vector3(sourcePos.x + math.cos(radius) * distance, sourcePos.y, sourcePos.z + math.sin(radius) * distance)
+end
+
 -- 返回(0 ~ 360)两个角度的偏差值
 function _G.aipDiffAngle(a1, a2)
 	local min = math.min(a1, a2)
@@ -245,13 +251,20 @@ function _G.aipRandomEnt(ents)
 end
 
 --------------------------------------- 辅助 ---------------------------------------
+-- 找到附近符合名字的物品，可以是一个对象 或者 是一个 点
 function _G.aipFindNearEnts(inst, prefabNames, distance)
-	local x, y, z = inst.Transform:GetWorldPosition()
+	local x, y, z = 0, 0, 0
+	if inst.Transform ~= nil then
+		x, y, z = inst.Transform:GetWorldPosition()
+	elseif inst.x ~= nil and inst.y ~= nil and inst.z ~= nil then
+		x = inst.x
+		y = inst.y
+		z = inst.z
+	end
 	local ents = TheSim:FindEntities(x, 0, z, distance or 10)
 	local prefabs = {}
 
 	for _, ent in pairs(ents) do
-		-- 检测图腾
 		if ent:IsValid() and table.contains(prefabNames, ent.prefab) then
 			table.insert(prefabs, ent)
 		end
@@ -278,6 +291,11 @@ end
 -- 在目标位置创建
 function _G.aipSpawnPrefab(inst, prefab, tx, ty, tz)
 	local tgt = _G.SpawnPrefab(prefab)
+
+	if tgt == nil then
+		return nil
+	end
+
 	if inst ~= nil then
 		local x, y, z = inst.Transform:GetWorldPosition()
 		tgt.Transform:SetPosition(fb(tx, x), fb(ty, y), fb(tz, z))
@@ -290,6 +308,10 @@ end
 -- 替换单位（如果是物品则替换对应物品栏），原生也有一个 ReplacePrefab
 function _G.aipReplacePrefab(inst, prefab, tx, ty, tz)
 	local tgt = _G.aipSpawnPrefab(inst, prefab, tx, ty, tz)
+
+	if tgt == nil then
+		return nil
+	end
 
 	if inst.components.inventoryitem ~= nil then
 		local container = inst.components.inventoryitem:GetContainer()
@@ -389,6 +411,58 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
 	return aipGetSpawnPoint(pt, minDistance)
 end
 
+-- 和 TheMap:FindRandomPointInOcean 相似，但是通过地图上的岩石附近创造
+function _G.aipFindRandomPointInOcean(radius, prefabRadius)
+	local w, h = _G.TheWorld.Map:GetSize()
+	local halfW = w/2 * _G.TILE_SCALE - 50 -- 裁剪边缘
+	local halfH = h/2 * _G.TILE_SCALE - 50 -- 裁剪边缘
+	
+	local pos = nil
+	for i = 1, 100 do
+		local x = math.random(-halfW, halfW)
+		local z = math.random(-halfH, halfH)
+		local rndPos = _G.Vector3(x, 0, z)
+
+		if _G.aipValidateOceanPoint(rndPos, radius) then
+			pos = rndPos
+			break
+		end
+	end
+
+	return pos
+end
+
+function _G.aipValidateOceanPoint(pt, radius, prefabRadius)
+	radius = radius or 0
+	prefabRadius = prefabRadius or radius or 0
+
+	-- 间隔一段地皮判断一次
+	for rx = pt.x - radius, pt.x + radius, _G.TILE_SCALE * 0.8 do
+		for rz = pt.z - radius, pt.z + radius, _G.TILE_SCALE * 0.8 do
+			if not _G.TheWorld.Map:IsOceanAtPoint(rx, 0, rz) then
+				return false
+			end
+		end
+	end
+
+	-- 附近允许石头、漂流瓶
+	local ents = TheSim:FindEntities(pt.x, 0, pt.z, prefabRadius)
+	for i, ent in ipairs(ents) do
+		if not table.contains({
+			"seastack",
+			"messagebottle",
+			"float_fx_back",
+			"float_fx_front",
+			"fireflies",
+			"driftwood_log",
+		}, ent.prefab) then
+			return false
+		end
+	end
+
+	return true
+end
+
 -- 在符合 tag 的地形上，且存在匹配的物品，在改物品附近找一个点
 function _G.aipGetTopologyPoint(tag, prefab, dist)
 	for i, node in ipairs(_G.TheWorld.topology.nodes) do
@@ -413,7 +487,7 @@ function _G.aipGetTopologyPoint(tag, prefab, dist)
 	return nil
 end
 
--- 按照参数找到所有符合名字列表的 prefab
+-- 按照参数找到所有符合名字列表的 prefab（TheSim:FindFirstEntityWithTag("malbatross")）
 function _G.aipFindEnt(...)
 	for _, ent in pairs(_G.Ents) do
 		-- 检测图腾

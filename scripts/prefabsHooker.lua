@@ -157,7 +157,87 @@ end)
 AddPrefabPostInit("stalker", function(inst)
 	-- 骨骸会概率掉落西游人物卡
 	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
+		inst.components.lootdropper:AddChanceLoot("aip_xiyou_card_white_bone", dev_mode and 1 or 0.1)
+	end
+end)
+
+AddPrefabPostInit("skeleton", function(inst)
+	-- 骨骸会概率掉落西游人物卡
+	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
 		inst.components.lootdropper:AddChanceLoot("aip_xiyou_card_white_bone", dev_mode and 1 or 0.01)
+	end
+end)
+
+AddPrefabPostInit("skeleton_player", function(inst)
+	-- 骨骸会概率掉落西游人物卡
+	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
+		inst.components.lootdropper:AddChanceLoot("aip_xiyou_card_white_bone", dev_mode and 1 or 0.01)
+	end
+end)
+
+------------------------------------------ 牛牛 ------------------------------------------
+AddPrefabPostInit("beefalo", function(inst)
+	-- 概率性替换成螃蟹
+	if _G.TheWorld.ismastersim and inst.components.periodicspawner ~= nil then
+		local originOnSpawn = inst.components.periodicspawner.onspawn
+
+		inst.components.periodicspawner.onspawn = function(inst, prefab, ...)
+			prefab:DoTaskInTime(dev_mode and 2 or 60, function()
+				local chance = dev_mode and 1 or 0.1
+				if
+					prefab:IsValid() and
+					prefab.prefab == "poop" and
+					math.random() <= chance and
+					(
+						prefab.components.inventoryitem == nil or
+						prefab.components.inventoryitem:GetContainer() == nil
+					) and
+					#_G.aipFindNearEnts(prefab, { "aip_mud_crab" }, 20) <= 2
+				then
+					_G.ReplacePrefab(prefab, "aip_mud_crab")
+				end
+			end)
+
+			if originOnSpawn ~= nil then
+				return originOnSpawn(inst, prefab, _G.unpack(arg))
+			end
+		end
+	end
+end)
+
+----------------------------------------- 漂流瓶 -----------------------------------------
+AddPrefabPostInit("messagebottle", function(inst)
+	-- 不开启食物就不能赠送了
+	if additional_food and _G.TheWorld.ismastersim and inst.components.mapspotrevealer ~= nil then
+		local originPrereveal = inst.components.mapspotrevealer.prerevealfn
+
+		inst.components.mapspotrevealer.prerevealfn = function(inst, doer, ...)
+			local chance = dev_mode and 1 or 0.05
+
+			-- 如果玩家不会，我们就概率送蓝图
+			if
+				doer ~= nil and
+				doer.components.builder ~= nil and
+				not doer.components.builder:KnowsRecipe("aip_olden_tea") and
+				math.random() <= chance
+			then
+				local blueprint = _G.aipSpawnPrefab(inst, "aip_olden_tea_blueprint")
+				local bottle = _G.aipSpawnPrefab(inst, "messagebottleempty")
+
+				-- 尝试给予
+				local container = inst.components.inventoryitem:GetContainer()
+				inst:Remove()
+
+				if container ~= nil then
+					container:GiveItem(bottle)
+					container:GiveItem(blueprint)
+				end
+
+				return false
+			end
+
+			return originPrereveal(inst, doer, _G.unpack(arg))
+		end
 	end
 end)
 
@@ -190,6 +270,7 @@ end)
 
 if additional_food and (_G.TheNet:GetIsServer() or _G.TheNet:IsDedicated()) then
 	AddPrefabPostInit("world", function (inst)
+		-- 季节变换时，生成向日葵
 		inst:WatchWorldState("season", function ()
 			for i, player in ipairs(_G.AllPlayers) do
 				if not player:HasTag("playerghost") and player.entity:IsVisible() then

@@ -197,6 +197,9 @@ local function fn()
 	-- 游戏里这么做，不知道为什么
 	inst:RemoveTag("_named")
 
+	inst:AddComponent("fuel")
+	inst.components.fuel.fuelvalue = TUNING.TINY_FUEL
+
 	inst:AddComponent("aipc_action")
 	inst.components.aipc_action.onDoTargetAction = onDoTargetAction
 
