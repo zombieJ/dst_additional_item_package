@@ -94,6 +94,14 @@ local function fn()
 	inst.components.locomotor.walkspeed = TUNING.SPIDER_RUN_SPEED
 	inst.components.locomotor:SetTriggersCreep(false)
 
+	inst:AddComponent("lootdropper")
+	inst.components.lootdropper:SetLoot({})
+	inst.components.lootdropper:AddRandomLoot("seeds", 80)
+	inst.components.lootdropper:AddRandomLoot("beardhair", 20)
+	inst.components.lootdropper:AddRandomLoot("tentaclespots", 2)
+	inst.components.lootdropper:AddRandomLoot("gears", 1)
+	inst.components.lootdropper.numrandomloot = 1
+
 	inst:SetStateGraph("SGaip_mud_crab")
 	inst:SetBrain(brain)
 
