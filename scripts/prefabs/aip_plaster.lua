@@ -26,6 +26,11 @@ local LANG_MAP = {
 		["DESC"] = "治疗烫伤的游方",
 		["DESCRIBE"] = "江湖郎中的独家秘方",
 	},
+	["russian"] = {
+		["NAME"] = "Зола растений",
+		["DESC"] = "Лечит ожоги",
+		["DESCRIBE"] = "Эксклюзивный секретный рецепт шарлатанского доктора",
+	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
