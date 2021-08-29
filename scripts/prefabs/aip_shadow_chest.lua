@@ -28,6 +28,11 @@ local LANG_MAP = {
 		DESC = "贪婪地收集物品",
 		DESCRIBE = "这个魔法正适合自动化",
 	},
+	russian = {
+		NAME = "Теневой сундук",
+		DESC = "Жадность собирает предметы",
+		DESCRIBE = "Это волшебство для автоматизации",
+	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
@@ -139,7 +144,7 @@ local function fn()
 	inst:ListenForEvent("onbuilt", onbuilt)
 	MakeSnowCovered(inst)
 
-	inst.OnSave = onsave
+	inst.OnSave = onsaveЖадность собирать предметы
 	inst.OnLoad = onload
 
 	return inst
