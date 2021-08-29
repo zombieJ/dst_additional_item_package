@@ -66,6 +66,35 @@ local LANG_MAP = {
 			"咳咳咳~",
 		},
 	},
+	russian = {
+		NAME = "Дух Стихии",
+		DESC = "Почему ты помогаешь мне?",
+		NAMES = {
+			AIP_DOU_ELEMENT_FIRE_GUARD = "Страж Света",
+			AIP_DOU_ELEMENT_ICE_GUARD = "Страж Льда",
+			AIP_DOU_ELEMENT_SAND_GUARD = "Страж Нападения",
+			AIP_DOU_ELEMENT_HEAL_GUARD = "Страж-Лекарь",
+			AIP_DOU_ELEMENT_DAWN_GUARD = "Страж Насмешек",
+			AIP_DOU_ELEMENT_COST_GUARD = "Страж Страданий",
+		},
+		DESC = {
+			AIP_DOU_ELEMENT_FIRE_GUARD = "Слабый свет может сжечь неприятности",
+			AIP_DOU_ELEMENT_ICE_GUARD = "Помощник для тушения пламени",
+			AIP_DOU_ELEMENT_SAND_GUARD = "Убийца без преданности",
+			AIP_DOU_ELEMENT_HEAL_GUARD = "Возвращает то, что утрачено",
+			AIP_DOU_ELEMENT_DAWN_GUARD = "Забавный",
+			AIP_DOU_ELEMENT_COST_GUARD = "Усилит твою боль",
+		},
+		DAWN_SPEACH = {
+			"Мне все равно.",
+			"Можешь попробовать.",
+			"Вот оно.",
+			"Непопулярно.",
+			"Дай пять.",
+			"Твой Страж.",
+			"(Caugh~)",
+		},
+	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
