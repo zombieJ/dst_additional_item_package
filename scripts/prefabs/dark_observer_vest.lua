@@ -26,6 +26,11 @@ local LANG_MAP = {
 		["DESC"] = "跟随Boss的马甲单位",
 		["DESCRIBE"] = "紧跟着怪物",
 	},
+	["russian"] = {
+		["NAME"] = "Наблюдатель",
+		["DESC"] = "Значок из темного наблюдателя",
+		["DESCRIBE"] = "Вслед за монстром!",
+	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
