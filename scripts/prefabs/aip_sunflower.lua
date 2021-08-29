@@ -18,6 +18,10 @@ local LANG_MAP = {
 		["NAME"] = "向日树",
 		["DESC"] = "它是怎么长出来的？",
 	},
+	["russian"] = {
+		["NAME"] = "Солнечное Дерево",
+		["DESC"] = "Что случилось?",
+	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
