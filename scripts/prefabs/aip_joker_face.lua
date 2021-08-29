@@ -26,6 +26,11 @@ local LANG_MAP = {
 		REC_DESC = "神经质的嘉奖",
 		DESC = "似乎有什么环绕着它",
 	},
+	russian = {
+		NAME = "Лицо Джокера",
+		REC_DESC = "Награда невротика",
+		DESC = "Кажется, что-то окружает его",
+	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
