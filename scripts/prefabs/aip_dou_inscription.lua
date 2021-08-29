@@ -100,6 +100,52 @@ local LANG_MAP = {
 			DESC = "失误也是一种美",
 		},
 	},
+	russian = {
+		aip_dou_fire_inscription = {
+			NAME = "Стихия: Огонь",
+			DESC = "40% шанс поджечь цель",
+		},
+		aip_dou_ice_inscription = {
+			NAME = "Стихия: Лед",
+			DESC = "Заморозит цель",
+		},
+		aip_dou_sand_inscription = {
+			NAME = "Стихия: Песок",
+			DESC = "Вызывает песчаный столб",
+		},
+		aip_dou_heal_inscription = {
+			NAME = "Стихия: Исцеление",
+			DESC = "Исцеляет цель",
+		},
+		aip_dou_dawn_inscription = {
+			NAME = "Стихия: Рассвет",
+			DESC = "Наносите больше урона теням",
+		},
+		aip_dou_cost_inscription = {
+			NAME = "Элемент: Цена",
+			DESC = "Должны ли мы давать взамен?",
+		},
+		aip_dou_follow_inscription = {
+			NAME = "Надпись: Преследование",
+			DESC = "Ваша магия может следовать за целью",
+		},
+		aip_dou_through_inscription = {
+			NAME = "Надпись: Сквозь",
+			DESC = "Делает магию пронзительной",
+		},
+		aip_dou_area_inscription = {
+			NAME = "Надпись: Область",
+			DESC = "Влияние на область",
+		},
+		aip_dou_split_inscription = {
+			NAME = "Зачарование: Разделение",
+			DESC = "Раздели свою магию",
+		},
+		aip_dou_rock_inscription = {
+			NAME = "Зачарование: Страж",
+			DESC = "Промах - это удар",
+		},
+	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
