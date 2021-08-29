@@ -144,7 +144,7 @@ local function fn()
 	inst:ListenForEvent("onbuilt", onbuilt)
 	MakeSnowCovered(inst)
 
-	inst.OnSave = onsaveЖадность собирать предметы
+	inst.OnSave = onsave
 	inst.OnLoad = onload
 
 	return inst
