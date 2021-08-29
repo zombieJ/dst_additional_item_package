@@ -13,6 +13,10 @@ local LANG_MAP = {
 		["NAME"] = "暗影碎牙",
 		["DESC"] = "钥匙的剩余那一部分！",
 	},
+	["russian"] = {
+		["NAME"] = "Теневой сломанный зуб",
+		["DESC"] = "Левая часть ключа!",
+	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
