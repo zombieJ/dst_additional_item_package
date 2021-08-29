@@ -22,6 +22,11 @@ local LANG_MAP = {
         ["REC_DESC"] = "快速打理你的花园",
         ["DESC"] = "时间就是金钱",
 	},
+	["russian"] = {
+        ["NAME"] = "Мотыга СинЮэ",
+        ["REC_DESC"] = "Нет ничего быстрее, чем это",
+        ["DESC"] = "Время - деньги",
+	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
