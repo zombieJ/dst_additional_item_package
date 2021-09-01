@@ -48,6 +48,7 @@ PrefabFiles = {
 	"aip_dragon",
 	"aip_dragon_tail",
 	"aip_dragon_footprint",
+	"aip_krampus_plus",
 
 	-- Weapon
 	"popcorngun",
