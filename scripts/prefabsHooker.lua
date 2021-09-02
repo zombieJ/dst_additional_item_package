@@ -241,6 +241,33 @@ AddPrefabPostInit("messagebottle", function(inst)
 	end
 end)
 
+---------------------------------------- 魔法扫把 ----------------------------------------
+AddPrefabPostInit("reskin_tool", function(inst)
+	if inst.components.spellcaster ~= nil then
+		local originCanCast = inst.components.spellcaster.can_cast_fn
+		local originSpell = inst.components.spellcaster.spell
+
+		-- 注入对小麦的改造
+		if originCanCast and originSpell then
+			inst.components.spellcaster:SetCanCastFn(function(doer, target, pos, ...)
+				if target.prefab == "aip_wheat" then
+					return true
+				end
+				return originCanCast(doer, target, pos, ...)
+			end)
+
+			inst.components.spellcaster:SetSpellFn(function(tool, target, pos, ...)
+				if target.prefab == "aip_wheat" then
+					_G.aipSpawnPrefab(target, "explode_reskin")
+					_G.aipReplacePrefab(target, "grass")
+					return
+				end
+				return originSpell(tool, target, pos, ...)
+			end)
+		end
+	end
+end)
+
 ------------------------------------------ 食物 ------------------------------------------
 AddPrefabPostInit("grass", function(inst)
 	if not _G.TheWorld.ismastersim then

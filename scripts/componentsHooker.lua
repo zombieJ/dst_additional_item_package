@@ -270,7 +270,7 @@ AddComponentPostInit("health", function(self)
 	-- 生命变化钩子
 	local originDoDelta = self.DoDelta
 
-	function self:DoDelta(amount, ...)
+	function self:DoDelta(amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb, ...)
 		-- healthCost buffer 的对象会受到更多伤害
 		if _G.hasBuffer(self.inst, "healthCost") and amount < 0 then
 			amount = amount * 2
@@ -279,7 +279,9 @@ AddComponentPostInit("health", function(self)
 		local data = { amount = amount }
 		self.inst:PushEvent("aip_healthdelta", data)
 
-		originDoDelta(self, data.amount, _G.unpack(arg))
+		return originDoDelta(
+			self, data.amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb, ...
+		)
 	end
 
 	-- 锁定无敌，锁定后无法再更改无敌状态
@@ -291,7 +293,7 @@ AddComponentPostInit("health", function(self)
 	local originSetInvincible = self.SetInvincible
 	function self:SetInvincible(val, ...)
 		if self.aipLockInvincible ~= true then
-			return originSetInvincible(self, val, _G.unpack(arg))
+			return originSetInvincible(self, val, ...)
 		end
 	end
 
@@ -319,7 +321,7 @@ AddComponentPostInit("writeable", function(self)
 			self.onAipEndWriting()
 		end
 
-		originEndWriting(self, _G.unpack(arg))
+		originEndWriting(self, ...)
 	end
 end)
 
@@ -332,6 +334,6 @@ AddComponentPostInit("healer", function(self)
 			self.onHealTarget(self.inst, target)
 		end
 
-		return originHeal(self, target, _G.unpack(arg))
+		return originHeal(self, target, ...)
 	end
 end)

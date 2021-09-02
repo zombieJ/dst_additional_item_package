@@ -415,6 +415,25 @@ function params.aip_xinyue_hoe.itemtestfn(container, item, slot)
 	return item:HasTag("deployedfarmplant")
 end
 
+----------------- 守财奴 -----------------
+-- 本来想和 坎普斯的袋子 一样大，但是这样太 imba 了
+params.aip_krampus_plus = {
+    widget = {
+        slotpos = {},
+        animbank = "ui_piggyback_2x6",
+        animbuild = "ui_piggyback_2x6",
+        pos = Vector3(-5, -50, 0),
+    },
+    issidewidget = true,
+    type = "pack",
+    openlimit = 1,
+}
+
+for y = 0, 5 do
+    table.insert(params.aip_krampus_plus.widget.slotpos, Vector3(-162, -75 * y + 170, 0))
+    table.insert(params.aip_krampus_plus.widget.slotpos, Vector3(-162 + 75, -75 * y + 170, 0))
+end
+
 ----------------------------------------------------------------------------------------------
 local containers = _G.require "containers"
 local old_widgetsetup = containers.widgetsetup
