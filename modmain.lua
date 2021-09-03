@@ -40,6 +40,7 @@ PrefabFiles = {
 	"aip_nectar",
 	"aip_leaf_note",
 	"aip_xinyue_hoe",
+	"aip_xinyue_gridplacer",
 
 	-- survival
 	"aip_blood_package",
