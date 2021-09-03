@@ -14,6 +14,7 @@ const MAX_WIDTH_COUNT = 9;
 const IMAGES = [
 	[
 		'aip_blood_package', 'aip_plaster', 'aip_mine_car', 'aip_dou_tooth',
+		'aip_krampus_plus',
 	],
 
 	[
@@ -73,7 +74,7 @@ function getImagePath(name) {
 		}
 
 		// 备份
-		const modExeportDonePath = path.join(rootPath, 'exported', `${name}.png`);
+		const modExeportDonePath = path.join(rootPath, 'exported_done', `${name}.png`);
 		if (fs.existsSync(modExeportDonePath)) {
 			return modExeportDonePath;
 		}
