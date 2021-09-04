@@ -175,6 +175,14 @@ AddPrefabPostInit("skeleton_player", function(inst)
 	end
 end)
 
+------------------------------------------ 鱼人 ------------------------------------------
+AddPrefabPostInit("merm", function(inst)
+	-- 鱼人会极低概率掉 22 磅重的鲶鱼
+	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
+		inst.components.lootdropper:AddChanceLoot("aip_22_fish", dev_mode and 1 or 0.001)
+	end
+end)
+
 ------------------------------------------ 牛牛 ------------------------------------------
 AddPrefabPostInit("beefalo", function(inst)
 	-- 概率性替换成螃蟹

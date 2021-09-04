@@ -41,6 +41,7 @@ PrefabFiles = {
 	"aip_leaf_note",
 	"aip_xinyue_hoe",
 	"aip_xinyue_gridplacer",
+	"aip_22_fish",
 
 	-- survival
 	"aip_blood_package",
