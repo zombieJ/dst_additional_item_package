@@ -11,27 +11,23 @@ local language = aipGetModConfig("language")
 
 local LANG_MAP = {
 	english = {
-		NAME = "Sun Tree",
-		DESC = "What happened?",
+		NAME = "Breadfruit Tree",
+		DESC = "Full of fruit aroma",
 	},
 	chinese = {
-		NAME = "向日树",
-		DESC = "它是怎么长出来的？",
-	},
-	russian = {
-		NAME = "Солнечное Дерево",
-		DESC = "Что случилось?",
+		NAME = "面包树",
+		DESC = "充满了水果香气",
 	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
 -- 文字描述
-STRINGS.NAMES.AIP_SUNFLOWER = LANG.NAME
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SUNFLOWER = LANG.DESC
+STRINGS.NAMES.AIP_BREADFRUIT_TREE = LANG.NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_BREADFRUIT_TREE = LANG.DESC
 
 local assets = {
-    Asset("ANIM", "anim/aip_sunflower.zip"),
+    Asset("ANIM", "anim/aip_breadfruit_tree.zip"),
 }
 
 ------------------------------- 幼苗阶段 -------------------------------
@@ -45,8 +41,8 @@ local function growNext(inst)
 	inst.SoundEmitter:PlaySound("dontstarve/forest/treeGrow")
 
 	inst:ListenForEvent("animover", function()
-		local tgt = aipReplacePrefab(inst, "aip_sunflower_"..inst._aip_next)
-		tgt.AnimState:PlayAnimation("grow_"..inst._aip_now.."_post", false)
+		local tgt = aipReplacePrefab(inst, "aip_breadfruit_tree_"..inst._aip_next)
+		tgt.AnimState:PlayAnimation("grow_"..inst._aip_now.."_pst", false)
 		tgt.AnimState:PushAnimation("idle_"..inst._aip_next, true)
 	end)
 end
@@ -75,59 +71,64 @@ local function chop_down_tree(inst, chopper)
 	inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
 	local pt = inst:GetPosition()
 
-    local he_right = true
-
-    if chopper then
-        local hispos = chopper:GetPosition()
-        he_right = (hispos - pt):Dot(TheCamera:GetRightVec()) > 0
-    else
-        if math.random() > 0.5 then
-            he_right = false
-        end
-    end
-
-    if he_right then
-        inst.AnimState:PlayAnimation("fallleft_"..inst._aip_stage)
-        inst.components.lootdropper:DropLoot(pt - TheCamera:GetRightVec())
-    else
-        inst.AnimState:PlayAnimation("fallright_"..inst._aip_stage)
-        inst.components.lootdropper:DropLoot(pt + TheCamera:GetRightVec())
-    end
+	inst.AnimState:PlayAnimation("fall_"..inst._aip_stage)
+	inst.components.lootdropper:DropLoot(pt - TheCamera:GetRightVec())
 
 	inst:DoTaskInTime(0.6, chop_down_shake)
 
 	inst:ListenForEvent("animover", inst.Remove)
 end
 
---------------------------------- 鬼树 ---------------------------------
-local function chop_ghost(inst, chopper)
-    if not (chopper ~= nil and chopper:HasTag("playerghost")) then
-		inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/livingtree_hit")
-    end
-
-	inst.AnimState:PlayAnimation("chop_"..inst._aip_stage)
-	inst.AnimState:PushAnimation("idle_"..inst._aip_stage, true)
+------------------------------- 可以收获 -------------------------------
+local function refreshFruit(inst)
+	aipPrint("Refresh:", inst.components.pickable:CanBePicked())
+	if inst.components.pickable:CanBePicked() then
+		inst.AnimState:Show("bread")
+	else
+		inst.AnimState:Hide("bread")
+	end
 end
 
-local function chop_down_ghost(inst, chopper)
-	inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/livingtree_die")
+local function getRegenTime(inst)
+	if inst.components.pickable == nil then
+		return TUNING.BERRY_REGROW_TIME
+	end
 
-	inst.AnimState:PlayAnimation("fall_"..inst._aip_stage)
-	inst.components.lootdropper:DropLoot()
+	return TUNING.BERRY_REGROW_TIME + TUNING.BERRY_REGROW_VARIANCE * math.random()
+end
 
-	-- 开启公测后创造一个鬼怪出来
-	local effect = aipSpawnPrefab(inst, "aip_shadow_wrapper")
-	effect.Transform:SetScale(2, 2, 2)
-	effect.DoShow()
+local function onpickedfn(inst, picker)
+	refreshFruit(inst)
+end
 
-	aipSpawnPrefab(inst, "aip_dragon")
+local function makeemptyfn(inst)
+	refreshFruit(inst)
+end
 
-	inst:ListenForEvent("animover", inst.Remove)
+local function makefullfn(inst)
+	refreshFruit(inst)
 end
 
 ------------------------------- 阶段函数 -------------------------------
-local function sunflower(stage, info)
-	local name = "aip_sunflower_"..stage
+local function refreshScale(inst)
+	inst.aipScale = inst.aipScale or (1 + math.random() * .3)
+	inst.Transform:SetScale(inst.aipScale, inst.aipScale, inst.aipScale)
+end
+
+-- 存取
+local function onSave(inst, data)
+	data.aipScale = inst.aipScale
+end
+
+local function onLoad(inst, data)
+	if data ~= nil then
+		inst.aipScale = data.aipScale
+		refreshScale(inst)
+	end
+end
+
+local function genTree(stage, info)
+	local name = "aip_breadfruit_tree_"..stage
 	local uname = string.upper(name)
 
 	STRINGS.NAMES[uname] = LANG.NAME
@@ -154,20 +155,19 @@ local function sunflower(stage, info)
 
 		inst:AddTag("plant")
 		inst:AddTag("tree")
-		inst:AddTag("aip_sunflower")
+		inst:AddTag("aip_breadfruit_tree")
 
 		if info.tag ~= nil then
 			inst:AddTag(info.tag)
 		end
 
-		inst.AnimState:SetBuild("aip_sunflower")
-		inst.AnimState:SetBank("aip_sunflower")
+		inst.AnimState:SetBuild("aip_breadfruit_tree")
+		inst.AnimState:SetBank("aip_breadfruit_tree")
 		inst.AnimState:PlayAnimation("idle_"..stage, true)
 
 		-- 原生的雪景覆盖没有定位信息，我们只能自己实现了
 		inst:AddTag("SnowCovered")
 		inst.AnimState:Hide("snow")
-
 
 		inst.entity:SetPristine()
 
@@ -176,8 +176,10 @@ local function sunflower(stage, info)
 		end
 
 		-- 微调颜色
-		local color = .5 + math.random() * .5
-		inst.AnimState:SetMultColour(color, color, color, 1)
+		local c1 = .7 + math.random() * .3
+		local c2 = .7 + math.random() * .3
+		local c3 = .7 + math.random() * .3
+		inst.AnimState:SetMultColour(c1, c2, c3, 1)
 
 		-- 燃烧
 		MakeLargeBurnable(inst, TUNING.TREE_BURN_TIME)
@@ -205,7 +207,28 @@ local function sunflower(stage, info)
 			inst.components.aipc_weak_timer:Start(info.grow.time, growNext)
 		end
 
+		if info.pickable then
+			inst:AddComponent("pickable")
+			inst.components.pickable.picksound = "dontstarve/wilson/harvest_berries"
+
+			inst.components.pickable.getregentimefn = getRegenTime
+			-- inst.components.pickable.max_cycles = TUNING.BERRYBUSH_CYCLES + math.random(2)
+			-- inst.components.pickable.cycles_left = inst.components.pickable.max_cycles 无限采收
+
+			inst.components.pickable.onpickedfn = onpickedfn
+			inst.components.pickable.makeemptyfn = makeemptyfn
+			-- inst.components.pickable.makebarrenfn = makebarrenfn
+			inst.components.pickable.makefullfn = makefullfn
+			-- inst.components.pickable.ontransplantfn = ontransplantfn
+			refreshFruit(inst)
+		end
+
+		refreshScale(inst)
+
 		MakeSnowCovered(inst)
+
+		inst.OnLoad = onLoad
+		inst.OnSave = onSave
 
 		return inst
 	end
@@ -230,7 +253,7 @@ local function fn()
 	end
 
 	inst:DoTaskInTime(0, function()
-		aipReplacePrefab(inst, "aip_sunflower_tall")
+		aipReplacePrefab(inst, "aip_breadfruit_tree_tall")
 	end)
 
 	return inst
@@ -245,7 +268,21 @@ local PLANTS = {
 			action = ACTIONS.DIG,
 			finishCallback = dig_tree,
 		},
-		loot = {"twigs"},
+		loot = {"spoiled_food"},
+		grow = {
+			next = "mid",
+			time = dev_mode and 3 or (TUNING.DAY_TIME_DEFAULT * 2),
+		}
+	},
+	mid = {
+		physics = .2,
+		workable = {
+			times = TUNING.EVERGREEN_CHOPS_NORMAL,
+			action = ACTIONS.CHOP,
+			callback = chop_tree,
+			finishCallback = chop_down_tree,
+		},
+		loot = {"log"},
 		grow = {
 			next = "tall",
 			time = dev_mode and 3 or (TUNING.DAY_TIME_DEFAULT * 3),
@@ -253,62 +290,36 @@ local PLANTS = {
 	},
 	tall = {
 		physics = .25,
-		tag = "aip_sunflower_tall",
+		-- tag = "aip_sunflower_tall",
 		workable = {
-			times = TUNING.EVERGREEN_CHOPS_NORMAL,
+			times = TUNING.EVERGREEN_CHOPS_TALL,
 			action = ACTIONS.CHOP,
 			callback = chop_tree,
 			finishCallback = chop_down_tree,
 		},
-		loot = {"log", "log","aip_veggie_sunflower"}
-	},
-	ghost = {
-		physics = .25,
-		workable = {
-			times = TUNING.EVERGREEN_CHOPS_NORMAL,
-			action = ACTIONS.CHOP,
-			callback = chop_ghost,
-			finishCallback = chop_down_ghost,
+		pickable = {
+			prefab = "ash",
 		},
-		loot = {"nightmarefuel"}
+		loot = {"log", "log", "log"}
 	},
 }
 local prefabs = {
-	Prefab("aip_sunflower", fn, assets)
+	Prefab("aip_breadfruit_tree", fn, assets)
 }
 
 for stage, info in pairs(PLANTS) do
-	table.insert(prefabs, sunflower(stage, info))
+	table.insert(prefabs, genTree(stage, info))
 end
 
 return unpack(prefabs)
 
 --[[
 
-c_give"aip_veggie_sunflower"
-c_give"birdcage"
-c_give"robin_winter"
-
-
-c_give"aip_sunflower_ghost"
-
+c_give"aip_breadfruit_tree"
 c_give"axe"
-
-
-c_give"aip_sunflower"
-
-
-
-
 
 TheWorld:PushEvent("snowcoveredchanged", true)
 
-
-
-TheWorld:PushEvent("ms_setseason", "spring")
-
-
-
-TheWorld:PushEvent("ms_setseason", "autumn")
+c_give"aip_breadfruit_tree_short"
 
 ]]

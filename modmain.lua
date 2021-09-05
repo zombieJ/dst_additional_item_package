@@ -88,6 +88,7 @@ PrefabFiles = {
 	"aip_shell_stone",
 	"aip_suwu",
 	"aip_suwu_mound",
+	"aip_breadfruit_tree",
 
 	-- Orbit
 	"aip_orbit",
