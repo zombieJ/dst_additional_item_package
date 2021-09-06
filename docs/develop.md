@@ -113,3 +113,9 @@ c_goto(c_find("aip_dou_totem_broken"))
 
 TheWorld:PushEvent("ms_setseason", "summer")
 TheWorld:PushEvent("ms_setseason", "winter")
+
+### AnimateState:Show 工作条件 
+
+https://forums.kleientertainment.com/forums/topic/47818-how-to-compile-for-animstatehide/
+
+需要重命名 layer，改成 snow-0_0 就可以通过 Show / Hide 来控制了

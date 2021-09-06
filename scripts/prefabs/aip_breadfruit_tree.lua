@@ -90,22 +90,29 @@ local function refreshFruit(inst)
 end
 
 local function getRegenTime(inst)
+	aipPrint("Get Regren Time:", inst.components.pickable)
 	if inst.components.pickable == nil then
 		return TUNING.BERRY_REGROW_TIME
 	end
 
-	return TUNING.BERRY_REGROW_TIME + TUNING.BERRY_REGROW_VARIANCE * math.random()
+	local time = dev_mode and 3 or TUNING.BERRY_REGROW_TIME + TUNING.BERRY_REGROW_VARIANCE * math.random()
+	aipPrint("Regren Time:", time)
+
+	return time
 end
 
 local function onpickedfn(inst, picker)
+	aipPrint("Pick")
 	refreshFruit(inst)
 end
 
 local function makeemptyfn(inst)
+	aipPrint("Empty")
 	refreshFruit(inst)
 end
 
 local function makefullfn(inst)
+	aipPrint("Full")
 	refreshFruit(inst)
 end
 
@@ -211,6 +218,7 @@ local function genTree(stage, info)
 			inst:AddComponent("pickable")
 			inst.components.pickable.picksound = "dontstarve/wilson/harvest_berries"
 
+			inst.components.pickable:SetUp(info.pickable.prefab, 5)
 			inst.components.pickable.getregentimefn = getRegenTime
 			-- inst.components.pickable.max_cycles = TUNING.BERRYBUSH_CYCLES + math.random(2)
 			-- inst.components.pickable.cycles_left = inst.components.pickable.max_cycles 无限采收

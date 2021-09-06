@@ -12,11 +12,11 @@
         <file id="8" name="tall/root_body.png" width="82" height="546" pivot_x="0" pivot_y="1"/>
     </folder>
     <folder id="1" name="bread">
-        <file id="0" name="bread/bread-0.png" width="269" height="244" pivot_x="0" pivot_y="1"/>
-        <file id="1" name="bread/bread-1.png" width="299" height="282" pivot_x="0" pivot_y="1"/>
-        <file id="2" name="bread/bread-2.png" width="248" height="240" pivot_x="0" pivot_y="1"/>
-        <file id="3" name="bread/bread-3.png" width="253" height="361" pivot_x="0" pivot_y="1"/>
-        <file id="4" name="bread/bread-4.png" width="262" height="297" pivot_x="0" pivot_y="1"/>
+        <file id="0" name="bread/bread-00.png" width="269" height="244" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="bread/bread-01.png" width="299" height="282" pivot_x="0" pivot_y="1"/>
+        <file id="2" name="bread/bread-02.png" width="248" height="240" pivot_x="0" pivot_y="1"/>
+        <file id="3" name="bread/bread-03.png" width="253" height="361" pivot_x="0" pivot_y="1"/>
+        <file id="4" name="bread/bread-04.png" width="262" height="297" pivot_x="0" pivot_y="1"/>
     </folder>
     <folder id="2" name="snow">
         <file id="0" name="snow/snow-0.png" width="68" height="124" pivot_x="0" pivot_y="1"/>
@@ -44,9 +44,9 @@
                     <object_ref id="5" name="root" folder="0" file="1" abs_x="2.492537" abs_y="-7.039587" abs_pivot_x="0.507463" abs_pivot_y="0.039587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="5"/>
                     <object_ref id="6" name="bread-0" folder="1" file="0" abs_x="-160.001852" abs_y="418.542857" abs_pivot_x="0.501852" abs_pivot_y="0.457143" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="6" key="0" z_index="6"/>
                     <object_ref id="7" name="bread-1" folder="1" file="1" abs_x="164.065" abs_y="338.54947" abs_pivot_x="0.435" abs_pivot_y="0.45053" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="7" key="0" z_index="7"/>
-                    <object_ref id="8" name="bread-2" folder="1" file="2" abs_x="64.046185" abs_y="431.03112" abs_pivot_x="0.453815" abs_pivot_y="0.46888" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="8" key="0" z_index="8"/>
-                    <object_ref id="9" name="bread-3" folder="1" file="3" abs_x="-105.51378" abs_y="702.095304" abs_pivot_x="0.51378" abs_pivot_y="0.404696" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="9" key="0" z_index="9"/>
-                    <object_ref id="10" name="bread-4" folder="1" file="4" abs_x="126.513308" abs_y="744.005034" abs_pivot_x="0.486692" abs_pivot_y="0.494966" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="10" key="0" z_index="10"/>
+                    <object_ref id="8" name="bread-0_2" folder="1" file="2" abs_x="64.046185" abs_y="431.03112" abs_pivot_x="0.453815" abs_pivot_y="0.46888" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="8" key="0" z_index="8"/>
+                    <object_ref id="9" name="bread-0_3" folder="1" file="3" abs_x="-105.51378" abs_y="702.095304" abs_pivot_x="0.51378" abs_pivot_y="0.404696" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="9" key="0" z_index="9"/>
+                    <object_ref id="10" name="bread-0_4" folder="1" file="4" abs_x="126.513308" abs_y="744.005034" abs_pivot_x="0.486692" abs_pivot_y="0.494966" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="10" key="0" z_index="10"/>
                     <object_ref id="11" name="snow-0" folder="2" file="0" abs_x="-30.050725" abs_y="332.504" abs_pivot_x="0.550725" abs_pivot_y="0.496" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="11" key="0" z_index="11"/>
                     <object_ref id="12" name="snow-1" folder="2" file="1" abs_x="29.089744" abs_y="245.144628" abs_pivot_x="0.410256" abs_pivot_y="0.355372" abs_angle="16.021866" abs_scale_x="0.869395" abs_scale_y="0.869395" abs_a="1" timeline="12" key="0" z_index="12"/>
                     <object_ref id="13" name="snow-0_000" folder="2" file="0" abs_x="-22.514493" abs_y="592.544" abs_pivot_x="0.514493" abs_pivot_y="0.456" abs_angle="40.132472" abs_scale_x="0.746378" abs_scale_y="1" abs_a="1" timeline="13" key="0" z_index="13"/>
@@ -105,7 +105,7 @@
                     <object folder="0" file="5" x="17.913978" y="425.266304" pivot_x="0.086022" pivot_y="0.233696" angle="0"/>
                 </key>
                 <key id="1" time="1500">
-                    <object folder="0" file="5" x="15.913978" y="428.266304" pivot_x="0.086022" pivot_y="0.233696" angle="357.563065"/>
+                    <object folder="0" file="5" x="6.771121" y="424.885352" pivot_x="0.086022" pivot_y="0.233696" angle="358.569928" scale_y="1"/>
                 </key>
             </timeline>
             <timeline id="5" name="right_3">
@@ -132,7 +132,7 @@
                     <object folder="1" file="1" x="167.397235" y="334.597228" pivot_x="0.435" pivot_y="0.45053" angle="357.375745"/>
                 </key>
             </timeline>
-            <timeline id="8" name="bread-2">
+            <timeline id="8" name="bread-0_2">
                 <key id="0" spin="-1">
                     <object folder="1" file="2" x="64.046185" y="431.03112" pivot_x="0.453815" pivot_y="0.46888" angle="0"/>
                 </key>
@@ -140,7 +140,7 @@
                     <object folder="1" file="2" x="62.249583" y="432.064378" pivot_x="0.453815" pivot_y="0.46888" angle="357.563065"/>
                 </key>
             </timeline>
-            <timeline id="9" name="bread-3">
+            <timeline id="9" name="bread-0_3">
                 <key id="0" spin="-1">
                     <object folder="1" file="3" x="-105.51378" y="702.095304" pivot_x="0.51378" pivot_y="0.404696" angle="0"/>
                 </key>
@@ -148,7 +148,7 @@
                     <object folder="1" file="3" x="-112.322885" y="699.427164" pivot_x="0.51378" pivot_y="0.404696" angle="358.09128"/>
                 </key>
             </timeline>
-            <timeline id="10" name="bread-4">
+            <timeline id="10" name="bread-0_4">
                 <key id="0" spin="-1">
                     <object folder="1" file="4" x="126.513308" y="744.005034" pivot_x="0.486692" pivot_y="0.494966" angle="0"/>
                 </key>
@@ -192,9 +192,9 @@
                     <object_ref id="5" name="root" folder="0" file="1" abs_x="8.368637" abs_y="-43.749885" abs_pivot_x="0.507463" abs_pivot_y="0.039587" abs_angle="0" abs_scale_x="0.387447" abs_scale_y="0.034486" abs_a="1" timeline="0" key="0" z_index="5"/>
                     <object_ref id="6" name="bread-0" folder="1" file="0" abs_x="-42.203858" abs_y="-22.176183" abs_pivot_x="0.501852" abs_pivot_y="0.457143" abs_angle="0" abs_scale_x="0.387447" abs_scale_y="0.034486" abs_a="1" timeline="6" key="0" z_index="6"/>
                     <object_ref id="7" name="bread-1" folder="1" file="1" abs_x="70.689841" abs_y="-36.290538" abs_pivot_x="0.435" abs_pivot_y="0.45053" abs_angle="0" abs_scale_x="0.387447" abs_scale_y="0.034486" abs_a="1" timeline="7" key="0" z_index="7"/>
-                    <object_ref id="8" name="bread-2" folder="1" file="2" abs_x="32.634743" abs_y="-39.349895" abs_pivot_x="0.453815" abs_pivot_y="0.46888" abs_angle="0" abs_scale_x="0.387447" abs_scale_y="0.034486" abs_a="1" timeline="8" key="0" z_index="8"/>
-                    <object_ref id="9" name="bread-3" folder="1" file="3" abs_x="-20.139066" abs_y="-21.708137" abs_pivot_x="0.51378" abs_pivot_y="0.404696" abs_angle="0" abs_scale_x="0.387447" abs_scale_y="0.034486" abs_a="1" timeline="9" key="0" z_index="9"/>
-                    <object_ref id="10" name="bread-4" folder="1" file="4" abs_x="57.998443" abs_y="-39.211154" abs_pivot_x="0.486692" abs_pivot_y="0.494966" abs_angle="0" abs_scale_x="0.387447" abs_scale_y="0.034486" abs_a="1" timeline="10" key="0" z_index="10"/>
+                    <object_ref id="8" name="bread-0_2" folder="1" file="2" abs_x="32.634743" abs_y="-39.349895" abs_pivot_x="0.453815" abs_pivot_y="0.46888" abs_angle="0" abs_scale_x="0.387447" abs_scale_y="0.034486" abs_a="1" timeline="8" key="0" z_index="8"/>
+                    <object_ref id="9" name="bread-0_3" folder="1" file="3" abs_x="-20.139066" abs_y="-21.708137" abs_pivot_x="0.51378" abs_pivot_y="0.404696" abs_angle="0" abs_scale_x="0.387447" abs_scale_y="0.034486" abs_a="1" timeline="9" key="0" z_index="9"/>
+                    <object_ref id="10" name="bread-0_4" folder="1" file="4" abs_x="57.998443" abs_y="-39.211154" abs_pivot_x="0.486692" abs_pivot_y="0.494966" abs_angle="0" abs_scale_x="0.387447" abs_scale_y="0.034486" abs_a="1" timeline="10" key="0" z_index="10"/>
                     <object_ref id="11" name="snow-0" folder="2" file="0" abs_x="-7.661533" abs_y="-27.29842" abs_pivot_x="0.550725" abs_pivot_y="0.496" abs_angle="0" abs_scale_x="0.387447" abs_scale_y="0.034486" abs_a="1" timeline="11" key="0" z_index="11"/>
                     <object_ref id="12" name="snow-1" folder="2" file="1" abs_x="18.501509" abs_y="-39.780866" abs_pivot_x="0.410256" abs_pivot_y="0.355372" abs_angle="16.021866" abs_scale_x="0.336844" abs_scale_y="0.029982" abs_a="1" timeline="12" key="0" z_index="12"/>
                     <object_ref id="13" name="snow-0_000" folder="2" file="0" abs_x="-5.847247" abs_y="-19.973717" abs_pivot_x="0.514493" abs_pivot_y="0.456" abs_angle="40.132472" abs_scale_x="0.289182" abs_scale_y="0.034486" abs_a="1" timeline="13" key="0" z_index="13"/>
@@ -360,7 +360,7 @@
                     <object folder="1" file="1" x="164.065" y="338.54947" pivot_x="0.435" pivot_y="0.45053" angle="0"/>
                 </key>
             </timeline>
-            <timeline id="8" name="bread-2">
+            <timeline id="8" name="bread-0_2">
                 <key id="0" spin="-1">
                     <object folder="1" file="2" x="32.634743" y="-39.349895" pivot_x="0.453815" pivot_y="0.46888" angle="0" scale_x="0.387447" scale_y="0.034486"/>
                 </key>
@@ -374,7 +374,7 @@
                     <object folder="1" file="2" x="64.046185" y="431.03112" pivot_x="0.453815" pivot_y="0.46888" angle="0"/>
                 </key>
             </timeline>
-            <timeline id="9" name="bread-3">
+            <timeline id="9" name="bread-0_3">
                 <key id="0">
                     <object folder="1" file="3" x="-20.139066" y="-21.708137" pivot_x="0.51378" pivot_y="0.404696" angle="0" scale_x="0.387447" scale_y="0.034486"/>
                 </key>
@@ -388,7 +388,7 @@
                     <object folder="1" file="3" x="-105.51378" y="702.095304" pivot_x="0.51378" pivot_y="0.404696" angle="0"/>
                 </key>
             </timeline>
-            <timeline id="10" name="bread-4">
+            <timeline id="10" name="bread-0_4">
                 <key id="0" spin="-1">
                     <object folder="1" file="4" x="57.998443" y="-39.211154" pivot_x="0.486692" pivot_y="0.494966" angle="0" scale_x="0.387447" scale_y="0.034486"/>
                 </key>
@@ -456,9 +456,9 @@
                     <object_ref id="5" name="root" folder="0" file="1" abs_x="2.492537" abs_y="-7.039587" abs_pivot_x="0.507463" abs_pivot_y="0.039587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="5"/>
                     <object_ref id="6" name="bread-0" folder="1" file="0" abs_x="-160.001852" abs_y="418.542857" abs_pivot_x="0.501852" abs_pivot_y="0.457143" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="6" key="0" z_index="6"/>
                     <object_ref id="7" name="bread-1" folder="1" file="1" abs_x="164.065" abs_y="338.54947" abs_pivot_x="0.435" abs_pivot_y="0.45053" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="7" key="0" z_index="7"/>
-                    <object_ref id="8" name="bread-2" folder="1" file="2" abs_x="64.046185" abs_y="431.03112" abs_pivot_x="0.453815" abs_pivot_y="0.46888" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="8" key="0" z_index="8"/>
-                    <object_ref id="9" name="bread-3" folder="1" file="3" abs_x="-105.51378" abs_y="702.095304" abs_pivot_x="0.51378" abs_pivot_y="0.404696" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="9" key="0" z_index="9"/>
-                    <object_ref id="10" name="bread-4" folder="1" file="4" abs_x="126.513308" abs_y="744.005034" abs_pivot_x="0.486692" abs_pivot_y="0.494966" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="10" key="0" z_index="10"/>
+                    <object_ref id="8" name="bread-0_2" folder="1" file="2" abs_x="64.046185" abs_y="431.03112" abs_pivot_x="0.453815" abs_pivot_y="0.46888" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="8" key="0" z_index="8"/>
+                    <object_ref id="9" name="bread-0_3" folder="1" file="3" abs_x="-105.51378" abs_y="702.095304" abs_pivot_x="0.51378" abs_pivot_y="0.404696" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="9" key="0" z_index="9"/>
+                    <object_ref id="10" name="bread-0_4" folder="1" file="4" abs_x="126.513308" abs_y="744.005034" abs_pivot_x="0.486692" abs_pivot_y="0.494966" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="10" key="0" z_index="10"/>
                     <object_ref id="11" name="snow-0" folder="2" file="0" abs_x="-30.050725" abs_y="332.504" abs_pivot_x="0.550725" abs_pivot_y="0.496" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="11" key="0" z_index="11"/>
                     <object_ref id="12" name="snow-1" folder="2" file="1" abs_x="29.089744" abs_y="245.144628" abs_pivot_x="0.410256" abs_pivot_y="0.355372" abs_angle="16.021866" abs_scale_x="0.869395" abs_scale_y="0.869395" abs_a="1" timeline="12" key="0" z_index="12"/>
                     <object_ref id="13" name="snow-0_000" folder="2" file="0" abs_x="-22.514493" abs_y="592.544" abs_pivot_x="0.514493" abs_pivot_y="0.456" abs_angle="40.132472" abs_scale_x="0.746378" abs_scale_y="1" abs_a="1" timeline="13" key="0" z_index="13"/>
@@ -584,7 +584,7 @@
                     <object folder="1" file="1" x="162.690778" y="336.74388" pivot_x="0.435" pivot_y="0.45053" angle="358.927729"/>
                 </key>
             </timeline>
-            <timeline id="8" name="bread-2">
+            <timeline id="8" name="bread-0_2">
                 <key id="0">
                     <object folder="1" file="2" x="64.046185" y="431.03112" pivot_x="0.453815" pivot_y="0.46888" angle="0"/>
                 </key>
@@ -595,7 +595,7 @@
                     <object folder="1" file="2" x="62.339522" y="430.732574" pivot_x="0.453815" pivot_y="0.46888" angle="355.917947"/>
                 </key>
             </timeline>
-            <timeline id="9" name="bread-3">
+            <timeline id="9" name="bread-0_3">
                 <key id="0">
                     <object folder="1" file="3" x="-105.51378" y="702.095304" pivot_x="0.51378" pivot_y="0.404696" angle="0"/>
                 </key>
@@ -606,7 +606,7 @@
                     <object folder="1" file="3" x="-112.041639" y="699.980273" pivot_x="0.51378" pivot_y="0.404696" angle="358.353169"/>
                 </key>
             </timeline>
-            <timeline id="10" name="bread-4">
+            <timeline id="10" name="bread-0_4">
                 <key id="0">
                     <object folder="1" file="4" x="126.513308" y="744.005034" pivot_x="0.486692" pivot_y="0.494966" angle="0"/>
                 </key>
