@@ -106,6 +106,11 @@ function CommonStore:CreateSuWuMound(pos)
 	return nil
 end
 
+function CreateFire(x, y, z)
+	local tgt = SpawnPrefab("aip_rubik_fire")
+	tgt.Transform:SetPosition(x, y, z)
+end
+
 function CommonStore:PostWorld()
 	-- 我们在世界启动后做操作以防止世界没有准备好
 
@@ -128,6 +133,27 @@ function CommonStore:PostWorld()
 	self.inst:DoTaskInTime(10, function()
 		self:CreateCoookieKing()
 	end)
+
+	--------------------------- 开发模式 ---------------------------
+	if dev_mode then
+	-- self.inst:DoTaskInTime(3, function()
+	-- 	local x, y, z = ThePlayer.Transform:GetWorldPosition()
+	-- 	local offset = 3
+	-- 	local height = 6
+
+	-- 	for ox = -1, 1 do
+	-- 		for oy = -1, 1 do
+	-- 			for oz = -1, 1 do
+	-- 				CreateFire(
+	-- 					x + ox * offset,
+	-- 					0 + oy * offset + height,
+	-- 					z + oz * offset
+	-- 				)
+	-- 			end
+	-- 		end
+	-- 	end
+	-- end)
+	end
 end
 
 return CommonStore
