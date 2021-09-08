@@ -89,7 +89,8 @@ PrefabFiles = {
 	"aip_suwu",
 	"aip_suwu_mound",
 	"aip_breadfruit_tree",
-	"aip_rubik_fire",
+	-- "aip_rubik_fire",
+	-- "aip_rubik",
 
 	-- Orbit
 	"aip_orbit",

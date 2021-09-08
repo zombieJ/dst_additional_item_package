@@ -31,8 +31,12 @@ local function genRubik(colorName, rgb)
         return { r / 255, g / 255, b / 255, a / 255 }
     end
 
-    local aipScale = 5
-    local aipSmokeScale = 2
+    local aipScale = 3
+    local aipSmokeScale = 1 -- 1.4
+
+    local aipTimeScale = 1.2 -- 1.3
+    local aipSmokeTimeScale = 1 -- 1.3
+    local aipSmokeOffset = 0 -- 0.5
 
     local function InitEnvelope()
         EnvelopeManager:AddColourEnvelope(
@@ -114,12 +118,9 @@ local function genRubik(colorName, rgb)
 
     --------------------------------------------------------------------------
 
-    local aipTimeScale = 1.6
-    local SMOKE_MAX_LIFETIME = 1.1 * aipTimeScale
+    local SMOKE_MAX_LIFETIME = 1.1 * aipSmokeTimeScale
     local FIRE_MAX_LIFETIME = .9 * aipTimeScale
-    local HAND_MAX_LIFETIME = 1.7 * aipTimeScale
-
-    local aipSmokeOffset = 1.5
+    local HAND_MAX_LIFETIME = 1.7 * aipSmokeTimeScale
 
     local function emit_fire_fn(effect, sphere_emitter)
         local vx, vy, vz = .005 * UnitRand(), 0, .0005 * UnitRand()
