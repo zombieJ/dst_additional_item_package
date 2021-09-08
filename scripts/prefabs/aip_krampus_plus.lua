@@ -41,7 +41,7 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_KRAMPUS_PLUS = LANG.DESCRIBE
 local aip_krampus_plus = Recipe("aip_krampus_plus", {
     Ingredient("klaussackkey", 1), -- 克劳斯钥匙
     Ingredient("fossil_piece", 2), -- 化石骨架
-    Ingredient("tentaclespots", 1), -- 触手皮
+    Ingredient("glommerwings", 1), -- 咕噜咪翅膀
 }, RECIPETABS.SURVIVAL, TECH.SCIENCE_TWO)
 aip_krampus_plus.atlas = "images/inventoryimages/aip_krampus_plus.xml"
 

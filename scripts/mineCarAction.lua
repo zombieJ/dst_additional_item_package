@@ -70,6 +70,13 @@ local AIP_PATCH = env.AddAction("AIP_PATCH", "Patch", function(act)
 			repairValue = math.floor(repairValue / 2)
 		end
 
+		-- 移除物资
+		if item.components.stackable ~= nil then
+			item.components.stackable:Get():Remove()
+		else
+			item:Remove()
+		end
+
 		currentUses = math.min(totalUses, currentUses + repairValue)
 		target.components.finiteuses:SetUses(currentUses)
 		target.SoundEmitter:PlaySound("dontstarve/common/place_structure_wood")
@@ -86,8 +93,10 @@ env.AddComponentAction("USEITEM", "fuel", function(inst, doer, target, actions, 
 		return
 	end
 
-	if (doer.prefab == "winona" and inst.prefab == "log") or inst.prefab == "boards" then
-		table.insert(actions, GLOBAL.ACTIONS.AIP_PATCH)
+	if target.components.aipc_minecar ~= nil then
+		if (doer.prefab == "winona" and inst.prefab == "log") or inst.prefab == "boards" then
+			table.insert(actions, GLOBAL.ACTIONS.AIP_PATCH)
+		end
 	end
 end)
 

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+	<folder id="0" name="Symbol 1">
+		<file id="0" name="Symbol 1/Symbol 1-0.png" width="952" height="952" pivot_x="0.1323" pivot_y="0.501891" />
+	</folder>
+	<entity id="0" name="aip_xinyue_gridplacer">
+		<animation id="0" name="anim_90s" length="167">
+			<mainline>
+				<key id="0" time="0">
+					<object_ref id="0" name="Symbol 1" abs_x="0" abs_y="0" abs_pivot_x="0.1323" abs_pivot_y="0.501891" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+				</key>
+				<key id="1" time="84">
+					<object_ref id="0" name="Symbol 1" abs_x="0" abs_y="0" abs_pivot_x="0.1323" abs_pivot_y="0.501891" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+				</key>
+				<key id="2" time="167">
+					<object_ref id="0" name="Symbol 1" abs_x="0" abs_y="0" abs_pivot_x="0.1323" abs_pivot_y="0.501891" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
+				</key>
+			</mainline>
+			<timeline id="0" name="Symbol 1">
+				<key id="0" time="0" spin="1">
+					<object folder="0" file="0" x="-349.999" y="-0" scale_x="1" scale_y="1" angle="0" />
+				</key>
+				<key id="1" time="84" spin="1">
+					<object folder="0" file="0" x="-349.999" y="-0" scale_x="1" scale_y="1" angle="0" />
+				</key>
+				<key id="2" time="167" spin="1">
+					<object folder="0" file="0" x="-349.999" y="-0" scale_x="1" scale_y="1" angle="0" />
+				</key>
+			</timeline>
+		</animation>
+	</entity>
+</spriter_data>

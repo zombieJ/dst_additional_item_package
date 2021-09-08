@@ -40,6 +40,8 @@ PrefabFiles = {
 	"aip_nectar",
 	"aip_leaf_note",
 	"aip_xinyue_hoe",
+	"aip_xinyue_gridplacer",
+	"aip_22_fish",
 
 	-- survival
 	"aip_blood_package",
@@ -86,6 +88,9 @@ PrefabFiles = {
 	"aip_shell_stone",
 	"aip_suwu",
 	"aip_suwu_mound",
+	"aip_breadfruit_tree",
+	-- "aip_rubik_fire",
+	-- "aip_rubik",
 
 	-- Orbit
 	"aip_orbit",

@@ -220,7 +220,7 @@ local AIPC_GRID_CASTER_ACTION = env.AddAction("AIPC_GRID_CASTER_ACTION", LANG.CA
 
 	return true
 end)
-AIPC_GRID_CASTER_ACTION.tile_placer = "gridplacer"
+AIPC_GRID_CASTER_ACTION.tile_placer = "aip_xinyue_gridplacer"
 AIPC_GRID_CASTER_ACTION.theme_music = "farming"
 AIPC_GRID_CASTER_ACTION.customarrivecheck = function(doer, dest) -- 是否可以点到这个地点
 	local doer_pos = doer:GetPosition()

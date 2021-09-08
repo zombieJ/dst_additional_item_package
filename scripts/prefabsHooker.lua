@@ -68,6 +68,17 @@ if additional_chesspieces then
 	end
 end
 
+---------------------------------------- 树精卫士 ----------------------------------------
+-- 掉落树叶笔记
+function dropLeafNote(inst)
+	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil and additional_chesspieces then
+		inst.components.lootdropper:AddChanceLoot("aip_leaf_note", dev_mode and 1 or 0.1)
+	end
+end
+
+AddPrefabPostInit("leif", dropLeafNote)
+AddPrefabPostInit("leif_sparse", dropLeafNote)
+
 ----------------------------------------- 暗影怪 -----------------------------------------
 
 function createFootPrint(inst)
@@ -175,6 +186,14 @@ AddPrefabPostInit("skeleton_player", function(inst)
 	end
 end)
 
+------------------------------------------ 鱼人 ------------------------------------------
+AddPrefabPostInit("merm", function(inst)
+	-- 鱼人会极低概率掉 22 磅重的鲶鱼
+	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
+		inst.components.lootdropper:AddChanceLoot("aip_22_fish", dev_mode and 1 or 0.001)
+	end
+end)
+
 ------------------------------------------ 牛牛 ------------------------------------------
 AddPrefabPostInit("beefalo", function(inst)
 	-- 概率性替换成螃蟹
@@ -257,7 +276,7 @@ AddPrefabPostInit("reskin_tool", function(inst)
 			end)
 
 			inst.components.spellcaster:SetSpellFn(function(tool, target, pos, ...)
-				if target.prefab == "aip_wheat" then
+				if target and target.prefab == "aip_wheat" then
 					_G.aipSpawnPrefab(target, "explode_reskin")
 					_G.aipReplacePrefab(target, "grass")
 					return

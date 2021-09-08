@@ -128,6 +128,10 @@ function CommonStore:PostWorld()
 	self.inst:DoTaskInTime(10, function()
 		self:CreateCoookieKing()
 	end)
+
+	--------------------------- 开发模式 ---------------------------
+	if dev_mode then
+	end
 end
 
 return CommonStore

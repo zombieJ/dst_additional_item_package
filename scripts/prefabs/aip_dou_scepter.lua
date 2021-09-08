@@ -313,7 +313,7 @@ local function genScepter(containerName, animName)
         -- 接受元素提炼
         inst:AddComponent("container")
         inst.components.container:WidgetSetup(containerName)
-        inst.components.container.canbeopened = false
+        -- inst.components.container.canbeopened = false
 
         inst:AddComponent("named")
         inst:AddComponent("inspectable")
