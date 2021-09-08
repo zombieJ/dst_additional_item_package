@@ -68,6 +68,17 @@ if additional_chesspieces then
 	end
 end
 
+---------------------------------------- 树精卫士 ----------------------------------------
+-- 掉落树叶笔记
+function dropLeafNote(inst)
+	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil and additional_chesspieces then
+		inst.components.lootdropper:AddChanceLoot("aip_leaf_note", dev_mode and 1 or 0.1)
+	end
+end
+
+AddPrefabPostInit("leif", dropLeafNote)
+AddPrefabPostInit("leif_sparse", dropLeafNote)
+
 ----------------------------------------- 暗影怪 -----------------------------------------
 
 function createFootPrint(inst)
