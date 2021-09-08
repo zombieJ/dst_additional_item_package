@@ -276,7 +276,7 @@ AddPrefabPostInit("reskin_tool", function(inst)
 			end)
 
 			inst.components.spellcaster:SetSpellFn(function(tool, target, pos, ...)
-				if target.prefab == "aip_wheat" then
+				if target and target.prefab == "aip_wheat" then
 					_G.aipSpawnPrefab(target, "explode_reskin")
 					_G.aipReplacePrefab(target, "grass")
 					return
