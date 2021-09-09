@@ -233,6 +233,8 @@ local function genScepter(containerName, animName)
         if inst.components.container ~= nil then
             inst.components.container:Open(owner)
         end
+
+        inst.components.container.canbeopened = true
     end
 
     local function onunequip(inst, owner)
@@ -242,6 +244,8 @@ local function genScepter(containerName, animName)
         if inst.components.container ~= nil then
             inst.components.container:Close()
         end
+
+        inst.components.container.canbeopened = false
     end
 
     ------------------------- 实体 -------------------------
@@ -313,7 +317,7 @@ local function genScepter(containerName, animName)
         -- 接受元素提炼
         inst:AddComponent("container")
         inst.components.container:WidgetSetup(containerName)
-        -- inst.components.container.canbeopened = false
+        inst.components.container.canbeopened = false
 
         inst:AddComponent("named")
         inst:AddComponent("inspectable")

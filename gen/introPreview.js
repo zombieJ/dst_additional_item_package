@@ -44,7 +44,7 @@ const IMAGES = [
 
 	['aip_blue_glasses', 'aip_horse_head', 'aip_som', 'aip_joker_face'],
 
-	['aip_olden_tea_half', 'aip_suwu', 'aip_map', 'aip_shell_stone'],
+	['aip_olden_tea_half', 'aip_suwu', 'aip_map', 'aip_shell_stone', 'aip_22_fish'],
 
 	[
 		'chesspiece_aip_doujiang_marble', 'chesspiece_aip_doujiang_stone', 'chesspiece_aip_doujiang_moonglass',
