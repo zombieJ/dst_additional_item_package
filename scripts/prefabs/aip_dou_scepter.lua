@@ -119,6 +119,12 @@ local function refreshScepter(inst)
     return projectileInfo
 end
 
+local function toggleIndicator(inst, doer)
+    if inst.components.aipc_caster ~= nil then
+        inst.components.aipc_caster:ToggleIndicator()
+    end
+end
+
 -- 合成科技
 local function onturnon(inst)
     inst.AnimState:PlayAnimation("proximity_pre")
@@ -313,6 +319,8 @@ local function genScepter(containerName, animName)
                 projectile.components.aipc_dou_projectile:StartBy(doer, projectileInfo.queue, target)
             end
         end
+
+        inst.components.aipc_action.onDoAction = toggleIndicator
 
         -- 接受元素提炼
         inst:AddComponent("container")
