@@ -70,6 +70,11 @@ local Caster = Class(function(self, inst)
 
     self.onEquip = nil
     self.onUnequip = nil
+
+    self.showIndicator = _G.net_bool(inst.GUID, "aipc_caster_indicator", "aipc_caster_indicator_dirty")
+    if TheWorld.ismastersim then
+      self.showIndicator:set(true)
+    end
 end)
 
 local function RefreshReticule(inst)
@@ -82,48 +87,58 @@ local function RefreshReticule(inst)
   end
 end
 
-function Caster:SetUp(type)
+function Caster:ToggleIndicator()
+  self.showIndicator:set(not self.showIndicator:value())
+  self:SetUp(self.type, true)
+end
+
+function Caster:SetUp(type, forceRefresh)
+  local showIndicator = self.showIndicator:value()
+
   -- 如果类型变了就重置一下
   local needRefresh = self.type ~= type and self.active ~= false
 
-  if needRefresh then
+  if needRefresh or not showIndicator or forceRefresh then
     self:StopTargeting()
   end
 
-  if type == "LINE" or type == "THROUGH" then
-    self.reticule.reticuleprefab = "reticulelong"
-    self.reticule.pingprefab = "reticulelongping"
-    self.reticule.targetfn = ReticuleTargetFn
-    self.reticule.mousetargetfn = ReticuleMouseTargetFn
-    self.reticule.updatepositionfn = ReticuleUpdatePositionFn
-    self.reticule.validcolour = {1, .75, 0, 1}
-    self.reticule.invalidcolour = {.5, 0, 0, 1}
-    self.reticule.ease = true
-    self.reticule.mouseenabled = true
-  elseif type == "AREA" then
-    self.reticule.reticuleprefab = "reticuleaoesmall"
-    self.reticule.pingprefab = "reticuleaoesmallping"
-    self.reticule.targetfn = AreaReticuleTargetFn
-    self.reticule.mousetargetfn = nil
-    self.reticule.updatepositionfn = nil
-    self.reticule.validcolour = { 1, .75, 0, 1 }
-    self.reticule.invalidcolour = { .5, 0, 0, 1 }
-    self.reticule.ease = true
-    self.reticule.mouseenabled = true
-  elseif type == "FOLLOW" then
-    self.reticule.reticuleprefab = nil
-    self.reticule.pingprefab = nil
-    self.reticule.targetfn = nil
-    self.reticule.mousetargetfn = nil
-    self.reticule.updatepositionfn = nil
-    self.reticule.validcolour = nil
-    self.reticule.invalidcolour = nil
-    self.reticule.ease = false
-    self.reticule.mouseenabled = false
-  end
+  -- 只有开启了指示器才显示
+  if showIndicator then
+    if type == "LINE" or type == "THROUGH" then
+      self.reticule.reticuleprefab = "reticulelong"
+      self.reticule.pingprefab = "reticulelongping"
+      self.reticule.targetfn = ReticuleTargetFn
+      self.reticule.mousetargetfn = ReticuleMouseTargetFn
+      self.reticule.updatepositionfn = ReticuleUpdatePositionFn
+      self.reticule.validcolour = {1, .75, 0, 1}
+      self.reticule.invalidcolour = {.5, 0, 0, 1}
+      self.reticule.ease = true
+      self.reticule.mouseenabled = true
+    elseif type == "AREA" then
+      self.reticule.reticuleprefab = "reticuleaoesmall"
+      self.reticule.pingprefab = "reticuleaoesmallping"
+      self.reticule.targetfn = AreaReticuleTargetFn
+      self.reticule.mousetargetfn = nil
+      self.reticule.updatepositionfn = nil
+      self.reticule.validcolour = { 1, .75, 0, 1 }
+      self.reticule.invalidcolour = { .5, 0, 0, 1 }
+      self.reticule.ease = true
+      self.reticule.mouseenabled = true
+    elseif type == "FOLLOW" then
+      self.reticule.reticuleprefab = nil
+      self.reticule.pingprefab = nil
+      self.reticule.targetfn = nil
+      self.reticule.mousetargetfn = nil
+      self.reticule.updatepositionfn = nil
+      self.reticule.validcolour = nil
+      self.reticule.invalidcolour = nil
+      self.reticule.ease = false
+      self.reticule.mouseenabled = false
+    end
 
-  if needRefresh then
-    self:StartTargeting()
+    if needRefresh or forceRefresh then
+      self:StartTargeting()
+    end
   end
 
     self.type = type

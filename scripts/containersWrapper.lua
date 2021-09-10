@@ -321,6 +321,11 @@ function fillDouScepter(slotCount, topOffset, offset)
 			animbank = "ui_cookpot_1x4",
 			animbuild = "ui_cookpot_1x4",
 			pos = Vector3(0, -30 + loopIndex * 45 - topOffset, 0),
+
+			buttoninfo = {
+				text = STRINGS.ACTIONS.CYCLE.GENERIC,
+				position = Vector3(0, 170, 0),
+			}
 		},
 		acceptsstacks = false,
 		usespecificslotsforitems = true,
@@ -337,6 +342,15 @@ function fillDouScepter(slotCount, topOffset, offset)
 	-- 只接受魔法元素
 	params[name].itemtestfn = function(container, item, slot)
 		return item:HasTag("aip_dou_inscription")
+	end
+
+	-- 操作按钮
+	params[name].widget.buttoninfo.fn = function(inst)
+		if inst.components.container ~= nil then
+			_G.BufferedAction(inst.components.container.opener, inst, AIP_ACTION):Do()
+		elseif inst.replica.container ~= nil and not inst.replica.container:IsBusy() then
+			_G.SendRPCToServer(_G.RPC.DoWidgetButtonAction, AIP_ACTION.code, inst, AIP_ACTION.mod_name)
+		end
 	end
 end
 
