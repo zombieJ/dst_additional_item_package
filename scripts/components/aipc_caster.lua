@@ -74,6 +74,10 @@ local Caster = Class(function(self, inst)
     self.showIndicator = _G.net_bool(inst.GUID, "aipc_caster_indicator", "aipc_caster_indicator_dirty")
     if TheWorld.ismastersim then
       self.showIndicator:set(true)
+    else
+      inst:ListenForEvent("aipc_caster_indicator_dirty", function()
+        self:ForceRefresh()
+      end)
     end
 end)
 
@@ -87,9 +91,13 @@ local function RefreshReticule(inst)
   end
 end
 
+function Caster:ForceRefresh()
+  self:SetUp(self.type, true)
+end
+
 function Caster:ToggleIndicator()
   self.showIndicator:set(not self.showIndicator:value())
-  self:SetUp(self.type, true)
+  self:ForceRefresh()
 end
 
 function Caster:SetUp(type, forceRefresh)
