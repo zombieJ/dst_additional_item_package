@@ -67,18 +67,6 @@ local function onfuelchange(newsection, oldsection, inst)
     end
 end
 
-------------------------------- 交互 -------------------------------
-local function canBeActOn(inst, doer)
-	return true
-end
-
-local function onOpenPicker(inst, doer)
-	-- 记录一下操作的对象
-	doer.player_classified.aip_rubik_prefab = inst
-	-- 加一个切割前缀强制服务器触发
-	doer.player_classified.aip_rubik:set(tostring(os.time()))
-end
-
 ------------------------------- 实体 -------------------------------
 local function fn()
     local inst = CreateEntity()
@@ -96,9 +84,6 @@ local function fn()
 
 	inst:AddTag("wildfireprotected")
 
-	inst:AddComponent("aipc_action_client")
-    inst.components.aipc_action_client.canBeActOn = canBeActOn
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -107,10 +92,6 @@ local function fn()
 
     inst:AddComponent("inspectable")
     inst:AddComponent("aipc_rubik")
-
-	-- 玩家交互
-	inst:AddComponent("aipc_action")
-    inst.components.aipc_action.onDoAction = onOpenPicker
 
 	-- 可以点燃
 	inst:AddComponent("burnable")

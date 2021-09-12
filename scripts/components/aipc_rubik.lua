@@ -16,6 +16,7 @@ local Rubik = Class(function(self, inst)
 	self.inst = inst
 
 	self.start = false
+	self.selectIndex = nil
 	self.fxs = {}
 
 	self.matrix = {}
@@ -32,6 +33,7 @@ local Rubik = Class(function(self, inst)
 	end
 end)
 
+------------------------------- 位置 -------------------------------
 function Rubik:SyncPos()
 	for i, fx in ipairs(self.fxs) do
 		local ox, oy, oz = getPos(i)
@@ -46,12 +48,14 @@ function Rubik:SyncPos()
 	end
 end
 
+------------------------------- 开关 -------------------------------
 function Rubik:Start()
 	self.start = true
 
 	if #self.fxs == 0 then
 		for i, color in ipairs(self.matrix) do
 			local fx = SpawnPrefab("aip_rubik_fire_"..color)
+			fx.aipRubik = self.inst
 			self.inst:AddChild(fx)
 			self.fxs[i] = fx
 		end
@@ -68,6 +72,19 @@ function Rubik:Stop()
 	end
 
 	self.fxs = {}
+end
+
+------------------------------- 选择 -------------------------------
+function Rubik:Select(fire)
+	self.selectIndex = aipTableIndex(self.fxs, fire)
+	
+	if self.selectIndex then
+		for i, fx in ipairs(self.fxs) do
+			fx.AnimState:PlayAnimation("idle")
+		end
+
+		fire.AnimState:PlayAnimation("selected", true)
+	end
 end
 
 return Rubik

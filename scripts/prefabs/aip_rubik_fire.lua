@@ -12,11 +12,11 @@ local language = aipGetModConfig("language")
 local LANG_MAP = {
 	english = {
 		NAME = "Fire",
-		DESC = "Click close fire to move",
+		DESC = "Examine close fire to move",
 	},
 	chinese = {
 		NAME = "火焰",
-		DESC = "点击相邻火焰移动",
+		DESC = "检查相邻火焰移动",
 	},
 }
 
@@ -26,6 +26,13 @@ for colorName, rgb in pairs(colors) do
     local name = "AIP_RUBIK_FIRE_"..string.upper(colorName)
     STRINGS.NAMES[name] = LANG.NAME
     STRINGS.CHARACTERS.GENERIC.DESCRIBE[name] = LANG.DESC
+end
+
+------------------------------- 事件 -------------------------------
+local function onSelect(inst, viewer)
+    if inst.aipRubik ~= nil and inst.aipRubik.components.aipc_rubik ~= nil then
+        inst.aipRubik.components.aipc_rubik:Select(inst)
+    end
 end
 
 ------------------------------- 实体 -------------------------------
@@ -316,6 +323,7 @@ local function genRubik(colorName, rgb)
 
     local function master_postinit(inst)
         inst:AddComponent("inspectable")
+        -- inst.components.inspectable.descriptionfn = onSelect
     end
 
     return MakeTorchFire("aip_rubik_fire_"..colorName, assets, nil, common_postinit, master_postinit)
