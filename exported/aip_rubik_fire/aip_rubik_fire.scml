@@ -3,7 +3,6 @@
     <folder id="0" name="body">
         <file id="0" name="body/fire.png" width="100" height="100" pivot_x="0" pivot_y="1"/>
         <file id="1" name="body/light.png" width="100" height="100" pivot_x="0" pivot_y="1"/>
-        <file id="2" name="body/00000002" width="20" height="20" pivot_x="0" pivot_y="1"/>
     </folder>
     <entity id="0" name="aip_rubik_fire">
         <animation id="0" name="idle" length="1000">

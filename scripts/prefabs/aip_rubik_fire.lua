@@ -225,10 +225,6 @@ local function genRubik(colorName, rgb)
 
         inst:RemoveTag("FX")
 
-        if true then
-            return
-        end
-
         --Dedicated server does not need to spawn local particle fx
         if TheNet:IsDedicated() then
             return
@@ -327,7 +323,7 @@ local function genRubik(colorName, rgb)
 
     local function master_postinit(inst)
         inst:AddComponent("inspectable")
-        -- inst.components.inspectable.descriptionfn = onSelect
+        inst.components.inspectable.descriptionfn = onSelect
     end
 
     return MakeTorchFire("aip_rubik_fire_"..colorName, assets, nil, common_postinit, master_postinit)
