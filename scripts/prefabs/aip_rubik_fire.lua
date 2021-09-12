@@ -1,3 +1,34 @@
+local colors = {
+    red = { 1, 0, 0 },
+    green = { 0, 1, 0 },
+    blue = { 0, 0, 1 },
+}
+
+-- string.upper(name)
+
+------------------------------- 描述 -------------------------------
+local language = aipGetModConfig("language")
+
+local LANG_MAP = {
+	english = {
+		NAME = "Fire",
+		DESC = "Click close fire to move",
+	},
+	chinese = {
+		NAME = "火焰",
+		DESC = "点击相邻火焰移动",
+	},
+}
+
+local LANG = LANG_MAP[language] or LANG_MAP.english
+
+for colorName, rgb in pairs(colors) do
+    local name = "AIP_RUBIK_FIRE_"..string.upper(colorName)
+    STRINGS.NAMES[name] = LANG.NAME
+    STRINGS.CHARACTERS.GENERIC.DESCRIBE[name] = LANG.DESC
+end
+
+------------------------------- 实体 -------------------------------
 local MakeTorchFire = require("prefabs/torchfire_common")
 
 local ANIM_HAND_TEXTURE = "fx/animhand.tex"
@@ -7,6 +38,7 @@ local SHADER = "shaders/vfx_particle.ksh"
 local REVEAL_SHADER = "shaders/vfx_particle_reveal.ksh"
 
 local assets = {
+    Asset("ANIM", "anim/aip_rubik_fire.zip"),
     Asset("IMAGE", ANIM_HAND_TEXTURE),
     Asset("IMAGE", ANIM_SMOKE_TEXTURE),
     Asset("SHADER", SHADER),
@@ -176,6 +208,16 @@ local function genRubik(colorName, rgb)
     --------------------------------------------------------------------------
 
     local function common_postinit(inst)
+        inst.entity:AddAnimState()
+        inst.AnimState:SetBank("aip_rubik_fire")
+        inst.AnimState:SetBuild("aip_rubik_fire")
+        inst.AnimState:PlayAnimation("idle")
+
+        MakeProjectilePhysics(inst)
+        RemovePhysicsColliders(inst)
+
+        inst:RemoveTag("FX")
+
         --Dedicated server does not need to spawn local particle fx
         if TheNet:IsDedicated() then
             return
@@ -273,19 +315,13 @@ local function genRubik(colorName, rgb)
     end
 
     local function master_postinit(inst)
-        MakeProjectilePhysics(inst)
-        RemovePhysicsColliders(inst)
+        inst:AddComponent("inspectable")
     end
 
     return MakeTorchFire("aip_rubik_fire_"..colorName, assets, nil, common_postinit, master_postinit)
 end
 
 local prefabList = {}
-local colors = {
-    red = { 1, 0, 0 },
-    green = { 0, 1, 0 },
-    blue = { 0, 0, 1 },
-}
 
 for colorName, rgb in pairs(colors) do
     table.insert(prefabList, genRubik(colorName, rgb))

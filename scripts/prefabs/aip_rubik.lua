@@ -1,3 +1,5 @@
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
+
 local language = aipGetModConfig("language")
 
 -- 文字描述
@@ -104,6 +106,7 @@ local function fn()
     end
 
     inst:AddComponent("inspectable")
+    inst:AddComponent("aipc_rubik")
 
 	-- 玩家交互
 	inst:AddComponent("aipc_action")
@@ -125,9 +128,7 @@ local function fn()
     inst.components.fueled:SetTakeFuelFn(ontakefuel)
     inst.components.fueled:SetUpdateFn(onupdatefueled)
     inst.components.fueled:SetSectionCallback(onfuelchange)
-    inst.components.fueled:InitializeFuelLevel(0)
-
-	inst:AddComponent("aipc_rubik")
+    inst.components.fueled:InitializeFuelLevel(dev_mode and TUNING.NIGHTLIGHT_FUEL_START or 0)
 
 	return inst
 end
