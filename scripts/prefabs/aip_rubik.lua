@@ -65,33 +65,16 @@ local function onfuelchange(newsection, oldsection, inst)
     end
 end
 
-------------------------------- 魔方 -------------------------------
-local function CreateFire(inst, colorName, x, y, z)
-	local tgt = SpawnPrefab("aip_rubik_fire_"..colorName)
-	inst:AddChild(tgt)
-	tgt.Transform:SetPosition(x, y, z)
+------------------------------- 交互 -------------------------------
+local function canBeActOn(inst, doer)
+	return true
 end
 
-local function initRubik(inst)
-	local offset = 2
-	local height = 4
-	local colors = {"green", "red","blue"}
-
-	for oy = 1, 3 do
-		local scaleOffset = 1 -- + (3 - oy) / 6
-
-		for ox = -1, 1 do
-			for oz = -1, 1 do
-				CreateFire(
-					inst,
-					colors[oy],
-					ox * offset * scaleOffset,
-					oy * offset + height,
-					oz * offset * scaleOffset
-				)
-			end
-		end
-	end
+local function onOpenPicker(inst, doer)
+	-- 记录一下操作的对象
+	doer.player_classified.aip_rubik_prefab = inst
+	-- 加一个切割前缀强制服务器触发
+	doer.player_classified.aip_rubik:set(tostring(os.time()))
 end
 
 ------------------------------- 实体 -------------------------------
@@ -111,6 +94,9 @@ local function fn()
 
 	inst:AddTag("wildfireprotected")
 
+	inst:AddComponent("aipc_action_client")
+    inst.components.aipc_action_client.canBeActOn = canBeActOn
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -118,6 +104,10 @@ local function fn()
     end
 
     inst:AddComponent("inspectable")
+
+	-- 玩家交互
+	inst:AddComponent("aipc_action")
+    inst.components.aipc_action.onDoAction = onOpenPicker
 
 	-- 可以点燃
 	inst:AddComponent("burnable")
@@ -137,7 +127,6 @@ local function fn()
     inst.components.fueled:SetSectionCallback(onfuelchange)
     inst.components.fueled:InitializeFuelLevel(0)
 
-	-- initRubik(inst)
 	inst:AddComponent("aipc_rubik")
 
 	return inst

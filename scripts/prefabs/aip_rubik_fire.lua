@@ -273,7 +273,8 @@ local function genRubik(colorName, rgb)
     end
 
     local function master_postinit(inst)
-        inst.fx_offset = -100
+        MakeProjectilePhysics(inst)
+        RemovePhysicsColliders(inst)
     end
 
     return MakeTorchFire("aip_rubik_fire_"..colorName, assets, nil, common_postinit, master_postinit)

@@ -1,6 +1,6 @@
 ------------------------------- 方法 -------------------------------
 local FX_OFFSET = 2
-local FX_HEIGHT = 5
+local FX_HEIGHT = 7
 
 local function getPos(idx)
 	local mathIdx = idx - 1
@@ -36,7 +36,7 @@ function Rubik:SyncPos()
 	for i, fx in ipairs(self.fxs) do
 		local ox, oy, oz = getPos(i)
 
-		local scaleOffset = 1 - (oy - 1) / 6
+		local scaleOffset = 1 + (oy - 1) / 6
 		
 		fx.Transform:SetPosition(
 			ox * FX_OFFSET * scaleOffset,
