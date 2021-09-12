@@ -225,6 +225,10 @@ local function genRubik(colorName, rgb)
 
         inst:RemoveTag("FX")
 
+        if true then
+            return
+        end
+
         --Dedicated server does not need to spawn local particle fx
         if TheNet:IsDedicated() then
             return
