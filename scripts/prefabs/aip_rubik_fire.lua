@@ -220,7 +220,8 @@ local function genRubik(colorName, rgb)
         inst.AnimState:SetBuild("aip_rubik_fire")
         inst.AnimState:PlayAnimation("idle")
 
-        MakeProjectilePhysics(inst)
+        MakeTinyFlyingCharacterPhysics(inst, 0, 0)
+        -- MakeInventoryPhysics(inst, 1, .5)
         RemovePhysicsColliders(inst)
 
         inst:RemoveTag("FX")
