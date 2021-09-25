@@ -299,8 +299,53 @@ function Rubik:Select(fire)
 		local axises = getSameAxis(pStart, pEnd)
 		for i, axis in ipairs(axises) do
 			if not isOnAxis(axis, pStart) and not isOnAxis(axis, pEnd) then
+				local fixedAxisPos = pEnd[axis] -- 固定轴上的固定点
+				local restAxises = getAxisRest(axis)
+
+				-- 从起点开始转圈
+				local currentPT = Vector3(pStart.x, pStart.y, pStart.z)
+
+				-- 我们会从一个轴开始转圈，一个转完了转另一个，然后往复到目标点为止
+				local walkingAxisIdx = 1
+				local walkingAxisOffsets = {}
+
+				for step = 1, 20 do
+					-- 获取当前需要走步数的坐标
+					local walkingAxis = restAxises[walkingAxisIdx]
+
+					-- 如果还没有位移数据，则根据点随便搞一个
+					if not walkingAxisOffsets[walkingAxisIdx] then
+						walkingAxisOffsets[walkingAxisIdx] = currentPT[walkingAxis] == 1 and -1 or 1
+					end
+
+					-- 获取位移数据
+					local walkingAxisOffset = walkingAxisOffsets[walkingAxisIdx]
+
+					-- 走一步
+					local nextWalkingAxisPos = currentPT[walkingAxis] + walkingAxisOffset
+					local nextPT = Vector3(currentPT.x, currentPT.y, currentPT.z)
+					nextPT[walkingAxis] = nextWalkingAxisPos
+
+					aipTypePrint("Walking:", step, currentPT, ">>>", nextPT)
+
+					-- 如果发现到了边界，则走下一个边
+					if math.abs(nextWalkingAxisPos) == 1 then
+						walkingAxisOffsets[walkingAxisIdx] = -walkingAxisOffsets[walkingAxisIdx]
+						walkingAxisIdx = walkingAxisIdx == 1 and 2 or 1
+					end
+
+					-- 如果到了目标点，我们结束
+					if nextPT.x == pEnd.x and nextPT.y == pEnd.y and nextPT.z == pEnd.z then
+						local reverseStep = 8 - step
+						aipPrint("Done! Step:", step)
+						break
+					end
+
+					currentPT = nextPT
+				end
+
+				-- 转过了，不用选中了
 				self.selectIndex = nil
-				aipPrint("Get Axis:", axis)
 			end
 		end
 	end
