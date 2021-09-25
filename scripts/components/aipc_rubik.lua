@@ -78,10 +78,8 @@ local function offsetPT(axis, pt, offset)
 	return setPT(axis, pt, val)
 end
 
-local function 
-
 -- 给与两个坐标轴，开始转一圈
-local function tryWalkPT(startPT, endPT, restAxises, reverse)
+local function walkPT(startPT, endPT, restAxises, reverse)
 	local currentPT = startPT
 
 	local finalRestAxises = aipTableSlice(restAxises)
@@ -380,12 +378,49 @@ function Rubik:Select(fire)
 				local walkInfo = walkPT(pStart, pEnd, restAxises)
 				local reserveWalkInfo = walkPT(pStart, pEnd, restAxises, true)
 
-				-- 开始旋转颜色
+				-- 根据方向选择角度
+				local angle = PI / 2
 				if walkInfo.step < reserveWalkInfo.step then
-					aipPrint("GGG")
+					aipPrint("顺时针转")
 				else
-					aipPrint("AAA")
+					aipPrint("逆时针转")
+					angle = -angle
 				end
+
+				-- 新建一套新的数据
+				local next_fxs = aipTableSlice(self.fxs)
+				local next_matrix = aipTableSlice(self.matrix)
+
+				for x = -1, 1 do -- x y 只是代指两个轴，不是真的 x y
+					for y = -1, 1 do
+						-- 需要取整
+						local nextX = math.floor(x * math.cos(angle) - y * math.sin(angle) + 0.1)
+						local nextY = math.floor(x * math.sin(angle) + y * math.cos(angle) + 0.1)
+						local xyz = Vector3()
+						xyz[axis] = fixedAxisPos
+						xyz[restAxises[1]] = x
+						xyz[restAxises[2]] = y
+
+						-- 目标节点
+						local nextXYZ = Vector3(xyz.x, xyz.y, xyz.z)
+						nextXYZ[restAxises[1]] = nextX
+						nextXYZ[restAxises[2]] = nextY
+
+						-- aipPrint("ROTATE:", xyz.x, xyz.y, xyz.z, ">", nextXYZ.x, nextXYZ.y, nextXYZ.z)
+
+						-- 交换 颜色 和 实体
+						local oriIdx = getIndex(xyz)
+						local tgtIdx = getIndex(nextXYZ)
+
+						next_fxs[tgtIdx] = self.fxs[oriIdx]
+						next_matrix[tgtIdx] = self.matrix[oriIdx]
+					end
+				end
+
+				-- 同步回去
+				self.fxs = next_fxs
+				self.matrix = next_matrix
+				self:SyncPos()
 
 				-- 转过了，不用选中了
 				self.selectIndex = nil
