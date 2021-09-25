@@ -72,6 +72,56 @@ local function setPT(axis, pt, val)
 	return clone
 end
 
+-- 偏移得到一个新的
+local function offsetPT(axis, pt, offset)
+	local val = pt[axis] + offset
+	return setPT(axis, pt, val)
+end
+
+-- 给与两个坐标轴，开始转一圈
+local function walkPT(startPT, endPT, restAxises)
+	local currentPT = startPT
+
+	-- 我们会从一个轴开始转圈，一个转完了转另一个，然后往复到目标点为止
+	local walkingAxisIdx = 1
+	local walkingAxisOffsets = {}
+
+	for step = 1, 20 do
+		-- 获取当前需要走步数的坐标
+		local walkingAxis = restAxises[walkingAxisIdx]
+
+		-- 如果还没有位移数据，则根据点随便搞一个
+		if not walkingAxisOffsets[walkingAxisIdx] then
+			walkingAxisOffsets[walkingAxisIdx] = currentPT[walkingAxis] == 1 and -1 or 1
+		end
+
+		-- 获取位移数据
+		local walkingAxisOffset = walkingAxisOffsets[walkingAxisIdx]
+
+		-- 走一步
+		local nextWalkingAxisPos = currentPT[walkingAxis] + walkingAxisOffset
+		local nextPT = Vector3(currentPT.x, currentPT.y, currentPT.z)
+		nextPT[walkingAxis] = nextWalkingAxisPos
+
+		aipTypePrint("Walking:", step, currentPT, ">>>", nextPT)
+
+		-- 如果发现到了边界，则走下一个边
+		if math.abs(nextWalkingAxisPos) == 1 then
+			walkingAxisOffsets[walkingAxisIdx] = -walkingAxisOffsets[walkingAxisIdx]
+			walkingAxisIdx = walkingAxisIdx == 1 and 2 or 1
+		end
+
+		-- 如果到了目标点，我们结束
+		if nextPT.x == endPT.x and nextPT.y == endPT.y and nextPT.z == endPT.z then
+			local reverseStep = 8 - step
+			aipPrint("Done! Step:", step)
+			break
+		end
+
+		currentPT = nextPT
+	end
+end
+
 -- 播放动画
 local function playAnimation(fx, motion)
 	if fx then
@@ -303,46 +353,7 @@ function Rubik:Select(fire)
 				local restAxises = getAxisRest(axis)
 
 				-- 从起点开始转圈
-				local currentPT = Vector3(pStart.x, pStart.y, pStart.z)
-
-				-- 我们会从一个轴开始转圈，一个转完了转另一个，然后往复到目标点为止
-				local walkingAxisIdx = 1
-				local walkingAxisOffsets = {}
-
-				for step = 1, 20 do
-					-- 获取当前需要走步数的坐标
-					local walkingAxis = restAxises[walkingAxisIdx]
-
-					-- 如果还没有位移数据，则根据点随便搞一个
-					if not walkingAxisOffsets[walkingAxisIdx] then
-						walkingAxisOffsets[walkingAxisIdx] = currentPT[walkingAxis] == 1 and -1 or 1
-					end
-
-					-- 获取位移数据
-					local walkingAxisOffset = walkingAxisOffsets[walkingAxisIdx]
-
-					-- 走一步
-					local nextWalkingAxisPos = currentPT[walkingAxis] + walkingAxisOffset
-					local nextPT = Vector3(currentPT.x, currentPT.y, currentPT.z)
-					nextPT[walkingAxis] = nextWalkingAxisPos
-
-					aipTypePrint("Walking:", step, currentPT, ">>>", nextPT)
-
-					-- 如果发现到了边界，则走下一个边
-					if math.abs(nextWalkingAxisPos) == 1 then
-						walkingAxisOffsets[walkingAxisIdx] = -walkingAxisOffsets[walkingAxisIdx]
-						walkingAxisIdx = walkingAxisIdx == 1 and 2 or 1
-					end
-
-					-- 如果到了目标点，我们结束
-					if nextPT.x == pEnd.x and nextPT.y == pEnd.y and nextPT.z == pEnd.z then
-						local reverseStep = 8 - step
-						aipPrint("Done! Step:", step)
-						break
-					end
-
-					currentPT = nextPT
-				end
+				walkPT(pStart, pEnd, restAxises)
 
 				-- 转过了，不用选中了
 				self.selectIndex = nil
