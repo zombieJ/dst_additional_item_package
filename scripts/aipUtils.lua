@@ -62,8 +62,10 @@ end
 
 function _G.aipTableSlice(tbl, start, len)
 	local list = {}
+	local finalStart = start or 1
+	local finalLen = len or #tbl
 
-	for i = start, math.min(len + start - 1, #tbl) do
+	for i = finalStart, math.min(finalLen + finalStart - 1, #tbl) do
 		table.insert(list, tbl[i])
 	end
 	return list

@@ -78,21 +78,43 @@ local function offsetPT(axis, pt, offset)
 	return setPT(axis, pt, val)
 end
 
+local function 
+
 -- 给与两个坐标轴，开始转一圈
-local function walkPT(startPT, endPT, restAxises)
+local function tryWalkPT(startPT, endPT, restAxises, reverse)
 	local currentPT = startPT
+
+	local finalRestAxises = aipTableSlice(restAxises)
 
 	-- 我们会从一个轴开始转圈，一个转完了转另一个，然后往复到目标点为止
 	local walkingAxisIdx = 1
 	local walkingAxisOffsets = {}
 
+	local startWalkingAxisOffset = nil
+
+	-- !!! 开始时需要决定初始转圈的方向 !!!
+	if math.abs(startPT[restAxises[1]]) == 1 and math.abs(startPT[restAxises[2]]) == 1 and reverse then
+		-- 如果是角落，互换一下坐标顺序即可
+		finalRestAxises = { restAxises[2], restAxises[1] }
+	end
+
 	for step = 1, 20 do
 		-- 获取当前需要走步数的坐标
-		local walkingAxis = restAxises[walkingAxisIdx]
+		local walkingAxis = finalRestAxises[walkingAxisIdx]
 
 		-- 如果还没有位移数据，则根据点随便搞一个
 		if not walkingAxisOffsets[walkingAxisIdx] then
 			walkingAxisOffsets[walkingAxisIdx] = currentPT[walkingAxis] == 1 and -1 or 1
+
+			-- 如果是设置了 reverse，就取反一下方向
+			if currentPT[walkingAxis] == 0 and reverse then
+				walkingAxisOffsets[walkingAxisIdx] = -walkingAxisOffsets[walkingAxisIdx]
+			end
+
+			-- 记录一下起始状态的 offset
+			if startWalkingAxisOffset == nil then
+				startWalkingAxisOffset = walkingAxisOffsets[walkingAxisIdx]
+			end
 		end
 
 		-- 获取位移数据
@@ -103,7 +125,7 @@ local function walkPT(startPT, endPT, restAxises)
 		local nextPT = Vector3(currentPT.x, currentPT.y, currentPT.z)
 		nextPT[walkingAxis] = nextWalkingAxisPos
 
-		aipTypePrint("Walking:", step, currentPT, ">>>", nextPT)
+		-- aipTypePrint("Walking:", step, currentPT, ">>>", nextPT)
 
 		-- 如果发现到了边界，则走下一个边
 		if math.abs(nextWalkingAxisPos) == 1 then
@@ -113,9 +135,11 @@ local function walkPT(startPT, endPT, restAxises)
 
 		-- 如果到了目标点，我们结束
 		if nextPT.x == endPT.x and nextPT.y == endPT.y and nextPT.z == endPT.z then
-			local reverseStep = 8 - step
-			aipPrint("Done! Step:", step)
-			break
+			return {
+				step = step,
+				restAxises = finalRestAxises,
+				walkingAxisOffset = startWalkingAxisOffset,
+			}
 		end
 
 		currentPT = nextPT
@@ -161,7 +185,7 @@ local function isOnAxis(axis, pt)
 	elseif axis == 'y' then
 		return pt.x == 0 and pt.z == 0
 	elseif axis == 'z' then
-		return pt.x == 0 and pt.z == 0
+		return pt.x == 0 and pt.y == 0
 	end
 end
 
@@ -335,7 +359,6 @@ function Rubik:Select(fire)
 	end
 
 	----------------------- 旋转判断 -----------------------
-	aipPrint("~~~>", self.selectIndex, prevIndex, fire.rotate)
 	if prevIndex and self.selectIndex and fire.rotate then
 		local px, py, pz = getPos(prevIndex)
 		local cx, cy, cz = getPos(self.selectIndex)
@@ -348,12 +371,21 @@ function Rubik:Select(fire)
 		-- 遍历每个轴，找到可以旋转的那个
 		local axises = getSameAxis(pStart, pEnd)
 		for i, axis in ipairs(axises) do
+			aipPrint("检测轴：", axis, not isOnAxis(axis, pStart), not isOnAxis(axis, pEnd))
 			if not isOnAxis(axis, pStart) and not isOnAxis(axis, pEnd) then
 				local fixedAxisPos = pEnd[axis] -- 固定轴上的固定点
 				local restAxises = getAxisRest(axis)
 
-				-- 从起点开始转圈
-				walkPT(pStart, pEnd, restAxises)
+				-- 从起点开始转圈，找到最快的转圈方向
+				local walkInfo = walkPT(pStart, pEnd, restAxises)
+				local reserveWalkInfo = walkPT(pStart, pEnd, restAxises, true)
+
+				-- 开始旋转颜色
+				if walkInfo.step < reserveWalkInfo.step then
+					aipPrint("GGG")
+				else
+					aipPrint("AAA")
+				end
 
 				-- 转过了，不用选中了
 				self.selectIndex = nil
