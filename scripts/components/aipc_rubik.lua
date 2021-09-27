@@ -11,6 +11,11 @@ local function getPos(idx)
 	return x - 1, y - 1, z - 1
 end
 
+local function getPosVec(idx)
+	local x, y, z = getPos(idx)
+	return Vector3(x, y, z)
+end
+
 local function getIndex(pt)
 	local x = pt.x + 1
 	local y = pt.y + 1
@@ -76,6 +81,16 @@ end
 local function offsetPT(axis, pt, offset)
 	local val = pt[axis] + offset
 	return setPT(axis, pt, val)
+end
+
+-- 根据一个轴的名字，获取剩余两个轴的名字
+local function getAxisRest(axis)
+	local tbl = {
+		x = { 'y', 'z' },
+		y = { 'z', 'x' },
+		z = { 'x', 'y' },
+	}
+	return tbl[axis]
 end
 
 -- 给与两个坐标轴，开始转一圈
@@ -144,6 +159,50 @@ local function walkPT(startPT, endPT, restAxises, reverse)
 	end
 end
 
+-- 按照一个角度旋转
+local function rotateFace(originFxs, originMatrix, fixedAxis, fixedAxisPos, reverse)
+	local angle = PI / 2
+	local restAxises = getAxisRest(fixedAxis)
+
+	if reverse then
+		angle = -angle
+	end
+
+	local next_fxs = aipTableSlice(originFxs)
+	local next_matrix = aipTableSlice(originMatrix)
+
+	for x = -1, 1 do -- x y 只是代指两个轴，不是真的 x y
+		for y = -1, 1 do
+			-- 需要取整
+			local nextX = math.floor(x * math.cos(angle) - y * math.sin(angle) + 0.1)
+			local nextY = math.floor(x * math.sin(angle) + y * math.cos(angle) + 0.1)
+			local xyz = Vector3()
+			xyz[fixedAxis] = fixedAxisPos
+			xyz[restAxises[1]] = x
+			xyz[restAxises[2]] = y
+
+			-- 目标节点
+			local nextXYZ = Vector3(xyz.x, xyz.y, xyz.z)
+			nextXYZ[restAxises[1]] = nextX
+			nextXYZ[restAxises[2]] = nextY
+
+			aipPrint("ROTATE:", xyz.x, xyz.y, xyz.z, ">", nextXYZ.x, nextXYZ.y, nextXYZ.z)
+
+			-- 交换 颜色 和 实体
+			local oriIdx = getIndex(xyz)
+			local tgtIdx = getIndex(nextXYZ)
+
+			next_fxs[tgtIdx] = originFxs[oriIdx]
+			next_matrix[tgtIdx] = originMatrix[oriIdx]
+		end
+	end
+
+	return {
+		fxs = next_fxs,
+		matrix = next_matrix,
+	}
+end
+
 -- 播放动画
 local function playAnimation(fx, motion)
 	if fx then
@@ -153,16 +212,6 @@ local function playAnimation(fx, motion)
 			fx.rotate = true
 		end
 	end
-end
-
--- 根据一个轴的名字，获取剩余两个轴的名字
-local function getAxisRest(axis)
-	local tbl = {
-		x = { 'y', 'z' },
-		y = { 'x', 'z' },
-		z = { 'x', 'y' },
-	}
-	return tbl[axis]
 end
 
 -- 根据值获得轴的名字
@@ -358,13 +407,10 @@ function Rubik:Select(fire)
 
 	----------------------- 旋转判断 -----------------------
 	if prevIndex and self.selectIndex and fire.rotate then
-		local px, py, pz = getPos(prevIndex)
-		local cx, cy, cz = getPos(self.selectIndex)
-		
-		local pStart = Vector3(px, py, pz)
-		local pEnd = Vector3(cx, cy, cz)
+		local pStart = getPosVec(prevIndex)
+		local pEnd = getPosVec(self.selectIndex)
 
-		aipPrint("旋转吧：", px, py, pz, '>>>', cx, cy, cz)
+		aipTypePrint("旋转吧：", pStart, '>>>', pEnd)
 
 		-- 遍历每个轴，找到可以旋转的那个
 		local axises = getSameAxis(pStart, pEnd)
@@ -372,55 +418,71 @@ function Rubik:Select(fire)
 			aipPrint("检测轴：", axis, not isOnAxis(axis, pStart), not isOnAxis(axis, pEnd))
 			if not isOnAxis(axis, pStart) and not isOnAxis(axis, pEnd) then
 				local fixedAxisPos = pEnd[axis] -- 固定轴上的固定点
-				local restAxises = getAxisRest(axis)
+				-- local restAxises = getAxisRest(axis)
 
-				-- 从起点开始转圈，找到最快的转圈方向
-				local walkInfo = walkPT(pStart, pEnd, restAxises)
-				local reserveWalkInfo = walkPT(pStart, pEnd, restAxises, true)
+				-- -- 从起点开始转圈，找到最快的转圈方向
+				-- local walkInfo = walkPT(pStart, pEnd, restAxises)
+				-- local reserveWalkInfo = walkPT(pStart, pEnd, restAxises, true)
 
-				-- 根据方向选择角度
-				local angle = PI / 2
-				if walkInfo.step < reserveWalkInfo.step then
-					aipPrint("顺时针转")
-				else
-					aipPrint("逆时针转")
-					angle = -angle
-				end
+				-- -- 根据方向选择角度
+				-- local angle = PI / 2
+				-- if walkInfo.step < reserveWalkInfo.step then
+				-- 	aipPrint("顺时针转", restAxises[1], restAxises[2])
+				-- else
+				-- 	aipPrint("逆时针转", restAxises[1], restAxises[2])
+				-- 	angle = -angle
+				-- end
 
-				-- 新建一套新的数据
-				local next_fxs = aipTableSlice(self.fxs)
-				local next_matrix = aipTableSlice(self.matrix)
+				-- -- 新建一套新的数据
+				-- local next_fxs = aipTableSlice(self.fxs)
+				-- local next_matrix = aipTableSlice(self.matrix)
 
-				for x = -1, 1 do -- x y 只是代指两个轴，不是真的 x y
-					for y = -1, 1 do
-						-- 需要取整
-						local nextX = math.floor(x * math.cos(angle) - y * math.sin(angle) + 0.1)
-						local nextY = math.floor(x * math.sin(angle) + y * math.cos(angle) + 0.1)
-						local xyz = Vector3()
-						xyz[axis] = fixedAxisPos
-						xyz[restAxises[1]] = x
-						xyz[restAxises[2]] = y
+				-- for x = -1, 1 do -- x y 只是代指两个轴，不是真的 x y
+				-- 	for y = -1, 1 do
+				-- 		-- 需要取整
+				-- 		local nextX = math.floor(x * math.cos(angle) - y * math.sin(angle) + 0.1)
+				-- 		local nextY = math.floor(x * math.sin(angle) + y * math.cos(angle) + 0.1)
+				-- 		local xyz = Vector3()
+				-- 		xyz[axis] = fixedAxisPos
+				-- 		xyz[restAxises[1]] = x
+				-- 		xyz[restAxises[2]] = y
 
-						-- 目标节点
-						local nextXYZ = Vector3(xyz.x, xyz.y, xyz.z)
-						nextXYZ[restAxises[1]] = nextX
-						nextXYZ[restAxises[2]] = nextY
+				-- 		-- 目标节点
+				-- 		local nextXYZ = Vector3(xyz.x, xyz.y, xyz.z)
+				-- 		nextXYZ[restAxises[1]] = nextX
+				-- 		nextXYZ[restAxises[2]] = nextY
 
-						-- aipPrint("ROTATE:", xyz.x, xyz.y, xyz.z, ">", nextXYZ.x, nextXYZ.y, nextXYZ.z)
+				-- 		aipPrint("ROTATE:", xyz.x, xyz.y, xyz.z, ">", nextXYZ.x, nextXYZ.y, nextXYZ.z)
 
-						-- 交换 颜色 和 实体
-						local oriIdx = getIndex(xyz)
-						local tgtIdx = getIndex(nextXYZ)
+				-- 		-- 交换 颜色 和 实体
+				-- 		local oriIdx = getIndex(xyz)
+				-- 		local tgtIdx = getIndex(nextXYZ)
 
-						next_fxs[tgtIdx] = self.fxs[oriIdx]
-						next_matrix[tgtIdx] = self.matrix[oriIdx]
-					end
-				end
+				-- 		next_fxs[tgtIdx] = self.fxs[oriIdx]
+				-- 		next_matrix[tgtIdx] = self.matrix[oriIdx]
+				-- 	end
+				-- end
 
-				-- 同步回去
-				self.fxs = next_fxs
-				self.matrix = next_matrix
-				self:SyncPos()
+				-- -- 同步回去
+				-- self.fxs = next_fxs
+				-- self.matrix = next_matrix
+				-- self:SyncPos()
+
+				-- 顺、逆时针 都转一圈
+				local walkingInfo = rotateFace(self.fxs, self.matrix, axis, fixedAxisPos)
+				local reverseWalkingInfo = rotateFace(self.fxs, self.matrix, axis, fixedAxisPos, true)
+
+				-- 顺时针的距离计算
+				local startRotatedIdx = aipTableIndex(walkingInfo.fxs, self.fxs[getIndex(pStart)])
+				local startRotatedPos = getPosVec(startRotatedIdx)
+				local rotatedDist = aipDist(startRotatedPos, pEnd, true)
+				aipTypePrint("顺时针后的点：", startRotatedIdx, startRotatedPos, rotatedDist)
+
+				-- 逆时针的距离计算
+				local reverseStartRotatedIdx = aipTableIndex(reverseWalkingInfo.fxs, self.fxs[getIndex(pStart)])
+				local reverseStartRotatedPos = getPosVec(reverseStartRotatedIdx)
+				local reverseRotatedDist = aipDist(reverseStartRotatedPos, pEnd, true)
+				aipTypePrint("逆时针后的点：", reverseStartRotatedIdx, reverseStartRotatedPos, reverseRotatedDist)
 
 				-- 转过了，不用选中了
 				self.selectIndex = nil

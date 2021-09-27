@@ -140,7 +140,11 @@ function _G.aipCommonStr(showType, split, ...)
 				parsed = parsed .. "}"
 			end
 
-			str = str .. "[" .. vType .. ": " .. tostring(parsed) .. "]" .. split
+			if vType == "string" then
+				str = str.."'"..tostring(parsed).."'"..split
+			else
+				str = str .. "[" .. vType .. ": " .. tostring(parsed) .. "]" .. split
+			end
 		else
 			-- 显示文字
 			str = str .. tostring(parsed) .. split
@@ -238,11 +242,17 @@ function _G.aipDiffAngle(a1, a2)
 	return math.min(diff1, diff2)
 end
 
--- 返回两点之间的距离（无视 Y 坐标）
-function _G.aipDist(p1, p2)
+-- 返回两点之间的距离（默认无视 Y 坐标）
+function _G.aipDist(p1, p2, includeY)
 	local dx = p1.x - p2.x
 	local dz = p1.z - p2.z
-	return math.pow(dx*dx+dz*dz, 0.5)
+	local dy = p1.y - p2.y
+
+	if includeY then
+		return math.pow(dx*dx+dy*dy+dz*dz, 1/3)
+	else
+		return math.pow(dx*dx+dz*dz, 0.5)
+	end
 end
 
 function _G.aipRandomEnt(ents)
