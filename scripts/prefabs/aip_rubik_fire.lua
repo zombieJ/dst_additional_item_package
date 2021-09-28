@@ -220,7 +220,8 @@ local function genRubik(colorName, rgb)
         inst.AnimState:SetBuild("aip_rubik_fire")
         inst.AnimState:PlayAnimation("idle")
 
-        MakeTinyFlyingCharacterPhysics(inst, 0, 0)
+        MakeTinyFlyingCharacterPhysics(inst, 1, 0)
+        -- MakeTinyFlyingCharacterPhysics(inst, 0, 0)
         -- MakeInventoryPhysics(inst, 1, .5)
         RemovePhysicsColliders(inst)
 
@@ -325,6 +326,8 @@ local function genRubik(colorName, rgb)
     local function master_postinit(inst)
         inst:AddComponent("inspectable")
         inst.components.inspectable.descriptionfn = onSelect
+
+        inst:AddComponent("aipc_float")
     end
 
     return MakeTorchFire("aip_rubik_fire_"..colorName, assets, nil, common_postinit, master_postinit)

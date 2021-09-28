@@ -132,7 +132,9 @@ function CommonStore:PostWorld()
 	--------------------------- 开发模式 ---------------------------
 	if dev_mode then
 		self.inst:DoTaskInTime(2, function()
-			aipSpawnPrefab(ThePlayer, "aip_rubik")
+			if ThePlayer then
+				aipSpawnPrefab(ThePlayer, "aip_rubik")
+			end
 		end)
 	end
 end

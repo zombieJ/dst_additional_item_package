@@ -200,7 +200,7 @@ local Rubik = Class(function(self, inst)
 end)
 
 ------------------------------- 位置 -------------------------------
-function Rubik:SyncPos()
+function Rubik:SyncPos(motion)
 	-- 我们总是延迟一丢丢
 	self.inst:DoTaskInTime(0.1, function()
 		local x, y, z = self.inst.Transform:GetWorldPosition()
@@ -213,8 +213,18 @@ function Rubik:SyncPos()
 			local tgtX = x + ox * FX_OFFSET * scaleOffset
 			local tgtY = y + oy * FX_OFFSET + FX_HEIGHT
 			local tgtZ = z + oz * FX_OFFSET * scaleOffset
-			
-			fx.Physics:Teleport(tgtX, tgtY, tgtZ)
+
+			local pt = Vector3(tgtX, tgtY, tgtZ)
+
+			if i == 2 then
+				fx.components.aipc_float.debug = true
+			end
+
+			if motion then
+				fx.components.aipc_float:MoveToPoint(pt)
+			else
+				fx.components.aipc_float:GoToPoint(pt)
+			end
 		end
 	end)
 end
@@ -378,7 +388,7 @@ function Rubik:Select(fire)
 					self.fxs = reverseWalkingInfo.fxs
 					self.matrix = reverseWalkingInfo.matrix
 				end
-				self:SyncPos()
+				self:SyncPos(true)
 	
 				-- 转过了，不用选中了
 				self.selectIndex = nil
