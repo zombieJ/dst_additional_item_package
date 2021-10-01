@@ -134,8 +134,40 @@ function CommonStore:PostWorld()
 		self.inst:DoTaskInTime(2, function()
 			if ThePlayer then
 				aipSpawnPrefab(ThePlayer, "aip_rubik")
+
+				-- local px = 1000
+				-- local py = 0
+				-- local pz = 1000
+				-- local tile = TheWorld.Map:GetTileAtPoint(px, py, pz)
+				-- aipPrint("Tile Type:", tile)
+
+				-- if tile == GROUND.INVALID then
+				-- 	local tileX, tileY = TheWorld.Map:GetTileCoordsAtPoint(px, py, pz)
+				-- 	TheWorld.Map:SetTile(tileX, tileY, GROUND.DIRT)
+				-- 	TheWorld.Map:RebuildLayer(GROUND.DIRT, tileX, tileY)
+
+				-- 	ThePlayer.Physics:Teleport(px, py, pz)
+				-- end
+
+
+				-- aipPrint("Next Tile Type:", TheWorld.Map:GetTileAtPoint(px, py, pz))
+
+				for px = 0, 1000 do
+					local py = 0
+					local pz = 0
+					local tile = TheWorld.Map:GetTileAtPoint(px, py, pz)
+					aipPrint("Tile Type:", px, tile)
+				end
 			end
 		end)
+
+		-- self.inst:DoPeriodicTask(1, function()
+		-- 	if ThePlayer then
+		-- 		local x, y, z = ThePlayer.Transform:GetWorldPosition()
+		-- 		local tile = TheWorld.Map:GetTileAtPoint(x,y,z)
+		-- 		aipPrint("Player Tile Type:", tile)
+		-- 	end
+		-- end)
 	end
 end
 

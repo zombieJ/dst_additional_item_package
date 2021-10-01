@@ -28,6 +28,7 @@ local LANG_MAP = {
         WAIT_NEXT = "I've seen an Gaint. Maybe you have interested",
         CARDS = "Reciprocity~",
         WRONG_GIFT = "It's meaningless",
+        TOTEM_RUBIK = "Shadow Rubik",
 	},
 	chinese = {
 		NAME = "若光",
@@ -41,6 +42,7 @@ local LANG_MAP = {
         WAIT_NEXT = "我看到过一个大家伙，你也去看看吧",
         CARDS = "礼尚往来~",
         WRONG_GIFT = "我不需要它！",
+        TOTEM_RUBIK = "暗影魔方",
 	},
 }
 
@@ -154,6 +156,23 @@ local function aipThrowBallBack(inst, ball)
     -- 游戏时间内不允许说话
     inst.components.timer:StopTimer("aip_mini_dou_no_talk")
     inst.components.timer:StartTimer("aip_mini_dou_no_talk", 5)
+end
+
+-- 创建魔方挑战
+local function createChallenge()
+    local rubikTotem = false
+
+    for i, totem in ipairs(TheWorld.components.world_common_store.flyTotems) do
+        if totem.markType == "RUBIK" then
+            rubikTotem = true
+        end
+    end
+
+    if rubikTotem == false then
+        local flyTotem = aipSpawnPrefab(nil, "aip_fly_totem", 3000, 0, 3000)
+        flyTotem.components.writeable:SetText(LANG.TOTEM_RUBIK)
+        flyTotem.markType = "RUBIK"
+    end
 end
 
 -- 判断是否要给奖励

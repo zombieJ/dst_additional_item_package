@@ -120,7 +120,7 @@ local function rotateFace(originFxs, originMatrix, fixedAxis, fixedAxisPos, reve
 			nextXYZ[restAxises[1]] = nextX
 			nextXYZ[restAxises[2]] = nextY
 
-			aipPrint("ROTATE:", xyz.x, xyz.y, xyz.z, ">", nextXYZ.x, nextXYZ.y, nextXYZ.z)
+			-- aipPrint("ROTATE:", xyz.x, xyz.y, xyz.z, ">", nextXYZ.x, nextXYZ.y, nextXYZ.z)
 
 			-- 交换 颜色 和 实体
 			local oriIdx = getIndex(xyz)
@@ -186,6 +186,8 @@ local Rubik = Class(function(self, inst)
 	self.fxs = {}
 
 	self.matrix = {}
+	self.randomTimes = 20 -- 随机剩余次数
+
 	local colors = {"red","green","blue"}
 	for y = 0, 2 do
 		local color = colors[y + 1]
@@ -193,7 +195,11 @@ local Rubik = Class(function(self, inst)
 		for x = 0, 2 do
 			for z = 0, 2 do
 				local idx = 1 + z + x * 3 + y * 9
-				self.matrix[idx] = color
+				local finalColor = color
+				if isFaceCenter(x-1,y-1,z-1) or (x==1 and y==1 and z==1) then
+					finalColor = "yellow"
+				end
+				self.matrix[idx] = finalColor
 			end
 		end
 	end
@@ -333,6 +339,39 @@ function Rubik:Start()
 
 	self:SyncPos()
 	self:SyncHighlight()
+
+	-- 随机旋转
+	self:TryRandom()
+end
+
+function Rubik:TryRandom()
+	if self.randomTimes > 0 then
+		self.randomTimes = self.randomTimes - 1
+
+		local axises = { "x", "y", "z" }
+		local axis = axises[math.random(#axises)]
+
+		local rndPos = 0
+		repeat
+			rndPos = math.random(-1, 1)
+		until(rndPos ~= self.randomPos)
+
+		local walkingInfo = rotateFace(self.fxs, self.matrix, axis, rndPos)
+		self.fxs = walkingInfo.fxs
+		self.matrix = walkingInfo.matrix
+
+		self.selectIndex = nil
+		self:SyncPos(true)
+		self:SyncHighlight()
+
+		-- 记录这次的旋转
+		self.randomPos = rndPos
+
+		-- 过一段时间再旋转一次
+		self.inst:DoTaskInTime(0.5, function()
+			self:TryRandom()
+		end)
+	end
 end
 
 function Rubik:Stop()

@@ -46,10 +46,6 @@ function Float:OnUpdate(dt)
 		(self.targetPos.y - pos.y) * self.ySpeed,
 		0
 	)
-
-	-- if self.debug then
-		aipTypePrint(pos)
-	-- end
 end
 
 return Float

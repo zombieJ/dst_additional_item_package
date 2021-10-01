@@ -2,6 +2,7 @@ local colors = {
     red = { 1, 0, 0 },
     green = { 0, 1, 0 },
     blue = { 0, 0, 1 },
+    yellow = { 1, 1, 0 },
 }
 
 -- string.upper(name)
@@ -279,7 +280,6 @@ local function genRubik(colorName, rgb)
         effect:SetUVFrameSize(2, .25, 1)
         effect:SetSortOrder(2, 0)
         effect:SetSortOffset(2, 1)
-        --effect:SetDragCoefficient(2, 50)
 
         -----------------------------------------------------
 

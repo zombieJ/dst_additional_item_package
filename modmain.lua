@@ -165,6 +165,7 @@ modimport("scripts/shadowPackageAction.lua")
 modimport("scripts/widgetHooker.lua")
 modimport("scripts/recpiesHooker.lua")
 modimport("scripts/flyWrapper.lua")
+modimport("scripts/houseWrapper.lua")
 
 ------------------------------------- 测试专用 -------------------------------------
 if GetModConfigData("dev_mode") == "enabled" then
