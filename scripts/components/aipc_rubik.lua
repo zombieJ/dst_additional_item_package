@@ -1,3 +1,5 @@
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
+
 ------------------------------- 方法 -------------------------------
 local FX_OFFSET = 2
 local FX_HEIGHT = 7
@@ -184,9 +186,10 @@ local Rubik = Class(function(self, inst)
 	self.start = false
 	self.selectIndex = nil
 	self.fxs = {}
+	self.fires = {}
 
 	self.matrix = {}
-	self.randomTimes = 20 -- 随机剩余次数
+	self.randomTimes = 10 -- 随机剩余次数
 
 	local colors = {"red","green","blue"}
 	for y = 0, 2 do
@@ -204,6 +207,59 @@ local Rubik = Class(function(self, inst)
 		end
 	end
 end)
+
+------------------------------- 检查 -------------------------------
+-- 检查是否可以触发火坑
+function Rubik:CheckTrigger()
+	local passedLevelCount = 0
+
+	-- TODO: 颜色检查好像不对啊。 。 。
+	for y = -1, 1 do
+		local commonColor = nil
+		local passed = true
+
+		for x = -1, 1 do
+			for z = -1, 1 do
+				local index = getIndex(Vector3(x, y ,z))
+				local color = self.matrix[index]
+
+				if color ~= "yellow" then
+					-- 如果没有颜色就初始化一个颜色
+					if commonColor == nil then
+						commonColor = color
+					end
+
+					-- 如果颜色不对，则不过了
+					if commonColor ~= color then
+						passed = false
+					end
+				end
+			end
+		end
+
+		if passed then
+			passedLevelCount = passedLevelCount + 1
+		end
+	end
+
+	-- 删除现存的火坑
+	if passedLevelCount == 0 then
+		for i, prefab in ipairs(self.fires) do
+			prefab:Remove()
+		end
+		self.fires = {}
+	elseif #self.fires == 0 then
+		local x, y, z = self.inst.Transform:GetWorldPosition()
+		local dist = math.random(3, 10)
+
+		self.fires = {
+			aipSpawnPrefab(self.inst, "aip_rubik_fire_hole", x - dist, nil, nil),
+			aipSpawnPrefab(self.inst, "aip_rubik_fire_hole", x + dist, nil, nil),
+			aipSpawnPrefab(self.inst, "aip_rubik_fire_hole", nil, nil, z - dist),
+			aipSpawnPrefab(self.inst, "aip_rubik_fire_hole", nil, nil, z + dist),
+		}
+	end
+end
 
 ------------------------------- 位置 -------------------------------
 function Rubik:SyncPos(motion)
@@ -232,6 +288,9 @@ function Rubik:SyncPos(motion)
 				fx.components.aipc_float:GoToPoint(pt)
 			end
 		end
+
+		-- 如果到了就出现火坑
+		self:CheckTrigger()
 	end)
 end
 
@@ -349,7 +408,7 @@ function Rubik:TryRandom()
 		self.randomTimes = self.randomTimes - 1
 
 		local axises = { "x", "y", "z" }
-		local axis = axises[math.random(#axises)]
+		local axis = dev_mode and 'x' or axises[math.random(#axises)]
 
 		local rndPos = 0
 		repeat
@@ -368,7 +427,7 @@ function Rubik:TryRandom()
 		self.randomPos = rndPos
 
 		-- 过一段时间再旋转一次
-		self.inst:DoTaskInTime(0.5, function()
+		self.inst:DoTaskInTime(0.3, function()
 			self:TryRandom()
 		end)
 	end
@@ -386,6 +445,11 @@ end
 
 ------------------------------- 选择 -------------------------------
 function Rubik:Select(fire)
+	-- 如果正在初始化旋转则不让选择
+	if self.randomTimes > 0 then
+		return
+	end
+
 	local prevIndex = self.selectIndex
 
 	self.selectIndex = aipTableIndex(self.fxs, fire)
