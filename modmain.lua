@@ -91,7 +91,7 @@ PrefabFiles = {
 	"aip_breadfruit_tree",
 	"aip_rubik_fire",
 	"aip_rubik",
-	"aip_rubik_fire_hole",
+	"aip_legion",
 
 	-- Orbit
 	"aip_orbit",

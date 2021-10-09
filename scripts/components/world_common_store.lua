@@ -90,6 +90,30 @@ function CommonStore:CreateCoookieKing(pos)
 	return nil
 end
 
+-- 创建 魔方，在墓地附近寻找
+function CommonStore:CreateRubik()
+	-- 存在且没有坐标就跳过
+	local ent = TheSim:FindFirstEntityWithTag("aip_rubik")
+	if ent ~= nil then
+		return ent
+	end
+
+	-- 寻找一个墓地
+	local grave = TheSim:FindFirstEntityWithTag("grave")
+	local pos = nil
+	if grave ~= nil then
+		pos = grave:GetPosition()
+	end
+
+	if not pos then
+		pos = aipGetSecretSpawnPoint(Vector3(0, 0, 0), 0, 1000)
+	end
+
+	pos = aipGetSecretSpawnPoint(pos, 0, 50, 5)
+
+	return aipSpawnPrefab(nil, "aip_rubik", pos.x, pos.y, pos.z)
+end
+
 function CommonStore:CreateSuWuMound(pos)
 	-- 存在且没有坐标就跳过
 	local ent = TheSim:FindFirstEntityWithTag("aip_suwu_mound")
@@ -129,25 +153,34 @@ function CommonStore:PostWorld()
 		self:CreateCoookieKing()
 	end)
 
+	--------------------------- 创建魔方 ---------------------------
+	self.inst:DoTaskInTime(5, function()
+		self:CreateRubik()
+	end)
+
 	--------------------------- 开发模式 ---------------------------
 	if dev_mode then
 		self.inst:DoTaskInTime(2, function()
-			if ThePlayer then
+			if ThePlayer and false then
 				aipSpawnPrefab(ThePlayer, "aip_rubik")
 
-				local px = 1000
+				-- 避免和神话书说&小房子冲突
+				local px = 1900
 				local py = 0
-				local pz = 1000
-				local tile = TheWorld.Map:GetTileAtPoint(px, py, pz)
-				aipPrint("Tile Type:", tile)
+				local pz = 1900
 
-				if tile == GROUND.INVALID then
-					local tileX, tileY = TheWorld.Map:GetTileCoordsAtPoint(px, py, pz)
-					TheWorld.Map:SetTile(tileX, tileY, GROUND.DIRT)
-					TheWorld.Map:RebuildLayer(GROUND.DIRT, tileX, tileY)
+				ThePlayer.Physics:Teleport(px, py, pz)
 
-					ThePlayer.Physics:Teleport(px, py, pz)
-				end
+				-- local tile = TheWorld.Map:GetTileAtPoint(px, py, pz)
+				-- aipPrint("Tile Type:", tile)
+
+				-- if tile == GROUND.INVALID then
+				-- 	local tileX, tileY = TheWorld.Map:GetTileCoordsAtPoint(px, py, pz)
+				-- 	TheWorld.Map:SetTile(tileX, tileY, GROUND.DIRT)
+				-- 	TheWorld.Map:RebuildLayer(GROUND.DIRT, tileX, tileY)
+
+				-- 	ThePlayer.Physics:Teleport(px, py, pz)
+				-- end
 
 
 				-- aipPrint("Next Tile Type:", TheWorld.Map:GetTileAtPoint(px, py, pz))

@@ -186,7 +186,6 @@ local Rubik = Class(function(self, inst)
 	self.start = false
 	self.selectIndex = nil
 	self.fxs = {}
-	self.fires = {}
 
 	self.matrix = {}
 	self.randomTimes = 10 -- 随机剩余次数
@@ -241,24 +240,6 @@ function Rubik:CheckTrigger()
 			passedLevelCount = passedLevelCount + 1
 		end
 	end
-
-	-- 删除现存的火坑
-	if passedLevelCount == 0 then
-		for i, prefab in ipairs(self.fires) do
-			prefab:Remove()
-		end
-		self.fires = {}
-	elseif #self.fires == 0 then
-		local x, y, z = self.inst.Transform:GetWorldPosition()
-		local dist = math.random(3, 10)
-
-		self.fires = {
-			aipSpawnPrefab(self.inst, "aip_rubik_fire_hole", x - dist, nil, nil),
-			aipSpawnPrefab(self.inst, "aip_rubik_fire_hole", x + dist, nil, nil),
-			aipSpawnPrefab(self.inst, "aip_rubik_fire_hole", nil, nil, z - dist),
-			aipSpawnPrefab(self.inst, "aip_rubik_fire_hole", nil, nil, z + dist),
-		}
-	end
 end
 
 ------------------------------- 位置 -------------------------------
@@ -288,9 +269,6 @@ function Rubik:SyncPos(motion)
 				fx.components.aipc_float:GoToPoint(pt)
 			end
 		end
-
-		-- 如果到了就出现火坑
-		self:CheckTrigger()
 	end)
 end
 

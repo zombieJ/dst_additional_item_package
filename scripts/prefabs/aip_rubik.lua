@@ -83,6 +83,7 @@ local function fn()
     inst.AnimState:PlayAnimation("idle")
 
 	inst:AddTag("wildfireprotected")
+    inst:AddTag("aip_rubik")
 
     inst.entity:SetPristine()
 
