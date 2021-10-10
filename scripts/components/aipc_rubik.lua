@@ -223,6 +223,7 @@ function Rubik:CreateMonster(count)
 		proj.components.aipc_info_client:SetByteArray( -- 调整颜色
 			"aip_projectile_color", { 0, 0, 0, 5 }
 		)
+		proj.components.aipc_projectile.speed = 10
 		proj.components.aipc_projectile:GoToPoint(tgtPT, function()
 			local effect = aipSpawnPrefab(proj, "aip_shadow_wrapper", nil, 0.1)
 			effect.DoShow()

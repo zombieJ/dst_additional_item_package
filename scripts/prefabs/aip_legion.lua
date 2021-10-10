@@ -5,10 +5,12 @@ local LANG_MAP = {
 	english = {
 		NAME = "Legion Stone",
 		DESC = "Last piece of Magic Rubik",
+		EMPTY = "This Rubik is powerless",
 	},
 	chinese = {
 		NAME = "棱镜石",
 		DESC = "魔力方阵的最后一片",
+		EMPTY = "这个方阵没有魔力了",
 	},
 }
 
@@ -16,6 +18,7 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 STRINGS.NAMES.AIP_LEGION = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_LEGION = LANG.DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_LEGION_EMPTY = LANG.EMPTY
 
 -- 资源
 local assets = {
@@ -32,20 +35,29 @@ local function onDoTargetAction(inst, doer, target)
 	-- server only
 	if
 		not TheWorld.ismastersim or					-- 不是主机
-		target.prefab ~= "aip_rubik" or				-- 不是魔方
-		not target.components.fueled or				-- 没有燃料
-		target.components.fueled:IsEmpty()			-- 燃料耗尽
+		target.prefab ~= "aip_rubik"				-- 不是魔方
 	then
 		return
 	end
 
-    -- TODO: 召唤 BOSS
+	if
+		not target.components.fueled or				-- 没有燃料
+		target.components.fueled:IsEmpty()			-- 燃料耗尽
+	then
+		if doer.components.talker ~= nil then
+			doer.components.talker:Say(
+				STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_LEGION_EMPTY
+			)
+		end
+		return
+	end
+
+	-- 召唤 BOSS
 	if target.components.aipc_rubik then
 		target.components.aipc_rubik:SummonBoss()
 	end
-	-- target.components.fueled:MakeEmpty()
 
-	-- inst:Remove()
+	inst:Remove()
 end
 
 -----------------------------------------------------------
