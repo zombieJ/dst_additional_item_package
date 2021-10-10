@@ -23,6 +23,32 @@ local assets = {
 	Asset("ATLAS", "images/inventoryimages/aip_legion.xml"),
 }
 
+-----------------------------------------------------------
+local function canActOn(inst, doer, target)
+	return target.prefab == "aip_rubik"
+end
+
+local function onDoTargetAction(inst, doer, target)
+	-- server only
+	if
+		not TheWorld.ismastersim or					-- 不是主机
+		target.prefab ~= "aip_rubik" or				-- 不是魔方
+		not target.components.fueled or				-- 没有燃料
+		target.components.fueled:IsEmpty()			-- 燃料耗尽
+	then
+		return
+	end
+
+    -- TODO: 召唤 BOSS
+	if target.components.aipc_rubik then
+		target.components.aipc_rubik:SummonBoss()
+	end
+	-- target.components.fueled:MakeEmpty()
+
+	-- inst:Remove()
+end
+
+-----------------------------------------------------------
 local function fn()
     local inst = CreateEntity()
 
@@ -40,9 +66,15 @@ local function fn()
 
     inst.entity:SetPristine()
 
+    inst:AddComponent("aipc_action_client")
+	inst.components.aipc_action_client.canActOn = canActOn
+
     if not TheWorld.ismastersim then
         return inst
     end
+
+    inst:AddComponent("aipc_action")
+	inst.components.aipc_action.onDoTargetAction = onDoTargetAction
 
     inst:AddComponent("inspectable")
     

@@ -189,6 +189,7 @@ local Rubik = Class(function(self, inst)
 
 	self.matrix = {}
 	self.randomTimes = 10 -- 随机剩余次数
+	self.summonning = false
 
 	local colors = {"red","green","blue"}
 	for y = 0, 2 do
@@ -207,12 +208,33 @@ local Rubik = Class(function(self, inst)
 	end
 end)
 
+----------------------------- 创造怪物 -----------------------------
+function Rubik:CreateMonster(count)
+	local pt = self.inst:GetPosition()
+	local dist = 7
+
+	for i = 1, count do
+		local angle = 2 * PI / count * i
+		local tgtPT = Vector3(
+			pt.x + math.cos(angle) * dist, 0, pt.z + math.sin(angle) * dist
+		)
+
+		local proj = aipSpawnPrefab(self.inst, "aip_projectile")
+		proj.components.aipc_info_client:SetByteArray( -- 调整颜色
+			"aip_projectile_color", { 0, 0, 0, 5 }
+		)
+		proj.components.aipc_projectile:GoToPoint(tgtPT, function()
+			local effect = aipSpawnPrefab(proj, "aip_shadow_wrapper", nil, 0.1)
+			effect.DoShow()
+		end)
+	end
+end
+
 ------------------------------- 检查 -------------------------------
 -- 检查是否可以触发火坑
-function Rubik:CheckTrigger()
+function Rubik:SummonBoss()
 	local passedLevelCount = 0
 
-	-- TODO: 颜色检查好像不对啊。 。 。
 	for y = -1, 1 do
 		local commonColor = nil
 		local passed = true
@@ -240,6 +262,36 @@ function Rubik:CheckTrigger()
 			passedLevelCount = passedLevelCount + 1
 		end
 	end
+
+	-- 动画效果，每个火都要回到火坑里
+	local x, y, z = self.inst.Transform:GetWorldPosition()
+	local pt = Vector3(x, y + 1.5, z)
+
+	for i, fx in ipairs(self.fxs) do
+		fx.components.aipc_float:MoveToPoint(pt)
+	end
+
+	self.summonning = true
+	self.selectIndex = nil
+
+	self.inst:DoTaskInTime(0.5, function()
+		if self.inst.components.fueled ~= nil then
+			self.inst.components.fueled:MakeEmpty()
+		end
+
+		-- 爆炸效果
+		local effect = aipSpawnPrefab(self.inst, "aip_shadow_wrapper", nil, 0.1)
+		effect.DoShow(2)
+
+		-- 创建怪物
+		self:CreateMonster(1 + (3 - passedLevelCount) * 3)
+
+		-- 我们直接重新替换一个新的
+		local replacedRubik = aipReplacePrefab(self.inst, "aip_rubik")
+		if replacedRubik.components.fueled ~= nil then
+			replacedRubik.components.fueled:MakeEmpty()
+		end
+	end)
 end
 
 ------------------------------- 位置 -------------------------------
@@ -424,7 +476,7 @@ end
 ------------------------------- 选择 -------------------------------
 function Rubik:Select(fire)
 	-- 如果正在初始化旋转则不让选择
-	if self.randomTimes > 0 then
+	if self.randomTimes > 0 or self.summonning then
 		return
 	end
 
@@ -442,12 +494,12 @@ function Rubik:Select(fire)
 		local pStart = getPosVec(prevIndex)
 		local pEnd = getPosVec(self.selectIndex)
 
-		aipTypePrint("旋转吧：", pStart, '>>>', pEnd)
+		-- aipTypePrint("旋转吧：", pStart, '>>>', pEnd)
 
 		-- 遍历每个轴，找到可以旋转的那个
 		local axises = getSameAxis(pStart, pEnd)
 		for i, axis in ipairs(axises) do
-			aipPrint("检测轴：", axis, not isOnAxis(axis, pStart), not isOnAxis(axis, pEnd))
+			-- aipPrint("检测轴：", axis, not isOnAxis(axis, pStart), not isOnAxis(axis, pEnd))
 			if not isOnAxis(axis, pStart) and not isOnAxis(axis, pEnd) then
 				local fixedAxisPos = pEnd[axis] -- 固定轴上的固定点
 
