@@ -213,6 +213,10 @@ function Rubik:CreateMonster(count)
 	local pt = self.inst:GetPosition()
 	local dist = 7
 
+	-- 创建心脏
+	local heart = aipSpawnPrefab(self.inst, "aip_rubik_heart")
+
+	-- 创建怪物
 	for i = 1, count do
 		local angle = 2 * PI / count * i
 		local tgtPT = Vector3(
@@ -227,6 +231,11 @@ function Rubik:CreateMonster(count)
 		proj.components.aipc_projectile:GoToPoint(tgtPT, function()
 			local effect = aipSpawnPrefab(proj, "aip_shadow_wrapper", nil, 0.1)
 			effect.DoShow()
+
+			local ghost = aipSpawnPrefab(proj, "aip_rubik_ghost")
+			if ghost.components.knownlocations then
+				ghost.components.knownlocations:RememberLocation("home", pt)
+			end
 		end)
 	end
 end

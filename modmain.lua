@@ -92,6 +92,8 @@ PrefabFiles = {
 	"aip_rubik_fire",
 	"aip_rubik",
 	"aip_legion",
+	"aip_rubik_ghost",
+	"aip_rubik_heart",
 
 	-- Orbit
 	"aip_orbit",

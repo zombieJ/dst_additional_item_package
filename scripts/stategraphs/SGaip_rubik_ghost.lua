@@ -28,23 +28,6 @@ local events = {
 
 local states = {
     State{
-        name = "appear",
-        tags = { "busy" },
-
-        onenter = function(inst)
-            inst.Physics:Stop()
-            inst.AnimState:PlayAnimation("appearing")
-            for i = 1, 4 do
-                inst.AnimState:PushAnimation("appearing", false)
-            end
-            inst.AnimState:PushAnimation("appear", false)
-        end,
-        events = {
-            EventHandler("animqueueover", function(inst) inst.sg:GoToState("idle") end),
-        },
-    },
-
-    State{
         name = "idle",
         tags = { "idle", "canrotate" },
 
@@ -69,10 +52,10 @@ local states = {
             inst.sg.statemem.target = inst.components.combat.target
         end,
 
-        timeline = {-- 1 秒 30 次渲染/1000 帧，320 帧时造成伤害。
+        timeline = {-- 1 秒 30 次渲染/1000 帧，340 帧时造成伤害。
             TimeEvent(0*FRAMES, function(inst) PlayExtendedSound(inst, "attack") end),
-            -- 30*320/1000
-            TimeEvent(9*FRAMES, function(inst) inst.components.combat:DoAttack(inst.sg.statemem.target) end),
+            -- 30*340/1000
+            TimeEvent(10.2*FRAMES, function(inst) inst.components.combat:DoAttack(inst.sg.statemem.target) end),
         },
         events = {
             EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
@@ -86,11 +69,7 @@ local states = {
         onenter = function(inst)
 			PlayExtendedSound(inst, "death")
 
-            if inst.AnimState:IsCurrentAnimation("appearing") then
-                inst.AnimState:PlayAnimation("death_appearing")
-            else
-                inst.AnimState:PlayAnimation("death")
-            end
+            inst.AnimState:PlayAnimation("death", false)
 
 			
             inst.Physics:Stop()
@@ -99,11 +78,11 @@ local states = {
             inst.persists = false
         end,
         events = {
-            EventHandler("animover", function(inst) inst:Remove() end),
+            -- EventHandler("animover", function(inst) inst:Remove() end),
         },
     },
 }
 
 CommonStates.AddWalkStates(states, nil, nil, true)
 
-return StateGraph("SGaip_dragon_tail", states, events, "appear")
+return StateGraph("SGaip_rubik_ghost", states, events, "idle")
