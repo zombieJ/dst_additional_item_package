@@ -3,7 +3,7 @@ local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 local BaseHealth = dev_mode and 100 or TUNING.WORM_HEALTH
 
-local brain = require("brains/aip_dragon_brain_tail")
+local brain = require("brains/aip_rubik_ghost_brain")
 
 local assets = {
 	Asset("ANIM", "anim/aip_rubik_ghost.zip"),
