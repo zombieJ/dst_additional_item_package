@@ -512,7 +512,7 @@ function _G.aipFindEnt(...)
 end
 
 -- 是暗影生物
-_G.aipShadowTags = { "shadow", "shadowminion", "shadowchesspiece", "stalker", "stalkerminion" }
+_G.aipShadowTags = { "shadow", "shadowminion", "shadowchesspiece", "stalker", "stalkerminion", "aip_shadowcreature" }
 
 function _G.aipIsShadowCreature(inst)
 	for i, tag in ipairs(_G.aipShadowTags) do

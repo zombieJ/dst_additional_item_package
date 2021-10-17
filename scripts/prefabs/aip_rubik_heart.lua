@@ -1,10 +1,9 @@
 -- 开发模式
 local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
-local BaseHealth = dev_mode and 100 or TUNING.WORM_HEALTH
+local BaseHealth = dev_mode and 100 or TUNING.TOADSTOOL_HEALTH
 
 local assets = {
-	Asset("ANIM", "anim/aip_rubik_ghost.zip"),
 	Asset("ANIM", "anim/aip_rubik_heart.zip"),
 }
 
@@ -33,9 +32,6 @@ local loot = {
 }
 
 ------------------------------- 事件 -------------------------------
-local function Retarget(inst)
-	return nil
-end
 
 ------------------------------- 实体 -------------------------------
 local function fn()
@@ -51,20 +47,16 @@ local function fn()
 
     MakeFlyingCharacterPhysics(inst, 1, .5)
 
-    inst:AddTag("shadowcreature")
+    inst:AddTag("aip_shadowcreature") -- 标记的暗影生物，因为默认的不允许攻击
 	inst:AddTag("gestaltnoloot")
 	inst:AddTag("monster")
 	inst:AddTag("hostile")
 	inst:AddTag("shadow")
 	inst:AddTag("notraptrigger")
 
-    -- inst.AnimState:SetBank("aip_rubik_heart")
-    -- inst.AnimState:SetBuild("aip_rubik_heart")
-	-- inst.AnimState:PlayAnimation("idle", true)
-
-	inst.AnimState:SetBank("aip_rubik_ghost")
-	inst.AnimState:SetBuild("aip_rubik_ghost")
-	inst.AnimState:PlayAnimation("idle_loop", true)
+    inst.AnimState:SetBank("aip_rubik_heart")
+    inst.AnimState:SetBuild("aip_rubik_heart")
+	inst.AnimState:PlayAnimation("idle", true)
 
     inst.entity:SetPristine()
 
@@ -75,20 +67,9 @@ local function fn()
 	inst:AddComponent("inspectable")
 
     inst:AddComponent("health")
-	-- inst.components.health:SetMaxHealth(TUNING.TOADSTOOL_HEALTH)
-	inst.components.health:SetMaxHealth(10)
-
-    -- inst:AddComponent("combat")
-    -- -- inst.components.combat.hiteffectsymbol = "body"
-    -- -- inst.components.combat:SetDefaultDamage(TUNING.PERD_DAMAGE)
-    -- -- inst.components.combat:SetAttackPeriod(TUNING.PERD_ATTACK_PERIOD)
+	inst.components.health:SetMaxHealth(BaseHealth)
 
 	inst:AddComponent("combat")
-    inst.components.combat.hiteffectsymbol = "body"
-	inst.components.combat:SetDefaultDamage(TUNING.SPIDER_DAMAGE)
-    inst.components.combat:SetAttackPeriod(TUNING.SPIDER_ATTACK_PERIOD)
-	inst.components.combat:SetRange(TUNING.BEE_ATTACK_RANGE)
-    inst.components.combat:SetRetargetFunction(1, Retarget)
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetLoot(loot)
