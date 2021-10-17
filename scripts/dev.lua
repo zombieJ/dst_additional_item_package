@@ -17,7 +17,7 @@ function PlayerPrefabPostInit(inst)
     -- 开发模式下移除失眠效果
     inst:RemoveTag("insomniac")
 
-    inst.components.aipc_timer:Interval(1, function()
+    inst.components.aipc_timer:Interval(0.3, function()
         if not inst.components.health:IsDead() and inst.components.health.currenthealth < 50 then
             inst.components.health:DoDelta(50)
         end

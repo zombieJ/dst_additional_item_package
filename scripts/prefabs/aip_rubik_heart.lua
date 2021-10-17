@@ -32,6 +32,25 @@ local loot = {
 }
 
 ------------------------------- 事件 -------------------------------
+local function onHit(inst)
+	inst.AnimState:PlayAnimation("hit")
+	inst.AnimState:PushAnimation("idle", true)
+end
+
+local function OnDead(inst)
+	if inst.aipGhosts then
+		-- 不用再通知其他鬼魂了
+		local tmpGhosts = inst.aipGhosts
+		inst.aipGhosts = {}
+
+		for i, ghost in ipairs(tmpGhosts) do
+			ghost.aipHeartDead = true
+			if ghost.components.health and not ghost.components.health:IsDead() then
+				ghost.components.health:Kill()
+			end
+		end
+	end
+end
 
 ------------------------------- 实体 -------------------------------
 local function fn()
@@ -45,7 +64,7 @@ local function fn()
 
 	inst.DynamicShadow:SetSize(.8, .5)
 
-    MakeFlyingCharacterPhysics(inst, 1, .5)
+    MakeFlyingCharacterPhysics(inst, 0, 0)
 
     inst:AddTag("aip_shadowcreature") -- 标记的暗影生物，因为默认的不允许攻击
 	inst:AddTag("gestaltnoloot")
@@ -70,9 +89,12 @@ local function fn()
 	inst.components.health:SetMaxHealth(BaseHealth)
 
 	inst:AddComponent("combat")
+	inst.components.combat:SetOnHit(onHit)
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetLoot(loot)
+
+	inst:ListenForEvent("death", OnDead)
 
 	inst.persists = false
 

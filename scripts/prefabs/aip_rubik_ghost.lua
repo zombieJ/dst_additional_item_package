@@ -1,8 +1,6 @@
 -- 开发模式
 local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
-local BaseHealth = dev_mode and 100 or TUNING.WORM_HEALTH
-
 local brain = require("brains/aip_rubik_ghost_brain")
 
 local assets = {
@@ -36,15 +34,30 @@ local sounds = {
 }
 
 ------------------------------- 厉火 -------------------------------
-local BASE_SCALE = 0.5
-local MULTIPLE_SCALE = 0.1
+local BaseHealth = dev_mode and 100 or TUNING.WORM_HEALTH
+local MultipleHealth = BaseHealth * 0.5
 
-local function refreshGrow(inst)
+local BaseDamage =  dev_mode and 4 or 40
+local MultipleDamage = BaseDamage * 0.5
+
+local BASE_SCALE = 1
+local MULTIPLE_SCALE = 0.2
+
+local function refreshGrow(inst, nextLevel)
+	local currentLevel = inst.aipGrow or 0
+
 	-- 每次死亡一个单位就飞过来充能一个单位
-	inst.aipGrow = inst.aipGrow or 1
-	local scale = BASE_SCALE + inst.aipGrow * MULTIPLE_SCALE
-
+	inst.aipGrow = nextLevel
+	local scale = BASE_SCALE + nextLevel * MULTIPLE_SCALE
 	inst.Transform:SetScale(scale, scale, scale)
+
+	-- 更新生命值
+	local healthPTG = inst.components.health:GetPercent()
+	inst.components.health:SetMaxHealth(BaseHealth + nextLevel * MultipleHealth)
+	inst.components.health:SetPercent(healthPTG)
+
+	-- 更新攻击力
+	inst.components.combat:SetDefaultDamage(BaseDamage + nextLevel * MultipleDamage)
 end
 
 ------------------------------- 事件 -------------------------------
@@ -70,6 +83,26 @@ local function OnAttacked(inst, data)
     inst.components.combat:ShareTarget(data.attacker, 30, function(dude)
 		return dude:HasTag("aip_rubik_ghost") and not dude.components.health:IsDead()
 	end, 99)
+end
+
+local function OnDead(inst)
+	if inst.aipHeart and inst.aipHeart.aipGhosts then
+		for i, ghost in ipairs(inst.aipHeart.aipGhosts) do
+			if ghost ~= inst and ghost.components.health and not ghost.components.health:IsDead() then
+				-- 飞行灵魂给其他鬼魂
+				local proj = aipSpawnPrefab(inst, "aip_projectile")
+				proj.components.aipc_info_client:SetByteArray( -- 调整颜色
+					"aip_projectile_color", { 0, 0, 0, 5 }
+				)
+				proj.components.aipc_projectile.speed = 10
+				proj.components.aipc_projectile:GoToTarget(ghost, function()
+					if ghost.components and ghost.components.health and not ghost.components.health:IsDead() then
+						refreshGrow(ghost, (ghost.aipGrow or 1) + 1)
+					end
+				end)
+			end
+		end
+	end
 end
 
 ------------------------------- 实体 -------------------------------
@@ -123,16 +156,19 @@ local function fn()
 
 	inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "body"
-	inst.components.combat:SetDefaultDamage(TUNING.SPIDER_DAMAGE)
-    inst.components.combat:SetAttackPeriod(TUNING.SPIDER_ATTACK_PERIOD)
-	inst.components.combat:SetRange(TUNING.BEE_ATTACK_RANGE)
+	inst.components.combat:SetDefaultDamage(BaseDamage)
+    inst.components.combat:SetAttackPeriod(TUNING.BEEQUEEN_ATTACK_PERIOD)
+	-- inst.components.combat:SetRange(TUNING.BEE_ATTACK_RANGE)
     inst.components.combat:SetRetargetFunction(1, Retarget)
 
 	inst:ListenForEvent("attacked", OnAttacked)
+	inst:ListenForEvent("death", OnDead)
 
 	inst.persists = false
 
-	inst:DoTaskInTime(0.1, refreshGrow)
+	inst:DoTaskInTime(0.1, function()
+		refreshGrow(inst, 0)
+	end)
 
 	return inst
 end

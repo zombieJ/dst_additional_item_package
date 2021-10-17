@@ -3,12 +3,14 @@ require "behaviours/chaseandattack"
 
 local NOTAGS = { "FX", "NOCLICK", "DECOR", "playerghost", "INLIMBO" }
 
-local MAX_CHASE_TIME = 30
-local MAX_CHASE_DIST = 35
+local MAX_CHASE_DIST = 15
+local MAX_CHASE_TIME = 8
+
 local MAX_WANDER_DIST = 20
 
 local RUN_AWAY_DIST = 3
-local STOP_RUN_AWAY_DIST = 6
+local STOP_RUN_AWAY_DIST = 5
+local STOP_RUN_AWAY_DIST_MAX = 8
 
 local RubikGhostBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
@@ -39,7 +41,7 @@ function RubikGhostBrain:OnStart()
 				self.inst,
 				function() return self.inst.components.combat.target end,
 				RUN_AWAY_DIST,
-				STOP_RUN_AWAY_DIST
+				math.random(STOP_RUN_AWAY_DIST, STOP_RUN_AWAY_DIST_MAX)
 			)
 		),
 

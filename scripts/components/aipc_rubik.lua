@@ -215,6 +215,7 @@ function Rubik:CreateMonster(count)
 
 	-- 创建心脏
 	local heart = aipSpawnPrefab(self.inst, "aip_rubik_heart")
+	heart.aipGhosts = {}
 
 	-- 创建怪物
 	for i = 1, count do
@@ -236,6 +237,9 @@ function Rubik:CreateMonster(count)
 			if ghost.components.knownlocations then
 				ghost.components.knownlocations:RememberLocation("home", pt)
 			end
+
+			ghost.aipHeart = heart
+			table.insert(heart.aipGhosts, ghost)
 		end)
 	end
 end
@@ -294,7 +298,7 @@ function Rubik:SummonBoss()
 		effect.DoShow(2)
 
 		-- 创建怪物
-		self:CreateMonster(1 + (3 - passedLevelCount) * 3)
+		self:CreateMonster(1 + (3 - passedLevelCount) * 2)
 
 		-- 我们直接重新替换一个新的
 		local replacedRubik = aipReplacePrefab(self.inst, "aip_rubik")
