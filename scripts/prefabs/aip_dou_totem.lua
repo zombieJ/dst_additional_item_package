@@ -4,7 +4,8 @@ local language = aipGetModConfig("language")
 
 local additional_survival = aipGetModConfig("additional_survival") == "open"
 
-local MaxUses = 20
+
+local FueledTime = 40
 
 local LANG_MAP = {
 	english = {
@@ -223,15 +224,17 @@ local function makeTotemFn(name, animation, nextPrefab, nextPrefabAnimation)
 
             -- 使用燃料
             inst:AddComponent("fueled")
-            inst.components.fueled.rate = 0 -- 永不熄灭
-            inst.components.fueled.maxfuel = TUNING.NIGHTLIGHT_FUEL_MAX
+            inst.components.fueled.maxfuel = FueledTime
             inst.components.fueled.accepting = true
             inst.components.fueled.fueltype = FUELTYPE.NIGHTMARE
-            inst.components.fueled:SetSections(4)
+            inst.components.fueled:SetSections(3)
             inst.components.fueled:SetTakeFuelFn(ontakefuel)
             inst.components.fueled:SetUpdateFn(onupdatefueled)
             inst.components.fueled:SetSectionCallback(onfuelchange)
-            inst.components.fueled:InitializeFuelLevel(dev_mode and TUNING.NIGHTLIGHT_FUEL_START or 0)
+            inst.components.fueled:InitializeFuelLevel(0)
+
+            inst.components.fueled.rate = 0 -- 永不熄灭
+            inst.components.fueled.bonusmult = (1 / TUNING.LARGE_FUEL) * (FueledTime / 4)
         end
 
         inst.entity:SetPristine()
