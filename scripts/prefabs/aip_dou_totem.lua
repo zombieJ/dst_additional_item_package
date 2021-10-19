@@ -1,3 +1,4 @@
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 -- 配置
 local language = aipGetModConfig("language")
 
@@ -124,6 +125,29 @@ local function createChallenge()
     aipGetTopologyPoint("lunacyarea", "moon_fissure")
 end
 
+---------------------------------- 燃料 ----------------------------------
+local function ontakefuel(inst)
+    inst.SoundEmitter:PlaySound("dontstarve/common/nightmareAddFuel")
+end
+
+local function onupdatefueled(inst)
+    if inst.components.burnable ~= nil then
+        inst.components.burnable:SetFXLevel(inst.components.fueled:GetCurrentSection(), inst.components.fueled:GetSectionPercent())
+    end
+end
+
+local function onfuelchange(newsection, oldsection, inst)
+    if newsection <= 0 then
+        inst.components.burnable:Extinguish()
+    else
+        if not inst.components.burnable:IsBurning() then
+            inst.components.burnable:Ignite()
+        end
+
+        inst.components.burnable:SetFXLevel(newsection, inst.components.fueled:GetSectionPercent())
+    end
+end
+
 ---------------------------------- 实体 ----------------------------------
 local function makeTotemFn(name, animation, nextPrefab, nextPrefabAnimation)
     -- 建筑到下一个级别
@@ -191,10 +215,23 @@ local function makeTotemFn(name, animation, nextPrefab, nextPrefabAnimation)
             inst.components.talker.colour = Vector3(.9, 1, .9)
             inst.components.talker.offset = Vector3(0, -500, 0)
 
-            -- 添加使用次数
-            inst:AddComponent("finiteuses")
-            inst.components.finiteuses:SetMaxUses(MaxUses)
-            inst.components.finiteuses:SetUses(MaxUses)
+            -- 可以点燃
+            inst:AddComponent("burnable")
+            inst.components.burnable:AddBurnFX("nightlight_flame", Vector3(0, 0, 0), "fire_marker_left")
+            inst.components.burnable:AddBurnFX("nightlight_flame", Vector3(0, 0, 0), "fire_marker_right")
+            inst.components.burnable.canlight = false
+
+            -- 使用燃料
+            inst:AddComponent("fueled")
+            inst.components.fueled.rate = 0 -- 永不熄灭
+            inst.components.fueled.maxfuel = TUNING.NIGHTLIGHT_FUEL_MAX
+            inst.components.fueled.accepting = true
+            inst.components.fueled.fueltype = FUELTYPE.NIGHTMARE
+            inst.components.fueled:SetSections(4)
+            inst.components.fueled:SetTakeFuelFn(ontakefuel)
+            inst.components.fueled:SetUpdateFn(onupdatefueled)
+            inst.components.fueled:SetSectionCallback(onfuelchange)
+            inst.components.fueled:InitializeFuelLevel(dev_mode and TUNING.NIGHTLIGHT_FUEL_START or 0)
         end
 
         inst.entity:SetPristine()
