@@ -1,7 +1,7 @@
 -- 开发模式
 local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
-local BaseHealth = dev_mode and 100 or TUNING.TOADSTOOL_HEALTH
+local BaseHealth = dev_mode and 100 or TUNING.LEIF_HEALTH
 
 local assets = {
 	Asset("ANIM", "anim/aip_rubik_heart.zip"),

@@ -20,6 +20,16 @@ AddRecipe(
 	"aip_score_ball.tex"
 )
 
+-- 劣质的飞行图腾
+AddRecipe(
+	"aip_fake_fly_totem",
+	{ Ingredient("boards", 1), Ingredient("rope", 1), Ingredient("nightmarefuel", 1) },
+	_G.RECIPETABS.TOWN, _G.TECH.LOST,
+	"aip_fake_fly_totem_placer", nil, nil, nil, nil,
+	"images/inventoryimages/aip_fake_fly_totem.xml",
+	"aip_fake_fly_totem.tex"
+)
+
 -- 飞行图腾。只有蓝图可以做出来，现在不提供
 AddRecipe(
 	"aip_fly_totem",

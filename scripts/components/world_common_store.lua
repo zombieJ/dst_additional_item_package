@@ -57,6 +57,9 @@ local CommonStore = Class(function(self, inst)
 	-- 记录所有的箱子
 	self.chests = {}
 
+	-- 当前的豆酱图腾
+	self.douTotem = nil
+
 	-- 记录所有的飞行点
 	self.flyTotems = {}
 
@@ -90,10 +93,18 @@ function CommonStore:CreateCoookieKing(pos)
 	return nil
 end
 
+-- 获取一下豆酱图腾
+function CommonStore:FindDouTotem()
+	if not self.douTotem then
+		self.douTotem = TheSim:FindFirstEntityWithTag("aip_rubik")
+	end
+	return self.douTotem
+end
+
 -- 创建 魔方，在墓地附近寻找
 function CommonStore:CreateRubik()
 	-- 存在且没有坐标就跳过
-	local ent = TheSim:FindFirstEntityWithTag("aip_rubik")
+	local ent = self:FindDouTotem()
 	if ent ~= nil then
 		return ent
 	end
@@ -111,7 +122,12 @@ function CommonStore:CreateRubik()
 
 	pos = aipGetSecretSpawnPoint(pos, 0, 50, 5)
 
-	return aipSpawnPrefab(nil, "aip_rubik", pos.x, pos.y, pos.z)
+	local rubik = aipSpawnPrefab(nil, "aip_rubik", pos.x, pos.y, pos.z)
+	rubik.components.fueled:MakeEmpty()
+
+	self.douTotem = rubik
+
+	return rubik
 end
 
 function CommonStore:CreateSuWuMound(pos)
@@ -144,8 +160,6 @@ function CommonStore:PostWorld()
 				aipSpawnPrefab(nil, "aip_dou_totem_broken", tgt.x, tgt.y, tgt.z)
 			end
 		end
-
-		
 	end)
 
 	--------------------------- 创建饼干 ---------------------------

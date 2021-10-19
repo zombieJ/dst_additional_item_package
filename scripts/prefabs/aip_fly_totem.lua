@@ -6,6 +6,11 @@ local LANG_MAP = {
 		NAME = "Fly Totem",
 		RECDESC = "Unicom's flight site",
         DESC = "To Infinity... and Beyond",
+
+        FAKE_NAME = "Inferior Fly Totem",
+		FAKE_RECDESC = "Not an outstanding counterfeit ",
+        FAKE_DESC = "Things that need to be recharged to activate ",
+
         UNNAMED = "[UNNAMED]",
         CURRENT = "I'm already here!",
         INVLIDATE = "Target seems disappeared",
@@ -16,6 +21,11 @@ local LANG_MAP = {
 		NAME = "飞行图腾",
 		RECDESC = "联通的飞行站点",
         DESC = "飞向宇宙，浩瀚无垠！",
+
+        FAKE_NAME = "劣质的飞行图腾",
+		FAKE_RECDESC = "并不杰出的仿冒品",
+        FAKE_DESC = "需要充能才能启动的玩意儿",
+
         UNNAMED = "[未命名]",
         CURRENT = "我就在这里！",
         INVLIDATE = "目的地不见了",
@@ -30,6 +40,11 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 STRINGS.NAMES.AIP_FLY_TOTEM = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_FLY_TOTEM = LANG.RECDESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM = LANG.DESC
+
+STRINGS.NAMES.AIP_FAKE_FLY_TOTEM = LANG.FAKE_NAME
+STRINGS.RECIPE_DESC.AIP_FAKE_FLY_TOTEM = LANG.FAKE_RECDESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FAKE_FLY_TOTEM = LANG.FAKE_DESC
+
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_UNNAMED = LANG.UNNAMED
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_CURRENT = LANG.CURRENT
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_INVLIDATE = LANG.INVLIDATE
@@ -41,7 +56,9 @@ require "prefabutil"
 
 local assets = {
 	Asset("ANIM", "anim/aip_fly_totem.zip"),
+    Asset("ANIM", "anim/aip_fake_fly_totem.zip"),
 	Asset("ATLAS", "images/inventoryimages/aip_fly_totem.xml"),
+    Asset("ATLAS", "images/inventoryimages/aip_fake_fly_totem.xml"),
 }
 
 local prefabs = {
@@ -157,82 +174,86 @@ local function startSpell(inst, targetTotem)
 end
 
 ---------------------------------- 实体 ----------------------------------
-local function fn()
-    local inst = CreateEntity()
+local function genTotem(buildName)
+    local function fn()
+        local inst = CreateEntity()
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddSoundEmitter()
-    -- inst.entity:AddMiniMapEntity()
-    inst.entity:AddNetwork()
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddSoundEmitter()
+        -- inst.entity:AddMiniMapEntity()
+        inst.entity:AddNetwork()
 
-    MakeObstaclePhysics(inst, .2)
+        MakeObstaclePhysics(inst, .2)
 
-    -- inst.MiniMapEntity:SetIcon("sign.png")
+        -- inst.MiniMapEntity:SetIcon("sign.png")
 
-    inst.AnimState:SetBank("aip_fly_totem")
-    inst.AnimState:SetBuild("aip_fly_totem")
-    inst.AnimState:PlayAnimation("idle")
+        inst.AnimState:SetBank(buildName)
+        inst.AnimState:SetBuild(buildName)
+        inst.AnimState:PlayAnimation("idle")
 
-    MakeSnowCoveredPristine(inst)
+        MakeSnowCoveredPristine(inst)
 
-    inst:AddTag("structure")
-    inst:AddTag("aip_fly_totem")
+        inst:AddTag("structure")
+        inst:AddTag("aip_fly_totem")
 
-    --Sneak these into pristine state for optimization
-    inst:AddTag("_writeable")
+        --Sneak these into pristine state for optimization
+        inst:AddTag("_writeable")
 
-    -- 添加飞行图腾
-    inst:AddComponent("aipc_action_client")
-    inst.components.aipc_action_client.canBeActOn = canBeActOn
+        -- 添加飞行图腾
+        inst:AddComponent("aipc_action_client")
+        inst.components.aipc_action_client.canBeActOn = canBeActOn
 
-	inst.entity:SetPristine()
+        inst.entity:SetPristine()
 
-    if not TheWorld.ismastersim then
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        --Remove these tags so that they can be added properly when replicating components below
+        inst:RemoveTag("_writeable")
+
+        inst:AddComponent("aipc_action")
+        inst.components.aipc_action.onDoAction = onOpenPicker
+
+        inst:AddComponent("inspectable")
+        inst:AddComponent("writeable")
+        inst:AddComponent("lootdropper")
+
+        inst:AddComponent("workable")
+        inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
+        inst.components.workable:SetWorkLeft(4)
+        inst.components.workable:SetOnFinishCallback(onhammered)
+        inst.components.workable:SetOnWorkCallback(onhit)
+
+        -- 玩家靠近
+        inst:AddComponent("playerprox")
+        inst.components.playerprox:SetDist(10, 13)
+        inst.components.playerprox:SetOnPlayerNear(onnear)
+
+        MakeSnowCovered(inst)
+
+        MakeSmallBurnable(inst, TUNING.LARGE_BURNTIME)
+        MakeSmallPropagator(inst)
+
+        inst.aipId = tostring(os.time())..tostring(math.random())
+
+        inst.aipStartSpell = startSpell
+
+        inst.OnSave = onSave
+        inst.OnLoad = onLoad
+
+        MakeHauntableWork(inst)
+        inst:ListenForEvent("onbuilt", onbuilt)
+
+        -- 全局注册飞行图腾
+        table.insert(TheWorld.components.world_common_store.flyTotems, inst)
+        inst:ListenForEvent("onremove", onRemove)
+
         return inst
     end
 
-    --Remove these tags so that they can be added properly when replicating components below
-    inst:RemoveTag("_writeable")
-
-    inst:AddComponent("aipc_action")
-    inst.components.aipc_action.onDoAction = onOpenPicker
-
-    inst:AddComponent("inspectable")
-    inst:AddComponent("writeable")
-    inst:AddComponent("lootdropper")
-
-    inst:AddComponent("workable")
-    inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
-    inst.components.workable:SetWorkLeft(4)
-    inst.components.workable:SetOnFinishCallback(onhammered)
-    inst.components.workable:SetOnWorkCallback(onhit)
-
-    -- 玩家靠近
-    inst:AddComponent("playerprox")
-    inst.components.playerprox:SetDist(10, 13)
-    inst.components.playerprox:SetOnPlayerNear(onnear)
-
-    MakeSnowCovered(inst)
-
-    MakeSmallBurnable(inst, TUNING.LARGE_BURNTIME)
-    MakeSmallPropagator(inst)
-
-    inst.aipId = tostring(os.time())..tostring(math.random())
-
-    inst.aipStartSpell = startSpell
-
-    inst.OnSave = onSave
-    inst.OnLoad = onLoad
-
-    MakeHauntableWork(inst)
-    inst:ListenForEvent("onbuilt", onbuilt)
-
-    -- 全局注册飞行图腾
-    table.insert(TheWorld.components.world_common_store.flyTotems, inst)
-    inst:ListenForEvent("onremove", onRemove)
-
-    return inst
+    return fn
 end
 
 -------------------------------- 起飞特效 --------------------------------
@@ -307,7 +328,9 @@ local function flyEffectFn()
 end
 
 
-return Prefab("aip_fly_totem", fn, assets, prefabs),
+return Prefab("aip_fly_totem", genTotem("aip_fly_totem"), assets, prefabs),
         MakePlacer("aip_fly_totem_placer", "aip_fly_totem", "aip_fly_totem", "idle"),
+        Prefab("aip_fake_fly_totem", genTotem("aip_fake_fly_totem"), assets, prefabs),
+        MakePlacer("aip_fake_fly_totem_placer", "aip_fake_fly_totem", "aip_fake_fly_totem", "idle"),
         Prefab("aip_eagle_effect", effectFn, { Asset("ANIM", "anim/lavaarena_attack_buff_effect.zip") }),
         Prefab("aip_fly_totem_effect", flyEffectFn, { Asset("ANIM", "anim/aip_fly_totem_effect.zip") })

@@ -3,6 +3,8 @@ local language = aipGetModConfig("language")
 
 local additional_survival = aipGetModConfig("additional_survival") == "open"
 
+local MaxUses = 20
+
 local LANG_MAP = {
 	english = {
         BROEKN_NAME = "Wreckage",
@@ -15,7 +17,6 @@ local LANG_MAP = {
         TALK_FIRST = "Start your challenge",
         TOTEM_POS = "First Place",
         TOTEM_BALLOON = "Ruo Guang",
-        TOTEM_SNAKE = "", -- 抓捕玩具蛇
 	},
 	chinese = {
         BROEKN_NAME = "一片残骸",
@@ -189,6 +190,11 @@ local function makeTotemFn(name, animation, nextPrefab, nextPrefabAnimation)
             inst.components.talker.font = TALKINGFONT
             inst.components.talker.colour = Vector3(.9, 1, .9)
             inst.components.talker.offset = Vector3(0, -500, 0)
+
+            -- 添加使用次数
+            inst:AddComponent("finiteuses")
+            inst.components.finiteuses:SetMaxUses(MaxUses)
+            inst.components.finiteuses:SetUses(MaxUses)
         end
 
         inst.entity:SetPristine()
