@@ -1,3 +1,5 @@
+local open_beta = aipGetModConfig("open_beta") == "open"
+
 local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 local function findFarAwayOcean(pos)
@@ -166,54 +168,56 @@ function CommonStore:PostWorld()
 	end)
 
 	--------------------------- 创建魔方 ---------------------------
-	self.inst:DoTaskInTime(5, function()
-		self:CreateRubik()
-	end)
+	if open_beta then
+		self.inst:DoTaskInTime(5, function()
+			self:CreateRubik()
+		end)
+	end
 
 	--------------------------- 开发模式 ---------------------------
-	if dev_mode then
-		self.inst:DoTaskInTime(2, function()
-			if ThePlayer and false then
-				aipSpawnPrefab(ThePlayer, "aip_rubik")
+	-- if dev_mode then
+	-- 	self.inst:DoTaskInTime(2, function()
+	-- 		if ThePlayer and false then
+	-- 			aipSpawnPrefab(ThePlayer, "aip_rubik")
 
-				-- 避免和神话书说&小房子冲突
-				local px = 1900
-				local py = 0
-				local pz = 1900
+	-- 			-- 避免和神话书说&小房子冲突
+	-- 			local px = 1900
+	-- 			local py = 0
+	-- 			local pz = 1900
 
-				ThePlayer.Physics:Teleport(px, py, pz)
+	-- 			ThePlayer.Physics:Teleport(px, py, pz)
 
-				-- local tile = TheWorld.Map:GetTileAtPoint(px, py, pz)
-				-- aipPrint("Tile Type:", tile)
+	-- 			-- local tile = TheWorld.Map:GetTileAtPoint(px, py, pz)
+	-- 			-- aipPrint("Tile Type:", tile)
 
-				-- if tile == GROUND.INVALID then
-				-- 	local tileX, tileY = TheWorld.Map:GetTileCoordsAtPoint(px, py, pz)
-				-- 	TheWorld.Map:SetTile(tileX, tileY, GROUND.DIRT)
-				-- 	TheWorld.Map:RebuildLayer(GROUND.DIRT, tileX, tileY)
+	-- 			-- if tile == GROUND.INVALID then
+	-- 			-- 	local tileX, tileY = TheWorld.Map:GetTileCoordsAtPoint(px, py, pz)
+	-- 			-- 	TheWorld.Map:SetTile(tileX, tileY, GROUND.DIRT)
+	-- 			-- 	TheWorld.Map:RebuildLayer(GROUND.DIRT, tileX, tileY)
 
-				-- 	ThePlayer.Physics:Teleport(px, py, pz)
-				-- end
+	-- 			-- 	ThePlayer.Physics:Teleport(px, py, pz)
+	-- 			-- end
 
 
-				-- aipPrint("Next Tile Type:", TheWorld.Map:GetTileAtPoint(px, py, pz))
+	-- 			-- aipPrint("Next Tile Type:", TheWorld.Map:GetTileAtPoint(px, py, pz))
 
-				-- for px = 0, 1000 do
-				-- 	local py = 0
-				-- 	local pz = 0
-				-- 	local tile = TheWorld.Map:GetTileAtPoint(px, py, pz)
-				-- 	aipPrint("Tile Type:", px, tile)
-				-- end
-			end
-		end)
+	-- 			-- for px = 0, 1000 do
+	-- 			-- 	local py = 0
+	-- 			-- 	local pz = 0
+	-- 			-- 	local tile = TheWorld.Map:GetTileAtPoint(px, py, pz)
+	-- 			-- 	aipPrint("Tile Type:", px, tile)
+	-- 			-- end
+	-- 		end
+	-- 	end)
 
-		-- self.inst:DoPeriodicTask(1, function()
-		-- 	if ThePlayer then
-		-- 		local x, y, z = ThePlayer.Transform:GetWorldPosition()
-		-- 		local tile = TheWorld.Map:GetTileAtPoint(x,y,z)
-		-- 		aipPrint("Player Tile Type:", tile)
-		-- 	end
-		-- end)
-	end
+	-- 	-- self.inst:DoPeriodicTask(1, function()
+	-- 	-- 	if ThePlayer then
+	-- 	-- 		local x, y, z = ThePlayer.Transform:GetWorldPosition()
+	-- 	-- 		local tile = TheWorld.Map:GetTileAtPoint(x,y,z)
+	-- 	-- 		aipPrint("Player Tile Type:", tile)
+	-- 	-- 	end
+	-- 	-- end)
+	-- end
 end
 
 return CommonStore

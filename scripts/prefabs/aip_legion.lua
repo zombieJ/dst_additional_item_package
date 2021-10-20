@@ -1,3 +1,5 @@
+local open_beta = aipGetModConfig("open_beta") == "open"
+
 local language = aipGetModConfig("language")
 
 -- 文字描述
@@ -13,6 +15,11 @@ local LANG_MAP = {
 		EMPTY = "这个方阵没有魔力了",
 	},
 }
+
+if not open_beta then
+	LANG_MAP.english.EMPTY = "Special but useless"
+	LANG_MAP.chinese.EMPTY = "奇特的石头，似乎没有什么用处"
+end
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
