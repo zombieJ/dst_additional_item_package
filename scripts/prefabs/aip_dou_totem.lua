@@ -209,13 +209,24 @@ local function makeTotemFn(name, animation, nextPrefab, nextPrefabAnimation)
 
         -- 最后一个级别做额外事情
         if nextPrefab == nil then
+            inst:AddTag("aip_dou_totem_final")
+
             -- 会添加对话能力
             inst:AddComponent("talker")
             inst.components.talker.fontsize = 30
             inst.components.talker.font = TALKINGFONT
             inst.components.talker.colour = Vector3(.9, 1, .9)
             inst.components.talker.offset = Vector3(0, -500, 0)
+        end
 
+        inst.entity:SetPristine()
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        -- 最后一个级别做额外事情
+        if nextPrefab == nil then
             -- 可以点燃
             inst:AddComponent("burnable")
             inst.components.burnable:AddBurnFX("nightlight_flame", Vector3(0, 0, 0), "fire_marker_left")
@@ -235,12 +246,6 @@ local function makeTotemFn(name, animation, nextPrefab, nextPrefabAnimation)
 
             inst.components.fueled.rate = 0 -- 永不熄灭
             inst.components.fueled.bonusmult = (1 / TUNING.LARGE_FUEL) * (FueledTime / 4)
-        end
-
-        inst.entity:SetPristine()
-
-        if not TheWorld.ismastersim then
-            return inst
         end
 
         inst:AddComponent("inspectable")

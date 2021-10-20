@@ -96,7 +96,7 @@ end
 -- 获取一下豆酱图腾
 function CommonStore:FindDouTotem()
 	if not self.douTotem then
-		self.douTotem = TheSim:FindFirstEntityWithTag("aip_rubik")
+		self.douTotem = TheSim:FindFirstEntityWithTag("aip_dou_totem_final")
 	end
 	return self.douTotem
 end
@@ -104,7 +104,7 @@ end
 -- 创建 魔方，在墓地附近寻找
 function CommonStore:CreateRubik()
 	-- 存在且没有坐标就跳过
-	local ent = self:FindDouTotem()
+	local ent = TheSim:FindFirstEntityWithTag("aip_rubik")
 	if ent ~= nil then
 		return ent
 	end
@@ -124,8 +124,6 @@ function CommonStore:CreateRubik()
 
 	local rubik = aipSpawnPrefab(nil, "aip_rubik", pos.x, pos.y, pos.z)
 	rubik.components.fueled:MakeEmpty()
-
-	self.douTotem = rubik
 
 	return rubik
 end

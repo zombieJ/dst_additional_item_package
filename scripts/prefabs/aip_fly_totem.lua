@@ -9,7 +9,8 @@ local LANG_MAP = {
 
         FAKE_NAME = "Inferior Fly Totem",
 		FAKE_RECDESC = "Not an outstanding counterfeit ",
-        FAKE_DESC = "Things that need to be recharged to activate ",
+        FAKE_DESC = "Things that need to be recharged to activate",
+        FAKE_NO_POWER = "Need recharge on the source",
 
         UNNAMED = "[UNNAMED]",
         CURRENT = "I'm already here!",
@@ -25,6 +26,7 @@ local LANG_MAP = {
         FAKE_NAME = "劣质的飞行图腾",
 		FAKE_RECDESC = "并不杰出的仿冒品",
         FAKE_DESC = "需要充能才能启动的玩意儿",
+        FAKE_NO_POWER = "它的魔力来源已经消耗殆尽了",
 
         UNNAMED = "[未命名]",
         CURRENT = "我就在这里！",
@@ -44,6 +46,7 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM = LANG.DESC
 STRINGS.NAMES.AIP_FAKE_FLY_TOTEM = LANG.FAKE_NAME
 STRINGS.RECIPE_DESC.AIP_FAKE_FLY_TOTEM = LANG.FAKE_RECDESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FAKE_FLY_TOTEM = LANG.FAKE_DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FAKE_FLY_TOTEM_NO_POWER = LANG.FAKE_NO_POWER
 
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_UNNAMED = LANG.UNNAMED
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FLY_TOTEM_CURRENT = LANG.CURRENT
@@ -98,6 +101,21 @@ local function canBeActOn(inst, doer)
 end
 
 local function onOpenPicker(inst, doer)
+    -- 如果是假图腾就检查是否豆酱图腾由能量
+    if inst.aipFake == true and TheWorld.components.world_common_store then
+        local douTotem = TheWorld.components.world_common_store:FindDouTotem()
+
+        -- 没有的话就不让飞行了
+        if not douTotem or not douTotem.components.fueled or douTotem.components.fueled:IsEmpty() then
+            if doer.components.talker then
+                doer.components.talker:Say(
+                    STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FAKE_FLY_TOTEM_NO_POWER
+                )
+            end
+            return
+        end
+    end
+
     -- 加一个切割前缀强制服务器触发
     doer.player_classified.aip_fly_picker:set(tostring(os.time()).."|"..inst.aipId)
 end
@@ -174,7 +192,7 @@ local function startSpell(inst, targetTotem)
 end
 
 ---------------------------------- 实体 ----------------------------------
-local function genTotem(buildName)
+local function genTotem(buildName, fake)
     local function fn()
         local inst = CreateEntity()
 
@@ -239,6 +257,7 @@ local function genTotem(buildName)
         inst.aipId = tostring(os.time())..tostring(math.random())
 
         inst.aipStartSpell = startSpell
+        inst.aipFake = fake
 
         inst.OnSave = onSave
         inst.OnLoad = onLoad
@@ -330,7 +349,7 @@ end
 
 return Prefab("aip_fly_totem", genTotem("aip_fly_totem"), assets, prefabs),
         MakePlacer("aip_fly_totem_placer", "aip_fly_totem", "aip_fly_totem", "idle"),
-        Prefab("aip_fake_fly_totem", genTotem("aip_fake_fly_totem"), assets, prefabs),
+        Prefab("aip_fake_fly_totem", genTotem("aip_fake_fly_totem", true), assets, prefabs),
         MakePlacer("aip_fake_fly_totem_placer", "aip_fake_fly_totem", "aip_fake_fly_totem", "idle"),
         Prefab("aip_eagle_effect", effectFn, { Asset("ANIM", "anim/lavaarena_attack_buff_effect.zip") }),
         Prefab("aip_fly_totem_effect", flyEffectFn, { Asset("ANIM", "anim/aip_fly_totem_effect.zip") })
