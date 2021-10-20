@@ -4,8 +4,10 @@ local language = aipGetModConfig("language")
 
 local additional_survival = aipGetModConfig("additional_survival") == "open"
 
+local WarnRange = 12 -- 创造攻击玩家的范围
 
-local FueledTime = 40
+
+local FueledTime = dev_mode and 8 or 40
 
 local LANG_MAP = {
 	english = {
@@ -149,6 +151,46 @@ local function onfuelchange(newsection, oldsection, inst)
     end
 end
 
+---------------------------------- 玩家 ----------------------------------
+local function killTimer(inst)
+    if inst.aipGhostTimer ~= nil then
+        inst.aipGhostTimer:Cancel()
+    end
+
+    inst.aipGhostTimer = nil
+end
+
+-- 玩家靠近
+local function onNear(inst, player)
+    killTimer(inst)
+
+    inst.aipGhostTimer = inst:DoPeriodicTask(8, function()
+        -- 点燃时，源源不断创造触手攻击玩家
+        if inst.components.fueled ~= nil and not inst.components.fueled:IsEmpty() then
+            local players = aipFindNearPlayers(inst, WarnRange)
+            local player = aipRandomEnt(players)
+
+            if player ~= nil then
+                local tentacle = aipSpawnPrefab(player, "shadowtentacle")
+                tentacle.components.combat:SetTarget(player)
+
+                -- 触手不会降低玩家理智
+                if tentacle.components.sanityaura ~= nil then
+                    tentacle.components.sanityaura.aura = 0
+                end
+
+                tentacle.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/shadowTentacleAttack_1")
+                tentacle.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/shadowTentacleAttack_2")
+            end
+        end
+    end)
+end
+
+-- 玩家远离
+local function onFar(inst)
+    killTimer(inst)
+end
+
 ---------------------------------- 实体 ----------------------------------
 local function makeTotemFn(name, animation, nextPrefab, nextPrefabAnimation)
     -- 建筑到下一个级别
@@ -246,6 +288,12 @@ local function makeTotemFn(name, animation, nextPrefab, nextPrefabAnimation)
 
             inst.components.fueled.rate = 0 -- 永不熄灭
             inst.components.fueled.bonusmult = (1 / TUNING.LARGE_FUEL) * (FueledTime / 4)
+
+            -- 玩家召唤触手打玩家
+            inst:AddComponent("playerprox")
+            inst.components.playerprox:SetDist(WarnRange, WarnRange)
+            inst.components.playerprox:SetOnPlayerNear(onNear)
+            inst.components.playerprox:SetOnPlayerFar(onFar)
         end
 
         inst:AddComponent("inspectable")
