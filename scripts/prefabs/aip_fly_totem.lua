@@ -191,7 +191,6 @@ local function startSpell(inst, targetTotem)
 
         -- 如果是劣质图腾则消耗一下使用寿命
         if inst.aipFake == true and TheWorld.components.world_common_store then
-            aipPrint("Spend!!!")
             local douTotem = TheWorld.components.world_common_store:FindDouTotem()
             douTotem.components.fueled:DoDelta(-1, inst)
         end

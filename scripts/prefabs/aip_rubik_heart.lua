@@ -28,11 +28,12 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_RUBIK_HEART = LANG.DESC
 
 ------------------------------- 掉落 -------------------------------
 local loot = {
-    "drumstick", -- TODO: 掉落瑕疵的飞行图腾蓝图
+    "aip_fake_fly_totem_blueprint",
 }
 
 ------------------------------- 事件 -------------------------------
 local function onHit(inst)
+	inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/livingtree_hit")
 	inst.AnimState:PlayAnimation("hit")
 	inst.AnimState:PushAnimation("idle", true)
 end
@@ -50,6 +51,17 @@ local function OnDead(inst)
 			end
 		end
 	end
+
+	inst:DoTaskInTime(0.1, function()
+		inst.AnimState:PlayAnimation("dead")
+		inst:ListenForEvent("animover", function()
+			aipSpawnPrefab(inst, "aip_shadow_wrapper", nil, 4).DoShow()
+			local pt = inst:GetPosition()
+			pt.y = 4
+			inst.components.lootdropper:DropLoot(pt)
+			inst:Remove()
+		end)
+	end)
 end
 
 ------------------------------- 实体 -------------------------------
@@ -87,6 +99,7 @@ local function fn()
 
     inst:AddComponent("health")
 	inst.components.health:SetMaxHealth(BaseHealth)
+	inst.components.health.nofadeout = true
 
 	inst:AddComponent("combat")
 	inst.components.combat:SetOnHit(onHit)
