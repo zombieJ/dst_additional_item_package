@@ -36,6 +36,32 @@ local function onHit(inst)
 	inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/livingtree_hit")
 	inst.AnimState:PlayAnimation("hit")
 	inst.AnimState:PushAnimation("idle", true)
+
+	if
+		inst.components.health ~= nil and
+		inst.components.timer ~= nil and
+		inst.components.health:GetPercent() < 0.5 and
+		not inst.components.timer:TimerExists("aip_eat_snity")
+	then
+		inst.components.timer:StartTimer("aip_eat_snity", 5)
+		local players = aipFindNearPlayers(inst, 10)
+
+		for i, player in ipairs(players) do
+			if player.components.sanity ~= nil and player.components.sanity:GetPercent() > 0 then
+				player.components.sanity:DoDelta(-30)
+
+				local proj = aipSpawnPrefab(player, "aip_projectile")
+				proj.components.aipc_info_client:SetByteArray( -- 调整颜色
+					"aip_projectile_color", { 0, 0, 0, 5 }
+				)
+				proj.components.aipc_projectile:GoToTarget(inst, function()
+					if not inst.components.health:IsDead() then
+						inst.components.health:DoDelta(50)
+					end
+				end)
+			end
+		end
+	end
 end
 
 local function OnDead(inst)
@@ -96,6 +122,8 @@ local function fn()
     end
 
 	inst:AddComponent("inspectable")
+
+	inst:AddComponent("timer")
 
     inst:AddComponent("health")
 	inst.components.health:SetMaxHealth(BaseHealth)
