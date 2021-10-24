@@ -31,35 +31,76 @@ local loot = {
     "aip_fake_fly_totem_blueprint",
 }
 
+local createProjectile = require("utils/aip_vest_util").createProjectile
+
 ------------------------------- 事件 -------------------------------
+-- 移除无效死鬼
+local function refreshGhosts(inst)
+	inst.aipGhosts = aipFilterTable(inst.aipGhosts or {}, function(ghost)
+		return ghost and ghost:IsValid() and ghost.components.health and not ghost.components.health:IsDead()
+	end)
+end
+
 local function onHit(inst)
 	inst.SoundEmitter:PlaySound("dontstarve/creatures/leif/livingtree_hit")
-	inst.AnimState:PlayAnimation("hit")
-	inst.AnimState:PushAnimation("idle", true)
+
+	-- 只有没有其他动作的时候被打才会表现动画
+	if inst.AnimState:IsCurrentAnimation("idle") then
+		inst.AnimState:PlayAnimation("hit")
+		inst.AnimState:PushAnimation("idle", true)
+	end
 
 	if
 		inst.components.health ~= nil and
-		inst.components.timer ~= nil and
-		inst.components.health:GetPercent() < 0.5 and
-		not inst.components.timer:TimerExists("aip_eat_snity")
+		inst.components.health:GetPercent() < 0.5
 	then
-		inst.components.timer:StartTimer("aip_eat_snity", 5)
-		local players = aipFindNearPlayers(inst, 10)
+		-- 血少了，开始吸血玩家
+		if inst.components.timer ~= nil and not inst.components.timer:TimerExists("aip_eat_snity") then
+			inst.AnimState:PlayAnimation("spell")
+			inst:DoTaskInTime(.5, function() -- 延迟施法
+				if inst.components.health:IsDead() then
+					return
+				end
 
-		for i, player in ipairs(players) do
-			if player.components.sanity ~= nil and player.components.sanity:GetPercent() > 0 then
-				player.components.sanity:DoDelta(-30)
+				inst.components.timer:StartTimer("aip_eat_snity", 5)
+				local players = aipFindNearPlayers(inst, 10)
 
-				local proj = aipSpawnPrefab(player, "aip_projectile")
-				proj.components.aipc_info_client:SetByteArray( -- 调整颜色
-					"aip_projectile_color", { 0, 0, 0, 5 }
-				)
-				proj.components.aipc_projectile:GoToTarget(inst, function()
-					if not inst.components.health:IsDead() then
-						inst.components.health:DoDelta(50)
+				for i, player in ipairs(players) do
+					if player.components.sanity ~= nil and player.components.sanity:GetPercent() > 0 then
+						player.components.sanity:DoDelta(-30)
+
+						createProjectile(player, inst, function()
+							if not inst.components.health:IsDead() then
+								inst.components.health:DoDelta(50)
+							end
+						end, { 0, 0, 0, 5 })
 					end
-				end)
-			end
+				end
+			end)
+		end
+
+		-- 如果发现没有生物了，我们至少召唤一个
+		refreshGhosts(inst)
+
+		if #inst.aipGhosts <= 0 then
+			local homePos = inst:GetPosition()
+			createProjectile(
+				inst, aipGetSpawnPoint(homePos, 5), function(proj)
+					local effect = aipSpawnPrefab(proj, "aip_shadow_wrapper", nil, 0.1)
+					effect.DoShow()
+
+					-- 有血我们才创建
+					if not inst.health:IsDead() then
+						local ghost = aipSpawnPrefab(proj, "aip_rubik_ghost")
+						if ghost.components.knownlocations then
+							ghost.components.knownlocations:RememberLocation("home", homePos)
+						end
+
+						ghost.aipHeart = inst
+						table.insert(inst.aipGhosts, ghost)
+					end
+				end, { 0, 0, 0, 5 }
+			)
 		end
 	end
 end

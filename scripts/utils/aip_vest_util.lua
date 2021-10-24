@@ -69,8 +69,29 @@ function createGroudVest(bank, build, animate)
 	return inst
 end
 
+-- 飞到目标点或者物
+function createProjectile(source, target, fn, color, speed)
+	local proj = aipSpawnPrefab(source, "aip_projectile")
+
+	-- 设置颜色
+	if color ~= nil then
+		proj.components.aipc_info_client:SetByteArray( -- 调整颜色
+			"aip_projectile_color", color
+		)
+	end
+
+	if target ~= nil and target.prefab ~= nil then
+		proj.components.aipc_projectile:GoToTarget(target, fn)
+	else
+		proj.components.aipc_projectile:GoToPoint(target, fn)
+	end
+
+	return proj
+end
+
 return {
 	createClientVest = createClientVest,
 	createEffectVest = createEffectVest,
 	createGroudVest = createGroudVest,
+	createProjectile = createProjectile,
 }

@@ -102,11 +102,6 @@ local function OnDead(inst)
 				end)
 			end
 		end
-
-		-- 移除死去的鬼魂
-		inst.aipHeart.aipGhosts = aipFilterTable(inst.aipHeart.aipGhosts, function(ent)
-			return ent ~= inst
-		end)
 	end
 end
 

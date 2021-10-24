@@ -240,7 +240,6 @@ function Rubik:CreateMonster(count)
 
 			ghost.aipHeart = heart
 			table.insert(heart.aipGhosts, ghost)
-			heart.aipGhostsCount = #heart.aipGhosts
 		end)
 	end
 end
