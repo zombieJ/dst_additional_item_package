@@ -1,5 +1,7 @@
 local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
+local createProjectile = require("utils/aip_vest_util").createProjectile
+
 ------------------------------- 方法 -------------------------------
 local FX_OFFSET = 2
 local FX_HEIGHT = 7
@@ -224,23 +226,20 @@ function Rubik:CreateMonster(count)
 			pt.x + math.cos(angle) * dist, 0, pt.z + math.sin(angle) * dist
 		)
 
-		local proj = aipSpawnPrefab(self.inst, "aip_projectile")
-		proj.components.aipc_info_client:SetByteArray( -- 调整颜色
-			"aip_projectile_color", { 0, 0, 0, 5 }
+		createProjectile(
+			self.inst, tgtPT, function(proj)
+				local effect = aipSpawnPrefab(proj, "aip_shadow_wrapper", nil, 0.1)
+				effect.DoShow()
+
+				local ghost = aipSpawnPrefab(proj, "aip_rubik_ghost")
+				if ghost.components.knownlocations then
+					ghost.components.knownlocations:RememberLocation("home", pt)
+				end
+
+				ghost.aipHeart = heart
+				table.insert(heart.aipGhosts, ghost)
+			end, { 0, 0, 0, 5 }, 10
 		)
-		proj.components.aipc_projectile.speed = 10
-		proj.components.aipc_projectile:GoToPoint(tgtPT, function()
-			local effect = aipSpawnPrefab(proj, "aip_shadow_wrapper", nil, 0.1)
-			effect.DoShow()
-
-			local ghost = aipSpawnPrefab(proj, "aip_rubik_ghost")
-			if ghost.components.knownlocations then
-				ghost.components.knownlocations:RememberLocation("home", pt)
-			end
-
-			ghost.aipHeart = heart
-			table.insert(heart.aipGhosts, ghost)
-		end)
 	end
 end
 

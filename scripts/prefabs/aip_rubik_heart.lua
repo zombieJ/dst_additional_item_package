@@ -54,15 +54,18 @@ local function onHit(inst)
 		inst.components.health ~= nil and
 		inst.components.health:GetPercent() < 0.5
 	then
+		refreshGhosts(inst)
+
 		-- 血少了，开始吸血玩家
 		if inst.components.timer ~= nil and not inst.components.timer:TimerExists("aip_eat_snity") then
+			inst.components.timer:StartTimer("aip_eat_snity", 5)
 			inst.AnimState:PlayAnimation("spell")
+
 			inst:DoTaskInTime(.5, function() -- 延迟施法
 				if inst.components.health:IsDead() then
 					return
 				end
 
-				inst.components.timer:StartTimer("aip_eat_snity", 5)
 				local players = aipFindNearPlayers(inst, 10)
 
 				for i, player in ipairs(players) do
@@ -77,12 +80,10 @@ local function onHit(inst)
 					end
 				end
 			end)
-		end
+		elseif #inst.aipGhosts <= 0 and not inst.components.timer:TimerExists("aip_spawn_ghost") then
+			inst.components.timer:StartTimer("aip_spawn_ghost", 10)
 
-		-- 如果发现没有生物了，我们至少召唤一个
-		refreshGhosts(inst)
-
-		if #inst.aipGhosts <= 0 then
+			-- 如果发现没有生物了，我们至少召唤一个
 			local homePos = inst:GetPosition()
 			createProjectile(
 				inst, aipGetSpawnPoint(homePos, 5), function(proj)
@@ -90,7 +91,7 @@ local function onHit(inst)
 					effect.DoShow()
 
 					-- 有血我们才创建
-					if not inst.health:IsDead() then
+					if not inst.components.health:IsDead() then
 						local ghost = aipSpawnPrefab(proj, "aip_rubik_ghost")
 						if ghost.components.knownlocations then
 							ghost.components.knownlocations:RememberLocation("home", homePos)

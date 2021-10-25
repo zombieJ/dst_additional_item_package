@@ -80,6 +80,10 @@ function createProjectile(source, target, fn, color, speed)
 		)
 	end
 
+	if speed ~= nil then
+		proj.components.aipc_projectile.speed = 10
+	end
+
 	if target ~= nil and target.prefab ~= nil then
 		proj.components.aipc_projectile:GoToTarget(target, fn)
 	else

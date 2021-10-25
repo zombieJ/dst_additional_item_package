@@ -21,6 +21,7 @@ local LANG_MAP = {
         TALK_FIRST = "Start your challenge",
         TOTEM_POS = "First Place",
         TOTEM_BALLOON = "Ruo Guang",
+        TOTEM_RUBIK = "The Matrix",
 	},
 	chinese = {
         BROEKN_NAME = "一片残骸",
@@ -33,6 +34,7 @@ local LANG_MAP = {
         TALK_FIRST = "开始你的挑战！",
         TOTEM_POS = "伊始之地",
         TOTEM_BALLOON = "若光小驻",
+        TOTEM_RUBIK = "薄暮矩阵",
 	},
 }
 
@@ -92,12 +94,15 @@ end
 local function createFlyTotems(inst)
     local startTotem = false
     local balloonTotem = false
+    local rubikTotem = false
 
     for i, totem in ipairs(TheWorld.components.world_common_store.flyTotems) do
         if totem.markType == "START" then
             startTotem = true
         elseif totem.markType == "BALLOON" then
             balloonTotem = true
+        elseif totem.markType == "RUBIK" then
+            rubikTotem = true
         end
     end
 
@@ -118,6 +123,17 @@ local function createFlyTotems(inst)
                 aipGetSecretSpawnPoint(pigking:GetPosition(), 50, 100, 5),
                 LANG.TOTEM_BALLOON,
                 "BALLOON"
+            )
+        end
+    end
+
+    if rubikTotem == false then
+        local rubik = TheSim:FindFirstEntityWithTag("aip_rubik")
+        if rubik then
+            createFlyTotem(
+                aipGetSecretSpawnPoint(rubik:GetPosition(), 4, 8, 5),
+                LANG.TOTEM_RUBIK,
+                "RUBIK"
             )
         end
     end

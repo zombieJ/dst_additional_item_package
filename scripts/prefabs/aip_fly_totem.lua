@@ -136,6 +136,18 @@ local function onLoad(inst, data)
 	end
 end
 
+---------------------------------- 燃料 ----------------------------------
+local function ontakefuel(inst)
+    if TheWorld.components.world_common_store then
+        local douTotem = TheWorld.components.world_common_store:FindDouTotem()
+
+        -- 给链接图腾补充燃料
+        if douTotem and douTotem.components.fueled then
+            douTotem.components.fueled:DoDelta(5)
+        end
+    end
+end
+
 ---------------------------------- 方法 ----------------------------------
 -- 玩家靠近时创建一个小豆酱
 local function onnear(inst, player)
@@ -254,6 +266,14 @@ local function genTotem(buildName, fake)
         inst:AddComponent("playerprox")
         inst.components.playerprox:SetDist(10, 13)
         inst.components.playerprox:SetOnPlayerNear(onnear)
+
+        -- 如果伪劣产品，我们可以充能
+        if fake then
+            inst:AddComponent("fueled")
+            inst.components.fueled.accepting = true
+            inst.components.fueled.fueltype = FUELTYPE.NIGHTMARE
+            inst.components.fueled:SetTakeFuelFn(ontakefuel)
+        end
 
         MakeSnowCovered(inst)
 
