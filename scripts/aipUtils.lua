@@ -530,18 +530,22 @@ function _G.aipRPC(funcName, ...)
 end
 
 -- 添加 aipc_buffer
-function _G.patchBuffer(inst, name, duration, fn)
+function _G.patchBuffer(inst, name, duration, fn, showFX)
 	if inst.components.aipc_buffer == nil then
 		inst:AddComponent("aipc_buffer")
 	end
 
-	inst.components.aipc_buffer:Patch(name, duration, fn)
+	inst.components.aipc_buffer:Patch(name, duration, fn, showFX)
 end
 
 -- 存在 aipc_buffer
 function _G.hasBuffer(inst, name)
-	if inst.components.aipc_buffer ~= nil then
-		return inst.components.aipc_buffer.buffers[name] ~= nil
+	-- if inst.components.aipc_buffer ~= nil then
+	-- 	return inst.components.aipc_buffer.buffers[name] ~= nil
+	-- end
+
+	if inst.replica.aipc_buffer ~= nil then
+		return inst.replica.aipc_buffer:HasBuffer(name)
 	end
 
 	return false

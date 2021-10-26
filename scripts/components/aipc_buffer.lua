@@ -19,6 +19,7 @@ local function DoEffect(inst, self)
 	end
 
 	self.buffers = aipFilterKeysTable(self.buffers, rmNames)
+	self:SyncBuffer()
 
 	if allRemove then
 		inst:RemoveComponent("aipc_buffer")
@@ -41,11 +42,31 @@ local Buffer = Class(function(self, inst)
 	self.inst:AddChild(self.fx)
 end)
 
-function Buffer:Patch(name, duration, fn)
+function Buffer:Patch(name, duration, fn, showFX)
 	self.buffers[name] = {
 		duration = duration or 2,
-		fn = fn
+		fn = fn,
+		showFX = showFX,
 	}
+
+	self:SyncBuffer()
+end
+
+function Buffer:SyncBuffer(ames)
+	local names = ""
+	local showFX = false
+	for name, ent in pairs(self.buffers) do
+		names = names.."|"..name
+		showFX = showFX or ent.showFX
+	end
+
+	if showFX then
+		self.fx:Show()
+	else
+		self.fx:Hide()
+	end
+
+	self.inst.replica.aipc_buffer:SyncBuffer(names)
 end
 
 return Buffer
