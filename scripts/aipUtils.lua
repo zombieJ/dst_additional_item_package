@@ -515,6 +515,10 @@ end
 _G.aipShadowTags = { "shadow", "shadowminion", "shadowchesspiece", "stalker", "stalkerminion", "aip_shadowcreature" }
 
 function _G.aipIsShadowCreature(inst)
+	if not inst then
+		return false
+	end
+
 	for i, tag in ipairs(_G.aipShadowTags) do
 		if inst:HasTag(tag) then
 			return true

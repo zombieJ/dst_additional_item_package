@@ -12,11 +12,11 @@ local PERISH_MAP = {
 local LANG_MAP = {
 	english = {
 		NAME = "Haunted Wizard Hat",
-		DESC = "I have 4 legs",
+		DESC = "Ghosts can't scare me anymore",
 	},
 	chinese = {
 		NAME = "闹鬼巫师帽",
-		DESC = "我感觉长了4条腿",
+		DESC = "鬼已经吓不到我了",
 	},
 }
 
@@ -34,8 +34,10 @@ end
 
 -- 配方
 local tempalte = require("prefabs/aip_dress_template")
+
+-- 可以获得直接看到诡影的能力，同时被攻击没有硬直
 return tempalte("aip_wizard_hat", {
-	dapperness = TUNING.DAPPERNESS_TINY,
+	dapperness = TUNING.DAPPERNESS_LARGE,
 	fueled = {
 		level = TUNING.AIP_WIZARD_FUEL,
 	},
@@ -63,5 +65,8 @@ return tempalte("aip_wizard_hat", {
 			inst._aipAura:Remove()
 		end
 		inst._aipAura = nil
+	end,
+	preInst = function(inst)
+		inst:AddTag("aip_no_shadow_stun")
 	end,
 })
