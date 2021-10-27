@@ -4,7 +4,7 @@ local language = aipGetModConfig("language")
 
 local additional_survival = aipGetModConfig("additional_survival") == "open"
 
-local WarnRange = 12 -- 创造攻击玩家的范围
+local WarnRange = 8 -- 创造攻击玩家的范围
 
 
 local FueledTime = dev_mode and 8 or 40
@@ -18,6 +18,7 @@ local LANG_MAP = {
 		NAME = "IOT Totem",
 		DESC = "Seems magic somewhere",
         TALK_WELCOME = "Are you ready?",
+        TALK_ANGER = "'Thank you' for fuel me!",
         TALK_FIRST = "Start your challenge",
         TOTEM_POS = "First Place",
         TOTEM_BALLOON = "Ruo Guang",
@@ -31,6 +32,7 @@ local LANG_MAP = {
 		NAME = "联结图腾",
         DESC = "有一丝魔法气息",
         TALK_WELCOME = "想得到我的秘密，你做好准备了吗？",
+        TALK_ANGER = "“感谢”你的馈赠",
         TALK_FIRST = "开始你的挑战！",
         TOTEM_POS = "伊始之地",
         TOTEM_BALLOON = "若光小驻",
@@ -49,6 +51,7 @@ STRINGS.NAMES.AIP_DOU_TOTEM = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_TOTEM = LANG.DESC
 STRINGS.AIP_DOU_TOTEM_TALK_WELCOME = LANG.TALK_WELCOME
 STRINGS.AIP_DOU_TOTEM_TALK_FIRST = LANG.TALK_FIRST
+STRINGS.AIP_DOU_TOTEM_TALK_ANGER = LANG.TALK_ANGER
 
 ---------------------------------- 资源 ----------------------------------
 local assets = {
@@ -197,6 +200,11 @@ local function onNear(inst, player)
 
                 tentacle.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/shadowTentacleAttack_1")
                 tentacle.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/shadowTentacleAttack_2")
+            
+                -- 警告玩家
+                if inst.components.talker then
+                    inst.components.talker:Say(STRINGS.AIP_DOU_TOTEM_TALK_ANGER)
+                end
             end
         end
     end)

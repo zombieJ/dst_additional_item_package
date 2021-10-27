@@ -29,6 +29,7 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_RUBIK_HEART = LANG.DESC
 ------------------------------- 掉落 -------------------------------
 local loot = {
     "aip_fake_fly_totem_blueprint",
+	"aip_wizard_hat",
 }
 
 local createProjectile = require("utils/aip_vest_util").createProjectile
