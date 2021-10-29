@@ -168,11 +168,9 @@ function CommonStore:PostWorld()
 	end)
 
 	--------------------------- 创建魔方 ---------------------------
-	if open_beta then
-		self.inst:DoTaskInTime(5, function()
-			self:CreateRubik()
-		end)
-	end
+	self.inst:DoTaskInTime(5, function()
+		self:CreateRubik()
+	end)
 
 	--------------------------- 开发模式 ---------------------------
 	-- if dev_mode then
