@@ -118,7 +118,7 @@ local function onDoEat(inst, doer)
 
 	if doer.components.timer ~= nil then
 		doer.components.timer:StopTimer("aip_olden_tea")
-		doer.components.timer:StartTimer("aip_olden_tea", dev_mode and 10 or 60)
+		doer.components.timer:StartTimer("aip_olden_tea", dev_mode and 300 or 60)
 
 		-- 喝茶时说一句话
 		if doer.components.talker ~= nil then

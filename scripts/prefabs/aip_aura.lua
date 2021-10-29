@@ -20,14 +20,16 @@ local function getFn(data)
 		inst.entity:AddAnimState()
 		inst.entity:AddNetwork()
 
-		inst.AnimState:SetBank(data.name)
-		inst.AnimState:SetBuild(data.name)
+		if data.assets ~= nil then
+			inst.AnimState:SetBank(data.name)
+			inst.AnimState:SetBuild(data.name)
 
-		inst.AnimState:PlayAnimation("idle", data.onAnimOver == nil)
+			inst.AnimState:PlayAnimation("idle", data.onAnimOver == nil)
 
-		inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
-		inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
-		inst.AnimState:SetSortOrder(2)
+			inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+			inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
+			inst.AnimState:SetSortOrder(2)
+		end
 
 		if data.scale ~= nil then
 			inst.Transform:SetScale(data.scale, data.scale, data.scale)
@@ -54,6 +56,9 @@ local function getFn(data)
 			inst.components.aipc_aura.bufferFn = data.bufferFn
 			inst.components.aipc_aura.mustTags = data.mustTags
 			inst.components.aipc_aura.noTags = data.noTags
+			if data.showFX ~= nil then
+				inst.components.aipc_aura.showFX = data.showFX
+			end
 		end
 
 		if data.onAnimOver ~= nil then
@@ -88,6 +93,14 @@ local list = {
 		onAnimOver = function(inst)
 			inst:Remove()
 		end,
+	},
+	{	-- 预见光环：可以直接看到诡影脚步
+		name = "aip_aura_see",
+		range = 1,
+		bufferName = "seeFootPrint",
+		showFX = false,
+		mustTags = { "_health" },
+		noTags = { "INLIMBO", "NOCLICK", "ghost" },
 	},
 }
 

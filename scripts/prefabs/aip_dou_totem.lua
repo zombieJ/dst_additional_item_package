@@ -1,7 +1,13 @@
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 -- 配置
 local language = aipGetModConfig("language")
 
 local additional_survival = aipGetModConfig("additional_survival") == "open"
+
+local WarnRange = 8 -- 创造攻击玩家的范围
+
+
+local FueledTime = dev_mode and 8 or 40
 
 local LANG_MAP = {
 	english = {
@@ -12,10 +18,11 @@ local LANG_MAP = {
 		NAME = "IOT Totem",
 		DESC = "Seems magic somewhere",
         TALK_WELCOME = "Are you ready?",
+        TALK_ANGER = "'Thank you' for fuel me!",
         TALK_FIRST = "Start your challenge",
         TOTEM_POS = "First Place",
         TOTEM_BALLOON = "Ruo Guang",
-        TOTEM_SNAKE = "", -- 抓捕玩具蛇
+        TOTEM_RUBIK = "The Matrix",
 	},
 	chinese = {
         BROEKN_NAME = "一片残骸",
@@ -25,9 +32,11 @@ local LANG_MAP = {
 		NAME = "联结图腾",
         DESC = "有一丝魔法气息",
         TALK_WELCOME = "想得到我的秘密，你做好准备了吗？",
+        TALK_ANGER = "“感谢”你的馈赠",
         TALK_FIRST = "开始你的挑战！",
         TOTEM_POS = "伊始之地",
         TOTEM_BALLOON = "若光小驻",
+        TOTEM_RUBIK = "薄暮矩阵",
 	},
 }
 
@@ -42,6 +51,7 @@ STRINGS.NAMES.AIP_DOU_TOTEM = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_TOTEM = LANG.DESC
 STRINGS.AIP_DOU_TOTEM_TALK_WELCOME = LANG.TALK_WELCOME
 STRINGS.AIP_DOU_TOTEM_TALK_FIRST = LANG.TALK_FIRST
+STRINGS.AIP_DOU_TOTEM_TALK_ANGER = LANG.TALK_ANGER
 
 ---------------------------------- 资源 ----------------------------------
 local assets = {
@@ -87,12 +97,15 @@ end
 local function createFlyTotems(inst)
     local startTotem = false
     local balloonTotem = false
+    local rubikTotem = false
 
     for i, totem in ipairs(TheWorld.components.world_common_store.flyTotems) do
         if totem.markType == "START" then
             startTotem = true
         elseif totem.markType == "BALLOON" then
             balloonTotem = true
+        elseif totem.markType == "RUBIK" then
+            rubikTotem = true
         end
     end
 
@@ -116,11 +129,90 @@ local function createFlyTotems(inst)
             )
         end
     end
+
+    if rubikTotem == false then
+        local rubik = TheSim:FindFirstEntityWithTag("aip_rubik")
+        if rubik then
+            createFlyTotem(
+                aipGetSecretSpawnPoint(rubik:GetPosition(), 4, 8, 5),
+                LANG.TOTEM_RUBIK,
+                "RUBIK"
+            )
+        end
+    end
 end
 
 -- 创建挑战点
 local function createChallenge()
     aipGetTopologyPoint("lunacyarea", "moon_fissure")
+end
+
+---------------------------------- 燃料 ----------------------------------
+local function ontakefuel(inst)
+    inst.SoundEmitter:PlaySound("dontstarve/common/nightmareAddFuel")
+end
+
+local function onupdatefueled(inst)
+    if inst.components.burnable ~= nil then
+        inst.components.burnable:SetFXLevel(inst.components.fueled:GetCurrentSection(), inst.components.fueled:GetSectionPercent())
+    end
+end
+
+local function onfuelchange(newsection, oldsection, inst)
+    if newsection <= 0 then
+        inst.components.burnable:Extinguish()
+    else
+        if not inst.components.burnable:IsBurning() then
+            inst.components.burnable:Ignite()
+        end
+
+        inst.components.burnable:SetFXLevel(newsection, inst.components.fueled:GetSectionPercent())
+    end
+end
+
+---------------------------------- 玩家 ----------------------------------
+local function killTimer(inst)
+    if inst.aipGhostTimer ~= nil then
+        inst.aipGhostTimer:Cancel()
+    end
+
+    inst.aipGhostTimer = nil
+end
+
+-- 玩家靠近
+local function onNear(inst, player)
+    killTimer(inst)
+
+    inst.aipGhostTimer = inst:DoPeriodicTask(8, function()
+        -- 点燃时，源源不断创造触手攻击玩家
+        if inst.components.fueled ~= nil and not inst.components.fueled:IsEmpty() then
+            local players = aipFindNearPlayers(inst, WarnRange)
+            local player = aipRandomEnt(players)
+
+            if player ~= nil then
+                local tentacle = aipSpawnPrefab(player, "shadowtentacle")
+                tentacle.components.combat:SetTarget(player)
+
+                -- 触手不会降低玩家理智
+                if tentacle.components.sanityaura ~= nil then
+                    tentacle.components.sanityaura.aura = 0
+                end
+
+                tentacle.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/shadowTentacleAttack_1")
+                tentacle.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/shadowTentacleAttack_2")
+            
+                -- 警告玩家
+                if inst.components.talker then
+                    inst.components.talker:Say(STRINGS.AIP_DOU_TOTEM_TALK_ANGER)
+                end
+            end
+        end
+    end)
+end
+
+-- 玩家远离
+local function onFar(inst)
+    killTimer(inst)
 end
 
 ---------------------------------- 实体 ----------------------------------
@@ -183,6 +275,8 @@ local function makeTotemFn(name, animation, nextPrefab, nextPrefabAnimation)
 
         -- 最后一个级别做额外事情
         if nextPrefab == nil then
+            inst:AddTag("aip_dou_totem_final")
+
             -- 会添加对话能力
             inst:AddComponent("talker")
             inst.components.talker.fontsize = 30
@@ -195,6 +289,35 @@ local function makeTotemFn(name, animation, nextPrefab, nextPrefabAnimation)
 
         if not TheWorld.ismastersim then
             return inst
+        end
+
+        -- 最后一个级别做额外事情
+        if nextPrefab == nil then
+            -- 可以点燃
+            inst:AddComponent("burnable")
+            inst.components.burnable:AddBurnFX("nightlight_flame", Vector3(0, 0, 0), "fire_marker_left")
+            inst.components.burnable:AddBurnFX("nightlight_flame", Vector3(0, 0, 0), "fire_marker_right")
+            inst.components.burnable.canlight = false
+
+            -- 使用燃料
+            inst:AddComponent("fueled")
+            inst.components.fueled.maxfuel = FueledTime
+            inst.components.fueled.accepting = true
+            inst.components.fueled.fueltype = FUELTYPE.NIGHTMARE
+            inst.components.fueled:SetSections(3)
+            inst.components.fueled:SetTakeFuelFn(ontakefuel)
+            inst.components.fueled:SetUpdateFn(onupdatefueled)
+            inst.components.fueled:SetSectionCallback(onfuelchange)
+            inst.components.fueled:InitializeFuelLevel(0)
+
+            inst.components.fueled.rate = 0 -- 永不熄灭
+            inst.components.fueled.bonusmult = (1 / TUNING.LARGE_FUEL) * (FueledTime / 4)
+
+            -- 玩家召唤触手打玩家
+            inst:AddComponent("playerprox")
+            inst.components.playerprox:SetDist(WarnRange, WarnRange)
+            inst.components.playerprox:SetOnPlayerNear(onNear)
+            inst.components.playerprox:SetOnPlayerFar(onFar)
         end
 
         inst:AddComponent("inspectable")

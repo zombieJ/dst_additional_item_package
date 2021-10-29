@@ -62,8 +62,10 @@ end
 
 function _G.aipTableSlice(tbl, start, len)
 	local list = {}
+	local finalStart = start or 1
+	local finalLen = len or #tbl
 
-	for i = start, math.min(len + start - 1, #tbl) do
+	for i = finalStart, math.min(finalLen + finalStart - 1, #tbl) do
 		table.insert(list, tbl[i])
 	end
 	return list
@@ -138,7 +140,11 @@ function _G.aipCommonStr(showType, split, ...)
 				parsed = parsed .. "}"
 			end
 
-			str = str .. "[" .. vType .. ": " .. tostring(parsed) .. "]" .. split
+			if vType == "string" then
+				str = str.."'"..tostring(parsed).."'"..split
+			else
+				str = str .. "[" .. vType .. ": " .. tostring(parsed) .. "]" .. split
+			end
 		else
 			-- 显示文字
 			str = str .. tostring(parsed) .. split
@@ -236,11 +242,17 @@ function _G.aipDiffAngle(a1, a2)
 	return math.min(diff1, diff2)
 end
 
--- 返回两点之间的距离（无视 Y 坐标）
-function _G.aipDist(p1, p2)
+-- 返回两点之间的距离（默认无视 Y 坐标）
+function _G.aipDist(p1, p2, includeY)
 	local dx = p1.x - p2.x
 	local dz = p1.z - p2.z
-	return math.pow(dx*dx+dz*dz, 0.5)
+	local dy = p1.y - p2.y
+
+	if includeY then
+		return math.pow(dx*dx+dy*dy+dz*dz, 1/3)
+	else
+		return math.pow(dx*dx+dz*dz, 0.5)
+	end
 end
 
 function _G.aipRandomEnt(ents)
@@ -500,9 +512,13 @@ function _G.aipFindEnt(...)
 end
 
 -- 是暗影生物
-_G.aipShadowTags = { "shadow", "shadowminion", "shadowchesspiece", "stalker", "stalkerminion" }
+_G.aipShadowTags = { "shadow", "shadowminion", "shadowchesspiece", "stalker", "stalkerminion", "aip_shadowcreature" }
 
 function _G.aipIsShadowCreature(inst)
+	if not inst then
+		return false
+	end
+
 	for i, tag in ipairs(_G.aipShadowTags) do
 		if inst:HasTag(tag) then
 			return true
@@ -518,18 +534,22 @@ function _G.aipRPC(funcName, ...)
 end
 
 -- 添加 aipc_buffer
-function _G.patchBuffer(inst, name, duration, fn)
+function _G.patchBuffer(inst, name, duration, fn, showFX)
 	if inst.components.aipc_buffer == nil then
 		inst:AddComponent("aipc_buffer")
 	end
 
-	inst.components.aipc_buffer:Patch(name, duration, fn)
+	inst.components.aipc_buffer:Patch(name, duration, fn, showFX)
 end
 
 -- 存在 aipc_buffer
 function _G.hasBuffer(inst, name)
-	if inst.components.aipc_buffer ~= nil then
-		return inst.components.aipc_buffer.buffers[name] ~= nil
+	-- if inst.components.aipc_buffer ~= nil then
+	-- 	return inst.components.aipc_buffer.buffers[name] ~= nil
+	-- end
+
+	if inst.replica.aipc_buffer ~= nil then
+		return inst.replica.aipc_buffer:HasBuffer(name)
 	end
 
 	return false

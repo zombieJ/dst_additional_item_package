@@ -89,8 +89,12 @@ PrefabFiles = {
 	"aip_suwu",
 	"aip_suwu_mound",
 	"aip_breadfruit_tree",
-	-- "aip_rubik_fire",
-	-- "aip_rubik",
+	"aip_rubik_fire",
+	"aip_rubik",
+	"aip_legion",
+	"aip_rubik_ghost",
+	"aip_rubik_heart",
+	"aip_wizard_hat",
 
 	-- Orbit
 	"aip_orbit",
@@ -165,6 +169,8 @@ modimport("scripts/shadowPackageAction.lua")
 modimport("scripts/widgetHooker.lua")
 modimport("scripts/recpiesHooker.lua")
 modimport("scripts/flyWrapper.lua")
+modimport("scripts/houseWrapper.lua")
+modimport("scripts/sgHooker.lua")
 
 ------------------------------------- 测试专用 -------------------------------------
 if GetModConfigData("dev_mode") == "enabled" then

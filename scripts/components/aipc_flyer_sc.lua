@@ -36,8 +36,13 @@ local function IsNearDanger(inst)
 		inst,
 		10,
 		function(target)
-			return (target.components.combat ~= nil and target.components.combat.target == inst) or
-					(target:HasTag("monster") and not target:HasTag("player"))
+			return (
+				target.components.combat ~= nil and
+				target.components.combat.target == inst and
+				target.prefab ~= "shadowtentacle"
+			) or (
+				target:HasTag("monster") and not target:HasTag("player")
+			)
 		end,
 		nil,
 		nil,

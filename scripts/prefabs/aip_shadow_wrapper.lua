@@ -62,7 +62,10 @@ function fn()
 	end
 
 	-- Play show
-	inst.DoShow = function()
+	inst.DoShow = function(scale)
+		scale = scale or 1
+		inst.Transform:SetScale(scale, scale, scale)
+
 		inst.SoundEmitter:PlaySound("dontstarve/maxwell/shadowmax_despawn")
 		inst.AnimState:PlayAnimation("end")
 

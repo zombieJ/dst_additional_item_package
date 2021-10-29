@@ -1,3 +1,5 @@
+local open_beta = aipGetModConfig("open_beta") == "open"
+
 local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 local function findFarAwayOcean(pos)
@@ -57,6 +59,9 @@ local CommonStore = Class(function(self, inst)
 	-- 记录所有的箱子
 	self.chests = {}
 
+	-- 当前的豆酱图腾
+	self.douTotem = nil
+
 	-- 记录所有的飞行点
 	self.flyTotems = {}
 
@@ -90,6 +95,41 @@ function CommonStore:CreateCoookieKing(pos)
 	return nil
 end
 
+-- 获取一下豆酱图腾
+function CommonStore:FindDouTotem()
+	if not self.douTotem then
+		self.douTotem = TheSim:FindFirstEntityWithTag("aip_dou_totem_final")
+	end
+	return self.douTotem
+end
+
+-- 创建 魔方，在墓地附近寻找
+function CommonStore:CreateRubik()
+	-- 存在且没有坐标就跳过
+	local ent = TheSim:FindFirstEntityWithTag("aip_rubik")
+	if ent ~= nil then
+		return ent
+	end
+
+	-- 寻找一个墓地
+	local grave = TheSim:FindFirstEntityWithTag("grave")
+	local pos = nil
+	if grave ~= nil then
+		pos = grave:GetPosition()
+	end
+
+	if not pos then
+		pos = aipGetSecretSpawnPoint(Vector3(0, 0, 0), 0, 1000)
+	end
+
+	pos = aipGetSecretSpawnPoint(pos, 0, 50, 5)
+
+	local rubik = aipSpawnPrefab(nil, "aip_rubik", pos.x, pos.y, pos.z)
+	rubik.components.fueled:MakeEmpty()
+
+	return rubik
+end
+
 function CommonStore:CreateSuWuMound(pos)
 	-- 存在且没有坐标就跳过
 	local ent = TheSim:FindFirstEntityWithTag("aip_suwu_mound")
@@ -120,8 +160,6 @@ function CommonStore:PostWorld()
 				aipSpawnPrefab(nil, "aip_dou_totem_broken", tgt.x, tgt.y, tgt.z)
 			end
 		end
-
-		
 	end)
 
 	--------------------------- 创建饼干 ---------------------------
@@ -129,9 +167,57 @@ function CommonStore:PostWorld()
 		self:CreateCoookieKing()
 	end)
 
-	--------------------------- 开发模式 ---------------------------
-	if dev_mode then
+	--------------------------- 创建魔方 ---------------------------
+	if open_beta then
+		self.inst:DoTaskInTime(5, function()
+			self:CreateRubik()
+		end)
 	end
+
+	--------------------------- 开发模式 ---------------------------
+	-- if dev_mode then
+	-- 	self.inst:DoTaskInTime(2, function()
+	-- 		if ThePlayer and false then
+	-- 			aipSpawnPrefab(ThePlayer, "aip_rubik")
+
+	-- 			-- 避免和神话书说&小房子冲突
+	-- 			local px = 1900
+	-- 			local py = 0
+	-- 			local pz = 1900
+
+	-- 			ThePlayer.Physics:Teleport(px, py, pz)
+
+	-- 			-- local tile = TheWorld.Map:GetTileAtPoint(px, py, pz)
+	-- 			-- aipPrint("Tile Type:", tile)
+
+	-- 			-- if tile == GROUND.INVALID then
+	-- 			-- 	local tileX, tileY = TheWorld.Map:GetTileCoordsAtPoint(px, py, pz)
+	-- 			-- 	TheWorld.Map:SetTile(tileX, tileY, GROUND.DIRT)
+	-- 			-- 	TheWorld.Map:RebuildLayer(GROUND.DIRT, tileX, tileY)
+
+	-- 			-- 	ThePlayer.Physics:Teleport(px, py, pz)
+	-- 			-- end
+
+
+	-- 			-- aipPrint("Next Tile Type:", TheWorld.Map:GetTileAtPoint(px, py, pz))
+
+	-- 			-- for px = 0, 1000 do
+	-- 			-- 	local py = 0
+	-- 			-- 	local pz = 0
+	-- 			-- 	local tile = TheWorld.Map:GetTileAtPoint(px, py, pz)
+	-- 			-- 	aipPrint("Tile Type:", px, tile)
+	-- 			-- end
+	-- 		end
+	-- 	end)
+
+	-- 	-- self.inst:DoPeriodicTask(1, function()
+	-- 	-- 	if ThePlayer then
+	-- 	-- 		local x, y, z = ThePlayer.Transform:GetWorldPosition()
+	-- 	-- 		local tile = TheWorld.Map:GetTileAtPoint(x,y,z)
+	-- 	-- 		aipPrint("Player Tile Type:", tile)
+	-- 	-- 	end
+	-- 	-- end)
+	-- end
 end
 
 return CommonStore

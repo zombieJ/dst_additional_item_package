@@ -60,7 +60,7 @@ function Projectile:OnUpdate(dt)
 		-- 目标已经失效
 		self:OnFinish()
 		return
-	else
+	elseif self.target ~= nil then
 		-- 目标留存
 		self.targetPos = self.target:GetPosition()
 	end

@@ -7,6 +7,7 @@ local Aura = Class(function(self, inst)
 	self.bufferFn = nil
 	self.mustTags = nil
 	self.noTags = nil
+	self.showFX = true
 
 	self:Start()
 end)
@@ -16,7 +17,7 @@ local function SearchToAddBuffer(inst, self)
 	local ents = TheSim:FindEntities(x, y, z, self.range, self.mustTags, self.noTags)
 
 	for i, ent in ipairs(ents) do
-		patchBuffer(ent, self.bufferName, self.bufferDuration, self.bufferFn)
+		patchBuffer(ent, self.bufferName, self.bufferDuration, self.bufferFn, self.showFX)
 	end
 end
 

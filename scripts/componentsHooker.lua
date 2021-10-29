@@ -1,6 +1,8 @@
 local _G = GLOBAL
 local language = _G.aipGetModConfig("language")
 
+env.AddReplicableComponent("aipc_buffer")
+
 ----------------------------------- 通用组件行为 -----------------------------------
 -- 服务端组件
 local function triggerComponentAction(player, item, target, targetPoint)

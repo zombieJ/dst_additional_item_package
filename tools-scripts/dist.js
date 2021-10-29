@@ -99,8 +99,8 @@ async function doJob() {
 		text = text.replace(src, tgt);
 		fs.writeFileSync(filepath, text, 'utf8');
 	}
-	replaceText('package/modinfo.lua', /"\(DEV MODE\)",/g, outputMark ? '"(OUTPUT)",' : '');
-	replaceText('package/modinfo.lua', /name = "Additional Item Package DEV"/g, `name = "Additional Item Package${outputMark ? ' (OUTPUT)' : ''}"`);
+	replaceText('package/modinfo.lua', /"\(DEV MODE\)",/g, outputMark ? '"(内测)",' : '');
+	replaceText('package/modinfo.lua', /name = "Additional Item Package DEV"/g, `name = "Additional Item Package${outputMark ? ' (测试)' : ''}"`);
 	replaceText('package/modmain.lua', /TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE = "Additional Item Package DEV"/g, 'TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE = "Additional Item Package"');
 
 	// 压缩一下 LUA 代码
@@ -128,7 +128,7 @@ async function doJob() {
 		fs.copySync('package', relativePath);
 
 		console.log(chalk.cyan("Add name mark..."));
-		replaceText(path.join(relativePath, '/modinfo.lua'), /name = "Additional Item Package"/g, 'name = "Additional Item Package (output)"');
+		replaceText(path.join(relativePath, '/modinfo.lua'), /name = "Additional Item Package"/g, 'name = "Additional Item Package (内测)"');
 
 		// 创建 zip 包
 		const parentFolder = path.dirname(relativePath);

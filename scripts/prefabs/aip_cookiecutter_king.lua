@@ -18,7 +18,7 @@ local LANG_MAP = {
 		TALK_KING_HUNGER_AIP_MUD_CRAB = "(Live Mud crab!)",
 
 		TALK_KING_FIND_ME = "(Keep in touch!)",
-		TALK_KING_FINISH = "(Nice food. Next challenge is in dev)",
+		TALK_KING_FINISH = "(Nice food. Wish you like rubik)",
 		TALK_KING_88 = "(Bye!)",
 	},
 	chinese = {
@@ -35,7 +35,7 @@ local LANG_MAP = {
 		TALK_KING_HUNGER_AIP_MUD_CRAB = "(活泥蟹!)",
 
 		TALK_KING_FIND_ME = "(保持联系，投石问路)",
-		TALK_KING_FINISH = "(多谢招待，下一个挑战还在开发中)",
+		TALK_KING_FINISH = "(多谢招待，希望你喜欢拼图)",
 		TALK_KING_88 = "(再见)",
 	},
 }
@@ -270,6 +270,9 @@ local function startEater(inst)
 									-- 给予子卿
 									inst.aipVest.components.lootdropper:SpawnLootPrefab("aip_suwu")
 								end
+
+								-- 给予棱镜石
+								inst.aipVest.components.lootdropper:SpawnLootPrefab("aip_legion")
 							end
 						)
 					end

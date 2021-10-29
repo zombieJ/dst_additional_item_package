@@ -106,4 +106,4 @@ local states = {
 
 CommonStates.AddWalkStates(states, nil, nil, true)
 
-return StateGraph("SGaip_dragon", states, events, "appear")
+return StateGraph("SGaip_dragon_tail", states, events, "appear")

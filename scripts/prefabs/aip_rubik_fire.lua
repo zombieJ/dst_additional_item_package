@@ -1,3 +1,42 @@
+local colors = {
+    red = { 1, 0, 0 },
+    green = { 0, 1, 0 },
+    blue = { 0, 0, 1 },
+    yellow = { 1, 1, 0 },
+}
+
+-- string.upper(name)
+
+------------------------------- 描述 -------------------------------
+local language = aipGetModConfig("language")
+
+local LANG_MAP = {
+	english = {
+		NAME = "Fire",
+		DESC = "Examine close fire to move",
+	},
+	chinese = {
+		NAME = "火焰",
+		DESC = "检查相邻火焰移动",
+	},
+}
+
+local LANG = LANG_MAP[language] or LANG_MAP.english
+
+for colorName, rgb in pairs(colors) do
+    local name = "AIP_RUBIK_FIRE_"..string.upper(colorName)
+    STRINGS.NAMES[name] = LANG.NAME
+    STRINGS.CHARACTERS.GENERIC.DESCRIBE[name] = LANG.DESC
+end
+
+------------------------------- 事件 -------------------------------
+local function onSelect(inst, viewer)
+    if inst.aipRubik ~= nil and inst.aipRubik.components.aipc_rubik ~= nil then
+        inst.aipRubik.components.aipc_rubik:Select(inst)
+    end
+end
+
+------------------------------- 实体 -------------------------------
 local MakeTorchFire = require("prefabs/torchfire_common")
 
 local ANIM_HAND_TEXTURE = "fx/animhand.tex"
@@ -7,6 +46,7 @@ local SHADER = "shaders/vfx_particle.ksh"
 local REVEAL_SHADER = "shaders/vfx_particle_reveal.ksh"
 
 local assets = {
+    Asset("ANIM", "anim/aip_rubik_fire.zip"),
     Asset("IMAGE", ANIM_HAND_TEXTURE),
     Asset("IMAGE", ANIM_SMOKE_TEXTURE),
     Asset("SHADER", SHADER),
@@ -176,6 +216,18 @@ local function genRubik(colorName, rgb)
     --------------------------------------------------------------------------
 
     local function common_postinit(inst)
+        inst.entity:AddAnimState()
+        inst.AnimState:SetBank("aip_rubik_fire")
+        inst.AnimState:SetBuild("aip_rubik_fire")
+        inst.AnimState:PlayAnimation("idle")
+
+        MakeTinyFlyingCharacterPhysics(inst, 1, 0)
+        -- MakeTinyFlyingCharacterPhysics(inst, 0, 0)
+        -- MakeInventoryPhysics(inst, 1, .5)
+        RemovePhysicsColliders(inst)
+
+        inst:RemoveTag("FX")
+
         --Dedicated server does not need to spawn local particle fx
         if TheNet:IsDedicated() then
             return
@@ -186,7 +238,8 @@ local function genRubik(colorName, rgb)
         -----------------------------------------------------
 
         local effect = inst.entity:AddVFXEffect()
-        effect:InitEmitters(3)
+        -- effect:InitEmitters(3)
+        effect:InitEmitters(1)
 
         --FIRE
         effect:SetRenderResources(0, ANIM_SMOKE_TEXTURE, REVEAL_SHADER)
@@ -203,32 +256,31 @@ local function genRubik(colorName, rgb)
         effect:SetKillOnEntityDeath(0, true)
         effect:SetFollowEmitter(0, true)
 
-        --SMOKE
-        effect:SetRenderResources(1, ANIM_SMOKE_TEXTURE, REVEAL_SHADER) --REVEAL_SHADER --particle_add
-        effect:SetMaxNumParticles(1, 32)
-        effect:SetRotationStatus(1, true)
-        effect:SetMaxLifetime(1, SMOKE_MAX_LIFETIME)
-        effect:SetColourEnvelope(1, COLOUR_ENVELOPE_NAME_SMOKE)
-        effect:SetScaleEnvelope(1, SCALE_ENVELOPE_NAME_SMOKE)
-        effect:SetBlendMode(1, BLENDMODE.AlphaBlended) --AlphaBlended Premultiplied
-        effect:EnableBloomPass(1, true)
-        effect:SetUVFrameSize(1, 1, 1)
-        effect:SetSortOrder(1, 0)
-        effect:SetSortOffset(1, 1)
+        -- --SMOKE
+        -- effect:SetRenderResources(1, ANIM_SMOKE_TEXTURE, REVEAL_SHADER) --REVEAL_SHADER --particle_add
+        -- effect:SetMaxNumParticles(1, 32)
+        -- effect:SetRotationStatus(1, true)
+        -- effect:SetMaxLifetime(1, SMOKE_MAX_LIFETIME)
+        -- effect:SetColourEnvelope(1, COLOUR_ENVELOPE_NAME_SMOKE)
+        -- effect:SetScaleEnvelope(1, SCALE_ENVELOPE_NAME_SMOKE)
+        -- effect:SetBlendMode(1, BLENDMODE.AlphaBlended) --AlphaBlended Premultiplied
+        -- effect:EnableBloomPass(1, true)
+        -- effect:SetUVFrameSize(1, 1, 1)
+        -- effect:SetSortOrder(1, 0)
+        -- effect:SetSortOffset(1, 1)
 
-        --HAND
-        effect:SetRenderResources(2, ANIM_HAND_TEXTURE, REVEAL_SHADER) --REVEAL_SHADER --particle_add
-        effect:SetMaxNumParticles(2, 32)
-        effect:SetRotationStatus(2, true)
-        effect:SetMaxLifetime(2, HAND_MAX_LIFETIME)
-        effect:SetColourEnvelope(2, COLOUR_ENVELOPE_NAME_HAND)
-        effect:SetScaleEnvelope(2, SCALE_ENVELOPE_NAME_HAND)
-        effect:SetBlendMode(2, BLENDMODE.AlphaBlended) --AlphaBlended Premultiplied
-        effect:EnableBloomPass(2, true)
-        effect:SetUVFrameSize(2, .25, 1)
-        effect:SetSortOrder(2, 0)
-        effect:SetSortOffset(2, 1)
-        --effect:SetDragCoefficient(2, 50)
+        -- --HAND
+        -- effect:SetRenderResources(2, ANIM_HAND_TEXTURE, REVEAL_SHADER) --REVEAL_SHADER --particle_add
+        -- effect:SetMaxNumParticles(2, 32)
+        -- effect:SetRotationStatus(2, true)
+        -- effect:SetMaxLifetime(2, HAND_MAX_LIFETIME)
+        -- effect:SetColourEnvelope(2, COLOUR_ENVELOPE_NAME_HAND)
+        -- effect:SetScaleEnvelope(2, SCALE_ENVELOPE_NAME_HAND)
+        -- effect:SetBlendMode(2, BLENDMODE.AlphaBlended) --AlphaBlended Premultiplied
+        -- effect:EnableBloomPass(2, true)
+        -- effect:SetUVFrameSize(2, .25, 1)
+        -- effect:SetSortOrder(2, 0)
+        -- effect:SetSortOffset(2, 1)
 
         -----------------------------------------------------
 
@@ -256,35 +308,33 @@ local function genRubik(colorName, rgb)
             end
             fire_num_particles_to_emit = fire_num_particles_to_emit + fire_particles_per_tick * math.random() * 3
 
-            --SMOKE
-            while smoke_num_particles_to_emit > 1 do
-                emit_smoke_fn(effect, sphere_emitter)
-                smoke_num_particles_to_emit = smoke_num_particles_to_emit - 1
-            end
-            smoke_num_particles_to_emit = smoke_num_particles_to_emit + smoke_particles_per_tick
+            -- --SMOKE
+            -- while smoke_num_particles_to_emit > 1 do
+            --     emit_smoke_fn(effect, sphere_emitter)
+            --     smoke_num_particles_to_emit = smoke_num_particles_to_emit - 1
+            -- end
+            -- smoke_num_particles_to_emit = smoke_num_particles_to_emit + smoke_particles_per_tick
 
-            --HAND
-            while hand_num_particles_to_emit > 1 do
-                emit_hand_fn(effect, sphere_emitter)
-                hand_num_particles_to_emit = hand_num_particles_to_emit - 1
-            end
-            hand_num_particles_to_emit = hand_num_particles_to_emit + hand_particles_per_tick
+            -- --HAND
+            -- while hand_num_particles_to_emit > 1 do
+            --     emit_hand_fn(effect, sphere_emitter)
+            --     hand_num_particles_to_emit = hand_num_particles_to_emit - 1
+            -- end
+            -- hand_num_particles_to_emit = hand_num_particles_to_emit + hand_particles_per_tick
         end)
     end
 
     local function master_postinit(inst)
-        inst.fx_offset = -100
+        inst:AddComponent("inspectable")
+        inst.components.inspectable.descriptionfn = onSelect
+
+        inst:AddComponent("aipc_float")
     end
 
     return MakeTorchFire("aip_rubik_fire_"..colorName, assets, nil, common_postinit, master_postinit)
 end
 
 local prefabList = {}
-local colors = {
-    red = { 1, 0, 0 },
-    green = { 0, 1, 0 },
-    blue = { 0, 0, 1 },
-}
 
 for colorName, rgb in pairs(colors) do
     table.insert(prefabList, genRubik(colorName, rgb))

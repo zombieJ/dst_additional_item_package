@@ -101,6 +101,11 @@ local function template(name, config)
 		inst:AddTag("hat")
 		inst:AddTag("waterproofer")
 
+		-- 额外功能
+		if config.preInst then
+			config.preInst(inst)
+		end
+
 		inst.entity:SetPristine()
 
 		if not TheWorld.ismastersim then
@@ -151,7 +156,7 @@ local function template(name, config)
 			end
 		end
 
-		-- 护甲
+		-- 额外功能
 		if config.postInst then
 			config.postInst(inst)
 		end

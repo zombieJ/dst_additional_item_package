@@ -13,6 +13,8 @@ kinds["aip_fly_totem"] = {
     acceptbtn = { text = _G.STRINGS.SIGNS.MENU.ACCEPT, cb = nil, control = _G.CONTROL_ACCEPT },
 }
 
+kinds["aip_fake_fly_totem"] = kinds["aip_fly_totem"]
+
 local originMakescreen = writeables.makescreen
 
 writeables.makescreen = function(inst, doer, ...)

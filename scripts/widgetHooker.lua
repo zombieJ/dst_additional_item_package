@@ -1,7 +1,9 @@
 local _G = GLOBAL
-local DestinationScreen = require("widgets/aip_dest_screen")
 
 local PlayerHud = _G.require("screens/playerhud")
+
+------------------------------- 飞行 -------------------------------
+local DestinationScreen = require("widgets/aip_dest_screen")
 
 function PlayerHud:OpenAIPDestination(inst, currentTotemId)
 	self.aipDestScreen = DestinationScreen(self.owner, currentTotemId)

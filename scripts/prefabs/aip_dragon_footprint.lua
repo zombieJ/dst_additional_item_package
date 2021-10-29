@@ -49,7 +49,15 @@ local function PrintFootPrint(inst)
 		local player = ThePlayer
 		if player ~= nil and player.replica.sanity ~= nil then
 			local ptg = player.replica.sanity:GetPercent()
-			vest.AnimState:OverrideMultColour(1, 1, 1, 1 - ptg * 0.8)
+
+			-- 如果有帽子光环就可以直接看到
+			if hasBuffer(player, "seeFootPrint") then
+				ptg = 0
+			end
+
+			local mulPtg = 1 - ptg * 0.8
+
+			vest.AnimState:OverrideMultColour(mulPtg, mulPtg, mulPtg, mulPtg)
 		end
 
 		-- 每次打印脚印后就更新一下记录
