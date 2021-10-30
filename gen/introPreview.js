@@ -24,9 +24,10 @@ const IMAGES = [
 	['incinerator', 'aip_orbit_item', 'aip_nectar_maker', 'aip_woodener', 'aip_igloo'],
 
 	[
-		'aip_dou_totem/totem/head', 'aip_fly_totem',
-		'dark_observer', 'aip_shadow_paper_package', 'aip_shadow_package',
-		'aip_dou_inscription_package', 'aip_dou_opal', 'aip_leaf_note', 'aip_glass_chest',
+		'aip_dou_totem/totem/head', 'dark_observer', 'aip_fake_fly_totem', 'aip_fly_totem',
+		'aip_shadow_paper_package', 'aip_shadow_package',
+		'aip_dou_inscription_package', 'aip_dou_opal', 'aip_legion',
+		'aip_leaf_note', 'aip_glass_chest',
 	],
 
 	[
@@ -42,7 +43,10 @@ const IMAGES = [
 		'aip_dou_through_inscription',
 	],
 
-	['aip_blue_glasses', 'aip_horse_head', 'aip_som', 'aip_joker_face'],
+	[
+		'aip_blue_glasses', 'aip_horse_head', 'aip_som', 'aip_joker_face',
+		'aip_wizard_hat',
+	],
 
 	['aip_olden_tea_half', 'aip_suwu', 'aip_map', 'aip_shell_stone', 'aip_22_fish'],
 
