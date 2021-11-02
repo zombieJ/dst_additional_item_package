@@ -310,6 +310,12 @@ AddPrefabPostInit("grass", function(inst)
 				end
 			end
 		end
+
+		-- 万圣节药剂也可以变化
+		if inst.components.halloweenmoonmutable == nil then
+			inst:AddComponent("halloweenmoonmutable")
+			inst.components.halloweenmoonmutable:SetPrefabMutated("aip_wheat")
+		end
 	end
 end)
 
