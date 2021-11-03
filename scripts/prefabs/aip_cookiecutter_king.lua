@@ -392,6 +392,9 @@ local function fn()
 		return inst
 	end
 
+	inst:AddComponent("sanityaura")
+    inst.components.sanityaura.aura = -TUNING.SANITYAURA_LARGE
+
 	inst:AddComponent("playerprox")
 	inst.components.playerprox:SetDist(6, 10)
 	inst.components.playerprox:SetOnPlayerNear(onNear)
