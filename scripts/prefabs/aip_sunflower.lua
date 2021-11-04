@@ -196,11 +196,6 @@ local function sunflower(stage, info)
 		-- 掉东西
 		inst:AddComponent("lootdropper")
 		inst.components.lootdropper:SetLoot(info.loot)
-		if info.chanceLoot ~= nil then
-			for prefab, chance in pairs(info.chanceLoot) do
-				inst.components.lootdropper:AddChanceLoot(prefab, chance)
-			end
-		end
 
 		-- 可成长
 		if info.grow then
@@ -265,8 +260,7 @@ local PLANTS = {
 			callback = chop_tree,
 			finishCallback = chop_down_tree,
 		},
-		loot = {"log", "log","aip_veggie_sunflower"},
-		chanceLoot = { aip_veggie_sunflower = 0.1 },
+		loot = {"log", "log","aip_veggie_sunflower"}
 	},
 	ghost = {
 		physics = .25,

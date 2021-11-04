@@ -83,16 +83,11 @@ end)
 
 local function RefreshReticule(inst)
   local owner = ThePlayer
-  if owner ~= nil and inst ~= nil and owner:IsValid() and inst:IsValid() then
-    local inventoryitem = inst.replica.inventoryitem
-    if
-      owner.replica.inventory ~= nil and
-      inventoryitem ~= nil and
-      inventoryitem:IsHeldBy(owner) and
-      owner.components.playercontroller ~= nil
-    then
-      owner.components.playercontroller:RefreshReticule()
-    end
+  if owner ~= nil then
+      local inventoryitem = inst.replica.inventoryitem
+      if inventoryitem ~= nil and inventoryitem:IsHeldBy(owner) and owner.components.playercontroller ~= nil then
+          owner.components.playercontroller:RefreshReticule()
+      end
   end
 end
 

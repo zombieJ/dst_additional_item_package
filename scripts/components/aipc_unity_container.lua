@@ -12,7 +12,7 @@ local function moveItems(src, tgt)
 				tgt.components.container:DropItemBySlot(slot)
 
 				-- 转移咯
-				src.components.container:DropItemBySlot(slot)
+				src.components.container:RemoveItem(srcItem, true)
 				tgt.components.container:GiveItem(srcItem, slot, nil, true)
 			end
 		end

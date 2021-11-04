@@ -99,12 +99,8 @@ async function doJob() {
 		text = text.replace(src, tgt);
 		fs.writeFileSync(filepath, text, 'utf8');
 	}
-
-	// modinfo
 	replaceText('package/modinfo.lua', /"\(DEV MODE\)",/g, outputMark ? '"(内测)",' : '');
-	replaceText('package/modinfo.lua', /\sDEV/g, outputMark ? '(测试)' : '');
-
-	// modmain
+	replaceText('package/modinfo.lua', /name = "Additional Item Package DEV"/g, `name = "Additional Item Package${outputMark ? ' (测试)' : ''}"`);
 	replaceText('package/modmain.lua', /TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE = "Additional Item Package DEV"/g, 'TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE = "Additional Item Package"');
 
 	// 压缩一下 LUA 代码
