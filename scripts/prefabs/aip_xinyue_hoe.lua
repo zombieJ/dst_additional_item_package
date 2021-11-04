@@ -120,7 +120,7 @@ local function onDoPointAction(inst, doer, point)
 
     -- 惩罚施法者对应的理智值
     if doer.components.sanity ~= nil then
-        doer.components.sanity:DoDelta(-50)
+        doer.components.sanity:DoDelta(-20)
     end
 
     inst.components.fueled:DoDelta(-BASIC_USE)
