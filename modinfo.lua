@@ -1,5 +1,7 @@
 local EN = locale ~= "zh" and locale ~= "zhr" and locale ~= "zht"
 
+version = "1.21.1"
+
 local descList = EN and {
 	"(DEV MODE)",
 	"Provide additional items for game. Enjoy your new package! (You can close part of package in options)",
@@ -40,7 +42,6 @@ local LARGE = Lang("Large", "大")
 name = Lang("Additional Item Package DEV", "额外物品包 DEV")
 description = joinArray(descList, "\n")
 author = "ZombieJ"
-version = "1.21.0"
 forumthread = "http://steamcommunity.com/sharedfiles/filedetails/?id=1085586145"
 icon_atlas = "modicon.xml"
 icon = "modicon.tex"
