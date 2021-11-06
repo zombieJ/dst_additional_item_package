@@ -574,7 +574,7 @@ function Projectile:OnUpdate(dt)
 			local targetPos = self.target:GetPosition()
 			self.targetPos = targetPos
 
-			if distsq(currentPos, targetPos) < 3 then
+			if aipDist(currentPos, targetPos) < 1.5 then
 				finishTask = self:EffectTaskOn(self.target) or finishTask
 				ShowEffect(self.task.element, self.target:GetPosition())
 			else
