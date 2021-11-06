@@ -95,12 +95,6 @@ AddPrefabPostInit("terrorbeak", createFootPrint)
 AddPrefabPostInit("crawlingnightmare", createFootPrint)
 AddPrefabPostInit("nightmarebeak", createFootPrint)
 
------------------------------------------- 活木 ------------------------------------------
-AddPrefabPostInit("livinglog", function(inst)
-	-- 添加燃料类型
-	inst:AddTag("LIVINGLOG_fuel")
-end)
-
 ------------------------------------------ 金块 ------------------------------------------
 local function canActOnGold(inst, doer, target)
 	return target.prefab == "aip_xinyue_hoe"

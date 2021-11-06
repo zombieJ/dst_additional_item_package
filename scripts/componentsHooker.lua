@@ -303,19 +303,6 @@ AddComponentPostInit("health", function(self)
 
 end)
 
--- 燃料允许自定义接受测试
-AddComponentPostInit("fueled", function(self)
-	-- 是否可以添加燃料
-	local originCanAcceptFuelItem = self.CanAcceptFuelItem
-
-	function self:CanAcceptFuelItem(item)
-		if self.canAcceptFuelFn ~= nil then
-			return self.canAcceptFuelFn(self.inst, item)
-		end
-		return originCanAcceptFuelItem(self, item)
-	end
-end)
-
 -- writeable 完成时额外触发一个事件
 AddComponentPostInit("writeable", function(self)
 	local originEndWriting = self.EndWriting
