@@ -39,7 +39,7 @@ local DEFAULT = Lang("Default", "默认")
 local MUCH = Lang("Much", "多")
 local LARGE = Lang("Large", "大")
 
-name = Lang("Additional Item Package DEV", "额外物品包 DEV")
+name = Lang("Additional Item Package DEV", "AIP-额外物品包 DEV")
 description = joinArray(descList, "\n")
 author = "ZombieJ"
 forumthread = "http://steamcommunity.com/sharedfiles/filedetails/?id=1085586145"

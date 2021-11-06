@@ -44,7 +44,7 @@ local function collectItems(lureplant)
 	for i, item in ipairs(items) do
 		if not holderChest.components.container:IsFull() then
 			-- 箱子没满就随便放
-			lureplant.components.inventory:RemoveItem(item, true)
+			lureplant.components.inventory:DropItem(item, true)
 			holderChest.components.container:GiveItem(item, nil, nil, true)
 		elseif item.components.stackable == nil then
 			-- 不可堆叠的满了就不继续了
@@ -64,7 +64,7 @@ local function collectItems(lureplant)
 			if restCount > 0 then
 				if restCount >= item.components.stackable:StackSize() then
 					-- 箱子放得下就从食人花里移除
-					lureplant.components.inventory:RemoveItem(item, true)
+					lureplant.components.inventory:DropItem(item, true)
 					holderChest.components.container:GiveItem(item)
 				else
 					-- 箱子放不下就修改堆叠
