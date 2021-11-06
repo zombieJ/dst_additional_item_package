@@ -92,7 +92,7 @@ end
 
 local jokerOrbPrefab = Prefab("aip_joker_orb", jokerOrbFn, { Asset("ANIM", "anim/staff_projectile.zip") }, { "fire_projectile" })
 
------------------------------------------------------- 面具实体 ------------------------------------------------------
+------------------------------------------- 实体 -------------------------------------------
 local tempalte = require("prefabs/aip_dress_template")
 local prefab = tempalte("aip_joker_face", {
 	keepHead = true,
@@ -123,7 +123,6 @@ local prefab = tempalte("aip_joker_face", {
 		inst.components.fueled.fueltype = FUELTYPE.MAGIC
 		inst.components.fueled:SetSections(5)
 		inst.components.fueled.accepting = false
-		-- inst.components.fueled.bonusmult = TUNING.AIP_JOKER_FACE_FUEL / 5 / TUNING.MED_FUEL -- 每次添加 1/5
 	end,
 })
 

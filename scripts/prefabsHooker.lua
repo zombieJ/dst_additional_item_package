@@ -95,6 +95,37 @@ AddPrefabPostInit("terrorbeak", createFootPrint)
 AddPrefabPostInit("crawlingnightmare", createFootPrint)
 AddPrefabPostInit("nightmarebeak", createFootPrint)
 
+------------------------------------------ 活木 ------------------------------------------
+local function canActOnLiving(inst, doer, target)
+	return target.prefab == "aip_joker_face"
+end
+
+local function onDoLivingTargetAction(inst, doer, target)
+	-- 填充燃料
+	if target.components.fueled ~= nil then
+		target.components.fueled:DoDelta(target.components.fueled.maxfuel / 5, doer)
+
+		if inst.components.stackable ~= nil then
+			inst.components.stackable:Get():Remove()
+		else
+			inst:Remove()
+		end
+	end
+end
+
+AddPrefabPostInit("livinglog", function(inst)
+	-- 燃料注入
+	inst:AddComponent("aipc_action_client")
+	inst.components.aipc_action_client.canActOn = canActOnLiving
+
+	if not _G.TheWorld.ismastersim then
+		return inst
+	end
+
+	inst:AddComponent("aipc_action")
+	inst.components.aipc_action.onDoTargetAction = onDoLivingTargetAction
+end)
+
 ------------------------------------------ 金块 ------------------------------------------
 local function canActOnGold(inst, doer, target)
 	return target.prefab == "aip_xinyue_hoe"
