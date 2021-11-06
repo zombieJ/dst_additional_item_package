@@ -23,15 +23,15 @@ end
 
 -- 收集物品
 local function collectItems(lureplant)
-	if lureplant == nil or lureplant.components.inventory == nil or #TheWorld.components.world_common_store.chests == 0 then
+	if lureplant == nil or lureplant.components.inventory == nil or #aipCommonStore().chests == 0 then
 		return
 	end
 
-	local holderChest = TheWorld.components.world_common_store.holderChest
+	local holderChest = aipCommonStore().holderChest
 	if holderChest == nil then
 		-- 如果没有容器，则随机选一个作为容器
-		holderChest = TheWorld.components.world_common_store.chests[1]
-		TheWorld.components.world_common_store.holderChest = holderChest
+		holderChest = aipCommonStore().chests[1]
+		aipCommonStore().holderChest = holderChest
 	end
 
 	-- 收集食人花内的物品
@@ -79,39 +79,49 @@ end
 ------------------------------------------------------------------------------------------
 local UnityCotainer = Class(function(self, inst)
 	self.inst = inst
+	self.checkTimes = 0
 
 	-- 全局注册
-	table.insert(TheWorld.components.world_common_store.chests, self.inst)
+	table.insert(aipCommonStore().chests, self.inst)
 
-	-- 每隔一段时间收取食人花内的物品（食人花 20 秒消化一次，我们 9.5 秒收集一次保证都收集到）
-	self.task = self.inst:DoPeriodicTask(9.5, function() self:CollectLureplant() end)
+	-- 每隔一段时间收取食人花内的物品（食人花 20 秒消化一次，我们 8 秒收集一次保证都收集到）
+	self.task = self.inst:DoPeriodicTask(2, function() self:CollectLureplant() end)
 
 	-- 异步标记当前为最重要的箱子
 	self.inst:DoTaskInTime(0.5, function()
 		if self.inst.components.container ~= nil and not self.inst.components.container:IsEmpty() then
-			TheWorld.components.world_common_store.holderChest = self.inst
+			aipCommonStore().holderChest = self.inst
 		end
 	end)
 
 	-- 移除时从全局删除
 	self.inst:ListenForEvent("onremove", function()
-		aipTableRemove(TheWorld.components.world_common_store.chests, self.inst)
+		aipTableRemove(aipCommonStore().chests, self.inst)
 
 		self:UnlockOthers()
+
+		-- 转移物品到其他箱子里
 	end)
 end)
 
 function UnityCotainer:CollectLureplant()
-	-- 获取附近的食人花容器
-	local x, y, z = self.inst.Transform:GetWorldPosition()
-	local lureplants = TheSim:FindEntities(x, y, z, TUNING.AIP_GLASS_CHEST_RANGE, nil, nil, { "lureplant", "eyeplant" })
-	for i, lureplant in ipairs(lureplants) do
-		collectItems(lureplant)
+	-- 我们内部计时器到期才收集以节省性能
+	if self.checkTimes == 0 or aipCommonStore().holderChest == self.inst then
+		-- 获取附近的食人花容器
+		local x, y, z = self.inst.Transform:GetWorldPosition()
+		local lureplants = TheSim:FindEntities(x, y, z, TUNING.AIP_GLASS_CHEST_RANGE, nil, nil, { "lureplant", "eyeplant" })
+		for i, lureplant in ipairs(lureplants) do
+			collectItems(lureplant)
+		end
+
+		self.checkTimes = 0
 	end
+
+	self.checkTimes = math.mod(self.checkTimes + 1, 4)
 end
 
 function UnityCotainer:LockOthers()
-	for i, chest in ipairs(TheWorld.components.world_common_store.chests) do
+	for i, chest in ipairs(aipCommonStore().chests) do
 		if chest ~= self.inst then
 			chest.components.container.canbeopened = false
 			chest.components.inspectable:SetDescription(STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_GLASS_CHEST_DISABLED)
@@ -121,25 +131,25 @@ function UnityCotainer:LockOthers()
 		end
 	end
 
+	-- 记录一下当前主要管理箱子是谁
+	aipCommonStore().holderChest = self.inst
+	aipCommonStore().chestOpened = true
+
 	-- 打开的时候强制收集一次
 	self:CollectLureplant()
-
-	-- 记录一下当前主要管理箱子是谁
-	TheWorld.components.world_common_store.holderChest = self.inst
-	TheWorld.components.world_common_store.chestOpened = true
 end
 
 function UnityCotainer:UnlockOthers()
 	-- 如果被打开的箱子关闭了，则全部解锁
-	if TheWorld.components.world_common_store.holderChest == self.inst then
-		for i, chest in ipairs(TheWorld.components.world_common_store.chests) do
+	if aipCommonStore().holderChest == self.inst then
+		for i, chest in ipairs(aipCommonStore().chests) do
 			chest.components.container.canbeopened = true
 			chest.components.inspectable:SetDescription(nil)
 		end
 	end
 
 	-- 更新记录箱子已经关闭
-	TheWorld.components.world_common_store.chestOpened = false
+	aipCommonStore().chestOpened = false
 end
 
 return UnityCotainer

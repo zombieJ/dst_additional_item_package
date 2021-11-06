@@ -527,6 +527,10 @@ function _G.aipIsShadowCreature(inst)
 	return false
 end
 
+function _G.aipCommonStore()
+	return _G.TheWorld.components ~= nil and _G.TheWorld.components.world_common_store
+end
+
 --------------------------------------- RPC ---------------------------------------
 -- RPC 发送时自动会带上 player 作为第一个参数
 function _G.aipRPC(funcName, ...)
