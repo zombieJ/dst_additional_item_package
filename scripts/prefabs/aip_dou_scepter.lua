@@ -157,6 +157,18 @@ local function beforeAction(inst, projectileInfo, doer)
     end
 
     inst.components.fueled:DoDelta(-BASIC_USE * projectileInfo.uses)
+
+    -- 如果没有能量了，就看看有没有放置噩梦燃料来充能
+    if inst.components.fueled:IsEmpty() then
+        local items = inst.components.container:GetAllItems()
+        for i, item in ipairs(items) do
+            if item.prefab == "nightmarefuel" then
+                local pop = inst.components.container:RemoveItem(item)
+
+                inst.components.fueled:TakeFuelItem(pop, doer)
+            end
+        end
+    end
     return true
 end
 

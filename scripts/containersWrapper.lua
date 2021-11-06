@@ -341,7 +341,7 @@ function fillDouScepter(slotCount, topOffset, offset)
 
 	-- 只接受魔法元素
 	params[name].itemtestfn = function(container, item, slot)
-		return item:HasTag("aip_dou_inscription")
+		return item:HasTag("aip_dou_inscription") or item.prefab == "nightmarefuel"
 	end
 
 	-- 操作按钮
