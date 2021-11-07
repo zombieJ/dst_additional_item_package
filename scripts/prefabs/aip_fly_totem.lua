@@ -62,6 +62,8 @@ local assets = {
     Asset("ANIM", "anim/aip_fake_fly_totem.zip"),
 	Asset("ATLAS", "images/inventoryimages/aip_fly_totem.xml"),
     Asset("ATLAS", "images/inventoryimages/aip_fake_fly_totem.xml"),
+    Asset("ATLAS", "minimap/aip_fly_totem.xml"),
+	Asset("IMAGE", "minimap/aip_fly_totem.tex"),
 }
 
 local prefabs = {
@@ -217,12 +219,12 @@ local function genTotem(buildName, fake)
         inst.entity:AddTransform()
         inst.entity:AddAnimState()
         inst.entity:AddSoundEmitter()
-        -- inst.entity:AddMiniMapEntity()
+        inst.entity:AddMiniMapEntity()
+        inst.MiniMapEntity:SetIcon("aip_fly_totem.tex")
+        inst.MiniMapEntity:SetPriority(10)
         inst.entity:AddNetwork()
 
         MakeObstaclePhysics(inst, .2)
-
-        -- inst.MiniMapEntity:SetIcon("sign.png")
 
         inst.AnimState:SetBank(buildName)
         inst.AnimState:SetBuild(buildName)
