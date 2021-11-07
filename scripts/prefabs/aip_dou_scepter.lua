@@ -162,10 +162,17 @@ local function beforeAction(inst, projectileInfo, doer)
     if inst.components.fueled:IsEmpty() then
         local items = inst.components.container:GetAllItems()
         for i, item in ipairs(items) do
+            -- 噩梦燃料
             if item.prefab == "nightmarefuel" then
                 local pop = inst.components.container:RemoveItem(item)
 
                 inst.components.fueled:TakeFuelItem(pop, doer)
+                break
+
+            --噩梦之灵
+            elseif item.prefab == "aip_nightmare_package" then
+                inst.components.fueled:DoDelta(MAX_USES, doer)
+                item.components.finiteuses:Use(4)
             end
         end
     end

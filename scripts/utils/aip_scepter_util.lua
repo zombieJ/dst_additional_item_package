@@ -167,7 +167,10 @@ function calculateProjectile(items, inst)
 					-- 动作消耗 2 点
 					projectileInfo.uses = projectileInfo.uses + 2
 				------------------------- 燃料 -------------------------
-				elseif typeInfo.prefab == "nightmarefuel" then
+				elseif
+					typeInfo.prefab == "nightmarefuel" or
+					typeInfo.prefab == "aip_nightmare_package"
+				then
 					-- 燃料不用做什么（但是兜底会提供 5 点基础伤害）
 				end
 			end
