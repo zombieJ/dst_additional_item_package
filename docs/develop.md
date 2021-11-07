@@ -114,6 +114,8 @@ c_goto(c_find("aip_dou_totem_broken"))
 TheWorld:PushEvent("ms_setseason", "summer")
 TheWorld:PushEvent("ms_setseason", "winter")
 
+TheWorld:PushEvent("phasechanged", "night")
+
 ### AnimateState:Show 工作条件 
 
 https://forums.kleientertainment.com/forums/topic/47818-how-to-compile-for-animstatehide/

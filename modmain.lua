@@ -95,6 +95,7 @@ PrefabFiles = {
 	"aip_rubik_ghost",
 	"aip_rubik_heart",
 	"aip_wizard_hat",
+	"aip_nightmare_package",
 
 	-- Orbit
 	"aip_orbit",
@@ -159,6 +160,7 @@ modimport("scripts/componentsHooker.lua")
 AddMinimapAtlas("minimap/dark_observer_vest.xml")
 AddMinimapAtlas("minimap/aip_dou_totem.xml")
 AddMinimapAtlas("minimap/aip_cookiecutter_king.xml")
+AddMinimapAtlas("minimap/aip_fly_totem.xml")
 
 --------------------------------------- 封装 ---------------------------------------
 modimport("scripts/containersWrapper.lua")

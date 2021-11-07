@@ -96,9 +96,34 @@ AddPrefabPostInit("crawlingnightmare", createFootPrint)
 AddPrefabPostInit("nightmarebeak", createFootPrint)
 
 ------------------------------------------ 活木 ------------------------------------------
+local function canActOnLiving(inst, doer, target)
+	return target.prefab == "aip_joker_face"
+end
+
+local function onDoLivingTargetAction(inst, doer, target)
+	-- 填充燃料
+	if target.components.fueled ~= nil then
+		target.components.fueled:DoDelta(target.components.fueled.maxfuel / 5, doer)
+
+		if inst.components.stackable ~= nil then
+			inst.components.stackable:Get():Remove()
+		else
+			inst:Remove()
+		end
+	end
+end
+
 AddPrefabPostInit("livinglog", function(inst)
-	-- 添加燃料类型
-	inst:AddTag("LIVINGLOG_fuel")
+	-- 燃料注入
+	inst:AddComponent("aipc_action_client")
+	inst.components.aipc_action_client.canActOn = canActOnLiving
+
+	if not _G.TheWorld.ismastersim then
+		return inst
+	end
+
+	inst:AddComponent("aipc_action")
+	inst.components.aipc_action.onDoTargetAction = onDoLivingTargetAction
 end)
 
 ------------------------------------------ 金块 ------------------------------------------
@@ -183,6 +208,18 @@ AddPrefabPostInit("skeleton_player", function(inst)
 	-- 骨骸会概率掉落西游人物卡
 	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
 		inst.components.lootdropper:AddChanceLoot("aip_xiyou_card_white_bone", dev_mode and 1 or 0.01)
+	end
+end)
+
+------------------------------------------ 幽灵 ------------------------------------------
+AddPrefabPostInit("ghost", function(inst)
+	-- 幽灵会概率掉落西游人物卡
+	if _G.TheWorld.ismastersim then
+		if inst.components.lootdropper == nil then
+			inst:AddComponent("lootdropper")
+		end
+
+		inst.components.lootdropper:AddChanceLoot("aip_xiyou_card_yama_commissioners", dev_mode and 1 or 0.1)
 	end
 end)
 
