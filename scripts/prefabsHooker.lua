@@ -211,6 +211,18 @@ AddPrefabPostInit("skeleton_player", function(inst)
 	end
 end)
 
+------------------------------------------ 幽灵 ------------------------------------------
+AddPrefabPostInit("ghost", function(inst)
+	-- 幽灵会概率掉落西游人物卡
+	if _G.TheWorld.ismastersim then
+		if inst.components.lootdropper == nil then
+			inst:AddComponent("lootdropper")
+		end
+
+		inst.components.lootdropper:AddChanceLoot("aip_xiyou_card_yama_commissioners", dev_mode and 1 or 0.1)
+	end
+end)
+
 ------------------------------------------ 鱼人 ------------------------------------------
 AddPrefabPostInit("merm", function(inst)
 	-- 鱼人会极低概率掉 22 磅重的鲶鱼

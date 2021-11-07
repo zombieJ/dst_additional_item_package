@@ -25,6 +25,7 @@ local LANG_MAP = {
 		PIGSY = "Pigsy",
 		YANGJIAN = "Jian",
 		MYTH_YUTU = "Yu Tu",
+		YAMA_COMMISSIONERS = "Impermanence",
 	},
 	chinese = {
 		NAME = "西游人物卡",
@@ -38,6 +39,7 @@ local LANG_MAP = {
 		PIGSY = "八戒",
 		YANGJIAN = "杨戬",
 		MYTH_YUTU = "玉兔",
+		YAMA_COMMISSIONERS = "无常",
 
 		DESC_WICKERBOTTOM = "骗孩子的玩意儿~", -- 测试用
 		DESC_MONKEY_KING = "呔，俺老孙甚是喜欢!",
@@ -46,6 +48,7 @@ local LANG_MAP = {
 		DESC_PIGSY = "这不是俺老猪么!",
 		DESC_YANGJIAN = "凡夫俗子的东西!",
 		DESC_MYTH_YUTU = "我的卡片嫦娥姐姐会有吗?",
+		DESC_YAMA_COMMISSIONERS = "引路六道，舍我其谁？",
 	},
 }
 
