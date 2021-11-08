@@ -503,7 +503,7 @@ end
 function _G.aipFindEnt(...)
 	for _, ent in pairs(_G.Ents) do
 		-- 检测图腾
-		if ent:IsValid() and table.contains(arg, ent.prefab) then
+		if ent ~= nil and ent:IsValid() and table.contains(arg, ent.prefab) then
 			return ent
 		end
 	end

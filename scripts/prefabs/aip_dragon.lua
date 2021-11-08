@@ -128,6 +128,7 @@ local function fn()
 
 	inst:AddComponent("lootdropper")
 	inst.components.lootdropper:AddChanceLoot("aip_dou_tooth", 1)
+	inst.components.lootdropper:AddChanceLoot("aip_nightmare_package", 1)
 	inst.components.lootdropper:AddChanceLoot("nightmarefuel", 1)
 	inst.components.lootdropper:AddChanceLoot("nightmarefuel", 0.5)
 	-- inst.components.lootdropper.numrandomloot = 1
