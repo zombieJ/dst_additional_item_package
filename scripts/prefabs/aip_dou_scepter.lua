@@ -173,6 +173,7 @@ local function beforeAction(inst, projectileInfo, doer)
             elseif item.prefab == "aip_nightmare_package" then
                 inst.components.fueled:DoDelta(MAX_USES, doer)
                 item.components.finiteuses:Use(4)
+                break
             end
         end
     end
