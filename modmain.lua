@@ -96,6 +96,7 @@ PrefabFiles = {
 	"aip_rubik_heart",
 	"aip_wizard_hat",
 	"aip_nightmare_package",
+	"aip_aura_track",
 
 	-- Orbit
 	"aip_orbit",
