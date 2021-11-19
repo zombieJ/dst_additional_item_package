@@ -3,7 +3,7 @@ local assets = {
 	Asset("ANIM", "anim/aip_aura_track.zip"),
 }
 
-local scale = 1.5
+local scale = 1.2
 
 local function fn()
 	local inst = CreateEntity()
@@ -12,6 +12,8 @@ local function fn()
 	inst.entity:AddAnimState()
 	inst.entity:AddNetwork()
 
+	inst:AddTag("NOCLICK")
+    inst:AddTag("FX")
 
 	inst.AnimState:SetBank("aip_aura_track")
 	inst.AnimState:SetBuild("aip_aura_track")
