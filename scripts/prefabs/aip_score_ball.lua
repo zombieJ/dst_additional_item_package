@@ -75,7 +75,8 @@ local function fn()
 	inst.entity:AddNetwork()
 
 	-- MakeFlyingCharacterPhysics(inst, 1, .5)
-	MakeInventoryPhysics(inst, 1, .5)
+	-- MakeInventoryPhysics(inst, 1, .5)
+	MakeInventoryPhysics(inst, 1, 0)
 	RemovePhysicsColliders(inst)
 	inst.Physics:CollidesWith(COLLISION.WORLD)
 

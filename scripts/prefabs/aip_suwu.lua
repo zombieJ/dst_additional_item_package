@@ -104,7 +104,7 @@ function fn()
 
 	inst.AnimState:SetRayTestOnBB(true)
 	
-	MakeInventoryPhysics(inst)
+	MakeInventoryPhysics(inst, nil, 0)
 	MakeInventoryFloatable(inst, "small", 0.05, {1.2, 0.75, 1.2})
 
 	-- -- 苏武只有一把

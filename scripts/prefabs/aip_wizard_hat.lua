@@ -37,6 +37,7 @@ local tempalte = require("prefabs/aip_dress_template")
 
 -- 可以获得直接看到诡影的能力，同时被攻击没有硬直
 return tempalte("aip_wizard_hat", {
+	rad = 0,
 	dapperness = TUNING.DAPPERNESS_LARGE,
 	fueled = {
 		level = TUNING.AIP_WIZARD_FUEL,

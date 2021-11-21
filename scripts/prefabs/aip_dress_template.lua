@@ -92,7 +92,7 @@ local function template(name, config)
 		inst.entity:AddAnimState()
 		inst.entity:AddNetwork()
 
-		MakeInventoryPhysics(inst)
+		MakeInventoryPhysics(inst, nil, config.rad)
 
 		inst.AnimState:SetBank(name)
 		inst.AnimState:SetBuild(name)

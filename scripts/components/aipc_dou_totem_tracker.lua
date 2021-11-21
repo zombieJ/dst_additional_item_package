@@ -20,7 +20,7 @@ local Tracker = Class(function(self, inst)
 	self.ball = nil
 	self.hat = nil
 
-	self.speed = 1
+	self.speed = 3
 	self.dist = nil
 	self.rotate = nil
 end)
@@ -31,10 +31,15 @@ end
 
 ------------------------------ 生成 ------------------------------------
 function Tracker:CreateChest()
+	if self.motionTimer ~= nil then
+		self.motionTimer:Cancel()
+		self.motionTimer = nil
+	end
+
 	if self:IsFull() then
-		self.suwu:Remove()
-		self.ball:Remove()
-		self.hat:Remove()
+		aipReplacePrefab(self.suwu, "aip_shadow_wrapper").DoShow()
+		aipReplacePrefab(self.ball, "aip_shadow_wrapper").DoShow()
+		aipReplacePrefab(self.hat, "aip_shadow_wrapper").DoShow()
 
 		self.suwu = nil
 		self.ball = nil
@@ -44,17 +49,19 @@ end
 
 ------------------------------ 动画 ------------------------------------
 local function initPrefab(inst)
-	inst.Physics:SetSphere(0)
+	-- inst.Physics:SetSphere(0)
 	inst:AddTag("NOCLICK")
 	inst:AddComponent("aipc_float")
 	inst:RemoveComponent("inventoryitem")
 end
 
-function Tracker:MovePrefab(inst, pos, rotate)
+function Tracker:MovePrefab(inst, pos, rotate, offsetHeight)
 	local radius = rotate / 180 * PI
+
+	-- 目标位置
 	local targetPos = Vector3(
 		pos.x + math.cos(radius) * self.dist,
-		pos.y,
+		pos.y + offsetHeight,
 		pos.z + math.sin(radius) * self.dist
 	)
 
@@ -63,14 +70,30 @@ function Tracker:MovePrefab(inst, pos, rotate)
 end
 
 function Tracker:LoopMotion()
+	if not self:IsFull() then
+		return
+	end
+
 	local pos = self.inst:GetPosition()
 	self.rotate = self.rotate + 10
 
-	self:MovePrefab(self.suwu, pos, self.rotate)
-	self:MovePrefab(self.ball, pos, self.rotate + 120)
-	self:MovePrefab(self.hat, pos, self.rotate + 240)
+	-- 高度计算
+	local startCnt = 3
+	local flyCnt = 2
+
+	local rndCnt = self.rotate / 360
+	local offsetHeight = math.max(rndCnt - startCnt, 0)
+	offsetHeight = math.min(offsetHeight, 2)
+
+	self:MovePrefab(self.suwu, pos, self.rotate, offsetHeight)
+	self:MovePrefab(self.ball, pos, self.rotate + 120, offsetHeight)
+	self:MovePrefab(self.hat, pos, self.rotate + 240, offsetHeight)
 
 	self.speed = math.min(self.speed + 0.05, 6)
+
+	if rndCnt > startCnt + flyCnt then
+		self:CreateChest()
+	end
 end
 
 -- 启动动画
