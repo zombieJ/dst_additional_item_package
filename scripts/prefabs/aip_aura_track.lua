@@ -31,6 +31,8 @@ local function fn()
 		return inst
 	end
 
+	inst:AddComponent("aipc_dou_totem_tracker")
+
 	return inst
 end
 

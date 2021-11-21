@@ -71,6 +71,7 @@ end
 local function encharge(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()
 	if
+		inst.components.inventoryitem ~= nil and
 		inst.components.inventoryitem:GetGrandOwner() == nil and
 		TheWorld.Map:IsOceanAtPoint(x, 0, z) and
 		inst.components.finiteuses:GetPercent() < 1

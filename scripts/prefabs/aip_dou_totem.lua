@@ -112,7 +112,7 @@ local function createFlyTotems(inst)
     -- 创建起点
     if startTotem == false then
         createFlyTotem(
-            aipGetSecretSpawnPoint(inst:GetPosition(), 3, 5, 5),
+            aipGetSecretSpawnPoint(inst:GetPosition(), 4, 6, 5),
             LANG.TOTEM_POS,
             "START"
         )
@@ -185,48 +185,6 @@ local function OnFullMoon(inst, isfullmoon)
     end
 end
 
-local function findGroundItem(pos, name)
-    local ents = aipFindNearEnts(pos, {name}, 3)
-    ents = aipFilterTable(ents, function(inst)
-        return inst.components.inventoryitem ~= nil and
-                inst.components.inventoryitem:GetGrandOwner() == nil
-    end)
-    return ents[1]
-end
-
--- 检查附近的物品
-local function checkItems(inst)
-    if not inst._aipAuraTrack then
-        return
-    end
-
-    local dist = 3
-    local pos = inst:GetPosition()
-    local stick = findGroundItem(pos, "aip_suwu")
-    local ball = findGroundItem(pos, "aip_score_ball")
-    local hat = findGroundItem(pos, "aip_wizard_hat")
-
-    aipPrint("checking")
-    if stick and ball and hat then
-        aipPrint("Has!!!")
-    end
-end
-
--- 重置计时器
-local function refreshTimer(inst)
-    -- 加一个计时器杀死检测器
-    if inst.components.timer ~= nil then
-        inst.components.timer:StopTimer("aip_check_items")
-        inst.components.timer:StartTimer("aip_check_items", 10)
-    end
-
-    -- 循环检查数据
-    if inst.aipCheckTimer ~= nil then
-        inst.aipCheckTimer:Cancel()
-    end
-    inst.aipCheckTimer = inst:DoPeriodicTask(2, checkItems)
-end
-
 local function onTimeDone(inst, data)
     if data.name == "aip_check_items" then
     end
@@ -245,12 +203,8 @@ end
 -- 玩家靠近
 local function onNear(inst, player)
     killTimer(inst)
-    refreshTimer(inst)
 
     inst.aipGhostTimer = inst:DoPeriodicTask(8, function()
-        -- 重置计时器
-        refreshTimer(inst)
-
         -- 点燃时，源源不断创造触手攻击玩家
         if inst.components.fueled ~= nil and not inst.components.fueled:IsEmpty() then
             local players = aipFindNearPlayers(inst, WarnRange)
