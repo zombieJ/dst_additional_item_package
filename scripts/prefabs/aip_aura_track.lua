@@ -17,7 +17,8 @@ local function fn()
 
 	inst.AnimState:SetBank("aip_aura_track")
 	inst.AnimState:SetBuild("aip_aura_track")
-	inst.AnimState:PlayAnimation("idle")
+	inst.AnimState:PlayAnimation("start")
+	inst.AnimState:PushAnimation("idle")
 
 	inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
 	inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)

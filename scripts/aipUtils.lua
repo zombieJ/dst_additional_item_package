@@ -499,16 +499,33 @@ function _G.aipGetTopologyPoint(tag, prefab, dist)
 	return nil
 end
 
+function entMatchNames(prefabNames, ent)
+	return ent ~= nil and ent:IsValid() and table.contains(prefabNames, ent.prefab)
+end
+
 -- 按照参数找到所有符合名字列表的 prefab（TheSim:FindFirstEntityWithTag("malbatross")）
 function _G.aipFindEnt(...)
 	for _, ent in pairs(_G.Ents) do
 		-- 检测图腾
-		if ent ~= nil and ent:IsValid() and table.contains(arg, ent.prefab) then
+		if entMatchNames(arg, ent) then
 			return ent
 		end
 	end
 
 	return nil
+end
+
+function _G.aipFindRandomEnt(...)
+	local list = {}
+
+	for _, ent in pairs(_G.Ents) do
+		-- 检测图腾
+		if entMatchNames(prefabNames, ent) then
+			table.insert(list, ent)
+		end
+	end
+
+	return _G.aipRandomEnt(list)
 end
 
 -- 是暗影生物

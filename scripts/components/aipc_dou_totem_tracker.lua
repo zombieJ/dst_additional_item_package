@@ -1,3 +1,5 @@
+local createProjectile = require("utils/aip_vest_util").createProjectile
+
 -- 寻找符合名字的物品
 local function findGroundItem(pos, name)
     local ents = aipFindNearEnts(pos, {name}, 3)
@@ -44,6 +46,19 @@ function Tracker:CreateChest()
 		self.suwu = nil
 		self.ball = nil
 		self.hat = nil
+
+		-- 找到一颗树
+		local tree = aipFindRandomEnt(
+			"evergreen_normal", "evergreen_tall", "evergreen_short",
+			"evergreen_sparse_normal", "evergreen_sparse_tall", "evergreen_sparse_short"
+		)
+
+		if tree ~= nil then
+			local tgtPT = aipGetSecretSpawnPoint(tree:GetPosition(), 1, 10, 5)
+
+			-- 创建一个飞行轨迹过去
+			createProjectile(self.inst, tgtPT, nil, { 0, 0, 0, 5 })
+		end
 	end
 end
 
