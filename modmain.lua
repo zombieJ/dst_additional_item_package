@@ -97,6 +97,7 @@ PrefabFiles = {
 	"aip_wizard_hat",
 	"aip_nightmare_package",
 	"aip_aura_track",
+	"aip_eye_box",
 
 	-- Orbit
 	"aip_orbit",

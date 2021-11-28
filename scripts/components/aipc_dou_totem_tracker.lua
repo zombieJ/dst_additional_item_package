@@ -47,17 +47,28 @@ function Tracker:CreateChest()
 		self.ball = nil
 		self.hat = nil
 
-		-- 找到一颗树
-		local tree = aipFindRandomEnt(
-			"evergreen_normal", "evergreen_tall", "evergreen_short",
-			"evergreen_sparse_normal", "evergreen_sparse_tall", "evergreen_sparse_short"
-		)
+		-- 寻找是否存在盒子
+		local tgtPT = nil
+		local eyeBox = aipFindEnt("aip_eye_box")
 
-		if tree ~= nil then
-			local tgtPT = aipGetSecretSpawnPoint(tree:GetPosition(), 1, 10, 5)
+		if eyeBox ~= nil then
+			tgtPT = eyeBox:GetPosition()
+		else
+			local tree = aipFindRandomEnt(
+				"evergreen",
+				"evergreen_normal", "evergreen_tall", "evergreen_short",
+				"evergreen_sparse_normal", "evergreen_sparse_tall", "evergreen_sparse_short"
+			)
 
+			if tree ~= nil then
+				tgtPT = aipGetSecretSpawnPoint(tree:GetPosition(), 1, 10, 5)
+				aipSpawnPrefab(nil, "aip_eye_box", tgtPT.x, tgtPT.y, tgtPT.z)
+			end
+		end
+
+		if tgtPT ~= nil then
 			-- 创建一个飞行轨迹过去
-			createProjectile(self.inst, tgtPT, nil, { 0, 0, 0, 5 })
+			createProjectile(self.inst, tgtPT, nil, { 0, 0, 0, 5 }, 20)
 		end
 	end
 end
@@ -93,7 +104,7 @@ function Tracker:LoopMotion()
 	self.rotate = self.rotate + 10
 
 	-- 高度计算
-	local startCnt = 3
+	local startCnt = 2
 	local flyCnt = 2
 
 	local rndCnt = self.rotate / 360

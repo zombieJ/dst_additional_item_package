@@ -520,7 +520,7 @@ function _G.aipFindRandomEnt(...)
 
 	for _, ent in pairs(_G.Ents) do
 		-- 检测图腾
-		if entMatchNames(prefabNames, ent) then
+		if entMatchNames(arg, ent) then
 			table.insert(list, ent)
 		end
 	end
