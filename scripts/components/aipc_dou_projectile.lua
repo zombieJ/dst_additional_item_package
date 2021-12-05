@@ -508,6 +508,8 @@ end
 function Projectile:EffectTaskOnPoint(projPT)
 	-- 【赋能 - 锁定】将附近的单位吸引到目标点
 	if self.task.lock then
+		aipSpawnPrefab(nil, "aip_aura_lock", projPT.x, projPT.y, projPT.z)
+
 		local ents = self:FindEntities(nil, projPT, LOCK_RANGE)
 		for i, ent in ipairs(ents) do
 			if ent.components.aipc_dou_lock == nil then

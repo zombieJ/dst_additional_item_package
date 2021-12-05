@@ -102,6 +102,16 @@ local list = {
 		mustTags = { "_health" },
 		noTags = { "INLIMBO", "NOCLICK", "ghost" },
 	},
+	{	-- 禁锢光环：并非真实的光环，播放一个吸收动画后消失
+		name = "aip_aura_lock",
+		assets = { Asset("ANIM", "anim/aip_aura_lock.zip") },
+		range = false, -- 不安装光环组件
+		fade = false,
+		scale = 2.5,
+		onAnimOver = function(inst)
+			inst:Remove()
+		end,
+	},
 }
 
 
