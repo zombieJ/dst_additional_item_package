@@ -12,9 +12,11 @@ end
 
 function OnUpdateProjectileTail(inst)
     local pos = inst:GetPosition()
+    local sx, sy, sz = inst.Transform:GetScale()
 
     local vest = createEffectVest("aip_dou_scepter_projectile", "aip_dou_scepter_projectile", "disappear")
     vest.Transform:SetPosition(pos.x, pos.y, pos.z)
+    vest.Transform:SetScale(sx, sy, sz)
 
     -- 需要设置一下速度，否则它就会自己往下掉
     vest.Physics:SetMotorVel(0, 1, 0)

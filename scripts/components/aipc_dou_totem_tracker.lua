@@ -68,7 +68,9 @@ function Tracker:CreateChest()
 
 		if tgtPT ~= nil then
 			-- 创建一个飞行轨迹过去
-			createProjectile(self.inst, tgtPT, nil, { 0, 0, 0, 5 }, 20)
+			local proj = createProjectile(self.inst, tgtPT, nil, { 0, 0, 0, 5 }, 20, 2)
+			local projPos = proj:GetPosition()
+			proj.Transform:SetPosition(projPos.x, 2, projPos.z)
 		end
 	end
 end

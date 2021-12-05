@@ -70,7 +70,7 @@ function createGroudVest(bank, build, animate)
 end
 
 -- 飞到目标点或者物
-function createProjectile(source, target, fn, color, speed)
+function createProjectile(source, target, fn, color, speed, scale)
 	local proj = aipSpawnPrefab(source, "aip_projectile")
 
 	-- 设置颜色
@@ -82,6 +82,10 @@ function createProjectile(source, target, fn, color, speed)
 
 	if speed ~= nil then
 		proj.components.aipc_projectile.speed = 10
+	end
+
+	if scale ~= nil then
+		proj.Transform:SetScale(scale, scale, scale)
 	end
 
 	if target ~= nil and target.prefab ~= nil then

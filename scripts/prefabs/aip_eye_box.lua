@@ -22,6 +22,32 @@ local assets = {
     Asset("ANIM", "anim/aip_eye_box.zip"),
 }
 
+-------------------------------------- 事件 ---------------------------------------
+local function OnCreate(inst)
+    if inst._aipInit == nil then
+        inst._aipInit = true
+        inst.AnimState:PlayAnimation("appear")
+        inst.AnimState:PushAnimation("idle", true)
+    end
+end
+
+local function OnPhaseChanged(inst, phase)
+    aipPrint("OnPhaseChanged", phase)
+    if phase == "day" then
+        inst.AnimState:PlayAnimation("work")
+        inst:ListenForEvent("animover", function()
+            local tree = aipFindRandomEnt("evergreen")
+
+			if tree ~= nil then
+				local tgtPT = aipGetSecretSpawnPoint(tree:GetPosition(), 1, 10, 5)
+                aipSpawnPrefab(nil, "aip_eye_box", tgtPT.x, tgtPT.y, tgtPT.z)
+                inst:Remove()
+			end
+        end)
+    end
+end
+
+-------------------------------------- 实体 ---------------------------------------
 local function fn()
     local inst = CreateEntity()
 
@@ -33,7 +59,7 @@ local function fn()
 
     inst.AnimState:SetBank("aip_eye_box")
     inst.AnimState:SetBuild("aip_eye_box")
-    inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:PlayAnimation("idle", true)
 
     inst.entity:SetPristine()
 
@@ -44,6 +70,12 @@ local function fn()
     inst:AddComponent("inspectable")
 
     MakeHauntableLaunch(inst)
+
+    inst:ListenForEvent("phasechanged", function(src, phase)
+        OnPhaseChanged(inst, phase)
+    end, TheWorld)
+
+    OnCreate(inst)
 
     return inst
 end
