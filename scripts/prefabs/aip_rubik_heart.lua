@@ -86,23 +86,27 @@ local function onHit(inst)
 
 			-- 如果发现没有生物了，我们至少召唤一个
 			local homePos = inst:GetPosition()
-			createProjectile(
-				inst, aipGetSpawnPoint(homePos, 5), function(proj)
-					local effect = aipSpawnPrefab(proj, "aip_shadow_wrapper", nil, 0.1)
-					effect.DoShow()
+			local ghostPt = aipGetSpawnPoint(homePos, 5)
 
-					-- 有血我们才创建
-					if not inst.components.health:IsDead() then
-						local ghost = aipSpawnPrefab(proj, "aip_rubik_ghost")
-						if ghost.components.knownlocations then
-							ghost.components.knownlocations:RememberLocation("home", homePos)
+			if ghostPt ~= nil then
+				createProjectile(
+					inst, ghostPt, function(proj)
+						local effect = aipSpawnPrefab(proj, "aip_shadow_wrapper", nil, 0.1)
+						effect.DoShow()
+
+						-- 有血我们才创建
+						if not inst.components.health:IsDead() then
+							local ghost = aipSpawnPrefab(proj, "aip_rubik_ghost")
+							if ghost.components.knownlocations then
+								ghost.components.knownlocations:RememberLocation("home", homePos)
+							end
+
+							ghost.aipHeart = inst
+							table.insert(inst.aipGhosts, ghost)
 						end
-
-						ghost.aipHeart = inst
-						table.insert(inst.aipGhosts, ghost)
-					end
-				end, { 0, 0, 0, 5 }
-			)
+					end, { 0, 0, 0, 5 }
+				)
+			end
 		end
 	end
 end

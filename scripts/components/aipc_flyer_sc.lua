@@ -103,6 +103,12 @@ function Flyer:FlyTo(target)
 	local instPos = self.inst:GetPosition()
 	self.target = target
 	self.targetPos = aipGetSpawnPoint(target:GetPosition(), 0.1)
+
+	-- 附近没有安全的点那就直接定位到目标位置
+	if self.targetPos == nil then
+		self.targetPos = target:GetPosition()
+	end
+
 	self.oriDistance = instPos:Dist(self.targetPos)
 	self.lastDistance = self.oriDistance
 

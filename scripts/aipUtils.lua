@@ -346,7 +346,8 @@ function _G.aipGetSpawnPoint(pt, distance)
 	local dist = distance or 40
 
 	-- 不在陆地就随便找一个陆地
-    if not _G.TheWorld.Map:IsAboveGroundAtPoint(pt:Get()) then
+	local px, py, pz = pt:Get()
+    if not _G.TheWorld.Map:IsAboveGroundAtPoint(px, py, pz, false) then
         pt = _G.FindNearbyLand(pt) or pt
     end
 
@@ -366,7 +367,7 @@ function _G.aipGetSpawnPoint(pt, distance)
 				local x = pt.x + offset.x
 				local y = pt.y + offset.y
 				local z = pt.z + offset.z
-				return _G.TheWorld.Map:IsAboveGroundAtPoint(x, y, z)
+				return _G.TheWorld.Map:IsAboveGroundAtPoint(x, y, z, false)
 			end
 		)
 
@@ -379,7 +380,10 @@ function _G.aipGetSpawnPoint(pt, distance)
 
 	-- 继续降级往回找
 	for i = dist, 0, -1 do
-		local offset = _G.FindWalkableOffset(pt, math.random() * 2 * _G.PI, i, 12, true)
+		local offset = _G.FindWalkableOffset(
+			pt, math.random() * 2 * _G.PI, i, 12, true,
+			true, nil, false -- ignore_walls, customcheckfn, allow_water
+	)
 		if offset ~= nil then
 			offset.x = offset.x + pt.x
 			offset.z = offset.z + pt.z
