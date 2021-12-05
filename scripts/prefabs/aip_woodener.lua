@@ -187,7 +187,7 @@ local function CreatTree(inst)
 					aipTypePrint(inst:GetPosition(), pt, deployable)
 
 					-- 一次种一颗
-					if pt ~= nil and deployable then
+					if deployable then
 						local sapling = aipSpawnPrefab(inst, "pinecone_sapling", pt.x, pt.y, pt.z)
 						sapling:StartGrowing()
 

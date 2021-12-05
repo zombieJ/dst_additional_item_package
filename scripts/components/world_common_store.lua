@@ -151,7 +151,12 @@ function CommonStore:PostWorld()
 
 	--------------------------- 创建图腾 ---------------------------
 	self.inst:DoTaskInTime(5, function()
-		local dou_totem = aipFindEnt("aip_dou_totem_broken", "aip_dou_totem_powerless", "aip_dou_totem")
+		local dou_totem = aipFindEnt(
+			"aip_dou_totem_broken",
+			"aip_dou_totem_powerless",
+			"aip_dou_totem",
+			"aip_dou_totem_cave" -- 洞穴里的图腾只有充能的能力
+		)
 
 		if dou_totem == nil then
 			local fissurePT = aipGetTopologyPoint("lunacyarea", "moon_fissure")
