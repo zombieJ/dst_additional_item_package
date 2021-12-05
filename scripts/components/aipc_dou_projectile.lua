@@ -2,6 +2,8 @@ local AREA_DISTANCE = 2
 
 local SAND_DAMAGE = 30
 
+local LOCK_RANGE = 5
+
 -- local COMBAT_TAGS = { "_combat" }
 local COMBAT_TAGS = { "_combat", "_health" }
 -- local NO_TAGS = { "player" }
@@ -502,6 +504,21 @@ function Projectile:EffectTaskOn(target)
 	return doEffect
 end
 
+-- 在目标点产生效果
+function Projectile:EffectTaskOnPoint(projPT)
+	-- 【赋能 - 锁定】将附近的单位吸引到目标点
+	if self.task.lock then
+		local ents = self:FindEntities(nil, projPT, LOCK_RANGE)
+		for i, ent in ipairs(ents) do
+			if ent.components.aipc_dou_lock == nil then
+				ent:AddComponent("aipc_dou_lock")
+			end
+
+			ent.components.aipc_dou_lock.targetPT = projPT
+		end
+	end
+end
+
 function Projectile:OnUpdate(dt)
 	-- 没有队列的话就可以清理了
 	if self.task == nil then
@@ -517,6 +534,9 @@ function Projectile:OnUpdate(dt)
 	-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 线性 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	if isLine(self.task.action) then
 		local ents = self:FindEntities(self.task.element, self.inst:GetPosition(), nil, self.affectedEntities)
+		if #ents > 0 then
+			self:EffectTaskOnPoint(currentPos)
+		end
 
 		-- 通杀
 		for i, prefab in ipairs(ents) do
@@ -575,6 +595,7 @@ function Projectile:OnUpdate(dt)
 			self.targetPos = targetPos
 
 			if aipDist(currentPos, targetPos) < 1.5 then
+				self:EffectTaskOnPoint(targetPos)
 				finishTask = self:EffectTaskOn(self.target) or finishTask
 				ShowEffect(self.task.element, self.target:GetPosition())
 			else
@@ -587,6 +608,7 @@ function Projectile:OnUpdate(dt)
 		-- 区域魔法会经过一定延迟释放
 		if self.diffTime >= 0.1 then
 			local ents = self:FindEntities(self.task.element, self.targetPos)
+			self:EffectTaskOnPoint(self.targetPos)
 
 			-- 通杀
 			for i, prefab in ipairs(ents) do

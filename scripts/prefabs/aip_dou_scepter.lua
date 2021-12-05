@@ -32,6 +32,7 @@ local LANG_MAP = {
         RUNNER = "Runer",
         POWER = "Power",
         VAMPIRE = "Vampire",
+        LOCK = "Lock",
 	},
 	chinese = {
         NAME = "神秘权杖",
@@ -46,6 +47,7 @@ local LANG_MAP = {
         RUNNER = "奔驰",    -- 更快速度
         POWER = "赋能",     -- 更多伤害
         VAMPIRE = "嗜血",   -- 伤害吸血
+        LOCK = "禁锢",      -- 拉至中心
 	},
 	russian = {
         NAME = "Мистический Cкипетр",
@@ -59,6 +61,7 @@ local LANG_MAP = {
         RUNNER = "Бегун",
         POWER = "Сила",
         VAMPIRE = "Вампир",
+        LOCK = "Lock",
 	},
 }
 
@@ -197,6 +200,9 @@ local empowerList = {
     },
     {
         empower = "VAMPIRE",    -- 伤害吸血
+    },
+    {
+        empower = "LOCK",       -- 吸附至目标点
     },
 }
 
