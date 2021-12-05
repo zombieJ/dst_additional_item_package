@@ -2,7 +2,7 @@ local AREA_DISTANCE = 2
 
 local SAND_DAMAGE = 30
 
-local LOCK_RANGE = 5
+local LOCK_RANGE = 4
 
 -- local COMBAT_TAGS = { "_combat" }
 local COMBAT_TAGS = { "_combat", "_health" }
@@ -516,7 +516,7 @@ function Projectile:EffectTaskOnPoint(projPT)
 				ent:AddComponent("aipc_dou_lock")
 			end
 
-			ent.components.aipc_dou_lock.targetPT = projPT
+			ent.components.aipc_dou_lock:LockTo(projPT)
 		end
 	end
 end
@@ -536,6 +536,12 @@ function Projectile:OnUpdate(dt)
 	-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 线性 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	if isLine(self.task.action) then
 		local ents = self:FindEntities(self.task.element, self.inst:GetPosition(), nil, self.affectedEntities)
+		
+		-- 不会对施法者生效
+		ents = aipFilterTable(ents, function(inst)
+			return self.doer ~= inst
+		end)
+
 		if #ents > 0 then
 			self:EffectTaskOnPoint(currentPos)
 		end
@@ -548,27 +554,24 @@ function Projectile:OnUpdate(dt)
 				prefab.components.combat ~= nil and
 				prefab.components.health ~= nil
 			then
-				-- 不会对施法者生效
-				if self.doer ~= prefab then
-					local effectWork = self:EffectTaskOn(prefab)
+				local effectWork = self:EffectTaskOn(prefab)
 
-					-- 生效后就加入黑名单
-					if effectWork then
-						table.insert(self.affectedEntities, prefab)
-					end
-
-					if self.task.action ~= "THROUGH" then
-						finishTask = effectWork or finishTask
-
-						-- 命中则更新位置和目标
-						if effectWork then
-							self.target = prefab
-							self.targetPos = self.target:GetPosition()
-						end
-					end
-
-					ShowEffect(self.task.element, prefab:GetPosition(), true)
+				-- 生效后就加入黑名单
+				if effectWork then
+					table.insert(self.affectedEntities, prefab)
 				end
+
+				if self.task.action ~= "THROUGH" then
+					finishTask = effectWork or finishTask
+
+					-- 命中则更新位置和目标
+					if effectWork then
+						self.target = prefab
+						self.targetPos = self.target:GetPosition()
+					end
+				end
+
+				ShowEffect(self.task.element, prefab:GetPosition(), true)
 			end
 		end
 

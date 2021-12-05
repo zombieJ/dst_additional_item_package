@@ -32,7 +32,7 @@ local LANG_MAP = {
         RUNNER = "Runer",
         POWER = "Power",
         VAMPIRE = "Vampire",
-        LOCK = "Lock",
+        LOCK = "Moon",
 	},
 	chinese = {
         NAME = "神秘权杖",
@@ -47,7 +47,7 @@ local LANG_MAP = {
         RUNNER = "奔驰",    -- 更快速度
         POWER = "赋能",     -- 更多伤害
         VAMPIRE = "嗜血",   -- 伤害吸血
-        LOCK = "禁锢",      -- 拉至中心
+        LOCK = "月能",      -- 拉至中心
 	},
 	russian = {
         NAME = "Мистический Cкипетр",
@@ -61,7 +61,7 @@ local LANG_MAP = {
         RUNNER = "Бегун",
         POWER = "Сила",
         VAMPIRE = "Вампир",
-        LOCK = "Lock",
+        LOCK = "Moon",
 	},
 }
 
@@ -184,6 +184,10 @@ local function beforeAction(inst, projectileInfo, doer)
 end
 
 -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>> 赋能 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+local empowerLock = {
+    empower = "LOCK",       -- 吸附至目标点
+}
+
 local empowerList = {
     {
         prefab = "aip_dou_huge_scepter",
@@ -201,9 +205,7 @@ local empowerList = {
     {
         empower = "VAMPIRE",    -- 伤害吸血
     },
-    {
-        empower = "LOCK",       -- 吸附至目标点
-    },
+    empowerLock,
 }
 
 local function empowerEffect(inst)
@@ -235,6 +237,9 @@ local function empower(inst, doer)
 
     -- 随机选择强化类型
     local emp = aipRandomEnt(empowerList)
+    if TheWorld.state.isfullmoon then -- 如果是满月，则一定是解锁
+        emp = empowerLock
+    end
     local prefab = emp.prefab or "aip_dou_empower_scepter"
     local empower = emp.empower
 
