@@ -159,10 +159,19 @@ function CommonStore:PostWorld()
 		)
 
 		if dou_totem == nil then
+			-- 寻找月岛地皮生成
 			local fissurePT = aipGetTopologyPoint("lunacyarea", "moon_fissure")
 			if fissurePT then
 				local tgt = aipGetSecretSpawnPoint(fissurePT, 0, 50, 5)
 				aipSpawnPrefab(nil, "aip_dou_totem_broken", tgt.x, tgt.y, tgt.z)
+
+			else
+				-- 寻找暗影灯座
+				local targetPrefab = aipFindRandomEnt("rabbithouse")
+				if targetPrefab ~= nil then
+					local tgt = aipGetSecretSpawnPoint(targetPrefab:GetPosition(), 0, 50, 5)
+					aipSpawnPrefab(nil, "aip_dou_totem_broken", tgt.x, tgt.y, tgt.z)
+				end
 			end
 		end
 	end)
