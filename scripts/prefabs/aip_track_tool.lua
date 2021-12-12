@@ -38,6 +38,7 @@ local assets = {
 	Asset("ATLAS", "images/inventoryimages/aip_track_tool.xml"),
 	Asset("ANIM", "anim/aip_track_tool.zip"),
 	Asset("ANIM", "anim/aip_track_tool_swap.zip"),
+	Asset("ANIM", "anim/aip_glass_orbit_point.zip"),
 }
 
 local prefabs = {}
@@ -47,7 +48,7 @@ STRINGS.NAMES.AIP_TRACK_TOOL = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_TRACK_TOOL = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_TRACK_TOOL = LANG.DESC
 
------------------------------------------------------------
+--------------------------------- 装备 ---------------------------------
 local function onequip(inst, owner)
 	owner.AnimState:OverrideSymbol("swap_object", "aip_track_tool_swap", "aip_track_tool_swap")
 	owner.SoundEmitter:PlaySound("dontstarve/wilson/equip_item_gold")
@@ -60,6 +61,13 @@ local function onunequip(inst, owner)
 	owner.AnimState:Hide("ARM_carry")
 	owner.AnimState:Show("ARM_normal")
 end
+
+--------------------------------- 部署 ---------------------------------
+local function onDeploy(inst, pt, deployer)
+    inst.components.aipc_track_creator:LineTo(pt, deployer)
+end
+
+--------------------------------- 实例 ---------------------------------
 
 function fn()
 	local inst = CreateEntity()
@@ -83,6 +91,8 @@ function fn()
 		return inst
 	end
 
+	inst:AddComponent("aipc_track_creator")
+
 	inst:AddComponent("weapon")
 	inst.components.weapon:SetDamage(TUNING.AIP_TRACK_TOOLE_DAMAGE)
 
@@ -100,4 +110,4 @@ function fn()
 	return inst
 end
 
-return Prefab( "aip_track_tool", fn, assets) 
+return	Prefab("aip_track_tool", fn, assets)

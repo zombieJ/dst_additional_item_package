@@ -99,6 +99,7 @@ PrefabFiles = {
 	"aip_aura_track",
 	"aip_eye_box",
 	"aip_track_tool",
+	"aip_glass_orbit",
 
 	-- Orbit
 	"aip_orbit",

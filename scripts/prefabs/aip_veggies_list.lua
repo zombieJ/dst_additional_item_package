@@ -9,6 +9,8 @@ local function onSunflowerDeploy(inst, pt, deployer)
 
 	local tgt = SpawnPrefab("aip_sunflower_short")
 	tgt.Transform:SetPosition(pt.x, pt.y, pt.z)
+
+	inst:Remove()
 end
 
 local VEGGIES =
