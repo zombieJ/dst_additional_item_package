@@ -39,6 +39,7 @@ end
 
 -- 清除轨道
 function Linker:Unlink()
+	aipPrint("Unlink!!!", #self.orbits)
 	for i, v in ipairs(self.orbits) do
 		if v:IsValid() then
 			v:Remove()
@@ -78,5 +79,15 @@ function Linker:SyncPath()
 		table.insert(self.orbits, orbit)
 	end
 end
+
+function Linker:Includes(target)
+	return self.startP == target or self.endP == target
+end
+
+function Linker:OnRemoveEntity()
+	self:Unlink()
+end
+
+Linker.OnRemoveFromEntity = Linker.OnRemoveEntity
 
 return Linker

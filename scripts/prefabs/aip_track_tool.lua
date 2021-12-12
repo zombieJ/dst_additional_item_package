@@ -113,9 +113,18 @@ end
 
 -- 拆出轨道点
 local function onDoTargetAction(inst, doer, target)
-	if target ~= nil then
-		target:Remove()
+	if target == nil then
+		return
 	end
+
+	local linkList = aipFindEnts("aip_glass_orbit_link")
+	for i, v in ipairs(linkList) do
+		if v.components.aipc_orbit_link:Includes(target) then
+			v:Remove()
+		end
+	end
+
+	target:Remove()
 end
 
 --------------------------------- 实例 ---------------------------------

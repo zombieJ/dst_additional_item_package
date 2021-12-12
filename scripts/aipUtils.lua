@@ -519,7 +519,7 @@ function _G.aipFindEnt(...)
 	return nil
 end
 
-function _G.aipFindRandomEnt(...)
+function _G.aipFindEnts(...)
 	local list = {}
 
 	for _, ent in pairs(_G.Ents) do
@@ -528,6 +528,12 @@ function _G.aipFindRandomEnt(...)
 			table.insert(list, ent)
 		end
 	end
+
+	return list
+end
+
+function _G.aipFindRandomEnt(...)
+	local list = _G.aipFindEnts(...)
 
 	return _G.aipRandomEnt(list)
 end
