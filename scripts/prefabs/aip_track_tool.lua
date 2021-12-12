@@ -63,12 +63,50 @@ local function onunequip(inst, owner)
 end
 
 --------------------------------- 部署 ---------------------------------
-local function onDeploy(inst, pt, deployer)
-    inst.components.aipc_track_creator:LineTo(pt, deployer)
+local function canActOnPoint()
+	return true
+end
+
+-- 寻找附近的标记点
+local function findNearByPoint(pt)
+	local ents = TheSim:FindEntities(pt.x, 0, pt.z, 2, { "aip_glass_orbit_point" })
+	return ents[1]
+end
+
+local function onDoPointAction(inst, creator, targetPos)
+    local startPos = creator:GetPosition()
+
+	-- 起始点：如果附近有点就不创建
+	local startP = findNearByPoint(startPos)
+	if startP == nil then
+		startP = aipSpawnPrefab(creator, "aip_glass_orbit_point")
+		aipSpawnPrefab(startP, "aip_shadow_wrapper").DoShow()
+	end
+
+	-- 目的地：如果附近有点就不创建
+	local endP = findNearByPoint(targetPos)
+	if endP == nil then
+		endP = aipSpawnPrefab(nil, "aip_glass_orbit_point", targetPos.x, 0, targetPos.z)
+		aipSpawnPrefab(endP, "aip_shadow_wrapper").DoShow()
+	end
+
+	-- 不是同一个节点的时候链接起来
+	if startP ~= nil and endP ~= nil and startP ~= endP then
+		-- startP.components.aipc_orbit_link:Add(endP)
+		-- endP.components.aipc_orbit_link:Add(startP)
+		local endPos = endP:GetPosition()
+		local centerPt = Vector3(
+			(startPos.x + endPos.x) / 2,
+			0,
+			(startPos.z + endPos.z) / 2
+		)
+
+		local link = aipSpawnPrefab(nil, "aip_glass_orbit_link", centerPt.x, centerPt.y, centerPt.z)
+		link.components.aipc_orbit_link:Link(startP, endP)
+	end
 end
 
 --------------------------------- 实例 ---------------------------------
-
 function fn()
 	local inst = CreateEntity()
 
@@ -85,13 +123,14 @@ function fn()
 	inst:AddTag("show_spoilage")
 	inst:AddTag("icebox_valid")
 
+	inst:AddComponent("aipc_action_client")
+	inst.components.aipc_action_client.canActOnPoint = canActOnPoint
+
 	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
 		return inst
 	end
-
-	inst:AddComponent("aipc_track_creator")
 
 	inst:AddComponent("weapon")
 	inst.components.weapon:SetDamage(TUNING.AIP_TRACK_TOOLE_DAMAGE)
@@ -100,6 +139,10 @@ function fn()
 
 	inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_track_tool.xml"
+
+	-- 施法
+    inst:AddComponent("aipc_action")
+    inst.components.aipc_action.onDoPointAction = onDoPointAction
 
 	MakeHauntableLaunch(inst)
 
