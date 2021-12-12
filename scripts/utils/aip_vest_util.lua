@@ -41,7 +41,7 @@ function createEffectVest(bank, build, animate, sound)
 end
 
 -- 创建地面马甲
-function createGroudVest(bank, build, animate)
+function createGroudVest(bank, build, animate, loop)
 	local inst = CreateEntity()
 
 	inst:AddTag("FX")
@@ -58,13 +58,18 @@ function createGroudVest(bank, build, animate)
 
 	inst.AnimState:SetBank(bank)
 	inst.AnimState:SetBuild(build)
-	inst.AnimState:PlayAnimation(animate)
 
 	inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
 	inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
 	inst.AnimState:SetSortOrder(2)
 
-	inst:ListenForEvent("animover", inst.Remove)
+	if loop == true then
+		inst.AnimState:PlayAnimation(animate, true)
+	else
+		inst.AnimState:PlayAnimation(animate)
+		inst:ListenForEvent("animover", inst.Remove)
+	end
+	
 
 	return inst
 end

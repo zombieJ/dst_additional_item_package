@@ -1,4 +1,8 @@
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
+
 local language = aipGetModConfig("language")
+
+local createGroudVest = require("utils/aip_vest_util").createGroudVest
 
 -- 文字描述
 local LANG_MAP = {
@@ -25,6 +29,7 @@ local assets = {
 
 ------------------------------------ 实例：节点 ------------------------------------
 local function pointFn()
+    local scale = 1
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -37,9 +42,19 @@ local function pointFn()
     inst.AnimState:SetBuild("aip_glass_orbit_point")
     inst.AnimState:PlayAnimation("idle")
 
+    inst.Transform:SetScale(scale, scale, scale)
+
     inst:AddTag("aip_glass_orbit_point")
 
     inst.entity:SetPristine()
+
+    -- 创建一个光环旋转效果
+    if not TheNet:IsDedicated() then
+        inst:DoTaskInTime(0.1, function()
+            local vest = createGroudVest("aip_glass_orbit", "aip_glass_orbit", "loop", true)
+            inst:AddChild(vest)
+        end)
+    end
 
     if not TheWorld.ismastersim then
         return inst
@@ -73,7 +88,8 @@ local function orbitFn()
     inst.AnimState:SetBuild("aip_glass_orbit")
     inst.AnimState:PlayAnimation("idle")
 
-    -- inst.AnimState:OverrideMultColour(0,0,0,1)
+    inst:AddTag("NOCLICK")
+    inst:AddTag("fx")
 
     -- inst.entity:SetPristine()
 
@@ -98,7 +114,10 @@ local function linkFn()
     inst.AnimState:SetBuild("aip_glass_orbit_point")
     inst.AnimState:PlayAnimation("idle")
 
-    inst.AnimState:OverrideMultColour(0,0,0,1)
+    inst.AnimState:OverrideMultColour(0,0,0,dev_mode and 0.3 or 0)
+
+    inst:AddTag("NOCLICK")
+    inst:AddTag("fx")
 
     -- 双端通用组件
     inst:AddComponent("aipc_orbit_link")
