@@ -189,10 +189,10 @@ function CommonStore:PostWorld()
 	--------------------------- 开发模式 ---------------------------
 
 	if dev_mode then
-		self.inst:DoTaskInTime(2, function()
-			TheWorld:PushEvent("phasechanged", "night")
-			TheWorld:PushEvent("ms_setmoonphase", {moonphase = "full"})
-		end)
+		-- self.inst:DoTaskInTime(2, function()
+		-- 	TheWorld:PushEvent("phasechanged", "night")
+		-- 	TheWorld:PushEvent("ms_setmoonphase", {moonphase = "full"})
+		-- end)
 	end
 	-- if dev_mode then
 	-- 	self.inst:DoTaskInTime(2, function()

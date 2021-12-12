@@ -63,17 +63,19 @@ local function orbitFn()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
-    inst.entity:AddNetwork()
+    -- inst.entity:AddNetwork()
 
-    MakeInventoryPhysics(inst)
+    inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+	inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
+	inst.AnimState:SetSortOrder(2)
 
     inst.AnimState:SetBank("aip_glass_orbit")
     inst.AnimState:SetBuild("aip_glass_orbit")
     inst.AnimState:PlayAnimation("idle")
 
-    inst.AnimState:OverrideMultColour(0,0,0,1)
+    -- inst.AnimState:OverrideMultColour(0,0,0,1)
 
-    inst.entity:SetPristine()
+    -- inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
