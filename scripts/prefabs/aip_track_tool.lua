@@ -67,12 +67,17 @@ local function canActOnPoint()
 	return true
 end
 
+local function canActOn(inst, doer, target)
+	return target ~= nil and target.prefab == "aip_glass_orbit_point"
+end
+
 -- 寻找附近的标记点
 local function findNearByPoint(pt)
 	local ents = TheSim:FindEntities(pt.x, 0, pt.z, 2, { "aip_glass_orbit_point" })
 	return ents[1]
 end
 
+-- 在点制造轨道
 local function onDoPointAction(inst, creator, targetPos)
     local startPos = creator:GetPosition()
 
@@ -106,6 +111,13 @@ local function onDoPointAction(inst, creator, targetPos)
 	end
 end
 
+-- 拆出轨道点
+local function onDoTargetAction(inst, doer, target)
+	if target ~= nil then
+		target:Remove()
+	end
+end
+
 --------------------------------- 实例 ---------------------------------
 function fn()
 	local inst = CreateEntity()
@@ -125,6 +137,7 @@ function fn()
 
 	inst:AddComponent("aipc_action_client")
 	inst.components.aipc_action_client.canActOnPoint = canActOnPoint
+	inst.components.aipc_action_client.canActOn = canActOn
 
 	inst.entity:SetPristine()
 
@@ -143,6 +156,7 @@ function fn()
 	-- 施法
     inst:AddComponent("aipc_action")
     inst.components.aipc_action.onDoPointAction = onDoPointAction
+	inst.components.aipc_action.onDoTargetAction = onDoTargetAction
 
 	MakeHauntableLaunch(inst)
 

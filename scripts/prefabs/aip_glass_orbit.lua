@@ -2,8 +2,6 @@ local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 local language = aipGetModConfig("language")
 
-local createGroudVest = require("utils/aip_vest_util").createGroudVest
-
 -- 文字描述
 local LANG_MAP = {
 	english = {
@@ -24,12 +22,10 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_GLASS_ORBIT_POINT = LANG.DESC
 -- 资源
 local assets = {
     Asset("ANIM", "anim/aip_glass_orbit.zip"),
-	Asset("ANIM", "anim/aip_glass_orbit_point.zip"),
 }
 
 ------------------------------------ 实例：节点 ------------------------------------
 local function pointFn()
-    local scale = 1
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -38,27 +34,25 @@ local function pointFn()
 
     MakeInventoryPhysics(inst)
 
-    inst.AnimState:SetBank("aip_glass_orbit_point")
-    inst.AnimState:SetBuild("aip_glass_orbit_point")
-    inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:SetBank("aip_glass_orbit")
+    inst.AnimState:SetBuild("aip_glass_orbit")
+    inst.AnimState:PlayAnimation("loop", true)
+    -- inst.AnimState:SetRayTestOnBB(true)
 
-    inst.Transform:SetScale(scale, scale, scale)
+    inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+	inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
+	inst.AnimState:SetSortOrder(3)
 
     inst:AddTag("aip_glass_orbit_point")
 
     inst.entity:SetPristine()
 
-    -- 创建一个光环旋转效果
-    if not TheNet:IsDedicated() then
-        inst:DoTaskInTime(0.1, function()
-            local vest = createGroudVest("aip_glass_orbit", "aip_glass_orbit", "loop", true)
-            inst:AddChild(vest)
-        end)
-    end
-
     if not TheWorld.ismastersim then
         return inst
     end
+
+    -- 轨道驱动器
+    inst:AddComponent("aipc_orbit_driver")
 
     inst:AddComponent("inspectable")
 

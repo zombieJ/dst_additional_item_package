@@ -28,6 +28,7 @@ local LANG_MAP = {
 		GIVE = "Give",
 		USE = "Use",
 		CAST = "Cast",
+		UNDO = "Undo", -- 和 Cast 相同，只是描述不同
 		READ = "Read",
 		EAT = "Eat",
 	},
@@ -35,6 +36,7 @@ local LANG_MAP = {
 		GIVE = "给予",
 		USE = "使用",
 		CAST = "释放",
+		UNDO = "解除",
 		READ = "阅读",
 		EAT = "吃",
 	},
@@ -184,7 +186,7 @@ local function getActionableItem(doer)
 end
 
 -------------> 标准的施法动作
-local AIPC_CASTER_ACTION = env.AddAction("AIPC_CASTER_ACTION", LANG.CAST, function(act)
+local function doCastAction(act)
 	local doer = act.doer
 	-- local item = act.invobject
 	local pos = act.pos
@@ -200,11 +202,21 @@ local AIPC_CASTER_ACTION = env.AddAction("AIPC_CASTER_ACTION", LANG.CAST, functi
 	end
 
 	return true
-end)
+end
+
+-- Cast
+local AIPC_CASTER_ACTION = env.AddAction("AIPC_CASTER_ACTION", LANG.CAST, doCastAction)
 AIPC_CASTER_ACTION.distance = 10
 
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_CASTER_ACTION, "quicktele"))
 AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_CASTER_ACTION, "quicktele"))
+
+-- undo
+local AIPC_UNDO_ACTION = env.AddAction("AIPC_UNDO_ACTION", LANG.UNDO, doCastAction)
+AIPC_UNDO_ACTION.distance = 10
+
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_UNDO_ACTION, "quicktele"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_UNDO_ACTION, "quicktele"))
 
 -------------> 带网格的施法动作：种地相关代码
 local AIPC_GRID_CASTER_ACTION = env.AddAction("AIPC_GRID_CASTER_ACTION", LANG.CAST, function(act)
@@ -265,6 +277,19 @@ env.AddComponentAction("SCENE", "combat", function(inst, doer, actions, right)
 
 	if item ~= nil and item.components.aipc_action_client:CanActOn(doer, inst) then
 		table.insert(actions, _G.ACTIONS.AIPC_CASTER_ACTION)
+	end
+end)
+
+-- 角色使用拥有 aipc_action_client 的物品对 aipc_orbit_driver 对象 操作
+env.AddComponentAction("SCENE", "aipc_orbit_driver", function(inst, doer, actions, right)
+	if not inst or not right then
+		return
+	end
+
+	local item = getActionableItem(doer)
+
+	if item ~= nil and item.components.aipc_action_client:CanActOn(doer, inst) then
+		table.insert(actions, _G.ACTIONS.AIPC_UNDO_ACTION)
 	end
 end)
 
