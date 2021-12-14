@@ -21,7 +21,6 @@ local Linker = Class(function(self, inst)
     end
 end)
 
--- TODO: 还需要考虑如果是进入视野创建的应该重新渲染轨道
 function Linker:Link(startP, endP)
 	self.startP = startP
 	self.endP = endP
@@ -39,7 +38,6 @@ end
 
 -- 清除轨道
 function Linker:Unlink()
-	aipPrint("Unlink!!!", #self.orbits)
 	for i, v in ipairs(self.orbits) do
 		if v:IsValid() then
 			v:Remove()
@@ -86,6 +84,14 @@ end
 
 function Linker:OnRemoveEntity()
 	self:Unlink()
+end
+
+function Linker:OnEntitySleep()
+	self:Unlink()
+end
+
+function Linker:OnEntityWake()
+	self:SyncPath()
 end
 
 Linker.OnRemoveFromEntity = Linker.OnRemoveEntity
