@@ -3,8 +3,7 @@ local _G = GLOBAL
 _G.STRINGS.AIP = {}
 
 -- 资源
-Assets =
-{
+Assets = {
 	Asset("ATLAS", "images/inventoryimages/popcorngun.xml"),
 	Asset("ATLAS", "images/inventoryimages/incinerator.xml"),
 	Asset("ATLAS", "images/inventoryimages/dark_observer.xml"),
@@ -22,7 +21,7 @@ Assets =
 	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_wind_bg.xml"),
 
 	-- 添加一个动作
-	-- Asset( "ANIM", "anim/aip_player_surf.zip"),
+	Asset( "ANIM", "anim/aip_player_drive.zip"),
 }
 
 -- 物品列表
@@ -199,6 +198,8 @@ AddPrefabPostInit("world", function(inst)
 end)
 
 ------------------------------------- 玩家钩子 -------------------------------------
+modimport("scripts/hooks/aip_drive_hook")
+
 function PlayerPrefabPostInit(inst)
 	if not inst.components.aipc_player_client then
 		inst:AddComponent("aipc_player_client")

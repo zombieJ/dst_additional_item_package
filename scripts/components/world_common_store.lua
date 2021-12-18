@@ -189,10 +189,12 @@ function CommonStore:PostWorld()
 	--------------------------- 开发模式 ---------------------------
 
 	if dev_mode then
-		-- self.inst:DoTaskInTime(2, function()
+		self.inst:DoTaskInTime(5, function()
 		-- 	TheWorld:PushEvent("phasechanged", "night")
 		-- 	TheWorld:PushEvent("ms_setmoonphase", {moonphase = "full"})
-		-- end)
+		aipPrint("do state!!!")
+		ThePlayer.sg:GoToState("aip_drive")
+		end)
 	end
 	-- if dev_mode then
 	-- 	self.inst:DoTaskInTime(2, function()
