@@ -36,8 +36,8 @@ local function getFn(data)
 
         MakeInventoryPhysics(inst)
 
-        inst.AnimState:SetBank("aip_22_fish")
-        inst.AnimState:SetBuild("aip_22_fish")
+        inst.AnimState:SetBank("aip_glass_minecar")
+        inst.AnimState:SetBuild("aip_glass_minecar")
         inst.AnimState:PlayAnimation("idle")
 
         inst.entity:SetPristine()
