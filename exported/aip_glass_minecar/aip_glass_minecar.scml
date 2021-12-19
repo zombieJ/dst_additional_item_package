@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="swap_aip_minecar_down_front">
+        <file id="0" name="swap_aip_minecar_down_front/swap_aip_minecar_down_front.png" width="400" height="500" pivot_x="0.5" pivot_y="0"/>
+    </folder>
+    <folder id="1" name="swap_aip_minecar_side">
+        <file id="0" name="swap_aip_minecar_side/swap_aip_minecar_side.png" width="600" height="500" pivot_x="0.5" pivot_y="0"/>
+    </folder>
+    <folder id="2" name="swap_aip_minecar_up_end">
+        <file id="0" name="swap_aip_minecar_up_end/swap_aip_minecar_up_end.png" width="400" height="500" pivot_x="0.5" pivot_y="0"/>
+    </folder>
+    <entity id="0" name="aip_glass_minecar">
+        <animation id="0" name="swap_aip_minecar_down_front" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="swap_aip_minecar_down_front" folder="0" file="0" abs_x="0.019183" abs_y="-130.331644" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="swap_aip_minecar_down_front">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="0.019183" y="-130.331644" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="1" name="swap_aip_minecar_side" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="swap_aip_minecar_side" folder="1" file="0" abs_x="1.983361" abs_y="-142.52495" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="swap_aip_minecar_side">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="1.983361" y="-142.52495" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="swap_aip_minecar_up_end" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="swap_aip_minecar_up_end" folder="2" file="0" abs_x="1.987531" abs_y="-112.550898" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="swap_aip_minecar_up_end">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="1.987531" y="-112.550898"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

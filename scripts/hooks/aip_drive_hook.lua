@@ -8,7 +8,10 @@ AddStategraphState("wilson", State {
         _G.aipPrint("SG!!!")
         inst.components.locomotor:Stop()
 		inst.AnimState:PlayAnimation("aip_drive", true)
-        inst.AnimState:OverrideSymbol("minecar_down_front", "swap_aip_minecar_down_front", "swap_aip_minecar_down_front")
+        inst.AnimState:OverrideSymbol("minecar_down_front", "aip_glass_minecar", "swap_aip_minecar_down_front")
+        inst.AnimState:OverrideSymbol("minecar_side", "aip_glass_minecar", "swap_aip_minecar_side")
+        inst.AnimState:OverrideSymbol("minecar_up_front", "aip_glass_minecar", "swap_aip_minecar_up_front")
+        inst.AnimState:OverrideSymbol("minecar_up_end", "aip_glass_minecar", "swap_aip_minecar_up_end")
     end,
     timeline = {},
     events = {}

@@ -17,7 +17,8 @@ local list = {
             },
         },
         assets = {
-            Asset("ANIM", "anim/swap_aip_minecar_down_front.zip"),
+            Asset("ANIM", "anim/aip_glass_minecar.zip"),
+            -- Asset("ANIM", "anim/swap_aip_minecar_down_front.zip"),
         },
     },
 }
