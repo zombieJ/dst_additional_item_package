@@ -97,8 +97,11 @@ PrefabFiles = {
 	"aip_nightmare_package",
 	"aip_aura_track",
 	"aip_eye_box",
+
+	-- 诡影迷踪：轨道
 	"aip_track_tool",
 	"aip_glass_orbit",
+	"aip_glass_minecar",
 
 	-- Orbit
 	"aip_orbit",
