@@ -42,6 +42,11 @@ end
 local function recharge(inst)
     if inst.components.finiteuses ~= nil then
         inst.components.finiteuses:Use(-1)
+
+        -- 不能过载
+        if inst.components.finiteuses:GetPercent() > 1 then
+            inst.components.finiteuses:SetPercent(1)
+        end
     end
 end
 

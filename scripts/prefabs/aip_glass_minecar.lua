@@ -18,7 +18,7 @@ local list = {
         },
         assets = {
             Asset("ANIM", "anim/aip_glass_minecar.zip"),
-            -- Asset("ANIM", "anim/swap_aip_minecar_down_front.zip"),
+            Asset("ATLAS", "images/inventoryimages/aip_glass_minecar.xml"),
         },
     },
 }
@@ -26,7 +26,27 @@ local list = {
 ---------------------------------------------------------------------
 --                               实体                               --
 ---------------------------------------------------------------------
+local function canActOn(inst, doer, target)
+	return target.prefab == "aip_glass_orbit_point"
+end
+
+local function onDoTargetAction(inst, doer, target)
+    if target.components.aipc_orbit_driver ~= nil then
+        target.components.aipc_orbit_driver:SetMineCar(inst)
+    end
+end
+
+
 local function getFn(data)
+    local upStr = string.upper(data.name)
+
+    local LANG = data.lang[language] or data.lang.english
+
+    -- 文字描述
+    STRINGS.NAMES[upStr] = LANG.NAME
+    STRINGS.RECIPE_DESC[upStr] = LANG.REC_DESC
+    STRINGS.CHARACTERS.GENERIC.DESCRIBE[upStr] = LANG.DESC
+
     local function fn()
         local inst = CreateEntity()
 
@@ -42,14 +62,20 @@ local function getFn(data)
 
         inst.entity:SetPristine()
 
+        inst:AddComponent("aipc_action_client")
+        inst.components.aipc_action_client.canActOn = canActOn
+
         if not TheWorld.ismastersim then
             return inst
         end
 
+        inst:AddComponent("aipc_action")
+        inst.components.aipc_action.onDoTargetAction = onDoTargetAction
+
         inst:AddComponent("inspectable")
         
         inst:AddComponent("inventoryitem")
-        inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_22_fish.xml"
+        inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_glass_minecar.xml"
 
         MakeHauntableLaunch(inst)
 
