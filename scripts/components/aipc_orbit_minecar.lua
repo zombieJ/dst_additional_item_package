@@ -23,7 +23,7 @@ function MineCar:TryBreak()
 	if
 		not self.doer or
 		not self.doer.sg or
-		(self.doer.components.health ~= nil and not self.doer.components.health:IsDead()) or
+		(self.doer.components.health ~= nil and self.doer.components.health:IsDead()) or
 		not self.doer:IsValid() or
 		self.doer:IsInLimbo()
 	then
@@ -42,6 +42,10 @@ function MineCar:TakeBy(doer)
 		return
 	end
 
+	local pt = self.inst:GetPosition()
+	self.inst:Hide()
+
+	self.doer.Physics:Teleport(pt.x, pt.y, pt.z)
 	self.doer.sg:GoToState("aip_drive")
 end
 
