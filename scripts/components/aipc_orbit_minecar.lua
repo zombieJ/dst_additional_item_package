@@ -1,4 +1,20 @@
--- 双端通用组件
+local language = aipGetModConfig("language")
+
+-- 文字描述
+local LANG_MAP = {
+	english = {
+		EXIT = "Arrow key to move. Press X to exit",
+	},
+	chinese = {
+		EXIT = "方向键控制，X 键退出",
+	},
+}
+
+local LANG = LANG_MAP[language] or LANG_MAP.english
+
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_MINECAR_EXIT = LANG.EXIT
+
+----------------------------------- 双端通用组件 -----------------------------------
 local MineCar = Class(function(self, inst)
 	self.inst = inst
 	self.orbitPoint = nil -- 记录当前所在的轨道点
@@ -40,6 +56,11 @@ function MineCar:TakeBy(doer)
 
 	if self:TryBreak() then -- 如果是不能控制的状态就算了
 		return
+	end
+
+	-- 玩家提示
+	if doer.components.talker ~= nil then
+		doer.components.talker:Say()
 	end
 
 	local pt = self.inst:GetPosition()

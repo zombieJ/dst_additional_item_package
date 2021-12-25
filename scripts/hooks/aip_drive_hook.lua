@@ -65,3 +65,26 @@ AddStategraphState("wilson", State {
     timeline = {},
     events = {}
 })
+
+---------------------------------------------------------------------------------
+--                                   键盘操作                                   --
+---------------------------------------------------------------------------------
+local KEY_UP = 119
+local KEY_RIGHT = 100
+local KEY_DOWN = 115
+local KEY_LEFT = 97
+local KEY_EXIT = 120
+
+local keys = { KEY_UP, KEY_RIGHT, KEY_DOWN, KEY_LEFT, KEY_EXIT }
+
+--- Movement must in server-side, so listen for a RPC.
+env.AddModRPCHandler(env.modname, "aipRunMineCar", function(player, keyCode, exit)
+	moveMineCar(player, keyCode, exit)
+end)
+
+-- 遍历键盘操作
+for i, keyCode in ipairs(keys) do
+	_G.TheInput:AddKeyDownHandler(keyCode, function()
+		
+	end)
+end
