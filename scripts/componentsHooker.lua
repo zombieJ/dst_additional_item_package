@@ -280,8 +280,8 @@ env.AddComponentAction("SCENE", "combat", function(inst, doer, actions, right)
 	end
 end)
 
--- 角色使用拥有 aipc_action_client 的物品对 aipc_orbit_driver 对象 操作
-env.AddComponentAction("SCENE", "aipc_orbit_driver", function(inst, doer, actions, right)
+-- 角色使用拥有 aipc_action_client 的物品对 aipc_orbit_point 对象 操作
+env.AddComponentAction("SCENE", "aipc_orbit_point", function(inst, doer, actions, right)
 	if not inst or not right then
 		return
 	end

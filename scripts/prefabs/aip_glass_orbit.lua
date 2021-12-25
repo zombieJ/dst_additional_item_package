@@ -52,7 +52,7 @@ local function pointFn()
     end
 
     -- 轨道驱动器
-    inst:AddComponent("aipc_orbit_driver")
+    inst:AddComponent("aipc_orbit_point")
 
     inst:AddComponent("inspectable")
 

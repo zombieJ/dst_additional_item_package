@@ -3,8 +3,8 @@
     <folder id="0" name="swap_aip_minecar_down_front">
         <file id="0" name="swap_aip_minecar_down_front/swap_aip_minecar_down_front.png" width="400" height="500" pivot_x="0.5" pivot_y="0"/>
     </folder>
-    <folder id="1" name="swap_aip_minecar_side">
-        <file id="0" name="swap_aip_minecar_side/swap_aip_minecar_side.png" width="600" height="500" pivot_x="0.5" pivot_y="0"/>
+    <folder id="1" name="swap_aip_minecar_side_front">
+        <file id="0" name="swap_aip_minecar_side_front/swap_aip_minecar_side_front.png" width="600" height="500" pivot_x="0.5" pivot_y="0"/>
     </folder>
     <folder id="2" name="swap_aip_minecar_up_end">
         <file id="0" name="swap_aip_minecar_up_end/swap_aip_minecar_up_end.png" width="400" height="500" pivot_x="0.5" pivot_y="0"/>
@@ -12,16 +12,25 @@
     <folder id="3" name="swap_aip_minecar_down_end">
         <file id="0" name="swap_aip_minecar_down_end/swap_aip_minecar_down_end.png" width="400" height="500" pivot_x="0.5" pivot_y="0"/>
     </folder>
+    <folder id="4" name="swap_aip_minecar_side_end">
+        <file id="0" name="swap_aip_minecar_side_end/swap_aip_minecar_side_end.png" width="600" height="500" pivot_x="0.5" pivot_y="0"/>
+    </folder>
+    <folder id="5" name="swap_aip_minecar_up_front">
+        <file id="0" name="swap_aip_minecar_up_front/swap_aip_minecar_down_front.png" width="400" height="500" pivot_x="0.5" pivot_y="0"/>
+    </folder>
+    <folder id="6" name="full">
+        <file id="0" name="full/full.png" width="400" height="500" pivot_x="0" pivot_y="1"/>
+    </folder>
     <entity id="0" name="aip_glass_minecar">
         <animation id="0" name="idle" length="1000">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="swap_aip_minecar_down_front" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="0" name="full" folder="6" file="0" abs_x="0" abs_y="-50" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
             </mainline>
-            <timeline id="0" name="swap_aip_minecar_down_front">
+            <timeline id="0" name="full">
                 <key id="0" spin="0">
-                    <object folder="0" file="0" angle="0"/>
+                    <object folder="6" file="0" y="-50" pivot_x="0.5" pivot_y="0" angle="0"/>
                 </key>
             </timeline>
         </animation>
@@ -37,19 +46,31 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="2" name="swap_aip_minecar_side" length="1000">
+        <animation id="2" name="swap_aip_minecar_side_front" length="1000">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="swap_aip_minecar_side" folder="1" file="0" abs_x="1.983361" abs_y="-142.52495" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="0" name="swap_aip_minecar_side_front" folder="1" file="0" abs_x="1.983361" abs_y="-142.52495" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
             </mainline>
-            <timeline id="0" name="swap_aip_minecar_side">
+            <timeline id="0" name="swap_aip_minecar_side_front">
                 <key id="0" spin="0">
                     <object folder="1" file="0" x="1.983361" y="-142.52495" angle="0"/>
                 </key>
             </timeline>
         </animation>
-        <animation id="3" name="swap_aip_minecar_up_end" length="1000">
+        <animation id="3" name="swap_aip_minecar_side_end" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="swap_aip_minecar_side_end" folder="4" file="0" abs_x="-36.995008" abs_y="-122.518962" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="swap_aip_minecar_side_end">
+                <key id="0" spin="0">
+                    <object folder="4" file="0" x="-36.995008" y="-122.518962" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="4" name="swap_aip_minecar_up_end" length="1000">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="swap_aip_minecar_up_end" folder="2" file="0" abs_x="1.987531" abs_y="-112.550898" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
@@ -61,15 +82,27 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="4" name="swap_aip_minecar_down_end" length="1000">
+        <animation id="5" name="swap_aip_minecar_up_front" length="1000">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="swap_aip_minecar_down_end" folder="3" file="0" abs_x="-49.992207" abs_y="-30.863273" abs_pivot_x="0.492207" abs_pivot_y="0.113273" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="0" name="swap_aip_minecar_down_front_000" folder="5" file="0" abs_x="20.995012" abs_y="-95.518962" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="swap_aip_minecar_down_front_000">
+                <key id="0" spin="0">
+                    <object folder="5" file="0" x="20.995012" y="-95.518962" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="6" name="swap_aip_minecar_down_end" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="swap_aip_minecar_down_end" folder="3" file="0" abs_x="-49.992207" abs_y="-30.863273" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
             </mainline>
             <timeline id="0" name="swap_aip_minecar_down_end">
                 <key id="0" spin="0">
-                    <object folder="3" file="0" x="-49.992207" y="-30.863273"/>
+                    <object folder="3" file="0" x="-49.992207" y="-30.863273" angle="0"/>
                 </key>
             </timeline>
         </animation>

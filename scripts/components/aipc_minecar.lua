@@ -1,3 +1,5 @@
+-- 旧版本矿车，废弃
+
 local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
 
 local Empty = Class(function()

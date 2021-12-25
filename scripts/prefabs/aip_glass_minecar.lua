@@ -31,8 +31,8 @@ local function canActOn(inst, doer, target)
 end
 
 local function onDoTargetAction(inst, doer, target)
-    if target.components.aipc_orbit_driver ~= nil then
-        target.components.aipc_orbit_driver:SetMineCar(inst)
+    if target.components.aipc_orbit_point ~= nil then
+        target.components.aipc_orbit_point:SetMineCar(inst)
     end
 end
 
@@ -68,6 +68,8 @@ local function getFn(data)
         if not TheWorld.ismastersim then
             return inst
         end
+
+        inst:AddComponent("aipc_orbit_minecar")
 
         inst:AddComponent("aipc_action")
         inst.components.aipc_action.onDoTargetAction = onDoTargetAction

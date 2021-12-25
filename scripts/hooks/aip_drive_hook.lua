@@ -1,6 +1,54 @@
 local _G = GLOBAL
 local State = _G.State
+local language = _G.aipGetModConfig("language")
 
+
+local LANG_MAP = {
+	english = {
+		DRIVE = "Drive",
+	},
+	chinese = {
+		DRIVE = "驾驶",
+	},
+}
+local LANG = LANG_MAP[language] or LANG_MAP.english
+
+---------------------------------------------------------------------------------
+--                                   玩家动作                                   --
+---------------------------------------------------------------------------------
+
+------------------------------------ 坐上矿车 ------------------------------------
+-- 注册动作
+local AIPC_MINECAR_DRIVE_ACTION = env.AddAction("AIPC_MINECAR_DRIVE_ACTION", LANG.DRIVE, function(act)
+	local doer = act.doer
+	local item = act.invobject	-- INVENTORY
+	local target = act.target	-- SCENE
+
+    if target ~= nil and target.components.aipc_orbit_point ~= nil then
+        target.components.aipc_orbit_point:Drive(doer)
+    end
+
+	return true
+end)
+AIPC_MINECAR_DRIVE_ACTION.priority = 99
+
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_MINECAR_DRIVE_ACTION, "doshortaction"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_MINECAR_DRIVE_ACTION, "doshortaction"))
+
+-- 根据是否有车决定可上车
+env.AddComponentAction("SCENE", "aipc_orbit_point", function(inst, doer, actions, right)
+	if not inst or not right then
+		return
+	end
+
+	if inst.components.aipc_orbit_point:CanDrive() then
+		table.insert(actions, GLOBAL.ACTIONS.AIPC_MINECAR_DRIVE_ACTION)
+	end
+end)
+
+---------------------------------------------------------------------------------
+--                                   开车状态                                   --
+---------------------------------------------------------------------------------
 AddStategraphState("wilson", State {
     name = "aip_drive",
     tags = {"doing", "busy",},
@@ -9,7 +57,8 @@ AddStategraphState("wilson", State {
 		inst.AnimState:PlayAnimation("aip_drive", true)
         inst.AnimState:OverrideSymbol("minecar_down_front", "aip_glass_minecar", "swap_aip_minecar_down_front")
         inst.AnimState:OverrideSymbol("minecar_down_end", "aip_glass_minecar", "swap_aip_minecar_down_end")
-        inst.AnimState:OverrideSymbol("minecar_side", "aip_glass_minecar", "swap_aip_minecar_side")
+        inst.AnimState:OverrideSymbol("minecar_side_front", "aip_glass_minecar", "swap_aip_minecar_side_front")
+        inst.AnimState:OverrideSymbol("minecar_side_end", "aip_glass_minecar", "swap_aip_minecar_side_end")
         inst.AnimState:OverrideSymbol("minecar_up_front", "aip_glass_minecar", "swap_aip_minecar_up_front")
         inst.AnimState:OverrideSymbol("minecar_up_end", "aip_glass_minecar", "swap_aip_minecar_up_end")
     end,

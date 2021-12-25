@@ -192,8 +192,8 @@ function CommonStore:PostWorld()
 		self.inst:DoTaskInTime(5, function()
 		-- 	TheWorld:PushEvent("phasechanged", "night")
 		-- 	TheWorld:PushEvent("ms_setmoonphase", {moonphase = "full"})
-		aipPrint("do state!!!")
-		ThePlayer.sg:GoToState("aip_drive")
+		-- aipPrint("do state!!!")
+		-- ThePlayer.sg:GoToState("aip_drive")
 		end)
 	end
 	-- if dev_mode then
