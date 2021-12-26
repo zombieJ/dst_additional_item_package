@@ -14,11 +14,33 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_MINECAR_EXIT = LANG.EXIT
 
+------------------------------------ 无状态方法 ------------------------------------
+local function findPoints(current, excluded)
+	local linkList = aipFindNearEnts(current, { "aip_glass_orbit_link" }, 15)
+
+	local includedLinks = aipFilterTable(linkList, function(link)
+		return	link.components.aipc_orbit_link ~= nil and
+				link.components.aipc_orbit_link:Includes(current) and
+				not link.components.aipc_orbit_link:Includes(excluded)
+	end)
+
+	local orbitPointList = {}
+
+	for i, link in ipairs(includedLinks) do
+		local anotherPoint = link.components.aipc_orbit_link:GetAnother(current)
+		table.insert(orbitPointList, anotherPoint)
+	end
+
+	return orbitPointList
+end
+
 ----------------------------------- 双端通用组件 -----------------------------------
 local Driver = Class(function(self, player)
 	self.inst = player
 	self.minecar = nil
 	self.orbitPoint = nil
+	self.nextOrbitPoint = nil
+	self.speed = 10
 end)
 
 -- 是否可以开车状态
@@ -68,23 +90,11 @@ function Driver:DriveTo(x, z, exit)
 		return
 	end
 
+	self.nextOrbitPoint = nil
 	local angle = aipGetAngle(Vector3(0, 0, 0), Vector3(x, 0, z))
-	aipPrint("Driver Angle:", angle)
 
-	-- 找到附近所有的连接器
-	local linkList = aipFindNearEnts(self.orbitPoint, { "aip_glass_orbit_link" }, 15)
-
-	-- 找到连接器的另一个端点
-	local orbitPointList = {}
-	for i, link in ipairs(linkList) do
-		if
-			link.components.aipc_orbit_link ~= nil and
-			link.components.aipc_orbit_link:Includes(self.orbitPoint)
-		then
-			local anotherPoint = link.components.aipc_orbit_link:GetAnother(self.orbitPoint)
-			table.insert(orbitPointList, anotherPoint)
-		end
-	end
+	-- 找到附近所有的连接器，对应的端点
+	local orbitPointList = findPoints(self.orbitPoint)
 
 	-- 找到角度最匹配的连接点
 	local targetPoint = nil
@@ -107,8 +117,43 @@ function Driver:DriveTo(x, z, exit)
 	end
 
 	-- 开过去吧
-	local targetPos = targetPoint:GetPosition()
-	self.inst.Physics:Teleport(targetPos.x, 0, targetPos.z)
+	self.nextOrbitPoint = targetPoint
+
+	self.inst:StartUpdatingComponent(self)
+end
+
+function Driver:StopDrive()
+	self.inst:StopUpdatingComponent(self)
+	self.inst.Physics:Stop()
+end
+
+function Driver:OnUpdate(dt)
+	-- TODO: 如果运动无效，应该断开移动才对
+	if self.orbitPoint == nil or self.nextOrbitPoint == nil then
+		self:StopDrive()
+		return
+	end
+
+	-- 向目标移动
+	local targetPos = self.nextOrbitPoint:GetPosition()
+	self.inst:ForceFacePoint(targetPos.x, 0, targetPos.z)
+	self.inst.Physics:SetMotorVel(self.speed, 0, 0)
+
+	-- 如果到达了就选择下一个目标
+	local playerPos = self.inst:GetPosition()
+	local dist = aipDist(playerPos, targetPos)
+	if dist < .5 then
+		local points = findPoints(self.nextOrbitPoint, self.orbitPoint)
+		self.orbitPoint = self.nextOrbitPoint
+		self.nextOrbitPoint = nil
+
+		if #points == 1 then
+			self.nextOrbitPoint = points[1]
+		else
+			self:StopDrive()
+			return
+		end
+	end
 end
 
 return Driver
