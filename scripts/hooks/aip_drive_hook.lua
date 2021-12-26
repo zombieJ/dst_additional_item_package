@@ -77,14 +77,56 @@ local KEY_EXIT = 120
 
 local keys = { KEY_UP, KEY_RIGHT, KEY_DOWN, KEY_LEFT, KEY_EXIT }
 
+-- 键盘角度
+local function getKeyAngle(keyCode)
+	if keyCode == KEY_UP then
+		return 0
+	elseif keyCode == KEY_RIGHT then
+		return 90
+	elseif keyCode == KEY_DOWN then
+		return 180
+	elseif keyCode == KEY_LEFT then
+		return 270
+	end
+
+	return nil
+end
+
+local function driveMineCar(player, keyCode, exit)
+end
+
 --- Movement must in server-side, so listen for a RPC.
 env.AddModRPCHandler(env.modname, "aipRunMineCar", function(player, keyCode, exit)
-	moveMineCar(player, keyCode, exit)
+	driveMineCar(player, keyCode, exit)
 end)
+
+
 
 -- 遍历键盘操作
 for i, keyCode in ipairs(keys) do
 	_G.TheInput:AddKeyDownHandler(keyCode, function()
-		
+		local player = _G.ThePlayer
+
+		if
+			not player
+			or player.HUD:IsConsoleScreenOpen()
+			or player.HUD:IsChatInputScreenOpen()
+			-- or not player:HasTag("aip_orbit_driver")
+		then
+			return
+		end
+
+		-- 计算角度
+		local screenRotation = _G.TheCamera:GetHeading() -- 指向屏幕左侧
+		_G.aipPrint("Rotate:", screenRotation)
+
+		-- -- Server-side
+		-- if GLOBAL.TheNet:GetIsServer() then
+		-- 	driveMineCar(player, keyCode, keyCode == KEY_EXIT)
+	
+		-- -- Client-side
+		-- else
+		-- 	_G.aipRPC("aipRunMineCar", keyCode, keyCode == KEY_EXIT)
+		-- end
 	end)
 end

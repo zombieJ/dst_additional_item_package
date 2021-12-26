@@ -68,6 +68,8 @@ function MineCar:TakeBy(doer)
 
 	self.doer.Physics:Teleport(pt.x, pt.y, pt.z)
 	self.doer.sg:GoToState("aip_drive")
+
+	self.doer:AddTag("aip_orbit_driver")
 end
 
 return MineCar
