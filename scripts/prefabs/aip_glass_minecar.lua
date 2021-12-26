@@ -69,8 +69,6 @@ local function getFn(data)
             return inst
         end
 
-        inst:AddComponent("aipc_orbit_minecar")
-
         inst:AddComponent("aipc_action")
         inst.components.aipc_action.onDoTargetAction = onDoTargetAction
 

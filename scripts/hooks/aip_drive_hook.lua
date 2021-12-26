@@ -91,7 +91,9 @@ local function GetWorldControllerVector()
 end
 
 local function driveMineCar(player, x, z, exit)
-	_G.aipPrint("Pressed!!!", player, x, z, exit)
+	if player ~= nil and player.components.aipc_orbit_driver ~= nil then
+		player.components.aipc_orbit_driver:DriveTo(x, z, exit)
+	end
 end
 
 --- Movement must in server-side, so listen for a RPC.
@@ -128,3 +130,16 @@ for i, keyCode in ipairs(keys) do
 		_G.aipRPC("driveMineCar", x, z, keyCode == KEY_EXIT)
 	end)
 end
+
+---------------------------------------------------------------------------------
+--                                   司机组件                                   --
+---------------------------------------------------------------------------------
+AddPlayerPostInit(function(player)
+	if not _G.TheWorld.ismastersim then
+		return
+	end
+	
+	if not player.components.aipc_orbit_driver then
+		player:AddComponent("aipc_orbit_driver")
+	end
+end)

@@ -82,6 +82,11 @@ function Linker:Includes(target)
 	return self.startP == target or self.endP == target
 end
 
+-- 获取另一个端点，如果都没有，则随便返回一个
+function Linker:GetAnother(target)
+	return self.startP == target and self.endP or self.startP
+end
+
 function Linker:OnRemoveEntity()
 	self:Unlink()
 end

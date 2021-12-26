@@ -1,5 +1,5 @@
 -- 双端通用组件
-local Driver = Class(function(self, inst)
+local Point = Class(function(self, inst)
 	self.inst = inst
 
 	-- 绑定矿车
@@ -7,23 +7,32 @@ local Driver = Class(function(self, inst)
 end)
 
 -- 设置矿车
-function Driver:SetMineCar(inst)
-	if self.minecar ~= nil or inst == nil or inst.components.aipc_orbit_minecar == nil then
+function Point:SetMineCar(inst)
+	if self.minecar ~= nil or inst == nil then
 		return
 	end
 
 	self.minecar = inst
-	self.minecar.components.aipc_orbit_minecar:BindPoint(self.inst)
+	
+	-- 矿车不能再被捡起
+	if self.minecar.components.inventoryitem ~= nil then
+		self.minecar.components.inventoryitem:RemoveFromOwner(true)
+		self.minecar.components.inventoryitem.canbepickedup = false
+	end
+
+	-- 矿车不能点击
+	self.minecar:AddTag("NOCLICK")
+	self.minecar:AddTag("fx")
 
 	self.inst:AddChild(self.minecar)
 end
 
 -- 是否可以乘坐
-function Driver:CanDrive()
+function Point:CanDrive()
 	return self.minecar ~= nil
 end
 
-function Driver:RemoveMineCar()
+function Point:RemoveMineCar()
 	if self.minecar ~= nil then
 		self.inst:RemoveChild(self.minecar)
 		self.minecar = nil
@@ -31,9 +40,9 @@ function Driver:RemoveMineCar()
 end
 
 -- 玩家上车了
-function Driver:Drive(doer)
-	if self.minecar ~=nil and self.minecar.components.aipc_orbit_minecar ~= nil then
-		local canTake = self.minecar.components.aipc_orbit_minecar:TakeBy(doer)
+function Point:Drive(doer)
+	if self.minecar ~=nil and doer and doer.components.aipc_orbit_driver ~= nil then
+		local canTake = doer.components.aipc_orbit_driver:UseMineCar(self.minecar, self.inst)
 
 		if canTake then
 			self:RemoveMineCar()
@@ -41,4 +50,4 @@ function Driver:Drive(doer)
 	end
 end
 
-return Driver
+return Point
