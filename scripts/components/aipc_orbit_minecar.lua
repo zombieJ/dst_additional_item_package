@@ -52,6 +52,10 @@ function MineCar:TryBreak()
 end
 
 function MineCar:TakeBy(doer)
+	if self.doer ~= nil then -- 有人就不能坐了
+		return
+	end
+
 	self.doer = doer
 
 	if self:TryBreak() then -- 如果是不能控制的状态就算了
@@ -60,7 +64,9 @@ function MineCar:TakeBy(doer)
 
 	-- 玩家提示
 	if doer.components.talker ~= nil then
-		doer.components.talker:Say()
+		doer.components.talker:Say(
+			STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_MINECAR_EXIT
+		)
 	end
 
 	local pt = self.inst:GetPosition()
@@ -69,7 +75,11 @@ function MineCar:TakeBy(doer)
 	self.doer.Physics:Teleport(pt.x, pt.y, pt.z)
 	self.doer.sg:GoToState("aip_drive")
 
+	-- 玩家绑定矿车
 	self.doer:AddTag("aip_orbit_driver")
+	self.doer._aip_oribit_minecar = self.inst
+
+	return true
 end
 
 return MineCar

@@ -23,10 +23,21 @@ function Driver:CanDrive()
 	return self.minecar ~= nil
 end
 
+function Driver:RemoveMineCar()
+	if self.minecar ~= nil then
+		self.inst:RemoveChild(self.minecar)
+		self.minecar = nil
+	end
+end
+
 -- 玩家上车了
 function Driver:Drive(doer)
 	if self.minecar ~=nil and self.minecar.components.aipc_orbit_minecar ~= nil then
-		self.minecar.components.aipc_orbit_minecar:TakeBy(doer)
+		local canTake = self.minecar.components.aipc_orbit_minecar:TakeBy(doer)
+
+		if canTake then
+			self:RemoveMineCar()
+		end
 	end
 end
 

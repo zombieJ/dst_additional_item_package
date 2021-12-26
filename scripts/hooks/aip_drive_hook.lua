@@ -77,27 +77,26 @@ local KEY_EXIT = 120
 
 local keys = { KEY_UP, KEY_RIGHT, KEY_DOWN, KEY_LEFT, KEY_EXIT }
 
--- 键盘角度
-local function getKeyAngle(keyCode)
-	if keyCode == KEY_UP then
-		return 0
-	elseif keyCode == KEY_RIGHT then
-		return 90
-	elseif keyCode == KEY_DOWN then
-		return 180
-	elseif keyCode == KEY_LEFT then
-		return 270
-	end
+-- 获取控制方向
+local function GetWorldControllerVector()
+    local xdir = _G.TheInput:GetAnalogControlValue(_G.CONTROL_MOVE_RIGHT) - _G.TheInput:GetAnalogControlValue(_G.CONTROL_MOVE_LEFT)
+    local ydir = _G.TheInput:GetAnalogControlValue(_G.CONTROL_MOVE_UP) - _G.TheInput:GetAnalogControlValue(_G.CONTROL_MOVE_DOWN)
+    local deadzone = .3
+    if math.abs(xdir) >= deadzone or math.abs(ydir) >= deadzone then
+        local dir = _G.TheCamera:GetRightVec() * xdir - _G.TheCamera:GetDownVec() * ydir
+        return dir:GetNormalized()
+    end
 
 	return nil
 end
 
-local function driveMineCar(player, keyCode, exit)
+local function driveMineCar(player, x, z, exit)
+	_G.aipPrint("Pressed!!!", player, x, z, exit)
 end
 
 --- Movement must in server-side, so listen for a RPC.
-env.AddModRPCHandler(env.modname, "aipRunMineCar", function(player, keyCode, exit)
-	driveMineCar(player, keyCode, exit)
+env.AddModRPCHandler(env.modname, "driveMineCar", function(player, x, z, exit)
+	driveMineCar(player, x, z, exit)
 end)
 
 
@@ -116,17 +115,16 @@ for i, keyCode in ipairs(keys) do
 			return
 		end
 
-		-- 计算角度
-		local screenRotation = _G.TheCamera:GetHeading() -- 指向屏幕左侧
-		_G.aipPrint("Rotate:", screenRotation)
+		-- 计算方向
+		local dir = GetWorldControllerVector()
+		local x = 0
+		local y = 0
+		if dir then
+			x = dir.x
+			z = dir.z
+		end
 
-		-- -- Server-side
-		-- if GLOBAL.TheNet:GetIsServer() then
-		-- 	driveMineCar(player, keyCode, keyCode == KEY_EXIT)
-	
-		-- -- Client-side
-		-- else
-		-- 	_G.aipRPC("aipRunMineCar", keyCode, keyCode == KEY_EXIT)
-		-- end
+		-- 发送方向数据给服务器
+		_G.aipRPC("driveMineCar", x, z, keyCode == KEY_EXIT)
 	end)
 end

@@ -561,7 +561,7 @@ end
 --------------------------------------- RPC ---------------------------------------
 -- RPC 发送时自动会带上 player 作为第一个参数
 function _G.aipRPC(funcName, ...)
-	SendModRPCToServer(MOD_RPC[env.modname][funcName], _G.unpack(arg))
+	SendModRPCToServer(MOD_RPC[env.modname][funcName], ...)
 end
 
 -- 添加 aipc_buffer
