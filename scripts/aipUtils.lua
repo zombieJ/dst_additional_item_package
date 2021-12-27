@@ -585,3 +585,15 @@ function _G.hasBuffer(inst, name)
 
 	return false
 end
+
+-- 获取玩家手持的物品，仅在 AddComponentAction 中使用
+function _G.aipGetActionableItem(doer)
+	local inventory = doer.replica.inventory
+	if inventory ~= nil then
+		local item = inventory:GetEquippedItem(_G.EQUIPSLOTS.HANDS)
+		if item ~= nil and item.components.aipc_action_client ~= nil then
+			return item
+		end
+	end
+	return nil
+end
