@@ -101,8 +101,6 @@ env.AddModRPCHandler(env.modname, "driveMineCar", function(player, x, z, exit)
 	driveMineCar(player, x, z, exit)
 end)
 
-
-
 -- 遍历键盘操作
 for i, keyCode in ipairs(keys) do
 	_G.TheInput:AddKeyDownHandler(keyCode, function()

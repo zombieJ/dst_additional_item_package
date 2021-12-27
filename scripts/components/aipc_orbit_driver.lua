@@ -85,13 +85,11 @@ function Driver:UseMineCar(minecar, orbitPoint)
 	return true
 end
 
-function Driver:DriveTo(x, z, exit)
-	if not self:CanDrive() then
-		return
-	end
-
+------------------------------- 开车啦 ------------------------------------------------
+-- 如果没有在运行，则找下一个可过去的点开过去
+function Driver:DriveFromPoint(angle)
 	self.nextOrbitPoint = nil
-	local angle = aipGetAngle(Vector3(0, 0, 0), Vector3(x, 0, z))
+	
 
 	-- 找到附近所有的连接器，对应的端点
 	local orbitPointList = findPoints(self.orbitPoint)
@@ -103,7 +101,7 @@ function Driver:DriveTo(x, z, exit)
 
 	for i, anotherPoint in ipairs(orbitPointList) do
 		local toPointAngle = aipGetAngle(srcOrbitPointPos, anotherPoint:GetPosition())
-		local diffAngle = math.abs(angle - toPointAngle)
+		local diffAngle = aipDiffAngle(angle, toPointAngle)
 
 		if diffAngle < minAngle then
 			minAngle = diffAngle
@@ -120,6 +118,33 @@ function Driver:DriveTo(x, z, exit)
 	self.nextOrbitPoint = targetPoint
 
 	self.inst:StartUpdatingComponent(self)
+end
+
+-- 如果是驾驶过程中，则看看是不是顺路，不顺路则返回
+function Driver:DriveBack(angle)
+	local orbitAngle = aipGetAngle(self.orbitPoint:GetPosition(), self.nextOrbitPoint:GetPosition())
+
+	if aipDiffAngle(angle, orbitAngle) > 90 then
+		local tmpOrbitPoint = self.nextOrbitPoint
+		self.nextOrbitPoint = self.orbitPoint
+		self.orbitPoint = tmpOrbitPoint
+	end
+end
+
+function Driver:DriveTo(x, z, exit)
+	if not self:CanDrive() then
+		return
+	end
+
+	local angle = aipGetAngle(Vector3(0, 0, 0), Vector3(x, 0, z))
+	
+	if self.nextOrbitPoint == nil then
+		self:DriveFromPoint(angle)
+	else
+		self:DriveBack(angle)
+	end
+
+	
 end
 
 function Driver:StopDrive()
