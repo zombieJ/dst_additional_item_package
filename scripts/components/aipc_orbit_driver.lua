@@ -136,6 +136,12 @@ function Driver:DriveTo(x, z, exit)
 		return
 	end
 
+	-- 退出了就不要做什么操作了
+	if exit then
+		self:AbortDrive()
+		return
+	end
+
 	local angle = aipGetAngle(Vector3(0, 0, 0), Vector3(x, 0, z))
 	
 	if self.nextOrbitPoint == nil then
@@ -150,6 +156,32 @@ end
 function Driver:StopDrive()
 	self.inst:StopUpdatingComponent(self)
 	self.inst.Physics:Stop()
+end
+
+function Driver:AbortDrive()
+	self:StopDrive()
+	self.inst.sg:GoToState("idle")
+
+	-- 矿车掉落
+	local pt = self.inst:GetPosition()
+	self.minecar:Show()
+	self.minecar.Physics:Teleport(pt.x, pt.y, pt.z)
+
+	self.minecar:RemoveTag("NOCLICK")
+	self.minecar:RemoveTag("fx")
+
+	if self.minecar.components.lootdropper ~= nil then
+		self.minecar.components.lootdropper:FlingItem(self.minecar, pt)
+	end
+
+	if self.minecar.components.inventoryitem ~= nil then
+		self.minecar.components.inventoryitem.canbepickedup = true
+	end
+
+	-- 清空状态
+	self.minecar = nil
+	self.orbitPoint = nil
+	self.nextOrbitPoint = nil
 end
 
 function Driver:OnUpdate(dt)

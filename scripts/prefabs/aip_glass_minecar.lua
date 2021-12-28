@@ -69,6 +69,8 @@ local function getFn(data)
             return inst
         end
 
+        inst:AddComponent("lootdropper")
+
         inst:AddComponent("aipc_action")
         inst.components.aipc_action.onDoTargetAction = onDoTargetAction
 
