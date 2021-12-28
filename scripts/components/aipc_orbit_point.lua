@@ -50,4 +50,32 @@ function Point:Drive(doer)
 	end
 end
 
+function Point:OnRemoveEntity()
+	aipPrint("nonono!!!")
+	if not self.minecar then
+		return
+	end
+	
+
+	local pt = self.inst:GetPosition()
+	self.inst:RemoveChild(self.minecar)
+	self.minecar.Physics:Teleport(pt.x, pt.y, pt.z)
+	aipTypePrint("yyyy!!!", pt)
+	
+	-- 矿车不能再被捡起
+	if self.minecar.components.inventoryitem ~= nil then
+		self.minecar.components.inventoryitem.canbepickedup = true
+	end
+
+	-- 矿车不能点击
+	self.minecar:RemoveTag("NOCLICK")
+	self.minecar:RemoveTag("fx")
+
+	if self.minecar.components.lootdropper ~= nil then
+		self.minecar.components.lootdropper:FlingItem(self.minecar, pt)
+	end
+end
+
+Point.OnRemoveFromEntity = Point.OnRemoveEntity
+
 return Point
