@@ -138,7 +138,7 @@ for i, keyCode in ipairs(keys) do
 			not player
 			or player.HUD:IsConsoleScreenOpen()
 			or player.HUD:IsChatInputScreenOpen()
-			-- or not player:HasTag("aip_orbit_driver")
+			or not player:HasTag("aip_orbit_driver")
 		then
 			return
 		end

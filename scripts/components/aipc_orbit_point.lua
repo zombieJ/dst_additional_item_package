@@ -50,8 +50,8 @@ function Point:Drive(doer)
 	end
 end
 
+-- 拆除时会掉落矿车
 function Point:OnRemoveEntity()
-	aipPrint("nonono!!!")
 	if not self.minecar then
 		return
 	end
@@ -60,7 +60,6 @@ function Point:OnRemoveEntity()
 	local pt = self.inst:GetPosition()
 	self.inst:RemoveChild(self.minecar)
 	self.minecar.Physics:Teleport(pt.x, pt.y, pt.z)
-	aipTypePrint("yyyy!!!", pt)
 	
 	-- 矿车不能再被捡起
 	if self.minecar.components.inventoryitem ~= nil then

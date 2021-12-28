@@ -101,4 +101,35 @@ end
 
 Linker.OnRemoveFromEntity = Linker.OnRemoveEntity
 
+-------------------------------------------------------------
+function Linker:OnSave()
+	if self.startP and self.endP then
+		local startPt = self.startP:GetPosition()
+		local endPt = self.endP:GetPosition()
+
+		return {
+			startX = startPt.x,
+			startZ = startPt.z,
+			endX = endPt.x,
+			endZ = endPt.z,
+		}
+	end
+end
+
+function Container:OnLoad(data)
+    if data then
+        local startX = data.startX
+		local startZ = data.startZ
+		local endX = data.endX
+		local endZ = data.endZ
+
+		local startP = TheSim:FindEntities(startX, 0, startZ, 0.1, {"aip_glass_orbit_point"})[1]
+		local endP = TheSim:FindEntities(endX, 0, endZ, 0.1, {"aip_glass_orbit_point"})[1]
+
+		if startP and endP then
+			self:Link(startP, endP)
+		end
+	end
+end
+
 return Linker
