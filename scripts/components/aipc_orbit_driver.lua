@@ -83,6 +83,8 @@ function Driver:UseMineCar(minecar, orbitPoint)
 	self.inst.sg:GoToState("aip_drive")
 	self.inst:AddTag("aip_orbit_driver")
 
+	MakeGhostPhysics(self.inst, 1, .5)
+
 	return true
 end
 
@@ -150,8 +152,6 @@ function Driver:DriveTo(x, z, exit)
 	else
 		self:DriveBack(angle)
 	end
-
-	
 end
 
 function Driver:StopDrive()
@@ -163,6 +163,7 @@ function Driver:AbortDrive()
 	self:StopDrive()
 	self.inst.sg:GoToState("idle")
 	self.inst:RemoveTag("aip_orbit_driver")
+	MakeCharacterPhysics(self.inst, 75, .5)
 
 	-- 矿车掉落
 	local pt = self.inst:GetPosition()

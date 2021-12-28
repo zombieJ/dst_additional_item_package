@@ -116,19 +116,24 @@ function Linker:OnSave()
 	end
 end
 
-function Container:OnLoad(data)
-    if data then
-        local startX = data.startX
+function Linker:OnLoad(data)
+	if data then
+		local startX = data.startX
 		local startZ = data.startZ
 		local endX = data.endX
 		local endZ = data.endZ
 
-		local startP = TheSim:FindEntities(startX, 0, startZ, 0.1, {"aip_glass_orbit_point"})[1]
-		local endP = TheSim:FindEntities(endX, 0, endZ, 0.1, {"aip_glass_orbit_point"})[1]
-
-		if startP and endP then
-			self:Link(startP, endP)
-		end
+		-- 等物体载入完成后，再链接起来
+		self.inst:DoTaskInTime(1, function()
+			local startP = TheSim:FindEntities(startX, 0, startZ, 0.1, {"aip_glass_orbit_point"})[1]
+			local endP = TheSim:FindEntities(endX, 0, endZ, 0.1, {"aip_glass_orbit_point"})[1]
+	
+			if startP and endP then
+				self:Link(startP, endP)
+			else
+				self.inst:Remove()
+			end
+		end)
 	end
 end
 
