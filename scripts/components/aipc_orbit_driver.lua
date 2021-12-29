@@ -168,6 +168,7 @@ function Driver:AbortDrive()
 	-- 矿车掉落
 	local pt = self.inst:GetPosition()
 	self.minecar:Show()
+	self.inst.Physics:Teleport(pt.x, pt.y, pt.z)
 	self.minecar.Physics:Teleport(pt.x, pt.y, pt.z)
 
 	self.minecar:RemoveTag("NOCLICK")

@@ -52,13 +52,18 @@ local function getFn(data)
 
         inst.entity:AddTransform()
         inst.entity:AddAnimState()
+        inst.entity:AddDynamicShadow()
         inst.entity:AddNetwork()
+
+        inst.DynamicShadow:SetSize(5.00, 1.50)
 
         MakeInventoryPhysics(inst)
 
         inst.AnimState:SetBank("aip_glass_minecar")
         inst.AnimState:SetBuild("aip_glass_minecar")
         inst.AnimState:PlayAnimation("idle")
+
+        MakeInventoryFloatable(inst, "large", nil, 0.75)
 
         inst.entity:SetPristine()
 
