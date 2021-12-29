@@ -127,6 +127,19 @@ local function onDoTargetAction(inst, doer, target)
 	target:Remove()
 end
 
+local function CanCastFn(doer, target, pos)
+    return true
+end
+
+local function CreateRail(inst, target, pos)
+	local owner = inst.components.inventoryitem:GetGrandOwner()
+	if owner == nil then
+		return
+	end
+
+	onDoPointAction(inst, owner, pos)
+end
+
 --------------------------------- 实例 ---------------------------------
 function fn()
 	local inst = CreateEntity()
@@ -141,8 +154,7 @@ function fn()
 	inst.AnimState:SetBuild("aip_track_tool")
 	inst.AnimState:PlayAnimation("idle")
 
-	inst:AddTag("show_spoilage")
-	inst:AddTag("icebox_valid")
+	inst:AddTag("allow_action_on_impassable")
 
 	inst:AddComponent("aipc_action_client")
 	inst.components.aipc_action_client.canActOnPoint = canActOnPoint
@@ -162,7 +174,7 @@ function fn()
 	inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_track_tool.xml"
 
-	-- 施法
+	-- -- 施法
     inst:AddComponent("aipc_action")
     inst.components.aipc_action.onDoPointAction = onDoPointAction
 	inst.components.aipc_action.onDoTargetAction = onDoTargetAction
