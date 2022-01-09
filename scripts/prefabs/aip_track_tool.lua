@@ -18,12 +18,12 @@ local DAMAGE_MAP = {
 
 local LANG_MAP = {
 	english = {
-		NAME = "Weak Holder",
+		NAME = "Track Measurer",
 		REC_DESC = "Create a shadow track",
 		DESC = "Mixed with moon and shadow",
 	},
 	chinese = {
-		NAME = "幻影之握",
+		NAME = "月轨测量仪",
 		REC_DESC = "制作一条暗影轨道",
 		DESC = "暗影与月光的奇艺融合",
 	},

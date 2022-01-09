@@ -141,15 +141,34 @@ local AIP_DOU_SCEPTER = AddRecipeTab(
 	true
 )
 
-local TECH_LANG = {
+local AIP_DOU_TOTEM = AddRecipeTab(
+	"AIP_DOU_TOTEM",
+	100,
+	"images/inventoryimages/aip_dou_tech.xml",
+	"aip_dou_tech.tex",
+	nil,
+	true
+)
+
+----------
+local TECH_SCEPTER_LANG = {
 	english = "Mysterious",
 	chinese = "神秘魔法",
 }
 
-_G.STRINGS.TABS.AIP_DOU_SCEPTER = TECH_LANG[language]
+local TECH_TOTEM_LANG = {
+	english = "IOT",
+	chinese = "联结",
+}
 
+_G.STRINGS.TABS.AIP_DOU_SCEPTER = TECH_SCEPTER_LANG[language]
+_G.STRINGS.TABS.AIP_DOU_TOTEM = TECH_TOTEM_LANG[language]
+
+----------
 modimport("scripts/techHooker.lua")
 
+----------
+-- 添加符文配方
 local inscriptions = require("utils/aip_scepter_util").inscriptions
 for name, info in pairs(inscriptions) do
 	AddRecipe(
@@ -158,6 +177,16 @@ for name, info in pairs(inscriptions) do
 		"images/inventoryimages/"..name..".xml", name..".tex"
 	)
 end
+
+-- 月轨测量仪
+AddRecipe(
+	"aip_track_tool",
+	{ Ingredient("moonglass", 6), Ingredient("moonrocknugget", 3), Ingredient("transistor", 1) },
+	AIP_DOU_TOTEM, _G.TECH.AIP_DOU_TOTEM,
+	nil, nil, true, nil, nil,
+	"images/inventoryimages/aip_track_tool.xml",
+	"aip_track_tool.tex"
+)
 
 ------------------------------------- 组件钩子 -------------------------------------
 modimport("scripts/componentsHooker.lua")

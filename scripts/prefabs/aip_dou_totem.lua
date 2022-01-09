@@ -344,6 +344,10 @@ local function makeTotemFn(name, animation, nextPrefab, nextPrefabAnimation, pos
             if not TheWorld:HasTag("cave") then
                 inst:WatchWorldState("isfullmoon", OnFullMoon)
                 OnFullMoon(inst, TheWorld.state.isfullmoon)
+
+                -- 地上可以用来合成
+                inst:AddComponent("prototyper")
+                inst.components.prototyper.trees = TUNING.PROTOTYPER_TREES.AIP_DOU_TOTEM
             end
         end
 
