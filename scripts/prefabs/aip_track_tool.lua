@@ -5,11 +5,8 @@ local weapon_damage = aipGetModConfig("weapon_damage")
 local language = aipGetModConfig("language")
 
 -- 默认参数
-local USES_MAP = {
-	less = 50,
-	normal = 100,
-	much = 150,
-}
+local USE_TIMES = 20
+
 local DAMAGE_MAP = {
 	less = TUNING.CANE_DAMAGE * 0.8,
 	normal = TUNING.CANE_DAMAGE,
@@ -62,6 +59,13 @@ local function onunequip(inst, owner)
 	owner.AnimState:Show("ARM_normal")
 end
 
+--------------------------------- 装备 ---------------------------------
+local function onFueled(inst, item, doer)
+	if inst.components.finiteuses ~= nil then
+		inst.components.finiteuses:Use(USE_TIMES / 4)
+	end
+end
+
 --------------------------------- 部署 ---------------------------------
 local function canActOnPoint()
 	return true
@@ -80,6 +84,13 @@ end
 -- 在点制造轨道
 local function onDoPointAction(inst, creator, targetPos)
     local startPos = creator:GetPosition()
+
+	if inst.components.finiteuses:GetUses() == 0 then
+		return
+	end
+
+	-- 消耗一次次数
+	inst.components.finiteuses:Use()
 
 	-- 起始点：如果附近有点就不创建
 	local startP = findNearByPoint(startPos)
@@ -166,8 +177,16 @@ function fn()
 		return inst
 	end
 
+	inst:AddComponent("aipc_fueled")
+	inst.components.aipc_fueled.prefab = "moonglass"
+	inst.components.aipc_fueled.onFueled = onFueled
+
 	inst:AddComponent("weapon")
 	inst.components.weapon:SetDamage(TUNING.AIP_TRACK_TOOLE_DAMAGE)
+
+	inst:AddComponent("finiteuses")
+	inst.components.finiteuses:SetMaxUses(USE_TIMES)
+    inst.components.finiteuses:SetUses(0)
 
 	inst:AddComponent("inspectable")
 

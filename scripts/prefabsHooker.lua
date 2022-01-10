@@ -157,6 +157,12 @@ AddPrefabPostInit("goldnugget", function(inst)
 	inst.components.aipc_action.onDoTargetAction = onDoGoldTargetAction
 end)
 
+---------------------------------------- 月亮玻璃 ----------------------------------------
+AddPrefabPostInit("moonglass", function(inst)
+	-- 燃料注入
+	inst:AddComponent("aipc_fuel")
+end)
+
 ------------------------------------------ 猪人 ------------------------------------------
 AddPrefabPostInit("pigman", function(inst)
 	-- 猪人会概率掉落西游人物卡

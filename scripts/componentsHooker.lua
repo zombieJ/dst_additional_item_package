@@ -26,6 +26,7 @@ end)
 local LANG_MAP = {
 	english = {
 		GIVE = "Give",
+		FUEL = "Fuel",
 		USE = "Use",
 		CAST = "Cast",
 		READ = "Read",
@@ -33,6 +34,7 @@ local LANG_MAP = {
 	},
 	chinese = {
 		GIVE = "给予",
+		FUEL = "充能",
 		USE = "使用",
 		CAST = "释放",
 		READ = "阅读",
@@ -72,6 +74,33 @@ env.AddComponentAction("USEITEM", "aipc_action_client", function(inst, doer, tar
 
 	if inst.components.aipc_action_client:CanActOn(doer, target) then
 		table.insert(actions, _G.ACTIONS.AIPC_ACTION)
+	end
+end)
+
+-------------------- 对目标充能的技能 --------------------
+local AIPC_FUEL_ACTION = env.AddAction("AIPC_FUEL_ACTION", LANG.FUEL, function(act)
+	local doer = act.doer
+	local item = act.invobject
+	local target = act.target
+
+	if doer ~= nil and item ~= nil and target ~= nil and target.components.aipc_fueled ~= nil then
+		return target.components.aipc_fueled:TakeFuel(item, player)
+	end
+
+	return false
+end)
+
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_FUEL_ACTION, "dolongaction"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_FUEL_ACTION, "dolongaction"))
+
+-- 角色使用 aipc_fuel 对带有 aipc_fueled 某物使用
+env.AddComponentAction("USEITEM", "aipc_fuel", function(inst, doer, target, actions, right)
+	if not inst or not target then
+		return
+	end
+
+	if target.components.aipc_fueled ~= nil and target.components.aipc_fueled:CanUse(inst, doer) then
+		table.insert(actions, _G.ACTIONS.AIPC_FUEL_ACTION)
 	end
 end)
 
