@@ -32,7 +32,7 @@ local function pointFn()
     inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
-    MakeInventoryPhysics(inst)
+    MakeTinyFlyingCharacterPhysics(inst, 0, 0)
 
     inst.AnimState:SetBank("aip_glass_orbit")
     inst.AnimState:SetBuild("aip_glass_orbit")
@@ -44,6 +44,9 @@ local function pointFn()
 	inst.AnimState:SetSortOrder(3)
 
     inst:AddTag("aip_glass_orbit_point")
+
+    -- 让船无视它
+    inst:AddTag("flying")
 
     inst.entity:SetPristine()
 
@@ -104,7 +107,7 @@ local function linkFn()
     inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
-    MakeInventoryPhysics(inst)
+    MakeTinyFlyingCharacterPhysics(inst, 0, 0)
 
     inst.AnimState:SetBank("aip_glass_orbit_point")
     inst.AnimState:SetBuild("aip_glass_orbit_point")

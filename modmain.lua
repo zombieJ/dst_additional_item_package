@@ -9,7 +9,7 @@ Assets = {
 	Asset("ATLAS", "images/inventoryimages/dark_observer.xml"),
 	Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
 
-	-- 豆酱雕塑需要提前加载
+	-- 神秘权杖需要提前加载
 	Asset("ATLAS", "images/inventoryimages/aip_dou_tech.xml"),
 	Asset("ANIM", "anim/aip_ui_doujiang_chest.zip"),
 	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_bg.xml"),
@@ -19,6 +19,9 @@ Assets = {
 	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_plant_bg.xml"),
 	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_water_bg.xml"),
 	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_wind_bg.xml"),
+
+	-- 诡影迷踪需要提前加载
+	Asset("ATLAS", "images/inventoryimages/aip_totem_tech.xml"),
 
 	-- 添加一个动作
 	Asset( "ANIM", "anim/aip_player_drive.zip"),
@@ -144,8 +147,8 @@ local AIP_DOU_SCEPTER = AddRecipeTab(
 local AIP_DOU_TOTEM = AddRecipeTab(
 	"AIP_DOU_TOTEM",
 	100,
-	"images/inventoryimages/aip_dou_tech.xml",
-	"aip_dou_tech.tex",
+	"images/inventoryimages/aip_totem_tech.xml",
+	"aip_totem_tech.tex",
 	nil,
 	true
 )
