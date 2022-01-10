@@ -62,7 +62,7 @@ end
 --------------------------------- 装备 ---------------------------------
 local function onFueled(inst, item, doer)
 	if inst.components.finiteuses ~= nil then
-		inst.components.finiteuses:Use(USE_TIMES / 4)
+		inst.components.finiteuses:Use(-USE_TIMES / 4)
 	end
 end
 
@@ -85,6 +85,7 @@ end
 local function onDoPointAction(inst, creator, targetPos)
     local startPos = creator:GetPosition()
 
+	aipPrint(inst.components.finiteuses:GetUses())
 	if inst.components.finiteuses:GetUses() == 0 then
 		return
 	end
