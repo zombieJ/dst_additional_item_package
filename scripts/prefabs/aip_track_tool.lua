@@ -67,7 +67,11 @@ local function onFueled(inst, item, doer)
 end
 
 --------------------------------- 部署 ---------------------------------
-local function canActOnPoint()
+local function canActOnPoint(inst)
+	if inst.components ~= nil and inst.components.finiteuses ~= nil then
+		return inst.components.finiteuses:GetUses() > 0
+	end
+
 	return true
 end
 
