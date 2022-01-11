@@ -68,10 +68,6 @@ end
 
 --------------------------------- 部署 ---------------------------------
 local function canActOnPoint(inst)
-	if inst.components ~= nil and inst.components.finiteuses ~= nil then
-		return inst.components.finiteuses:GetUses() > 0
-	end
-
 	return true
 end
 
@@ -176,15 +172,16 @@ function fn()
 	inst.components.aipc_action_client.canActOnPoint = canActOnPoint
 	inst.components.aipc_action_client.canActOn = canActOn
 
+	-- 双端通用的匹配
+	inst:AddComponent("aipc_fueled")
+	inst.components.aipc_fueled.prefab = "moonglass"
+	inst.components.aipc_fueled.onFueled = onFueled
+
 	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
 		return inst
 	end
-
-	inst:AddComponent("aipc_fueled")
-	inst.components.aipc_fueled.prefab = "moonglass"
-	inst.components.aipc_fueled.onFueled = onFueled
 
 	inst:AddComponent("weapon")
 	inst.components.weapon:SetDamage(TUNING.AIP_TRACK_TOOLE_DAMAGE)

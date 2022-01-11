@@ -48,14 +48,14 @@ local function pointFn()
     -- 让船无视它
     inst:AddTag("flying")
 
+    -- 轨道驱动器
+    inst:AddComponent("aipc_orbit_point")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
-
-    -- 轨道驱动器
-    inst:AddComponent("aipc_orbit_point")
 
     inst:AddComponent("inspectable")
 

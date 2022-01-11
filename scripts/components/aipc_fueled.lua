@@ -1,3 +1,4 @@
+-- 跨端通用
 local Fueled = Class(function(self, inst)
 	self.inst = inst
 

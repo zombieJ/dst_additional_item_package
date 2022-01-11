@@ -20,6 +20,7 @@ local list = {
             Asset("ANIM", "anim/aip_glass_minecar.zip"),
             Asset("ATLAS", "images/inventoryimages/aip_glass_minecar.xml"),
         },
+        uses = 10,
     },
 }
 

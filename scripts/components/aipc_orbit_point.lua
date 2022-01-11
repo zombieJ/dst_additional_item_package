@@ -4,6 +4,13 @@ local Point = Class(function(self, inst)
 
 	-- 绑定矿车
 	self.minecar = nil
+
+	-- 网络标记
+	self.hasMinecar = net_bool(inst.GUID, "aipc_orbit_point_car", "aipc_orbit_point_car_dirty")
+
+	if TheWorld.ismastersim then
+		self.hasMinecar:set(false)
+	end
 end)
 
 -- 设置矿车
@@ -13,6 +20,7 @@ function Point:SetMineCar(inst)
 	end
 
 	self.minecar = inst
+	self.hasMinecar:set(true)
 	
 	-- 矿车不能再被捡起
 	if self.minecar.components.inventoryitem ~= nil then
@@ -29,13 +37,14 @@ end
 
 -- 是否可以乘坐
 function Point:CanDrive()
-	return self.minecar ~= nil
+	return self.hasMinecar:value()
 end
 
 function Point:RemoveMineCar()
 	if self.minecar ~= nil then
 		self.inst:RemoveChild(self.minecar)
 		self.minecar = nil
+		self.hasMinecar:set(false)
 	end
 end
 
