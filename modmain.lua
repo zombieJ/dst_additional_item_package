@@ -129,6 +129,8 @@ PrefabFiles = {
 }
 
 local language = GetModConfigData("language")
+local dev_mode = GetModConfigData("dev_mode") == "enabled"
+local open_beta = GetModConfigData("open_beta") == "open"
 
 --------------------------------------- 工具 ---------------------------------------
 modimport("scripts/aipUtils.lua")
@@ -170,8 +172,8 @@ _G.STRINGS.TABS.AIP_DOU_TOTEM = TECH_TOTEM_LANG[language]
 ----------
 modimport("scripts/techHooker.lua")
 
-----------
--- 添加符文配方
+---------- 配方 ----------
+-- 符文
 local inscriptions = require("utils/aip_scepter_util").inscriptions
 for name, info in pairs(inscriptions) do
 	AddRecipe(
@@ -189,6 +191,16 @@ AddRecipe(
 	nil, nil, true, nil, nil,
 	"images/inventoryimages/aip_track_tool.xml",
 	"aip_track_tool.tex"
+)
+
+-- 玻璃矿车
+AddRecipe(
+	"aip_glass_minecar",
+	{ Ingredient("moonglass", 5), Ingredient("goldnugget", 4) },
+	AIP_DOU_TOTEM, _G.TECH.AIP_DOU_TOTEM,
+	nil, nil, true, nil, nil,
+	"images/inventoryimages/aip_glass_minecar.xml",
+	"aip_glass_minecar.tex"
 )
 
 ------------------------------------- 组件钩子 -------------------------------------
@@ -213,7 +225,7 @@ modimport("scripts/houseWrapper.lua")
 modimport("scripts/sgHooker.lua")
 
 ------------------------------------- 测试专用 -------------------------------------
-if GetModConfigData("dev_mode") == "enabled" then
+if dev_mode then
 	modimport("scripts/dev.lua")
 end
 

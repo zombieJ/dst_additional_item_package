@@ -1,4 +1,5 @@
 local language = aipGetModConfig("language")
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 -------------------------------- 数据 --------------------------------
 local list = {
@@ -20,7 +21,7 @@ local list = {
             Asset("ANIM", "anim/aip_glass_minecar.zip"),
             Asset("ATLAS", "images/inventoryimages/aip_glass_minecar.xml"),
         },
-        uses = 10,
+        uses = dev_mode and 3 or 20,
     },
 }
 
@@ -73,6 +74,12 @@ local function getFn(data)
 
         if not TheWorld.ismastersim then
             return inst
+        end
+
+        if data.uses then
+            inst:AddComponent("finiteuses")
+            inst.components.finiteuses:SetMaxUses(data.uses)
+            inst.components.finiteuses:SetUses(data.uses)
         end
 
         inst:AddComponent("lootdropper")

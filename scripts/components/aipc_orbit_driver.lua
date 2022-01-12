@@ -182,6 +182,15 @@ function Driver:AbortDrive()
 		self.minecar.components.inventoryitem.canbepickedup = true
 	end
 
+	-- 用完即弃
+	if self.minecar.components.finiteuses ~= nil then
+		self.minecar.components.finiteuses:Use()
+
+		if self.minecar.components.finiteuses:GetUses() <= 0 then
+			aipReplacePrefab(self.minecar, "collapse_big")
+		end
+	end
+
 	-- 清空状态
 	self.minecar = nil
 	self.orbitPoint = nil
