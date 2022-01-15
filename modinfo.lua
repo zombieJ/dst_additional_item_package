@@ -1,6 +1,6 @@
 local EN = locale ~= "zh" and locale ~= "zhr" and locale ~= "zht"
 
-version = "1.22.1"
+version = "1.23.0"
 
 local descList = EN and {
 	"(DEV MODE)",
