@@ -105,6 +105,7 @@ PrefabFiles = {
 	"aip_track_tool",
 	"aip_glass_orbit",
 	"aip_glass_minecar",
+	"aip_shadow_transfer",
 
 	-- Orbit
 	"aip_orbit",
@@ -183,6 +184,16 @@ for name, info in pairs(inscriptions) do
 	)
 end
 
+-- 搬运石偶
+AddRecipe(
+	"aip_shadow_transfer",
+	{ Ingredient("moonglass", 2), Ingredient("moonrocknugget", 2), Ingredient("aip_22_fish", 1, "images/inventoryimages/aip_22_fish.xml") },
+	AIP_DOU_TOTEM, _G.TECH.AIP_DOU_TOTEM,
+	nil, nil, true, nil, nil,
+	"images/inventoryimages/aip_shadow_transfer.xml",
+	"aip_shadow_transfer.tex"
+)
+
 -- 月轨测量仪
 AddRecipe(
 	"aip_track_tool",
@@ -246,6 +257,7 @@ end)
 
 ------------------------------------- 玩家钩子 -------------------------------------
 modimport("scripts/hooks/aip_drive_hook")
+modimport("scripts/hooks/aip_transfer_hook")
 
 function PlayerPrefabPostInit(inst)
 	if not inst.components.aipc_player_client then

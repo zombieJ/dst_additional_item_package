@@ -28,7 +28,7 @@ local function getFn(data)
 
 			inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
 			inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
-			inst.AnimState:SetSortOrder(2)
+			inst.AnimState:SetSortOrder(0)
 		end
 
 		if data.scale ~= nil then
@@ -111,6 +111,12 @@ local list = {
 		onAnimOver = function(inst)
 			inst:Remove()
 		end,
+	},
+	{	-- 传送光环：并非真实的光环，播放一个循环转圈动画
+		name = "aip_aura_transfer",
+		assets = { Asset("ANIM", "anim/aip_aura_transfer.zip") },
+		range = false, -- 不安装光环组件
+		scale = 1.5,
 	},
 }
 
