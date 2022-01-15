@@ -213,6 +213,9 @@ function Driver:OnUpdate(dt)
 	local playerPos = self.inst:GetPosition()
 	local dist = aipDist(playerPos, targetPos)
 	if dist < .5 then
+		-- 矿车位移到玩家位置
+		self.minecar.Physics:Teleport(playerPos.x, playerPos.y, playerPos.z)
+
 		local points = findPoints(self.nextOrbitPoint, self.orbitPoint)
 		self.orbitPoint = self.nextOrbitPoint
 		self.nextOrbitPoint = nil
