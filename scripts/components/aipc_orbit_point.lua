@@ -4,6 +4,7 @@ local Point = Class(function(self, inst)
 
 	-- 绑定矿车
 	self.minecar = nil
+	self.fakeMinecar = nil
 
 	-- 网络标记
 	self.hasMinecar = net_bool(inst.GUID, "aipc_orbit_point_car", "aipc_orbit_point_car_dirty")
@@ -11,7 +12,30 @@ local Point = Class(function(self, inst)
 	if TheWorld.ismastersim then
 		self.hasMinecar:set(false)
 	end
+
+	-- 创建的时候看看附近有没有车，放上来
+	self.inst:DoTaskInTime(0.1, function()
+		local pt = self.inst:GetPosition()
+		local minecars = TheSim:FindEntities(pt.x, pt.y, pt.z, 0.5, { "aip_glass_minecar" })
+		aipTypePrint(#minecars, minecars)
+		local minecar = minecars[1]
+		if minecar ~= nil then
+			self:SetMineCar(minecar)
+		end
+	end)
 end)
+
+function disableMinecar(minecar)
+	-- 矿车不能再被捡起
+	if minecar.components.inventoryitem ~= nil then
+		minecar.components.inventoryitem:RemoveFromOwner(true)
+		minecar.components.inventoryitem.canbepickedup = false
+	end
+
+	-- 矿车不能点击
+	minecar:AddTag("NOCLICK")
+	minecar:AddTag("fx")
+end
 
 -- 设置矿车
 function Point:SetMineCar(inst)
@@ -20,19 +44,18 @@ function Point:SetMineCar(inst)
 	end
 
 	self.minecar = inst
+	self.fakeMinecar = SpawnPrefab(self.minecar.prefab)
 	self.hasMinecar:set(true)
 	
-	-- 矿车不能再被捡起
-	if self.minecar.components.inventoryitem ~= nil then
-		self.minecar.components.inventoryitem:RemoveFromOwner(true)
-		self.minecar.components.inventoryitem.canbepickedup = false
-	end
+	disableMinecar(self.minecar)
+	disableMinecar(self.fakeMinecar)
 
-	-- 矿车不能点击
-	self.minecar:AddTag("NOCLICK")
-	self.minecar:AddTag("fx")
+	-- 位移矿车
+	local pt = self.inst:GetPosition()
+	self.minecar.Physics:Teleport(pt.x, pt.y, pt.z)
+	self.minecar:Hide()
 
-	self.inst:AddChild(self.minecar)
+	self.inst:AddChild(self.fakeMinecar)
 end
 
 -- 是否可以乘坐
@@ -42,9 +65,11 @@ end
 
 function Point:RemoveMineCar()
 	if self.minecar ~= nil then
-		self.inst:RemoveChild(self.minecar)
+		self.inst:RemoveChild(self.fakeMinecar)
 		self.minecar = nil
 		self.hasMinecar:set(false)
+
+		self.fakeMinecar:Remove()
 	end
 end
 

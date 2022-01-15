@@ -67,6 +67,8 @@ local function getFn(data)
 
         MakeInventoryFloatable(inst, "large", nil, 0.75)
 
+        inst:AddTag("aip_glass_minecar")
+
         inst.entity:SetPristine()
 
         inst:AddComponent("aipc_action_client")
