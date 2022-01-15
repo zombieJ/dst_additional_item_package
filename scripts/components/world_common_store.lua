@@ -151,13 +151,27 @@ function CommonStore:PostWorld()
 
 	--------------------------- 创建图腾 ---------------------------
 	self.inst:DoTaskInTime(5, function()
-		local dou_totem = aipFindEnt("aip_dou_totem_broken", "aip_dou_totem_powerless", "aip_dou_totem")
+		local dou_totem = aipFindEnt(
+			"aip_dou_totem_broken",
+			"aip_dou_totem_powerless",
+			"aip_dou_totem",
+			"aip_dou_totem_cave" -- 洞穴里的图腾只有充能的能力
+		)
 
 		if dou_totem == nil then
+			-- 寻找月岛地皮生成
 			local fissurePT = aipGetTopologyPoint("lunacyarea", "moon_fissure")
 			if fissurePT then
 				local tgt = aipGetSecretSpawnPoint(fissurePT, 0, 50, 5)
 				aipSpawnPrefab(nil, "aip_dou_totem_broken", tgt.x, tgt.y, tgt.z)
+
+			else
+				-- 寻找暗影灯座
+				local targetPrefab = aipFindRandomEnt("rabbithouse")
+				if targetPrefab ~= nil then
+					local tgt = aipGetSecretSpawnPoint(targetPrefab:GetPosition(), 0, 50, 5)
+					aipSpawnPrefab(nil, "aip_dou_totem_broken", tgt.x, tgt.y, tgt.z)
+				end
 			end
 		end
 	end)
@@ -173,6 +187,15 @@ function CommonStore:PostWorld()
 	end)
 
 	--------------------------- 开发模式 ---------------------------
+
+	if dev_mode then
+		self.inst:DoTaskInTime(5, function()
+		-- 	TheWorld:PushEvent("phasechanged", "night")
+		-- 	TheWorld:PushEvent("ms_setmoonphase", {moonphase = "full"})
+		-- aipPrint("do state!!!")
+		-- ThePlayer.sg:GoToState("aip_drive")
+		end)
+	end
 	-- if dev_mode then
 	-- 	self.inst:DoTaskInTime(2, function()
 	-- 		if ThePlayer and false then

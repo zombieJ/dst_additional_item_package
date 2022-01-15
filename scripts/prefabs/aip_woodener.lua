@@ -181,21 +181,24 @@ local function CreatTree(inst)
 		if pinecone ~= nil and pinecone.components.deployable ~= nil then
 			for dist = 1, 20 do
 				local pt = aipGetSpawnPoint(inst:GetPosition(), math.random() * dist / 2)
-				local deployable = pinecone.components.deployable:CanDeploy(pt, nil, inst)
-				aipTypePrint(inst:GetPosition(), pt, deployable)
 
-				-- 一次种一颗
-				if pt ~= nil and deployable then
-					local sapling = aipSpawnPrefab(inst, "pinecone_sapling", pt.x, pt.y, pt.z)
-					sapling:StartGrowing()
+				if pt ~= nil then
+					local deployable = pinecone.components.deployable:CanDeploy(pt, nil, inst)
+					aipTypePrint(inst:GetPosition(), pt, deployable)
 
-					if pinecone.components.stackable ~= nil then
-						pinecone.components.stackable:Get():Remove()
-					else
-						pinecone:Remove()
+					-- 一次种一颗
+					if deployable then
+						local sapling = aipSpawnPrefab(inst, "pinecone_sapling", pt.x, pt.y, pt.z)
+						sapling:StartGrowing()
+
+						if pinecone.components.stackable ~= nil then
+							pinecone.components.stackable:Get():Remove()
+						else
+							pinecone:Remove()
+						end
+
+						return
 					end
-
-					return
 				end
 			end
 		end

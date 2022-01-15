@@ -15,6 +15,8 @@ local LANG_MAP = {
         BROEKN_DESC = "Maybe we can fix this",
         POWERLESS_NAME = "Powerless Totem",
         POWERLESS_DESC = "Just one last dance!",
+        CAVE_NAME = "IOT Symbol",
+        CAVE_DESC = "It's powerless but still work",
 		NAME = "IOT Totem",
 		DESC = "Seems magic somewhere",
         TALK_WELCOME = "Are you ready?",
@@ -29,6 +31,8 @@ local LANG_MAP = {
         BROEKN_DESC = "看起来可以修复它",
         POWERLESS_NAME = "失能的图腾",
         POWERLESS_DESC = "还差最后一步！",
+        CAVE_NAME = "联结徽记",
+        CAVE_DESC = "稍弱一些，但是还能工作",
 		NAME = "联结图腾",
         DESC = "有一丝魔法气息",
         TALK_WELCOME = "想得到我的秘密，你做好准备了吗？",
@@ -47,6 +51,8 @@ STRINGS.NAMES.AIP_DOU_TOTEM_BROKEN = LANG.BROEKN_NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_TOTEM_BROKEN = LANG.BROEKN_DESC
 STRINGS.NAMES.AIP_DOU_TOTEM_POWERLESS = LANG.POWERLESS_NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_TOTEM_POWERLESS = LANG.POWERLESS_DESC
+STRINGS.NAMES.AIP_DOU_TOTEM_CAVE = LANG.CAVE_NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_TOTEM_CAVE = LANG.CAVE_DESC
 STRINGS.NAMES.AIP_DOU_TOTEM = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_TOTEM = LANG.DESC
 STRINGS.AIP_DOU_TOTEM_TALK_WELCOME = LANG.TALK_WELCOME
@@ -112,7 +118,7 @@ local function createFlyTotems(inst)
     -- 创建起点
     if startTotem == false then
         createFlyTotem(
-            aipGetSecretSpawnPoint(inst:GetPosition(), 2, 5, 5),
+            aipGetSecretSpawnPoint(inst:GetPosition(), 4, 6, 5),
             LANG.TOTEM_POS,
             "START"
         )
@@ -170,6 +176,21 @@ local function onfuelchange(newsection, oldsection, inst)
     end
 end
 
+---------------------------------- 满月 ----------------------------------
+-- 触发光环
+local function OnFullMoon(inst, isfullmoon)
+    if inst._aipAuraTrack ~= nil then
+        inst._aipAuraTrack:Remove()
+        inst._aipAuraTrack = nil
+    end
+
+    if isfullmoon then
+        inst:DoTaskInTime(0.1, function()
+            inst._aipAuraTrack = aipSpawnPrefab(inst, "aip_aura_track")
+        end)
+    end
+end
+
 ---------------------------------- 玩家 ----------------------------------
 local function killTimer(inst)
     if inst.aipGhostTimer ~= nil then
@@ -216,7 +237,7 @@ local function onFar(inst)
 end
 
 ---------------------------------- 实体 ----------------------------------
-local function makeTotemFn(name, animation, nextPrefab, nextPrefabAnimation)
+local function makeTotemFn(name, animation, nextPrefab, nextPrefabAnimation, postFn)
     -- 建筑到下一个级别
     local function OnConstructed(inst, doer)
         local concluded = true
@@ -318,6 +339,16 @@ local function makeTotemFn(name, animation, nextPrefab, nextPrefabAnimation)
             inst.components.playerprox:SetDist(WarnRange, WarnRange)
             inst.components.playerprox:SetOnPlayerNear(onNear)
             inst.components.playerprox:SetOnPlayerFar(onFar)
+
+            -- 满月事件（地面才有）
+            if not TheWorld:HasTag("cave") then
+                inst:WatchWorldState("isfullmoon", OnFullMoon)
+                OnFullMoon(inst, TheWorld.state.isfullmoon)
+
+                -- 地上可以用来合成
+                inst:AddComponent("prototyper")
+                inst.components.prototyper.trees = TUNING.PROTOTYPER_TREES.AIP_DOU_TOTEM
+            end
         end
 
         inst:AddComponent("inspectable")
@@ -326,7 +357,7 @@ local function makeTotemFn(name, animation, nextPrefab, nextPrefabAnimation)
             inst:AddComponent("constructionsite")
             inst.components.constructionsite:SetConstructionPrefab("construction_container")
             inst.components.constructionsite:SetOnConstructedFn(OnConstructed)
-        else
+        elseif not TheWorld:HasTag("cave") then
             -- 5s 后会检查附近有没有图腾，并且创造一个
             inst:DoTaskInTime(3, createFlyTotems)
         end
@@ -335,12 +366,26 @@ local function makeTotemFn(name, animation, nextPrefab, nextPrefabAnimation)
 
         MakeHauntableWork(inst)
 
+        if postFn ~= nil then
+            postFn(inst)
+        end
+
         return inst
     end
 
     return Prefab(name, fn, assets, prefabs)
 end
 
-return makeTotemFn("aip_dou_totem_broken", "broken", "aip_dou_totem_powerless"),
-    makeTotemFn("aip_dou_totem_powerless", "powerless", "aip_dou_totem", "idle"),
-    makeTotemFn("aip_dou_totem", "idle")
+-- 洞穴里会自动变成洞穴图腾
+local function autoReplace(inst)
+    if TheWorld:HasTag("cave") then
+        inst:DoTaskInTime(0.1, function()
+            aipReplacePrefab(inst, "aip_dou_totem_cave")
+        end)
+    end
+end
+
+return makeTotemFn("aip_dou_totem_broken", "broken", "aip_dou_totem_powerless", nil, autoReplace),
+    makeTotemFn("aip_dou_totem_powerless", "powerless", "aip_dou_totem", "idle", autoReplace),
+    makeTotemFn("aip_dou_totem", "idle", nil, nil, autoReplace),
+    makeTotemFn("aip_dou_totem_cave", "idle_cave")

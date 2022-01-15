@@ -26,6 +26,7 @@ end)
 local LANG_MAP = {
 	english = {
 		GIVE = "Give",
+		FUEL = "Fuel",
 		USE = "Use",
 		CAST = "Cast",
 		READ = "Read",
@@ -33,6 +34,7 @@ local LANG_MAP = {
 	},
 	chinese = {
 		GIVE = "给予",
+		FUEL = "充能",
 		USE = "使用",
 		CAST = "释放",
 		READ = "阅读",
@@ -72,6 +74,33 @@ env.AddComponentAction("USEITEM", "aipc_action_client", function(inst, doer, tar
 
 	if inst.components.aipc_action_client:CanActOn(doer, target) then
 		table.insert(actions, _G.ACTIONS.AIPC_ACTION)
+	end
+end)
+
+-------------------- 对目标充能的技能 --------------------
+local AIPC_FUEL_ACTION = env.AddAction("AIPC_FUEL_ACTION", LANG.FUEL, function(act)
+	local doer = act.doer
+	local item = act.invobject
+	local target = act.target
+
+	if doer ~= nil and item ~= nil and target ~= nil and target.components.aipc_fueled ~= nil then
+		return target.components.aipc_fueled:TakeFuel(item, player)
+	end
+
+	return false
+end)
+
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_FUEL_ACTION, "dolongaction"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_FUEL_ACTION, "dolongaction"))
+
+-- 角色使用 aipc_fuel 对带有 aipc_fueled 某物使用
+env.AddComponentAction("USEITEM", "aipc_fuel", function(inst, doer, target, actions, right)
+	if not inst or not target then
+		return
+	end
+
+	if target.components.aipc_fueled ~= nil and target.components.aipc_fueled:CanUse(inst, doer) then
+		table.insert(actions, _G.ACTIONS.AIPC_FUEL_ACTION)
 	end
 end)
 
@@ -172,24 +201,13 @@ env.AddComponentAction("INVENTORY", "aipc_action_client", function(inst, doer, a
 end)
 
 -------------------- 施法行为 https://www.zybuluo.com/longfei/note/600841
-local function getActionableItem(doer)
-	local inventory = doer.replica.inventory
-	if inventory ~= nil then
-		local item = inventory:GetEquippedItem(_G.EQUIPSLOTS.HANDS)
-		if item ~= nil and item.components.aipc_action_client ~= nil then
-			return item
-		end
-	end
-	return nil
-end
-
 -------------> 标准的施法动作
-local AIPC_CASTER_ACTION = env.AddAction("AIPC_CASTER_ACTION", LANG.CAST, function(act)
+local function doCastAction(act)
 	local doer = act.doer
 	-- local item = act.invobject
 	local pos = act.pos
 	local target = act.target
-	local item = getActionableItem(doer)
+	local item = _G.aipGetActionableItem(doer)
 
 	if _G.TheNet:GetIsServer() then
 		-- server
@@ -200,7 +218,10 @@ local AIPC_CASTER_ACTION = env.AddAction("AIPC_CASTER_ACTION", LANG.CAST, functi
 	end
 
 	return true
-end)
+end
+
+-- Cast
+local AIPC_CASTER_ACTION = env.AddAction("AIPC_CASTER_ACTION", LANG.CAST, doCastAction)
 AIPC_CASTER_ACTION.distance = 10
 
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_CASTER_ACTION, "quicktele"))
@@ -212,7 +233,7 @@ local AIPC_GRID_CASTER_ACTION = env.AddAction("AIPC_GRID_CASTER_ACTION", LANG.CA
 	-- local item = act.invobject
 	local pos = act.pos
 	local target = act.target
-	local item = getActionableItem(doer)
+	local item = _G.aipGetActionableItem(doer)
 
 	if _G.TheNet:GetIsServer() then
 		-- server
@@ -261,7 +282,7 @@ env.AddComponentAction("SCENE", "combat", function(inst, doer, actions, right)
 		return
 	end
 
-	local item = getActionableItem(doer)
+	local item = _G.aipGetActionableItem(doer)
 
 	if item ~= nil and item.components.aipc_action_client:CanActOn(doer, inst) then
 		table.insert(actions, _G.ACTIONS.AIPC_CASTER_ACTION)

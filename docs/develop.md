@@ -114,6 +114,7 @@ c_goto(c_find("aip_dou_totem_broken"))
 TheWorld:PushEvent("ms_setseason", "summer")
 TheWorld:PushEvent("ms_setseason", "winter")
 
+TheWorld:PushEvent("phasechanged", "day")
 TheWorld:PushEvent("phasechanged", "night")
 
 ### AnimateState:Show 工作条件 

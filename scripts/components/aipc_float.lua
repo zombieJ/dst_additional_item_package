@@ -24,6 +24,7 @@ end
 -- 飞向目标
 function Float:MoveToPoint(pt)
 	self.targetPos = pt
+	self.inst:StartUpdatingComponent(self)
 end
 
 function Float:OnUpdate(dt)

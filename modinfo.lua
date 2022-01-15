@@ -54,6 +54,20 @@ api_version = 10
 
 configuration_options = {
 	{
+		name = "language",
+		label = Lang("Language", "语言"),
+		options =
+		{
+			{description = "中文", data = "chinese"},
+			{description = "English", data = "english"},
+			{description = "Spanish", data = "spanish"},
+			{description = "Portuguese", data = "portuguese"},
+			{description = "Russian", data = "russian"},
+			{description = "Korean", data = "korean"},
+		},
+		default = "english",
+	},
+	{
 		name = "additional_weapon",
 		label = Lang("Weapon Recipes", "武器配方"),
 		options = {
@@ -205,20 +219,6 @@ configuration_options = {
 			{description = CLOSE, data = "close"},
 		},
 		default = "open",
-	},
-	{
-		name = "language",
-		label = Lang("Language", "语言"),
-		options =
-		{
-			{description = "中文", data = "chinese"},
-			{description = "English", data = "english"},
-			{description = "Spanish", data = "spanish"},
-			{description = "Portuguese", data = "portuguese"},
-			{description = "Russian", data = "russian"},
-			{description = "Korean", data = "korean"},
-		},
-		default = "english",
 	},
 	--[[{
 		name = "additional_experiment",

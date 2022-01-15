@@ -91,6 +91,8 @@ local function createGroup(prevGrp)
 		cost = 0,
 		-- 吸血
 		vampire = false,
+		-- 锁定目标
+		lock = false,
 	}
 end
 
@@ -204,6 +206,10 @@ function calculateProjectile(items, inst)
 	elseif emp == "VAMPIRE" then		-- 吸血
 		for i, task in ipairs(projectileInfo.queue) do
 			task.vampire = true
+		end
+	elseif emp == "LOCK" then			-- 锁定目标
+		for i, task in ipairs(projectileInfo.queue) do
+			task.lock = true
 		end
 	end
 

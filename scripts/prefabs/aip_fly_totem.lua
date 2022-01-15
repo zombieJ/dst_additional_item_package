@@ -155,12 +155,15 @@ end
 local function onnear(inst, player)
     if inst.markType == "BALLOON" and inst._aipMiniDou == nil then
         local pos = aipGetSpawnPoint(inst:GetPosition(), 1)
-        inst._aipMiniDou = SpawnPrefab("aip_mini_doujiang")
-        inst._aipMiniDou.Transform:SetPosition(pos.x, pos.y, pos.z)
 
-        aipSpawnPrefab(inst, "aip_shadow_wrapper").DoShow()
+        if pos ~= nil then
+            inst._aipMiniDou = SpawnPrefab("aip_mini_doujiang")
+            inst._aipMiniDou.Transform:SetPosition(pos.x, pos.y, pos.z)
 
-        inst._aipMiniDou._aipTotem = inst
+            aipSpawnPrefab(inst, "aip_shadow_wrapper").DoShow()
+
+            inst._aipMiniDou._aipTotem = inst
+        end
     end
 end
 

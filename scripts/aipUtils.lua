@@ -346,7 +346,8 @@ function _G.aipGetSpawnPoint(pt, distance)
 	local dist = distance or 40
 
 	-- 不在陆地就随便找一个陆地
-    if not _G.TheWorld.Map:IsAboveGroundAtPoint(pt:Get()) then
+	local px, py, pz = pt:Get()
+    if not _G.TheWorld.Map:IsAboveGroundAtPoint(px, py, pz, false) then
         pt = _G.FindNearbyLand(pt) or pt
     end
 
@@ -366,7 +367,7 @@ function _G.aipGetSpawnPoint(pt, distance)
 				local x = pt.x + offset.x
 				local y = pt.y + offset.y
 				local z = pt.z + offset.z
-				return _G.TheWorld.Map:IsAboveGroundAtPoint(x, y, z)
+				return _G.TheWorld.Map:IsAboveGroundAtPoint(x, y, z, false)
 			end
 		)
 
@@ -379,7 +380,10 @@ function _G.aipGetSpawnPoint(pt, distance)
 
 	-- 继续降级往回找
 	for i = dist, 0, -1 do
-		local offset = _G.FindWalkableOffset(pt, math.random() * 2 * _G.PI, i, 12, true)
+		local offset = _G.FindWalkableOffset(
+			pt, math.random() * 2 * _G.PI, i, 12, true,
+			true, nil, false -- ignore_walls, customcheckfn, allow_water
+	)
 		if offset ~= nil then
 			offset.x = offset.x + pt.x
 			offset.z = offset.z + pt.z
@@ -499,16 +503,39 @@ function _G.aipGetTopologyPoint(tag, prefab, dist)
 	return nil
 end
 
+function entMatchNames(prefabNames, ent)
+	return ent ~= nil and ent:IsValid() and table.contains(prefabNames, ent.prefab)
+end
+
 -- 按照参数找到所有符合名字列表的 prefab（TheSim:FindFirstEntityWithTag("malbatross")）
 function _G.aipFindEnt(...)
 	for _, ent in pairs(_G.Ents) do
 		-- 检测图腾
-		if ent ~= nil and ent:IsValid() and table.contains(arg, ent.prefab) then
+		if entMatchNames(arg, ent) then
 			return ent
 		end
 	end
 
 	return nil
+end
+
+function _G.aipFindEnts(...)
+	local list = {}
+
+	for _, ent in pairs(_G.Ents) do
+		-- 检测图腾
+		if entMatchNames(arg, ent) then
+			table.insert(list, ent)
+		end
+	end
+
+	return list
+end
+
+function _G.aipFindRandomEnt(...)
+	local list = _G.aipFindEnts(...)
+
+	return _G.aipRandomEnt(list)
 end
 
 -- 是暗影生物
@@ -534,7 +561,7 @@ end
 --------------------------------------- RPC ---------------------------------------
 -- RPC 发送时自动会带上 player 作为第一个参数
 function _G.aipRPC(funcName, ...)
-	SendModRPCToServer(MOD_RPC[env.modname][funcName], _G.unpack(arg))
+	SendModRPCToServer(MOD_RPC[env.modname][funcName], ...)
 end
 
 -- 添加 aipc_buffer
@@ -557,4 +584,16 @@ function _G.hasBuffer(inst, name)
 	end
 
 	return false
+end
+
+-- 获取玩家手持的物品，仅在 AddComponentAction 中使用
+function _G.aipGetActionableItem(doer)
+	local inventory = doer.replica.inventory
+	if inventory ~= nil then
+		local item = inventory:GetEquippedItem(_G.EQUIPSLOTS.HANDS)
+		if item ~= nil and item.components.aipc_action_client ~= nil then
+			return item
+		end
+	end
+	return nil
 end

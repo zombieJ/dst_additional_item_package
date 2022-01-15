@@ -3,14 +3,13 @@ local _G = GLOBAL
 _G.STRINGS.AIP = {}
 
 -- 资源
-Assets =
-{
+Assets = {
 	Asset("ATLAS", "images/inventoryimages/popcorngun.xml"),
 	Asset("ATLAS", "images/inventoryimages/incinerator.xml"),
 	Asset("ATLAS", "images/inventoryimages/dark_observer.xml"),
 	Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
 
-	-- 豆酱雕塑需要提前加载
+	-- 神秘权杖需要提前加载
 	Asset("ATLAS", "images/inventoryimages/aip_dou_tech.xml"),
 	Asset("ANIM", "anim/aip_ui_doujiang_chest.zip"),
 	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_bg.xml"),
@@ -21,8 +20,11 @@ Assets =
 	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_water_bg.xml"),
 	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_wind_bg.xml"),
 
+	-- 诡影迷踪需要提前加载
+	Asset("ATLAS", "images/inventoryimages/aip_totem_tech.xml"),
+
 	-- 添加一个动作
-	-- Asset( "ANIM", "anim/aip_player_surf.zip"),
+	Asset( "ANIM", "anim/aip_player_drive.zip"),
 }
 
 -- 物品列表
@@ -96,6 +98,14 @@ PrefabFiles = {
 	"aip_rubik_heart",
 	"aip_wizard_hat",
 	"aip_nightmare_package",
+	"aip_aura_track",
+	"aip_eye_box",
+
+	-- 诡影迷踪：轨道
+	"aip_track_tool",
+	"aip_glass_orbit",
+	"aip_glass_minecar",
+	"aip_shadow_transfer",
 
 	-- Orbit
 	"aip_orbit",
@@ -120,6 +130,8 @@ PrefabFiles = {
 }
 
 local language = GetModConfigData("language")
+local dev_mode = GetModConfigData("dev_mode") == "enabled"
+local open_beta = GetModConfigData("open_beta") == "open"
 
 --------------------------------------- 工具 ---------------------------------------
 modimport("scripts/aipUtils.lua")
@@ -135,15 +147,34 @@ local AIP_DOU_SCEPTER = AddRecipeTab(
 	true
 )
 
-local TECH_LANG = {
+local AIP_DOU_TOTEM = AddRecipeTab(
+	"AIP_DOU_TOTEM",
+	100,
+	"images/inventoryimages/aip_totem_tech.xml",
+	"aip_totem_tech.tex",
+	nil,
+	true
+)
+
+----------
+local TECH_SCEPTER_LANG = {
 	english = "Mysterious",
 	chinese = "神秘魔法",
 }
 
-_G.STRINGS.TABS.AIP_DOU_SCEPTER = TECH_LANG[language]
+local TECH_TOTEM_LANG = {
+	english = "IOT",
+	chinese = "联结",
+}
 
+_G.STRINGS.TABS.AIP_DOU_SCEPTER = TECH_SCEPTER_LANG[language]
+_G.STRINGS.TABS.AIP_DOU_TOTEM = TECH_TOTEM_LANG[language]
+
+----------
 modimport("scripts/techHooker.lua")
 
+---------- 配方 ----------
+-- 符文
 local inscriptions = require("utils/aip_scepter_util").inscriptions
 for name, info in pairs(inscriptions) do
 	AddRecipe(
@@ -152,6 +183,36 @@ for name, info in pairs(inscriptions) do
 		"images/inventoryimages/"..name..".xml", name..".tex"
 	)
 end
+
+-- 搬运石偶
+AddRecipe(
+	"aip_shadow_transfer",
+	{ Ingredient("moonglass", 2), Ingredient("moonrocknugget", 2), Ingredient("aip_22_fish", 1, "images/inventoryimages/aip_22_fish.xml") },
+	AIP_DOU_TOTEM, _G.TECH.AIP_DOU_TOTEM,
+	nil, nil, true, nil, nil,
+	"images/inventoryimages/aip_shadow_transfer.xml",
+	"aip_shadow_transfer.tex"
+)
+
+-- 月轨测量仪
+AddRecipe(
+	"aip_track_tool",
+	{ Ingredient("moonglass", 6), Ingredient("moonrocknugget", 3), Ingredient("transistor", 1) },
+	AIP_DOU_TOTEM, _G.TECH.AIP_DOU_TOTEM,
+	nil, nil, true, nil, nil,
+	"images/inventoryimages/aip_track_tool.xml",
+	"aip_track_tool.tex"
+)
+
+-- 玻璃矿车
+AddRecipe(
+	"aip_glass_minecar",
+	{ Ingredient("moonglass", 5), Ingredient("goldnugget", 4) },
+	AIP_DOU_TOTEM, _G.TECH.AIP_DOU_TOTEM,
+	nil, nil, true, nil, nil,
+	"images/inventoryimages/aip_glass_minecar.xml",
+	"aip_glass_minecar.tex"
+)
 
 ------------------------------------- 组件钩子 -------------------------------------
 modimport("scripts/componentsHooker.lua")
@@ -175,7 +236,7 @@ modimport("scripts/houseWrapper.lua")
 modimport("scripts/sgHooker.lua")
 
 ------------------------------------- 测试专用 -------------------------------------
-if GetModConfigData("dev_mode") == "enabled" then
+if dev_mode then
 	modimport("scripts/dev.lua")
 end
 
@@ -195,6 +256,9 @@ AddPrefabPostInit("world", function(inst)
 end)
 
 ------------------------------------- 玩家钩子 -------------------------------------
+modimport("scripts/hooks/aip_drive_hook")
+modimport("scripts/hooks/aip_transfer_hook")
+
 function PlayerPrefabPostInit(inst)
 	if not inst.components.aipc_player_client then
 		inst:AddComponent("aipc_player_client")
