@@ -25,7 +25,7 @@ local AIPC_TRANSFER_MARK_ACTION = env.AddAction("AIPC_TRANSFER_MARK_ACTION", LAN
 	local item = act.invobject
 
 	if item ~= nil and target ~= nil and item.components.aipc_shadow_transfer ~= nil then
-		item.components.aipc_shadow_transfer:Mark(target)
+		item.components.aipc_shadow_transfer:Mark(target, doer)
 	end
 
 	return true

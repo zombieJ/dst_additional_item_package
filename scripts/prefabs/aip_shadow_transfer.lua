@@ -28,9 +28,9 @@ local assets = {
 }
 
 ------------------------------------ 事件 ------------------------------------
-local function ondeploy(inst, pt)
+local function ondeploy(inst, pt, deployer)
     if inst.components.aipc_shadow_transfer ~= nil then
-        inst.components.aipc_shadow_transfer:MoveTo(pt)
+        inst.components.aipc_shadow_transfer:MoveTo(pt, deployer)
     end
 end
 
@@ -45,7 +45,6 @@ local function onToggle(inst, marked)
             inst:AddComponent("deployable")
             inst.components.deployable.ondeploy = ondeploy
             inst.components.deployable:SetDeploySpacing(DEPLOYSPACING.LESS)
-            inst.components.deployable.keep_in_inventory_on_deploy = true
         end
 	else
         inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_shadow_transfer.xml"

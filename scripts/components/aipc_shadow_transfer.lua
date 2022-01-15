@@ -1,11 +1,17 @@
 -- 跨端通用
 local Transfer = Class(function(self, inst)
 	self.inst = inst
+	self.sanityCost = TUNING.SANITY_MED
 	self.target = nil
 	self.aura = nil
 	self.onToggle = nil
 
 	self.prefabName = net_string(inst.GUID, "aipc_shadow_transfer_prefab", "aipc_shadow_transfer_prefab_dirty")
+
+	-- 替换贴图名称
+	self.inst:ListenForEvent("aipc_shadow_transfer_prefab_dirty", function()
+		self.inst.overridedeployplacername = self.prefabName:value().."_placer"
+	end)
 end)
 
 function Transfer:CanMark(target)
@@ -30,7 +36,7 @@ function Transfer:CanMark(target)
 	return true
 end
 
-function Transfer:Mark(target)
+function Transfer:Mark(target, doer)
 	if self.target then
 		return
 	end
@@ -49,15 +55,27 @@ function Transfer:Mark(target)
 	end
 
 	self.prefabName:set(target.prefab)
+
+	-- Damage Sanity
+	if doer.components.sanity then
+		doer.components.sanity:DoDelta(-TUNING.SANITY_MED)
+	end
 end
 
-function Transfer:MoveTo(pt)
+function Transfer:MoveTo(pt, doer)
 	if not self.target then
 		return
 	end
 
 	-- 位移
 	self.target.Physics:Teleport(pt.x, pt.y, pt.z)
+	aipSpawnPrefab(self.target, "aip_shadow_wrapper").DoShow()
+
+	-- 直接替换掉
+	local container = self.inst.components.inventoryitem:GetContainer()
+	if doer ~= nil and doer.components.inventory ~= nil then
+		doer.components.inventory:GiveItem(SpawnPrefab("aip_shadow_transfer"))
+	end
 
 	-- 清理
 	self.target:RemoveTag("aipc_transfer_marked")
@@ -67,6 +85,13 @@ function Transfer:MoveTo(pt)
 	self.inst:RemoveTag("aip_marked")
 	self.aura:Remove()
 	self.aura = nil
+
+	self.inst.overridedeployplacername = nil
+
+	-- Damage Sanity
+	if doer.components.sanity then
+		doer.components.sanity:DoDelta(-TUNING.SANITY_MED)
+	end
 
 	if self.onToggle ~= nil then
 		self.onToggle(self.inst, false)
