@@ -17,7 +17,6 @@ local Point = Class(function(self, inst)
 	self.inst:DoTaskInTime(0.1, function()
 		local pt = self.inst:GetPosition()
 		local minecars = TheSim:FindEntities(pt.x, pt.y, pt.z, 0.5, { "aip_glass_minecar" })
-		aipTypePrint(#minecars, minecars)
 		local minecar = minecars[1]
 		if minecar ~= nil then
 			self:SetMineCar(minecar)
@@ -45,6 +44,7 @@ function Point:SetMineCar(inst)
 
 	self.minecar = inst
 	self.fakeMinecar = SpawnPrefab(self.minecar.prefab)
+	self.fakeMinecar.persists = false
 	self.hasMinecar:set(true)
 	
 	disableMinecar(self.minecar)

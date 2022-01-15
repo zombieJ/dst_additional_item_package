@@ -96,6 +96,10 @@ local function getFn(data)
 
         MakeHauntableLaunch(inst)
 
+        inst:DoTaskInTime(0.1, function()
+            aipPrint("Load minecar~~~~", inst.Transform:GetWorldPosition())
+        end)
+
         return inst
     end
 
