@@ -13,7 +13,7 @@ const MAX_WIDTH_COUNT = 9;
 
 const IMAGES = [
 	[
-		'aip_blood_package', 'aip_plaster', 'aip_mine_car', 'aip_dou_tooth',
+		'aip_blood_package', 'aip_plaster', 'aip_glass_minecar', 'aip_dou_tooth',
 		'aip_krampus_plus',
 	],
 
@@ -21,18 +21,19 @@ const IMAGES = [
 		'aip_xiyou_card_single', 'aip_xiyou_card_multiple', 'aip_xiyou_card_package', 'aip_xiyou_cards',
 	],
 
-	['incinerator', 'aip_orbit_item', 'aip_nectar_maker', 'aip_woodener', 'aip_igloo'],
+	['incinerator', 'aip_nectar_maker', 'aip_woodener', 'aip_igloo'],
 
 	[
 		'aip_dou_totem/totem/head', 'dark_observer', 'aip_fake_fly_totem', 'aip_fly_totem',
-		'aip_shadow_paper_package', 'aip_shadow_package',
+		'aip_shadow_transfer',
 		'aip_dou_inscription_package', 'aip_dou_opal', 'aip_legion',
 		'aip_leaf_note', 'aip_glass_chest',
 	],
 
 	[
 		'popcorngun', 'aip_fish_sword', 'aip_beehave', 'aip_oar_woodead', 'aip_armor_gambler',
-		'aip_dou_scepter', 'aip_dou_empower_scepter', 'aip_xinyue_hoe', "aip_score_ball",
+		'aip_dou_scepter', 'aip_dou_empower_scepter', 'aip_xinyue_hoe', 'aip_track_tool',
+		"aip_score_ball",
 	],
 
 	[

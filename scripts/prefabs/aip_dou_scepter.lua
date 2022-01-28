@@ -214,6 +214,10 @@ local function empowerEffect(inst)
     if emp == "RUNNER" then
         inst.components.equippable.walkspeedmult = 1.55
     end
+
+    if emp == "LOCK" then
+        inst:AddTag("aip_lock")
+    end
 end
 
 local function onsave(inst, data)
@@ -227,7 +231,7 @@ local function onload(inst, data)
 	end
 end
 
-local function empower(inst, doer)
+local function empower(inst, doer, customizeEmpower)
     inst.SoundEmitter:PlaySound("dontstarve/common/ancienttable_repair")
 
     -- 掉出所有符文
@@ -236,9 +240,12 @@ local function empower(inst, doer)
     end
 
     -- 随机选择强化类型
-    local emp = aipRandomEnt(empowerList)
-    if TheWorld.state.isfullmoon then -- 如果是满月，则一定是解锁
-        emp = empowerLock
+    local emp = customizeEmpower
+    if not emp then
+        emp = aipRandomEnt(empowerList)
+        if TheWorld.state.isfullmoon then -- 如果是满月，则一定是解锁
+            emp = empowerLock
+        end
     end
     local prefab = emp.prefab or "aip_dou_empower_scepter"
     local empower = emp.empower
@@ -319,7 +326,11 @@ local function genScepter(containerName, animName)
         inst:AddComponent("aipc_action_client")
         inst.components.aipc_action_client.canActOn = function(inst, doer, target)
             refreshScepter(inst)
-            return inst._projectileInfo.action == "FOLLOW" and (target.components.health ~= nil or target.replica.health ~= nil)
+            return (
+                inst._projectileInfo.action == "FOLLOW" and
+                -- 有生命的单位
+                (target.components.health ~= nil or target.replica.health ~= nil)
+            )
         end
         inst.components.aipc_action_client.canActOnPoint = function()
             refreshScepter(inst)
@@ -440,10 +451,22 @@ local function explodeShadowFn()
 end
 
 
+-- 普通权杖
 return Prefab("aip_dou_scepter", genScepter("aip_dou_scepter"), assets, prefabs),
+    -- 强化权杖
     Prefab("aip_dou_empower_scepter", genScepter("aip_dou_empower_scepter"), assets, prefabs),
+    -- 扩容权杖
     Prefab("aip_dou_huge_scepter", genScepter("aip_dou_huge_scepter", "aip_dou_empower_scepter"), assets, prefabs),
-    Prefab("aip_explode_shadow", explodeShadowFn, { Asset("ANIM", "anim/staff_projectile.zip") }, { "fire_projectile" })
+    -- 黑暗爆炸，不知道干啥的
+    Prefab("aip_explode_shadow", explodeShadowFn, { Asset("ANIM", "anim/staff_projectile.zip") }, { "fire_projectile" }),
+    -- 测试用，月能权杖
+    Prefab("aip_dou_scepter_lock", function()
+        local inst = genScepter("aip_dou_empower_scepter")()
+        inst:DoTaskInTime(0.5, function()
+            empower(inst, nil, empowerLock)
+        end)
+        return inst
+    end, assets, prefabs)
 
 
 --[[

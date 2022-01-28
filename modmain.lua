@@ -107,6 +107,9 @@ PrefabFiles = {
 	"aip_glass_minecar",
 	"aip_shadow_transfer",
 
+	-- 古神低语
+	"aip_oldone_plant",
+
 	-- Orbit
 	"aip_orbit",
 	"aip_mine_car",
@@ -286,6 +289,11 @@ function PlayerPrefabPostInit(inst)
 	
 	if not inst.components.aipc_timer then
 		inst:AddComponent("aipc_timer")
+	end
+
+	-- 古神低语
+	if not inst.components.aipc_timer then
+		inst:AddComponent("aipc_old_one_whispers")
 	end
 end
 
