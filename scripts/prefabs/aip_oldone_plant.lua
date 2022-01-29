@@ -43,6 +43,12 @@ local function fn()
 
     inst:AddComponent("inspectable")
 
+    -- 可以挖起，就是安全的
+    inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.DIG)
+    inst.components.workable:SetOnFinishCallback(on_submerged_dug_up)
+    inst.components.workable:SetWorkLeft(1)
+
     MakeHauntableLaunch(inst)
 
     return inst
