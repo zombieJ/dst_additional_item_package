@@ -3,7 +3,7 @@ local writeables = _G.require "writeables"
 
 local kinds = {}
 
-kinds["aip_fly_totem"] = {
+local layout = {
     prompt = _G.STRINGS.SIGNS.MENU.PROMPT,
     animbank = "ui_board_5x3",
     animbuild = "ui_board_5x3",
@@ -13,15 +13,5 @@ kinds["aip_fly_totem"] = {
     acceptbtn = { text = _G.STRINGS.SIGNS.MENU.ACCEPT, cb = nil, control = _G.CONTROL_ACCEPT },
 }
 
-kinds["aip_fake_fly_totem"] = kinds["aip_fly_totem"]
-
-local originMakescreen = writeables.makescreen
-
-writeables.makescreen = function(inst, doer, ...)
-	local data = kinds[inst.prefab]
-	if doer and doer.HUD and data then
-		return doer.HUD:ShowWriteableWidget(inst, data)
-	end
-
-	return originMakescreen(inst, doer, _G.unpack(arg))
-end
+writeables.AddLayout("aip_fly_totem", layout)
+writeables.AddLayout("aip_fake_fly_totem", layout)
