@@ -22,6 +22,17 @@ local assets = {
     Asset("ANIM", "anim/aip_oldone_plant.zip"),
 }
 
+------------------------------------ 事件 ------------------------------------
+-- 捡起，释放毒圈
+local function onpickedfn(inst, picker)
+    
+end
+
+local function CanShaveTest(inst, shaver)
+    return true
+end
+
+------------------------------------ 实例 ------------------------------------
 local function fn()
     local inst = CreateEntity()
 
@@ -43,11 +54,20 @@ local function fn()
 
     inst:AddComponent("inspectable")
 
-    -- 可以挖起，就是安全的
-    inst:AddComponent("workable")
-    inst.components.workable:SetWorkAction(ACTIONS.DIG)
-    inst.components.workable:SetOnFinishCallback(on_submerged_dug_up)
-    inst.components.workable:SetWorkLeft(1)
+    -- 可以直接捡起，但是会中毒
+    inst:AddComponent("pickable")
+    inst.components.pickable.picksound = "dontstarve/wilson/harvest_berries"
+    inst.components.pickable:SetUp("carrot", 10)
+    inst.components.pickable.onpickedfn = onpickedfn
+	inst.components.pickable.remove_when_picked = true
+    inst.components.pickable.quickpick = true
+
+    -- 可以用剃刀
+    inst:AddComponent("beard")
+    inst.components.beard.bits = 1
+    inst.components.beard.canshavetest = CanShaveTest
+    inst.components.beard.prize = "beefalowool"
+    inst:ListenForEvent("shaved", inst.Remove)
 
     MakeHauntableLaunch(inst)
 

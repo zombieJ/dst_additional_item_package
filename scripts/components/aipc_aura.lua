@@ -5,9 +5,11 @@ local Aura = Class(function(self, inst)
 	self.bufferName = nil
 	self.bufferDuration = nil
 	self.bufferFn = nil
+	self.bufferRemoveFn = nil
 	self.mustTags = nil
 	self.noTags = nil
 	self.showFX = true
+	self.interval = 1.5
 
 	self:Start()
 end)
@@ -17,14 +19,18 @@ local function SearchToAddBuffer(inst, self)
 	local ents = TheSim:FindEntities(x, y, z, self.range, self.mustTags, self.noTags)
 
 	for i, ent in ipairs(ents) do
-		patchBuffer(ent, self.bufferName, self.bufferDuration, self.bufferFn, self.showFX)
+		patchBuffer(
+			ent, inst, self.bufferName, self.bufferDuration,
+			self.bufferFn, self.bufferRemoveFn,
+			self.showFX
+		)
 	end
 end
 
 function Aura:Start()
 	self:Stop()
 
-	self.task = self.inst:DoPeriodicTask(1.5, SearchToAddBuffer, 0.1, self)
+	self.task = self.inst:DoPeriodicTask(self.interval, SearchToAddBuffer, 0.1, self)
 end
 
 function Aura:Stop()

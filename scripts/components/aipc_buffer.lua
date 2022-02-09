@@ -7,7 +7,7 @@ local function DoEffect(inst, self)
 		info.duration = info.duration - 1
 
 		if info.fn ~= nil then
-			info.fn(inst)
+			info.fn(info.source, inst)
 		end
 
 		-- 清理过期的 buffer
@@ -15,6 +15,14 @@ local function DoEffect(inst, self)
 			table.insert(rmNames, name)
 		else
 			allRemove = false
+		end
+	end
+
+	-- 清除的 buffer 需要一个退出事件处理收尾
+	for i, name in ipairs(rmNames) do
+		local info = self.buffers[name]
+		if info.removeFn ~= nil then
+			info.removeFn(info.source, inst)
 		end
 	end
 
@@ -42,10 +50,12 @@ local Buffer = Class(function(self, inst)
 	self.inst:AddChild(self.fx)
 end)
 
-function Buffer:Patch(name, duration, fn, showFX)
+function Buffer:Patch(name, source, duration, fn, removeFn, showFX)
 	self.buffers[name] = {
+		source = source,
 		duration = duration or 2,
 		fn = fn,
+		removeFn = removeFn,
 		showFX = showFX,
 	}
 
