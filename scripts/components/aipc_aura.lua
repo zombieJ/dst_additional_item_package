@@ -5,13 +5,12 @@ local Aura = Class(function(self, inst)
 	self.bufferName = nil
 	self.bufferDuration = nil
 	self.bufferFn = nil
-	self.bufferRemoveFn = nil
+	self.bufferStartFn = nil
+	self.bufferEndFn = nil
 	self.mustTags = nil
 	self.noTags = nil
 	self.showFX = true
 	self.interval = 1.5
-
-	self:Start()
 end)
 
 local function SearchToAddBuffer(inst, self)
@@ -21,7 +20,7 @@ local function SearchToAddBuffer(inst, self)
 	for i, ent in ipairs(ents) do
 		patchBuffer(
 			ent, inst, self.bufferName, self.bufferDuration,
-			self.bufferFn, self.bufferRemoveFn,
+			self.bufferFn, self.bufferStartFn, self.bufferEndFn,
 			self.showFX
 		)
 	end

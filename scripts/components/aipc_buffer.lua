@@ -21,8 +21,8 @@ local function DoEffect(inst, self)
 	-- 清除的 buffer 需要一个退出事件处理收尾
 	for i, name in ipairs(rmNames) do
 		local info = self.buffers[name]
-		if info.removeFn ~= nil then
-			info.removeFn(info.source, inst)
+		if info.endFn ~= nil then
+			info.endFn(info.source, inst)
 		end
 	end
 
@@ -50,12 +50,17 @@ local Buffer = Class(function(self, inst)
 	self.inst:AddChild(self.fx)
 end)
 
-function Buffer:Patch(name, source, duration, fn, removeFn, showFX)
+function Buffer:Patch(name, source, duration, fn, startFn, endFn, showFX)
+	if self.buffers[name] == nil and startFn ~= nil then
+		startFn(source, self.inst)
+	end
+
 	self.buffers[name] = {
 		source = source,
 		duration = duration or 2,
 		fn = fn,
-		removeFn = removeFn,
+		startFn = startFn,
+		endFn = endFn,
 		showFX = showFX,
 	}
 

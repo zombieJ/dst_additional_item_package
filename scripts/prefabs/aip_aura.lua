@@ -55,13 +55,15 @@ local function getFn(data)
 			inst.components.aipc_aura.bufferName = data.bufferName
 			inst.components.aipc_aura.bufferDuration = data.bufferDuration or 3
 			inst.components.aipc_aura.bufferFn = data.bufferFn
-			inst.components.aipc_aura.bufferRemoveFn = data.bufferRemoveFn
+			inst.components.aipc_aura.bufferStartFn = data.bufferStartFn
+			inst.components.aipc_aura.bufferEndFn = data.bufferEndFn
 			inst.components.aipc_aura.mustTags = data.mustTags
 			inst.components.aipc_aura.noTags = data.noTags
 			inst.components.aipc_aura.interval = data.interval or 1.5
 			if data.showFX ~= nil then
 				inst.components.aipc_aura.showFX = data.showFX
 			end
+			inst.components.aipc_aura:Start()
 
 			-- debug 模式下，周围创建一圈光环指示范围
 			if data.debug then
@@ -76,7 +78,13 @@ local function getFn(data)
 		end
 
 		if data.onAnimOver ~= nil then
-			inst:ListenForEvent("animover", data.onAnimOver)
+			-- 只会触发一次
+			local function callback()
+				inst:RemoveEventCallback("animover", callback)
+				data.onAnimOver(inst)
+			end
+
+			inst:ListenForEvent("animover", callback)
 		end
 
 		if data.postFn ~= nil then
@@ -143,24 +151,36 @@ local list = {
 		range = 5,
 		-- debug = true,
 		scale = 2,
-		interval = 0.4, -- 中毒检测会更快一些
+		interval = 0.33, -- 中毒检测会更快一些
+		bufferDuration = 1.1,
 		bufferFn = function(inst, target)
 			if target.components.health ~= nil then
-				target.components.health:DoDelta(-10, false, inst)
-			end
-
-			-- 中毒会减速
-			if target.components.locomotor then
-				target.components.locomotor:SetExternalSpeedMultiplier(target, "aip_oldonePoison", 0.5)
+				target.components.health:DoDelta(-7, false, inst)
 			end
 		end,
-		bufferRemoveFn = function(inst, target)
+		-- 中毒减速
+		bufferStartFn = function(inst, target)
+			if target.components.health ~= nil then
+				target.components.health:DoDelta(-15, false, inst)
+			end
+
+			if target.components.locomotor then
+				target.components.locomotor:SetExternalSpeedMultiplier(target, "aip_oldonePoison", 0.6)
+			end
+		end,
+		bufferEndFn = function(inst, target)
 			if target.components.locomotor then
 				target.components.locomotor:RemoveExternalSpeedMultiplier(target, "aip_oldonePoison")
 			end
 		end,
 		onAnimOver = function(inst)
-			inst:DoTaskInTime(10, inst.Remove)
+			inst:DoTaskInTime(12, function()
+				inst.AnimState:PlayAnimation("end")
+
+				inst:ListenForEvent("animover", function()
+					inst:Remove()
+				end)
+			end)
 		end,
 	},
 }
