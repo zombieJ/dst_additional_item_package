@@ -66,7 +66,7 @@ local function fn()
     inst:AddComponent("beard")
     inst.components.beard.bits = 1
     inst.components.beard.canshavetest = CanShaveTest
-    inst.components.beard.prize = "beefalowool"
+    inst.components.beard.prize = "aip_oldone_plant_full"
     inst:ListenForEvent("shaved", inst.Remove)
 
     MakeHauntableLaunch(inst)

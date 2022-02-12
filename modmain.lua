@@ -110,6 +110,7 @@ PrefabFiles = {
 	-- 古神低语
 	"aip_oldone_plant",
 	"aip_oldone_plant_broken",
+	"aip_oldone_plant_full",
 
 	-- Orbit
 	"aip_orbit",
