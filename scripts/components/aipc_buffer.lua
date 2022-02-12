@@ -1,13 +1,15 @@
+local interval = 0.5
+
 -- 每秒执行一次效果，如果所有的 buffer duration 都结束了，就删除这个组件
 local function DoEffect(inst, self)
 	local allRemove = true
 	local rmNames = {}
 
 	for name, info in pairs(self.buffers) do
-		info.duration = info.duration - 1
+		info.duration = info.duration - interval
 
 		if info.fn ~= nil then
-			info.fn(info.source, inst)
+			info.fn(info.source, inst, interval)
 		end
 
 		-- 清理过期的 buffer
@@ -43,7 +45,7 @@ local Buffer = Class(function(self, inst)
 	self.fn = nil
 	self.buffers = {}
 
-	self.task = self.inst:DoPeriodicTask(1, DoEffect, 0.1, self)
+	self.task = self.inst:DoPeriodicTask(interval, DoEffect, 0.1, self)
 
 	-- TODO: Test this
 	self.fx = SpawnPrefab("aip_buffer_fx")

@@ -152,16 +152,17 @@ local list = {
 		-- debug = true,
 		scale = 2,
 		interval = 0.33, -- 中毒检测会更快一些
-		bufferDuration = 1.1,
-		bufferFn = function(inst, target)
+		bufferDuration = 0.8,
+		bufferFn = function(inst, target, interval)
 			if target.components.health ~= nil then
-				target.components.health:DoDelta(-7, false, inst)
+				target.components.health:DoDelta(-7 * interval, false, inst)
 			end
 		end,
 		-- 中毒减速
 		bufferStartFn = function(inst, target)
-			if target.components.health ~= nil then
-				target.components.health:DoDelta(-15, false, inst)
+			-- 受到攻击伤害，这样玩家会跳一下
+			if target.components.combat ~= nil then
+				target.components.combat:GetAttacked(inst, 15)
 			end
 
 			if target.components.locomotor then
@@ -175,11 +176,7 @@ local list = {
 		end,
 		onAnimOver = function(inst)
 			inst:DoTaskInTime(12, function()
-				inst.AnimState:PlayAnimation("end")
-
-				inst:ListenForEvent("animover", function()
-					inst:Remove()
-				end)
+				ErodeAway(inst, 0.3)
 			end)
 		end,
 	},

@@ -25,7 +25,7 @@ local assets = {
 ------------------------------------ 事件 ------------------------------------
 -- 捡起，释放毒圈
 local function onpickedfn(inst, picker)
-    
+    aipSpawnPrefab(inst, "aip_aura_poison")
 end
 
 local function CanShaveTest(inst, shaver)
@@ -57,7 +57,7 @@ local function fn()
     -- 可以直接捡起，但是会中毒
     inst:AddComponent("pickable")
     inst.components.pickable.picksound = "dontstarve/wilson/harvest_berries"
-    inst.components.pickable:SetUp("carrot", 10)
+    inst.components.pickable:SetUp("aip_oldone_plant_broken", 10)
     inst.components.pickable.onpickedfn = onpickedfn
 	inst.components.pickable.remove_when_picked = true
     inst.components.pickable.quickpick = true
