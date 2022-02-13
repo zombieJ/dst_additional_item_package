@@ -342,56 +342,58 @@ function _G.aipReplacePrefab(inst, prefab, tx, ty, tz)
 end
 
 -- 获取一个可访达的路径，默认 40。TODO：优化一下避免在建筑附近生成
-function _G.aipGetSpawnPoint(pt, distance)
+function _G.aipGetSpawnPoint(startPT, distance)
 	local dist = distance or 40
+	local pt = nil
 
-	-- 不在陆地就随便找一个陆地
-	local px, py, pz = pt:Get()
+	-- 不在陆地就随便找一个陆地作为起始点
+	local px, py, pz = startPT:Get()
     if not _G.TheWorld.Map:IsAboveGroundAtPoint(px, py, pz, false) then
-        pt = _G.FindNearbyLand(pt) or pt
+        startPT = _G.FindNearbyLand(startPT) or startPT
     end
 
-	-- 找范围内可以走到的路径
-	local offset = _G.FindWalkableOffset(pt, math.random() * 2 * _G.PI, dist, 12, true)
+	-- 1. 找范围内可以走到的路径
+	local offset = _G.FindWalkableOffset(startPT, math.random() * 2 * _G.PI, dist, 12, true)
 	if offset ~= nil then
-		offset.x = offset.x + pt.x
-		offset.z = offset.z + pt.z
+		offset.x = offset.x + startPT.x
+		offset.z = offset.z + startPT.z
 		return offset
 	end
 
-	-- 随机找一个附近的点
+	-- 2. 随机找一个附近的点
 	for i = dist, dist + 100, 10 do
 		local nextOffset = _G.FindValidPositionByFan(
 			math.random() * 2 * _G.PI, dist, nil,
 			function(offset)
-				local x = pt.x + offset.x
-				local y = pt.y + offset.y
-				local z = pt.z + offset.z
+				local x = startPT.x + offset.x
+				local y = startPT.y + offset.y
+				local z = startPT.z + offset.z
 				return _G.TheWorld.Map:IsAboveGroundAtPoint(x, y, z, false)
 			end
 		)
 
 		if nextOffset ~= nil then
-			nextOffset.x = nextOffset.x + pt.x
-			nextOffset.z = nextOffset.z + pt.z
+			nextOffset.x = nextOffset.x + startPT.x
+			nextOffset.z = nextOffset.z + startPT.z
 			return nextOffset
 		end
 	end
 
-	-- 继续降级往回找
+	-- 3. 继续降级往回找
 	for i = dist, 0, -1 do
 		local offset = _G.FindWalkableOffset(
-			pt, math.random() * 2 * _G.PI, i, 12, true,
+			startPT, math.random() * 2 * _G.PI, i, 12, true,
 			true, nil, false -- ignore_walls, customcheckfn, allow_water
 	)
 		if offset ~= nil then
-			offset.x = offset.x + pt.x
-			offset.z = offset.z + pt.z
+			offset.x = offset.x + startPT.x
+			offset.z = offset.z + startPT.z
 			return offset
 		end
 	end
 
-	return pt
+	-- 4. 都没有的时候就不返回了
+	return nil
 end
 
 function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)

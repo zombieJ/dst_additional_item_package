@@ -362,21 +362,32 @@ AddPrefabPostInit("grass", function(inst)
 	end
 end)
 
-
-if additional_food and (_G.TheNet:GetIsServer() or _G.TheNet:IsDedicated()) then
-	AddPrefabPostInit("world", function (inst)
-		-- 季节变换时，生成向日葵
-		inst:WatchWorldState("season", function ()
-			for i, player in ipairs(_G.AllPlayers) do
-				if not player:HasTag("playerghost") and player.entity:IsVisible() then
-					local pos = _G.aipGetSpawnPoint(player:GetPosition())
-					if pos ~= nil then
-						local sunflower = _G.SpawnPrefab("aip_sunflower")
-						sunflower.Transform:SetPosition(pos.x, pos.y, pos.z)
-						break
-					end
-				end
+local function spawnNearPlayer(prefabName)
+	for i, player in ipairs(_G.AllPlayers) do
+		if not player:HasTag("playerghost") and player.entity:IsVisible() then
+			local pos = _G.aipGetSpawnPoint(player:GetPosition())
+			if pos ~= nil then
+				local prefab = _G.SpawnPrefab(prefabName)
+				prefab.Transform:SetPosition(pos.x, pos.y, pos.z)
+				break
 			end
+		end
+	end
+end
+
+
+if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
+	AddPrefabPostInit("world", function (inst)
+		if additional_food then
+			-- 季节变换时，生成向日葵
+			inst:WatchWorldState("season", function ()
+				spawnNearPlayer("aip_sunflower")
+			end)
+		end
+
+		-- 每天都有一定概率给玩家附近生成一个 怪异的球茎
+		inst:WatchWorldState("isnight", function()
+			spawnNearPlayer("aip_oldone_plant")
 		end)
 	end)
 end

@@ -24,6 +24,12 @@ local assets = {
 }
 
 ----------------------------------- 事件 -----------------------------------
+local function onHit(inst, attacker, target)
+    -- SpawnPrefab("splash_snow_fx").Transform:SetPosition(inst.Transform:GetWorldPosition())
+    -- inst.components.wateryprotection:SpreadProtection(inst)
+    -- inst:Remove()
+    aipReplacePrefab(inst, "aip_aura_poison")
+end
 
 ----------------------------------- 实体 -----------------------------------
 local function fn()
@@ -51,6 +57,10 @@ local function fn()
     end
 
     inst:AddComponent("complexprojectile")
+    inst.components.complexprojectile:SetHorizontalSpeed(15)
+    inst.components.complexprojectile:SetGravity(-25)
+    inst.components.complexprojectile:SetLaunchOffset(Vector3(0, 2.5, 0))
+    inst.components.complexprojectile:SetOnHit(onHit)
 
     inst:AddComponent("inspectable")
     

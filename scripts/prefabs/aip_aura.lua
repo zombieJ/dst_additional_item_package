@@ -42,6 +42,9 @@ local function getFn(data)
 			inst.periodTask = inst:DoPeriodicTask(0.1, onFade)
 		end
 
+		inst:AddTag("NOCLICK")
+		inst:AddTag("FX")
+
 		inst.entity:SetPristine()
 
 		if not TheWorld.ismastersim then
@@ -176,7 +179,7 @@ local list = {
 		end,
 		onAnimOver = function(inst)
 			inst:DoTaskInTime(12, function()
-				ErodeAway(inst, 0.3)
+				ErodeAway(inst, 0.5)
 			end)
 		end,
 	},
