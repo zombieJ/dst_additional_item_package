@@ -362,14 +362,24 @@ AddPrefabPostInit("grass", function(inst)
 	end
 end)
 
-local function spawnNearPlayer(prefabName)
+local function spawnNearPlayer(prefabName, dist, maxCount)
+	dist = dist or 40
+	maxCount = maxCount or 999
+
 	for i, player in ipairs(_G.AllPlayers) do
 		if not player:HasTag("playerghost") and player.entity:IsVisible() then
-			local pos = _G.aipGetSpawnPoint(player:GetPosition())
+			local pos = _G.aipGetSpawnPoint(player:GetPosition(), dist)
 			if pos ~= nil then
 				local prefab = _G.SpawnPrefab(prefabName)
 				prefab.Transform:SetPosition(pos.x, pos.y, pos.z)
-				break
+
+				-- 超过最大数我们就不创建了
+				local ents = _G.aipFindNearEnts(prefab, { prefabName }, 20)
+				if #ents > maxCount then
+					prefab:Remove()
+				else
+					break
+				end
 			end
 		end
 	end
@@ -385,9 +395,9 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 			end)
 		end
 
-		-- 每天都有一定概率给玩家附近生成一个 怪异的球茎
+		-- 每天都有一定概率给玩家附近生成一个 怪异的球茎（最多 3 个）
 		inst:WatchWorldState("isnight", function()
-			spawnNearPlayer("aip_oldone_plant")
+			spawnNearPlayer("aip_oldone_plant", nil, 3)
 		end)
 	end)
 end
