@@ -5,10 +5,12 @@ local LANG_MAP = {
 	english = {
 		NAME = "'Fully' Bulb",
 		DESC = "Filled with spider silk neurons",
+        NO_UPGRADE = "This Spider Den is too strong",
 	},
 	chinese = {
 		NAME = "“完整”的球茎",
 		DESC = "其中充满蜘蛛丝状神经元",
+        NO_UPGRADE = "这个蜘蛛巢太过强壮了",
 	},
 }
 
@@ -16,6 +18,7 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 STRINGS.NAMES.AIP_OLDONE_PLANT_FULL = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_PLANT_FULL = LANG.DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_PLANT_NO_UPGRADE = LANG.NO_UPGRADE
 
 -- 资源
 local assets = {
@@ -24,10 +27,26 @@ local assets = {
 }
 
 ----------------------------------- 事件 -----------------------------------
+-- 附身蜘蛛巢
+local function canActOn(inst, doer, target)
+	return target.prefab == "spiderden"
+end
+
+local function onDoTargetAction(inst, doer, target)
+	if target.components.upgradeable ~= nil and target.components.upgradeable.stage == 1 then
+        aipReplacePrefab(target, "aip_oldone_spiderden")
+        inst:Remove()
+        return
+    end
+
+    if doer.components.talker ~= nil then
+        doer.components.talker:Say(
+            STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_PLANT_NO_UPGRADE
+        )
+    end
+end
+
 local function onHit(inst, attacker, target)
-    -- SpawnPrefab("splash_snow_fx").Transform:SetPosition(inst.Transform:GetWorldPosition())
-    -- inst.components.wateryprotection:SpreadProtection(inst)
-    -- inst:Remove()
     aipReplacePrefab(inst, "aip_aura_poison")
 end
 
@@ -52,9 +71,15 @@ local function fn()
 
     inst.entity:SetPristine()
 
+    inst:AddComponent("aipc_action_client")
+	inst.components.aipc_action_client.canActOn = canActOn
+
     if not TheWorld.ismastersim then
         return inst
     end
+
+    inst:AddComponent("aipc_action")
+	inst.components.aipc_action.onDoTargetAction = onDoTargetAction
 
     inst:AddComponent("complexprojectile")
     inst.components.complexprojectile:SetHorizontalSpeed(15)

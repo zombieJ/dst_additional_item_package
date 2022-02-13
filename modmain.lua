@@ -111,6 +111,7 @@ PrefabFiles = {
 	"aip_oldone_plant",
 	"aip_oldone_plant_broken",
 	"aip_oldone_plant_full",
+	"aip_oldone_spiderden",
 
 	-- Orbit
 	"aip_orbit",
