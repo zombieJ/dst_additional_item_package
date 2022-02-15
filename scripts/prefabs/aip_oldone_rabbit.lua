@@ -1,7 +1,7 @@
 -- 开发模式
 local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
-local brain = require("brains/aip_dragon_brain_tail")
+local brain = require("brains/aip_oldone_rabbit_brain")
 
 local assets = {
 	Asset("ANIM", "anim/aip_oldone_rabbit.zip"),
@@ -28,7 +28,9 @@ STRINGS.NAMES.AIP_OLDONE_RABBIT = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_RABBIT = LANG.DESC
 
 ----------------------------------- 事件 -----------------------------------
-
+local function OnAttacked(inst, data)
+    inst:PushEvent("gohome")
+end
 
 ----------------------------------- 实体 -----------------------------------
 local function fn()
@@ -42,7 +44,7 @@ local function fn()
 	MakeCharacterPhysics(inst, 10, .5)
 
 	inst.Transform:SetTwoFaced()
-	-- inst.Transform:SetScale(2, 2, 2)
+	inst.Transform:SetScale(0.6, 0.6, 0.6)
 
     inst:AddTag("animal")
     inst:AddTag("prey")
@@ -55,7 +57,7 @@ local function fn()
 
 	inst.AnimState:SetBank("aip_oldone_rabbit")
 	inst.AnimState:SetBuild("aip_oldone_rabbit")
-	inst.AnimState:PlayAnimation("idle_loop", true)
+	inst.AnimState:PlayAnimation("idle", true)
 
 	inst.entity:SetPristine()
 
@@ -67,6 +69,8 @@ local function fn()
     inst.components.locomotor:SetSlowMultiplier(1)
     inst.components.locomotor:SetTriggersCreep(false)
     inst.components.locomotor.pathcaps = { ignorecreep = true }
+	inst.components.locomotor.walkspeed = TUNING.SPIDER_WALK_SPEED / 2
+    inst.components.locomotor.runspeed = TUNING.SPIDER_WALK_SPEED
 
 	inst:AddComponent("drownable")
 
@@ -80,7 +84,7 @@ local function fn()
 
 	---------------------
     MakeMediumBurnableCharacter(inst, "body")
-    MakeMediumFreezableCharacter(inst, "body")
+    -- MakeMediumFreezableCharacter(inst, "body")
     inst.components.burnable.flammability = TUNING.SPIDER_FLAMMABILITY
     ---------------------
 
@@ -89,10 +93,13 @@ local function fn()
 
 	inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "body"
+	inst:ListenForEvent("attacked", OnAttacked)
 
 	inst:AddComponent("knownlocations")
 
 	inst:AddComponent("inspectable")
+
+	inst.bedazzled = true
 
 	MakeHauntablePanic(inst)
 

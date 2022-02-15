@@ -70,6 +70,16 @@ local function fn()
         return inst
     end
 
+    inst:AddComponent("childspawner")
+    inst.components.childspawner.childname = "aip_oldone_rabbit"
+    inst.components.childspawner:SetRegenPeriod(dev_mode and 1 or TUNING.SPIDERDEN_REGEN_TIME)
+    inst.components.childspawner:SetSpawnPeriod(dev_mode and 1 or TUNING.SPIDERDEN_RELEASE_TIME)
+    inst.components.childspawner:SetMaxChildren(3)
+    inst.components.childspawner.allowboats = true
+    inst.components.childspawner.childreninside = 1
+    inst.components.childspawner:StartSpawning()
+    inst.components.childspawner:StartRegen()
+
     inst:AddComponent("inspectable")
 
     inst:AddComponent("lootdropper")
