@@ -28,8 +28,23 @@ STRINGS.NAMES.AIP_OLDONE_RABBIT = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_RABBIT = LANG.DESC
 
 ----------------------------------- 事件 -----------------------------------
+local function SwitchSpeed(inst, fast)
+	if fast then
+		inst.components.locomotor.walkspeed = TUNING.SPIDER_RUN_SPEED * 1.5
+		inst.components.locomotor.runspeed = TUNING.SPIDER_RUN_SPEED * 1.5
+	else
+		inst.components.locomotor.walkspeed = TUNING.SPIDER_WALK_SPEED
+		inst.components.locomotor.runspeed = TUNING.SPIDER_WALK_SPEED
+	end
+end
+
 local function OnAttacked(inst, data)
+	SwitchSpeed(inst, true)
     inst:PushEvent("gohome")
+end
+
+local function goingHome(inst)
+	inst:Remove()
 end
 
 ----------------------------------- 实体 -----------------------------------
@@ -69,8 +84,7 @@ local function fn()
     inst.components.locomotor:SetSlowMultiplier(1)
     inst.components.locomotor:SetTriggersCreep(false)
     inst.components.locomotor.pathcaps = { ignorecreep = true }
-	inst.components.locomotor.walkspeed = TUNING.SPIDER_WALK_SPEED / 2
-    inst.components.locomotor.runspeed = TUNING.SPIDER_WALK_SPEED
+	SwitchSpeed(inst)
 
 	inst:AddComponent("drownable")
 
@@ -89,11 +103,12 @@ local function fn()
     ---------------------
 
     inst:AddComponent("health")
-    inst.components.health:SetMaxHealth(dev_mode and 1 or TUNING.SPIDER_HEALTH)
+    inst.components.health:SetMaxHealth(dev_mode and 50 or TUNING.SPIDER_HEALTH)
 
 	inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "body"
 	inst:ListenForEvent("attacked", OnAttacked)
+	inst:ListenForEvent("goinghome", goingHome)
 
 	inst:AddComponent("knownlocations")
 

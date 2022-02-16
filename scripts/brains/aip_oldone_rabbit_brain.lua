@@ -13,7 +13,7 @@ local SEE_FOOD_DIST = 10
 
 local TRADE_DIST = 20
 
-local MAX_WANDER_DIST = 5
+local MAX_WANDER_DIST = 8
 
 local DAMAGE_UNTIL_SHIELD = 50
 local SHIELD_TIME = 3
