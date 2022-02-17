@@ -46,6 +46,15 @@ local function OnKilled(inst)
     inst.components.lootdropper:DropLoot(inst:GetPosition())
 end
 
+-- 扔毒药给攻击者，需要按照队列延迟才行
+local function onGoHome(inst, child)
+    local attacker = child._aipAttacker
+    if attacker ~= nil and attacker:IsValid() then
+        local ball = aipSpawnPrefab(inst, "aip_oldone_plant_full")
+        ball.components.complexprojectile:Launch(attacker:GetPosition(), inst)
+    end
+end
+
 ----------------------------------- 实体 -----------------------------------
 local function fn()
     local inst = CreateEntity()
@@ -57,6 +66,7 @@ local function fn()
     inst.entity:AddGroundCreepEntity()
 
     inst:AddTag("hostile")
+    inst:AddTag("aip_oldone")
 
     MakeInventoryPhysics(inst)
 
@@ -74,11 +84,12 @@ local function fn()
     inst.components.childspawner.childname = "aip_oldone_rabbit"
     inst.components.childspawner:SetRegenPeriod(dev_mode and 1 or TUNING.SPIDERDEN_REGEN_TIME)
     inst.components.childspawner:SetSpawnPeriod(dev_mode and 1 or TUNING.SPIDERDEN_RELEASE_TIME)
-    inst.components.childspawner:SetMaxChildren(5)
+    inst.components.childspawner:SetMaxChildren(3)
     inst.components.childspawner.allowboats = true
-    inst.components.childspawner.childreninside = 0
+    inst.components.childspawner.childreninside = 3
     inst.components.childspawner:StartSpawning()
     inst.components.childspawner:StartRegen()
+    inst.components.childspawner:SetGoHomeFn(onGoHome)
 
     inst:AddComponent("inspectable")
 
@@ -97,6 +108,13 @@ local function fn()
     MakeMediumPropagator(inst)
 
     inst:DoTaskInTime(0, updateCreep)
+
+    -- 测试模式直接释放蜘蛛
+    if dev_mode then
+        inst:DoTaskInTime(0, function()
+            inst.components.childspawner:ReleaseAllChildren()
+        end)
+    end
 
     return inst
 end

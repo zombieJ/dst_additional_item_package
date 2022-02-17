@@ -38,13 +38,25 @@ local function SwitchSpeed(inst, fast)
 	end
 end
 
+-- 让周围所有的蜘蛛都回家
+local RABBIT_MUST_TAGS = { "aip_oldone_rabbit" }
+local RABBIT_CANT_TAGS = { "INLIMBO" }
 local function OnAttacked(inst, data)
-	SwitchSpeed(inst, true)
-    inst:PushEvent("gohome")
+	local attacker = data and data.attacker
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, y, z, 30, RABBIT_MUST_TAGS, RABBIT_CANT_TAGS)
+    for i, v in ipairs(ents) do
+		SwitchSpeed(v, true)
+		v._aipAttacker = attacker
+        v:PushEvent("gohome")
+    end
 end
 
 local function goingHome(inst)
-	inst:Remove()
+	-- SwitchSpeed(inst, false)
+end
+
+local function onWentHome(inst)
 end
 
 ----------------------------------- 实体 -----------------------------------
@@ -69,6 +81,8 @@ local function fn()
     inst:AddTag("cattoy")
     inst:AddTag("catfood")
     inst:AddTag("stunnedbybomb")
+	inst:AddTag("aip_oldone")
+	inst:AddTag("aip_oldone_rabbit")
 
 	inst.AnimState:SetBank("aip_oldone_rabbit")
 	inst.AnimState:SetBuild("aip_oldone_rabbit")
@@ -109,6 +123,7 @@ local function fn()
     inst.components.combat.hiteffectsymbol = "body"
 	inst:ListenForEvent("attacked", OnAttacked)
 	inst:ListenForEvent("goinghome", goingHome)
+	inst:ListenForEvent("onwenthome", onWentHome)
 
 	inst:AddComponent("knownlocations")
 
