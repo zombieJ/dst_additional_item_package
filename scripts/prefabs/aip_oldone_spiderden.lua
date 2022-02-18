@@ -31,8 +31,27 @@ local function updateCreep(inst)
     end
 end
 
-local function OnHit(inst)
+local function OnHit(inst, attacker)
     inst.AnimState:PlayAnimation("hit")
+
+    -- 不再生产
+    inst.components.childspawner:StopSpawning()
+    if inst._aipStartTimer ~= nil then
+        inst._aipStartTimer:Cancel()
+        inst._aipStartTimer = nil
+    end
+
+    -- 让孩子回家
+    for k, v in pairs(inst.components.childspawner.childrenoutside) do
+        v._aipAttacker = attacker
+        v:PushEvent("gohome")
+    end
+
+    -- 一段时间后恢复生产
+    inst._aipStartTime = inst:DoTaskInTime(10, function()
+        inst.components.childspawner:StartSpawning()
+        inst._aipStartTime = nil
+    end)
 end
 
 local function OnKilled(inst)
@@ -46,13 +65,40 @@ local function OnKilled(inst)
     inst.components.lootdropper:DropLoot(inst:GetPosition())
 end
 
+-- 投毒计时器，让投毒更有美感
+local function startThrow(inst, target)
+    table.insert(inst._aipTargets, target)
+
+    if inst._aipTimer ~= nil then
+        return
+    end
+
+    inst._aipTimer = inst:DoPeriodicTask(1.5, function()
+        if #inst._aipTargets <= 0 then
+            inst._aipTimer:Cancel()
+            inst._aipTimer = nil
+            return
+        end
+
+        local target = table.remove(inst._aipTargets, 1)
+        if target ~= nil and target:IsValid() then
+            local ball = aipSpawnPrefab(inst, "aip_oldone_plant_full")
+            local x, y, z = target.Transform:GetWorldPosition()
+            ball.components.complexprojectile:Launch(
+                Vector3(
+                    x + math.random(-2, 2),
+                    y,
+                    z + math.random(-2, 2)
+                ),
+                inst
+            )
+        end
+    end, 1)
+end
+
 -- 扔毒药给攻击者，需要按照队列延迟才行
 local function onGoHome(inst, child)
-    local attacker = child._aipAttacker
-    if attacker ~= nil and attacker:IsValid() then
-        local ball = aipSpawnPrefab(inst, "aip_oldone_plant_full")
-        ball.components.complexprojectile:Launch(attacker:GetPosition(), inst)
-    end
+    startThrow(inst, child._aipAttacker)
 end
 
 ----------------------------------- 实体 -----------------------------------
@@ -115,6 +161,8 @@ local function fn()
             inst.components.childspawner:ReleaseAllChildren()
         end)
     end
+
+    inst._aipTargets = {}
 
     return inst
 end

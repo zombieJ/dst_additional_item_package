@@ -43,13 +43,11 @@ local RABBIT_MUST_TAGS = { "aip_oldone_rabbit" }
 local RABBIT_CANT_TAGS = { "INLIMBO" }
 local function OnAttacked(inst, data)
 	local attacker = data and data.attacker
-    local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, 30, RABBIT_MUST_TAGS, RABBIT_CANT_TAGS)
-    for i, v in ipairs(ents) do
-		SwitchSpeed(v, true)
-		v._aipAttacker = attacker
-        v:PushEvent("gohome")
-    end
+
+	local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
+	if home ~= nil and home.components.combat ~= nil and home.components.combat.onhitfn ~= nil then
+		home.components.combat.onhitfn(home, attacker, 0)
+	end
 end
 
 local function goingHome(inst)
