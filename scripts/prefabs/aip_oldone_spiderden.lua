@@ -32,7 +32,12 @@ local function updateCreep(inst)
 end
 
 local function OnHit(inst, attacker)
+    if inst.components.health:IsDead() then
+        return
+    end
+
     inst.AnimState:PlayAnimation("hit")
+    inst.AnimState:PushAnimation("idle", true)
 
     -- 不再生产
     inst.components.childspawner:StopSpawning()
@@ -55,10 +60,13 @@ local function OnHit(inst, attacker)
 end
 
 local function OnKilled(inst)
-    inst.AnimState:PlayAnimation("dead")
+    -- 实际上死亡时是无法将蜘蛛释放出来的
     if inst.components.childspawner ~= nil then
         inst.components.childspawner:ReleaseAllChildren()
     end
+
+    inst.AnimState:PlayAnimation("death")
+
     RemovePhysicsColliders(inst)
 
     inst.SoundEmitter:PlaySound("dontstarve/creatures/spider/spiderLair_destroy")
@@ -74,7 +82,7 @@ local function startThrow(inst, target)
     end
 
     inst._aipTimer = inst:DoPeriodicTask(1.5, function()
-        if #inst._aipTargets <= 0 then
+        if #inst._aipTargets <= 0 or inst.components.health:IsDead() then
             inst._aipTimer:Cancel()
             inst._aipTimer = nil
             return
@@ -93,7 +101,7 @@ local function startThrow(inst, target)
                 inst
             )
         end
-    end, 1)
+    end, 0.5)
 end
 
 -- 扔毒药给攻击者，需要按照队列延迟才行
@@ -141,10 +149,11 @@ local function fn()
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:AddChanceLoot("plantmeat", 1)
-    inst.components.lootdropper:AddChanceLoot("monstermeat", 1)
+    inst.components.lootdropper:AddChanceLoot("silk", 1)
 
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(dev_mode and 66 or 666)
+    -- inst.components.health.nofadeout = true
 
     inst:AddComponent("combat")
     inst.components.combat:SetOnHit(OnHit)

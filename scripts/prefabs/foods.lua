@@ -374,6 +374,26 @@ local food_recipes = {
 		cooktime = CO * 40,
 		tags = {"honeyed", "aip_nectar_material", "aip_exquisite"},
 	},
+
+	-- 古神低语
+	aip_food_leather_jelly = { -- 皮质果冻，叶肉 + 粘衣
+		test = function(cooker, names, tags)
+			return (
+				(names.plantmeat or 0) + (names.plantmeat_cooked or 0) >= 1 and
+				names.aip_oldone_plant_broken and
+				tags.sweetener
+			)
+		end,
+		priority = 99,
+		weight = 1,
+		foodtype = FOODTYPE.VEGGIE,
+		health = HP * -10,
+		hunger = HU * 25,
+		sanity = SAN * -10,
+		perishtime = PER * 5,
+		cooktime = CO * 20,
+		tags = {"honeyed"},
+	},
 }
 
 --------------------------------------------------
