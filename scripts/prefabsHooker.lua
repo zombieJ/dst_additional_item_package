@@ -408,3 +408,11 @@ local VEGGIES = _G.require('prefabs/aip_veggies_list')
 for name, data in pairs(VEGGIES) do
 	env.AddIngredientValues({"aip_veggie_"..name}, data.tags or {}, data.cancook or false, data.candry or false)
 end
+
+-- 粘衣赋值
+env.AddIngredientValues(
+	{"aip_oldone_plant_broken"},
+	{ indescribable = 1 }, -- tags
+	false, -- cancook
+	false -- candry
+)

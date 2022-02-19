@@ -380,7 +380,7 @@ local food_recipes = {
 		test = function(cooker, names, tags)
 			return (
 				(names.plantmeat or 0) + (names.plantmeat_cooked or 0) >= 1 and
-				names.aip_oldone_plant_broken and
+				tags.indescribable and
 				tags.sweetener
 			)
 		end,
