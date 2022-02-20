@@ -1,5 +1,3 @@
-local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
-
 -- 配置
 local additional_food = aipGetModConfig("additional_food")
 if additional_food ~= "open" then
@@ -8,6 +6,7 @@ end
 
 local food_effect = aipGetModConfig("food_effect")
 local language = aipGetModConfig("language")
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 -- 默认参数
 local EFFECT_MAP = {
@@ -391,7 +390,7 @@ local food_recipes = {
 		hunger = HU * 25,
 		sanity = SAN * -10,
 		perishtime = PER * 5,
-		cooktime = CO * 20,
+		cooktime = dev_mode and CO or CO * 20,
 		tags = {"honeyed"},
 	},
 }
