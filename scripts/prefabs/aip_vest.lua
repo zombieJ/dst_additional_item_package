@@ -4,7 +4,7 @@ local assets =
 	Asset("ANIM", "anim/staff_projectile.zip"),
 }
 
-function fn()
+local function fn()
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()

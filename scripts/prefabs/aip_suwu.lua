@@ -95,7 +95,7 @@ local function onunequip(inst, owner)
 end
 
 ------------------------------- 实体 -------------------------------
-function fn()
+local function fn()
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()

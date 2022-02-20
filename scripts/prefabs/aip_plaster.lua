@@ -54,7 +54,7 @@ aip_plaster.atlas = "images/inventoryimages/aip_plaster.xml"
 
 -----------------------------------------------------------
 
-function fn()
+local function fn()
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()

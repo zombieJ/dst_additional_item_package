@@ -154,7 +154,7 @@ end
 -- 注：
 -- 默认的乘坐逻辑需要装上鞍，装备完毕后的移动动画是骑牛的动画（并且会显示鞍）。
 -- 感觉在之上改造太过麻烦，干脆直接自己模拟好了。
-function fn()
+local function fn()
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()

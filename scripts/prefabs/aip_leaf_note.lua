@@ -90,7 +90,7 @@ local function onload(inst, data)
   setNote(inst, inst._noteIdx)
 end
 
-function fn()
+local function fn()
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()

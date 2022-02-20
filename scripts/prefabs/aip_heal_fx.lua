@@ -13,7 +13,7 @@ local assets =
 
 -----------------------------------------------------------
 
-function fn()
+local function fn()
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()

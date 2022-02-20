@@ -85,7 +85,7 @@ local function onDoTargetAction(inst, doer, target)
 	inst:Remove()
 end
 
-function fn()
+local function fn()
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()

@@ -10,7 +10,7 @@ local function patchColor(inst, color)
     return true
 end
 
-function OnUpdateProjectileTail(inst)
+local function OnUpdateProjectileTail(inst)
     local pos = inst:GetPosition()
     local sx, sy, sz = inst.Transform:GetScale()
 
@@ -29,7 +29,7 @@ local assets = {
     Asset("ANIM", "anim/aip_dou_scepter_projectile.zip"),
 }
 
-function fn()
+local function fn()
 	local inst = CreateEntity()
 
     inst.entity:AddTransform()

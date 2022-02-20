@@ -30,7 +30,7 @@ local assets = {
 
 local prefabs = {}
 
-function fn()
+local function fn()
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()

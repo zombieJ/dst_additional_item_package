@@ -45,7 +45,7 @@ local function onDoAction(inst, doer)
 end
 
 ----------------------------------- 实体 -----------------------------------
-function fn()
+local function fn()
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()

@@ -69,7 +69,7 @@ local prefabs =
 	"aip_shadow_wrapper",
 }
 
-function fn_common(name, preFunc, postFunc)
+local function fn_common(name, preFunc, postFunc)
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()
@@ -172,7 +172,7 @@ local function onPaperLoad(inst)
 	end
 end
 
-function fnPaper()
+local function fnPaper()
 	return fn_common("aip_shadow_paper_package", function(inst)
 		-- Pre Func
 		inst.AnimState:PlayAnimation("paper", true)
@@ -296,7 +296,7 @@ local function onDeploy(inst, pt, deployer)
 	shadowWrapper.DoShow()
 end
 
-function fnPackage()
+local function fnPackage()
 	return fn_common("aip_shadow_package", function(inst)
 		-- Pre Func
 		inst.AnimState:PlayAnimation("idle", true)

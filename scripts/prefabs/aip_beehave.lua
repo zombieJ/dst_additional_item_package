@@ -124,7 +124,7 @@ local function onunequip(inst, owner)
 	owner.AnimState:Show("ARM_normal")
 end
 
-function fn()
+local function fn()
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()
