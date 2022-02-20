@@ -18,10 +18,13 @@ local function SearchToAddBuffer(inst, self)
 	local ents = TheSim:FindEntities(x, y, z, self.range, self.mustTags, self.noTags)
 
 	for i, ent in ipairs(ents) do
-		patchBuffer(
-			ent, inst, self.bufferName, self.bufferDuration,
-			self.bufferFn, self.bufferStartFn, self.bufferEndFn,
-			self.showFX
+		aipPatchBuffer(
+			ent, inst, self.bufferName, self.bufferDuration, {
+				fn = self.bufferFn,
+				startFn = self.bufferStartFn,
+				endFn = self.bufferEndFn,
+				showFX = self.showFX,
+			}
 		)
 	end
 end

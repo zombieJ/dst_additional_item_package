@@ -297,7 +297,7 @@ AddComponentPostInit("health", function(self)
 
 	function self:DoDelta(amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb, ...)
 		-- healthCost buffer 的对象会受到更多伤害
-		if _G.hasBuffer(self.inst, "healthCost") and amount < 0 then
+		if _G.aipHasBuffer(self.inst, "healthCost") and amount < 0 then
 			amount = amount * 2
 		end
 

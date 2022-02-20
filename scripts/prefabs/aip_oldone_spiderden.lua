@@ -6,10 +6,12 @@ local LANG_MAP = {
 	english = {
 		NAME = "Parasitic Spider Den",
 		DESC = "Seems a big difference inside",
+        SEE = "Who is watching?",
 	},
 	chinese = {
 		NAME = "寄生蜘蛛巢",
 		DESC = "内部结果似乎已经大不一样了",
+        SEE = "谁在注视我？",
 	},
 }
 
@@ -17,6 +19,7 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 STRINGS.NAMES.AIP_OLDONE_SPIDERDEN = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_SPIDERDEN = LANG.DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_SPIDERDEN_SEE = LANG.SEE
 
 -- 资源
 local assets = {
@@ -59,7 +62,35 @@ local function OnHit(inst, attacker)
     end)
 end
 
+-- 不断在玩家附近创建眼睛
+aipClientBuffer("aip_see_eyes", function(inst)
+    local pt = inst:GetPosition()
+    local eye = aipSpawnPrefab(
+        inst, "aip_oldone_eye",
+        pt.x + math.random(-5, 5), 0,
+        pt.z + math.random(-5, 5)
+    )
+
+    local scale = math.random(1, 1.8)
+    eye.Transform:SetScale(scale, scale, scale)
+    eye.Transform:SetRotation(math.random() * 360)
+end)
+
 local function OnKilled(inst)
+    -- 诅咒附近的玩家
+    local players = aipFindNearPlayers(inst, 9)
+    for k, player in pairs(players) do
+        aipPatchBuffer(player, inst, "aip_see_eyes", dev_mode and 60 or 120, {
+            showFX = false,
+        })
+
+        if player.components.talker ~= nil then
+            player.components.talker:Say(
+                STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_SPIDERDEN_SEE
+            )
+        end
+    end
+
     -- 实际上死亡时是无法将蜘蛛释放出来的
     if inst.components.childspawner ~= nil then
         inst.components.childspawner:ReleaseAllChildren()

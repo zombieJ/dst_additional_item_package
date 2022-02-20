@@ -51,7 +51,7 @@ local function PrintFootPrint(inst)
 			local ptg = player.replica.sanity:GetPercent()
 
 			-- 如果有帽子光环就可以直接看到
-			if hasBuffer(player, "seeFootPrint") then
+			if aipHasBuffer(player, "seeFootPrint") then
 				ptg = 0
 			end
 

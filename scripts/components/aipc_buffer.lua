@@ -52,18 +52,21 @@ local Buffer = Class(function(self, inst)
 	self.inst:AddChild(self.fx)
 end)
 
-function Buffer:Patch(name, source, duration, fn, startFn, endFn, showFX)
-	if self.buffers[name] == nil and startFn ~= nil then
-		startFn(source, self.inst)
+function Buffer:Patch(name, source, duration, info)
+	if self.buffers[name] == nil and info.startFn ~= nil then
+		info.startFn(source, self.inst)
 	end
 
 	self.buffers[name] = {
 		source = source,
 		duration = duration or 2,
-		fn = fn,
-		startFn = startFn,
-		endFn = endFn,
-		showFX = showFX,
+		fn = info.fn,
+		startFn = info.startFn,
+		endFn = info.endFn,
+
+		clientFn = info.clientFn,
+
+		showFX = info.showFX,
 	}
 
 	self:SyncBuffer()

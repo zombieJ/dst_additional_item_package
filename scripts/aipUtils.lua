@@ -567,16 +567,16 @@ function _G.aipRPC(funcName, ...)
 end
 
 -- 添加 aipc_buffer
-function _G.patchBuffer(inst, source, name, duration, fn, startFn, endFn, showFX)
+function _G.aipPatchBuffer(inst, source, name, duration, info)
 	if inst.components.aipc_buffer == nil then
 		inst:AddComponent("aipc_buffer")
 	end
 
-	inst.components.aipc_buffer:Patch(name, source, duration, fn, startFn, endFn, showFX)
+	inst.components.aipc_buffer:Patch(name, source, duration, info)
 end
 
 -- 存在 aipc_buffer
-function _G.hasBuffer(inst, name)
+function _G.aipHasBuffer(inst, name)
 	-- if inst.components.aipc_buffer ~= nil then
 	-- 	return inst.components.aipc_buffer.buffers[name] ~= nil
 	-- end
@@ -586,6 +586,15 @@ function _G.hasBuffer(inst, name)
 	end
 
 	return false
+end
+
+-- 注册客户端 Buffer 效果
+local clientBuffers = {}
+function _G.aipClientBuffer(name, clientFn)
+	if clientFn ~= nil then
+		clientBuffers[name] = clientFn
+	end
+	return clientBuffers[name]
 end
 
 -- 获取玩家手持的物品，仅在 AddComponentAction 中使用

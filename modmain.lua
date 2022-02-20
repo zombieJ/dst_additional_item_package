@@ -113,6 +113,7 @@ PrefabFiles = {
 	"aip_oldone_plant_full",
 	"aip_oldone_spiderden",
 	"aip_oldone_rabbit",
+	"aip_oldone_eye",
 
 	-- Orbit
 	"aip_orbit",
