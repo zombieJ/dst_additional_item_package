@@ -65,23 +65,26 @@ end
 -- 不断在玩家附近创建眼睛
 aipClientBuffer("aip_see_eyes", function(inst)
     local pt = inst:GetPosition()
-    local eye = aipSpawnPrefab(
-        inst, "aip_oldone_eye",
-        pt.x + math.random(-5, 5), 0,
-        pt.z + math.random(-5, 5)
-    )
 
-    local scale = math.random(1, 1.8)
-    eye.Transform:SetScale(scale, scale, scale)
-    eye.Transform:SetRotation(math.random() * 360)
+    for i = 1, 2 do
+        local eye = aipSpawnPrefab(
+            inst, "aip_oldone_eye",
+            pt.x + math.random(-10, 10), 0,
+            pt.z + math.random(-10, 10)
+        )
+
+        local scale = 1 + math.random() / 2
+        eye.Transform:SetScale(scale, scale, scale)
+        eye.Transform:SetRotation(math.random() * 360)
+    end
 end)
 
 local function OnKilled(inst)
     -- 诅咒附近的玩家
     local players = aipFindNearPlayers(inst, 9)
     for k, player in pairs(players) do
-        aipPatchBuffer(player, inst, "aip_see_eyes", dev_mode and 60 or 120, {
-            showFX = false,
+        aipPatchBuffer(player, inst, "aip_see_eyes", dev_mode and 10 or 30, {
+            showFX = true,
         })
 
         if player.components.talker ~= nil then

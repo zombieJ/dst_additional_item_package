@@ -392,6 +392,11 @@ local food_recipes = {
 		perishtime = PER * 5,
 		cooktime = dev_mode and CO or CO * 20,
 		tags = {"honeyed"},
+		oneatenfn = function(inst, eater)
+			aipPatchBuffer(eater, inst, "aip_see_eyes", dev_mode and 60 or 120, {
+				showFX = true,
+			})
+		end,
 	},
 }
 
