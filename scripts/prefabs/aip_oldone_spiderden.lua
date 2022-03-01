@@ -181,6 +181,9 @@ local function fn()
 
     inst:AddComponent("inspectable")
 
+    inst:AddComponent("sanityaura")
+    inst.components.sanityaura.aura = -TUNING.SANITYAURA_SMALL
+
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:AddChanceLoot("plantmeat", 1)
     inst.components.lootdropper:AddChanceLoot("silk", 1)

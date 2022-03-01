@@ -6,6 +6,7 @@
         <file id="2" name="wall/hand1.png" width="45" height="54" pivot_x="0" pivot_y="1"/>
         <file id="3" name="wall/hand2.png" width="28" height="44" pivot_x="0" pivot_y="1"/>
         <file id="4" name="wall/eye.png" width="20" height="20" pivot_x="0" pivot_y="1"/>
+        <file id="5" name="wall/item.png" width="240" height="220" pivot_x="0" pivot_y="1"/>
     </folder>
     <entity id="0" name="aip_oldone_wall">
         <animation id="0" name="idle" length="5000">
@@ -2485,6 +2486,24 @@
                 </key>
                 <key id="2" time="500" spin="0">
                     <object folder="0" file="4" x="-42.272221" y="-86.238274" pivot_x="0.5" pivot_y="0.595238" angle="0" scale_x="1.313261" scale_y="0.000557"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="4" name="item" length="2000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="item" folder="0" file="5" abs_x="0.004149" abs_y="1.221719" abs_pivot_x="0.495851" abs_pivot_y="0.278281" abs_angle="360" abs_scale_x="0.9" abs_scale_y="0.9" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="1000">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="item">
+                <key id="0" spin="0">
+                    <object folder="0" file="5" x="0.004149" y="1.221719" pivot_x="0.495851" pivot_y="0.278281" scale_x="0.9" scale_y="0.9"/>
+                </key>
+                <key id="1" time="1000" spin="0">
+                    <object folder="0" file="5" x="0.004149" y="-0.778281" pivot_x="0.495851" pivot_y="0.278281" scale_x="0.962344" scale_y="0.839903"/>
                 </key>
             </timeline>
         </animation>

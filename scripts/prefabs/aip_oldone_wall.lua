@@ -19,11 +19,13 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 STRINGS.NAMES.AIP_OLDONE_WALL = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_WALL = LANG.DESC
+STRINGS.NAMES.AIP_OLDONE_WALL_ITEM = LANG.NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_WALL_ITEM = LANG.DESC
 
 -- 资源
 local assets = {
     Asset("ANIM", "anim/aip_oldone_wall.zip"),
-	-- Asset("ATLAS", "images/inventoryimages/aip_22_fish.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_oldone_wall_item.xml"),
 }
 
 --------------------------------- 路径 ---------------------------------
@@ -55,6 +57,65 @@ end
 local function makeobstacle(inst)
     inst.Physics:SetActive(true)
     inst._ispathfinding:set(true)
+end
+
+--------------------------------- 事件 ---------------------------------
+local function ondeploywall(inst, pt, deployer)
+    local wall = SpawnPrefab("aip_oldone_wall")
+    if wall ~= nil then
+        local x = math.floor(pt.x) + .5
+        local z = math.floor(pt.z) + .5
+        wall.Physics:SetCollides(false)
+        wall.Physics:Teleport(x, 0, z)
+        wall.Physics:SetCollides(true)
+        inst.components.stackable:Get():Remove()
+
+        wall.SoundEmitter:PlaySound("dontstarve/common/place_structure_straw")
+    end
+end
+
+--------------------------------- 实例：物品 ---------------------------------
+local function itemfn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddNetwork()
+
+    MakeInventoryPhysics(inst)
+
+    inst:AddTag("wallbuilder")
+
+    inst.AnimState:SetBank("aip_oldone_wall")
+    inst.AnimState:SetBuild("aip_oldone_wall")
+    inst.AnimState:PlayAnimation("item", true)
+
+    MakeInventoryFloatable(inst)
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst:AddComponent("stackable")
+    inst.components.stackable.maxsize = TUNING.STACK_SIZE_MEDITEM
+
+    inst:AddComponent("inspectable")
+    inst:AddComponent("inventoryitem")
+    inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_oldone_wall_item.xml"
+
+    MakeSmallBurnable(inst, TUNING.MED_BURNTIME)
+    MakeSmallPropagator(inst)
+
+
+    inst:AddComponent("deployable")
+    inst.components.deployable.ondeploy = ondeploywall
+    inst.components.deployable:SetDeployMode(DEPLOYMODE.WALL)
+
+    MakeHauntableLaunch(inst)
+
+    return inst
 end
 
 --------------------------------- 事件 ---------------------------------
@@ -92,7 +153,7 @@ local function nextAnimate(inst)
     end
 end
 
---------------------------------- 实例 ---------------------------------
+--------------------------------- 实例：墙壁 ---------------------------------
 local function fn()
     local inst = CreateEntity()
 
@@ -164,4 +225,6 @@ local function fn()
     return inst
 end
 
-return Prefab("aip_oldone_wall", fn, assets)
+return Prefab("aip_oldone_wall", fn, assets),
+Prefab("aip_oldone_wall_item", itemfn, assets, { "aip_oldone_wall", "aip_oldone_wall_item_placer" }),
+MakePlacer("aip_oldone_wall_item_placer", "aip_oldone_wall", "aip_oldone_wall", "idle", false, false, true)
