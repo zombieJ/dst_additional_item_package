@@ -50,6 +50,13 @@ local function OnPhaseChanged(inst, phase)
     end
 end
 
+-- 丢起物品
+local function onLockDrop(inst, source)
+    for i = 1, 3 do
+        inst.components.lootdropper:SpawnLootPrefab("aip_oldone_wall_item")
+    end
+end
+
 -------------------------------------- 实体 ---------------------------------------
 local function fn()
     local inst = CreateEntity()
@@ -57,6 +64,9 @@ local function fn()
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddNetwork()
+
+    inst.entity:AddDynamicShadow()
+	inst.DynamicShadow:SetSize(1.5, .5)
 
     MakeObstaclePhysics(inst, .5)
 
@@ -78,6 +88,8 @@ local function fn()
 
     inst:AddComponent("inspectable")
 
+    inst:AddComponent("lootdropper")
+
     MakeHauntableLaunch(inst)
 
     inst:ListenForEvent("phasechanged", function(src, phase)
@@ -85,6 +97,8 @@ local function fn()
     end, TheWorld)
 
     OnCreate(inst)
+
+    inst._aipLockDrop = onLockDrop
 
     return inst
 end

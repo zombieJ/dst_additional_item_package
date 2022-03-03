@@ -512,6 +512,11 @@ function Projectile:EffectTaskOnPoint(projPT)
 
 		local ents = self:FindEntities(nil, projPT, LOCK_RANGE)
 		for i, ent in ipairs(ents) do
+			if ent._aipLockDrop ~= nil then
+				-- 如果是克苏鲁雕像，则掉落物品
+				ent._aipLockDrop(ent)
+			end
+
 			if ent.components.aipc_dou_lock == nil then
 				ent:AddComponent("aipc_dou_lock")
 			end
