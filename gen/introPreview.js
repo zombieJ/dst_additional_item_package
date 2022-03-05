@@ -98,12 +98,33 @@ function getImagePath(name) {
 (async function() {
 	console.log(chalk.cyan("Start build intro image..."));
 
-	// 获取食物
+	// ========================== 获取食物 ==========================
 	console.log(chalk.yellow("Generate food json..."));
-	execSync(`node "${path.resolve(rootPath, 'gen', 'foodPreview.js')}"`);
+	const foodsFilePath = path.join(rootPath, 'scripts' , 'prefabs', `foods.lua`);
+	const foodsContextLines = fs.readFileSync(foodsFilePath, 'utf8').split(/[\r\n]+/);
+	
+	const recipeLineNo = foodsContextLines.findIndex(line => line.includes('food_recipes'));
 
-	const foodList = fs.readJSONSync(path.join(__STEAM__PATH, 'food.json'));
-	IMAGES.push(foodList.map(food => food.name));
+	let left = 0;
+	const foodList = [];
+	IMAGES.push(foodList);
+
+	for (i = recipeLineNo; i < foodsContextLines.length; i += 1) {
+		const line = foodsContextLines[i];
+		left += line.includes('{') ? 1 : 0;
+		left -= line.includes('}') ? 1 : 0;
+
+		// 获取食物名字
+		const match = line.match(/^\t([a-zA-Z_]+)\s*=\s*\{/);
+		if (match) {
+			console.log(match[1]);
+			foodList.push(match[1]);
+		}
+
+		if (left === 0) {
+			break;
+		}
+	}
 
 	// Auto break lines
 	console.log(chalk.cyan("Relayouting..."));
