@@ -80,6 +80,11 @@ end
 
 -- 创建 饼干粉碎机: 如果给了坐标，就找一个尽量远的坐标
 function CommonStore:CreateCoookieKing(pos)
+	-- 只有地面可以有
+	if not TheWorld:HasTag("forest") then
+		return
+	end
+
 	-- 存在且没有坐标就跳过
 	local ent = TheSim:FindFirstEntityWithTag("aip_cookiecutter_king")
 	if ent ~= nil and pos == nil then
@@ -105,6 +110,11 @@ end
 
 -- 创建 魔方，在墓地附近寻找
 function CommonStore:CreateRubik()
+	-- 只有地面可以有
+	if not TheWorld:HasTag("forest") then
+		return
+	end
+
 	-- 存在且没有坐标就跳过
 	local ent = TheSim:FindFirstEntityWithTag("aip_rubik")
 	if ent ~= nil then
@@ -128,6 +138,37 @@ function CommonStore:CreateRubik()
 	rubik.components.fueled:MakeEmpty()
 
 	return rubik
+end
+
+-- 创建 古神蛛巢，随机找一个触手怪
+function CommonStore:CreateSpiderden()
+	-- 只有地面可以有
+	if not TheWorld:HasTag("forest") then
+		return
+	end
+
+	-- 存在且没有坐标就跳过
+	local ent = TheSim:FindFirstEntityWithTag("aip_oldone_spiderden")
+	if ent ~= nil then
+		return ent
+	end
+
+	-- 寻找一个触手
+	local tentacle = aipFindRandomEnt("tentacle")
+	local pos = nil
+	if tentacle ~= nil then
+		pos = tentacle:GetPosition()
+	end
+
+	if not pos then
+		pos = aipGetSecretSpawnPoint(Vector3(0, 0, 0), 0, 1000)
+	end
+
+	pos = aipGetSecretSpawnPoint(pos, 0, 50, 5)
+
+	local spiderden = aipSpawnPrefab(nil, "aip_oldone_spiderden", pos.x, pos.y, pos.z)
+
+	return spiderden
 end
 
 function CommonStore:CreateSuWuMound(pos)
@@ -184,6 +225,11 @@ function CommonStore:PostWorld()
 	--------------------------- 创建魔方 ---------------------------
 	self.inst:DoTaskInTime(5, function()
 		self:CreateRubik()
+	end)
+
+	------------------------- 创建古神蛛巢 -------------------------
+	self.inst:DoTaskInTime(7, function()
+		self:CreateSpiderden()
 	end)
 
 	--------------------------- 开发模式 ---------------------------

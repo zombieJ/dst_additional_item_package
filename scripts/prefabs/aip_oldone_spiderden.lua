@@ -155,6 +155,7 @@ local function fn()
 
     inst:AddTag("hostile")
     inst:AddTag("aip_oldone")
+    inst:AddTag("aip_oldone_spiderden")
 
     MakeInventoryPhysics(inst)
 
