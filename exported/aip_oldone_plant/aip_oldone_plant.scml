@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="short">
+        <file id="0" name="short/bottom.png" width="240" height="120" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="short/bubble.png" width="240" height="120" pivot_x="0" pivot_y="1"/>
+        <file id="2" name="short/top.png" width="240" height="120" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_oldone_plant">
+        <animation id="0" name="small" length="3000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="bottom" folder="0" file="0" abs_x="1" abs_y="-14.900901" abs_pivot_x="0.5" abs_pivot_y="0.400901" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="bubble" folder="0" file="1" abs_x="1.009479" abs_y="7.945946" abs_pivot_x="0.490521" abs_pivot_y="0.554054" abs_angle="0" abs_scale_x="1" abs_scale_y="0.630473" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="2" name="top" folder="0" file="2" abs_x="6.990521" abs_y="-22.828829" abs_pivot_x="0.509479" abs_pivot_y="0.328829" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2"/>
+                </key>
+                <key id="1" time="1498">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                    <object_ref id="2" timeline="2" key="1" z_index="2"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="bottom">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="1" y="-14.900901" pivot_x="0.5" pivot_y="0.400901" angle="0"/>
+                </key>
+                <key id="1" time="1498" spin="0">
+                    <object folder="0" file="0" x="1" y="-12.900901" pivot_x="0.5" pivot_y="0.400901" angle="0" scale_y="1.117541"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="bubble">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="1.009479" y="7.945946" pivot_x="0.490521" pivot_y="0.554054" angle="0" scale_y="0.630473"/>
+                </key>
+                <key id="1" time="1498" spin="0">
+                    <object folder="0" file="1" x="1.009479" y="15.945946" pivot_x="0.490521" pivot_y="0.554054" angle="0" scale_x="1.018046" scale_y="1.130348"/>
+                </key>
+            </timeline>
+            <timeline id="2" name="top">
+                <key id="0" spin="0">
+                    <object folder="0" file="2" x="6.990521" y="-22.828829" pivot_x="0.509479" pivot_y="0.328829" angle="0"/>
+                </key>
+                <key id="1" time="1498" spin="0">
+                    <object folder="0" file="2" x="6.990521" y="-20.828829" pivot_x="0.509479" pivot_y="0.328829" angle="0" scale_y="1.071425"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

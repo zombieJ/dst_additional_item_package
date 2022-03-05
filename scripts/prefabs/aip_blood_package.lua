@@ -76,7 +76,7 @@ aip_blood_package.atlas = "images/inventoryimages/aip_blood_package.xml"
 
 -----------------------------------------------------------
 
-function fn()
+local function fn()
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()

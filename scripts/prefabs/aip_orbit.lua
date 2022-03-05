@@ -104,7 +104,7 @@ STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVE.ITEM_NOT_MINE_CAR = LANG.ACTIONFAIL.WE
 STRINGS.CHARACTERS.WINONA.ACTIONFAIL.GIVE.ITEM_NOT_MINE_CAR = LANG.ACTIONFAIL.WINONA or LANG.ACTIONFAIL.GENERIC
 
 -- 配方
-local aip_orbit_item = Recipe("aip_orbit_item", {Ingredient("boards", 1)}, RECIPETABS.TOWN, TECH.SCIENCE_ONE, nil, nil, nil, 4)
+local aip_orbit_item = Recipe("aip_orbit_item", {Ingredient("boards", 1)}, RECIPETABS.TOWN, TECH.LOST, nil, nil, nil, 4)
 aip_orbit_item.atlas = "images/inventoryimages/aip_orbit_item.xml"
 
 ----------------------------- 函数 -----------------------------

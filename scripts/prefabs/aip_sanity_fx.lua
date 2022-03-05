@@ -1,6 +1,6 @@
 local language = aipGetModConfig("language")
 
-function fn()
+local function fn()
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()

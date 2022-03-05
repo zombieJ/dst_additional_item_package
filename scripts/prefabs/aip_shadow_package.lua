@@ -53,7 +53,7 @@ STRINGS.NAMES.AIP_SHADOW_PAPER_PACKAGE = LANG.PAPER_NAME or LANG_ENG.PAPER_NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SHADOW_PAPER_PACKAGE = LANG.PAPER_DESCRIBE or LANG_ENG.PAPER_DESCRIBE
 
 -- 配方
-local aip_shadow_package = Recipe("aip_shadow_package", {Ingredient("waxpaper", 1), Ingredient("nightmarefuel", 5), Ingredient("featherpencil", 1)}, RECIPETABS.MAGIC, TECH.MAGIC_TWO)
+local aip_shadow_package = Recipe("aip_shadow_package", {Ingredient("waxpaper", 1), Ingredient("nightmarefuel", 5), Ingredient("featherpencil", 1)}, RECIPETABS.MAGIC, TECH.LOST)
 aip_shadow_package.atlas = "images/inventoryimages/aip_shadow_package.xml"
 
 -----------------------------------------------------------
@@ -69,7 +69,7 @@ local prefabs =
 	"aip_shadow_wrapper",
 }
 
-function fn_common(name, preFunc, postFunc)
+local function fn_common(name, preFunc, postFunc)
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()
@@ -172,7 +172,7 @@ local function onPaperLoad(inst)
 	end
 end
 
-function fnPaper()
+local function fnPaper()
 	return fn_common("aip_shadow_paper_package", function(inst)
 		-- Pre Func
 		inst.AnimState:PlayAnimation("paper", true)
@@ -296,7 +296,7 @@ local function onDeploy(inst, pt, deployer)
 	shadowWrapper.DoShow()
 end
 
-function fnPackage()
+local function fnPackage()
 	return fn_common("aip_shadow_package", function(inst)
 		-- Pre Func
 		inst.AnimState:PlayAnimation("idle", true)

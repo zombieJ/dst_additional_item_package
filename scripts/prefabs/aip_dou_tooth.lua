@@ -64,7 +64,7 @@ local function OnUse(inst, target) -- 恢复 50% 损失的理智值
 	end
 end
 
-function fn()
+local function fn()
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()

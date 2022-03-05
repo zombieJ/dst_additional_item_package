@@ -1,13 +1,15 @@
+local interval = 0.5
+
 -- 每秒执行一次效果，如果所有的 buffer duration 都结束了，就删除这个组件
 local function DoEffect(inst, self)
 	local allRemove = true
 	local rmNames = {}
 
 	for name, info in pairs(self.buffers) do
-		info.duration = info.duration - 1
+		info.duration = info.duration - interval
 
 		if info.fn ~= nil then
-			info.fn(inst)
+			info.fn(info.source, inst, interval)
 		end
 
 		-- 清理过期的 buffer
@@ -15,6 +17,14 @@ local function DoEffect(inst, self)
 			table.insert(rmNames, name)
 		else
 			allRemove = false
+		end
+	end
+
+	-- 清除的 buffer 需要一个退出事件处理收尾
+	for i, name in ipairs(rmNames) do
+		local info = self.buffers[name]
+		if info.endFn ~= nil then
+			info.endFn(info.source, inst)
 		end
 	end
 
@@ -35,18 +45,28 @@ local Buffer = Class(function(self, inst)
 	self.fn = nil
 	self.buffers = {}
 
-	self.task = self.inst:DoPeriodicTask(1, DoEffect, 0.1, self)
+	self.task = self.inst:DoPeriodicTask(interval, DoEffect, 0.1, self)
 
 	-- TODO: Test this
 	self.fx = SpawnPrefab("aip_buffer_fx")
 	self.inst:AddChild(self.fx)
 end)
 
-function Buffer:Patch(name, duration, fn, showFX)
+function Buffer:Patch(name, source, duration, info)
+	if self.buffers[name] == nil and info.startFn ~= nil then
+		info.startFn(source, self.inst)
+	end
+
 	self.buffers[name] = {
+		source = source,
 		duration = duration or 2,
-		fn = fn,
-		showFX = showFX,
+		fn = info.fn,
+		startFn = info.startFn,
+		endFn = info.endFn,
+
+		clientFn = info.clientFn,
+
+		showFX = info.showFX,
 	}
 
 	self:SyncBuffer()

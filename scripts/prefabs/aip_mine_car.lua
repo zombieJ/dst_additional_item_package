@@ -57,7 +57,7 @@ TUNING.AIP_MINE_CAR_USAGE = dev_mode and 3 or 8
 local speedMulti = dev_mode and 0.1 or 2
 
 -- 配方
-local aip_mine_car = Recipe("aip_mine_car", {Ingredient("boards", 5)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_ONE)
+local aip_mine_car = Recipe("aip_mine_car", {Ingredient("boards", 5)}, RECIPETABS.SURVIVAL, TECH.LOST)
 aip_mine_car.atlas = "images/inventoryimages/aip_mine_car.xml"
 
 -------------------------------------- 实体 --------------------------------------
@@ -154,7 +154,7 @@ end
 -- 注：
 -- 默认的乘坐逻辑需要装上鞍，装备完毕后的移动动画是骑牛的动画（并且会显示鞍）。
 -- 感觉在之上改造太过麻烦，干脆直接自己模拟好了。
-function fn()
+local function fn()
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()

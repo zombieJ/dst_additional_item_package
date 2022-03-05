@@ -42,6 +42,9 @@ local function getFn(data)
 			inst.periodTask = inst:DoPeriodicTask(0.1, onFade)
 		end
 
+		inst:AddTag("NOCLICK")
+		inst:AddTag("FX")
+
 		inst.entity:SetPristine()
 
 		if not TheWorld.ismastersim then
@@ -49,20 +52,42 @@ local function getFn(data)
 		end
 
 		if data.range ~= false then
+			local range = data.range or 15
 			inst:AddComponent("aipc_aura")
-			inst.components.aipc_aura.range = data.range or 15
+			inst.components.aipc_aura.range = range
 			inst.components.aipc_aura.bufferName = data.bufferName
 			inst.components.aipc_aura.bufferDuration = data.bufferDuration or 3
 			inst.components.aipc_aura.bufferFn = data.bufferFn
+			inst.components.aipc_aura.bufferStartFn = data.bufferStartFn
+			inst.components.aipc_aura.bufferEndFn = data.bufferEndFn
 			inst.components.aipc_aura.mustTags = data.mustTags
 			inst.components.aipc_aura.noTags = data.noTags
+			inst.components.aipc_aura.interval = data.interval or 1.5
 			if data.showFX ~= nil then
 				inst.components.aipc_aura.showFX = data.showFX
+			end
+			inst.components.aipc_aura:Start()
+
+			-- debug 模式下，周围创建一圈光环指示范围
+			if data.debug then
+				inst:DoTaskInTime(0, function()
+					local pos = inst:GetPosition()
+					aipSpawnPrefab(inst, "aip_projectile", pos.x - range, 0, pos.z)
+					aipSpawnPrefab(inst, "aip_projectile", pos.x + range, 0, pos.z)
+					aipSpawnPrefab(inst, "aip_projectile", pos.x, 0, pos.z - range)
+					aipSpawnPrefab(inst, "aip_projectile", pos.x, 0, pos.z + range)
+				end)
 			end
 		end
 
 		if data.onAnimOver ~= nil then
-			inst:ListenForEvent("animover", data.onAnimOver)
+			-- 只会触发一次
+			local function callback()
+				inst:RemoveEventCallback("animover", callback)
+				data.onAnimOver(inst)
+			end
+
+			inst:ListenForEvent("animover", callback)
 		end
 
 		if data.postFn ~= nil then
@@ -117,6 +142,46 @@ local list = {
 		assets = { Asset("ANIM", "anim/aip_aura_transfer.zip") },
 		range = false, -- 不安装光环组件
 		scale = 1.5,
+	},
+	{	-- 剧毒光环：动画播放完后会暂停，其中的单位都会受到持续伤害。结束后消失
+		name = "aip_aura_poison",
+		assets = { Asset("ANIM", "anim/aip_aura_poison.zip") },
+		bufferName = "oldonePoison",
+		mustTags = { "_health" },
+		noTags = { "INLIMBO", "NOCLICK", "ghost", "flying", "aip_oldone" },
+		showFX = false,
+		fade = false,
+		range = 5,
+		-- debug = true,
+		scale = 2,
+		interval = 0.33, -- 中毒检测会更快一些
+		bufferDuration = 0.8,
+		bufferFn = function(inst, target, interval)
+			if target.components.health ~= nil then
+				target.components.health:DoDelta(-7 * interval, false, inst)
+			end
+		end,
+		-- 中毒减速
+		bufferStartFn = function(inst, target)
+			-- 受到攻击伤害，这样玩家会跳一下
+			if target.components.combat ~= nil then
+				target.components.combat:GetAttacked(inst, 15)
+			end
+
+			if target.components.locomotor then
+				target.components.locomotor:SetExternalSpeedMultiplier(target, "aip_oldonePoison", 0.6)
+			end
+		end,
+		bufferEndFn = function(inst, target)
+			if target.components.locomotor then
+				target.components.locomotor:RemoveExternalSpeedMultiplier(target, "aip_oldonePoison")
+			end
+		end,
+		onAnimOver = function(inst)
+			inst:DoTaskInTime(12, function()
+				ErodeAway(inst, 0.5)
+			end)
+		end,
 	},
 }
 

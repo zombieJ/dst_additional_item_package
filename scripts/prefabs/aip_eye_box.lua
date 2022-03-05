@@ -31,19 +31,29 @@ local function OnCreate(inst)
     end
 end
 
-local function OnPhaseChanged(inst, phase)
-    aipPrint("OnPhaseChanged", phase)
-    if phase == "day" then
-        inst.AnimState:PlayAnimation("work")
-        inst:ListenForEvent("animover", function()
-            local tree = aipFindRandomEnt("evergreen")
+local function GoToNewPlace(inst)
+    inst.AnimState:PlayAnimation("work")
+    inst:ListenForEvent("animover", function()
+        local tree = aipFindRandomEnt("evergreen")
 
-			if tree ~= nil then
-				local tgtPT = aipGetSecretSpawnPoint(tree:GetPosition(), 1, 10, 5)
-                aipSpawnPrefab(nil, "aip_eye_box", tgtPT.x, tgtPT.y, tgtPT.z)
-                inst:Remove()
-			end
-        end)
+        if tree ~= nil then
+            local tgtPT = aipGetSecretSpawnPoint(tree:GetPosition(), 1, 10, 5)
+            aipSpawnPrefab(nil, "aip_eye_box", tgtPT.x, tgtPT.y, tgtPT.z)
+            inst:Remove()
+        end
+    end)
+end
+
+local function OnPhaseChanged(inst, phase)
+    if phase == "day" then
+        GoToNewPlace(inst)
+    end
+end
+
+-- 丢起物品
+local function onLockDrop(inst, source)
+    for i = 1, 3 do
+        inst.components.lootdropper:SpawnLootPrefab("aip_oldone_wall_item")
     end
 end
 
@@ -54,6 +64,9 @@ local function fn()
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddNetwork()
+
+    inst.entity:AddDynamicShadow()
+	inst.DynamicShadow:SetSize(1.5, .5)
 
     MakeObstaclePhysics(inst, .5)
 
@@ -67,7 +80,15 @@ local function fn()
         return inst
     end
 
+    -- 1 点生命值，被攻击就离开
+    inst:AddComponent("health")
+    inst.components.health:SetMaxHealth(666666)
+    inst:AddComponent("combat")
+    inst:ListenForEvent("attacked", GoToNewPlace)
+
     inst:AddComponent("inspectable")
+
+    inst:AddComponent("lootdropper")
 
     MakeHauntableLaunch(inst)
 
@@ -76,6 +97,8 @@ local function fn()
     end, TheWorld)
 
     OnCreate(inst)
+
+    inst._aipLockDrop = onLockDrop
 
     return inst
 end

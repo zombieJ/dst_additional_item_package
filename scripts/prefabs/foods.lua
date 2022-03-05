@@ -1,5 +1,3 @@
-local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
-
 -- 配置
 local additional_food = aipGetModConfig("additional_food")
 if additional_food ~= "open" then
@@ -8,6 +6,7 @@ end
 
 local food_effect = aipGetModConfig("food_effect")
 local language = aipGetModConfig("language")
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 -- 默认参数
 local EFFECT_MAP = {
@@ -373,6 +372,31 @@ local food_recipes = {
 		perishtime = PER * 15,
 		cooktime = CO * 40,
 		tags = {"honeyed", "aip_nectar_material", "aip_exquisite"},
+	},
+
+	-- 古神低语
+	aip_food_leather_jelly = { -- 皮质果冻，叶肉 + 粘衣
+		test = function(cooker, names, tags)
+			return (
+				(names.plantmeat or 0) + (names.plantmeat_cooked or 0) >= 1 and
+				tags.indescribable and
+				tags.sweetener
+			)
+		end,
+		priority = 99,
+		weight = 1,
+		foodtype = FOODTYPE.VEGGIE,
+		health = HP * -10,
+		hunger = HU * 25,
+		sanity = SAN * -10,
+		perishtime = PER * 5,
+		cooktime = dev_mode and CO or CO * 20,
+		tags = {"honeyed"},
+		oneatenfn = function(inst, eater)
+			aipPatchBuffer(eater, inst, "aip_see_eyes", dev_mode and 60 or 120, {
+				showFX = true,
+			})
+		end,
 	},
 }
 

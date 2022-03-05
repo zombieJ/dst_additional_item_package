@@ -362,21 +362,52 @@ AddPrefabPostInit("grass", function(inst)
 	end
 end)
 
+local function spawnNearBy(inst, prefabName, dist, maxCount)
+	dist = dist or 40
+	maxCount = maxCount or 999
 
-if additional_food and (_G.TheNet:GetIsServer() or _G.TheNet:IsDedicated()) then
+	local pos = _G.aipGetSpawnPoint(inst:GetPosition(), dist)
+	if pos ~= nil then
+		local prefab = _G.SpawnPrefab(prefabName)
+		prefab.Transform:SetPosition(pos.x, pos.y, pos.z)
+
+		-- 超过最大数我们就不创建了
+		local ents = _G.aipFindNearEnts(prefab, { prefabName }, 20)
+		if #ents > maxCount then
+			prefab:Remove()
+			return false
+		else
+			return true
+		end
+	end
+
+	return false
+end
+
+local function spawnNearPlayer(prefabName, dist, maxCount)
+	for i, player in ipairs(_G.AllPlayers) do
+		if not player:HasTag("playerghost") and player.entity:IsVisible() then
+			spawnNearBy(player, prefabName, dist, maxCount)
+		end
+	end
+end
+
+
+if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 	AddPrefabPostInit("world", function (inst)
-		-- 季节变换时，生成向日葵
-		inst:WatchWorldState("season", function ()
-			for i, player in ipairs(_G.AllPlayers) do
-				if not player:HasTag("playerghost") and player.entity:IsVisible() then
-					local pos = _G.aipGetSpawnPoint(player:GetPosition())
-					if pos ~= nil then
-						local sunflower = _G.SpawnPrefab("aip_sunflower")
-						sunflower.Transform:SetPosition(pos.x, pos.y, pos.z)
-						break
-					end
-				end
-			end
+		if additional_food then
+			-- 季节变换时，生成向日葵
+			inst:WatchWorldState("season", function ()
+				spawnNearPlayer("aip_sunflower")
+			end)
+		end
+
+		-- 每天都有一定概率给玩家附近生成一个 怪异的球茎（最多 3 个）
+		inst:WatchWorldState("isnight", function()
+			inst:DoTaskInTime(1, function() -- 延迟生效以防卡顿
+				local spawnPoint = _G.aipFindRandomEnt("spawnpoint_multiplayer", "spawnpoint_master")
+				spawnNearBy(spawnPoint, "aip_oldone_plant", 80, 3)
+			end)
 		end)
 	end)
 end
@@ -387,3 +418,11 @@ local VEGGIES = _G.require('prefabs/aip_veggies_list')
 for name, data in pairs(VEGGIES) do
 	env.AddIngredientValues({"aip_veggie_"..name}, data.tags or {}, data.cancook or false, data.candry or false)
 end
+
+-- 粘衣赋值
+env.AddIngredientValues(
+	{"aip_oldone_plant_broken"},
+	{ indescribable = 1 }, -- tags
+	false, -- cancook
+	false -- candry
+)

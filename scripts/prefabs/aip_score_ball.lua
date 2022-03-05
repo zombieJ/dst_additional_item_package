@@ -31,7 +31,7 @@ end
 
 ---------------------------------- 实体 ----------------------------------
 -- 球体
-function ballFn()
+local function ballFn()
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()

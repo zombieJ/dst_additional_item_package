@@ -153,7 +153,7 @@ local function CreateRail(inst, target, pos)
 end
 
 --------------------------------- 实例 ---------------------------------
-function fn()
+local function fn()
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()

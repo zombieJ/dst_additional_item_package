@@ -107,6 +107,15 @@ PrefabFiles = {
 	"aip_glass_minecar",
 	"aip_shadow_transfer",
 
+	-- 古神低语
+	"aip_oldone_plant",
+	"aip_oldone_plant_broken",
+	"aip_oldone_plant_full",
+	"aip_oldone_spiderden",
+	"aip_oldone_rabbit",
+	"aip_oldone_eye",
+	"aip_oldone_wall",
+
 	-- Orbit
 	"aip_orbit",
 	"aip_mine_car",
@@ -286,6 +295,11 @@ function PlayerPrefabPostInit(inst)
 	
 	if not inst.components.aipc_timer then
 		inst:AddComponent("aipc_timer")
+	end
+
+	-- 古神低语
+	if not inst.components.aipc_old_one_whispers then
+		inst:AddComponent("aipc_old_one_whispers")
 	end
 end
 

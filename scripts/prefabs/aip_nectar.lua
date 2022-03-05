@@ -421,7 +421,7 @@ local function onLoad(inst, data)
 	end
 end
 
-function fn()
+local function fn()
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()

@@ -140,7 +140,8 @@ local function aipThrowBallBack(inst, ball)
 
     local players = aipFindNearPlayers(inst, 20)
     local tgtEnt = players[1] or inst
-    local tgtPos = aipGetSpawnPoint(tgtEnt:GetPosition(), 3)
+    local tgtEntPos = tgtEnt:GetPosition()
+    local tgtPos = aipGetSpawnPoint(tgtEntPos, 3) or tgtEntPos
 
     ball.components.aipc_score_ball:Throw(
         tgtPos,
