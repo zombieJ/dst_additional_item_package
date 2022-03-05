@@ -404,8 +404,10 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 
 		-- 每天都有一定概率给玩家附近生成一个 怪异的球茎（最多 3 个）
 		inst:WatchWorldState("isnight", function()
-			local spawnPoint = _G.aipFindRandomEnt("spawnpoint_multiplayer", "spawnpoint_master")
-			spawnNearBy(spawnPoint, "aip_oldone_plant", 80, 3)
+			inst:DoTaskInTime(1, function() -- 延迟生效以防卡顿
+				local spawnPoint = _G.aipFindRandomEnt("spawnpoint_multiplayer", "spawnpoint_master")
+				spawnNearBy(spawnPoint, "aip_oldone_plant", 80, 3)
+			end)
 		end)
 	end)
 end
