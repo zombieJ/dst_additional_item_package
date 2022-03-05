@@ -47,6 +47,8 @@ local function getFn(data)
 
 		inst.entity:SetPristine()
 
+		inst.persists = false
+
 		if not TheWorld.ismastersim then
 			return inst
 		end
@@ -157,15 +159,16 @@ local list = {
 		interval = 0.33, -- 中毒检测会更快一些
 		bufferDuration = 0.8,
 		bufferFn = function(inst, target, interval)
-			if target.components.health ~= nil then
-				target.components.health:DoDelta(-7 * interval, false, inst)
+			if target.components.health ~= nil and not target.components.health:IsDead() then
+				-- 伤害来源不能是光环，否则会死循环
+				target.components.health:DoDelta(-7 * interval, false)
 			end
 		end,
 		-- 中毒减速
 		bufferStartFn = function(inst, target)
 			-- 受到攻击伤害，这样玩家会跳一下
 			if target.components.combat ~= nil then
-				target.components.combat:GetAttacked(inst, 15)
+				target.components.combat:GetAttacked(target, 15)
 			end
 
 			if target.components.locomotor then
