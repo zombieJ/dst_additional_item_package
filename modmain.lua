@@ -298,7 +298,7 @@ function PlayerPrefabPostInit(inst)
 	end
 
 	-- 古神低语
-	if not inst.components.aipc_timer then
+	if not inst.components.aipc_old_one_whispers then
 		inst:AddComponent("aipc_old_one_whispers")
 	end
 end

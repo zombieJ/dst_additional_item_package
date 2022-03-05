@@ -57,7 +57,7 @@ TUNING.AIP_MINE_CAR_USAGE = dev_mode and 3 or 8
 local speedMulti = dev_mode and 0.1 or 2
 
 -- 配方
-local aip_mine_car = Recipe("aip_mine_car", {Ingredient("boards", 5)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_ONE)
+local aip_mine_car = Recipe("aip_mine_car", {Ingredient("boards", 5)}, RECIPETABS.SURVIVAL, TECH.LOST)
 aip_mine_car.atlas = "images/inventoryimages/aip_mine_car.xml"
 
 -------------------------------------- 实体 --------------------------------------
