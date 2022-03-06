@@ -235,7 +235,7 @@ AddMinimapAtlas("minimap/aip_fly_totem.xml")
 --------------------------------------- 封装 ---------------------------------------
 modimport("scripts/containersWrapper.lua")
 modimport("scripts/writeablesWrapper.lua")
-modimport("scripts/itemTileWrapper.lua")
+-- modimport("scripts/itemTileWrapper.lua")
 modimport("scripts/hudWrapper.lua")
 modimport("scripts/shadowPackageAction.lua")
 modimport("scripts/widgetHooker.lua")
@@ -243,6 +243,7 @@ modimport("scripts/recpiesHooker.lua")
 modimport("scripts/flyWrapper.lua")
 modimport("scripts/houseWrapper.lua")
 modimport("scripts/sgHooker.lua")
+modimport("scripts/hooks/aip_hover_hooker.lua")
 
 ------------------------------------- 测试专用 -------------------------------------
 if dev_mode then
