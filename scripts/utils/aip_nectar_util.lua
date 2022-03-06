@@ -100,7 +100,12 @@ local function getNectarValues(item)
 	local ingredient = cooking.ingredients[prefab]
 	if ingredient and ingredient.tags then
 		-- 素材价值
-		if ingredient.tags.fruit or ingredient.tags.sweetener or ingredient.tags.frozen then
+		if
+			ingredient.tags.fruit or
+			ingredient.tags.sweetener or
+			ingredient.tags.frozen or
+			ingredient.tags.starch
+		then
 			values = extends(values, ingredient.tags)
 		end
 	end
