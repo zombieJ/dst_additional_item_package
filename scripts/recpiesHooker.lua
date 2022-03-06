@@ -67,8 +67,8 @@ AddRecipe(
 		Ingredient(_G.TECH_INGREDIENT.SCULPTING, 2),
 		Ingredient("aip_oldone_plant_broken", 1, "images/inventoryimages/aip_oldone_plant_broken.xml"),
 	},
-    -- _G.RECIPETABS.SCULPTING, _G.TECH.LOST,
-	_G.RECIPETABS.SCULPTING, _G.TECH.SCULPTING_ONE,
+    _G.RECIPETABS.SCULPTING, _G.TECH.LOST,
+	-- _G.RECIPETABS.SCULPTING, _G.TECH.SCULPTING_ONE,
     nil, nil, true, nil, nil,
     "images/inventoryimages/chesspiece_aip_mouth.xml",
     "chesspiece_aip_mouth.tex"
