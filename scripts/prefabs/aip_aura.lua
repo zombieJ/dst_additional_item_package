@@ -168,7 +168,7 @@ local list = {
 		bufferStartFn = function(inst, target)
 			-- 受到攻击伤害，这样玩家会跳一下
 			if target.components.combat ~= nil then
-				target.components.combat:GetAttacked(target, 15)
+				target.components.combat:GetAttacked(nil, 15)
 			end
 
 			if target.components.locomotor then
