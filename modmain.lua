@@ -126,6 +126,7 @@ PrefabFiles = {
 
 	-- Chesspiece
 	"aip_chesspiece",
+	"aip_chesspiece_sketch",
 
 	-- Magic
 	"dark_observer",
