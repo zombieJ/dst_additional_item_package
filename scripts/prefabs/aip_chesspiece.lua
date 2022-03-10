@@ -47,6 +47,11 @@ local LANG_MAP = {
 			REC_DESC = "Maybe not smile",
 			DESC = "Hmmm...it's something",
 		},
+		aip_octupus = {
+			NAME = "Octupus",
+			REC_DESC = "He is looing you",
+			DESC = "So many eyes!",
+		},
 	},
 	spanish = {
 		aip_moon = {
@@ -93,6 +98,11 @@ local LANG_MAP = {
 			NAME = "微笑",
 			REC_DESC = "不像在笑",
 			DESC = "看来有点东西",
+		},
+		aip_octupus = {
+			NAME = "章鱼",
+			REC_DESC = "它正在看着你",
+			DESC = "太多眼睛!",
 		},
 	},
 	russian = {
@@ -223,6 +233,10 @@ local PIECES =
 	},
 	{
 		name = "aip_mouth",
+		moonevent = false,
+	},
+	{
+		name = "aip_octupus",
 		moonevent = false,
 	},
 }
