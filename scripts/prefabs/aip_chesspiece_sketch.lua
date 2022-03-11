@@ -14,6 +14,7 @@ local assets = {
 local SKETCHES = {
     { item = "chesspiece_aip_mouth",	recipe = "chesspiece_aip_mouth_builder" },
     { item = "chesspiece_aip_octupus",	recipe = "chesspiece_aip_octupus_builder" },
+    { item = "chesspiece_aip_fish",		recipe = "chesspiece_aip_fish_builder" },
 }
 
 -------------------------------- 方法 --------------------------------

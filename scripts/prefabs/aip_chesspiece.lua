@@ -52,6 +52,11 @@ local LANG_MAP = {
 			REC_DESC = "He is looing you",
 			DESC = "So many eyes!",
 		},
+		aip_fish = {
+			NAME = "Mermaid",
+			REC_DESC = "No front & end",
+			DESC = "It's 'beautiful'",
+		},
 	},
 	spanish = {
 		aip_moon = {
@@ -103,6 +108,11 @@ local LANG_MAP = {
 			NAME = "章鱼",
 			REC_DESC = "它正在看着你",
 			DESC = "太多眼睛!",
+		},
+		aip_fish = {
+			NAME = "美人鱼",
+			REC_DESC = "没有正反面",
+			DESC = "它可真“美”",
 		},
 	},
 	russian = {
@@ -237,6 +247,10 @@ local PIECES =
 	},
 	{
 		name = "aip_octupus",
+		moonevent = false,
+	},
+	{
+		name = "aip_fish",
 		moonevent = false,
 	},
 }

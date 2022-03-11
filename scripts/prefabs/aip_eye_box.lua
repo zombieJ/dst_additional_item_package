@@ -56,7 +56,9 @@ end
 local function onLockDrop(inst, source)
     local ptg = dev_mode and 0.5 or 0.01
 
-    if Prefabs.chesspiece_aip_mouth_sketch ~= nil and math.random() < ptg then
+    if Prefabs.chesspiece_aip_fish_sketch ~= nil and math.random() < ptg then
+        inst.components.lootdropper:SpawnLootPrefab("chesspiece_aip_fish_sketch")
+    elseif Prefabs.chesspiece_aip_octupus_sketch ~= nil and math.random() < ptg then
         inst.components.lootdropper:SpawnLootPrefab("chesspiece_aip_octupus_sketch")
     elseif Prefabs.chesspiece_aip_mouth_sketch ~= nil and math.random() < ptg then
         inst.components.lootdropper:SpawnLootPrefab("chesspiece_aip_mouth_sketch")
