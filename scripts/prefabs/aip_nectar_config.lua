@@ -86,6 +86,7 @@ local LANG_VALUE_MAP = {
 		vampire = "Bloodthirsty",
 		damage = "Warsong",
 		starch = "buzzed",
+		wine = "fermentation",
 
 		tasteless = "Tasteless",
 		balance = "Balance",
@@ -112,6 +113,7 @@ local LANG_VALUE_MAP = {
 		vampire = "嗜血",
 		damage = "战歌",
 		starch = "微醺",
+		wine = "酒香",
 
 		tasteless = "平淡",
 		balance = "平衡",
@@ -138,6 +140,7 @@ local LANG_VALUE_MAP = {
 		vampire = "Кровожадность",
 		damage = "Песнь войны",
 		starch = "пьяный",
+		wine = "Ферментация",
 
 		tasteless = "Безвкусный",
 		balance = "Сбалансированный",
@@ -173,6 +176,7 @@ local VALUE_WEIGHT = {
 	vampire =		{1.0, 0.5, 0.5, 1.0},
 	damage =		{0.5, 1.0, 1.0, 1.0},
 	starch =		{1.0, 0.5, 1.0, 1.0},
+	wine =			{1.0, 0.5, 0.5, 1.0},
 
 	tasteless =		{1.0, 1.0, 1.0, 1.0},
 	balance =		{1.0, 1.0, 1.0, 1.0},
@@ -227,6 +231,11 @@ local VALUE_EAT_BONUS = {
 		health = HP * 4,
 		hunger = HU * 5,
 		sanity = SAN * -1,
+	},
+	wine = {
+		health = HP * 0,
+		hunger = HU * 0,
+		sanity = SAN * -3,
 	},
 }
 

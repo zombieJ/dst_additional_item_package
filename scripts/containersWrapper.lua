@@ -95,7 +95,9 @@ end
 
 function params.aip_nectar_maker.itemtestfn(container, item, slot)
 	local values = getNectarValues(item)
-	return _G.next(values) ~= nil
+
+	-- 有价值但是不能是酒
+	return _G.next(values) ~= nil and not values.wine
 end
 
 function params.aip_nectar_maker.widget.buttoninfo.fn(inst)

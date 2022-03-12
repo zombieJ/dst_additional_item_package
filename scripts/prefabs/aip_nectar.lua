@@ -46,11 +46,12 @@ local assets =
 	Asset("ATLAS", "images/inventoryimages/aip_nectar_3.xml"),
 	Asset("ATLAS", "images/inventoryimages/aip_nectar_4.xml"),
 	Asset("ATLAS", "images/inventoryimages/aip_nectar_5.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_nectar_wine.xml"),
 }
 
 local prefabs = {}
 
------------------------------------------------------------
+--------------------------------- 攻击 ---------------------------------
 local function onVampireAttackOther(inst, data)
 	local target = data.target
 	if target ~= nil and inst.components.health then
@@ -65,7 +66,7 @@ local function onDamageAttackOther(inst, data)
 	end
 end
 
-------------------------- 持续恢复 -------------------------
+------------------------------- 持续恢复 -------------------------------
 local function onEaten(inst, eater)
 	if not inst.nectarContinueValues or not eater.components.aipc_timer then
 		return
@@ -132,7 +133,7 @@ local function onEaten(inst, eater)
 	end
 end
 
-------------------------- 刷新名字 -------------------------
+------------------------------- 刷新名字 -------------------------------
 local function onRefreshName(inst)
 	local changeColor = 1 - BASE_COLOR
 
@@ -273,7 +274,7 @@ local function onRefreshName(inst)
 	if nectarValues.exquisite then
 		currentQuality = currentQuality + 1
 	end
-	
+
 	--> 属性加成
 	currentQuality = currentQuality + math.min(1, totalTagVal * 0.03)
 	
@@ -303,9 +304,15 @@ local function onRefreshName(inst)
 	end
 
 	-- 更新贴图
-	inst.components.inventoryitem.atlasname = aipStr("images/inventoryimages/aip_nectar_", currentQuality, ".xml")
-	inst.components.inventoryitem:ChangeImageName(aipStr("aip_nectar_", currentQuality))
-	inst.AnimState:PlayAnimation(aipStr("q", currentQuality))
+	if nectarValues.wine then -- 酒化
+		inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_nectar_wine.xml"
+		inst.components.inventoryitem:ChangeImageName("aip_nectar_wine")
+		inst.AnimState:PlayAnimation("wine")
+	else
+		inst.components.inventoryitem.atlasname = aipStr("images/inventoryimages/aip_nectar_", currentQuality, ".xml")
+		inst.components.inventoryitem:ChangeImageName(aipStr("aip_nectar_", currentQuality))
+		inst.AnimState:PlayAnimation(aipStr("q", currentQuality))
+	end
 
 	--------------- 食用价值 ---------------
 	local continueRecover = currentQuality >= 3
@@ -417,7 +424,28 @@ local function onRefreshName(inst)
 	end
 end
 
----------------------------- 存储 ----------------------------
+--------------------------------- 腐烂 ---------------------------------
+-- 如果是含有粮食度的，过期会变成酒
+local function onPerish(inst)
+	local nectarValues = inst.nectarValues or {}
+
+	if nectarValues.starch then
+		nectarValues.wine = (nectarValues.wine or 0) + 1
+		nectarValues.wine = math.min(nectarValues.wine, 99)
+
+		inst.components.perishable.onperishreplacement = nil
+
+		-- 重新启动计时器
+		inst:DoTaskInTime(0, function()
+			inst.components.perishable:SetPercent(1)
+			inst.components.perishable:StartPerishing()
+
+			inst.refreshName()
+		end)
+	end
+end
+
+--------------------------------- 存储 ---------------------------------
 local function onSave(inst, data)
 	data.nectarValues = inst.nectarValues
 end
@@ -430,6 +458,7 @@ local function onLoad(inst, data)
 	end
 end
 
+--------------------------------- 实体 ---------------------------------
 local function fn()
 	local inst = CreateEntity()
 
@@ -491,6 +520,7 @@ local function fn()
 	inst:AddComponent("perishable")
 	inst.components.perishable:SetPerishTime(TUNING.PERISH_PRESERVED)
 	inst.components.perishable:StartPerishing()
+	inst.components.perishable.perishfn = onPerish
 	inst.components.perishable.onperishreplacement = "spoiled_food"
 
 	-- 火焰传播者 - 不会着火
