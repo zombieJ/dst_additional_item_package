@@ -35,7 +35,7 @@ end
 
 -- Hover 展示信息
 AddClassPostConstruct("widgets/hoverer", function(self)
-    self.aipText = self:AddChild(Text(_G.UIFONT, 30))
+    self.aipText = self:AddChild(Text(_G.UIFONT, 24))
     self.aipText:SetPosition(-20, -30, 0)
 
     local originUpdate = self.OnUpdate
@@ -43,9 +43,19 @@ AddClassPostConstruct("widgets/hoverer", function(self)
     self.OnUpdate = function(...)
         local ret = originUpdate(self, ...)
 
+        -- 物品栏里的物品
         local item = findFocusItem(
             self.isFE and self.owner or self.owner.HUD.controls
         )
+
+        -- 鼠标 Hover 到的物品
+        if item == nil and not self.isFE and self.owner:IsActionsVisible() then
+            lmb = self.owner.components.playercontroller:GetLeftMouseAction()
+
+            if lmb ~= nil then
+                item = lmb.target
+            end
+        end
 
         -- 如果没有提示内容，就略过
         if

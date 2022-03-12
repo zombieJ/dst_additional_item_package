@@ -40,8 +40,12 @@ local GENERATION_AFFECT = .95
 local assets =
 {
 	Asset("ANIM", "anim/aip_nectar.zip"),
-	Asset("ATLAS", "images/inventoryimages/aip_nectar.xml"),
-	Asset("IMAGE", "images/inventoryimages/aip_nectar.tex"),
+	Asset("ATLAS", "images/inventoryimages/aip_nectar_0.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_nectar_1.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_nectar_2.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_nectar_3.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_nectar_4.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_nectar_5.xml"),
 }
 
 local prefabs = {}
@@ -298,6 +302,11 @@ local function onRefreshName(inst)
 		inst.components.aipc_info_client:SetByteArray("aip_info_color", QUALITY_COLORS[qualityName])
 	end
 
+	-- 更新贴图
+	inst.components.inventoryitem.atlasname = aipStr("images/inventoryimages/aip_nectar_", currentQuality, ".xml")
+	inst.components.inventoryitem:ChangeImageName(aipStr("aip_nectar_", currentQuality))
+	inst.AnimState:PlayAnimation(aipStr("q", currentQuality))
+
 	--------------- 食用价值 ---------------
 	local continueRecover = currentQuality >= 3
 	
@@ -435,7 +444,7 @@ local function fn()
 
 	inst.AnimState:SetBank("aip_nectar")
 	inst.AnimState:SetBuild("aip_nectar")
-	inst.AnimState:PlayAnimation("BUILD")
+	inst.AnimState:PlayAnimation("q0")
 
 	inst:AddTag("aip_nectar")
 	inst:AddTag("aip_nectar_material")
@@ -468,7 +477,8 @@ local function fn()
 	inst:AddComponent("inspectable")
 
 	inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_nectar.xml"
+	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_nectar_0.xml"
+	inst.components.inventoryitem.imagename = "aip_nectar_0"
 
 	-- 食物
 	inst:AddComponent("edible")
