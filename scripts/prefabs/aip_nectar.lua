@@ -77,6 +77,7 @@ local function onEaten(inst, eater)
 	local speedTime = inst.nectarContinueValues.speedTime or 0
 	local vampireTime = inst.nectarContinueValues.vampireTime or 0
 	local damageTime = inst.nectarContinueValues.damageTime or 0
+	local drunkTime = inst.nectarContinueValues.drunkTime or 0
 
 	-- 回血灰理智
 	if health and sanity then
@@ -129,6 +130,24 @@ local function onEaten(inst, eater)
 
 		eater.components.aipc_timer:Timeout(damageTime, function()
 			eater:RemoveEventCallback("onattackother", onDamageAttackOther)
+		end)
+	end
+
+	-- 醉酒
+	if drunkTime then
+		local leftTime = drunkTime
+		eater.components.aipc_timer:Interval(1, function()
+			local speedMulti = 1 + (leftTime % 2 == 0 and 1 or -1) * TUNING.NECTAR_DRUNK_SPEED_MULT
+
+			eater.components.locomotor:SetExternalSpeedMultiplier(
+				eater, "aip_nectar_drunk", speedMulti
+			)
+
+			leftTime = leftTime - 1
+			if leftTime <= 0 then
+				eater.components.locomotor:RemoveExternalSpeedMultiplier(eater, "aip_nectar_drunk")
+				return false
+			end
 		end)
 	end
 end
@@ -339,19 +358,25 @@ local function onRefreshName(inst)
 	-- 移动速度
 	if nectarValues.light then
 		inst.nectarContinueValues = inst.nectarContinueValues or {}
-		inst.nectarContinueValues.speedTime = math.min(4 + nectarValues.light * 1, 30) -- 最多加速30秒
+		inst.nectarContinueValues.speedTime = math.min(9 + nectarValues.light * 1, 30) -- 最多加速30秒
 	end
 
 	-- 吸血鬼
 	if nectarValues.vampire then
 		inst.nectarContinueValues = inst.nectarContinueValues or {}
-		inst.nectarContinueValues.vampireTime = math.min(6 + nectarValues.vampire * 1, 30) -- 最多吸血30秒
+		inst.nectarContinueValues.vampireTime = math.min(9 + nectarValues.vampire * 1, 30) -- 最多吸血30秒
 	end
 	
 	-- 伤害增加
 	if nectarValues.damage then
 		inst.nectarContinueValues = inst.nectarContinueValues or {}
-		inst.nectarContinueValues.damageTime = math.min(4 + nectarValues.damage * 1, 30) -- 最多吸血30秒
+		inst.nectarContinueValues.damageTime = math.min(9 + nectarValues.damage * 1, 30) -- 最多增伤30秒
+	end
+
+	-- 醉酒步伐
+	if nectarValues.wine then
+		inst.nectarContinueValues = inst.nectarContinueValues or {}
+		inst.nectarContinueValues.drunkTime = math.min(9 + nectarValues.wine * 1, 30) -- 最多醉酒30秒
 	end
 
 	if inst.components.edible then
@@ -518,7 +543,7 @@ local function fn()
 
 	-- 腐烂
 	inst:AddComponent("perishable")
-	inst.components.perishable:SetPerishTime(TUNING.PERISH_PRESERVED)
+	inst.components.perishable:SetPerishTime(dev_mode and 20 or TUNING.PERISH_PRESERVED)
 	inst.components.perishable:StartPerishing()
 	inst.components.perishable.perishfn = onPerish
 	inst.components.perishable.onperishreplacement = "spoiled_food"

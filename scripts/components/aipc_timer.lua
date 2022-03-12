@@ -12,7 +12,7 @@ function Timer:Interval(step, func, ...)
 	local interval = self.inst:DoPeriodicTask(step, function(...)
 		local result = func(...)
 		if result == false then
-			self:Remove(myId)
+			self:Kill(myId)
 		end
 
 		return result
@@ -26,16 +26,12 @@ function Timer:Timeout(step, func, ...)
 	self.id = self.id + 1
 	local myId = self.id
 	local timeout = self.inst:DoTaskInTime(step, function(...)
-		self:Remove(myId)
+		self:Kill(myId)
 		return func(...)
 	end, ...)
 	self.list[myId] = timeout
 
 	return myId
-end
-
-function Timer:Remove(id)
-	self.list[id] = nil
 end
 
 function Timer:Kill(id)

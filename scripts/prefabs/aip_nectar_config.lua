@@ -1,5 +1,7 @@
 TUNING.NECTAR_SPEED_MULT = 1.75
 
+TUNING.NECTAR_DRUNK_SPEED_MULT = 0.4 -- 喝醉时速度一会儿快一会儿慢
+
 --[[local function RGB(r, g, b, a)
 	return { r / 255, g / 255, b / 255, (a or 255) / 255 }
 end]]
