@@ -158,10 +158,10 @@ local list = {
 		scale = 2,
 		interval = 0.33, -- 中毒检测会更快一些
 		bufferDuration = 0.8,
-		bufferFn = function(inst, target, interval)
+		bufferFn = function(inst, target, info)
 			if target.components.health ~= nil and not target.components.health:IsDead() then
 				-- 伤害来源不能是光环，否则会死循环
-				target.components.health:DoDelta(-7 * interval, false)
+				target.components.health:DoDelta(-7 * info.interval, false)
 			end
 		end,
 		-- 中毒减速

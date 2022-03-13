@@ -66,7 +66,23 @@ local function onDamageAttackOther(inst, data)
 	end
 end
 
-------------------------------- 持续恢复 -------------------------------
+--------------------------------- BUFF ---------------------------------
+local function bufferDrunkFn(source, eater, info)
+	local interval = info.interval
+	local passTime = info.passTime
+
+	local speedMulti = 1 + (math.floor(passTime) % 2 == 0 and 1 or -1) * TUNING.NECTAR_DRUNK_SPEED_MULT
+
+	eater.components.locomotor:SetExternalSpeedMultiplier(
+		eater, "aip_nectar_drunk", speedMulti
+	)
+end
+
+local function bufferDrunkEndFn(source, eater, info)
+	eater.components.locomotor:RemoveExternalSpeedMultiplier(eater, "aip_nectar_drunk")
+end
+
+------------------------------- 持续效果 -------------------------------
 local function onEaten(inst, eater)
 	if not inst.nectarContinueValues or not eater.components.aipc_timer then
 		return
@@ -135,20 +151,13 @@ local function onEaten(inst, eater)
 
 	-- 醉酒
 	if drunkTime then
-		local leftTime = drunkTime
-		eater.components.aipc_timer:Interval(1, function()
-			local speedMulti = 1 + (leftTime % 2 == 0 and 1 or -1) * TUNING.NECTAR_DRUNK_SPEED_MULT
-
-			eater.components.locomotor:SetExternalSpeedMultiplier(
-				eater, "aip_nectar_drunk", speedMulti
-			)
-
-			leftTime = leftTime - 1
-			if leftTime <= 0 then
-				eater.components.locomotor:RemoveExternalSpeedMultiplier(eater, "aip_nectar_drunk")
-				return false
-			end
-		end)
+		aipPatchBuffer(
+			eater, eater, "aip_nectar_drunk", drunkTime, {
+				fn = bufferDrunkFn,
+				endFn = bufferDrunkEndFn,
+				showFX = true,
+			}
+		)
 	end
 end
 
@@ -561,4 +570,4 @@ local function fn()
 	return inst
 end
 
-return Prefab("aip_nectar", fn, assets) 
+return Prefab("aip_nectar", fn, assets)

@@ -10,20 +10,20 @@ require "prefabutil"
 local language = aipGetModConfig("language")
 
 local LANG_MAP = {
-	["english"] = {
-		["NAME"] = "Inscription Package",
-		["REC_DESC"] = "Hold your inscriptions!",
-		["DESC"] = "Inscriptions' home",
+	english = {
+		NAME = "Inscription Package",
+		REC_DESC = "Hold your inscriptions!",
+		DESC = "Inscriptions' home",
 	},
-	["chinese"] = {
-		["NAME"] = "符文袋",
-		["REC_DESC"] = "装下你的符文！",
-		["DESC"] = "符文的好去处",
+	chinese = {
+		NAME = "符文袋",
+		REC_DESC = "装下你的符文！",
+		DESC = "符文的好去处",
 	},
-	["russian"] = {
-		["NAME"] = "Сумка для надписей",
-		["REC_DESC"] = "Храни свои надписи!",
-		["DESC"] = "Дом надписей",
+	russian = {
+		NAME = "Сумка для надписей",
+		REC_DESC = "Храни свои надписи!",
+		DESC = "Дом надписей",
 	},
 }
 
@@ -45,7 +45,7 @@ local assets =
 local aip_dou_inscription_package = Recipe(
 	"aip_dou_inscription_package",
 	{
-        Ingredient("aip_shadow_paper_package", 1, "images/inventoryimages/aip_shadow_paper_package.xml"),
+        Ingredient("aip_leaf_note", 2, "images/inventoryimages/aip_leaf_note.xml"),
         Ingredient("lightbulb", 2)
     },
 	RECIPETABS.MAGIC, TECH.MAGIC_TWO

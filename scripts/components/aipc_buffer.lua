@@ -9,7 +9,12 @@ local function DoEffect(inst, self)
 		info.duration = info.duration - interval
 
 		if info.fn ~= nil then
-			info.fn(info.source, inst, interval)
+			-- 源头，目标，间隔，时间差
+			info.fn(info.source, inst, {
+				interval = interval,
+				passTime = GetTime() - info.startTime,
+				data = info.data,
+			})
 		end
 
 		-- 清理过期的 buffer
@@ -24,7 +29,9 @@ local function DoEffect(inst, self)
 	for i, name in ipairs(rmNames) do
 		local info = self.buffers[name]
 		if info.endFn ~= nil then
-			info.endFn(info.source, inst)
+			info.endFn(info.source, inst, {
+				data = info.data,
+			})
 		end
 	end
 
@@ -53,21 +60,29 @@ local Buffer = Class(function(self, inst)
 end)
 
 function Buffer:Patch(name, source, duration, info)
-	if self.buffers[name] == nil and info.startFn ~= nil then
-		info.startFn(source, self.inst)
+	if self.buffers[name] == nil then
+		-- 初始化 Buff
+		self.buffers[name] = {
+			startTime = GetTime(), -- 记录启动时间
+			data = {}, -- 一些额外的信息记录
+		}
+
+		-- 启动函数
+		if info.startFn ~= nil then
+			info.startFn(source, self.inst, { data = self.buffers[name].data })
+		end
 	end
 
-	self.buffers[name] = {
-		source = source,
-		duration = duration or 2,
-		fn = info.fn,
-		startFn = info.startFn,
-		endFn = info.endFn,
 
-		clientFn = info.clientFn,
+	self.buffers[name].source = source
+	self.buffers[name].duration = duration or 2
+	self.buffers[name].fn = info.fn
+	self.buffers[name].startFn = info.startFn
+	self.buffers[name].endFn = info.endFn
+	self.buffers[name].clientFn = info.clientFn
 
-		showFX = info.showFX,
-	}
+	self.buffers[name].showFX = info.showFX
+
 
 	self:SyncBuffer()
 end
