@@ -254,11 +254,11 @@ function CommonStore:PostWorld()
 		-- ThePlayer.sg:GoToState("aip_drive")
 		end)
 
-		self.inst:DoPeriodicTask(2, function()
-			local x, y, z = ThePlayer.Transform:GetWorldPosition()
-			local tile = TheWorld.Map:GetTileAtPoint(x, y, z)
-			aipPrint("Tile:", tile)
-		end)
+		-- self.inst:DoPeriodicTask(2, function()
+		-- 	local x, y, z = ThePlayer.Transform:GetWorldPosition()
+		-- 	local tile = TheWorld.Map:GetTileAtPoint(x, y, z)
+		-- 	aipPrint("Tile:", isNaturalPoint(Vector3(x, y, z)), tile)
+		-- end)
 	end
 	-- if dev_mode then
 	-- 	self.inst:DoTaskInTime(2, function()
