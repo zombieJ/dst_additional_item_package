@@ -40,7 +40,10 @@ local function GoToNewPlace(inst)
 
         if tree ~= nil then
             local tgtPT = aipGetSecretSpawnPoint(tree:GetPosition(), 1, 10, 5)
-            aipSpawnPrefab(nil, "aip_eye_box", tgtPT.x, tgtPT.y, tgtPT.z)
+            if tgtPT ~= nil then
+                aipSpawnPrefab(nil, "aip_eye_box", tgtPT.x, tgtPT.y, tgtPT.z)
+            end
+
             inst:Remove()
         end
     end)

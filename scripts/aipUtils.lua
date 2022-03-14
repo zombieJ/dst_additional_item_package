@@ -397,9 +397,10 @@ function _G.aipGetSpawnPoint(startPT, distance)
 end
 
 function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
+	local tgtPT = nil
+
 	-- 如果范围内存在物体，我们就找数量最少的地方
 	if emptyDistance ~= nil then
-		local tgtPT = nil
 		local tgtEntCnt = 99999999
 
 		local mergedMaxDistance = maxDistance
@@ -420,13 +421,13 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
 				end
 			end
 		end
-
-		if tgtPT ~= nil then
-			return tgtPT
-		end
 	end
 
-	return aipGetSpawnPoint(pt, minDistance)
+	if tgtPT == nil then
+		tgtPT = aipGetSpawnPoint(pt, minDistance)
+	end
+
+	return tgtPT
 end
 
 -- 和 TheMap:FindRandomPointInOcean 相似，但是通过地图上的岩石附近创造

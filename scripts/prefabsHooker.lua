@@ -366,7 +366,7 @@ local function spawnNearBy(inst, prefabName, dist, maxCount)
 	dist = dist or 40
 	maxCount = maxCount or 999
 
-	local pos = _G.aipGetSpawnPoint(inst:GetPosition(), dist)
+	local pos = _G.aipGetSecretSpawnPoint(inst:GetPosition(), dist, dist + 5, 5)
 	if pos ~= nil then
 		local prefab = _G.SpawnPrefab(prefabName)
 		prefab.Transform:SetPosition(pos.x, pos.y, pos.z)

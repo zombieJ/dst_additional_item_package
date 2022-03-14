@@ -134,6 +134,10 @@ function CommonStore:CreateRubik()
 
 	pos = aipGetSecretSpawnPoint(pos, 0, 50, 5)
 
+	if pos == nil then
+		return nil
+	end
+
 	local rubik = aipSpawnPrefab(nil, "aip_rubik", pos.x, pos.y, pos.z)
 	rubik.components.fueled:MakeEmpty()
 
@@ -165,6 +169,10 @@ function CommonStore:CreateSpiderden()
 	end
 
 	pos = aipGetSecretSpawnPoint(pos, 0, 50, 5)
+
+	if pos == nil then
+		return nil
+	end
 
 	local spiderden = aipSpawnPrefab(nil, "aip_oldone_spiderden", pos.x, pos.y, pos.z)
 
@@ -204,14 +212,18 @@ function CommonStore:PostWorld()
 			local fissurePT = aipGetTopologyPoint("lunacyarea", "moon_fissure")
 			if fissurePT then
 				local tgt = aipGetSecretSpawnPoint(fissurePT, 0, 50, 5)
-				aipSpawnPrefab(nil, "aip_dou_totem_broken", tgt.x, tgt.y, tgt.z)
+				if tgt ~= nil then
+					aipSpawnPrefab(nil, "aip_dou_totem_broken", tgt.x, tgt.y, tgt.z)
+				end
 
 			else
 				-- 寻找暗影灯座
 				local targetPrefab = aipFindRandomEnt("rabbithouse")
 				if targetPrefab ~= nil then
 					local tgt = aipGetSecretSpawnPoint(targetPrefab:GetPosition(), 0, 50, 5)
-					aipSpawnPrefab(nil, "aip_dou_totem_broken", tgt.x, tgt.y, tgt.z)
+					if tgt ~= nil then
+						aipSpawnPrefab(nil, "aip_dou_totem_broken", tgt.x, tgt.y, tgt.z)
+					end
 				end
 			end
 		end
@@ -240,6 +252,12 @@ function CommonStore:PostWorld()
 		-- 	TheWorld:PushEvent("ms_setmoonphase", {moonphase = "full"})
 		-- aipPrint("do state!!!")
 		-- ThePlayer.sg:GoToState("aip_drive")
+		end)
+
+		self.inst:DoPeriodicTask(2, function()
+			local x, y, z = ThePlayer.Transform:GetWorldPosition()
+			local tile = TheWorld.Map:GetTileAtPoint(x, y, z)
+			aipPrint("Tile:", tile)
 		end)
 	end
 	-- if dev_mode then
