@@ -406,18 +406,20 @@ function _G.isNaturalPoint(pt)
 		[GROUND.GRASS] = true,
 		[GROUND.FOREST] = true,
 		[GROUND.MARSH] = true,
-
-		-- -- CAVES
+	
+		-- CAVES
 		[GROUND.CAVE] = true,
 		[GROUND.FUNGUS] = true,
 		[GROUND.SINKHOLE] = true,
 		[GROUND.MUD] = true,
-
-		 --EXPANDED FLOOR TILES
-		 [GROUND.DECIDUOUS] = true,
+		[GROUND.FUNGUSRED] = true,
+		[GROUND.FUNGUSGREEN] = true,
+	
+		--EXPANDED FLOOR TILES
+		[GROUND.DECIDUOUS] = true,
 	}
 
-	return DEFAULT_VALID_TILE_TYPES[tile]
+	return DEFAULT_VALID_TILE_TYPES[tile] and pt or nil
 end
 
 -- 获取一个隐秘地点，如果是人工地皮就无效返回 nil
@@ -439,9 +441,7 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
 			local pos = _G.aipGetSpawnPoint(pt, distance)
 
 			-- 如果不是自然地皮就跳过
-			if not isNaturalPoint(pos) then
-				pos = nil
-			end
+			pos = isNaturalPoint(pos)
 
 			if pos ~= nil then
 				local ents = TheSim:FindEntities(pos.x, 0, pos.z, emptyDistance)
@@ -455,6 +455,9 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
 
 	if tgtPT == nil then
 		tgtPT = aipGetSpawnPoint(pt, minDistance)
+
+		-- 如果不是自然地皮就跳过
+		tgtPT = isNaturalPoint(tgtPT)
 	end
 
 	return tgtPT
