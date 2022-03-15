@@ -99,3 +99,16 @@ AddRecipe(
     "images/inventoryimages/chesspiece_aip_fish.xml",
     "chesspiece_aip_fish.tex"
 )
+
+-- 榴星
+AddRecipe(
+	"aip_oldone_durian",
+    {
+		Ingredient("durian", 1),
+		Ingredient("aip_oldone_plant_full", 1, "images/inventoryimages/aip_oldone_plant_full.xml"),
+	},
+	_G.RECIPETABS.MAGIC, _G.TECH.MAGIC_TWO,
+	nil, nil, nil, nil, nil,
+	"images/inventoryimages/aip_oldone_durian.xml",
+	"aip_oldone_durian.tex"
+)

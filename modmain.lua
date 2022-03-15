@@ -115,6 +115,7 @@ PrefabFiles = {
 	"aip_oldone_rabbit",
 	"aip_oldone_eye",
 	"aip_oldone_wall",
+	"aip_oldone_durian",
 
 	-- Orbit
 	"aip_orbit",
