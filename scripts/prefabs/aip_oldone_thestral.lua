@@ -5,6 +5,7 @@ local brain = require("brains/aip_oldone_thestral_brain")
 
 local assets = {
     Asset("ANIM", "anim/aip_oldone_thestral.zip"),
+	Asset("ANIM", "anim/aip_oldone_thestral_full.zip"),
 }
 
 
@@ -13,9 +14,11 @@ local language = aipGetModConfig("language")
 local LANG_MAP = {
 	english = {
 		NAME = "Sock Snake",
+		DESC = "Hmmm, strange...",
 	},
 	chinese = {
 		NAME = "袜子蛇",
+		DESC = "千人千面！",
 	},
 }
 
@@ -23,6 +26,7 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 -- 文字描述
 STRINGS.NAMES.AIP_OLDONE_THESTRAL = LANG.NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL = LANG.DESC
 
 local sounds = {
 	attack = "dontstarve/sanity/creature2/attack",
@@ -55,6 +59,8 @@ local function fn()
 	inst.AnimState:SetBank("aip_oldone_thestral")
 	inst.AnimState:SetBuild("aip_oldone_thestral")
 	inst.AnimState:PlayAnimation("idle_loop", true)
+
+	inst.AnimState:SetClientsideBuildOverride("insane", "aip_oldone_thestral", "aip_oldone_thestral_full")
 
 	inst.entity:SetPristine()
 
