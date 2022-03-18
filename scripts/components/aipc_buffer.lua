@@ -8,13 +8,21 @@ local function DoEffect(inst, self)
 	for name, info in pairs(self.buffers) do
 		info.duration = info.duration - interval
 
+		-- 参数：源头，目标，间隔，时间差
+		local fnData = {
+			interval = interval,
+			passTime = GetTime() - info.startTime,
+			data = info.data,
+		}
+
+		-- 全局函数
+		local fn = aipGlobalBuffer(name).fn
+		if fn ~= nil then
+			fn(info.source, inst, fnData)
+		end
+
 		if info.fn ~= nil then
-			-- 源头，目标，间隔，时间差
-			info.fn(info.source, inst, {
-				interval = interval,
-				passTime = GetTime() - info.startTime,
-				data = info.data,
-			})
+			info.fn(info.source, inst, fnData)
 		end
 
 		-- 清理过期的 buffer
@@ -28,10 +36,16 @@ local function DoEffect(inst, self)
 	-- 清除的 buffer 需要一个退出事件处理收尾
 	for i, name in ipairs(rmNames) do
 		local info = self.buffers[name]
+
+		-- 全局结束函数
+		local endFn = aipGlobalBuffer(name).endFn
+		if endFn ~= nil then
+			endFn(info.source, inst, { data = info.data })
+		end
+
+		-- 结束函数
 		if info.endFn ~= nil then
-			info.endFn(info.source, inst, {
-				data = info.data,
-			})
+			info.endFn(info.source, inst, { data = info.data })
 		end
 	end
 
@@ -66,6 +80,12 @@ function Buffer:Patch(name, source, duration, info)
 			startTime = GetTime(), -- 记录启动时间
 			data = {}, -- 一些额外的信息记录
 		}
+
+		-- 全局启动函数
+		local startFn = aipGlobalBuffer(name).startFn
+		if startFn ~= nil then
+			startFn(source, self.inst, { data = self.buffers[name].data })
+		end
 
 		-- 启动函数
 		if info.startFn ~= nil then

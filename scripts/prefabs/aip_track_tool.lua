@@ -85,7 +85,6 @@ end
 local function onDoPointAction(inst, creator, targetPos)
     local startPos = creator:GetPosition()
 
-	aipPrint(inst.components.finiteuses:GetUses())
 	if inst.components.finiteuses:GetUses() == 0 then
 		return
 	end

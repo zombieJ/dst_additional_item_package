@@ -5,7 +5,7 @@ local function DoEffect(inst, self)
 	local nameList = self:GetNames()
 
 	for i, name in ipairs(nameList) do
-		local clientFn = aipClientBuffer(name)
+		local clientFn = aipGlobalBuffer(name).clientFn
 
 		if clientFn ~= nil then
 			clientFn(inst)

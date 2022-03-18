@@ -89,9 +89,6 @@ function AIP_UniqueSlotInfo:ShowTip(slot)
 			local text1Width, text1Height = text1:GetRegionSize()
 			local text2Width, text2Height = text2:GetRegionSize()
 
-			aipTypePrint("Text1", text1:GetString(), text1Height, text1:GetPosition())
-			aipTypePrint("Text2", text1:GetString(), text2Height, text2:GetPosition())
-
 			local text1Pos = text1:GetPosition()
 			local textY = text1Pos.y
 			local myY = textY + (text1Height / 2) + (myHeight / 2) + 10

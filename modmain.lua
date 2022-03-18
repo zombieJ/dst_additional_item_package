@@ -246,7 +246,7 @@ modimport("scripts/recpiesHooker.lua")
 modimport("scripts/flyWrapper.lua")
 modimport("scripts/houseWrapper.lua")
 modimport("scripts/sgHooker.lua")
-modimport("scripts/hooks/aip_hover_hooker.lua")
+modimport("scripts/hooks/aip_hover_hook.lua")
 
 ------------------------------------- 测试专用 -------------------------------------
 if dev_mode then
@@ -271,6 +271,7 @@ end)
 ------------------------------------- 玩家钩子 -------------------------------------
 modimport("scripts/hooks/aip_drive_hook")
 modimport("scripts/hooks/aip_transfer_hook")
+modimport("scripts/hooks/aip_oldone_hook")
 
 function PlayerPrefabPostInit(inst)
 	if not inst.components.aipc_player_client then

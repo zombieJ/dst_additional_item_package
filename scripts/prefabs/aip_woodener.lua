@@ -184,7 +184,6 @@ local function CreatTree(inst)
 
 				if pt ~= nil then
 					local deployable = pinecone.components.deployable:CanDeploy(pt, nil, inst)
-					aipTypePrint(inst:GetPosition(), pt, deployable)
 
 					-- 一次种一颗
 					if deployable then

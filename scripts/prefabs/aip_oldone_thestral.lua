@@ -60,7 +60,11 @@ local function fn()
 	inst.AnimState:SetBuild("aip_oldone_thestral")
 	inst.AnimState:PlayAnimation("idle_loop", true)
 
-	inst.AnimState:SetClientsideBuildOverride("insane", "aip_oldone_thestral", "aip_oldone_thestral_full")
+	inst.AnimState:SetClientsideBuildOverride(
+		"aip_see_eyes", -- 客户端替换贴图，有疯狂的 aip_see_eyes buff 的人才能看到
+		"aip_oldone_thestral",
+		"aip_oldone_thestral_full"
+	)
 
 	inst.entity:SetPristine()
 

@@ -622,13 +622,14 @@ function _G.aipHasBuffer(inst, name)
 	return false
 end
 
--- 注册客户端 Buffer 效果
-local clientBuffers = {}
-function _G.aipClientBuffer(name, clientFn)
-	if clientFn ~= nil then
-		clientBuffers[name] = clientFn
+-- 注册全局 Buffer 效果，会先于自定义 Buffer 触发相关事件
+-- info: clientFn, startFn, endFn, fn
+local globalBuffers = {}
+function _G.aipGlobalBuffer(name, info)
+	if info ~= nil then
+		globalBuffers[name] = info
 	end
-	return clientBuffers[name]
+	return globalBuffers[name] or {}
 end
 
 -- 获取玩家手持的物品，仅在 AddComponentAction 中使用
