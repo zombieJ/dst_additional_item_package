@@ -2,7 +2,6 @@ local _G = GLOBAL
 
 local function onEyeDiff(inst)
     local seeEyes = inst.aip_see_eyes:value()
-    _G.aipPrint("Changed", seeEyes)
 
     inst._parent.AnimState:SetClientSideBuildOverrideFlag("aip_see_eyes", seeEyes)
 end
