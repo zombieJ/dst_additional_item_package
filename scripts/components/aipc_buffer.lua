@@ -1,5 +1,9 @@
 local interval = 0.5
 
+local function getSource(GUID)
+	return Ents[GUID]
+end
+
 -- 每秒执行一次效果，如果所有的 buffer duration 都结束了，就删除这个组件
 local function DoEffect(inst, self)
 	local allRemove = true
@@ -18,11 +22,11 @@ local function DoEffect(inst, self)
 		-- 全局函数
 		local fn = aipGlobalBuffer(name).fn
 		if fn ~= nil then
-			fn(info.source, inst, fnData)
+			fn(getSource(info.srcGUID), inst, fnData)
 		end
 
 		if info.fn ~= nil then
-			info.fn(info.source, inst, fnData)
+			info.fn(getSource(info.srcGUID), inst, fnData)
 		end
 
 		-- 清理过期的 buffer
@@ -40,12 +44,12 @@ local function DoEffect(inst, self)
 		-- 全局结束函数
 		local endFn = aipGlobalBuffer(name).endFn
 		if endFn ~= nil then
-			endFn(info.source, inst, { data = info.data })
+			endFn(getSource(info.srcGUID), inst, { data = info.data })
 		end
 
 		-- 结束函数
 		if info.endFn ~= nil then
-			info.endFn(info.source, inst, { data = info.data })
+			info.endFn(getSource(info.srcGUID), inst, { data = info.data })
 		end
 	end
 
@@ -94,7 +98,7 @@ function Buffer:Patch(name, source, duration, info)
 	end
 
 
-	self.buffers[name].source = source
+	self.buffers[name].srcGUID = source ~= nil and source.GUID
 	self.buffers[name].duration = duration or 2
 	self.buffers[name].fn = info.fn
 	self.buffers[name].startFn = info.startFn
