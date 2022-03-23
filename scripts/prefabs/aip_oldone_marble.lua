@@ -5,10 +5,14 @@ local LANG_MAP = {
 	english = {
 		NAME = "Defaced Statue",
 		DESC = "It has a heavy head",
+        HEAD_NAME = "Head Part",
+        HEAD_DESC = "This is the main part",
 	},
 	chinese = {
 		NAME = "污损的雕像",
 		DESC = "它的头似乎很沉重",
+        HEAD_NAME = "头颅部件",
+        HEAD_DESC = "这是它的本体",
 	},
 }
 
@@ -17,7 +21,8 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 STRINGS.NAMES.AIP_OLDONE_MARBLE = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_MARBLE = LANG.DESC
 
-
+STRINGS.NAMES.AIP_OLDONE_MARBLE_HEAD = LANG.NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_MARBLE_HEAD = LANG.DESC
 
 --------------------------------- 雕塑 ---------------------------------
 local assets = {
