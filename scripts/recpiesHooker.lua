@@ -1,8 +1,25 @@
 local _G = GLOBAL
+local TECH = _G.TECH
+local CRAFTING_FILTERS = _G.CRAFTING_FILTERS
 
 function GLOBAL.AddModPrefabCookerRecipe(cooker, recipe)
 	env.AddCookerRecipe(cooker, recipe)
 end
+
+--[[
+	1 名称, 2 配方, 3 等级,
+	4 配置, 5 过滤
+]]
+
+-- 鱼刀
+AddRecipe2(
+	"aip_fish_sword",
+	{Ingredient("pondfish", 1),Ingredient("nightmarefuel", 2),Ingredient("rope", 1)},
+	TECH.SCIENCE_TWO, { atlas = "images/inventoryimages/aip_fish_sword.xml" },
+	{ CRAFTING_FILTERS.WEAPONS.name }
+)
+
+-----------------------------------------------------------------------------------
 
 --[[
 	1 名称, 2 配方, 3 分类, 4 等级,
