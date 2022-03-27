@@ -35,22 +35,10 @@ STRINGS.RECIPE_DESC.AIP_DOU_INSCRIPTION_PACKAGE = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_DOU_INSCRIPTION_PACKAGE = LANG.DESC
 
 ------------------------------------ 代码 ------------------------------------
-local assets =
-{
+local assets = {
 	Asset("ATLAS", "images/inventoryimages/aip_dou_inscription_package.xml"),
 	Asset("ANIM", "anim/aip_dou_inscription_package.zip"),
 }
-
--- 配方
-local aip_dou_inscription_package = Recipe(
-	"aip_dou_inscription_package",
-	{
-        Ingredient("aip_shadow_paper_package", 1, "images/inventoryimages/aip_shadow_paper_package.xml"),
-        Ingredient("lightbulb", 2)
-    },
-	RECIPETABS.MAGIC, TECH.MAGIC_TWO
-)
-aip_dou_inscription_package.atlas = "images/inventoryimages/aip_dou_inscription_package.xml"
 
 local function onDrop(inst)
     if inst.components.container ~= nil then
@@ -100,13 +88,3 @@ local function fn()
 end
 
 return Prefab("aip_dou_inscription_package", fn, assets)
-
---[[
-
-
-
-							c_give"aip_dou_inscription_package"
-
-
-
-]]

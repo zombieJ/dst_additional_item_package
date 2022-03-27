@@ -38,10 +38,6 @@ STRINGS.NAMES.AIP_HORSE_HEAD = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_HORSE_HEAD = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_HORSE_HEAD = LANG.DESC
 
--- 配方
-local aip_horse_head = Recipe("aip_horse_head", {Ingredient("beefalowool", 5),Ingredient("boneshard", 3),Ingredient("beardhair", 3)}, RECIPETABS.DRESS, TECH.SCIENCE_TWO)
-aip_horse_head.atlas = "images/inventoryimages/aip_horse_head.xml"
-
 local tempalte = require("prefabs/aip_dress_template")
 return tempalte("aip_horse_head", {
 	hideHead = true,

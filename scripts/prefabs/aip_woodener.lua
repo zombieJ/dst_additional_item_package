@@ -86,10 +86,6 @@ STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.GIVE.AIP_WOODENER_LOG_ONLY = LANG.ACTIO
 STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVE.AIP_WOODENER_LOG_ONLY = LANG.ACTIONFAIL.WEBBER or LANG.ACTIONFAIL.GENERIC
 STRINGS.CHARACTERS.WINONA.ACTIONFAIL.GIVE.AIP_WOODENER_LOG_ONLY = LANG.ACTIONFAIL.WINONA or LANG.ACTIONFAIL.GENERIC
 
--- 配方
-local aip_woodener = Recipe("aip_woodener", {Ingredient("goldnugget", 5), Ingredient("livinglog", 2), Ingredient("boards", 3)}, RECIPETABS.MAGIC, TECH.MAGIC_TWO, "aip_woodener_placer")
-aip_woodener.atlas = "images/inventoryimages/aip_woodener.xml"
-
 -----------------------------------------------------------------------
 require "prefabutil"
 

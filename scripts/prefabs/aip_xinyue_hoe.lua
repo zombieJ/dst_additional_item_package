@@ -46,12 +46,6 @@ local assets = {
 local prefabs = {
 }
 
---------------------------------- 配方 ---------------------------------
-local aip_xinyue_hoe = Recipe("aip_xinyue_hoe", {
-	Ingredient("golden_farm_hoe", 1), Ingredient("frozen_heart", 1, "images/inventoryimages/frozen_heart.xml"), Ingredient("boneshard", 5)
-}, RECIPETABS.TOOLS, TECH.SCIENCE_TWO)
-aip_xinyue_hoe.atlas = "images/inventoryimages/aip_xinyue_hoe.xml"
-
 -- --------------------------------- 功能 ---------------------------------
 -- 装备
 local function onequip(inst, owner)

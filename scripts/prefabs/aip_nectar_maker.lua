@@ -39,10 +39,6 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_NECTAR_MAKER = LANG.DESCRIBE
 
 TUNING.AIP_NECTAR_COOKTIME = dev_mode and 3 or 60
 
--- 配方
-local aip_nectar_maker = Recipe("aip_nectar_maker", {Ingredient("boards", 4), Ingredient("goldnugget", 3), Ingredient("rope", 2)}, RECIPETABS.FARM, TECH.SCIENCE_TWO, "aip_nectar_maker_placer")
-aip_nectar_maker.atlas = "images/inventoryimages/aip_nectar_maker.xml"
-
 ------------------------------------ 配方 ------------------------------------
 local getNectarValues = require("utils/aip_nectar_util")
 

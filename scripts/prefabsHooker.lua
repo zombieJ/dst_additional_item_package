@@ -379,6 +379,16 @@ local function spawnNearBy(inst, prefabName, dist, maxCount)
 		else
 			return true
 		end
+
+		-- 如果有建筑物就不创建
+		local buildings = TheSim:FindEntities(
+			pos.x, pos.y, pos.z,
+			12, nil, nil, { "structure", "wall" }
+		)
+		if #buildings > 0 then
+			prefab:Remove()
+			return false
+		end
 	end
 
 	return false
@@ -405,8 +415,12 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 		-- 每天都有一定概率给玩家附近生成一个 怪异的球茎（最多 3 个）
 		inst:WatchWorldState("isnight", function()
 			inst:DoTaskInTime(1, function() -- 延迟生效以防卡顿
-				local spawnPoint = _G.aipFindRandomEnt("spawnpoint_multiplayer", "spawnpoint_master")
-				spawnNearBy(spawnPoint, "aip_oldone_plant", 80, 3)
+				local chance = dev_mode and 1 or 0.2
+
+				if math.random() < chance then
+					local spawnPoint = _G.aipFindRandomEnt("spawnpoint_multiplayer", "spawnpoint_master")
+					spawnNearBy(spawnPoint, "aip_oldone_plant", 120, 3)
+				end
 			end)
 		end)
 	end)

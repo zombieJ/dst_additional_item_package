@@ -35,10 +35,6 @@ STRINGS.RECIPE_DESC.AIP_GLASS_CHEST = LANG.RECDESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_GLASS_CHEST = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_GLASS_CHEST_DISABLED = LANG.DISABLED
 
--- 配方
-local aip_glass_chest = Recipe("aip_glass_chest", { Ingredient("moonglass", 3), Ingredient("nightmarefuel", 1), Ingredient("plantmeat", 1) }, RECIPETABS.MAGIC, TECH.MAGIC_TWO, "aip_glass_chest_placer")
-aip_glass_chest.atlas = "images/inventoryimages/aip_glass_chest.xml"
-
 ---------------------------------- 资源 ----------------------------------
 require "prefabutil"
 

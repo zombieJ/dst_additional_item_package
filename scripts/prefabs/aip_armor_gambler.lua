@@ -46,17 +46,6 @@ STRINGS.NAMES.AIP_ARMOR_GAMBLER = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_ARMOR_GAMBLER = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_ARMOR_GAMBLER = LANG.DESC
 
--- 配方
-local aip_armor_gambler = Recipe("aip_armor_gambler", {
-    Ingredient("papyrus", 6),
-    Ingredient("nightmarefuel", 1),
-    Ingredient("rope", 1)
-  },
-  RECIPETABS.WAR,
-  TECH.SCIENCE_TWO
-)
-aip_armor_gambler.atlas = "images/inventoryimages/aip_armor_gambler.xml"
-
 -----------------------------------------------------------
 
 local function OnBlocked(owner)

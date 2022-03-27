@@ -70,10 +70,6 @@ STRINGS.NAMES.AIP_BEEHAVE = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_BEEHAVE = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_BEEHAVE = LANG.DESC
 
--- 配方
-local aip_beehave = Recipe("aip_beehave", {Ingredient("tentaclespike", 1),Ingredient("stinger", 10),Ingredient("nightmarefuel", 2)}, RECIPETABS.MAGIC, TECH.MAGIC_TWO)
-aip_beehave.atlas = "images/inventoryimages/aip_beehave.xml"
-
 -----------------------------------------------------------
 local function calcDamage(inst, attacker, target)
 	local dmg = TUNING.AIP_BEEHAVE_DAMAGE

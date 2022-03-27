@@ -44,10 +44,6 @@ STRINGS.NAMES.AIP_JOKER_FACE = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_JOKER_FACE = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_JOKER_FACE = LANG.DESC
 
--- 配方
-local aip_joker_face = Recipe("aip_joker_face", {Ingredient("livinglog", 3), Ingredient("spidereggsack", 1), Ingredient("razor", 1)}, RECIPETABS.DRESS, TECH.SCIENCE_TWO)
-aip_joker_face.atlas = "images/inventoryimages/aip_joker_face.xml"
-
 ------------------------------------------------------- 环形球 -------------------------------------------------------
 local function jokerOrbFn()
 	local inst = CreateEntity()
