@@ -131,3 +131,27 @@ rec("aip_olden_tea", TECH.LOST, { CRAFTING_FILTERS.RESTORATION },
 -- 饼干碎石
 rec("aip_shell_stone", TECH.LOST, { CRAFTING_FILTERS.TOOLS },
 	{ Ingredient("cookiecuttershell", 1), Ingredient("moonrocknugget", 1) })
+
+------------------------------------ 神秘权杖 ------------------------------------
+-- 符文
+local inscriptions = require("utils/aip_scepter_util").inscriptions
+for name, info in pairs(inscriptions) do
+	rec(name, TECH.AIP_DOU_SCEPTER, { CRAFTING_FILTERS.MAGIC },
+	info.recipes)
+end
+
+------------------------------------ 联结图腾 ------------------------------------
+-- 搬运石偶
+rec(
+	"aip_shadow_transfer", TECH.AIP_DOU_TOTEM, { CRAFTING_FILTERS.TOOLS, CRAFTING_FILTERS.MAGIC },
+	{ Ingredient("moonglass", 2), Ingredient("moonrocknugget", 2), Ingredient("aip_22_fish", 1, "images/inventoryimages/aip_22_fish.xml") })
+
+-- 月轨测量仪
+rec(
+	"aip_track_tool", TECH.AIP_DOU_TOTEM, { CRAFTING_FILTERS.TOOLS, CRAFTING_FILTERS.MAGIC },
+	{ Ingredient("moonglass", 6), Ingredient("moonrocknugget", 3), Ingredient("transistor", 1) })
+
+-- 玻璃矿车
+rec(
+	"aip_glass_minecar", TECH.AIP_DOU_TOTEM, { CRAFTING_FILTERS.TOOLS, CRAFTING_FILTERS.MAGIC },
+	{ Ingredient("moonglass", 5), Ingredient("goldnugget", 4) })
