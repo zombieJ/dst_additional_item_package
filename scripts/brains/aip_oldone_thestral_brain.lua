@@ -1,4 +1,3 @@
--- https://gitee.com/anxin1225/BehaviourTree
 require "behaviours/wander"
 require "behaviours/chaseandattack"
 require "behaviours/follow"
@@ -51,7 +50,10 @@ function findPigKingPos(self)
 		self.pingKing = aipFindEnt("pigking")
 	end
 
-	return self.pingKing and self.pingKing:GetPosition() or nil
+	local pingKingPos = self.pingKing and self.pingKing:GetPosition() or nil
+
+	-- 太远了就随便漫步了
+	return aipDist(pingKingPos, self.inst) < 80 and pingKingPos or nil
 end
 
 function DragonBrain:OnStop()
@@ -92,7 +94,7 @@ function DragonBrain:OnStart()
 		-- ),
 
 		-- 漫步
-		-- Wander(self.inst, function() return findPigKingPos(self) end, 40),
+		Wander(self.inst, function() return findPigKingPos(self) end, 40),
 	}, .25)
 	
 	self.bt = BT(self.inst, root)

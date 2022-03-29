@@ -51,8 +51,6 @@ local TALK_DIFF = dev_mode and 8 or 15
 
 -- 玩家靠近
 local function onNear(inst, player)
-	aipPrint("Near!")
-
 	inst.aip_player_time = inst.components.aipc_timer:Interval(1, function()
 		local now = GetTime()
 
@@ -104,7 +102,7 @@ local function fn()
 	inst.Transform:SetTwoFaced()
 	inst.Transform:SetScale(0.8, 0.8, 0.8)
 
-	-- inst:AddTag("monster")
+	inst:AddTag("aip_oldone_thestral")
 
 	inst.AnimState:SetBank("aip_oldone_thestral")
 	inst.AnimState:SetBuild("aip_oldone_thestral")

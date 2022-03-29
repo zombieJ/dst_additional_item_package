@@ -441,7 +441,7 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
 			local pos = _G.aipGetSpawnPoint(pt, distance)
 
 			-- 如果不是自然地皮就跳过
-			pos = isNaturalPoint(pos)
+			pos = _G.isNaturalPoint(pos)
 
 			if pos ~= nil then
 				local ents = TheSim:FindEntities(pos.x, 0, pos.z, emptyDistance)
@@ -457,7 +457,7 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
 		tgtPT = aipGetSpawnPoint(pt, minDistance)
 
 		-- 如果不是自然地皮就跳过
-		tgtPT = isNaturalPoint(tgtPT)
+		tgtPT = _G.isNaturalPoint(tgtPT)
 	end
 
 	return tgtPT

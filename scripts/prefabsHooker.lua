@@ -421,6 +421,20 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 				end
 			end)
 		end)
+
+		-- 每个季节变换都会在 猪王 附近重置一条 袜子蛇
+		inst:WatchWorldState("season", function ()
+			inst:DoTaskInTime(3, function() -- 延迟生效以防卡顿
+				local pigking = aipFindEnt("pigking")
+				if pigking then
+					local ents = TheSim:FindEntities(x, y, z, 100, { "aip_oldone_thestral" })
+
+					if #ents == 0 then
+						aipSpawnPrefab(pigking, "aip_oldone_thestral")
+					end
+				end
+			end)
+		end)
 	end)
 end
 
