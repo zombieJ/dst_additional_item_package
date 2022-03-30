@@ -12,6 +12,11 @@ local assets = {
 }
 
 local SKETCHES = {
+    -- 老版
+    -- { item = "chesspiece_aip_moon",	recipe = "chesspiece_aip_moon_builder" },
+    -- { item = "chesspiece_aip_doujiang",	recipe = "chesspiece_aip_doujiang_builder" },
+    -- { item = "chesspiece_aip_deer",	recipe = "chesspiece_aip_deer_builder" },
+    -- 新版
     { item = "chesspiece_aip_mouth",	recipe = "chesspiece_aip_mouth_builder" },
     { item = "chesspiece_aip_octupus",	recipe = "chesspiece_aip_octupus_builder" },
     { item = "chesspiece_aip_fish",		recipe = "chesspiece_aip_fish_builder" },

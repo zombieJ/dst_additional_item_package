@@ -168,7 +168,7 @@ local PIECES =
 	{
 		name = "aip_moon",
 		moonevent = false,
-		recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("moonrocknugget", 9), Ingredient("frozen_heart", 1, "images/inventoryimages/frozen_heart.xml")},
+		-- recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("moonrocknugget", 9), Ingredient("frozen_heart", 1, "images/inventoryimages/frozen_heart.xml")},
 		common_postinit = function(inst)
 			-- 月光星尘会发光
 			inst.entity:AddLight()
