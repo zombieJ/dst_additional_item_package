@@ -186,47 +186,6 @@ _G.STRINGS.TABS.AIP_DOU_TOTEM = TECH_TOTEM_LANG[language]
 ----------
 modimport("scripts/techHooker.lua")
 
----------- 配方 ----------
--- 符文
-local inscriptions = require("utils/aip_scepter_util").inscriptions
-for name, info in pairs(inscriptions) do
-	AddRecipe(
-		name, info.recipes, AIP_DOU_SCEPTER, _G.TECH.AIP_DOU_SCEPTER,
-		nil, nil, true, nil, nil,
-		"images/inventoryimages/"..name..".xml", name..".tex"
-	)
-end
-
--- 搬运石偶
-AddRecipe(
-	"aip_shadow_transfer",
-	{ Ingredient("moonglass", 2), Ingredient("moonrocknugget", 2), Ingredient("aip_22_fish", 1, "images/inventoryimages/aip_22_fish.xml") },
-	AIP_DOU_TOTEM, _G.TECH.AIP_DOU_TOTEM,
-	nil, nil, true, nil, nil,
-	"images/inventoryimages/aip_shadow_transfer.xml",
-	"aip_shadow_transfer.tex"
-)
-
--- 月轨测量仪
-AddRecipe(
-	"aip_track_tool",
-	{ Ingredient("moonglass", 6), Ingredient("moonrocknugget", 3), Ingredient("transistor", 1) },
-	AIP_DOU_TOTEM, _G.TECH.AIP_DOU_TOTEM,
-	nil, nil, true, nil, nil,
-	"images/inventoryimages/aip_track_tool.xml",
-	"aip_track_tool.tex"
-)
-
--- 玻璃矿车
-AddRecipe(
-	"aip_glass_minecar",
-	{ Ingredient("moonglass", 5), Ingredient("goldnugget", 4) },
-	AIP_DOU_TOTEM, _G.TECH.AIP_DOU_TOTEM,
-	nil, nil, true, nil, nil,
-	"images/inventoryimages/aip_glass_minecar.xml",
-	"aip_glass_minecar.tex"
-)
-
 ------------------------------------- 组件钩子 -------------------------------------
 modimport("scripts/componentsHooker.lua")
 

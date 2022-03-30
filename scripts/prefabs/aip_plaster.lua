@@ -48,10 +48,6 @@ STRINGS.NAMES.AIP_PLASTER = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_PLASTER = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PLASTER = LANG.DESCRIBE
 
--- 配方
-local aip_plaster = Recipe("aip_plaster", {Ingredient("ash", 1), Ingredient("poop", 1), Ingredient("cutgrass", 1)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_ONE)
-aip_plaster.atlas = "images/inventoryimages/aip_plaster.xml"
-
 -----------------------------------------------------------
 
 local function fn()

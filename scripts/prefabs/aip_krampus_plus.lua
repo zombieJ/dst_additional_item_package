@@ -37,14 +37,6 @@ STRINGS.NAMES.AIP_KRAMPUS_PLUS = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_KRAMPUS_PLUS = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_KRAMPUS_PLUS = LANG.DESCRIBE
 
--- 配方
-local aip_krampus_plus = Recipe("aip_krampus_plus", {
-    Ingredient("klaussackkey", 1), -- 克劳斯钥匙
-    Ingredient("fossil_piece", 2), -- 化石骨架
-    Ingredient("glommerwings", 1), -- 咕噜咪翅膀
-}, RECIPETABS.SURVIVAL, TECH.SCIENCE_TWO)
-aip_krampus_plus.atlas = "images/inventoryimages/aip_krampus_plus.xml"
-
 ---------------------------- 事件 ----------------------------
 -- 刷新速度
 local function refreshSpeed(inst)

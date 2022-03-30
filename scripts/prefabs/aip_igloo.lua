@@ -240,10 +240,6 @@ local function common_fn(name, config)
 end
 
 --------------------------------------- 冰屋 ---------------------------------------
--- 配方
-local aip_igloo = Recipe("aip_igloo", {Ingredient("ice", 21), Ingredient("carrot", 1), Ingredient("twigs", 2)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_TWO, "aip_igloo_placer")
-aip_igloo.atlas = "images/inventoryimages/aip_igloo.xml"
-
 -- local function TemperatureChange(inst, data)
 --     local curTemp = inst.components.temperature:GetCurrent()
 --     aipTypePrint("temp:", curTemp)

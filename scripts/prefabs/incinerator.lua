@@ -133,10 +133,6 @@ STRINGS.CHARACTERS.WATHGRITHR.ACTIONFAIL.GIVE.INCINERATOR_NOT_BURN = LANG.ACTION
 STRINGS.CHARACTERS.WEBBER.ACTIONFAIL.GIVE.INCINERATOR_NOT_BURN = LANG.ACTIONFAIL.WEBBER or LANG.ACTIONFAIL.GENERIC
 STRINGS.CHARACTERS.WINONA.ACTIONFAIL.GIVE.INCINERATOR_NOT_BURN = LANG.ACTIONFAIL.WINONA or LANG.ACTIONFAIL.GENERIC
 
--- 配方
-local incinerator = Recipe("incinerator", {Ingredient("rocks", 5), Ingredient("twigs", 2), Ingredient("ash", 1)}, RECIPETABS.LIGHT, TECH.SCIENCE_ONE, "incinerator_placer")
-incinerator.atlas = "images/inventoryimages/incinerator.xml"
-
 -----------------------------------------------------------------------
 require "prefabutil"
 

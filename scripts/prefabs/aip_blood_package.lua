@@ -70,10 +70,6 @@ STRINGS.NAMES.AIP_BLOOD_PACKAGE = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_BLOOD_PACKAGE = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_BLOOD_PACKAGE = LANG.DESCRIBE
 
--- 配方
-local aip_blood_package = Recipe("aip_blood_package", {Ingredient("mosquitosack", 1), Ingredient("spidergland", 3), Ingredient("ash", 2)}, RECIPETABS.SURVIVAL, TECH.SCIENCE_TWO)
-aip_blood_package.atlas = "images/inventoryimages/aip_blood_package.xml"
-
 -----------------------------------------------------------
 
 local function fn()

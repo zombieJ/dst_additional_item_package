@@ -1,114 +1,193 @@
 local _G = GLOBAL
+local TECH = _G.TECH
+local CRAFTING_FILTERS = _G.CRAFTING_FILTERS
+local TECH_INGREDIENT = _G.TECH_INGREDIENT
 
 function GLOBAL.AddModPrefabCookerRecipe(cooker, recipe)
 	env.AddCookerRecipe(cooker, recipe)
 end
 
+-- 新版 mod 物品配方
+local function rec(name, tech, filters, ingredients, placerOrConfig)
+	local filterNames = {}
+	for _, filter in ipairs(filters) do
+		table.insert(filterNames, filter.name)
+	end
+
+	local config = {}
+	if type(placerOrConfig) == "table" then
+		config = placerOrConfig
+	else
+		config.placer = placerOrConfig
+	end
+
+	-- atlas
+	if config.atlas == nil then
+		config.atlas = "images/inventoryimages/"..name..".xml"
+	end
+
+	AddRecipe2(
+		name,
+		ingredients,
+		tech,
+		config,
+		filterNames
+	)
+end
+
 --[[
-	1 名称, 2 配方, 3 分类, 4 等级,
-	5 建筑占位 placer, 6 最小间距, 7 不能解锁, 8 给予数量, 9 建筑标签？,
-	10 atlas, 11 image, 12 testfn, 13 product, 14 build_mode, 15 build_distance
+	1 名称, 2 配方, 3 等级,
+	4 配置, 5 过滤
 ]]
 
+-- 鱼刀
+rec("aip_fish_sword", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.WEAPONS },
+	{Ingredient("pondfish", 1),Ingredient("nightmarefuel", 2),Ingredient("rope", 1)})
+
+-- 马头
+rec("aip_horse_head", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.CLOTHING },
+	{Ingredient("beefalowool", 5),Ingredient("boneshard", 3),Ingredient("beardhair", 3)})
+
+-- 赌徒铠甲
+rec("aip_armor_gambler", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.WEAPONS, CRAFTING_FILTERS.ARMOUR },
+	{Ingredient("papyrus", 6),Ingredient("nightmarefuel", 1),Ingredient("rope", 1)})
+
+-- 蜂语
+rec("aip_beehave", TECH.MAGIC_TWO, { CRAFTING_FILTERS.MAGIC, CRAFTING_FILTERS.WEAPONS },
+	{Ingredient("tentaclespike", 1),Ingredient("stinger", 10),Ingredient("nightmarefuel", 2)})
+
+-- 血袋
+rec("aip_blood_package", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.RESTORATION },
+	{Ingredient("mosquitosack", 1), Ingredient("spidergland", 3), Ingredient("ash", 2)})
+
+-- 岚色眼镜
+rec("aip_blue_glasses", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.CLOTHING },
+	{Ingredient("steelwool", 1), Ingredient("ice", 2)})
+
+-- 符文袋
+rec("aip_dou_inscription_package", TECH.MAGIC_TWO, { CRAFTING_FILTERS.MAGIC },
+	{Ingredient("aip_leaf_note", 2, "images/inventoryimages/aip_leaf_note.xml"),Ingredient("lightbulb", 2)})
+
+-- 玻璃宝箱
+rec("aip_glass_chest", TECH.MAGIC_TWO, { CRAFTING_FILTERS.MAGIC },
+	{ Ingredient("moonglass", 3), Ingredient("nightmarefuel", 1), Ingredient("plantmeat", 1) },
+	"aip_glass_chest_placer")
+
+-- 雪人小屋
+rec("aip_igloo", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.STRUCTURES },
+	{Ingredient("ice", 21), Ingredient("carrot", 1), Ingredient("twigs", 2)},
+	"aip_igloo_placer")
+
+-- 诙谐面具
+rec("aip_joker_face", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.CLOTHING },
+	{Ingredient("livinglog", 3), Ingredient("spidereggsack", 1), Ingredient("razor", 1)})
+
+-- 守财奴的背包
+rec("aip_krampus_plus", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.CONTAINERS },
+	{
+		Ingredient("klaussackkey", 1), -- 克劳斯钥匙
+		Ingredient("fossil_piece", 2), -- 化石骨架
+		Ingredient("glommerwings", 1), -- 咕噜咪翅膀
+	})
+
+-- 花蜜桶
+rec("aip_nectar_maker", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.RESTORATION, CRAFTING_FILTERS.STRUCTURES, CRAFTING_FILTERS.CONTAINERS },
+	{Ingredient("boards", 4), Ingredient("goldnugget", 3), Ingredient("rope", 2)},
+	"aip_nectar_maker_placer")
+
+-- 草木灰
+rec("aip_plaster", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.RESTORATION },
+	{Ingredient("ash", 1), Ingredient("poop", 1), Ingredient("cutgrass", 1)})
+
+-- 木图腾
+rec("aip_woodener", TECH.MAGIC_TWO, { CRAFTING_FILTERS.MAGIC, CRAFTING_FILTERS.CONTAINERS },
+	{Ingredient("goldnugget", 5), Ingredient("livinglog", 2), Ingredient("boards", 3)},
+	"aip_woodener_placer")
+
+-- 心悦锄
+rec("aip_xinyue_hoe", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.TOOLS },
+	{Ingredient("golden_farm_hoe", 1), Ingredient("frozen_heart", 1, "images/inventoryimages/frozen_heart.xml"), Ingredient("boneshard", 5)})
+
+-- 暗影观察者
+rec("dark_observer", TECH.MAGIC_TWO, { CRAFTING_FILTERS.MAGIC },
+	{Ingredient("livinglog", 5), Ingredient("nightmarefuel", 5), Ingredient("frozen_heart", 1, "images/inventoryimages/frozen_heart.xml")},
+	"dark_observer_placer")
+
+-- 焚烧炉
+rec("incinerator", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.LIGHT },
+	{Ingredient("rocks", 5), Ingredient("twigs", 2), Ingredient("ash", 1)},
+	"incinerator_placer")
+
+-- 玉米枪
+rec("popcorngun", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.WEAPONS },
+	{Ingredient("corn", 2),Ingredient("houndstooth", 4),Ingredient("silk", 3)})
+
+-----------------------------------------------------------------------------------
 -- 豆豆球
-AddRecipe(
-	"aip_score_ball",
-	{ Ingredient("pigskin", 1), Ingredient("silk", 1), Ingredient("cutgrass", 6) },
-	_G.RECIPETABS.TOOLS, _G.TECH.LOST,
-	nil, nil, nil, nil, nil,
-	"images/inventoryimages/aip_score_ball.xml",
-	"aip_score_ball.tex"
-)
+rec("aip_score_ball", TECH.LOST, { CRAFTING_FILTERS.TOOLS },
+	{ Ingredient("pigskin", 1), Ingredient("silk", 1), Ingredient("cutgrass", 6) })
 
 -- 劣质的飞行图腾
-AddRecipe(
-	"aip_fake_fly_totem",
+rec("aip_fake_fly_totem", TECH.LOST, { CRAFTING_FILTERS.STRUCTURES, CRAFTING_FILTERS.MAGIC },
 	{ Ingredient("boards", 1), Ingredient("rope", 1), Ingredient("nightmarefuel", 1) },
-	_G.RECIPETABS.TOWN, _G.TECH.LOST,
-	"aip_fake_fly_totem_placer", nil, nil, nil, nil,
-	"images/inventoryimages/aip_fake_fly_totem.xml",
-	"aip_fake_fly_totem.tex"
-)
+	"aip_fake_fly_totem_placer")
 
 -- 飞行图腾。只有蓝图可以做出来，现在不提供
-AddRecipe(
-	"aip_fly_totem",
+rec("aip_fly_totem", TECH.LOST, { CRAFTING_FILTERS.STRUCTURES, CRAFTING_FILTERS.MAGIC },
 	{ Ingredient(_G.CHARACTER_INGREDIENT.SANITY, 35) },
-	_G.RECIPETABS.TOWN, _G.TECH.LOST,
-	"aip_fly_totem_placer", nil, nil, nil, nil,
-	"images/inventoryimages/aip_fly_totem.xml",
-	"aip_fly_totem.tex"
-)
+	"aip_fly_totem_placer")
 
 -- 古早茶
-AddRecipe(
-	"aip_olden_tea",
-	{ Ingredient("messagebottleempty", 1), Ingredient("sweettea", 1), Ingredient("cutreeds", 3) },
-	_G.RECIPETABS.SURVIVAL, _G.TECH.LOST,
-	nil, nil, nil, nil, nil,
-	"images/inventoryimages/aip_olden_tea.xml",
-	"aip_olden_tea.tex"
-)
+rec("aip_olden_tea", TECH.LOST, { CRAFTING_FILTERS.RESTORATION },
+	{ Ingredient("messagebottleempty", 1), Ingredient("sweettea", 1), Ingredient("cutreeds", 3) })
 
 -- 饼干碎石
-AddRecipe(
-	"aip_shell_stone",
-	{ Ingredient("cookiecuttershell", 1), Ingredient("moonrocknugget", 1) },
-	_G.RECIPETABS.TOOLS, _G.TECH.LOST,
-	nil, nil, nil, 3, nil,
-	"images/inventoryimages/aip_shell_stone.xml",
-	"aip_shell_stone.tex"
-)
+rec("aip_shell_stone", TECH.LOST, { CRAFTING_FILTERS.TOOLS },
+	{ Ingredient("cookiecuttershell", 1), Ingredient("moonrocknugget", 1) })
 
+------------------------------------ 神秘权杖 ------------------------------------
+-- 符文
+local inscriptions = require("utils/aip_scepter_util").inscriptions
+for name, info in pairs(inscriptions) do
+	rec(name, TECH.AIP_DOU_SCEPTER, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.MAGIC },
+	info.recipes, { nounlock=true })
+end
+
+------------------------------------ 联结图腾 ------------------------------------
+-- 搬运石偶
+rec(
+	"aip_shadow_transfer", TECH.AIP_DOU_TOTEM, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.TOOLS, CRAFTING_FILTERS.MAGIC },
+	{ Ingredient("moonglass", 2), Ingredient("moonrocknugget", 2), Ingredient("aip_22_fish", 1, "images/inventoryimages/aip_22_fish.xml") },
+	{ nounlock=true })
+
+-- 月轨测量仪
+rec(
+	"aip_track_tool", TECH.AIP_DOU_TOTEM, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.TOOLS, CRAFTING_FILTERS.MAGIC },
+	{ Ingredient("moonglass", 6), Ingredient("moonrocknugget", 3), Ingredient("transistor", 1) },
+	{ nounlock=true })
+
+-- 玻璃矿车
+rec(
+	"aip_glass_minecar", TECH.AIP_DOU_TOTEM, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.TOOLS, CRAFTING_FILTERS.MAGIC },
+	{ Ingredient("moonglass", 5), Ingredient("goldnugget", 4) },
+	{ nounlock=true })
+
+------------------------------------ 古神低语 ------------------------------------
 -- 微笑雕像
-AddRecipe(
-	"chesspiece_aip_mouth_builder",
-    {
-		Ingredient(_G.TECH_INGREDIENT.SCULPTING, 2),
-		Ingredient("aip_oldone_plant_broken", 1, "images/inventoryimages/aip_oldone_plant_broken.xml"),
-	},
-    _G.RECIPETABS.SCULPTING, _G.TECH.LOST,
-	-- _G.RECIPETABS.SCULPTING, _G.TECH.SCULPTING_ONE,
-    nil, nil, true, nil, nil,
-    "images/inventoryimages/chesspiece_aip_mouth.xml",
-    "chesspiece_aip_mouth.tex"
-)
+rec("chesspiece_aip_mouth_builder", TECH.LOST, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.DECOR },
+	{ Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("aip_oldone_plant_broken", 1, "images/inventoryimages/aip_oldone_plant_broken.xml") },
+	{ nounlock=true, atlas = "images/inventoryimages/chesspiece_aip_mouth.xml", image = "chesspiece_aip_mouth.tex" })
 
 -- 章鱼雕像
-AddRecipe(
-	"chesspiece_aip_octupus_builder",
-    {
-		Ingredient(_G.TECH_INGREDIENT.SCULPTING, 2),
-		Ingredient("aip_oldone_plant_broken", 1, "images/inventoryimages/aip_oldone_plant_broken.xml"),
-	},
-    _G.RECIPETABS.SCULPTING, _G.TECH.LOST,
-    nil, nil, true, nil, nil,
-    "images/inventoryimages/chesspiece_aip_octupus.xml",
-    "chesspiece_aip_octupus.tex"
-)
+rec("chesspiece_aip_octupus_builder", TECH.LOST, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.DECOR },
+	{ Ingredient(_G.TECH_INGREDIENT.SCULPTING, 2), Ingredient("aip_oldone_plant_broken", 1, "images/inventoryimages/aip_oldone_plant_broken.xml") },
+	{ nounlock=true, atlas = "images/inventoryimages/chesspiece_aip_octupus.xml", image = "chesspiece_aip_octupus.tex" })
 
 -- 美人鱼雕像
-AddRecipe(
-	"chesspiece_aip_fish_builder",
-    {
-		Ingredient(_G.TECH_INGREDIENT.SCULPTING, 2),
-		Ingredient("aip_oldone_plant_broken", 1, "images/inventoryimages/aip_oldone_plant_broken.xml"),
-	},
-    _G.RECIPETABS.SCULPTING, _G.TECH.LOST,
-    nil, nil, true, nil, nil,
-    "images/inventoryimages/chesspiece_aip_fish.xml",
-    "chesspiece_aip_fish.tex"
-)
+rec("chesspiece_aip_fish_builder", TECH.LOST, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.DECOR },
+	{ Ingredient(_G.TECH_INGREDIENT.SCULPTING, 2), Ingredient("aip_oldone_plant_broken", 1, "images/inventoryimages/aip_oldone_plant_broken.xml") },
+	{ nounlock=true, atlas = "images/inventoryimages/chesspiece_aip_fish.xml", image = "chesspiece_aip_fish.tex" })
 
 -- 榴星
-AddRecipe(
-	"aip_oldone_durian",
-    {
-		Ingredient("durian", 1),
-		Ingredient("aip_oldone_plant_full", 1, "images/inventoryimages/aip_oldone_plant_full.xml"),
-	},
-	_G.RECIPETABS.MAGIC, _G.TECH.MAGIC_TWO,
-	nil, nil, nil, nil, nil,
-	"images/inventoryimages/aip_oldone_durian.xml",
-	"aip_oldone_durian.tex"
-)
+rec("aip_oldone_durian", TECH.LOST, { CRAFTING_FILTERS.WEAPONS },
+	{ Ingredient("durian", 1), Ingredient("aip_oldone_plant_full", 1, "images/inventoryimages/aip_oldone_plant_full.xml"), })

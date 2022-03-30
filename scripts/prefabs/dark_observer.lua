@@ -55,10 +55,6 @@ STRINGS.NAMES.DARK_OBSERVER = LANG.NAME
 STRINGS.RECIPE_DESC.DARK_OBSERVER = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.DARK_OBSERVER = LANG.DESCRIBE
 
--- 配方
-local dark_observer = Recipe("dark_observer", {Ingredient("livinglog", 5), Ingredient("nightmarefuel", 5), Ingredient("frozen_heart", 1, "images/inventoryimages/frozen_heart.xml")}, RECIPETABS.MAGIC, TECH.MAGIC_TWO, "dark_observer_placer")
-dark_observer.atlas = "images/inventoryimages/dark_observer.xml"
-
 -----------------------------------------------------------
 require "prefabutil"
 

@@ -83,10 +83,6 @@ STRINGS.NAMES.POPCORNGUN = LANG.NAME
 STRINGS.RECIPE_DESC.POPCORNGUN = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.POPCORNGUN = LANG.DESCRIBE
 
--- 配方
-local popcorngun = Recipe("popcorngun", {Ingredient("corn", 2),Ingredient("houndstooth", 4),Ingredient("silk", 3)}, RECIPETABS.WAR, TECH.SCIENCE_TWO)
-popcorngun.atlas = "images/inventoryimages/popcorngun.xml"
-
 -----------------------------------------------------------
 
 local function onequip(inst, owner)
