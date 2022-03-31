@@ -146,6 +146,18 @@ rec("aip_shell_stone", TECH.LOST, { CRAFTING_FILTERS.TOOLS },
 	{ Ingredient("cookiecuttershell", 1), Ingredient("moonrocknugget", 1) })
 
 ------------------------------------ 神秘权杖 ------------------------------------
+local scepterData = {
+	icon_atlas = "images/inventoryimages/aip_dou_tech.xml",
+	icon_image = "aip_dou_tech.tex",
+	is_crafting_station = true,
+	action_str = "SCULPTING",
+	filter_text = _G.STRINGS.UI.CRAFTING_STATION_FILTERS.SCULPTING,
+}
+
+env.AddPrototyperDef("aip_dou_scepter", scepterData)
+env.AddPrototyperDef("aip_dou_empower_scepter", scepterData)
+env.AddPrototyperDef("aip_dou_huge_scepter", scepterData)
+
 -- 符文
 local inscriptions = require("utils/aip_scepter_util").inscriptions
 for name, info in pairs(inscriptions) do
@@ -154,6 +166,14 @@ for name, info in pairs(inscriptions) do
 end
 
 ------------------------------------ 联结图腾 ------------------------------------
+env.AddPrototyperDef("aip_dou_totem", {
+	icon_atlas = "images/inventoryimages/aip_totem_tech.xml",
+	icon_image = "aip_totem_tech.tex",
+	is_crafting_station = true,
+	action_str = "SCULPTING",
+	filter_text = _G.STRINGS.UI.CRAFTING_STATION_FILTERS.SCULPTING,
+})
+
 -- 搬运石偶
 rec(
 	"aip_shadow_transfer", TECH.AIP_DOU_TOTEM, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.TOOLS, CRAFTING_FILTERS.MAGIC },
