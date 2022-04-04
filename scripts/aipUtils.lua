@@ -286,10 +286,11 @@ function _G.aipFindNearEnts(inst, prefabNames, distance)
 end
 
 function _G.aipFindNearPlayers(inst, dist)
-	local NOTAGS = { "FX", "NOCLICK", "DECOR", "playerghost", "INLIMBO" }
+	-- local NOTAGS = { "FX", "NOCLICK", "DECOR", "playerghost", "INLIMBO" }
 	local x, y, z = inst.Transform:GetWorldPosition()
-	local ents = TheSim:FindEntities(x, 0, z, dist, { "player", "_health" }, NOTAGS)
-	return ents
+	-- local ents = TheSim:FindEntities(x, 0, z, dist, { "player", "_health" }, NOTAGS)
+	-- return ents
+	return _G.FindPlayersInRange(x, y, z, dist, true)
 end
 
 -- 降级值如果没有的话
@@ -642,4 +643,15 @@ function _G.aipGetActionableItem(doer)
 		end
 	end
 	return nil
+end
+
+------------------------------------- 简易 AI -------------------------------------
+-- 纯时序 AI，返回 false 则继续执行下一个 Step
+function _G.aipQueue(...)
+	for i, fn in ipairs(arg) do
+		-- 如果为 true 则不用再往下了
+		if fn() then
+			return
+		end
+	end
 end

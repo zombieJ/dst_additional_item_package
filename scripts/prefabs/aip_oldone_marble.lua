@@ -1,5 +1,7 @@
 local language = aipGetModConfig("language")
 
+-- local brain = require("brains/aip_oldone_marble_brain")
+
 -- 文字描述
 local LANG_MAP = {
 	english = {
@@ -25,9 +27,73 @@ STRINGS.NAMES.AIP_OLDONE_MARBLE_HEAD = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_MARBLE_HEAD = LANG.DESC
 
 --------------------------------- 雕塑 ---------------------------------
+-- 简易版 brain，不需要 Stage 配合
+local function doBrain(inst)
+    aipQueue(
+        -- 附近有玩家的时候投掷脓包
+        function()
+            -- CD 中则不执行其他操作了
+            if inst.components.timer:TimerExists("aip_throw") then
+                return true
+            end
+
+            -- 没有玩家则跳过
+            local players = aipFindNearPlayers(inst, 6)
+            local player = aipRandomEnt(players)
+            if player == nil then
+                return false
+            end
+
+            inst.components.timer:StartTimer("aip_throw", 2.55)
+            local ball = aipSpawnPrefab(inst, "aip_oldone_plant_full")
+            local x, y, z = player.Transform:GetWorldPosition()
+            ball.components.complexprojectile:SetLaunchOffset(Vector3(0, 5, 0))
+            ball.components.complexprojectile:Launch(
+                Vector3(
+                    x,
+                    0,
+                    z
+                ),
+                inst
+            )
+
+            return true
+        end
+    )
+end
+
+local function stopBrain(inst)
+    if inst._aipBrain ~= nil then
+        inst._aipBrain:Cancel()
+    end
+
+    inst._aipBrain = nil
+end
+
+local function startBrain(inst)
+    stopBrain(inst)
+
+    inst._aipBrain = inst:DoPeriodicTask(0.25, function()
+		doBrain(inst)
+	end, 0.1)
+end
+
+local function onNear(inst)
+    startBrain(inst)
+end
+
+local function onFar(inst)
+    stopBrain(inst)
+end
+
+---------------------------------- AI ----------------------------------
 local assets = {
     Asset("ANIM", "anim/aip_oldone_marble.zip"),
 }
+
+local function onremovebody(body)
+    body._aipBody._aipHead = nil
+end
 
 local function fn()
     local inst = CreateEntity()
@@ -50,7 +116,19 @@ local function fn()
         return inst
     end
 
+    inst:AddComponent("timer")
+
     inst:AddComponent("inspectable")
+
+    -- 创造跟随的头部
+    inst:DoTaskInTime(3, function()
+        -- inst.AnimState:Hide("head")
+    end)
+
+    inst:AddComponent("playerprox")
+	inst.components.playerprox:SetDist(15, 30)
+	inst.components.playerprox:SetOnPlayerNear(onNear)
+	inst.components.playerprox:SetOnPlayerFar(onFar)
 
     return inst
 end
@@ -93,6 +171,8 @@ local function headFn()
         return inst
     end
 
+    -- 这个是头，别放错地方！
+
     inst:AddComponent("heavyobstaclephysics")
     inst.components.heavyobstaclephysics:SetRadius(PHYSICS_RADIUS)
 
@@ -112,6 +192,10 @@ local function headFn()
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
+
+    inst.persists = false
+
+    -- 这个是头，别放错地方！
 
     return inst
 end
