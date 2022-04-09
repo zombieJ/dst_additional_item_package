@@ -83,13 +83,15 @@ local function getFn(data)
 		end
 
 		if data.onAnimOver ~= nil then
-			-- 只会触发一次
-			local function callback()
-				inst:RemoveEventCallback("animover", callback)
-				data.onAnimOver(inst)
-			end
+			-- 只会触发一次，延迟一点以防止还需要读一些额外的数据
+			inst:DoTaskInTime(0.01, function()
+				local function callback()
+					inst:RemoveEventCallback("animover", callback)
+					data.onAnimOver(inst)
+				end
 
-			inst:ListenForEvent("animover", callback)
+				inst:ListenForEvent("animover", callback)
+			end)
 		end
 
 		if data.postFn ~= nil then
@@ -181,7 +183,9 @@ local list = {
 			end
 		end,
 		onAnimOver = function(inst)
-			inst:DoTaskInTime(12, function()
+			local duration = inst._aipDuration or 12 -- 允许被覆盖
+
+			inst:DoTaskInTime(duration, function()
 				ErodeAway(inst, 0.5)
 			end)
 		end,

@@ -47,7 +47,8 @@ local function onDoTargetAction(inst, doer, target)
 end
 
 local function onHit(inst, attacker, target)
-    aipReplacePrefab(inst, "aip_aura_poison")
+    local aura = aipReplacePrefab(inst, "aip_aura_poison")
+    aura._aipDuration = inst._aipDuration
 end
 
 ----------------------------------- 实体 -----------------------------------

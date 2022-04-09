@@ -38,16 +38,18 @@ local function doBrain(inst)
             end
 
             -- 没有玩家则跳过
-            local players = aipFindNearPlayers(inst, 6)
+            local players = aipFindNearPlayers(inst, 8)
             local player = aipRandomEnt(players)
             if player == nil then
                 return false
             end
 
-            inst.components.timer:StartTimer("aip_throw", 2.55)
+            inst.AnimState:PlayAnimation("throw")
+            inst.AnimState:PushAnimation("idle", true)
+            inst.components.timer:StartTimer("aip_throw", 1.55)
             local ball = aipSpawnPrefab(inst, "aip_oldone_plant_full")
             local x, y, z = player.Transform:GetWorldPosition()
-            ball.components.complexprojectile:SetLaunchOffset(Vector3(0, 5, 0))
+            ball.components.complexprojectile:SetLaunchOffset(Vector3(0, 6, 0))
             ball.components.complexprojectile:Launch(
                 Vector3(
                     x,
@@ -56,6 +58,7 @@ local function doBrain(inst)
                 ),
                 inst
             )
+            ball._aipDuration = 1.5 -- 和正常的比持续更短的时间
 
             return true
         end
@@ -106,7 +109,7 @@ local function fn()
 
     inst.AnimState:SetBank("aip_oldone_marble")
     inst.AnimState:SetBuild("aip_oldone_marble")
-    inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:PlayAnimation("idle", true)
 
     inst:AddTag("largecreature")
 
