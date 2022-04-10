@@ -55,5 +55,43 @@
                 </key>
             </timeline>
         </animation>
+        <animation id="2" name="launch" length="510">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="body" folder="0" file="0" abs_x="8.00277" abs_y="-0.607985" abs_pivot_x="0.49723" abs_pivot_y="0.107985" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="head" folder="0" file="1" abs_x="1.670646" abs_y="662.49249" abs_pivot_x="0.516854" abs_pivot_y="0.50751" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="300">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+                <key id="2" time="500">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="2" z_index="1"/>
+                </key>
+                <key id="3" time="501">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="body">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="8.00277" y="-0.607985" pivot_x="0.49723" pivot_y="0.107985" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="head">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="1.670646" y="662.49249" pivot_x="0.516854" pivot_y="0.50751" angle="0"/>
+                </key>
+                <key id="1" time="300" spin="0">
+                    <object folder="0" file="1" x="1.670646" y="601.49249" pivot_x="0.516854" pivot_y="0.50751" angle="0"/>
+                </key>
+                <key id="2" time="500" spin="0">
+                    <object folder="0" file="1" x="1.670646" y="2663.49249" pivot_x="0.516854" pivot_y="0.50751" angle="0"/>
+                </key>
+                <key id="3" time="501" spin="0">
+                    <object folder="0" file="1" x="1.670646" y="2663.49249" pivot_x="0.516854" pivot_y="0.50751" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
     </entity>
 </spriter_data>

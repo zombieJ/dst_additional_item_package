@@ -647,8 +647,8 @@ end
 
 ------------------------------------- 简易 AI -------------------------------------
 -- 纯时序 AI，返回 false 则继续执行下一个 Step
-function _G.aipQueue(...)
-	for i, fn in ipairs(arg) do
+function _G.aipQueue(tasks)
+	for i, fn in ipairs(tasks) do
 		-- 如果为 true 则不用再往下了
 		if fn() then
 			return

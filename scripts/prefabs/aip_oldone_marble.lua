@@ -1,3 +1,4 @@
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 local language = aipGetModConfig("language")
 
 -- local brain = require("brains/aip_oldone_marble_brain")
@@ -26,11 +27,53 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_MARBLE = LANG.DESC
 STRINGS.NAMES.AIP_OLDONE_MARBLE_HEAD = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_MARBLE_HEAD = LANG.DESC
 
+local PHYSICS_RADIUS = .45
+local PHYSICS_HEIGHT = 1
+
 --------------------------------- 雕塑 ---------------------------------
 -- 简易版 brain，不需要 Stage 配合
 local function doBrain(inst)
-    aipQueue(
-        -- 附近有玩家的时候投掷脓包
+    aipQueue({
+        ------------------------- 控制头攻击 -------------------------
+        function()
+            if inst._aipHead == nil then
+                return false
+            end
+
+            -- 按照目标位置开始爆炸
+            if inst._aipBombPos ~= nil and not inst.components.timer:TimerExists("aip_bomb") then
+                inst.components.timer:StartTimer("aip_bomb", 0.15)
+
+                local cx = inst._aipBombPos.x
+                local cy = inst._aipBombPos.y
+                local cz = inst._aipBombPos.z
+
+                local tgtPos = inst._aipHead:GetPosition()
+
+                local ptg = 0.8
+                local nPtg = 1 - ptg
+
+                local ox = cx * ptg + tgtPos.x * nPtg
+                local oy = cy * ptg + tgtPos.y * nPtg
+                local oz = cz * ptg + tgtPos.z * nPtg
+
+                aipSpawnPrefab(inst, "aip_shadow_wrapper", ox, oy, oz).DoShow()
+
+                inst._aipBombPos.x = ox
+                inst._aipBombPos.y = oy
+                inst._aipBombPos.z = oz
+
+                if aipDist(inst._aipBombPos, tgtPos) < 0.25 then
+                    inst._aipHead:Remove()
+                    inst._aipHead = nil
+                    inst.AnimState:PlayAnimation("idle", true)
+                end
+            end
+
+            return true
+        end,
+
+        ------------------- 附近有玩家的时候投掷脓包 -------------------
         function()
             -- CD 中则不执行其他操作了
             if inst.components.timer:TimerExists("aip_throw") then
@@ -38,7 +81,7 @@ local function doBrain(inst)
             end
 
             -- 没有玩家则跳过
-            local players = aipFindNearPlayers(inst, 8)
+            local players = aipFindNearPlayers(inst, 6)
             local player = aipRandomEnt(players)
             if player == nil then
                 return false
@@ -61,8 +104,69 @@ local function doBrain(inst)
             ball._aipDuration = 1.5 -- 和正常的比持续更短的时间
 
             return true
-        end
-    )
+        end,
+
+        ------------ 如果附近没有玩家，则找远一点的玩家用头怼 ------------
+        function()
+            local players = aipFindNearPlayers(inst, 30)
+            local player = aipRandomEnt(players)
+            if player == nil then
+                return false
+            end
+
+            inst.AnimState:PlayAnimation("launch", false)
+            inst._aipHead = aipSpawnPrefab(player, "aip_oldone_marble_head")
+            inst._aipBombPos = nil
+
+            local px, py, pz = player.Transform:GetWorldPosition()
+
+            -- 让大理石暂时可以移动，落地后则继续不能移动
+            inst._aipHead.Physics:SetMass(1)
+            inst._aipHead.Physics:SetCapsule(0, PHYSICS_HEIGHT)
+
+            inst._aipHead.Physics:Teleport(px + 0.1, 30, pz + 0.1)
+            inst._aipHead.Physics:SetMotorVel(0, -30, 0)
+
+            -- 延迟一会儿炸开
+            inst:DoTaskInTime(1, function()
+                local sinkhole = aipSpawnPrefab(inst._aipHead, "antlion_sinkhole", nil, 0)
+                sinkhole.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/ground_break")
+
+                -- 变成可以搬动的状态
+                inst._aipHead.Physics:Stop()
+                inst._aipHead.Physics:Teleport(px + 0.1, 0, pz + 0.1)
+                inst._aipHead.Physics:SetMass(0)
+                inst._aipHead.Physics:SetCapsule(PHYSICS_RADIUS, PHYSICS_HEIGHT)
+
+                -- 伤害附近的玩家
+                local ents = TheSim:FindEntities(
+                    px + 0.1, 0, pz + 0.1,
+                    2.5,
+                    { "_combat", "_health" },
+                    { "INLIMBO", "NOCLICK", "ghost", "flying" }
+                )
+
+                for i, v in ipairs(ents) do
+                    if v.components.combat ~= nil and v.components.health ~= nil and not v.components.health:IsDead() then
+                        v.components.combat:GetAttacked(inst, 50)
+                    end
+                end
+
+                -- 过一会儿开始暗触手去拿回头颅
+                inst:DoTaskInTime(1, function()
+                    local ix, iy, iz = inst.Transform:GetWorldPosition()
+                    -- inst._aipBombPos = inst:GetPosition()
+                    inst._aipHand = SpawnPrefab("shadowhand")
+                    inst._aipHand.Transform:SetPosition(ix, 0, iz)
+                    inst._aipHand:SetTargetFire(fire)
+
+                    -- 给手注入一些数据
+                    inst._aipHand.components.playerprox:SetDist(1.4, 1.4) -- 让玩家更难踩
+                    inst._aipHand:RemoveEventCallback("enterlight", inst._aipHand.dissipatefn)
+                end)
+            end)
+        end,
+    })
 end
 
 local function stopBrain(inst)
@@ -133,12 +237,18 @@ local function fn()
 	inst.components.playerprox:SetOnPlayerNear(onNear)
 	inst.components.playerprox:SetOnPlayerFar(onFar)
 
+    -- 生命
+    inst:AddComponent("health")
+    inst.components.health:SetMaxHealth(dev_mode and 100 or TUNING.STALKER_ATRIUM_HEALTH)
+	inst.components.health.nofadeout = true
+
+	inst:AddComponent("combat")
+    inst.components.combat.hiteffectsymbol = "body"
+
     return inst
 end
 
 --------------------------------- 头像 ---------------------------------
-local PHYSICS_RADIUS = .45
-
 local headAssets = {
     Asset("ANIM", "anim/aip_oldone_marble_head.zip"),
     Asset("ATLAS", "images/inventoryimages/aip_oldone_marble_head.xml"),
@@ -160,7 +270,8 @@ local function headFn()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
-    MakeHeavyObstaclePhysics(inst, PHYSICS_RADIUS)
+    MakeHeavyObstaclePhysics(inst, PHYSICS_RADIUS, PHYSICS_HEIGHT)
+    inst.Physics:CollidesWith(COLLISION.WORLD)
 
     inst.AnimState:SetBank("chesspiece")
     inst.AnimState:SetBuild("aip_oldone_marble_head")
