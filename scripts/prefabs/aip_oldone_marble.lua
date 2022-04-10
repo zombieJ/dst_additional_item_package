@@ -1,5 +1,6 @@
 local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 local language = aipGetModConfig("language")
+local createEffectVest = require("utils/aip_vest_util").createEffectVest
 
 -- local brain = require("brains/aip_oldone_marble_brain")
 
@@ -34,13 +35,17 @@ local PHYSICS_HEIGHT = 1
 -- 简易版 brain，不需要 Stage 配合
 local function doBrain(inst)
     aipQueue({
-        ---------------------------- 等待 ----------------------------
+        -------------------------- 转手角度 --------------------------
         function()
-            -- 头不在身边
             if inst._aipHead ~= nil then
+                if inst._aipHand ~= nil then
+                    inst._aipHand.arm:FacePoint(inst._aipHead:GetPosition())
+                end
                 return true
             end
-
+        end,
+        ---------------------------- 等待 ----------------------------
+        function()
             -- 播放特定动画
             if
                 inst.AnimState:IsCurrentAnimation("throw") or
@@ -96,8 +101,12 @@ local function doBrain(inst)
 
             inst.AnimState:PlayAnimation("launch", false)
             local head = aipSpawnPrefab(player, "aip_oldone_marble_head")
+            head.persists = false -- 不允许保存
             inst._aipHead = head
             inst._aipBombPos = nil
+
+            -- 马甲
+            inst._aipVest = aipSpawnPrefab(player, "aip_oldone_marble_vest")
 
             local px, py, pz = player.Transform:GetWorldPosition()
 
@@ -137,9 +146,9 @@ local function doBrain(inst)
                 inst:DoTaskInTime(1, function()
                     local ix, iy, iz = inst.Transform:GetWorldPosition()
                     local hand = SpawnPrefab("shadowhand")
-                    hand.components.locomotor.walkspeed = 0.5 -- 它走的很慢
+                    -- hand.components.locomotor.walkspeed = 0.5 -- 它走的很慢
                     hand.Transform:SetPosition(ix, 0, iz)
-                    hand:SetTargetFire(head)
+                    hand:SetTargetFire(inst._aipVest)
 
                     -- 给手注入一些数据
                     hand:RemoveComponent("playerprox") -- 不会被踩熄灭
@@ -151,10 +160,43 @@ local function doBrain(inst)
                         if data.action ~= nil then
                             if data.action.action == ACTIONS.EXTINGUISH then
                                 hand:DoTaskInTime(17 * FRAMES, function()
-                                    aipReplacePrefab(head, "aip_shadow_wrapper").DoShow()
-                                    inst._aipHead = nil
-                                    inst.AnimState:PlayAnimation("back")
-                                    inst.AnimState:PushAnimation("idle", true)
+                                    -- 无论如何地震波都会消失
+                                    ErodeAway(sinkhole)
+
+                                    -- 计算间距
+                                    local dist = aipDist(
+                                        inst._aipVest:GetPosition(),
+                                        inst._aipHead:GetPosition()
+                                    )
+
+                                    -- 如果没有被搬走，我们就移除头颅
+                                    if dist < 1 then
+                                        local owner = head.components.inventoryitem:GetGrandOwner()
+                                        if owner ~= nil then
+                                            owner.components.inventory:DropItem(head, true, true)
+                                        end
+
+                                        -- 播放一个特效
+                                        local headPos = head:GetPosition()
+                                        aipReplacePrefab(
+                                            inst._aipVest,
+                                            "aip_shadow_wrapper", headPos.x, headPos.y, headPos.z
+                                        ).DoShow()
+
+                                        head:Remove()
+                                        inst._aipHead = nil
+
+                                        -- 播放长回头颅的动画
+                                        inst.AnimState:PlayAnimation("back")
+                                        inst.AnimState:PushAnimation("idle", true)
+                                    else
+                                        -- 没有取回头颅，继续待机
+                                        head.persists = nil
+                                    end
+
+                                    -- 清理无用引用
+                                    inst._aipHand = nil
+                                    inst._aipVest = nil
                                 end)
                             end
                         end
@@ -214,6 +256,7 @@ local function fn()
     inst.AnimState:PlayAnimation("idle", true)
 
     inst:AddTag("largecreature")
+    inst:AddTag("hostile")
 
     inst.entity:SetPristine()
 
@@ -305,20 +348,44 @@ local function headFn()
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 
+    -- 这个是头，别放错地方！
+
+    return inst
+end
+
+
+--------------------------------- 马甲 ---------------------------------
+local function vestFn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddNetwork()
+
+    MakeSmallObstaclePhysics(inst, 0, 0)
+
+    inst:AddTag("NOCLICK")
+    inst:AddTag("fx")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
     -- 添加一个火，从而让手可以拿走它
     inst:AddComponent("burnable")
     inst:AddComponent("fueled")
     inst.components.fueled.maxfuel = TUNING.CAMPFIRE_FUEL_MAX
     inst.components.fueled.accepting = false
     inst.components.fueled:SetSections(4)
-    inst.components.fueled:InitializeFuelLevel(TUNING.CAMPFIRE_FUEL_START)
+    inst.components.fueled:InitializeFuelLevel(TUNING.CAMPFIRE_FUEL_MAX)
     inst.components.fueled:StopConsuming()
 
     inst.persists = false
 
-    -- 这个是头，别放错地方！
-
     return inst
 end
 
-return Prefab("aip_oldone_marble", fn, assets), Prefab("aip_oldone_marble_head", headFn, headAssets)
+return Prefab("aip_oldone_marble", fn, assets),
+    Prefab("aip_oldone_marble_head", headFn, headAssets),
+    Prefab("aip_oldone_marble_vest", vestFn, {})
