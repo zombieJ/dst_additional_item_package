@@ -34,43 +34,23 @@ local PHYSICS_HEIGHT = 1
 -- 简易版 brain，不需要 Stage 配合
 local function doBrain(inst)
     aipQueue({
-        ------------------------- 控制头攻击 -------------------------
+        ---------------------------- 等待 ----------------------------
         function()
-            if inst._aipHead == nil then
-                return false
+            -- 头不在身边
+            if inst._aipHead ~= nil then
+                return true
             end
 
-            -- 按照目标位置开始爆炸
-            if inst._aipBombPos ~= nil and not inst.components.timer:TimerExists("aip_bomb") then
-                inst.components.timer:StartTimer("aip_bomb", 0.15)
-
-                local cx = inst._aipBombPos.x
-                local cy = inst._aipBombPos.y
-                local cz = inst._aipBombPos.z
-
-                local tgtPos = inst._aipHead:GetPosition()
-
-                local ptg = 0.8
-                local nPtg = 1 - ptg
-
-                local ox = cx * ptg + tgtPos.x * nPtg
-                local oy = cy * ptg + tgtPos.y * nPtg
-                local oz = cz * ptg + tgtPos.z * nPtg
-
-                aipSpawnPrefab(inst, "aip_shadow_wrapper", ox, oy, oz).DoShow()
-
-                inst._aipBombPos.x = ox
-                inst._aipBombPos.y = oy
-                inst._aipBombPos.z = oz
-
-                if aipDist(inst._aipBombPos, tgtPos) < 0.25 then
-                    inst._aipHead:Remove()
-                    inst._aipHead = nil
-                    inst.AnimState:PlayAnimation("idle", true)
-                end
+            -- 播放特定动画
+            if
+                inst.AnimState:IsCurrentAnimation("throw") or
+                inst.AnimState:IsCurrentAnimation("launch") or
+                inst.AnimState:IsCurrentAnimation("back")
+            then
+                return true
             end
 
-            return true
+            return false
         end,
 
         ------------------- 附近有玩家的时候投掷脓包 -------------------
@@ -81,7 +61,7 @@ local function doBrain(inst)
             end
 
             -- 没有玩家则跳过
-            local players = aipFindNearPlayers(inst, 6)
+            local players = aipFindNearPlayers(inst, 8)
             local player = aipRandomEnt(players)
             if player == nil then
                 return false
@@ -115,28 +95,29 @@ local function doBrain(inst)
             end
 
             inst.AnimState:PlayAnimation("launch", false)
-            inst._aipHead = aipSpawnPrefab(player, "aip_oldone_marble_head")
+            local head = aipSpawnPrefab(player, "aip_oldone_marble_head")
+            inst._aipHead = head
             inst._aipBombPos = nil
 
             local px, py, pz = player.Transform:GetWorldPosition()
 
             -- 让大理石暂时可以移动，落地后则继续不能移动
-            inst._aipHead.Physics:SetMass(1)
-            inst._aipHead.Physics:SetCapsule(0, PHYSICS_HEIGHT)
+            head.Physics:SetMass(1)
+            head.Physics:SetCapsule(0, PHYSICS_HEIGHT)
 
-            inst._aipHead.Physics:Teleport(px + 0.1, 30, pz + 0.1)
-            inst._aipHead.Physics:SetMotorVel(0, -30, 0)
+            head.Physics:Teleport(px + 0.1, 30, pz + 0.1)
+            head.Physics:SetMotorVel(0, -30, 0)
 
             -- 延迟一会儿炸开
             inst:DoTaskInTime(1, function()
-                local sinkhole = aipSpawnPrefab(inst._aipHead, "antlion_sinkhole", nil, 0)
+                local sinkhole = aipSpawnPrefab(head, "antlion_sinkhole", nil, 0)
                 sinkhole.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/ground_break")
 
                 -- 变成可以搬动的状态
-                inst._aipHead.Physics:Stop()
-                inst._aipHead.Physics:Teleport(px + 0.1, 0, pz + 0.1)
-                inst._aipHead.Physics:SetMass(0)
-                inst._aipHead.Physics:SetCapsule(PHYSICS_RADIUS, PHYSICS_HEIGHT)
+                head.Physics:Stop()
+                head.Physics:Teleport(px + 0.1, 0, pz + 0.1)
+                head.Physics:SetMass(0)
+                head.Physics:SetCapsule(PHYSICS_RADIUS, PHYSICS_HEIGHT)
 
                 -- 伤害附近的玩家
                 local ents = TheSim:FindEntities(
@@ -155,14 +136,31 @@ local function doBrain(inst)
                 -- 过一会儿开始暗触手去拿回头颅
                 inst:DoTaskInTime(1, function()
                     local ix, iy, iz = inst.Transform:GetWorldPosition()
-                    -- inst._aipBombPos = inst:GetPosition()
-                    inst._aipHand = SpawnPrefab("shadowhand")
-                    inst._aipHand.Transform:SetPosition(ix, 0, iz)
-                    inst._aipHand:SetTargetFire(fire)
+                    local hand = SpawnPrefab("shadowhand")
+                    hand.components.locomotor.walkspeed = 0.5 -- 它走的很慢
+                    hand.Transform:SetPosition(ix, 0, iz)
+                    hand:SetTargetFire(head)
 
                     -- 给手注入一些数据
-                    inst._aipHand.components.playerprox:SetDist(1.4, 1.4) -- 让玩家更难踩
-                    inst._aipHand:RemoveEventCallback("enterlight", inst._aipHand.dissipatefn)
+                    hand:RemoveComponent("playerprox") -- 不会被踩熄灭
+                    hand:RemoveEventCallback("enterlight", hand.dissipatefn)
+                    hand:RemoveEventCallback("enterlight", hand.dissipatefn)
+
+                    -- 鬼手抓到后归位
+                    hand:ListenForEvent("startaction", function(_, data)
+                        if data.action ~= nil then
+                            if data.action.action == ACTIONS.EXTINGUISH then
+                                hand:DoTaskInTime(17 * FRAMES, function()
+                                    aipReplacePrefab(head, "aip_shadow_wrapper").DoShow()
+                                    inst._aipHead = nil
+                                    inst.AnimState:PlayAnimation("back")
+                                    inst.AnimState:PushAnimation("idle", true)
+                                end)
+                            end
+                        end
+                    end)
+
+                    inst._aipHand = hand
                 end)
             end)
         end,
@@ -306,6 +304,15 @@ local function headFn()
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
+
+    -- 添加一个火，从而让手可以拿走它
+    inst:AddComponent("burnable")
+    inst:AddComponent("fueled")
+    inst.components.fueled.maxfuel = TUNING.CAMPFIRE_FUEL_MAX
+    inst.components.fueled.accepting = false
+    inst.components.fueled:SetSections(4)
+    inst.components.fueled:InitializeFuelLevel(TUNING.CAMPFIRE_FUEL_START)
+    inst.components.fueled:StopConsuming()
 
     inst.persists = false
 
