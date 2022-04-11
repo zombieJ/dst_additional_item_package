@@ -111,7 +111,7 @@ local function doBrain(inst)
             local px, py, pz = player.Transform:GetWorldPosition()
 
             -- 让大理石暂时可以移动，落地后则继续不能移动
-            head.Physics:SetMass(1)
+            -- head.Physics:SetMass(1)
             head.Physics:SetCapsule(0, PHYSICS_HEIGHT)
 
             head.Physics:Teleport(px + 0.1, 30, pz + 0.1)
@@ -125,7 +125,7 @@ local function doBrain(inst)
                 -- 变成可以搬动的状态
                 head.Physics:Stop()
                 head.Physics:Teleport(px + 0.1, 0, pz + 0.1)
-                head.Physics:SetMass(0)
+                -- head.Physics:SetMass(0)
                 head.Physics:SetCapsule(PHYSICS_RADIUS, PHYSICS_HEIGHT)
 
                 -- 伤害附近的玩家
@@ -295,12 +295,93 @@ local headAssets = {
     Asset("ATLAS", "images/inventoryimages/aip_oldone_marble_head.xml"),
 }
 
+local function getBody(inst)
+    -- 找到自己的基座 Ents[GUID]
+    local body = Ents[inst._aipBodyGUID]
+    if body == nil then
+        body = aipFindEnt("aip_oldone_marble")
+
+        if body ~= nil then
+            inst._aipBodyGUID = body.GUID
+        end
+    end
+
+    return body
+end
+
+local function stopTryDrop(inst)
+    if inst._aipDropTask ~= nil then
+        inst._aipDropTask:Cancel()
+        inst._aipDropTask = nil
+    end
+end
+
+local function starTryDrop(inst)
+    stopTryDrop(inst)
+
+    local timeout = dev_mode and 3 or (6 + math.random() * 4)
+
+    inst._aipDropTask = inst:DoTaskInTime(timeout, function()
+        local body = getBody(inst)
+
+        if body ~= nil then
+            -- 如果手还在取回状态则重新等待
+            if body._aipHand ~= nil then
+                starTryDrop(inst)
+                return
+            end
+
+            -- 尝试掉落
+            local owner = inst.components.inventoryitem:GetGrandOwner()
+            if owner ~= nil then
+                owner.components.inventory:DropItem(inst, true, true)
+
+                -- 掉落还要攻击一下携带者
+                inst.AnimState:PlayAnimation("aipAttack")
+                inst.AnimState:PushAnimation("aipJump", true)
+
+                if owner.components.combat ~= nil then
+                    owner.components.combat:GetAttacked(body, 10)
+                end
+            end
+        end
+    end)
+end
+
+local function stopTryBack(inst)
+    if inst._aipBackTask ~= nil then
+        inst._aipBackTask:Cancel()
+        inst._aipBackTask = nil
+    end
+
+    inst.components.locomotor:Stop()
+    inst.components.locomotor:Clear()
+end
+
+local function startTryBack(inst)
+    stopTryBack(inst)
+
+    inst._aipBackTask = inst:DoPeriodicTask(1, function()
+        local body = getBody(inst)
+
+        if body ~= nil then
+            aipPrint("do back!!!")
+            local bodyPos = body:GetPosition()
+            inst.components.locomotor:GoToPoint(bodyPos)
+        end
+    end, 0.1)
+end
+
 local function onequip(inst, owner)
 	owner.AnimState:OverrideSymbol("swap_body", "aip_oldone_marble_head", "swap_body")
+    starTryDrop(inst)
+    stopTryBack(inst)
 end
 
 local function onunequip(inst, owner)
 	owner.AnimState:ClearOverrideSymbol("swap_body")
+    stopTryDrop(inst)
+    startTryBack(inst)
 end
 
 local function headFn()
@@ -311,12 +392,14 @@ local function headFn()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
-    MakeHeavyObstaclePhysics(inst, PHYSICS_RADIUS, PHYSICS_HEIGHT)
+    -- MakeHeavyObstaclePhysics(inst, PHYSICS_RADIUS, PHYSICS_HEIGHT)
+    -- MakeGiantCharacterPhysics(inst, 999, PHYSICS_RADIUS)
+    MakeCharacterPhysics(inst, 10, PHYSICS_RADIUS)
     inst.Physics:CollidesWith(COLLISION.WORLD)
 
     inst.AnimState:SetBank("chesspiece")
     inst.AnimState:SetBuild("aip_oldone_marble_head")
-    inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:PlayAnimation("aipJump", true)
 
     inst:AddTag("heavy")
 
@@ -344,6 +427,15 @@ local function headFn()
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
     inst.components.equippable.walkspeedmult = TUNING.HEAVY_SPEED_MULT
+
+    -- 也能自己回去
+    inst:AddComponent("locomotor")
+    inst.components.locomotor.walkspeed = 2
+    inst.components.locomotor.runspeed = 2
+    inst.components.locomotor.slowmultiplier = 1
+    inst.components.locomotor.fastmultiplier = 1
+	inst.components.locomotor:SetTriggersCreep(false)
+    inst.components.locomotor.pathcaps = { ignorecreep = true }
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
