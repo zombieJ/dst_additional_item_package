@@ -30,6 +30,8 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_MARBLE_HEAD = LANG.DESC
 
 local PHYSICS_RADIUS = .45
 local PHYSICS_HEIGHT = 1
+local PHYSICS_MASS = 10
+local HEAD_WALK_SPEED = 1
 
 --------------------------------- 雕塑 ---------------------------------
 -- 简易版 brain，不需要 Stage 配合
@@ -123,8 +125,9 @@ local function doBrain(inst)
                 sinkhole.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/ground_break")
 
                 -- 变成可以搬动的状态
-                head.Physics:Stop()
+                -- head.Physics:Stop()
                 head.Physics:Teleport(px + 0.1, 0, pz + 0.1)
+                head.Physics:SetMotorVel(0, 0, 0)
                 -- head.Physics:SetMass(0)
                 head.Physics:SetCapsule(PHYSICS_RADIUS, PHYSICS_HEIGHT)
 
@@ -161,7 +164,9 @@ local function doBrain(inst)
                             if data.action.action == ACTIONS.EXTINGUISH then
                                 hand:DoTaskInTime(17 * FRAMES, function()
                                     -- 无论如何地震波都会消失
-                                    ErodeAway(sinkhole)
+                                    if sinkhole ~= nil then
+                                        ErodeAway(sinkhole)
+                                    end
 
                                     -- 计算间距
                                     local dist = aipDist(
@@ -170,7 +175,7 @@ local function doBrain(inst)
                                     )
 
                                     -- 如果没有被搬走，我们就移除头颅
-                                    if dist < 1 then
+                                    if dist < 2 then
                                         local owner = head.components.inventoryitem:GetGrandOwner()
                                         if owner ~= nil then
                                             owner.components.inventory:DropItem(head, true, true)
@@ -361,15 +366,22 @@ end
 local function startTryBack(inst)
     stopTryBack(inst)
 
-    inst._aipBackTask = inst:DoPeriodicTask(1, function()
+    inst._aipBackTask = inst:DoPeriodicTask(2, function()
         local body = getBody(inst)
 
         if body ~= nil then
-            aipPrint("do back!!!")
-            local bodyPos = body:GetPosition()
-            inst.components.locomotor:GoToPoint(bodyPos)
+            inst.Physics:SetMass(PHYSICS_MASS)
+            inst.Physics:CollidesWith(COLLISION.WORLD)
+            inst.Physics:CollidesWith(COLLISION.OBSTACLES)
+            inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
+
+            if inst.Physics:GetMotorSpeed() <= 0 then
+                inst.Physics:SetMotorVel(HEAD_WALK_SPEED, 0, 0)
+            end
+
+            inst.components.locomotor:GoToPoint(body:GetPosition())
         end
-    end, 0.1)
+    end, 1)
 end
 
 local function onequip(inst, owner)
@@ -394,7 +406,7 @@ local function headFn()
 
     -- MakeHeavyObstaclePhysics(inst, PHYSICS_RADIUS, PHYSICS_HEIGHT)
     -- MakeGiantCharacterPhysics(inst, 999, PHYSICS_RADIUS)
-    MakeCharacterPhysics(inst, 10, PHYSICS_RADIUS)
+    MakeCharacterPhysics(inst, PHYSICS_MASS, PHYSICS_RADIUS)
     inst.Physics:CollidesWith(COLLISION.WORLD)
 
     inst.AnimState:SetBank("chesspiece")
@@ -430,8 +442,8 @@ local function headFn()
 
     -- 也能自己回去
     inst:AddComponent("locomotor")
-    inst.components.locomotor.walkspeed = 2
-    inst.components.locomotor.runspeed = 2
+    inst.components.locomotor.walkspeed = HEAD_WALK_SPEED
+    inst.components.locomotor.runspeed = HEAD_WALK_SPEED
     inst.components.locomotor.slowmultiplier = 1
     inst.components.locomotor.fastmultiplier = 1
 	inst.components.locomotor:SetTriggersCreep(false)

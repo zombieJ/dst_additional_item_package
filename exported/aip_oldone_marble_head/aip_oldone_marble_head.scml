@@ -20,15 +20,15 @@
         <file id="0" name="attacker/spike.png" width="300" height="300" pivot_x="0" pivot_y="1"/>
     </folder>
     <entity id="0" name="chesspiece">
-        <animation id="0" name="aipJump" length="1000">
+        <animation id="0" name="aipJump" length="600">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="idle" folder="0" file="1" abs_x="0.980533" abs_y="0.33" abs_pivot_x="0.5" abs_pivot_y="0.08" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
-                <key id="1" time="503">
+                <key id="1" time="301">
                     <object_ref id="0" timeline="0" key="1" z_index="0"/>
                 </key>
-                <key id="2" time="656">
+                <key id="2" time="393">
                     <object_ref id="0" timeline="0" key="2" z_index="0"/>
                 </key>
             </mainline>
@@ -36,10 +36,10 @@
                 <key id="0" spin="0">
                     <object folder="0" file="1" x="0.980533" y="0.33" angle="0"/>
                 </key>
-                <key id="1" time="503" spin="0">
+                <key id="1" time="301" spin="0">
                     <object folder="0" file="1" x="0.980533" y="-5.182716" angle="0" scale_x="1.142088" scale_y="0.876119"/>
                 </key>
-                <key id="2" time="656" spin="0">
+                <key id="2" time="393" spin="0">
                     <object folder="0" file="1" x="0.980533" y="48.970505" angle="0" scale_x="0.946272" scale_y="1.036865"/>
                 </key>
             </timeline>
@@ -47,7 +47,7 @@
         <animation id="1" name="aipAttack" length="500">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="spike" folder="1" file="0" abs_x="-1.414333" abs_y="108.571429" abs_pivot_x="0.485762" abs_pivot_y="0.5" abs_angle="360" abs_scale_x="0.581411" abs_scale_y="0.581411" abs_a="1" timeline="1" key="0" z_index="0"/>
+                    <object_ref id="0" name="spike" folder="1" file="0" abs_x="-1.414333" abs_y="108.571429" abs_pivot_x="0.485762" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.581411" abs_scale_y="0.581411" abs_a="1" timeline="1" key="0" z_index="0"/>
                     <object_ref id="1" name="idle" folder="0" file="1" abs_x="0.980533" abs_y="0.33" abs_pivot_x="0.5" abs_pivot_y="0.08" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1"/>
                 </key>
                 <key id="1" time="200">
@@ -72,13 +72,13 @@
             </timeline>
             <timeline id="1" name="spike">
                 <key id="0" spin="0">
-                    <object folder="1" file="0" x="-1.414333" y="108.571429" pivot_x="0.485762" pivot_y="0.5" scale_x="0.581411" scale_y="0.581411"/>
+                    <object folder="1" file="0" x="-1.414333" y="108.571429" pivot_x="0.485762" pivot_y="0.5" angle="0" scale_x="0.581411" scale_y="0.581411"/>
                 </key>
                 <key id="1" time="200" spin="0">
-                    <object folder="1" file="0" x="-1.414333" y="118.571429" pivot_x="0.485762" pivot_y="0.5" scale_x="1.25" scale_y="1.25"/>
+                    <object folder="1" file="0" x="-1.414333" y="118.571429" pivot_x="0.485762" pivot_y="0.5" angle="0" scale_x="1.25" scale_y="1.25"/>
                 </key>
                 <key id="2" time="500" spin="0">
-                    <object folder="1" file="0" x="-1.414333" y="108.571429" pivot_x="0.485762" pivot_y="0.5" scale_x="0.710633" scale_y="0.710633"/>
+                    <object folder="1" file="0" x="-1.414333" y="108.571429" pivot_x="0.485762" pivot_y="0.5" angle="0" scale_x="0.710633" scale_y="0.710633"/>
                 </key>
             </timeline>
         </animation>
