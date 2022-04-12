@@ -39,12 +39,11 @@ local function doBrain(inst)
     aipQueue({
         -------------------------- 转手角度 --------------------------
         function()
-            if inst._aipHead ~= nil then
-                if inst._aipHand ~= nil then
-                    inst._aipHand.arm:FacePoint(inst._aipHead:GetPosition())
-                end
-                return true
+            if inst._aipHead ~= nil and not inst._aipHead:IsValid() then
+                inst._aipHead = nil
             end
+
+            return inst._aipHead ~= nil
         end,
         ---------------------------- 等待 ----------------------------
         function()
@@ -52,6 +51,7 @@ local function doBrain(inst)
             if
                 inst.AnimState:IsCurrentAnimation("throw") or
                 inst.AnimState:IsCurrentAnimation("launch") or
+                inst.AnimState:IsCurrentAnimation("launchBack") or
                 inst.AnimState:IsCurrentAnimation("back")
             then
                 return true
@@ -261,7 +261,9 @@ local function fn()
     inst.AnimState:PlayAnimation("idle", true)
 
     inst:AddTag("largecreature")
+    inst:AddTag("monster")
     inst:AddTag("hostile")
+    inst:AddTag("aip_oldone")
 
     inst.entity:SetPristine()
 
@@ -363,6 +365,7 @@ local function stopTryBack(inst)
     inst.components.locomotor:Clear()
 end
 
+-- 尝试回到基处
 local function startTryBack(inst)
     stopTryBack(inst)
 
@@ -370,6 +373,26 @@ local function startTryBack(inst)
         local body = getBody(inst)
 
         if body ~= nil then
+            -- 如果手还在，则先不做事情
+            if body._aipHand ~= nil then
+                return
+            end
+
+
+            local bodyPos = body:GetPosition()
+
+            -- 如果已经到了附近就直接飞上去 aipJumpBack launchBack
+            if aipDist(inst:GetPosition(), bodyPos) < 5 then
+                inst.AnimState:PlayAnimation("aipJumpBack")
+                inst:ListenForEvent("animover", function()
+                    body.AnimState:PlayAnimation("launchBack")
+                    body.AnimState:PushAnimation("idle", true)
+                    inst:Remove()
+                end)
+                return
+            end
+
+            -- 继续往基座走
             inst.Physics:SetMass(PHYSICS_MASS)
             inst.Physics:CollidesWith(COLLISION.WORLD)
             inst.Physics:CollidesWith(COLLISION.OBSTACLES)
@@ -379,7 +402,7 @@ local function startTryBack(inst)
                 inst.Physics:SetMotorVel(HEAD_WALK_SPEED, 0, 0)
             end
 
-            inst.components.locomotor:GoToPoint(body:GetPosition())
+            inst.components.locomotor:GoToPoint(bodyPos)
         end
     end, 1)
 end
