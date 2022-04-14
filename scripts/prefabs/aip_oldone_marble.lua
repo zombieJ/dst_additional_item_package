@@ -33,7 +33,7 @@ local PHYSICS_HEIGHT = 1
 local PHYSICS_MASS = 10
 local HEAD_WALK_SPEED = 1
 
---------------------------------- 雕塑 ---------------------------------
+---------------------------------- AI ----------------------------------
 -- 简易版 brain，不需要 Stage 配合
 local function doBrain(inst)
     aipQueue({
@@ -238,7 +238,7 @@ local function onFar(inst)
     stopBrain(inst)
 end
 
----------------------------------- AI ----------------------------------
+--------------------------------- 雕塑 ---------------------------------
 local assets = {
     Asset("ANIM", "anim/aip_oldone_marble.zip"),
 }
@@ -275,11 +275,6 @@ local function fn()
 
     inst:AddComponent("inspectable")
 
-    -- 创造跟随的头部
-    inst:DoTaskInTime(3, function()
-        -- inst.AnimState:Hide("head")
-    end)
-
     inst:AddComponent("playerprox")
 	inst.components.playerprox:SetDist(15, 30)
 	inst.components.playerprox:SetOnPlayerNear(onNear)
@@ -292,6 +287,13 @@ local function fn()
 
 	inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "body"
+
+    -- 寻找头部，如果存在则跳转至无头状态
+    inst:DoTaskInTime(1, function()
+        local head = aipFindEnt("aip_oldone_marble_head")
+        inst._aipHead = head
+        inst.AnimState:PlayAnimation("launch", false)
+    end)
 
     return inst
 end
@@ -438,6 +440,8 @@ local function headFn()
 
     inst:AddTag("heavy")
 
+    MakeInventoryFloatable(inst, "med", nil, 0.65)
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -470,7 +474,7 @@ local function headFn()
     inst.components.locomotor.slowmultiplier = 1
     inst.components.locomotor.fastmultiplier = 1
 	inst.components.locomotor:SetTriggersCreep(false)
-    inst.components.locomotor.pathcaps = { ignorecreep = true }
+    inst.components.locomotor.pathcaps = { ignorecreep = true } -- , allowocean = true
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
