@@ -37,6 +37,10 @@ local HEAD_WALK_SPEED = 1
 -- 简易版 brain，不需要 Stage 配合
 local function doBrain(inst)
     aipQueue({
+        -------------------------- 尚未启动 --------------------------
+        function()
+            return inst._aipStart ~= true
+        end,
         -------------------------- 转手角度 --------------------------
         function()
             if inst._aipHead ~= nil and not inst._aipHead:IsValid() then
@@ -122,6 +126,7 @@ local function doBrain(inst)
             -- 延迟一会儿炸开
             inst:DoTaskInTime(1, function()
                 local sinkhole = aipSpawnPrefab(head, "antlion_sinkhole", nil, 0)
+                sinkhole.persists = false -- 重启时消失
                 sinkhole.SoundEmitter:PlaySound("dontstarve/creatures/together/antlion/sfx/ground_break")
 
                 -- 变成可以搬动的状态
@@ -196,7 +201,7 @@ local function doBrain(inst)
                                         inst.AnimState:PushAnimation("idle", true)
                                     else
                                         -- 没有取回头颅，继续待机
-                                        head.persists = nil
+                                        head.persists = true
                                     end
 
                                     -- 清理无用引用
@@ -291,8 +296,13 @@ local function fn()
     -- 寻找头部，如果存在则跳转至无头状态
     inst:DoTaskInTime(1, function()
         local head = aipFindEnt("aip_oldone_marble_head")
-        inst._aipHead = head
-        inst.AnimState:PlayAnimation("launch", false)
+
+        if head ~= nil then
+            inst._aipHead = head
+            inst.AnimState:PlayAnimation("launch", false)
+        end
+
+        inst._aipStart = true
     end)
 
     return inst
@@ -325,7 +335,7 @@ local function stopTryDrop(inst)
     end
 end
 
-local function starTryDrop(inst)
+local function startTryDrop(inst)
     stopTryDrop(inst)
 
     local timeout = dev_mode and 3 or (6 + math.random() * 4)
@@ -336,7 +346,7 @@ local function starTryDrop(inst)
         if body ~= nil then
             -- 如果手还在取回状态则重新等待
             if body._aipHand ~= nil then
-                starTryDrop(inst)
+                startTryDrop(inst)
                 return
             end
 
@@ -411,7 +421,7 @@ end
 
 local function onequip(inst, owner)
 	owner.AnimState:OverrideSymbol("swap_body", "aip_oldone_marble_head", "swap_body")
-    starTryDrop(inst)
+    startTryDrop(inst)
     stopTryBack(inst)
 end
 
@@ -419,6 +429,18 @@ local function onunequip(inst, owner)
 	owner.AnimState:ClearOverrideSymbol("swap_body")
     stopTryDrop(inst)
     startTryBack(inst)
+end
+
+local function onHeadLoad(inst)
+    inst:DoTaskInTime(1, function()
+        -- 检查是否被抱着，不是就开始回去
+        local owner = inst.components.inventoryitem:GetGrandOwner()
+        if owner == nil then
+            startTryBack(inst)
+        else
+            startTryDrop(inst)
+        end
+    end)
 end
 
 local function headFn()
@@ -480,6 +502,8 @@ local function headFn()
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 
     -- 这个是头，别放错地方！
+
+    inst.OnLoad = onHeadLoad
 
     return inst
 end
