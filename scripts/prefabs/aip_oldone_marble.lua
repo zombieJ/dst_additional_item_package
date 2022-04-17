@@ -269,6 +269,7 @@ local function fn()
     inst:AddTag("monster")
     inst:AddTag("hostile")
     inst:AddTag("aip_oldone")
+    inst:AddTag("aip_oldone_marble")
 
     inst.entity:SetPristine()
 

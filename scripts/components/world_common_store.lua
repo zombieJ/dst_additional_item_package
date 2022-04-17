@@ -179,6 +179,38 @@ function CommonStore:CreateSpiderden()
 	return spiderden
 end
 
+-- 创建 古神蛛巢，随机找一个触手怪
+function CommonStore:CreateMarble()
+	-- 只有地面可以有
+	if not TheWorld:HasTag("forest") then
+		return
+	end
+
+	-- 存在且没有坐标就跳过
+	local marble = TheSim:FindFirstEntityWithTag("aip_oldone_marble")
+	if marble ~= nil then
+		return marble
+	end
+
+	-- 如果没有雕像则在沼泽创造
+	if marble == nil then
+		for i = 1, 10 do
+			local reeds = aipFindRandomEnt("reeds")
+			local rx, ry, rz = reeds.Transform:GetWorldPosition()
+
+			if TheWorld.Map:GetTileAtPoint(rx, ry, rz) == GROUND.MARSH then
+				local tgtPT = aipGetSecretSpawnPoint(reeds:GetPosition(), 1, 10, 5)
+				if tgtPT ~= nil then
+					marble = aipSpawnPrefab(nil, "aip_oldone_marble", tgtPT.x, tgtPT.y, tgtPT.z)
+					break
+				end
+			end
+		end
+	end
+
+	return marble
+end
+
 function CommonStore:CreateSuWuMound(pos)
 	-- 存在且没有坐标就跳过
 	local ent = TheSim:FindFirstEntityWithTag("aip_suwu_mound")
@@ -242,6 +274,11 @@ function CommonStore:PostWorld()
 	------------------------- 创建古神蛛巢 -------------------------
 	self.inst:DoTaskInTime(7, function()
 		self:CreateSpiderden()
+	end)
+
+	------------------------- 创建沼泽雕塑 -------------------------
+	self.inst:DoTaskInTime(3, function()
+		self:CreateMarble()
 	end)
 
 	--------------------------- 开发模式 ---------------------------

@@ -49,8 +49,6 @@ local DIST_NEAR = 10
 local DIST_FAR = 20
 local TALK_DIFF = dev_mode and 8 or 15
 
-local marble = nil
-
 -- 玩家靠近
 local function onNear(inst, player)
 	inst.aip_player_time = inst.components.aipc_timer:Interval(1, function()
@@ -67,38 +65,12 @@ local function onNear(inst, player)
 				end
 			)
 
-			-- 清理一下大理石雕塑
-			if marble ~= nil and not marble:IsValid() then
-				marble = nil
-			end
-
-			-- 如果没有雕像则在沼泽创造
-			if #players > 0 then
-				marble = aipFindEnt("aip_oldone_marble")
-				if marble == nil then
-					for i = 1, 10 do
-						local reeds = aipFindRandomEnt("reeds")
-						local rx, ry, rz = reeds.Transform:GetWorldPosition()
-
-						if TheWorld.Map:GetTileAtPoint(rx, ry, rz) == GROUND.MARSH then
-							local tgtPT = aipGetSecretSpawnPoint(reeds:GetPosition(), 1, 10, 5)
-							if tgtPT ~= nil then
-								marble = aipSpawnPrefab(nil, "aip_oldone_marble", tgtPT.x, tgtPT.y, tgtPT.z)
-								break
-							end
-						end
-					end
-				end
-			end
-
 			-- 玩家说话
-			if marble ~= nil then
-				for i, player in ipairs(players) do
-					if player.components.talker ~= nil then
-						player.components.talker:Say(
-							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_ROCK_HEAD
-						)
-					end
+			for i, player in ipairs(players) do
+				if player.components.talker ~= nil then
+					player.components.talker:Say(
+						STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_ROCK_HEAD
+					)
 				end
 			end
 
