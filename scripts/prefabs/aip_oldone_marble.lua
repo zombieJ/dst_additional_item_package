@@ -34,12 +34,23 @@ local PHYSICS_MASS = 10
 local HEAD_WALK_SPEED = 1
 
 ---------------------------------- AI ----------------------------------
+local function IsDead(inst)
+    return inst.components.health ~= nil and inst.components.health:IsDead()
+end
+
 -- 简易版 brain，不需要 Stage 配合
 local function doBrain(inst)
     aipQueue({
         -------------------------- 尚未启动 --------------------------
         function()
             return inst._aipStart ~= true
+        end,
+        -------------------------- 已经死亡 --------------------------
+        function()
+            if IsDead(inst) then
+                return true
+            end
+            return false
         end,
         -------------------------- 转手角度 --------------------------
         function()
@@ -145,7 +156,7 @@ local function doBrain(inst)
                 )
 
                 for i, v in ipairs(ents) do
-                    if v.components.combat ~= nil and v.components.health ~= nil and not v.components.health:IsDead() then
+                    if v.components.combat ~= nil and not IsDead(v) then
                         v.components.combat:GetAttacked(inst, 50)
                     end
                 end
@@ -180,7 +191,7 @@ local function doBrain(inst)
                                     )
 
                                     -- 如果没有被搬走，我们就移除头颅
-                                    if dist < 2 then
+                                    if dist < 2 and not IsDead(inst) then
                                         local owner = head.components.inventoryitem:GetGrandOwner()
                                         if owner ~= nil then
                                             owner.components.inventory:DropItem(head, true, true)
@@ -248,8 +259,15 @@ local assets = {
     Asset("ANIM", "anim/aip_oldone_marble.zip"),
 }
 
-local function onremovebody(body)
-    body._aipBody._aipHead = nil
+local function onDeath(inst)
+    aipSpawnPrefab(inst, "aip_shadow_wrapper").DoShow(2)
+    inst.AnimState:PlayAnimation("broken", false)
+    inst.components.lootdropper:DropLoot()
+
+    if inst._aipHead == nil then
+        inst.components.lootdropper:SpawnLootPrefab("aip_oldone_marble_head")
+    end
+    inst._aipHead = nil
 end
 
 local function fn()
@@ -286,21 +304,29 @@ local function fn()
 	inst.components.playerprox:SetOnPlayerNear(onNear)
 	inst.components.playerprox:SetOnPlayerFar(onFar)
 
+    inst:AddComponent("lootdropper")
+    inst.components.lootdropper:SetLoot({"marble","marble","marble"})
+
     -- 生命
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(dev_mode and 100 or TUNING.STALKER_ATRIUM_HEALTH)
 	inst.components.health.nofadeout = true
+    inst:ListenForEvent("death", onDeath)
 
 	inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "body"
 
     -- 寻找头部，如果存在则跳转至无头状态
     inst:DoTaskInTime(1, function()
-        local head = aipFindEnt("aip_oldone_marble_head")
+        if IsDead(inst) then
+            inst.AnimState:PlayAnimation("broken", false) -- 死了就不用管了
+        else
+            local head = aipFindEnt("aip_oldone_marble_head")
 
-        if head ~= nil then
-            inst._aipHead = head
-            inst.AnimState:PlayAnimation("launch", false)
+            if head ~= nil then
+                inst._aipHead = head
+                inst.AnimState:PlayAnimation("launch", false)
+            end
         end
 
         inst._aipStart = true
@@ -344,7 +370,7 @@ local function startTryDrop(inst)
     inst._aipDropTask = inst:DoTaskInTime(timeout, function()
         local body = getBody(inst)
 
-        if body ~= nil then
+        if body ~= nil and not IsDead(body) then
             -- 如果手还在取回状态则重新等待
             if body._aipHand ~= nil then
                 startTryDrop(inst)
@@ -385,7 +411,7 @@ local function startTryBack(inst)
     inst._aipBackTask = inst:DoPeriodicTask(2, function()
         local body = getBody(inst)
 
-        if body ~= nil then
+        if body ~= nil and not IsDead(body) then
             -- 如果手还在，则先不做事情
             if body._aipHand ~= nil then
                 return
