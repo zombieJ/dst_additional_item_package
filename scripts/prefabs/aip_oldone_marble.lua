@@ -2,21 +2,15 @@ local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 local language = aipGetModConfig("language")
 local createEffectVest = require("utils/aip_vest_util").createEffectVest
 
--- local brain = require("brains/aip_oldone_marble_brain")
-
 -- 文字描述
 local LANG_MAP = {
 	english = {
 		NAME = "Defaced Statue",
 		DESC = "It has a heavy head",
-        HEAD_NAME = "Head Part",
-        HEAD_DESC = "This is the main part",
 	},
 	chinese = {
 		NAME = "污损的雕像",
 		DESC = "它的头似乎很沉重",
-        HEAD_NAME = "头颅部件",
-        HEAD_DESC = "这是它的本体",
 	},
 }
 
@@ -24,14 +18,6 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 STRINGS.NAMES.AIP_OLDONE_MARBLE = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_MARBLE = LANG.DESC
-
-STRINGS.NAMES.AIP_OLDONE_MARBLE_HEAD = LANG.NAME
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_MARBLE_HEAD = LANG.DESC
-
-local PHYSICS_RADIUS = .45
-local PHYSICS_HEIGHT = 1
-local PHYSICS_MASS = 10
-local HEAD_WALK_SPEED = 1
 
 ---------------------------------- AI ----------------------------------
 local function IsDead(inst)
@@ -129,7 +115,7 @@ local function doBrain(inst)
 
             -- 让大理石暂时可以移动，落地后则继续不能移动
             -- head.Physics:SetMass(1)
-            head.Physics:SetCapsule(0, PHYSICS_HEIGHT)
+            head.Physics:SetCapsule(0, 1)
 
             head.Physics:Teleport(px + 0.1, 30, pz + 0.1)
             head.Physics:SetMotorVel(0, -30, 0)
@@ -143,9 +129,7 @@ local function doBrain(inst)
                 -- 变成可以搬动的状态
                 -- head.Physics:Stop()
                 head.Physics:Teleport(px + 0.1, 0, pz + 0.1)
-                head.Physics:SetMotorVel(0, 0, 0)
-                -- head.Physics:SetMass(0)
-                head.Physics:SetCapsule(PHYSICS_RADIUS, PHYSICS_HEIGHT)
+                head.resetHeadPhysics(head)
 
                 -- 伤害附近的玩家
                 local ents = TheSim:FindEntities(
@@ -262,12 +246,17 @@ local assets = {
 local function onDeath(inst)
     aipSpawnPrefab(inst, "aip_shadow_wrapper").DoShow(2)
     inst.AnimState:PlayAnimation("broken", false)
-    inst.components.lootdropper:DropLoot()
 
-    if inst._aipHead == nil then
-        inst.components.lootdropper:SpawnLootPrefab("aip_oldone_marble_head")
-    end
-    inst._aipHead = nil
+    inst:DoTaskInTime(0.1, function()
+        if inst._aipHead == nil then
+            local head = aipFindEnt("aip_oldone_marble_head")
+            if head == nil then
+                inst.components.lootdropper:DropLoot()
+                inst.components.lootdropper:SpawnLootPrefab("aip_oldone_marble_head")
+            end
+        end
+        inst._aipHead = nil
+    end)
 end
 
 local function fn()
@@ -277,7 +266,7 @@ local function fn()
     inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
-    MakeObstaclePhysics(inst, 1.5)
+    MakeObstaclePhysics(inst, 1.2)
 
     inst.AnimState:SetBank("aip_oldone_marble")
     inst.AnimState:SetBuild("aip_oldone_marble")
@@ -335,207 +324,6 @@ local function fn()
     return inst
 end
 
---------------------------------- 头像 ---------------------------------
-local headAssets = {
-    Asset("ANIM", "anim/aip_oldone_marble_head.zip"),
-    Asset("ATLAS", "images/inventoryimages/aip_oldone_marble_head.xml"),
-}
-
-local function getBody(inst)
-    -- 找到自己的基座 Ents[GUID]
-    local body = Ents[inst._aipBodyGUID]
-    if body == nil then
-        body = aipFindEnt("aip_oldone_marble")
-
-        if body ~= nil then
-            inst._aipBodyGUID = body.GUID
-        end
-    end
-
-    return body
-end
-
-local function stopTryDrop(inst)
-    if inst._aipDropTask ~= nil then
-        inst._aipDropTask:Cancel()
-        inst._aipDropTask = nil
-    end
-end
-
-local function startTryDrop(inst)
-    stopTryDrop(inst)
-
-    local timeout = dev_mode and 3 or (6 + math.random() * 4)
-
-    inst._aipDropTask = inst:DoTaskInTime(timeout, function()
-        local body = getBody(inst)
-
-        if body ~= nil and not IsDead(body) then
-            -- 如果手还在取回状态则重新等待
-            if body._aipHand ~= nil then
-                startTryDrop(inst)
-                return
-            end
-
-            -- 尝试掉落
-            local owner = inst.components.inventoryitem:GetGrandOwner()
-            if owner ~= nil then
-                owner.components.inventory:DropItem(inst, true, true)
-
-                -- 掉落还要攻击一下携带者
-                inst.AnimState:PlayAnimation("aipAttack")
-                inst.AnimState:PushAnimation("aipJump", true)
-
-                if owner.components.combat ~= nil then
-                    owner.components.combat:GetAttacked(body, 10)
-                end
-            end
-        end
-    end)
-end
-
-local function stopTryBack(inst)
-    if inst._aipBackTask ~= nil then
-        inst._aipBackTask:Cancel()
-        inst._aipBackTask = nil
-    end
-
-    inst.components.locomotor:Stop()
-    inst.components.locomotor:Clear()
-end
-
--- 尝试回到基处
-local function startTryBack(inst)
-    stopTryBack(inst)
-
-    inst._aipBackTask = inst:DoPeriodicTask(2, function()
-        local body = getBody(inst)
-
-        if body ~= nil and not IsDead(body) then
-            -- 如果手还在，则先不做事情
-            if body._aipHand ~= nil then
-                return
-            end
-
-
-            local bodyPos = body:GetPosition()
-
-            -- 如果已经到了附近就直接飞上去 aipJumpBack launchBack
-            if aipDist(inst:GetPosition(), bodyPos) < 5 then
-                inst.AnimState:PlayAnimation("aipJumpBack")
-                inst:ListenForEvent("animover", function()
-                    body.AnimState:PlayAnimation("launchBack")
-                    body.AnimState:PushAnimation("idle", true)
-                    inst:Remove()
-                end)
-                return
-            end
-
-            -- 继续往基座走
-            inst.Physics:SetMass(PHYSICS_MASS)
-            inst.Physics:CollidesWith(COLLISION.WORLD)
-            inst.Physics:CollidesWith(COLLISION.OBSTACLES)
-            inst.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
-
-            if inst.Physics:GetMotorSpeed() <= 0 then
-                inst.Physics:SetMotorVel(HEAD_WALK_SPEED, 0, 0)
-            end
-
-            inst.components.locomotor:GoToPoint(bodyPos)
-        end
-    end, 1)
-end
-
-local function onequip(inst, owner)
-	owner.AnimState:OverrideSymbol("swap_body", "aip_oldone_marble_head", "swap_body")
-    startTryDrop(inst)
-    stopTryBack(inst)
-end
-
-local function onunequip(inst, owner)
-	owner.AnimState:ClearOverrideSymbol("swap_body")
-    stopTryDrop(inst)
-    startTryBack(inst)
-end
-
-local function onHeadLoad(inst)
-    inst:DoTaskInTime(1, function()
-        -- 检查是否被抱着，不是就开始回去
-        local owner = inst.components.inventoryitem:GetGrandOwner()
-        if owner == nil then
-            startTryBack(inst)
-        else
-            startTryDrop(inst)
-        end
-    end)
-end
-
-local function headFn()
-    local inst = CreateEntity()
-
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddSoundEmitter()
-    inst.entity:AddNetwork()
-
-    -- MakeHeavyObstaclePhysics(inst, PHYSICS_RADIUS, PHYSICS_HEIGHT)
-    -- MakeGiantCharacterPhysics(inst, 999, PHYSICS_RADIUS)
-    MakeCharacterPhysics(inst, PHYSICS_MASS, PHYSICS_RADIUS)
-    inst.Physics:CollidesWith(COLLISION.WORLD)
-
-    inst.AnimState:SetBank("chesspiece")
-    inst.AnimState:SetBuild("aip_oldone_marble_head")
-    inst.AnimState:PlayAnimation("aipJump", true)
-
-    inst:AddTag("heavy")
-
-    MakeInventoryFloatable(inst, "med", nil, 0.65)
-
-    inst.entity:SetPristine()
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
-    -- 这个是头，别放错地方！
-
-    inst:AddComponent("heavyobstaclephysics")
-    inst.components.heavyobstaclephysics:SetRadius(PHYSICS_RADIUS)
-
-    inst:AddComponent("inspectable")
-
-    inst:AddComponent("lootdropper")
-
-    inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem.cangoincontainer = false
-    inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_oldone_marble_head.xml"
-
-    inst:AddComponent("equippable")
-    inst.components.equippable.equipslot = EQUIPSLOTS.BODY
-    inst.components.equippable:SetOnEquip(onequip)
-    inst.components.equippable:SetOnUnequip(onunequip)
-    inst.components.equippable.walkspeedmult = TUNING.HEAVY_SPEED_MULT
-
-    -- 也能自己回去
-    inst:AddComponent("locomotor")
-    inst.components.locomotor.walkspeed = HEAD_WALK_SPEED
-    inst.components.locomotor.runspeed = HEAD_WALK_SPEED
-    inst.components.locomotor.slowmultiplier = 1
-    inst.components.locomotor.fastmultiplier = 1
-	inst.components.locomotor:SetTriggersCreep(false)
-    inst.components.locomotor.pathcaps = { ignorecreep = true } -- , allowocean = true
-
-    inst:AddComponent("hauntable")
-    inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
-
-    -- 这个是头，别放错地方！
-
-    inst.OnLoad = onHeadLoad
-
-    return inst
-end
-
-
 --------------------------------- 马甲 ---------------------------------
 local function vestFn()
     local inst = CreateEntity()
@@ -569,5 +357,4 @@ local function vestFn()
 end
 
 return Prefab("aip_oldone_marble", fn, assets),
-    Prefab("aip_oldone_marble_head", headFn, headAssets),
     Prefab("aip_oldone_marble_vest", vestFn, {})

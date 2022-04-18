@@ -246,6 +246,8 @@ function CommonStore:PostWorld()
 				local tgt = aipGetSecretSpawnPoint(fissurePT, 0, 50, 5)
 				if tgt ~= nil then
 					aipSpawnPrefab(nil, "aip_dou_totem_broken", tgt.x, tgt.y, tgt.z)
+				else
+					aipPrint("月岛图腾创建失败！")
 				end
 
 			else
@@ -255,7 +257,11 @@ function CommonStore:PostWorld()
 					local tgt = aipGetSecretSpawnPoint(targetPrefab:GetPosition(), 0, 50, 5)
 					if tgt ~= nil then
 						aipSpawnPrefab(nil, "aip_dou_totem_broken", tgt.x, tgt.y, tgt.z)
+					else
+						aipPrint("洞穴图腾创建失败！")
 					end
+				else
+					aipPrint("兜底图腾创建失败！")
 				end
 			end
 		end

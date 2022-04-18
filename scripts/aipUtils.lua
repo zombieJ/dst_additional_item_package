@@ -407,6 +407,9 @@ function _G.isNaturalPoint(pt)
 		[GROUND.GRASS] = true,
 		[GROUND.FOREST] = true,
 		[GROUND.MARSH] = true,
+
+		-- 月岛
+		[GROUND.METEOR] = true,
 	
 		-- CAVES
 		[GROUND.CAVE] = true,
@@ -455,7 +458,7 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
 	end
 
 	if tgtPT == nil then
-		tgtPT = aipGetSpawnPoint(pt, minDistance)
+		tgtPT = _G.aipGetSpawnPoint(pt, minDistance)
 
 		-- 如果不是自然地皮就跳过
 		tgtPT = _G.isNaturalPoint(tgtPT)
