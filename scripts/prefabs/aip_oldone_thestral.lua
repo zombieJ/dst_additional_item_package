@@ -17,12 +17,14 @@ local LANG_MAP = {
 		DESC = "Hmmm, strange...",
 		SNAKE = "Si si si...",
 		ROCK_HEAD = "'Bring the marble skull to me'",
+		ROCK_HEAD_LOCK = "'No More Annoying hahaha'",
 	},
 	chinese = {
 		NAME = "袜子蛇",
 		DESC = "千人千面！",
 		SNAKE = "嘶嘶嘶...",
 		ROCK_HEAD = "“把大理石头骨带给我”",
+		ROCK_HEAD_LOCK = "“聒噪的家伙终于安静了”",
 	},
 }
 
@@ -33,6 +35,7 @@ STRINGS.NAMES.AIP_OLDONE_THESTRAL = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_SNAKE = LANG.SNAKE
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_ROCK_HEAD = LANG.ROCK_HEAD
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_ROCK_HEAD_LOCK = LANG.ROCK_HEAD_LOCK
 
 local sounds = {
 	attack = "dontstarve/sanity/creature2/attack",
@@ -47,44 +50,63 @@ local sounds = {
 -------------------------------- 事件 --------------------------------
 local DIST_NEAR = 10
 local DIST_FAR = 20
-local TALK_DIFF = dev_mode and 8 or 15
+local TALK_DIFF = dev_mode and 3 or 15
 
 -- 玩家靠近
 local function onNear(inst, player)
-	inst.aip_player_time = inst.components.aipc_timer:Interval(1, function()
-		local now = GetTime()
+	inst.components.aipc_timer:NamedInterval("PlayerNear", 1, function()
+		-- 检测附近有没有头像，有就吃掉它
+		local x, y, z = inst.Transform:GetWorldPosition()
+		local heads = TheSim:FindEntities(x, y, z, 5, { "aip_oldone_marble_head" })
 
-		if now - inst.aip_talk_time >= TALK_DIFF then
-			inst.aip_talk_time = now
-
-			-- 找到可以看到真身的玩家们
-			local players = aipFilterTable(
-				aipFindNearPlayers(inst, DIST_NEAR),
-				function(player)
-					return aipHasBuffer(player, "aip_see_eyes")
+		if #heads > 0 then
+			for i, head in ipairs(heads) do
+				if not head:HasTag("aipHeadLock") then
+					-- TODO: 让头颅被捆绑
 				end
-			)
+			end
+		end
+
+		-- 和身边的玩家说话
+		if inst.components.timer:TimerExists("aip_talk") then
+			return
+		end
+
+		inst.components.timer:StartTimer("aip_talk", TALK_DIFF)
+
+		-- 找到可以看到真身的玩家们
+		local players = aipFilterTable(
+			aipFindNearPlayers(inst, DIST_NEAR),
+			function(player)
+				return aipHasBuffer(player, "aip_see_eyes")
+			end
+		)
+
+		if #players > 0 then
+			local head = aipFindEnt("aip_oldone_marble_head")
 
 			-- 玩家说话
 			for i, player in ipairs(players) do
 				if player.components.talker ~= nil then
 					player.components.talker:Say(
-						STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_ROCK_HEAD
+						(head and head:HasTag("aipHeadLock"))
+						and STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_ROCK_HEAD_LOCK
+						or STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_ROCK_HEAD
 					)
 				end
 			end
-
-			-- 蛇蛇说话
-			inst.components.talker:Say(
-				STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_SNAKE
-			)
 		end
+
+		-- 蛇蛇说话
+		inst.components.talker:Say(
+			STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_SNAKE
+		)
 	end)
 end
 
 -- 玩家远离
 local function onFar(inst)
-	inst.components.aipc_timer:Kill(inst.aip_player_time)
+	inst.components.aipc_timer:KillName("PlayerNear")
 end
 -------------------------------- 实例 --------------------------------
 local function fn()
@@ -127,6 +149,8 @@ local function fn()
 		return inst
 	end
 
+	inst:AddComponent("timer")
+
 	inst:AddComponent("inspectable")
 
 	inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
@@ -155,8 +179,6 @@ local function fn()
 
 	inst:AddComponent("lootdropper")
 	inst.components.lootdropper:AddChanceLoot("aip_dou_tooth", 1)
-
-	inst.aip_talk_time = -999
 
 	return inst
 end

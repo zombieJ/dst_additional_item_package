@@ -26,16 +26,15 @@ local PHYSICS_HEIGHT = 1
 local PHYSICS_MASS = 10
 local HEAD_WALK_SPEED = 1
 
----------------------------------- AI ----------------------------------
-local function IsDead(inst)
-    return inst.components.health ~= nil and inst.components.health:IsDead()
-end
-
---------------------------------- 头像 ---------------------------------
 local headAssets = {
     Asset("ANIM", "anim/aip_oldone_marble_head.zip"),
     Asset("ATLAS", "images/inventoryimages/aip_oldone_marble_head.xml"),
 }
+
+--------------------------------- 方法 ---------------------------------
+local function IsDead(inst)
+    return inst.components.health ~= nil and inst.components.health:IsDead()
+end
 
 local function resetHeadPhysics(inst)
     inst.Physics:SetMotorVel(0, 0, 0)
@@ -166,6 +165,9 @@ local function onunequip(inst, owner)
     startTryBack(inst)
 end
 
+local function onHeadSave(inst, data)
+end
+
 local function onHeadLoad(inst)
     inst:DoTaskInTime(1, function()
         -- 检查是否被抱着，不是就开始回去
@@ -177,6 +179,8 @@ local function onHeadLoad(inst)
         end
     end)
 end
+
+--------------------------------- 头像 ---------------------------------
 
 local function headFn()
     local inst = CreateEntity()
@@ -196,6 +200,7 @@ local function headFn()
     inst.AnimState:PlayAnimation("aipJump", true)
 
     inst:AddTag("heavy")
+    inst:AddTag("aip_oldone_marble_head")
 
     MakeInventoryFloatable(inst, "med", nil, 0.65)
 
@@ -239,6 +244,7 @@ local function headFn()
     -- 这个是头，别放错地方！
 
     inst.OnLoad = onHeadLoad
+    inst.OnSave = onHeadSave
 
     return inst
 end
