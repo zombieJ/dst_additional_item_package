@@ -119,6 +119,7 @@ PrefabFiles = {
 	"aip_oldone_thestral",
 	"aip_oldone_marble",
 	"aip_oldone_marble_head",
+	"aip_oldone_marble_head_lock",
 
 	-- Orbit
 	"aip_orbit",

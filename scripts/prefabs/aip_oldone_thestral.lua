@@ -61,13 +61,8 @@ local function onNear(inst, player)
 
 		if #heads > 0 then
 			for i, head in ipairs(heads) do
-				if not head:HasTag("aipHeadLock") then
-					head:AddTag("aipHeadLock") --  aipCollect
-					aipSpawnPrefab(head, "aip_shadow_wrapper").DoShow()
-
-					-- 刷新状态
-					head.aipRefreshStatus(head)
-				end
+				aipSpawnPrefab(head, "aip_shadow_wrapper").DoShow()
+				aipReplacePrefab(head, "aip_oldone_marble_head_lock")
 			end
 		end
 
@@ -87,13 +82,13 @@ local function onNear(inst, player)
 		)
 
 		if #players > 0 then
-			local head = aipFindEnt("aip_oldone_marble_head")
+			local head = aipFindEnt("aip_oldone_marble_head_lock")
 
 			-- 玩家说话
 			for i, player in ipairs(players) do
 				if player.components.talker ~= nil then
 					player.components.talker:Say(
-						(head and head:HasTag("aipHeadLock"))
+						head
 						and STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_ROCK_HEAD_LOCK
 						or STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_ROCK_HEAD
 					)

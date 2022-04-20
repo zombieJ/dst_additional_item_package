@@ -24,6 +24,10 @@ local function IsDead(inst)
     return inst.components.health ~= nil and inst.components.health:IsDead()
 end
 
+local function findHead()
+    return aipFindEnt("aip_oldone_marble_head", "aip_oldone_marble_head_lock")
+end
+
 -- 简易版 brain，不需要 Stage 配合
 local function doBrain(inst)
     aipQueue({
@@ -249,7 +253,7 @@ local function onDeath(inst)
 
     inst:DoTaskInTime(0.1, function()
         if inst._aipHead == nil then
-            local head = aipFindEnt("aip_oldone_marble_head")
+            local head = findHead()
             if head == nil then
                 inst.components.lootdropper:DropLoot()
                 inst.components.lootdropper:SpawnLootPrefab("aip_oldone_marble_head")
@@ -310,7 +314,7 @@ local function fn()
         if IsDead(inst) then
             inst.AnimState:PlayAnimation("broken", false) -- 死了就不用管了
         else
-            local head = aipFindEnt("aip_oldone_marble_head")
+            local head = findHead()
 
             if head ~= nil then
                 inst._aipHead = head
