@@ -31,7 +31,12 @@ local headAssets = {
     Asset("ATLAS", "images/inventoryimages/aip_oldone_marble_head.xml"),
 }
 
---------------------------------- 方法 ---------------------------------
+--------------------------------- 束缚 ---------------------------------
+local function IsLocked(inst)
+    return inst:HasTag("aipHeadLock")
+end
+
+--------------------------------- 战斗 ---------------------------------
 local function IsDead(inst)
     return inst.components.health ~= nil and inst.components.health:IsDead()
 end
@@ -65,6 +70,10 @@ end
 
 local function startTryDrop(inst)
     stopTryDrop(inst)
+
+    if IsLocked(inst) then -- 被束缚的头颅不用做事情
+        return
+    end
 
     local timeout = dev_mode and 3 or (6 + math.random() * 4)
 
@@ -108,6 +117,10 @@ end
 -- 尝试回到基处
 local function startTryBack(inst)
     stopTryBack(inst)
+
+    if IsLocked(inst) then -- 被束缚的头颅不用做事情
+        return
+    end
 
     inst._aipBackTask = inst:DoPeriodicTask(2, function()
         local body = getBody(inst)
@@ -165,18 +178,37 @@ local function onunequip(inst, owner)
     startTryBack(inst)
 end
 
+--------------------------------- 收集 ---------------------------------
+-- 更新状态
+local function refreshStatus(inst)
+    if IsLocked(inst) then
+        -- 锁定就变成不能动的状态
+        stopTryDrop(inst)
+        stopTryBack(inst)
+
+        inst.AnimState:PlayAnimation("aipStruggle", true)
+    else
+        -- 检查是否被抱着，不是就开始回去
+        local owner = inst.components.inventoryitem:GetGrandOwner()
+        if owner == nil then
+            stopTryDrop(inst)
+            startTryBack(inst)
+        else
+            stopTryBack(inst)
+            startTryDrop(inst)
+        end
+
+        inst.AnimState:PlayAnimation("aipJump", true)
+    end
+end
+
+--------------------------------- 存储 ---------------------------------
 local function onHeadSave(inst, data)
 end
 
 local function onHeadLoad(inst)
     inst:DoTaskInTime(1, function()
-        -- 检查是否被抱着，不是就开始回去
-        local owner = inst.components.inventoryitem:GetGrandOwner()
-        if owner == nil then
-            startTryBack(inst)
-        else
-            startTryDrop(inst)
-        end
+        refreshStatus(inst)
     end)
 end
 
@@ -245,6 +277,8 @@ local function headFn()
 
     inst.OnLoad = onHeadLoad
     inst.OnSave = onHeadSave
+
+    inst.aipRefreshStatus = refreshStatus
 
     return inst
 end

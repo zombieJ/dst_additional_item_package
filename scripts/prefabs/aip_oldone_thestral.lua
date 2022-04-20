@@ -62,7 +62,11 @@ local function onNear(inst, player)
 		if #heads > 0 then
 			for i, head in ipairs(heads) do
 				if not head:HasTag("aipHeadLock") then
-					-- TODO: 让头颅被捆绑
+					head:AddTag("aipHeadLock") --  aipCollect
+					aipSpawnPrefab(head, "aip_shadow_wrapper").DoShow()
+
+					-- 刷新状态
+					head.aipRefreshStatus(head)
 				end
 			end
 		end
