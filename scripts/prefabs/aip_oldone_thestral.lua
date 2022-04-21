@@ -132,10 +132,25 @@ local function onFar(inst)
 	inst.components.aipc_timer:KillName("PlayerNear")
 end
 
+-- 如果攻击者是开眼状态，则伤害变低
+local function onHealthDelta(inst, data)
+	local chance = dev_mode and 0.5 or 0.01
+	if inst ~= nil and data ~= nil and aipHasBuffer(data.afflicter, "aip_see_eyes") then
+		data.amount = math.random() <= chance and -1 or 0
+	end
+end
+
 -- 掉落物检测
 local function onDeath(inst, data)
-    if data ~= nil and data.afflicter ~= nil and aipHasBuffer(data.afflicter, "aip_see_eyes") then
-		inst.components.lootdropper:SpawnLootPrefab("aip_oldone_thestral_fur")
+	local killer = data ~= nil and data.afflicter or nil
+    if killer ~= nil and aipHasBuffer(killer, "aip_see_eyes") then
+		for i = 1, 3 do
+			inst.components.lootdropper:SpawnLootPrefab("aip_oldone_thestral_fur")
+		end
+
+		if killer.components.hunger ~= nil then -- 干掉凶手的饥饿度
+			killer.components.hunger:SetPercent(.001)
+		end
 	else
 		inst.components.lootdropper:SpawnLootPrefab("trinket_9")
 	end
@@ -209,6 +224,7 @@ local function fn()
 
 	inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "body"
+	inst:ListenForEvent("aip_healthdelta", onHealthDelta)
 
 	inst:AddComponent("lootdropper")
 	inst:ListenForEvent("death", onDeath)

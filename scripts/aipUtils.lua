@@ -619,7 +619,7 @@ function _G.aipHasBuffer(inst, name)
 	-- 	return inst.components.aipc_buffer.buffers[name] ~= nil
 	-- end
 
-	if inst.replica.aipc_buffer ~= nil then
+	if inst ~= nil and inst.replica.aipc_buffer ~= nil then
 		return inst.replica.aipc_buffer:HasBuffer(name)
 	end
 
