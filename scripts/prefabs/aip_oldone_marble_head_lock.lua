@@ -23,7 +23,7 @@ local PHYSICS_HEIGHT = 1
 local PHYSICS_MASS = 10
 local HEAD_WALK_SPEED = 1
 
-local headAssets = {
+local assets = {
     Asset("ANIM", "anim/aip_oldone_marble_head_lock.zip"),
     Asset("ATLAS", "images/inventoryimages/aip_oldone_marble_head_lock.xml"),
 }

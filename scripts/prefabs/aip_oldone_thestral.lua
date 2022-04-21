@@ -16,15 +16,31 @@ local LANG_MAP = {
 		NAME = "Sock Snake",
 		DESC = "Hmmm, strange...",
 		SNAKE = "Si si si...",
-		ROCK_HEAD = "'Bring the marble skull to me'",
-		ROCK_HEAD_LOCK = "'No More Annoying hahaha'",
+		ROCK_HEAD = {
+			"'Bring the marble head to me'",
+			"'It in the marsh'",
+			"'Annoying ball...'",
+		},
+		ROCK_HEAD_LOCK = {
+			"'No More Annoying hahaha'",
+			"'Do not free it'",
+			"'Still want to go'",
+		},
 	},
 	chinese = {
 		NAME = "袜子蛇",
 		DESC = "千人千面！",
 		SNAKE = "嘶嘶嘶...",
-		ROCK_HEAD = "“把大理石头骨带给我”",
-		ROCK_HEAD_LOCK = "“聒噪的家伙终于安静了”",
+		ROCK_HEAD = {
+			"“把那个大理石带给我”",
+			"“沼泽有个聒噪的家伙”",
+			"“那个圆球好吵闹”",
+		},
+		ROCK_HEAD_LOCK = {
+			"“聒噪的家伙终于安静了”",
+			"“不要再释放它了”",
+			"“虽然绑住了，看起来还是不消停”",
+		},
 	},
 }
 
@@ -50,28 +66,15 @@ local sounds = {
 -------------------------------- 事件 --------------------------------
 local DIST_NEAR = 10
 local DIST_FAR = 20
-local TALK_DIFF = dev_mode and 3 or 15
+local TALK_DIFF = dev_mode and 3 or 12
 
 -- 玩家靠近
 local function onNear(inst, player)
 	inst.components.aipc_timer:NamedInterval("PlayerNear", 1, function()
-		-- 检测附近有没有头像，有就吃掉它
-		local x, y, z = inst.Transform:GetWorldPosition()
-		local heads = TheSim:FindEntities(x, y, z, 5, { "aip_oldone_marble_head" })
-
-		if #heads > 0 then
-			for i, head in ipairs(heads) do
-				aipSpawnPrefab(head, "aip_shadow_wrapper").DoShow()
-				aipReplacePrefab(head, "aip_oldone_marble_head_lock")
-			end
-		end
-
 		-- 和身边的玩家说话
 		if inst.components.timer:TimerExists("aip_talk") then
 			return
 		end
-
-		inst.components.timer:StartTimer("aip_talk", TALK_DIFF)
 
 		-- 找到可以看到真身的玩家们
 		local players = aipFilterTable(
@@ -82,15 +85,35 @@ local function onNear(inst, player)
 		)
 
 		if #players > 0 then
-			local head = aipFindEnt("aip_oldone_marble_head_lock")
+			-- 检测附近有没有头像，有就吃掉它
+			local x, y, z = inst.Transform:GetWorldPosition()
+			local heads = TheSim:FindEntities(x, y, z, 5, { "aip_oldone_marble_head" })
+
+			local convertedHeads = {}
+
+			if #heads > 0 then
+				for i, head in ipairs(heads) do
+					local owner = head.components.inventoryitem:GetGrandOwner()
+
+					if owner == nil then
+						aipSpawnPrefab(head, "aip_shadow_wrapper").DoShow()
+						local replaced = aipReplacePrefab(head, "aip_oldone_marble_head_lock")
+						table.insert(convertedHeads, replaced)
+					end
+				end
+			end
 
 			-- 玩家说话
+			local head = aipFindEnt("aip_oldone_marble_head_lock")
+
 			for i, player in ipairs(players) do
 				if player.components.talker ~= nil then
-					player.components.talker:Say(
-						head
+					local talks = head
 						and STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_ROCK_HEAD_LOCK
 						or STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_ROCK_HEAD
+
+					player.components.talker:Say(
+						talks[math.random(#talks)]
 					)
 				end
 			end
@@ -100,6 +123,7 @@ local function onNear(inst, player)
 		inst.components.talker:Say(
 			STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_SNAKE
 		)
+		inst.components.timer:StartTimer("aip_talk", TALK_DIFF)
 	end)
 end
 
@@ -107,6 +131,16 @@ end
 local function onFar(inst)
 	inst.components.aipc_timer:KillName("PlayerNear")
 end
+
+-- 掉落物检测
+local function onDeath(inst, data)
+    if data ~= nil and data.afflicter ~= nil and aipHasBuffer(data.afflicter, "aip_see_eyes") then
+		inst.components.lootdropper:SpawnLootPrefab("aip_oldone_thestral_fur")
+	else
+		inst.components.lootdropper:SpawnLootPrefab("trinket_9")
+	end
+end
+
 -------------------------------- 实例 --------------------------------
 local function fn()
 	local inst = CreateEntity()
@@ -177,7 +211,7 @@ local function fn()
     inst.components.combat.hiteffectsymbol = "body"
 
 	inst:AddComponent("lootdropper")
-	inst.components.lootdropper:AddChanceLoot("aip_dou_tooth", 1)
+	inst:ListenForEvent("death", onDeath)
 
 	return inst
 end
