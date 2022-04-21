@@ -37,7 +37,22 @@ local function onunequip(inst, owner)
 	owner.AnimState:ClearOverrideSymbol("swap_body")
 end
 
---------------------------------- 头像 ---------------------------------
+--------------------------------- 收集 ---------------------------------
+local function triggerCollect(inst, quick)
+    inst.components.aipc_timer:NamedInterval("Collect", quick and 5 or 120, function()
+        -- TODO: 开始采集
+    end)
+end
+
+local function OnEntityWake(inst)
+    triggerCollect(inst, true)
+end
+
+local function OnEntitySleep(inst)
+    triggerCollect(inst, false)
+end
+
+--------------------------------- 实例 ---------------------------------
 
 local function fn()
     local inst = CreateEntity()
@@ -81,6 +96,11 @@ local function fn()
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
+
+    inst:AddComponent("aipc_timer")
+
+    inst.OnEntitySleep = OnEntitySleep
+    inst.OnEntityWake = OnEntityWake
 
     return inst
 end
