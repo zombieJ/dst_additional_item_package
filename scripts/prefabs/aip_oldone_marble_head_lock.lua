@@ -40,7 +40,14 @@ end
 --------------------------------- 收集 ---------------------------------
 local function triggerCollect(inst, hasWatcher)
     local quickInterval = dev_mode and 2 or 5
-    inst.components.aipc_timer:NamedInterval("Collect", hasWatcher and quickInterval or 120, function()
+    local longTimes = hasWatcher and 1 or 30 -- 一次性检查多少次
+    local finalDuration = quickInterval * longTimes
+
+    if dev_mode then
+        longTimes = longTimes * 5
+    end
+
+    inst.components.aipc_timer:NamedInterval("Collect", finalDuration, function()
         -- 如果是有人拿着的就不再寻找
         local owner = inst.components.inventoryitem:GetGrandOwner()
         if owner ~= nil then
@@ -53,12 +60,32 @@ local function triggerCollect(inst, hasWatcher)
 
         -- 尝试收集
         local targetPlant = nil
-        for i, plant in ipairs(plants) do
-            -- 如果可以收集
-            if plant.components.pickable ~= nil and plant.components.pickable:CanBePicked() then
-                plant.components.pickable:Pick(inst)
-                targetPlant = plant
-                break
+        for times = 1, longTimes do -- 循环实验
+            for i, plant in ipairs(plants) do
+                if plant ~= nil and plant:IsValid() then -- 无效则不干活了
+                    -- 如果可以收集
+                    if plant.components.pickable ~= nil then
+                        if plant.components.pickable:CanBePicked() then -- 收集
+                            plant.components.pickable:Pick(inst)
+                            targetPlant = plant
+                            break
+                        end
+
+                    -- 如果可以 workable
+                    elseif plant.components.workable ~= nil then
+                        local action = plant.components.workable:GetWorkAction()
+
+                        if action == ACTIONS.CHOP then -- 挖掘
+                            plant.components.workable:WorkedBy(inst, 1)
+                            targetPlant = plant
+                            break
+                        elseif action == ACTIONS.MINE then -- 矿
+                            plant.components.workable:WorkedBy(inst, 1)
+                            targetPlant = plant
+                            break
+                        end
+                    end
+                end
             end
         end
 
@@ -69,7 +96,15 @@ local function triggerCollect(inst, hasWatcher)
 
             inst.AnimState:PlayAnimation("aipCollect")
             inst.AnimState:PushAnimation("aipStruggle", true)
+            inst._aipTargetPos = targetPlant:GetPosition()
         end
+    end)
+end
+
+local function onGotNewItem(inst, data)
+    -- 丢起物品
+    inst:DoTaskInTime(.1, function()
+        inst.components.inventory:DropItem(data.item, true, true, inst._aipTargetPos)
     end)
 end
 
@@ -129,6 +164,8 @@ local function fn()
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 
     inst:AddComponent("aipc_timer")
+
+    inst:ListenForEvent("gotnewitem", onGotNewItem)
 
     inst.OnEntitySleep = OnEntitySleep
     inst.OnEntityWake = OnEntityWake
