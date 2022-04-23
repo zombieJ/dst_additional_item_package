@@ -38,9 +38,38 @@ local function onunequip(inst, owner)
 end
 
 --------------------------------- 收集 ---------------------------------
-local function triggerCollect(inst, quick)
-    inst.components.aipc_timer:NamedInterval("Collect", quick and 5 or 120, function()
-        -- TODO: 开始采集
+local function triggerCollect(inst, hasWatcher)
+    local quickInterval = dev_mode and 2 or 5
+    inst.components.aipc_timer:NamedInterval("Collect", hasWatcher and quickInterval or 120, function()
+        -- 如果是有人拿着的就不再寻找
+        local owner = inst.components.inventoryitem:GetGrandOwner()
+        if owner ~= nil then
+            return
+        end
+
+        local dist = 5
+        local x, y, z = inst.Transform:GetWorldPosition()
+        local plants = TheSim:FindEntities(x, 0, z, dist)
+
+        -- 尝试收集
+        local targetPlant = nil
+        for i, plant in ipairs(plants) do
+            -- 如果可以收集
+            if plant.components.pickable ~= nil and plant.components.pickable:CanBePicked() then
+                plant.components.pickable:Pick(inst)
+                targetPlant = plant
+                break
+            end
+        end
+
+        if targetPlant ~= nil then
+            if hasWatcher then
+                aipSpawnPrefab(targetPlant, "aip_shadow_wrapper").DoShow()
+            end
+
+            inst.AnimState:PlayAnimation("aipCollect")
+            inst.AnimState:PushAnimation("aipStruggle", true)
+        end
     end)
 end
 
@@ -78,6 +107,8 @@ local function fn()
     if not TheWorld.ismastersim then
         return inst
     end
+
+    inst:AddComponent("inventory")
 
     inst:AddComponent("heavyobstaclephysics")
     inst.components.heavyobstaclephysics:SetRadius(PHYSICS_RADIUS)
