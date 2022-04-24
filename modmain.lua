@@ -29,6 +29,9 @@ Assets = {
 
 -- 物品列表
 PrefabFiles = {
+	-- Meta
+	"aip_0_buffer",
+
 	-- vest
 	"aip_vest",
 	"aip_projectile",
@@ -66,7 +69,6 @@ PrefabFiles = {
 	"aip_dou_inscription_package",
 	"aip_dou_element_guard",
 	"aip_aura",
-	"aip_buffer_fx",
 
 	-- Scepter
 	"aip_dou_opal",
@@ -210,6 +212,7 @@ modimport("scripts/flyWrapper.lua")
 modimport("scripts/houseWrapper.lua")
 modimport("scripts/sgHooker.lua")
 modimport("scripts/hooks/aip_hover_hook.lua")
+modimport("scripts/hooks/aip_buffer_hook.lua")
 
 ------------------------------------- 测试专用 -------------------------------------
 if dev_mode then

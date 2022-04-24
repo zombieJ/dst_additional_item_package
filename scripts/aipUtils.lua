@@ -106,6 +106,15 @@ function _G.aipFilterKeysTable(originTbl, keys)
 	return tbl
 end
 
+-- 获取 key
+function _G.aipTableKeys(tbl)
+	local keys = {}
+	for k, v in pairs(tbl) do
+		table.insert(keys, k)
+	end
+	return keys
+end
+
 --------------------------------------- 调试 ---------------------------------------
 function _G.aipCommonStr(showType, split, ...)
 	local count = _G.aipCountTable(arg)
@@ -205,6 +214,22 @@ function _G.aipGetAnimState(inst)
 end
 
 --------------------------------------- 文本 ---------------------------------------
+function _G.aipJoin(strList, spliter)
+	local str = ""
+	local first = true
+	for i, val in ipairs(strList) do
+		if first then
+			first = false
+		else
+			str = str..spliter
+		end
+
+		str = str..val
+	end
+
+	return str
+end
+
 function _G.aipSplit(str, spliter)
 	local list = {}
 	local str = str..spliter
