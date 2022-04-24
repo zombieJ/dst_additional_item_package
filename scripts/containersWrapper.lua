@@ -95,7 +95,9 @@ end
 
 function params.aip_nectar_maker.itemtestfn(container, item, slot)
 	local values = getNectarValues(item)
-	return _G.next(values) ~= nil
+
+	-- 有价值但是不能是酒
+	return _G.next(values) ~= nil and not values.wine
 end
 
 function params.aip_nectar_maker.widget.buttoninfo.fn(inst)
@@ -458,7 +460,7 @@ local old_widgetsetup = containers.widgetsetup
 -- 豪华锅 和 冰箱 代码有BUG，只能注入一下了
 -- Some mod inject the `widgetsetup` function with missing the `data` arguments cause customize data not work anymore.
 -- Have to inject the function also, so sad.
-function containers.widgetsetup(container, prefab, data)
+function containers.widgetsetup(container, prefab, data, ...)
 	local pref = prefab or container.inst.prefab
 
 	-- Hook
@@ -471,7 +473,7 @@ function containers.widgetsetup(container, prefab, data)
 		return
 	end
 
-	return old_widgetsetup(container, prefab, data)
+	return old_widgetsetup(container, prefab, data, ...)
 end
 
 for k, v in pairs(params) do

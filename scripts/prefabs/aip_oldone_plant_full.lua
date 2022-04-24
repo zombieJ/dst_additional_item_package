@@ -35,7 +35,7 @@ end
 local function onDoTargetAction(inst, doer, target)
 	if target.components.upgradeable ~= nil and target.components.upgradeable.stage == 1 then
         aipReplacePrefab(target, "aip_oldone_spiderden")
-        inst:Remove()
+        inst.components.stackable:Get():Remove()
         return
     end
 
@@ -47,7 +47,8 @@ local function onDoTargetAction(inst, doer, target)
 end
 
 local function onHit(inst, attacker, target)
-    aipReplacePrefab(inst, "aip_aura_poison")
+    local aura = aipReplacePrefab(inst, "aip_aura_poison")
+    aura._aipDuration = inst._aipDuration
 end
 
 ----------------------------------- 实体 -----------------------------------

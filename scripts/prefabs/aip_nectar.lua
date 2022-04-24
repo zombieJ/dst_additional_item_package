@@ -40,13 +40,18 @@ local GENERATION_AFFECT = .95
 local assets =
 {
 	Asset("ANIM", "anim/aip_nectar.zip"),
-	Asset("ATLAS", "images/inventoryimages/aip_nectar.xml"),
-	Asset("IMAGE", "images/inventoryimages/aip_nectar.tex"),
+	Asset("ATLAS", "images/inventoryimages/aip_nectar_0.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_nectar_1.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_nectar_2.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_nectar_3.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_nectar_4.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_nectar_5.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_nectar_wine.xml"),
 }
 
 local prefabs = {}
 
------------------------------------------------------------
+--------------------------------- 攻击 ---------------------------------
 local function onVampireAttackOther(inst, data)
 	local target = data.target
 	if target ~= nil and inst.components.health then
@@ -61,7 +66,23 @@ local function onDamageAttackOther(inst, data)
 	end
 end
 
-------------------------- 持续恢复 -------------------------
+--------------------------------- BUFF ---------------------------------
+local function bufferDrunkFn(source, eater, info)
+	local interval = info.interval
+	local passTime = info.passTime
+
+	local speedMulti = 1 + (math.floor(passTime) % 2 == 0 and 1 or -1) * TUNING.NECTAR_DRUNK_SPEED_MULT
+
+	eater.components.locomotor:SetExternalSpeedMultiplier(
+		eater, "aip_nectar_drunk", speedMulti
+	)
+end
+
+local function bufferDrunkEndFn(source, eater, info)
+	eater.components.locomotor:RemoveExternalSpeedMultiplier(eater, "aip_nectar_drunk")
+end
+
+------------------------------- 持续效果 -------------------------------
 local function onEaten(inst, eater)
 	if not inst.nectarContinueValues or not eater.components.aipc_timer then
 		return
@@ -72,6 +93,7 @@ local function onEaten(inst, eater)
 	local speedTime = inst.nectarContinueValues.speedTime or 0
 	local vampireTime = inst.nectarContinueValues.vampireTime or 0
 	local damageTime = inst.nectarContinueValues.damageTime or 0
+	local drunkTime = inst.nectarContinueValues.drunkTime or 0
 
 	-- 回血灰理智
 	if health and sanity then
@@ -126,9 +148,20 @@ local function onEaten(inst, eater)
 			eater:RemoveEventCallback("onattackother", onDamageAttackOther)
 		end)
 	end
+
+	-- 醉酒
+	if drunkTime then
+		aipPatchBuffer(
+			eater, eater, "aip_nectar_drunk", drunkTime, {
+				fn = bufferDrunkFn,
+				endFn = bufferDrunkEndFn,
+				showFX = true,
+			}
+		)
+	end
 end
 
-------------------------- 刷新名字 -------------------------
+------------------------------- 刷新名字 -------------------------------
 local function onRefreshName(inst)
 	local changeColor = 1 - BASE_COLOR
 
@@ -269,7 +302,7 @@ local function onRefreshName(inst)
 	if nectarValues.exquisite then
 		currentQuality = currentQuality + 1
 	end
-	
+
 	--> 属性加成
 	currentQuality = currentQuality + math.min(1, totalTagVal * 0.03)
 	
@@ -298,6 +331,17 @@ local function onRefreshName(inst)
 		inst.components.aipc_info_client:SetByteArray("aip_info_color", QUALITY_COLORS[qualityName])
 	end
 
+	-- 更新贴图
+	if nectarValues.wine then -- 酒化
+		inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_nectar_wine.xml"
+		inst.components.inventoryitem:ChangeImageName("aip_nectar_wine")
+		inst.AnimState:PlayAnimation("wine")
+	else
+		inst.components.inventoryitem.atlasname = aipStr("images/inventoryimages/aip_nectar_", currentQuality, ".xml")
+		inst.components.inventoryitem:ChangeImageName(aipStr("aip_nectar_", currentQuality))
+		inst.AnimState:PlayAnimation(aipStr("q", currentQuality))
+	end
+
 	--------------- 食用价值 ---------------
 	local continueRecover = currentQuality >= 3
 	
@@ -323,19 +367,25 @@ local function onRefreshName(inst)
 	-- 移动速度
 	if nectarValues.light then
 		inst.nectarContinueValues = inst.nectarContinueValues or {}
-		inst.nectarContinueValues.speedTime = math.min(4 + nectarValues.light * 1, 30) -- 最多加速30秒
+		inst.nectarContinueValues.speedTime = math.min(9 + nectarValues.light * 1, 30) -- 最多加速30秒
 	end
 
 	-- 吸血鬼
 	if nectarValues.vampire then
 		inst.nectarContinueValues = inst.nectarContinueValues or {}
-		inst.nectarContinueValues.vampireTime = math.min(6 + nectarValues.vampire * 1, 30) -- 最多吸血30秒
+		inst.nectarContinueValues.vampireTime = math.min(9 + nectarValues.vampire * 1, 30) -- 最多吸血30秒
 	end
 	
 	-- 伤害增加
 	if nectarValues.damage then
 		inst.nectarContinueValues = inst.nectarContinueValues or {}
-		inst.nectarContinueValues.damageTime = math.min(4 + nectarValues.damage * 1, 30) -- 最多吸血30秒
+		inst.nectarContinueValues.damageTime = math.min(9 + nectarValues.damage * 1, 30) -- 最多增伤30秒
+	end
+
+	-- 醉酒步伐
+	if nectarValues.wine then
+		inst.nectarContinueValues = inst.nectarContinueValues or {}
+		inst.nectarContinueValues.drunkTime = math.min(9 + nectarValues.wine * 1, 30) -- 最多醉酒30秒
 	end
 
 	if inst.components.edible then
@@ -408,7 +458,28 @@ local function onRefreshName(inst)
 	end
 end
 
----------------------------- 存储 ----------------------------
+--------------------------------- 腐烂 ---------------------------------
+-- 如果是含有粮食度的，过期会变成酒
+local function onPerish(inst)
+	local nectarValues = inst.nectarValues or {}
+
+	if nectarValues.starch then
+		nectarValues.wine = (nectarValues.wine or 0) + 1
+		nectarValues.wine = math.min(nectarValues.wine, 99)
+
+		inst.components.perishable.onperishreplacement = nil
+
+		-- 重新启动计时器
+		inst:DoTaskInTime(0, function()
+			inst.components.perishable:SetPercent(1)
+			inst.components.perishable:StartPerishing()
+
+			inst.refreshName()
+		end)
+	end
+end
+
+--------------------------------- 存储 ---------------------------------
 local function onSave(inst, data)
 	data.nectarValues = inst.nectarValues
 end
@@ -421,6 +492,7 @@ local function onLoad(inst, data)
 	end
 end
 
+--------------------------------- 实体 ---------------------------------
 local function fn()
 	local inst = CreateEntity()
 
@@ -435,7 +507,7 @@ local function fn()
 
 	inst.AnimState:SetBank("aip_nectar")
 	inst.AnimState:SetBuild("aip_nectar")
-	inst.AnimState:PlayAnimation("BUILD")
+	inst.AnimState:PlayAnimation("q0")
 
 	inst:AddTag("aip_nectar")
 	inst:AddTag("aip_nectar_material")
@@ -468,7 +540,8 @@ local function fn()
 	inst:AddComponent("inspectable")
 
 	inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_nectar.xml"
+	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_nectar_0.xml"
+	inst.components.inventoryitem.imagename = "aip_nectar_0"
 
 	-- 食物
 	inst:AddComponent("edible")
@@ -479,8 +552,9 @@ local function fn()
 
 	-- 腐烂
 	inst:AddComponent("perishable")
-	inst.components.perishable:SetPerishTime(TUNING.PERISH_PRESERVED)
+	inst.components.perishable:SetPerishTime(dev_mode and 20 or TUNING.PERISH_PRESERVED)
 	inst.components.perishable:StartPerishing()
+	inst.components.perishable.perishfn = onPerish
 	inst.components.perishable.onperishreplacement = "spoiled_food"
 
 	-- 火焰传播者 - 不会着火
@@ -496,4 +570,4 @@ local function fn()
 	return inst
 end
 
-return Prefab("aip_nectar", fn, assets) 
+return Prefab("aip_nectar", fn, assets)

@@ -1,5 +1,9 @@
 local interval = 0.5
 
+local function getSource(GUID)
+	return Ents[GUID]
+end
+
 -- 每秒执行一次效果，如果所有的 buffer duration 都结束了，就删除这个组件
 local function DoEffect(inst, self)
 	local allRemove = true
@@ -8,8 +12,21 @@ local function DoEffect(inst, self)
 	for name, info in pairs(self.buffers) do
 		info.duration = info.duration - interval
 
+		-- 参数：源头，目标，间隔，时间差
+		local fnData = {
+			interval = interval,
+			passTime = GetTime() - info.startTime,
+			data = info.data,
+		}
+
+		-- 全局函数
+		local fn = aipGlobalBuffer(name).fn
+		if fn ~= nil then
+			fn(getSource(info.srcGUID), inst, fnData)
+		end
+
 		if info.fn ~= nil then
-			info.fn(info.source, inst, interval)
+			info.fn(getSource(info.srcGUID), inst, fnData)
 		end
 
 		-- 清理过期的 buffer
@@ -23,8 +40,16 @@ local function DoEffect(inst, self)
 	-- 清除的 buffer 需要一个退出事件处理收尾
 	for i, name in ipairs(rmNames) do
 		local info = self.buffers[name]
+
+		-- 全局结束函数
+		local endFn = aipGlobalBuffer(name).endFn
+		if endFn ~= nil then
+			endFn(getSource(info.srcGUID), inst, { data = info.data })
+		end
+
+		-- 结束函数
 		if info.endFn ~= nil then
-			info.endFn(info.source, inst)
+			info.endFn(getSource(info.srcGUID), inst, { data = info.data })
 		end
 	end
 
@@ -53,21 +78,35 @@ local Buffer = Class(function(self, inst)
 end)
 
 function Buffer:Patch(name, source, duration, info)
-	if self.buffers[name] == nil and info.startFn ~= nil then
-		info.startFn(source, self.inst)
+	if self.buffers[name] == nil then
+		-- 初始化 Buff
+		self.buffers[name] = {
+			startTime = GetTime(), -- 记录启动时间
+			data = {}, -- 一些额外的信息记录
+		}
+
+		-- 全局启动函数
+		local startFn = aipGlobalBuffer(name).startFn
+		if startFn ~= nil then
+			startFn(source, self.inst, { data = self.buffers[name].data })
+		end
+
+		-- 启动函数
+		if info.startFn ~= nil then
+			info.startFn(source, self.inst, { data = self.buffers[name].data })
+		end
 	end
 
-	self.buffers[name] = {
-		source = source,
-		duration = duration or 2,
-		fn = info.fn,
-		startFn = info.startFn,
-		endFn = info.endFn,
 
-		clientFn = info.clientFn,
+	self.buffers[name].srcGUID = source ~= nil and source.GUID
+	self.buffers[name].duration = duration or 2
+	self.buffers[name].fn = info.fn
+	self.buffers[name].startFn = info.startFn
+	self.buffers[name].endFn = info.endFn
+	self.buffers[name].clientFn = info.clientFn
 
-		showFX = info.showFX,
-	}
+	self.buffers[name].showFX = info.showFX
+
 
 	self:SyncBuffer()
 end

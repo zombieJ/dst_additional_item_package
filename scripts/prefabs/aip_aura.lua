@@ -83,13 +83,15 @@ local function getFn(data)
 		end
 
 		if data.onAnimOver ~= nil then
-			-- 只会触发一次
-			local function callback()
-				inst:RemoveEventCallback("animover", callback)
-				data.onAnimOver(inst)
-			end
+			-- 只会触发一次，延迟一点以防止还需要读一些额外的数据
+			inst:DoTaskInTime(0.01, function()
+				local function callback()
+					inst:RemoveEventCallback("animover", callback)
+					data.onAnimOver(inst)
+				end
 
-			inst:ListenForEvent("animover", callback)
+				inst:ListenForEvent("animover", callback)
+			end)
 		end
 
 		if data.postFn ~= nil then
@@ -158,17 +160,17 @@ local list = {
 		scale = 2,
 		interval = 0.33, -- 中毒检测会更快一些
 		bufferDuration = 0.8,
-		bufferFn = function(inst, target, interval)
+		bufferFn = function(inst, target, info)
 			if target.components.health ~= nil and not target.components.health:IsDead() then
 				-- 伤害来源不能是光环，否则会死循环
-				target.components.health:DoDelta(-7 * interval, false)
+				target.components.health:DoDelta(-7 * info.interval, false)
 			end
 		end,
 		-- 中毒减速
 		bufferStartFn = function(inst, target)
 			-- 受到攻击伤害，这样玩家会跳一下
 			if target.components.combat ~= nil then
-				target.components.combat:GetAttacked(target, 15)
+				target.components.combat:GetAttacked(inst, 15)
 			end
 
 			if target.components.locomotor then
@@ -181,7 +183,9 @@ local list = {
 			end
 		end,
 		onAnimOver = function(inst)
-			inst:DoTaskInTime(12, function()
+			local duration = inst._aipDuration or 12 -- 允许被覆盖
+
+			inst:DoTaskInTime(duration, function()
 				ErodeAway(inst, 0.5)
 			end)
 		end,

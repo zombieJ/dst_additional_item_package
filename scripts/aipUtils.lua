@@ -286,10 +286,11 @@ function _G.aipFindNearEnts(inst, prefabNames, distance)
 end
 
 function _G.aipFindNearPlayers(inst, dist)
-	local NOTAGS = { "FX", "NOCLICK", "DECOR", "playerghost", "INLIMBO" }
+	-- local NOTAGS = { "FX", "NOCLICK", "DECOR", "playerghost", "INLIMBO" }
 	local x, y, z = inst.Transform:GetWorldPosition()
-	local ents = TheSim:FindEntities(x, 0, z, dist, { "player", "_health" }, NOTAGS)
-	return ents
+	-- local ents = TheSim:FindEntities(x, 0, z, dist, { "player", "_health" }, NOTAGS)
+	-- return ents
+	return _G.FindPlayersInRange(x, y, z, dist, true)
 end
 
 -- 降级值如果没有的话
@@ -396,10 +397,41 @@ function _G.aipGetSpawnPoint(startPT, distance)
 	return nil
 end
 
+-- 是自然地皮
+function _G.isNaturalPoint(pt)
+	local tile = _G.TheWorld.Map:GetTileAtPoint(pt.x, pt.y, pt.z)
+
+	local DEFAULT_VALID_TILE_TYPES = {
+		[GROUND.DIRT] = true,
+		[GROUND.SAVANNA] = true,
+		[GROUND.GRASS] = true,
+		[GROUND.FOREST] = true,
+		[GROUND.MARSH] = true,
+
+		-- 月岛
+		[GROUND.METEOR] = true,
+	
+		-- CAVES
+		[GROUND.CAVE] = true,
+		[GROUND.FUNGUS] = true,
+		[GROUND.SINKHOLE] = true,
+		[GROUND.MUD] = true,
+		[GROUND.FUNGUSRED] = true,
+		[GROUND.FUNGUSGREEN] = true,
+	
+		--EXPANDED FLOOR TILES
+		[GROUND.DECIDUOUS] = true,
+	}
+
+	return DEFAULT_VALID_TILE_TYPES[tile] and pt or nil
+end
+
+-- 获取一个隐秘地点，如果是人工地皮就无效返回 nil
 function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
+	local tgtPT = nil
+
 	-- 如果范围内存在物体，我们就找数量最少的地方
 	if emptyDistance ~= nil then
-		local tgtPT = nil
 		local tgtEntCnt = 99999999
 
 		local mergedMaxDistance = maxDistance
@@ -412,6 +444,9 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
 		for distance = minDistance, maxDistance, step do
 			local pos = _G.aipGetSpawnPoint(pt, distance)
 
+			-- 如果不是自然地皮就跳过
+			pos = _G.isNaturalPoint(pos)
+
 			if pos ~= nil then
 				local ents = TheSim:FindEntities(pos.x, 0, pos.z, emptyDistance)
 				if #ents < tgtEntCnt then
@@ -420,13 +455,16 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
 				end
 			end
 		end
-
-		if tgtPT ~= nil then
-			return tgtPT
-		end
 	end
 
-	return aipGetSpawnPoint(pt, minDistance)
+	if tgtPT == nil then
+		tgtPT = _G.aipGetSpawnPoint(pt, minDistance)
+
+		-- 如果不是自然地皮就跳过
+		tgtPT = _G.isNaturalPoint(tgtPT)
+	end
+
+	return tgtPT
 end
 
 -- 和 TheMap:FindRandomPointInOcean 相似，但是通过地图上的岩石附近创造
@@ -581,20 +619,21 @@ function _G.aipHasBuffer(inst, name)
 	-- 	return inst.components.aipc_buffer.buffers[name] ~= nil
 	-- end
 
-	if inst.replica.aipc_buffer ~= nil then
+	if inst ~= nil and inst.replica.aipc_buffer ~= nil then
 		return inst.replica.aipc_buffer:HasBuffer(name)
 	end
 
 	return false
 end
 
--- 注册客户端 Buffer 效果
-local clientBuffers = {}
-function _G.aipClientBuffer(name, clientFn)
-	if clientFn ~= nil then
-		clientBuffers[name] = clientFn
+-- 注册全局 Buffer 效果，会先于自定义 Buffer 触发相关事件
+-- info: clientFn, startFn, endFn, fn
+local globalBuffers = {}
+function _G.aipGlobalBuffer(name, info)
+	if info ~= nil then
+		globalBuffers[name] = info
 	end
-	return clientBuffers[name]
+	return globalBuffers[name] or {}
 end
 
 -- 获取玩家手持的物品，仅在 AddComponentAction 中使用
@@ -607,4 +646,15 @@ function _G.aipGetActionableItem(doer)
 		end
 	end
 	return nil
+end
+
+------------------------------------- 简易 AI -------------------------------------
+-- 纯时序 AI，返回 false 则继续执行下一个 Step
+function _G.aipQueue(tasks)
+	for i, fn in ipairs(tasks) do
+		-- 如果为 true 则不用再往下了
+		if fn() then
+			return
+		end
+	end
 end

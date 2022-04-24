@@ -1,5 +1,3 @@
-local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
-
 ------------------------------------ 配置 ------------------------------------
 -- 建筑关闭
 local additional_building = aipGetModConfig("additional_building")

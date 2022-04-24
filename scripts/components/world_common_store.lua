@@ -134,6 +134,10 @@ function CommonStore:CreateRubik()
 
 	pos = aipGetSecretSpawnPoint(pos, 0, 50, 5)
 
+	if pos == nil then
+		return nil
+	end
+
 	local rubik = aipSpawnPrefab(nil, "aip_rubik", pos.x, pos.y, pos.z)
 	rubik.components.fueled:MakeEmpty()
 
@@ -166,9 +170,45 @@ function CommonStore:CreateSpiderden()
 
 	pos = aipGetSecretSpawnPoint(pos, 0, 50, 5)
 
+	if pos == nil then
+		return nil
+	end
+
 	local spiderden = aipSpawnPrefab(nil, "aip_oldone_spiderden", pos.x, pos.y, pos.z)
 
 	return spiderden
+end
+
+-- 创建 古神蛛巢，随机找一个触手怪
+function CommonStore:CreateMarble()
+	-- 只有地面可以有
+	if not TheWorld:HasTag("forest") then
+		return
+	end
+
+	-- 存在且没有坐标就跳过
+	local marble = TheSim:FindFirstEntityWithTag("aip_oldone_marble")
+	if marble ~= nil then
+		return marble
+	end
+
+	-- 如果没有雕像则在沼泽创造
+	if marble == nil then
+		for i = 1, 10 do
+			local reeds = aipFindRandomEnt("reeds")
+			local rx, ry, rz = reeds.Transform:GetWorldPosition()
+
+			if TheWorld.Map:GetTileAtPoint(rx, ry, rz) == GROUND.MARSH then
+				local tgtPT = aipGetSecretSpawnPoint(reeds:GetPosition(), 1, 10, 5)
+				if tgtPT ~= nil then
+					marble = aipSpawnPrefab(nil, "aip_oldone_marble", tgtPT.x, tgtPT.y, tgtPT.z)
+					break
+				end
+			end
+		end
+	end
+
+	return marble
 end
 
 function CommonStore:CreateSuWuMound(pos)
@@ -204,14 +244,24 @@ function CommonStore:PostWorld()
 			local fissurePT = aipGetTopologyPoint("lunacyarea", "moon_fissure")
 			if fissurePT then
 				local tgt = aipGetSecretSpawnPoint(fissurePT, 0, 50, 5)
-				aipSpawnPrefab(nil, "aip_dou_totem_broken", tgt.x, tgt.y, tgt.z)
+				if tgt ~= nil then
+					aipSpawnPrefab(nil, "aip_dou_totem_broken", tgt.x, tgt.y, tgt.z)
+				else
+					aipPrint("月岛图腾创建失败！")
+				end
 
 			else
 				-- 寻找暗影灯座
 				local targetPrefab = aipFindRandomEnt("rabbithouse")
 				if targetPrefab ~= nil then
 					local tgt = aipGetSecretSpawnPoint(targetPrefab:GetPosition(), 0, 50, 5)
-					aipSpawnPrefab(nil, "aip_dou_totem_broken", tgt.x, tgt.y, tgt.z)
+					if tgt ~= nil then
+						aipSpawnPrefab(nil, "aip_dou_totem_broken", tgt.x, tgt.y, tgt.z)
+					else
+						aipPrint("洞穴图腾创建失败！")
+					end
+				else
+					aipPrint("兜底图腾创建失败！")
 				end
 			end
 		end
@@ -232,6 +282,11 @@ function CommonStore:PostWorld()
 		self:CreateSpiderden()
 	end)
 
+	------------------------- 创建沼泽雕塑 -------------------------
+	self.inst:DoTaskInTime(3, function()
+		self:CreateMarble()
+	end)
+
 	--------------------------- 开发模式 ---------------------------
 
 	if dev_mode then
@@ -241,6 +296,12 @@ function CommonStore:PostWorld()
 		-- aipPrint("do state!!!")
 		-- ThePlayer.sg:GoToState("aip_drive")
 		end)
+
+		-- self.inst:DoPeriodicTask(2, function()
+		-- 	local x, y, z = ThePlayer.Transform:GetWorldPosition()
+		-- 	local tile = TheWorld.Map:GetTileAtPoint(x, y, z)
+		-- 	aipPrint("Tile:", isNaturalPoint(Vector3(x, y, z)), tile)
+		-- end)
 	end
 	-- if dev_mode then
 	-- 	self.inst:DoTaskInTime(2, function()

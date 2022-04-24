@@ -1,5 +1,7 @@
 TUNING.NECTAR_SPEED_MULT = 1.75
 
+TUNING.NECTAR_DRUNK_SPEED_MULT = 0.4 -- 喝醉时速度一会儿快一会儿慢
+
 --[[local function RGB(r, g, b, a)
 	return { r / 255, g / 255, b / 255, (a or 255) / 255 }
 end]]
@@ -85,6 +87,8 @@ local LANG_VALUE_MAP = {
 		terrible = "Terrible",
 		vampire = "Bloodthirsty",
 		damage = "Warsong",
+		starch = "buzzed",
+		wine = "fermentation",
 
 		tasteless = "Tasteless",
 		balance = "Balance",
@@ -110,6 +114,8 @@ local LANG_VALUE_MAP = {
 		terrible = "恐怖",
 		vampire = "嗜血",
 		damage = "战歌",
+		starch = "微醺",
+		wine = "酒香",
 
 		tasteless = "平淡",
 		balance = "平衡",
@@ -135,6 +141,8 @@ local LANG_VALUE_MAP = {
 		terrible = "Ужасный",
 		vampire = "Кровожадность",
 		damage = "Песнь войны",
+		starch = "пьяный",
+		wine = "Ферментация",
 
 		tasteless = "Безвкусный",
 		balance = "Сбалансированный",
@@ -169,6 +177,8 @@ local VALUE_WEIGHT = {
 	terrible =		{0.0, 0.0, 0.0, 1.0},
 	vampire =		{1.0, 0.5, 0.5, 1.0},
 	damage =		{0.5, 1.0, 1.0, 1.0},
+	starch =		{1.0, 0.5, 1.0, 1.0},
+	wine =			{1.0, 0.5, 0.5, 1.0},
 
 	tasteless =		{1.0, 1.0, 1.0, 1.0},
 	balance =		{1.0, 1.0, 1.0, 1.0},
@@ -218,6 +228,16 @@ local VALUE_EAT_BONUS = {
 		health = HP * -5,
 		hunger = HU * 0,
 		sanity = SAN * -5,
+	},
+	starch = {
+		health = HP * 4,
+		hunger = HU * 5,
+		sanity = SAN * -1,
+	},
+	wine = {
+		health = HP * 0,
+		hunger = HU * 0,
+		sanity = SAN * -3,
 	},
 }
 

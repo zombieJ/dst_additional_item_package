@@ -18,88 +18,118 @@ local language = aipGetModConfig("language")
 
 -- 语言
 local LANG_MAP = {
-	["english"] = {
-		["aip_moon"] = {
-			["NAME"] = "Moon Ash",
-			["REC_DESC"] = "Provide weak light",
-			["DESC"] = "Is that Contemporary Art?",
+	english = {
+		aip_moon = {
+			NAME = "Moon Ash",
+			REC_DESC = "Provide weak light",
+			DESC = "Is that Contemporary Art?",
 		},
-		["aip_doujiang"] = {
-			["NAME"] = "Dou Jiang",
-			["REC_DESC"] = "Happy is life target",
-			["DESC"] = "Looks like turn into stone",
+		aip_doujiang = {
+			NAME = "Dou Jiang",
+			REC_DESC = "Happy is life target",
+			DESC = "Looks like turn into stone",
 
-			["AIP_WIND_ONLY"] = "Something can more represent of wind",
-			["AIP_FIRE_ONLY"] = "Something can more represent of fire",
-			["AIP_WATER_ONLY"] = "Something can more represent of water",
-			["AIP_ASH_ONLY"] = "Something can more represent of earth",
-			["AIP_ELECTRICITY_ONLY"] = "Something can more represent of electricity",
-			["AIP_PLANT_ONLY"] = "Something can more represent of plant",
-			["AIP_SLOT_ONLY"] = "Need put in slot instead",
+			AIP_WIND_ONLY = "Something can more represent of wind",
+			AIP_FIRE_ONLY = "Something can more represent of fire",
+			AIP_WATER_ONLY = "Something can more represent of water",
+			AIP_ASH_ONLY = "Something can more represent of earth",
+			AIP_ELECTRICITY_ONLY = "Something can more represent of electricity",
+			AIP_PLANT_ONLY = "Something can more represent of plant",
+			AIP_SLOT_ONLY = "Need put in slot instead",
 		},
-		["aip_deer"] = {
-			["NAME"] = "Watcher",
-			["REC_DESC"] = "Looks like alive",
-			["DESC"] = "What's it waiting for?",
+		aip_deer = {
+			NAME = "Watcher",
+			REC_DESC = "Looks like alive",
+			DESC = "What's it waiting for?",
 		},
-	},
-	["spanish"] = {
-		["aip_moon"] = {
-			["NAME"] = "Ceniza lunar",
-			["REC_DESC"] = "Proporciona una luz tenue",
-			["DESC"] = "Eso es arte contemporaneo?",
+		aip_mouth = {
+			NAME = "Smiler",
+			REC_DESC = "Maybe not smile",
+			DESC = "Hmmm...it's something",
 		},
-		["aip_doujiang"] = {
-			["NAME"] = "Dou Jiang",
-			["REC_DESC"] = "La felicidad es el objetivo de la vida",
-			["DESC"] = "Parece que se hubiese vuelto piedra",
+		aip_octupus = {
+			NAME = "Octupus",
+			REC_DESC = "He is looing you",
+			DESC = "So many eyes!",
 		},
-		["aip_deer"] = {
-			["NAME"] = "Observador",
-			["REC_DESC"] = "Parece algo vivo",
-			["DESC"] = "¿A qué está esperando?",
+		aip_fish = {
+			NAME = "Mermaid",
+			REC_DESC = "No front & end",
+			DESC = "It's 'beautiful'",
 		},
 	},
-	["chinese"] = {
-		["aip_moon"] = {
-			["NAME"] = "月光星尘",
-			["REC_DESC"] = "可以提供微弱的光芒",
-			["DESC"] = "这是当代艺术吗？",
+	spanish = {
+		aip_moon = {
+			NAME = "Ceniza lunar",
+			REC_DESC = "Proporciona una luz tenue",
+			DESC = "Eso es arte contemporaneo?",
 		},
-		["aip_doujiang"] = {
-			["NAME"] = "豆酱",
-			["REC_DESC"] = "无忧无虑的生活最是向往",
-			["DESC"] = "看起来就像是被石化了",
+		aip_doujiang = {
+			NAME = "Dou Jiang",
+			REC_DESC = "La felicidad es el objetivo de la vida",
+			DESC = "Parece que se hubiese vuelto piedra",
+		},
+		aip_deer = {
+			NAME = "Observador",
+			REC_DESC = "Parece algo vivo",
+			DESC = "¿A qué está esperando?",
+		},
+	},
+	chinese = {
+		aip_moon = {
+			NAME = "月光星尘",
+			REC_DESC = "可以提供微弱的光芒",
+			DESC = "这是当代艺术吗？",
+		},
+		aip_doujiang = {
+			NAME = "豆酱",
+			REC_DESC = "无忧无虑的生活最是向往",
+			DESC = "看起来就像是被石化了",
 
-			["AIP_WIND_ONLY"] = "应该有更能代表风的物品",
-			["AIP_FIRE_ONLY"] = "应该有更能代表火的物品",
-			["AIP_WATER_ONLY"] = "应该有更能代表水的物品",
-			["AIP_ASH_ONLY"] = "应该有更能代表土的物品",
-			["AIP_ELECTRICITY_ONLY"] = "应该有更能代表电的物品",
-			["AIP_PLANT_ONLY"] = "应该有更能代表木的物品",
-			["AIP_SLOT_ONLY"] = "需要放到对应的插槽中",
+			AIP_WIND_ONLY = "应该有更能代表风的物品",
+			AIP_FIRE_ONLY = "应该有更能代表火的物品",
+			AIP_WATER_ONLY = "应该有更能代表水的物品",
+			AIP_ASH_ONLY = "应该有更能代表土的物品",
+			AIP_ELECTRICITY_ONLY = "应该有更能代表电的物品",
+			AIP_PLANT_ONLY = "应该有更能代表木的物品",
+			AIP_SLOT_ONLY = "需要放到对应的插槽中",
 		},
-		["aip_deer"] = {
-			["NAME"] = "守望者",
-			["REC_DESC"] = "凡灵皆有生命",
-			["DESC"] = "它似乎在等着什么",
+		aip_deer = {
+			NAME = "守望者",
+			REC_DESC = "凡灵皆有生命",
+			DESC = "它似乎在等着什么",
+		},
+		aip_mouth = {
+			NAME = "微笑",
+			REC_DESC = "不像在笑",
+			DESC = "看来有点东西",
+		},
+		aip_octupus = {
+			NAME = "章鱼",
+			REC_DESC = "它正在看着你",
+			DESC = "太多眼睛!",
+		},
+		aip_fish = {
+			NAME = "美人鱼",
+			REC_DESC = "没有正反面",
+			DESC = "它可真“美”",
 		},
 	},
-	["russian"] = {
-		["aip_moon"] = {
-			["NAME"] = "Лунный Пепел",
-			["REC_DESC"] = "Излучает слабый свет.",
-			["DESC"] = "Это современное искусство?",
+	russian = {
+		aip_moon = {
+			NAME = "Лунный Пепел",
+			REC_DESC = "Излучает слабый свет.",
+			DESC = "Это современное искусство?",
 		},
-		["aip_doujiang"] = {
-			["NAME"] = "Доу Цзян",
-			["REC_DESC"] = "Веселье - это цель его жизни.",
-			["DESC"] = "Такое чувство, будто он превратился в камень.",
+		aip_doujiang = {
+			NAME = "Доу Цзян",
+			REC_DESC = "Веселье - это цель его жизни.",
+			DESC = "Такое чувство, будто он превратился в камень.",
 		},
-		["aip_deer"] = {
-			["NAME"] = "Смотритель",
-			["REC_DESC"] = "Выглядит как живой!",
-			["DESC"] = "Чего он ждёт?",
+		aip_deer = {
+			NAME = "Смотритель",
+			REC_DESC = "Выглядит как живой!",
+			DESC = "Чего он ждёт?",
 		},
 	},	
 }
@@ -138,7 +168,7 @@ local PIECES =
 	{
 		name = "aip_moon",
 		moonevent = false,
-		recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("moonrocknugget", 9), Ingredient("frozen_heart", 1, "images/inventoryimages/frozen_heart.xml")},
+		-- recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("moonrocknugget", 9), Ingredient("frozen_heart", 1, "images/inventoryimages/frozen_heart.xml")},
 		common_postinit = function(inst)
 			-- 月光星尘会发光
 			inst.entity:AddLight()
@@ -211,6 +241,18 @@ local PIECES =
 		moonevent = false,
 		recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("boneshard", 2), Ingredient("beardhair", 1)},
 	},
+	{
+		name = "aip_mouth",
+		moonevent = false,
+	},
+	{
+		name = "aip_octupus",
+		moonevent = false,
+	},
+	{
+		name = "aip_fish",
+		moonevent = false,
+	},
 }
 
 --------------------------------- 遍历创建者 ----------------------------------
@@ -220,8 +262,15 @@ for pieceid = 1,#PIECES do
 	-- 只处理有name的
 	local name = piece.name
 	if name then
-		local recipe = Recipe("chesspiece_"..name.."_builder", piece.recipe, RECIPETABS.SCULPTING, TECH.SCULPTING_ONE, nil, nil, true, nil, nil, nil, "chesspiece_"..name..".tex")
-		recipe.atlas = "images/inventoryimages/chesspiece_"..name..".xml"
+		if piece.recipe ~= nil then -- 如果是遗失，就需要在 recpiesHooker 里面添加
+			local recipe = Recipe(
+				"chesspiece_"..name.."_builder", piece.recipe,
+				RECIPETABS.SCULPTING, TECH.SCULPTING_ONE,
+				nil, nil, true, nil, nil, nil,
+				"chesspiece_"..name..".tex"
+			)
+			recipe.atlas = "images/inventoryimages/chesspiece_"..name..".xml"
+		end
 
 		local upperCase = string.upper(name)
 		local lang = LANG[name] or LANG_ENG[name]

@@ -1,3 +1,5 @@
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
+
 local language = aipGetModConfig("language")
 
 -- 文字描述
@@ -38,7 +40,10 @@ local function GoToNewPlace(inst)
 
         if tree ~= nil then
             local tgtPT = aipGetSecretSpawnPoint(tree:GetPosition(), 1, 10, 5)
-            aipSpawnPrefab(nil, "aip_eye_box", tgtPT.x, tgtPT.y, tgtPT.z)
+            if tgtPT ~= nil then
+                aipSpawnPrefab(nil, "aip_eye_box", tgtPT.x, tgtPT.y, tgtPT.z)
+            end
+
             inst:Remove()
         end
     end)
@@ -52,8 +57,19 @@ end
 
 -- 丢起物品
 local function onLockDrop(inst, source)
-    for i = 1, 3 do
-        inst.components.lootdropper:SpawnLootPrefab("aip_oldone_wall_item")
+    local ptg = dev_mode and 0.5 or 0.01
+
+    if Prefabs.chesspiece_aip_fish_sketch ~= nil and math.random() < ptg then
+        inst.components.lootdropper:SpawnLootPrefab("chesspiece_aip_fish_sketch")
+    elseif Prefabs.chesspiece_aip_octupus_sketch ~= nil and math.random() < ptg then
+        inst.components.lootdropper:SpawnLootPrefab("chesspiece_aip_octupus_sketch")
+    elseif Prefabs.chesspiece_aip_mouth_sketch ~= nil and math.random() < ptg then
+        inst.components.lootdropper:SpawnLootPrefab("chesspiece_aip_mouth_sketch")
+    else
+        local count = math.random(3, 5)
+        for i = 1, count do
+            inst.components.lootdropper:SpawnLootPrefab("aip_oldone_wall_item")
+        end
     end
 end
 

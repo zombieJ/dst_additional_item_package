@@ -366,7 +366,7 @@ local function spawnNearBy(inst, prefabName, dist, maxCount)
 	dist = dist or 40
 	maxCount = maxCount or 999
 
-	local pos = _G.aipGetSpawnPoint(inst:GetPosition(), dist)
+	local pos = _G.aipGetSecretSpawnPoint(inst:GetPosition(), dist, dist + 5, 5)
 	if pos ~= nil then
 		local prefab = _G.SpawnPrefab(prefabName)
 		prefab.Transform:SetPosition(pos.x, pos.y, pos.z)
@@ -420,6 +420,21 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 				if math.random() < chance then
 					local spawnPoint = _G.aipFindRandomEnt("spawnpoint_multiplayer", "spawnpoint_master")
 					spawnNearBy(spawnPoint, "aip_oldone_plant", 120, 3)
+				end
+			end)
+		end)
+
+		-- 每个季节变换都会在 猪王 附近重置一条 袜子蛇
+		inst:WatchWorldState("season", function ()
+			inst:DoTaskInTime(1.5, function() -- 延迟生效以防卡顿
+				local pigking = _G.aipFindEnt("pigking")
+				if pigking then
+					local pos = pigking:GetPosition()
+					local ents = TheSim:FindEntities(pos.x, pos.y, pos.z, 100, { "aip_oldone_thestral" })
+
+					if #ents == 0 then
+						_G.aipSpawnPrefab(pigking, "aip_oldone_thestral")
+					end
 				end
 			end)
 		end)

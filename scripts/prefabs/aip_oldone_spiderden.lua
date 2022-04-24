@@ -63,21 +63,37 @@ local function OnHit(inst, attacker)
 end
 
 -- 不断在玩家附近创建眼睛
-aipClientBuffer("aip_see_eyes", function(inst)
-    local pt = inst:GetPosition()
+aipGlobalBuffer("aip_see_eyes", {
+    clientFn = function(inst)
+        local pt = inst:GetPosition()
+    
+        for i = 1, 2 do
+            local eye = aipSpawnPrefab(
+                inst, "aip_oldone_eye",
+                pt.x + math.random(-10, 10), 0,
+                pt.z + math.random(-10, 10)
+            )
+    
+            local scale = 1 + math.random() / 2
+            eye.Transform:SetScale(scale, scale, scale)
+            eye.Transform:SetRotation(math.random() * 360)
+        end
+    end,
 
-    for i = 1, 2 do
-        local eye = aipSpawnPrefab(
-            inst, "aip_oldone_eye",
-            pt.x + math.random(-10, 10), 0,
-            pt.z + math.random(-10, 10)
-        )
+    -- 告知客机玩家可以看见特殊东西了
+    startFn = function(source, inst)
+        if inst.player_classified ~= nil and inst.player_classified.aip_see_eyes ~= nil then
+            inst.player_classified.aip_see_eyes:set(true)
+        end
+    end,
 
-        local scale = 1 + math.random() / 2
-        eye.Transform:SetScale(scale, scale, scale)
-        eye.Transform:SetRotation(math.random() * 360)
-    end
-end)
+    -- 告知客机玩家不用再看了
+    endFn = function(source, inst)
+        if inst.player_classified ~= nil and inst.player_classified.aip_see_eyes ~= nil then
+            inst.player_classified.aip_see_eyes:set(false)
+        end
+    end,
+})
 
 local function OnKilled(inst)
     -- 诅咒附近的玩家

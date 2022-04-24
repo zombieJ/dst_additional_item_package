@@ -115,6 +115,12 @@ PrefabFiles = {
 	"aip_oldone_rabbit",
 	"aip_oldone_eye",
 	"aip_oldone_wall",
+	"aip_oldone_durian",
+	"aip_oldone_thestral",
+	"aip_oldone_thestral_fur",
+	"aip_oldone_marble",
+	"aip_oldone_marble_head",
+	"aip_oldone_marble_head_lock",
 
 	-- Orbit
 	"aip_orbit",
@@ -126,6 +132,7 @@ PrefabFiles = {
 
 	-- Chesspiece
 	"aip_chesspiece",
+	"aip_chesspiece_sketch",
 
 	-- Magic
 	"dark_observer",
@@ -194,7 +201,7 @@ AddMinimapAtlas("minimap/aip_fly_totem.xml")
 --------------------------------------- 封装 ---------------------------------------
 modimport("scripts/containersWrapper.lua")
 modimport("scripts/writeablesWrapper.lua")
-modimport("scripts/itemTileWrapper.lua")
+-- modimport("scripts/itemTileWrapper.lua")
 modimport("scripts/hudWrapper.lua")
 modimport("scripts/shadowPackageAction.lua")
 modimport("scripts/widgetHooker.lua")
@@ -202,6 +209,7 @@ modimport("scripts/recpiesHooker.lua")
 modimport("scripts/flyWrapper.lua")
 modimport("scripts/houseWrapper.lua")
 modimport("scripts/sgHooker.lua")
+modimport("scripts/hooks/aip_hover_hook.lua")
 
 ------------------------------------- 测试专用 -------------------------------------
 if dev_mode then
@@ -226,6 +234,7 @@ end)
 ------------------------------------- 玩家钩子 -------------------------------------
 modimport("scripts/hooks/aip_drive_hook")
 modimport("scripts/hooks/aip_transfer_hook")
+modimport("scripts/hooks/aip_oldone_hook")
 
 function PlayerPrefabPostInit(inst)
 	if not inst.components.aipc_player_client then

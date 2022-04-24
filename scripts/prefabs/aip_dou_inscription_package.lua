@@ -10,20 +10,20 @@ require "prefabutil"
 local language = aipGetModConfig("language")
 
 local LANG_MAP = {
-	["english"] = {
-		["NAME"] = "Inscription Package",
-		["REC_DESC"] = "Hold your inscriptions!",
-		["DESC"] = "Inscriptions' home",
+	english = {
+		NAME = "Inscription Package",
+		REC_DESC = "Hold your inscriptions!",
+		DESC = "Inscriptions' home",
 	},
-	["chinese"] = {
-		["NAME"] = "符文袋",
-		["REC_DESC"] = "装下你的符文！",
-		["DESC"] = "符文的好去处",
+	chinese = {
+		NAME = "符文袋",
+		REC_DESC = "装下你的符文！",
+		DESC = "符文的好去处",
 	},
-	["russian"] = {
-		["NAME"] = "Сумка для надписей",
-		["REC_DESC"] = "Храни свои надписи!",
-		["DESC"] = "Дом надписей",
+	russian = {
+		NAME = "Сумка для надписей",
+		REC_DESC = "Храни свои надписи!",
+		DESC = "Дом надписей",
 	},
 }
 

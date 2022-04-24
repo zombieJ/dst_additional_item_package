@@ -94,10 +94,12 @@ CONSTRUCTION_PLANS["aip_dou_totem_powerless"] = aip_dou_totem_powerless_plans
 
 ---------------------------------- 事件 ----------------------------------
 local function createFlyTotem(pt, name, markType)
-    local flyTotem = aipSpawnPrefab(nil, "aip_fly_totem", pt.x, pt.y, pt.z)
-    aipSpawnPrefab(flyTotem, "collapse_small")
-    flyTotem.components.writeable:SetText(name)
-    flyTotem.markType = markType
+    if pt ~= nil then
+        local flyTotem = aipSpawnPrefab(nil, "aip_fly_totem", pt.x, pt.y, pt.z)
+        aipSpawnPrefab(flyTotem, "collapse_small")
+        flyTotem.components.writeable:SetText(name)
+        flyTotem.markType = markType
+    end
 end
 
 local function createFlyTotems(inst)

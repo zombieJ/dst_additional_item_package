@@ -16,6 +16,9 @@ local AIP_UniqueSlotInfo = Class(Widget, function(self)
 	self.text = self:AddChild(Text(UIFONT, 25))
 	self.text:SetPosition(Vector3(0, 0, 0))
 
+	-- 控件会延迟对齐，我们这边加一个计时器
+	self.syncTask = nil
+
 	self:Hide()
 	self:SetClickable(false)
 end)
@@ -66,7 +69,10 @@ function AIP_UniqueSlotInfo:ShowTip(slot)
 	self.text:SetColour(unpack(aip_info_color))
 	
 	-- 偏移坐标
-	widgetInst:DoTaskInTime(0.1, function()
+	if self.syncTask ~= nil then
+		self.syncTask:Cancel()
+	end
+	self.syncTask = widgetInst:DoTaskInTime(0.001, function()
 		if self.currentSlot ~= slot then
 			return
 		end

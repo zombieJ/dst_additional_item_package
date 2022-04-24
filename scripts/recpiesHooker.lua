@@ -1,23 +1,36 @@
 local _G = GLOBAL
 local TECH = _G.TECH
 local CRAFTING_FILTERS = _G.CRAFTING_FILTERS
+local TECH_INGREDIENT = _G.TECH_INGREDIENT
 
 function GLOBAL.AddModPrefabCookerRecipe(cooker, recipe)
 	env.AddCookerRecipe(cooker, recipe)
 end
 
 -- 新版 mod 物品配方
-local function rec(name, tech, filters, ingredients, placer)
+local function rec(name, tech, filters, ingredients, placerOrConfig)
 	local filterNames = {}
 	for _, filter in ipairs(filters) do
 		table.insert(filterNames, filter.name)
+	end
+
+	local config = {}
+	if type(placerOrConfig) == "table" then
+		config = placerOrConfig
+	else
+		config.placer = placerOrConfig
+	end
+
+	-- atlas
+	if config.atlas == nil then
+		config.atlas = "images/inventoryimages/"..name..".xml"
 	end
 
 	AddRecipe2(
 		name,
 		ingredients,
 		tech,
-		{ atlas = "images/inventoryimages/"..name..".xml", placer = placer },
+		config,
 		filterNames
 	)
 end
@@ -133,25 +146,68 @@ rec("aip_shell_stone", TECH.LOST, { CRAFTING_FILTERS.TOOLS },
 	{ Ingredient("cookiecuttershell", 1), Ingredient("moonrocknugget", 1) })
 
 ------------------------------------ 神秘权杖 ------------------------------------
+local scepterData = {
+	icon_atlas = "images/inventoryimages/aip_dou_tech.xml",
+	icon_image = "aip_dou_tech.tex",
+	is_crafting_station = true,
+	action_str = "SCULPTING",
+	filter_text = _G.STRINGS.UI.CRAFTING_STATION_FILTERS.SCULPTING,
+}
+
+env.AddPrototyperDef("aip_dou_scepter", scepterData)
+env.AddPrototyperDef("aip_dou_empower_scepter", scepterData)
+env.AddPrototyperDef("aip_dou_huge_scepter", scepterData)
+
 -- 符文
 local inscriptions = require("utils/aip_scepter_util").inscriptions
 for name, info in pairs(inscriptions) do
-	rec(name, TECH.AIP_DOU_SCEPTER, { CRAFTING_FILTERS.MAGIC },
-	info.recipes)
+	rec(name, TECH.AIP_DOU_SCEPTER, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.MAGIC },
+	info.recipes, { nounlock=true })
 end
 
 ------------------------------------ 联结图腾 ------------------------------------
+env.AddPrototyperDef("aip_dou_totem", {
+	icon_atlas = "images/inventoryimages/aip_totem_tech.xml",
+	icon_image = "aip_totem_tech.tex",
+	is_crafting_station = true,
+	action_str = "SCULPTING",
+	filter_text = _G.STRINGS.UI.CRAFTING_STATION_FILTERS.SCULPTING,
+})
+
 -- 搬运石偶
 rec(
-	"aip_shadow_transfer", TECH.AIP_DOU_TOTEM, { CRAFTING_FILTERS.TOOLS, CRAFTING_FILTERS.MAGIC },
-	{ Ingredient("moonglass", 2), Ingredient("moonrocknugget", 2), Ingredient("aip_22_fish", 1, "images/inventoryimages/aip_22_fish.xml") })
+	"aip_shadow_transfer", TECH.AIP_DOU_TOTEM, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.TOOLS, CRAFTING_FILTERS.MAGIC },
+	{ Ingredient("moonglass", 2), Ingredient("moonrocknugget", 2), Ingredient("aip_22_fish", 1, "images/inventoryimages/aip_22_fish.xml") },
+	{ nounlock=true })
 
 -- 月轨测量仪
 rec(
-	"aip_track_tool", TECH.AIP_DOU_TOTEM, { CRAFTING_FILTERS.TOOLS, CRAFTING_FILTERS.MAGIC },
-	{ Ingredient("moonglass", 6), Ingredient("moonrocknugget", 3), Ingredient("transistor", 1) })
+	"aip_track_tool", TECH.AIP_DOU_TOTEM, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.TOOLS, CRAFTING_FILTERS.MAGIC },
+	{ Ingredient("moonglass", 6), Ingredient("moonrocknugget", 3), Ingredient("transistor", 1) },
+	{ nounlock=true })
 
 -- 玻璃矿车
 rec(
-	"aip_glass_minecar", TECH.AIP_DOU_TOTEM, { CRAFTING_FILTERS.TOOLS, CRAFTING_FILTERS.MAGIC },
-	{ Ingredient("moonglass", 5), Ingredient("goldnugget", 4) })
+	"aip_glass_minecar", TECH.AIP_DOU_TOTEM, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.TOOLS, CRAFTING_FILTERS.MAGIC },
+	{ Ingredient("moonglass", 5), Ingredient("goldnugget", 4) },
+	{ nounlock=true })
+
+------------------------------------ 古神低语 ------------------------------------
+-- 微笑雕像
+rec("chesspiece_aip_mouth_builder", TECH.LOST, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.DECOR },
+	{ Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("aip_oldone_plant_broken", 1, "images/inventoryimages/aip_oldone_plant_broken.xml") },
+	{ nounlock=true, atlas = "images/inventoryimages/chesspiece_aip_mouth.xml", image = "chesspiece_aip_mouth.tex" })
+
+-- 章鱼雕像
+rec("chesspiece_aip_octupus_builder", TECH.LOST, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.DECOR },
+	{ Ingredient(_G.TECH_INGREDIENT.SCULPTING, 2), Ingredient("aip_oldone_plant_broken", 1, "images/inventoryimages/aip_oldone_plant_broken.xml") },
+	{ nounlock=true, atlas = "images/inventoryimages/chesspiece_aip_octupus.xml", image = "chesspiece_aip_octupus.tex" })
+
+-- 美人鱼雕像
+rec("chesspiece_aip_fish_builder", TECH.LOST, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.DECOR },
+	{ Ingredient(_G.TECH_INGREDIENT.SCULPTING, 2), Ingredient("aip_oldone_plant_broken", 1, "images/inventoryimages/aip_oldone_plant_broken.xml") },
+	{ nounlock=true, atlas = "images/inventoryimages/chesspiece_aip_fish.xml", image = "chesspiece_aip_fish.tex" })
+
+-- 榴星
+rec("aip_oldone_durian", TECH.LOST, { CRAFTING_FILTERS.WEAPONS },
+	{ Ingredient("durian", 1), Ingredient("aip_oldone_plant_full", 1, "images/inventoryimages/aip_oldone_plant_full.xml"), })
