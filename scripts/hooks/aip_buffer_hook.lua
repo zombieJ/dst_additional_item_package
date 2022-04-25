@@ -13,20 +13,19 @@ function _G.aipBufferFn(name, fnName)
 end
 
 function _G.aipBufferExist(inst, name)
-	if inst == nil or inst.children == nil then
+	if inst == nil or inst._aipBufferGUID == nil then
 		return false
 	end
 
 	-- 找到 Buffer 对象
-	local buffer = nil
-	for child, exist in pairs(inst.children) do
-		if exist and child:IsValid() and child.prefab == "aip_0_buffer" then
-			buffer = child
-			break
-		end
-	end
+	local buffer = _G.Ents[inst._aipBufferGUID]
 
-	return buffer ~= nil and buffer._aipBufferExist ~= nil and buffer._aipBufferExist(buffer, name)
+	return (
+		buffer ~= nil and
+		buffer:IsValid() and
+		buffer._aipBufferExist ~= nil and
+		buffer._aipBufferExist(buffer, name)
+	)
 end
 
 -- 【服务端】创建 Buffer

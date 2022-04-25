@@ -9,6 +9,23 @@ local assets = {
 	Asset("ANIM", "anim/aip_buffer.zip")
 }
 
+
+----------------------------------- 注册 -----------------------------------
+local function onRegisterParent(inst)
+    local parent = inst.entity:GetParent()
+    if parent ~= nil then
+        inst._aipParentGUID = parent.GUID
+        parent._aipBufferGUID = inst.GUID
+    end
+end
+
+local function onUnregisterParent(inst)
+    local parent = Ents[inst._aipParentGUID]
+    if parent ~= nil then
+        parent._aipBufferGUID = nil
+    end
+end
+
 ----------------------------------- 事件 -----------------------------------
 local interval = 0.5
 
@@ -148,6 +165,12 @@ local function fn(data)
             aipPrint("Same one?", inst.entity:GetParent() == ThePlayer)
         end)
     end
+
+    -- 将自己注册给父节点
+    inst:DoTaskInTime(0.01, onRegisterParent)
+
+    -- 如果移除了，父节点也取消一下
+    inst.OnRemoveEntity = onUnregisterParent
 
     -- 服务器不用展示特效
     if not TheNet:IsDedicated() then
