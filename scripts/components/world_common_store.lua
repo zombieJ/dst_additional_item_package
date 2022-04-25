@@ -196,13 +196,16 @@ function CommonStore:CreateMarble()
 	if marble == nil then
 		for i = 1, 10 do
 			local reeds = aipFindRandomEnt("reeds")
-			local rx, ry, rz = reeds.Transform:GetWorldPosition()
 
-			if TheWorld.Map:GetTileAtPoint(rx, ry, rz) == GROUND.MARSH then
-				local tgtPT = aipGetSecretSpawnPoint(reeds:GetPosition(), 1, 10, 5)
-				if tgtPT ~= nil then
-					marble = aipSpawnPrefab(nil, "aip_oldone_marble", tgtPT.x, tgtPT.y, tgtPT.z)
-					break
+			if reeds ~= nil then
+				local rx, ry, rz = reeds.Transform:GetWorldPosition()
+
+				if TheWorld.Map:GetTileAtPoint(rx, ry, rz) == GROUND.MARSH then
+					local tgtPT = aipGetSecretSpawnPoint(reeds:GetPosition(), 1, 10, 5)
+					if tgtPT ~= nil then
+						marble = aipSpawnPrefab(nil, "aip_oldone_marble", tgtPT.x, tgtPT.y, tgtPT.z)
+						break
+					end
 				end
 			end
 		end

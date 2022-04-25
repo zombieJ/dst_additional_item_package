@@ -11,7 +11,13 @@ local Text = require "widgets/text"
 local function findFocusItem(self)
     if self.focus then
         -- 找到物品啦
-        if self.item ~= nil and self.item:IsValid() and self.item.replica.inventoryitem ~= nil then
+        if
+            self.item ~= nil and
+            self.item.IsValid ~= nil and -- T 键会给不是 inst 的东东
+            self.item:IsValid() and
+            self.item.replica ~= nil and
+            self.item.replica.inventoryitem ~= nil
+        then
             return self.item
         end
 
