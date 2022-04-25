@@ -8,7 +8,7 @@ function _G.aipBufferRegister(name, info)
 	globalBuffers[name] = info
 end
 
-local function getBufferFn(name, fnName)
+function _G.aipBufferFn(name, fnName)
 	return (globalBuffers[name] or {})[fnName]
 end
 
@@ -44,7 +44,7 @@ function _G.aipBufferPatch(inst, name, source, duration, info)
 		}
 
 		-- 全局启动函数
-		local startFn = getBufferFn(name, "startFn")
+		local startFn = _G.aipBufferFn(name, "startFn")
 		if startFn ~= nil then
 			startFn(source, inst, { data = inst._buffers[name].data })
 		end
@@ -52,10 +52,10 @@ function _G.aipBufferPatch(inst, name, source, duration, info)
 
 	inst._buffers[name].srcGUID = source ~= nil and source.GUID
 	inst._buffers[name].duration = duration or 2
-	inst._buffers[name].fn = info.fn
-	inst._buffers[name].startFn = info.startFn
-	inst._buffers[name].endFn = info.endFn
-	inst._buffers[name].clientFn = info.clientFn
+	-- inst._buffers[name].fn = info.fn
+	-- inst._buffers[name].startFn = info.startFn
+	-- inst._buffers[name].endFn = info.endFn
+	-- inst._buffers[name].clientFn = info.clientFn
 
 	inst._buffers[name].showFX = info.showFX
 

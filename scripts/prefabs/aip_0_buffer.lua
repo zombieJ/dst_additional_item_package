@@ -13,18 +13,75 @@ local interval = 0.5
 -- 【服务端】同步名称
 local function syncNames(inst)
     inst._aipBufferNames:set(
-        aipJoin(aipTableKeys(inst._buffers))
+        aipJoin(aipTableKeys(inst._buffers), ",")
     )
     
 end
 
 -- 【客户端】函数
 local function clientRefresh(inst)
+    local bufferKeys = aipSplit(inst._aipBufferNames:(), ",")
 
+    -- 遍历创建客户端特效
+    for i, bufferName in ipairs(bufferKeys) do
+        local clientFn = aipBufferFn(bufferName, "clientFn")
+        if clientFn ~= nil then
+            clientFn(inst)
+        end
+    end
+end
+
+local function getSource(GUID)
+	return Ents[GUID]
 end
 
 -- 【服务端】函数
 local function serverRefresh(inst)
+    local allRemove = true
+	local rmNames = {}
+
+	for name, info in pairs(inst._buffers) do
+		info.duration = info.duration - interval
+
+		-- 参数：源头，目标，间隔，时间差
+		local fnData = {
+			interval = interval,
+			passTime = GetTime() - info.startTime,
+			data = info.data,
+		}
+
+		-- 全局函数
+		local fn = aipBufferFn(name, "fn")
+		if fn ~= nil then
+			fn(getSource(info.srcGUID), inst, fnData)
+		end
+
+		-- 清理过期的 buffer
+		if info.duration <= 0 then
+			table.insert(rmNames, name)
+		else
+			allRemove = false
+		end
+	end
+
+	-- 清除的 buffer 需要一个退出事件处理收尾
+	for i, name in ipairs(rmNames) do
+		local info = self.buffers[name]
+
+		-- 全局结束函数
+		local endFn = aipBufferFn(name, "endFn")
+		if endFn ~= nil then
+			endFn(getSource(info.srcGUID), inst, { data = info.data })
+		end
+	end
+
+	inst._buffers = aipFilterKeysTable(inst._buffers, rmNames)
+	syncNames(inst)
+
+    -- 没有 Buffer 直接删除实体
+	if allRemove then
+		inst.parent:Remove()
+	end
 end
 
 ----------------------------------- 实例 -----------------------------------
