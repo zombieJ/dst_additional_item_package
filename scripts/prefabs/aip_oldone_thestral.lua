@@ -80,7 +80,7 @@ local function onNear(inst, player)
 		local players = aipFilterTable(
 			aipFindNearPlayers(inst, DIST_NEAR),
 			function(player)
-				return aipHasBuffer(player, "aip_see_eyes")
+				return aipBufferExist(player, "aip_see_eyes")
 			end
 		)
 
@@ -135,7 +135,7 @@ end
 -- 如果攻击者是开眼状态，则伤害变低
 local function onHealthDelta(inst, data)
 	local chance = dev_mode and 0.5 or 0.01
-	if inst ~= nil and data ~= nil and aipHasBuffer(data.afflicter, "aip_see_eyes") then
+	if inst ~= nil and data ~= nil and aipBufferExist(data.afflicter, "aip_see_eyes") then
 		data.amount = math.random() <= chance and -1 or 0
 	end
 end
@@ -143,7 +143,7 @@ end
 -- 掉落物检测
 local function onDeath(inst, data)
 	local killer = data ~= nil and data.afflicter or nil
-    if killer ~= nil and aipHasBuffer(killer, "aip_see_eyes") then
+    if killer ~= nil and aipBufferExist(killer, "aip_see_eyes") then
 		for i = 1, 3 do
 			inst.components.lootdropper:SpawnLootPrefab("aip_oldone_thestral_fur")
 		end

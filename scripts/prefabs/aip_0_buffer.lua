@@ -20,7 +20,7 @@ end
 
 -- 【客户端】函数
 local function clientRefresh(inst)
-    local bufferKeys = aipSplit(inst._aipBufferNames:(), ",")
+    local bufferKeys = aipSplit(inst._aipBufferNames:value(), ",")
 
     -- 遍历创建客户端特效
     for i, bufferName in ipairs(bufferKeys) do
@@ -31,6 +31,19 @@ local function clientRefresh(inst)
     end
 end
 
+-- 【客户端】存在 Buffer
+local function bufferExist(inst, name)
+    local bufferKeys = aipSplit(inst._aipBufferNames:value(), ",")
+
+    for i, bufferName in ipairs(bufferKeys) do
+        if bufferName == name then
+            return true
+        end
+    end
+
+    return false
+end
+
 local function getSource(GUID)
 	return Ents[GUID]
 end
@@ -39,6 +52,7 @@ end
 local function serverRefresh(inst)
     local allRemove = true
 	local rmNames = {}
+    local nextShowFX = false
 
 	for name, info in pairs(inst._buffers) do
 		info.duration = info.duration - interval
@@ -53,8 +67,10 @@ local function serverRefresh(inst)
 		-- 全局函数
 		local fn = aipBufferFn(name, "fn")
 		if fn ~= nil then
-			fn(getSource(info.srcGUID), inst, fnData)
+			fn(getSource(info.srcGUID), inst.parent, fnData)
 		end
+
+        nextShowFX = aipBufferFn(name, "showFX") or nextShowFX
 
 		-- 清理过期的 buffer
 		if info.duration <= 0 then
@@ -64,14 +80,25 @@ local function serverRefresh(inst)
 		end
 	end
 
+    -- 决定是否需要展示光环
+    if nextShowFX ~= inst._aipShowFX then
+        inst._aipShowFX = nextShowFX
+
+        if inst._aipShowFX then
+            inst:Show()
+        else
+            inst:Hide()
+        end
+    end
+
 	-- 清除的 buffer 需要一个退出事件处理收尾
 	for i, name in ipairs(rmNames) do
-		local info = self.buffers[name]
+		local info = inst._buffers[name]
 
 		-- 全局结束函数
 		local endFn = aipBufferFn(name, "endFn")
 		if endFn ~= nil then
-			endFn(getSource(info.srcGUID), inst, { data = info.data })
+			endFn(getSource(info.srcGUID), inst.parent, { data = info.data })
 		end
 	end
 
@@ -80,7 +107,7 @@ local function serverRefresh(inst)
 
     -- 没有 Buffer 直接删除实体
 	if allRemove then
-		inst.parent:Remove()
+		inst:Remove()
 	end
 end
 
@@ -110,6 +137,7 @@ local function fn(data)
     inst:DoPeriodicTask(interval, clientRefresh, 0.01)
 
     inst._aipBufferNames = net_string(inst.GUID, "aipc_buffer", "aipc_buffer_dirty")
+    inst._aipBufferExist = bufferExist
 
     if not TheWorld.ismastersim then
         return inst
@@ -119,6 +147,7 @@ local function fn(data)
 
     inst._buffers = {}
     inst._aipSyncNames = syncNames
+    inst._aipShowFX = nil
 
     inst:DoPeriodicTask(interval, serverRefresh, 0.01)
 

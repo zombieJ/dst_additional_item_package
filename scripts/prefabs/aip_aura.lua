@@ -12,6 +12,17 @@ local function onFade(inst)
 end
 
 local function getFn(data)
+	-- 全局注册一下 Buffer
+	if data.bufferName ~= nil then
+		aipBufferRegister(data.bufferName, {
+			fn = data.bufferFn,
+			-- 中毒减速
+			startFn = data.bufferStartFn,
+			endFn = data.bufferEndFn,
+			showFX = data.showFX,
+		})
+	end
+
 	-- 返回函数哦
 	local function fn()
 		local inst = CreateEntity()
@@ -59,15 +70,9 @@ local function getFn(data)
 			inst.components.aipc_aura.range = range
 			inst.components.aipc_aura.bufferName = data.bufferName
 			inst.components.aipc_aura.bufferDuration = data.bufferDuration or 3
-			inst.components.aipc_aura.bufferFn = data.bufferFn
-			inst.components.aipc_aura.bufferStartFn = data.bufferStartFn
-			inst.components.aipc_aura.bufferEndFn = data.bufferEndFn
 			inst.components.aipc_aura.mustTags = data.mustTags
 			inst.components.aipc_aura.noTags = data.noTags
 			inst.components.aipc_aura.interval = data.interval or 1.5
-			if data.showFX ~= nil then
-				inst.components.aipc_aura.showFX = data.showFX
-			end
 			inst.components.aipc_aura:Start()
 
 			-- debug 模式下，周围创建一圈光环指示范围

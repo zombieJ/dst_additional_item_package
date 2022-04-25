@@ -629,38 +629,6 @@ function _G.aipRPC(funcName, ...)
 	SendModRPCToServer(MOD_RPC[env.modname][funcName], ...)
 end
 
--- 添加 aipc_buffer
-function _G.aipPatchBuffer(inst, source, name, duration, info)
-	if inst.components.aipc_buffer == nil then
-		inst:AddComponent("aipc_buffer")
-	end
-
-	inst.components.aipc_buffer:Patch(name, source, duration, info)
-end
-
--- 存在 aipc_buffer
-function _G.aipHasBuffer(inst, name)
-	-- if inst.components.aipc_buffer ~= nil then
-	-- 	return inst.components.aipc_buffer.buffers[name] ~= nil
-	-- end
-
-	if inst ~= nil and inst.replica.aipc_buffer ~= nil then
-		return inst.replica.aipc_buffer:HasBuffer(name)
-	end
-
-	return false
-end
-
--- 注册全局 Buffer 效果，会先于自定义 Buffer 触发相关事件
--- info: clientFn, startFn, endFn, fn
-local globalBuffers = {}
-function _G.aipGlobalBuffer(name, info)
-	if info ~= nil then
-		globalBuffers[name] = info
-	end
-	return globalBuffers[name] or {}
-end
-
 -- 获取玩家手持的物品，仅在 AddComponentAction 中使用
 function _G.aipGetActionableItem(doer)
 	local inventory = doer.replica.inventory

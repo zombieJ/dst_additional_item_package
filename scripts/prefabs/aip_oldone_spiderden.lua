@@ -63,10 +63,10 @@ local function OnHit(inst, attacker)
 end
 
 -- 不断在玩家附近创建眼睛
-aipGlobalBuffer("aip_see_eyes", {
+aipBufferRegister("aip_see_eyes", {
     clientFn = function(inst)
         local pt = inst:GetPosition()
-    
+
         for i = 1, 2 do
             local eye = aipSpawnPrefab(
                 inst, "aip_oldone_eye",
@@ -93,15 +93,15 @@ aipGlobalBuffer("aip_see_eyes", {
             inst.player_classified.aip_see_eyes:set(false)
         end
     end,
+
+    showFX = true,
 })
 
 local function OnKilled(inst)
     -- 诅咒附近的玩家
     local players = aipFindNearPlayers(inst, 9)
     for k, player in pairs(players) do
-        aipPatchBuffer(player, inst, "aip_see_eyes", dev_mode and 10 or 30, {
-            showFX = true,
-        })
+        aipBufferPatch(inst, player, "aip_see_eyes", dev_mode and 10 or 30)
 
         if player.components.talker ~= nil then
             player.components.talker:Say(
