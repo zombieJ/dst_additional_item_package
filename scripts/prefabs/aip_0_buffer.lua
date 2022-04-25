@@ -3,12 +3,19 @@
     我们通过创建一个实体来同步数据。
 ]]
 
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
+
 local assets = {
 	Asset("ANIM", "anim/aip_buffer.zip")
 }
 
 ----------------------------------- 事件 -----------------------------------
 local interval = 0.5
+
+local function getParent(inst)
+    local parentEntity = inst.entity:GetParent()
+    return parentEntity and Ents[parentEntity.GUID] or nil
+end
 
 -- 【服务端】同步名称
 local function syncNames(inst)
@@ -26,7 +33,7 @@ local function clientRefresh(inst)
     for i, bufferName in ipairs(bufferKeys) do
         local clientFn = aipBufferFn(bufferName, "clientFn")
         if clientFn ~= nil then
-            clientFn(inst)
+            clientFn(getParent(inst))
         end
     end
 end
@@ -67,7 +74,7 @@ local function serverRefresh(inst)
 		-- 全局函数
 		local fn = aipBufferFn(name, "fn")
 		if fn ~= nil then
-			fn(getSource(info.srcGUID), inst.parent, fnData)
+			fn(getSource(info.srcGUID), getParent(inst), fnData)
 		end
 
         nextShowFX = aipBufferFn(name, "showFX") or nextShowFX
@@ -98,7 +105,7 @@ local function serverRefresh(inst)
 		-- 全局结束函数
 		local endFn = aipBufferFn(name, "endFn")
 		if endFn ~= nil then
-			endFn(getSource(info.srcGUID), inst.parent, { data = info.data })
+			endFn(getSource(info.srcGUID), getParent(inst), { data = info.data })
 		end
 	end
 
@@ -134,7 +141,18 @@ local function fn(data)
 
     inst.entity:SetPristine()
 
-    inst:DoPeriodicTask(interval, clientRefresh, 0.01)
+    -- 打印一些数据
+    if dev_mode then
+        inst:DoTaskInTime(0.5, function()
+            aipPrint("Create With GUID:", inst.GUID, inst.entity:GetParent() == Ents[inst.entity:GetParent().GUID])
+            aipPrint("Same one?", inst.entity:GetParent() == ThePlayer)
+        end)
+    end
+
+    -- 服务器不用展示特效
+    if not TheNet:IsDedicated() then
+        inst:DoPeriodicTask(interval, clientRefresh, 0.01)
+    end
 
     inst._aipBufferNames = net_string(inst.GUID, "aipc_buffer", "aipc_buffer_dirty")
     inst._aipBufferExist = bufferExist

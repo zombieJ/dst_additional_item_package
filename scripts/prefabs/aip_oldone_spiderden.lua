@@ -65,18 +65,20 @@ end
 -- 不断在玩家附近创建眼睛
 aipBufferRegister("aip_see_eyes", {
     clientFn = function(inst)
-        local pt = inst:GetPosition()
+        if inst ~= nil then
+            local pt = inst:GetPosition()
 
-        for i = 1, 2 do
-            local eye = aipSpawnPrefab(
-                inst, "aip_oldone_eye",
-                pt.x + math.random(-10, 10), 0,
-                pt.z + math.random(-10, 10)
-            )
-    
-            local scale = 1 + math.random() / 2
-            eye.Transform:SetScale(scale, scale, scale)
-            eye.Transform:SetRotation(math.random() * 360)
+            for i = 1, 2 do
+                local eye = aipSpawnPrefab(
+                    inst, "aip_oldone_eye",
+                    pt.x + math.random(-10, 10), 0,
+                    pt.z + math.random(-10, 10)
+                )
+        
+                local scale = 1 + math.random() / 2
+                eye.Transform:SetScale(scale, scale, scale)
+                eye.Transform:SetRotation(math.random() * 360)
+            end
         end
     end,
 
