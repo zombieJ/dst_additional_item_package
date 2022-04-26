@@ -4,12 +4,8 @@ local Aura = Class(function(self, inst)
 	self.range = 15
 	self.bufferName = nil
 	self.bufferDuration = nil
-	self.bufferFn = nil
-	self.bufferStartFn = nil
-	self.bufferEndFn = nil
 	self.mustTags = nil
 	self.noTags = nil
-	self.showFX = true
 	self.interval = 1.5
 end)
 
@@ -18,14 +14,7 @@ local function SearchToAddBuffer(inst, self)
 	local ents = TheSim:FindEntities(x, y, z, self.range, self.mustTags, self.noTags)
 
 	for i, ent in ipairs(ents) do
-		aipPatchBuffer(
-			ent, inst, self.bufferName, self.bufferDuration, {
-				fn = self.bufferFn,
-				startFn = self.bufferStartFn,
-				endFn = self.bufferEndFn,
-				showFX = self.showFX,
-			}
-		)
+		aipBufferPatch(inst, ent, self.bufferName, self.bufferDuration)
 	end
 end
 

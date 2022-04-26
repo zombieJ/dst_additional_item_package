@@ -82,6 +82,12 @@ local function bufferDrunkEndFn(source, eater, info)
 	eater.components.locomotor:RemoveExternalSpeedMultiplier(eater, "aip_nectar_drunk")
 end
 
+aipBufferRegister("aip_nectar_drunk", {
+	fn = bufferDrunkFn,
+	endFn = bufferDrunkEndFn,
+	showFX = true,
+})
+
 ------------------------------- 持续效果 -------------------------------
 local function onEaten(inst, eater)
 	if not inst.nectarContinueValues or not eater.components.aipc_timer then
@@ -151,13 +157,7 @@ local function onEaten(inst, eater)
 
 	-- 醉酒
 	if drunkTime then
-		aipPatchBuffer(
-			eater, eater, "aip_nectar_drunk", drunkTime, {
-				fn = bufferDrunkFn,
-				endFn = bufferDrunkEndFn,
-				showFX = true,
-			}
-		)
+		aipBufferPatch(eater, eater, "aip_nectar_drunk", drunkTime)
 	end
 end
 

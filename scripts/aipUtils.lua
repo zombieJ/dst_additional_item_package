@@ -106,6 +106,15 @@ function _G.aipFilterKeysTable(originTbl, keys)
 	return tbl
 end
 
+-- 获取 key
+function _G.aipTableKeys(tbl)
+	local keys = {}
+	for k, v in pairs(tbl) do
+		table.insert(keys, k)
+	end
+	return keys
+end
+
 --------------------------------------- 调试 ---------------------------------------
 function _G.aipCommonStr(showType, split, ...)
 	local count = _G.aipCountTable(arg)
@@ -205,6 +214,22 @@ function _G.aipGetAnimState(inst)
 end
 
 --------------------------------------- 文本 ---------------------------------------
+function _G.aipJoin(strList, spliter)
+	local str = ""
+	local first = true
+	for i, val in ipairs(strList) do
+		if first then
+			first = false
+		else
+			str = str..spliter
+		end
+
+		str = str..val
+	end
+
+	return str
+end
+
 function _G.aipSplit(str, spliter)
 	local list = {}
 	local str = str..spliter
@@ -602,38 +627,6 @@ end
 -- RPC 发送时自动会带上 player 作为第一个参数
 function _G.aipRPC(funcName, ...)
 	SendModRPCToServer(MOD_RPC[env.modname][funcName], ...)
-end
-
--- 添加 aipc_buffer
-function _G.aipPatchBuffer(inst, source, name, duration, info)
-	if inst.components.aipc_buffer == nil then
-		inst:AddComponent("aipc_buffer")
-	end
-
-	inst.components.aipc_buffer:Patch(name, source, duration, info)
-end
-
--- 存在 aipc_buffer
-function _G.aipHasBuffer(inst, name)
-	-- if inst.components.aipc_buffer ~= nil then
-	-- 	return inst.components.aipc_buffer.buffers[name] ~= nil
-	-- end
-
-	if inst ~= nil and inst.replica.aipc_buffer ~= nil then
-		return inst.replica.aipc_buffer:HasBuffer(name)
-	end
-
-	return false
-end
-
--- 注册全局 Buffer 效果，会先于自定义 Buffer 触发相关事件
--- info: clientFn, startFn, endFn, fn
-local globalBuffers = {}
-function _G.aipGlobalBuffer(name, info)
-	if info ~= nil then
-		globalBuffers[name] = info
-	end
-	return globalBuffers[name] or {}
 end
 
 -- 获取玩家手持的物品，仅在 AddComponentAction 中使用
