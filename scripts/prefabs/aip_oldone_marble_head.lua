@@ -250,6 +250,8 @@ local function headFn()
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 
+    inst.resetHeadPhysics = resetHeadPhysics
+
     -- 这个是头，别放错地方！
 
     inst.OnLoad = onHeadLoad

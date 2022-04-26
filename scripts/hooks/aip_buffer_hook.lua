@@ -34,7 +34,8 @@ function _G.aipBufferPatch(source, inst, name, duration, info)
 
 	------------------------------- 准备阶段 -------------------------------
 	-- 复用 Buffer 对象
-	for child, exist in pairs(inst.children) do
+	local children = inst.children or {}
+	for child, exist in pairs(children) do
 		if exist and child:IsValid() and child.prefab == "aip_0_buffer" then
 			buffer = child
 			break
