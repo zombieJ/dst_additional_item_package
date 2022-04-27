@@ -13,9 +13,11 @@ local function findFocusItem(self)
         -- 找到物品啦
         if
             self.item ~= nil and
+            type(self.item) == "table" and
             self.item.IsValid ~= nil and -- T 键会给不是 inst 的东东
             self.item:IsValid() and
             self.item.replica ~= nil and
+            type(self.item.replica) == "table" and
             self.item.replica.inventoryitem ~= nil
         then
             return self.item
