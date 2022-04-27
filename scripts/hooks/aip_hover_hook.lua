@@ -24,7 +24,8 @@ local function findFocusItem(self)
         end
 
         -- 查找子元素有没有绑定物品
-        for child, v in pairs(self.children) do
+        local children = self.children or {}
+        for child, v in pairs(children) do
             local item = findFocusItem(child)
             if item ~= nil then
                 return item

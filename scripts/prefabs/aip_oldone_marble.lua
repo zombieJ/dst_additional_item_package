@@ -172,35 +172,37 @@ local function doBrain(inst)
                                         ErodeAway(sinkhole)
                                     end
 
-                                    -- 计算间距
-                                    local dist = aipDist(
-                                        inst._aipVest:GetPosition(),
-                                        inst._aipHead:GetPosition()
-                                    )
+                                    if inst._aipVest ~= nil and inst._aipHead ~= nil then
+                                        -- 计算间距
+                                        local dist = aipDist(
+                                            inst._aipVest:GetPosition(),
+                                            inst._aipHead:GetPosition()
+                                        )
 
-                                    -- 如果没有被搬走，我们就移除头颅
-                                    if dist < 2 and not IsDead(inst) then
-                                        local owner = head.components.inventoryitem:GetGrandOwner()
-                                        if owner ~= nil then
-                                            owner.components.inventory:DropItem(head, true, true)
+                                        -- 如果没有被搬走，我们就移除头颅
+                                        if dist < 2 and not IsDead(inst) then
+                                            local owner = head.components.inventoryitem:GetGrandOwner()
+                                            if owner ~= nil then
+                                                owner.components.inventory:DropItem(head, true, true)
+                                            end
+
+                                            -- 播放一个特效
+                                            local headPos = head:GetPosition()
+                                            aipReplacePrefab(
+                                                inst._aipVest,
+                                                "aip_shadow_wrapper", headPos.x, headPos.y, headPos.z
+                                            ).DoShow()
+
+                                            head:Remove()
+                                            inst._aipHead = nil
+
+                                            -- 播放长回头颅的动画
+                                            inst.AnimState:PlayAnimation("back")
+                                            inst.AnimState:PushAnimation("idle", true)
+                                        else
+                                            -- 没有取回头颅，继续待机
+                                            head.persists = true
                                         end
-
-                                        -- 播放一个特效
-                                        local headPos = head:GetPosition()
-                                        aipReplacePrefab(
-                                            inst._aipVest,
-                                            "aip_shadow_wrapper", headPos.x, headPos.y, headPos.z
-                                        ).DoShow()
-
-                                        head:Remove()
-                                        inst._aipHead = nil
-
-                                        -- 播放长回头颅的动画
-                                        inst.AnimState:PlayAnimation("back")
-                                        inst.AnimState:PushAnimation("idle", true)
-                                    else
-                                        -- 没有取回头颅，继续待机
-                                        head.persists = true
                                     end
 
                                     -- 清理无用引用
