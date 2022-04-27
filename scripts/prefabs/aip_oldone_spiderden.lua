@@ -65,7 +65,7 @@ end
 -- 不断在玩家附近创建眼睛
 aipBufferRegister("aip_see_eyes", {
     clientFn = function(inst)
-        if inst ~= nil then
+        if inst ~= nil and inst == ThePlayer then
             local pt = inst:GetPosition()
 
             for i = 1, 2 do
