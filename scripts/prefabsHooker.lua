@@ -412,16 +412,35 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 			end)
 		end
 
-		-- 每天都有一定概率给玩家附近生成一个 怪异的球茎（最多 3 个）
-		inst:WatchWorldState("isnight", function()
-			inst:DoTaskInTime(1, function() -- 延迟生效以防卡顿
-				local chance = dev_mode and 1 or 0.2
+		inst:WatchWorldState("isnight", function(_, isnight)
+			if isnight then
+				-- 每天都有一定概率给玩家附近生成一个 怪异的球茎（最多 3 个）
+				inst:DoTaskInTime(1, function() -- 延迟生效以防卡顿
+					local chance = dev_mode and 1 or 0.2
 
-				if math.random() < chance then
-					local spawnPoint = _G.aipFindRandomEnt("spawnpoint_multiplayer", "spawnpoint_master")
-					spawnNearBy(spawnPoint, "aip_oldone_plant", 120, 3)
-				end
-			end)
+					if math.random() < chance then
+						local spawnPoint = _G.aipFindRandomEnt("spawnpoint_multiplayer", "spawnpoint_master")
+						spawnNearBy(spawnPoint, "aip_oldone_plant", 120, 3)
+					end
+				end)
+
+				-- 每天都有一定概率在地图随机位置创建一次鲜花迷宫，如果已经有了就不再创建
+				inst:DoTaskInTime(0.5, function()
+					local chance = dev_mode and 1 or 0.3
+
+					if math.random() < chance then
+						local ent = TheSim:FindFirstEntityWithTag("aip_olden_flower")
+						if ent == nil then
+							local pt = _G.aipFindRandomPointInLand(5)
+
+							-- 如果可以创造鲜花，则创建
+							if pt ~= nil then
+								_G.aipSpawnPrefab(nil, "aip_four_flower", pt.x, pt.y, pt.z)
+							end
+						end
+					end
+				end)
+			end
 		end)
 
 		-- 每个季节变换都会在 猪王 附近重置一条 袜子蛇

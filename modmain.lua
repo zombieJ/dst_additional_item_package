@@ -123,6 +123,7 @@ PrefabFiles = {
 	"aip_oldone_marble",
 	"aip_oldone_marble_head",
 	"aip_oldone_marble_head_lock",
+	"aip_four_flower",
 
 	-- Orbit
 	"aip_orbit",

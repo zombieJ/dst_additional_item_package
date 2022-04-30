@@ -513,6 +513,28 @@ function _G.aipFindRandomPointInOcean(radius, prefabRadius)
 	return pos
 end
 
+function _G.aipFindRandomPointInLand(emptyDistance)
+	local w, h = _G.TheWorld.Map:GetSize()
+	local halfW = w/2 * _G.TILE_SCALE - 50 -- 裁剪边缘
+	local halfH = h/2 * _G.TILE_SCALE - 50 -- 裁剪边缘
+
+	local pos = nil
+	for i = 1, 100 do
+		local x = math.random(-halfW, halfW)
+		local z = math.random(-halfH, halfH)
+		local rndPos = _G.Vector3(x, 0, z)
+
+		if _G.TheWorld.Map:IsAboveGroundAtPoint(x, 0, z, false) then
+			pos = _G.aipGetSecretSpawnPoint(rndPos, 0, 100, emptyDistance)
+			if pos ~= nil then
+				break
+			end
+		end
+	end
+
+	return pos
+end
+
 function _G.aipValidateOceanPoint(pt, radius, prefabRadius)
 	radius = radius or 0
 	prefabRadius = prefabRadius or radius or 0
