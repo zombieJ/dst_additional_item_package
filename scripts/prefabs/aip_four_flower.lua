@@ -32,7 +32,7 @@ local function syncAnim(inst)
 end
 
 -- 点击激活点
-local function toggleActive(inst)
+local function toggleActive(inst, doer)
     if inst == nil then
         return
     end
@@ -58,14 +58,64 @@ local function toggleActive(inst)
         inverse(cx, cz - 1)
         inverse(cx + 1, cz)
         inverse(cx, cz + 1)
+
+        -- 提交验证结果，如果不存在可能是当前花朵正在初始化
+        if inst._aipMaster._aipFlush ~= nil then
+            inst._aipMaster:_aipFlush(inst, doer)
+        end
     end
 
 	return true
 end
 
--- 卸载全部
-local function destroyMatrix(inst)
+-- 计算花朵数量
+local function countOpen(inst, open)
+    local cnt = 0
 
+    local matrix = inst._aipMatrix
+    local size = inst._aipSize
+
+    if matrix ~= nil and size ~= nil then
+        for x = 1, size do
+            for z = 1, size do
+                local flower = matrix[x][z]
+                if flower ~= nil and flower._aipOpen == open then
+                    cnt = cnt + 1
+                end
+            end
+        end
+    end
+
+    return cnt
+end
+
+-- 检测免疫结果
+local function flushResult(inst, doer)
+    if countOpen(inst, false) == 0 then
+        -- 增加一点模因因子
+        if doer ~= nil and doer.components.aipc_oldone ~= nil then
+            doer.components.aipc_oldone:DoDelta()
+        end
+
+        -- 不再可点击
+        local matrix = inst._aipMatrix
+        local size = inst._aipSize
+
+        if matrix ~= nil and size ~= nil then
+            for x = 1, size do
+                for z = 1, size do
+                    local flower = matrix[x][z]
+                    if flower ~= nil and flower.components.activatable ~= nil then
+                        flower.components.activatable.inactive = false
+                    end
+                end
+            end
+        end
+
+        inst:DoTaskInTime(1, function()
+            aipReplacePrefab(inst, "aip_shadow_wrapper").DoShow(2)
+        end)
+    end
 end
 
 -- 初始化矩阵
@@ -82,8 +132,8 @@ local function initMatrix(inst)
     inst.AnimState:OverrideMultColour(0, 0, 0, 0)
 
     -- 初始化矩阵
-    local size = math.random(3, 4) and 3
-    local cut = math.random(0, 1)
+    local size = math.random(3, 4)
+    local cut = math.random() < 0.6
 
     local offset = 0.8
     local cx = px - offset * size / 2 - offset -- 遍历从 1 开始，我们多加一位
@@ -98,7 +148,7 @@ local function initMatrix(inst)
         matrix[x] = {}
         for z = 1, size do
             -- 如果在边缘就不用创建了
-            if cut ~= 1 or (
+            if cut or (
                 (x ~= 1 and x ~= size) or
                 (z ~= 1 and z ~= size)
             ) then
@@ -117,22 +167,6 @@ local function initMatrix(inst)
         end
     end
 
-    -- 计算花朵数量
-    local function count(open)
-        local cnt = 0
-
-        for x = 1, size do
-            for z = 1, size do
-                local flower = matrix[x][z]
-                if flower ~= nil and flower._aipOpen == open then
-                    cnt = cnt + 1
-                end
-            end
-        end
-
-        return cnt
-    end
-
     -- 随机关闭花朵，直到数量差不多
     for i = 1, 25 do
         local rx = math.random(1, size)
@@ -141,9 +175,12 @@ local function initMatrix(inst)
         toggleActive(matrix[rx][rz])
     end
 
-    if count(true) == 0 or count(false) == 0 then
+    if countOpen(inst, true) == 0 or countOpen(inst, false) == 0 then
         inst:Remove()
+        return
     end
+
+    inst._aipFlush = flushResult
 end
 
 local function OnRemoveEntity(inst)
