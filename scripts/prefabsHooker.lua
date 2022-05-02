@@ -429,12 +429,15 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 							if pt ~= nil then
 								local rnd = math.random()
 
-								if rnd < 0.5 then
+								if rnd < 0.33 then
 									-- 创建一个鲜花迷宫
 									_G.aipSpawnPrefab(nil, "aip_four_flower", pt.x, pt.y, pt.z)
-								else
+								elseif rnd < 0.66 then
 									-- 创建一个枯萎鲜花
 									_G.aipSpawnPrefab(nil, "aip_watering_flower", pt.x, pt.y, pt.z)
+								else
+									-- 创建一个石头谜团
+									_G.aipSpawnPrefab(nil, "aip_oldone_rock", pt.x, pt.y, pt.z)
 								end
 							end
 						end

@@ -142,6 +142,8 @@ local function fn()
     inst.AnimState:SetBuild("aip_oldone_rock")
     inst.AnimState:PlayAnimation("idle")
 
+    inst:AddTag("aip_olden_flower")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
