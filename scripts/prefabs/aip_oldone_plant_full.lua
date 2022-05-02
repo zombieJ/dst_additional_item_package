@@ -35,7 +35,8 @@ end
 local function onDoTargetAction(inst, doer, target)
 	if target.components.upgradeable ~= nil and target.components.upgradeable.stage == 1 then
         aipReplacePrefab(target, "aip_oldone_spiderden")
-        inst.components.stackable:Get():Remove()
+       
+        aipRemove(inst)
         return
     end
 

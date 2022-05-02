@@ -71,11 +71,7 @@ local AIP_PATCH = env.AddAction("AIP_PATCH", "Patch", function(act)
 		end
 
 		-- 移除物资
-		if item.components.stackable ~= nil then
-			item.components.stackable:Get():Remove()
-		else
-			item:Remove()
-		end
+		_G.aipRemove(item)
 
 		currentUses = math.min(totalUses, currentUses + repairValue)
 		target.components.finiteuses:SetUses(currentUses)

@@ -41,7 +41,7 @@ local function onDoAction(inst, doer)
 		inst.components.lootdropper:DropLoot()
 	end
 
-	inst.components.stackable:Get():Remove()
+	aipRemove(inst)
 end
 
 ----------------------------------- 实体 -----------------------------------

@@ -26,7 +26,7 @@ local assets = {
 local function onAipProtected(inst)
     inst.AnimState:PlayAnimation("bloom")
 
-    local players = aipFindNearPlayers(inst, 3)
+    local players = aipFindNearPlayers(inst, 5)
     for i, player in ipairs(players) do
         if player ~= nil and player.components.aipc_oldone ~= nil then
             player.components.aipc_oldone:DoDelta()
@@ -54,6 +54,7 @@ local function fn()
 
     --witherable (from witherable component) added to pristine state for optimization
     inst:AddTag("witherable")
+    inst:AddTag("aip_olden_flower")
 
     inst.entity:SetPristine()
 

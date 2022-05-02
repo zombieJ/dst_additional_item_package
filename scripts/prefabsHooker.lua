@@ -105,11 +105,7 @@ local function onDoLivingTargetAction(inst, doer, target)
 	if target.components.fueled ~= nil then
 		target.components.fueled:DoDelta(target.components.fueled.maxfuel / 5, doer)
 
-		if inst.components.stackable ~= nil then
-			inst.components.stackable:Get():Remove()
-		else
-			inst:Remove()
-		end
+		_G.aipRemove(inst)
 	end
 end
 
@@ -136,11 +132,7 @@ local function onDoGoldTargetAction(inst, doer, target)
 	if target.components.fueled ~= nil then
 		target.components.fueled:DoDelta(target.components.fueled.maxfuel, doer)
 
-		if inst.components.stackable ~= nil then
-			inst.components.stackable:Get():Remove()
-		else
-			inst:Remove()
-		end
+		_G.aipRemove(inst)
 	end
 end
 
@@ -435,7 +427,15 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 
 							-- 如果可以创造鲜花，则创建
 							if pt ~= nil then
-								_G.aipSpawnPrefab(nil, "aip_four_flower", pt.x, pt.y, pt.z)
+								local rnd = math.random()
+
+								if rnd < 0.5 then
+									-- 创建一个鲜花迷宫
+									_G.aipSpawnPrefab(nil, "aip_four_flower", pt.x, pt.y, pt.z)
+								else
+									-- 创建一个枯萎鲜花
+									_G.aipSpawnPrefab(nil, "aip_watering_flower", pt.x, pt.y, pt.z)
+								end
 							end
 						end
 					end

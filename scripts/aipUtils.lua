@@ -289,7 +289,7 @@ end
 
 --------------------------------------- 辅助 ---------------------------------------
 -- 找到附近符合名字的物品，可以是一个对象 或者 是一个 点
-function _G.aipFindNearEnts(inst, prefabNames, distance)
+function _G.aipFindNearEnts(inst, prefabNames, distance, includeInv)
 	local x, y, z = 0, 0, 0
 	if inst.Transform ~= nil then
 		x, y, z = inst.Transform:GetWorldPosition()
@@ -307,7 +307,15 @@ function _G.aipFindNearEnts(inst, prefabNames, distance)
 		end
 	end
 
-	return prefabs
+	-- 是否包含身上物品
+	if includeInv then
+		return prefabs
+	end
+
+	return _G.aipFilterTable(prefabs, function(inst)
+        return inst.components.inventoryitem ~= nil and
+                inst.components.inventoryitem:GetGrandOwner() == nil
+    end)
 end
 
 function _G.aipFindNearPlayers(inst, dist)
@@ -643,6 +651,47 @@ end
 
 function _G.aipCommonStore()
 	return _G.TheWorld.components ~= nil and _G.TheWorld.components.world_common_store
+end
+
+function _G.aipRemove(inst)
+	if inst ~= nil and inst:IsValid() then
+		if inst.components.stackable ~= nil then
+			inst.components.stackable:Get():Remove()
+		else
+			inst:Remove()
+		end
+	end
+end
+
+-- 丢弃物品，产生一个物理抛下的效果
+function _G.aipFlingItem(loot, pt)
+	if loot ~= nil and loot:IsValid() then
+        if pt ~= nil then
+            loot.Transform:SetPosition(pt:Get())
+        end
+
+        local min_speed =  0
+        local max_speed = 2
+        local y_speed = 8
+        local y_speed_variance = 4
+
+        if loot.Physics ~= nil then
+            local angle = math.random() * 2 * _G.PI
+            local speed = min_speed + math.random() * (max_speed - min_speed)
+            if loot:IsAsleep() then
+                local radius = .5 * speed
+                loot.Transform:SetPosition(
+                    pt.x + math.cos(angle) * radius,
+                    0,
+                    pt.z - math.sin(angle) * radius
+                )
+            else
+                local sinangle = math.sin(angle)
+                local cosangle = math.cos(angle)
+                loot.Physics:SetVel(speed * cosangle, _G.GetRandomWithVariance(y_speed, y_speed_variance), speed * -sinangle)
+            end
+        end
+    end
 end
 
 --------------------------------------- RPC ---------------------------------------

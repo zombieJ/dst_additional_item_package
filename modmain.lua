@@ -125,6 +125,7 @@ PrefabFiles = {
 	"aip_oldone_marble_head_lock",
 	"aip_four_flower",
 	"aip_watering_flower",
+	"aip_oldone_rock",
 
 	-- Orbit
 	"aip_orbit",

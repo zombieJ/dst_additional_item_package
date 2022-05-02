@@ -94,7 +94,7 @@ local function flushResult(inst, doer)
     if countOpen(inst, false) == 0 then
         -- 增加一点模因因子
         if doer ~= nil and doer.components.aipc_oldone ~= nil then
-            doer.components.aipc_oldone:DoDelta()
+            doer.components.aipc_oldone:DoDelta(2)
         end
 
         -- 不再可点击
