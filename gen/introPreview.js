@@ -9,7 +9,9 @@ const chalk = require("chalk");
 const execSync = require('child_process').execSync;
 
 const IMG_SIZE = 64;
+const IMG_CONTENT_SIZE = 52;
 const MAX_WIDTH_COUNT = 9;
+const IMG_DES = 4;
 
 const IMAGES = [
 	[
@@ -67,7 +69,7 @@ const IMAGES = [
 	[
 		'aip_oldone_plant_broken', 'aip_oldone_plant_full', 'aip_oldone_durian',
 		'aip_oldone_wall_item', "aip_oldone_marble_head", "aip_oldone_marble_head_lock",
-		"aip_four_flower/body/bud", "aip_watering_flower/body/bloom", "aip_oldone_rock/body/full",
+		"aip_four_flower/body/bud", "aip_four_flower/body/open", "aip_watering_flower/body/bloom", "aip_oldone_rock/body/full",
 	],
 
 	[
@@ -155,7 +157,10 @@ function getImagePath(name) {
 
 	// Generate images
 	console.log(chalk.cyan("Generating..."));
-	const descImg = new jimp(MAX_WIDTH_COUNT * IMG_SIZE, imageLines.length * IMG_SIZE);
+	const descImg = new jimp(
+		MAX_WIDTH_COUNT * (IMG_SIZE + IMG_DES) - IMG_DES,
+		imageLines.length * (IMG_SIZE + IMG_DES) - IMG_DES,
+	);
 
 	for (let y = 0; y < imageLines.length; y += 1) {
 		const images = imageLines[y];
@@ -163,12 +168,117 @@ function getImagePath(name) {
 		for (let x = 0; x < images.length; x += 1) {
 			const imagePath = getImagePath(images[x]);
 			const img = await jimp.read(imagePath);
-			img.contain(
-				IMG_SIZE,
-				IMG_SIZE,
-			);
 
-			descImg.composite(img, x * IMG_SIZE, y * IMG_SIZE);
+			// ============= 裁剪图片 =============
+			const { width, height } = img.bitmap;
+			let left = 0;
+			let right = width - 1;
+			let top = 0;
+			let bottom = height - 1;
+
+			// 上边
+			while (top < bottom) {
+				let pass = true;
+				for (let x = 0; x < width; x += 1) {
+					const pixel = img.getPixelColor(x, top);
+					const alpha = jimp.intToRGBA(pixel).a
+					if (alpha !== 0) {
+						pass = false;
+						break;
+					}
+				}
+
+				if (!pass) {
+					break;
+				}
+
+				top += 1
+			}
+
+			// 下边
+			while (top < bottom) {
+				let pass = true;
+				for (let x = 0; x < width; x += 1) {
+					const pixel = img.getPixelColor(x, bottom);
+					const alpha = jimp.intToRGBA(pixel).a
+					if (alpha !== 0) {
+						pass = false;
+						break;
+					}
+				}
+
+				if (!pass) {
+					break;
+				}
+
+				bottom -= 1
+			}
+
+			// 左边
+			while (left < right) {
+				let pass = true;
+				for (let y = 0; y < height; y += 1) {
+					const pixel = img.getPixelColor(left, y);
+					const alpha = jimp.intToRGBA(pixel).a
+					if (alpha !== 0) {
+						pass = false;
+						break;
+					}
+				}
+
+				if (!pass) {
+					break;
+				}
+
+				left += 1
+			}
+
+			// 右边
+			while (left < right) {
+				let pass = true;
+				for (let y = 0; y < height; y += 1) {
+					const pixel = img.getPixelColor(right, y);
+					const alpha = jimp.intToRGBA(pixel).a
+					if (alpha !== 0) {
+						pass = false;
+						break;
+					}
+				}
+
+				if (!pass) {
+					break;
+				}
+
+				right -= 1
+			}
+
+			const newWidth = right - left;
+			const newHeight = bottom - top;
+			img.crop(left, top, newWidth, newHeight);
+
+			// ============= 缩放图片 =============
+			const minSize = Math.min(newWidth, newHeight);
+			const maxSize = Math.max(newWidth, newHeight);
+			const smallSize = maxSize / minSize < 1.3
+			const des = smallSize ? (IMG_SIZE - IMG_CONTENT_SIZE) / 2 : 0;
+
+			if (smallSize) {
+				img.contain(
+					IMG_CONTENT_SIZE,
+					IMG_CONTENT_SIZE,
+				);
+			} else {
+				img.contain(
+					IMG_SIZE,
+					IMG_SIZE,
+				);
+			}
+
+			descImg.composite(
+				img,
+				x * (IMG_SIZE + IMG_DES) + des,
+				y * (IMG_SIZE + IMG_DES) + des
+			);
 		}
 	}
 

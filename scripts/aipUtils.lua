@@ -269,6 +269,11 @@ end
 
 -- 返回两点之间的距离（默认无视 Y 坐标）
 function _G.aipDist(p1, p2, includeY)
+	-- 无效坐标，则返回超级远
+	if p1 == nil or p2 == nil then
+		return 9999999
+	end
+
 	local dx = p1.x - p2.x
 	local dz = p1.z - p2.z
 	local dy = p1.y - p2.y
