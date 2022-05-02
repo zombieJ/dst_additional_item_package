@@ -16,5 +16,10 @@
                 </key>
             </timeline>
         </animation>
+        <animation id="1" name="empty" length="100">
+            <mainline>
+                <key id="0"/>
+            </mainline>
+        </animation>
     </entity>
 </spriter_data>

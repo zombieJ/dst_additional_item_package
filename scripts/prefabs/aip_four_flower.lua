@@ -129,7 +129,7 @@ local function initMatrix(inst)
 
     inst:AddTag("NOCLICK")
     inst:AddTag("FX")
-    inst.AnimState:OverrideMultColour(0, 0, 0, 0)
+    inst.AnimState:PlayAnimation("empty")
 
     -- 初始化矩阵
     local size = math.random(3, 4)

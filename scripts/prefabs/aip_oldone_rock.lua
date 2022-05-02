@@ -26,13 +26,13 @@ local assets = {
 local function hidePrefab(inst)
     inst:AddTag("NOCLICK")
     inst:AddTag("FX")
-    inst.AnimState:OverrideMultColour(0, 0, 0, 0)
+    inst.AnimState:PlayAnimation("empty")
 end
 
 local function showPrefab(inst)
     inst:RemoveTag("NOCLICK")
     inst:RemoveTag("FX")
-    inst.AnimState:OverrideMultColour(1, 1, 1, 1)
+    inst.AnimState:PlayAnimation("idle")
 end
 
 local function onNear(inst, player)
