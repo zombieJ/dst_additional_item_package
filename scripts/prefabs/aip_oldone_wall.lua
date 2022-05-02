@@ -68,7 +68,7 @@ local function ondeploywall(inst, pt, deployer)
         wall.Physics:SetCollides(false)
         wall.Physics:Teleport(x, 0, z)
         wall.Physics:SetCollides(true)
-        inst.components.stackable:Get():Remove()
+        aipRemove(inst)
 
         wall.SoundEmitter:PlaySound("dontstarve/common/place_structure_straw")
     end

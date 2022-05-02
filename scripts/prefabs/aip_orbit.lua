@@ -169,7 +169,7 @@ local function onDeployOrbit(inst, pt, deployer)
 		orbit.Physics:SetCollides(false)
 		orbit.Physics:Teleport(x, y, z)
 		-- wall.Physics:SetCollides(true)
-		inst.components.stackable:Get():Remove()
+		aipRemove(inst)
 
 		-- 轨道重排
 		adjustOrbit(orbit, true)

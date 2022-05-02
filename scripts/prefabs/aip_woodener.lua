@@ -186,11 +186,7 @@ local function CreatTree(inst)
 						local sapling = aipSpawnPrefab(inst, "pinecone_sapling", pt.x, pt.y, pt.z)
 						sapling:StartGrowing()
 
-						if pinecone.components.stackable ~= nil then
-							pinecone.components.stackable:Get():Remove()
-						else
-							pinecone:Remove()
-						end
+						aipRemove(pinecone)
 
 						return
 					end

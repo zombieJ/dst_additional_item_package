@@ -349,3 +349,16 @@ AddComponentPostInit("healer", function(self)
 		return originHeal(self, target, ...)
 	end
 end)
+
+-- 浇水允许回调
+AddComponentPostInit("witherable", function(self)
+	local originProtect = self.Protect
+
+	function self:Protect(...)
+		if self.onAipProtected ~= nil then
+			self.onAipProtected(self.inst)
+		end
+
+		return originProtect(self, ...)
+	end
+end)

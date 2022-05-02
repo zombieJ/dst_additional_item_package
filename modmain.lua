@@ -123,6 +123,9 @@ PrefabFiles = {
 	"aip_oldone_marble",
 	"aip_oldone_marble_head",
 	"aip_oldone_marble_head_lock",
+	"aip_four_flower",
+	"aip_watering_flower",
+	"aip_oldone_rock",
 
 	-- Orbit
 	"aip_orbit",
@@ -269,8 +272,8 @@ function PlayerPrefabPostInit(inst)
 	end
 
 	-- 古神低语
-	if not inst.components.aipc_old_one_whispers then
-		inst:AddComponent("aipc_old_one_whispers")
+	if not inst.components.aipc_oldone then
+		inst:AddComponent("aipc_oldone")
 	end
 end
 

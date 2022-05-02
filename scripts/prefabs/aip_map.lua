@@ -27,7 +27,7 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_MAP = LANG.DESC
 
 ----------------------------------- 事件 -----------------------------------
 local function onRemove(inst)
-	inst.components.stackable:Get():Remove()
+	aipRemove(inst)
 end
 
 -- 如果帝王蟹是隐身状态就 投石问路

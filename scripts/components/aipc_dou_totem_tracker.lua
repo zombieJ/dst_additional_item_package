@@ -3,10 +3,7 @@ local createProjectile = require("utils/aip_vest_util").createProjectile
 -- 寻找符合名字的物品
 local function findGroundItem(pos, name)
     local ents = aipFindNearEnts(pos, {name}, 3)
-    ents = aipFilterTable(ents, function(inst)
-        return inst.components.inventoryitem ~= nil and
-                inst.components.inventoryitem:GetGrandOwner() == nil
-    end)
+
     return ents[1]
 end
 

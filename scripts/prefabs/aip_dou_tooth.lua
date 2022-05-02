@@ -49,11 +49,7 @@ local function onDoTargetAction(inst, doer, target)
 		target._aipEmpower(target, doer)
 	end
 
-	if inst.components.stackable ~= nil then
-		inst.components.stackable:Get():Remove()
-	else
-		inst:Remove()
-	end
+	aipRemove(inst)
 end
 
 local function OnUse(inst, target) -- 恢复 50% 损失的理智值

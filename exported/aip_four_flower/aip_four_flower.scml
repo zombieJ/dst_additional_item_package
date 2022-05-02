@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="body">
+        <file id="0" name="body/bud.png" width="256" height="256" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="body/open.png" width="256" height="256" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_four_flower">
+        <animation id="0" name="bud" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="bud" folder="0" file="0" abs_x="0.019455" abs_y="-1.937743" abs_pivot_x="0.480545" abs_pivot_y="0.437743" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="bud">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="0.019455" y="-1.937743" pivot_x="0.480545" pivot_y="0.437743" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="1" name="open" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="open" folder="0" file="1" abs_x="-5.988327" abs_y="35.027237" abs_pivot_x="0.488327" abs_pivot_y="0.472763" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="open">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="-5.988327" y="35.027237" pivot_x="0.488327" pivot_y="0.472763" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

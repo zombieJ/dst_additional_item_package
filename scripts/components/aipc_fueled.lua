@@ -15,11 +15,7 @@ function Fueled:TakeFuel(inst, doer)
 		self.onFueled(self.inst, inst, doer)
 	end
 
-	if inst.components.stackable ~= nil then
-		inst.components.stackable:Get():Remove()
-	else
-		inst:Remove()
-	end
+	aipRemove(inst)
 
 	return true
 end
