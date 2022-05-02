@@ -57,6 +57,19 @@ const IMAGES = [
 		'chesspiece_aip_moon_marble', 'chesspiece_aip_moon_stone', 'chesspiece_aip_moon_moonglass',
 	],
 
+	// 花蜜
+	[
+		'aip_nectar_0', 'aip_nectar_1', 'aip_nectar_2', 'aip_nectar_3', 'aip_nectar_4', 'aip_nectar_5',
+		'aip_nectar_wine',
+	],
+
+	// 古神低语
+	[
+		'aip_oldone_plant_broken', 'aip_oldone_plant_full', 'aip_oldone_durian',
+		'aip_oldone_wall_item', "aip_oldone_marble_head", "aip_oldone_marble_head_lock",
+		"aip_four_flower/body/bud", "aip_watering_flower/body/bloom", "aip_oldone_rock/body/full",
+	],
+
 	[
 		'aip_veggie_wheat', 'aip_veggie_wheat_cooked',
 		'aip_veggie_sunflower', 'aip_veggie_sunflower_cooked',
