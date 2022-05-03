@@ -126,6 +126,7 @@ PrefabFiles = {
 	"aip_four_flower",
 	"aip_watering_flower",
 	"aip_oldone_rock",
+	"aip_oldone_snowman",
 
 	-- Orbit
 	"aip_orbit",
