@@ -453,6 +453,15 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 									table.insert(flowers, "aip_oldone_hot")
 								end
 
+								-- 秋天还有额外的几率出现枯叶谜团
+								if _G.TheWorld.state.isautumn then
+									if dev_mode then -- 测试环境一定是特定谜团
+										flowers = {}
+									end
+
+									table.insert(flowers, "aip_oldone_leaves")
+								end
+
 								-- 冬天还有额外的几率出现雪人谜团
 								if _G.TheWorld.state.iswinter then
 									if dev_mode then -- 测试环境一定是特定谜团

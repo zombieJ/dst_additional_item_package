@@ -129,6 +129,7 @@ PrefabFiles = {
 	"aip_oldone_snowman",
 	"aip_oldone_hot",
 	"aip_oldone_plant_flower",
+	"aip_oldone_leaves",
 
 	-- Orbit
 	"aip_orbit",
