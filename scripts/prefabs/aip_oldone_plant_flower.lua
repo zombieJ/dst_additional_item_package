@@ -35,9 +35,7 @@ local function onNear(inst, player)
             end
 
             -- 播放一个闪现特效
-            inst:DoTaskInTime(0.5, function()
-                aipSpawnPrefab(inst, "aip_shadow_wrapper").DoShow(0.6)
-            end)
+            aipSpawnPrefab(inst, "aip_shadow_wrapper").DoShow(0.6)
             inst:RemoveComponent("aipc_timer")
 
             -- 增加模因因子
