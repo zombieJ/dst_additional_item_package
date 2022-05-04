@@ -182,7 +182,7 @@ local PIECES =
 	{
 		name = "aip_doujiang",
 		moonevent = false,
-		recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("plantmeat_cooked", 1), Ingredient("pinecone", 1)},
+		-- recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("plantmeat_cooked", 1), Ingredient("pinecone", 1)},
 		client_postinit = function(inst)
 			-- 拒绝要说话
 			inst:AddComponent("talker")
@@ -239,7 +239,7 @@ local PIECES =
 	{
 		name = "aip_deer",
 		moonevent = false,
-		recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("boneshard", 2), Ingredient("beardhair", 1)},
+		-- recipe = {Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("boneshard", 2), Ingredient("beardhair", 1)},
 	},
 	{
 		name = "aip_mouth",
