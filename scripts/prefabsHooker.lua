@@ -429,16 +429,59 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 							if pt ~= nil then
 								local rnd = math.random()
 
-								if rnd < 0.33 then
-									-- 创建一个鲜花迷宫
-									_G.aipSpawnPrefab(nil, "aip_four_flower", pt.x, pt.y, pt.z)
-								elseif rnd < 0.66 then
-									-- 创建一个枯萎鲜花
-									_G.aipSpawnPrefab(nil, "aip_watering_flower", pt.x, pt.y, pt.z)
-								else
-									-- 创建一个石头谜团
-									_G.aipSpawnPrefab(nil, "aip_oldone_rock", pt.x, pt.y, pt.z)
+								local flowers = {
+									"aip_four_flower",		-- 鲜花迷宫
+									"aip_watering_flower",	-- 枯萎鲜花
+									"aip_oldone_rock",		-- 石头谜团
+								}
+
+								-- 春天还有额外的几率出现春日谜团
+								if _G.TheWorld.state.isspring then
+									if dev_mode then -- 测试环境一定是特定谜团
+										flowers = {}
+									end
+
+									table.insert(flowers, "aip_oldone_plant_flower")
 								end
+
+								-- 夏天还有额外的几率出现化缘谜团
+								if _G.TheWorld.state.issummer then
+									if dev_mode then -- 测试环境一定是特定谜团
+										flowers = {}
+									end
+
+									table.insert(flowers, "aip_oldone_hot")
+								end
+
+								-- 秋天还有额外的几率出现枯叶谜团
+								if _G.TheWorld.state.isautumn then
+									if dev_mode then -- 测试环境一定是特定谜团
+										flowers = {}
+									end
+
+									table.insert(flowers, "aip_oldone_leaves")
+								end
+
+								-- 冬天还有额外的几率出现雪人谜团
+								if _G.TheWorld.state.iswinter then
+									if dev_mode then -- 测试环境一定是特定谜团
+										flowers = {}
+									end
+
+									table.insert(flowers, "aip_oldone_snowman")
+								end
+
+								local flowerName = _G.aipRandomEnt(flowers)
+								local flower = _G.aipSpawnPrefab(nil, flowerName, pt.x, pt.y, pt.z)
+								
+								if dev_mode then
+									_G.aipPrint("Create Puzzle:", flowerName)
+								end
+
+								flower:AddComponent("perishable")
+								flower.components.perishable:StartPerishing()
+								flower.components.perishable:SetPerishTime(TUNING.PERISH_MED)
+								flower.components.perishable.onperishreplacement = "seeds"
 							end
 						end
 					end

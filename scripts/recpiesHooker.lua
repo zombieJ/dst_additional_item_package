@@ -122,6 +122,22 @@ rec("incinerator", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.LIGHT },
 rec("popcorngun", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.WEAPONS },
 	{Ingredient("corn", 2),Ingredient("houndstooth", 4),Ingredient("silk", 3)})
 
+-------------------------------------- 雕塑 --------------------------------------
+-- 月光星尘雕像
+rec("chesspiece_aip_moon_builder", TECH.SCULPTING_ONE, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.DECOR },
+	{Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("moonrocknugget", 9), Ingredient("frozen_heart", 1, "images/inventoryimages/frozen_heart.xml")},
+	{ nounlock=true, actionstr="SCULPTING", atlas = "images/inventoryimages/chesspiece_aip_moon.xml", image = "chesspiece_aip_moon.tex" })
+
+-- 豆酱雕像
+rec("chesspiece_aip_doujiang_builder", TECH.SCULPTING_ONE, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.DECOR },
+	{Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("plantmeat_cooked", 1), Ingredient("pinecone", 1)},
+	{ nounlock=true, actionstr="SCULPTING", atlas = "images/inventoryimages/chesspiece_aip_doujiang.xml", image = "chesspiece_aip_doujiang.tex" })
+
+-- 守望者雕像
+rec("chesspiece_aip_deer_builder", TECH.SCULPTING_ONE, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.DECOR },
+{Ingredient(TECH_INGREDIENT.SCULPTING, 2), Ingredient("boneshard", 2), Ingredient("beardhair", 1)},
+	{ nounlock=true, actionstr="SCULPTING", atlas = "images/inventoryimages/chesspiece_aip_deer.xml", image = "chesspiece_aip_deer.tex" })
+
 -----------------------------------------------------------------------------------
 -- 豆豆球
 rec("aip_score_ball", TECH.LOST, { CRAFTING_FILTERS.TOOLS },

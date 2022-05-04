@@ -34,6 +34,10 @@ function Oldone:DoDelta(amount)
 	elseif amount < 0 then
 		aipSpawnPrefab(self.inst, "farm_plant_unhappy")
 	end
+
+	if dev_mode then
+		aipPrint("增加谜团因子：", amount)
+	end
 end
 
 ------------------------------- 存取 -------------------------------
