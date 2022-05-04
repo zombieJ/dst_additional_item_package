@@ -435,9 +435,18 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 									"aip_oldone_rock",		-- 石头谜团
 								}
 
+								-- 春天还有额外的几率出现春日谜团
+								if _G.TheWorld.state.isspring then
+									if dev_mode then -- 测试环境一定是特定谜团
+										flowers = {}
+									end
+
+									table.insert(flowers, "aip_oldone_plant_flower")
+								end
+
 								-- 夏天还有额外的几率出现化缘谜团
-								if _G.TheWorld.state.iswinter then
-									if dev_mode then -- 测试环境一定是化缘谜团
+								if _G.TheWorld.state.issummer then
+									if dev_mode then -- 测试环境一定是特定谜团
 										flowers = {}
 									end
 
@@ -446,7 +455,7 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 
 								-- 冬天还有额外的几率出现雪人谜团
 								if _G.TheWorld.state.iswinter then
-									if dev_mode then -- 测试环境一定是雪人谜团
+									if dev_mode then -- 测试环境一定是特定谜团
 										flowers = {}
 									end
 
@@ -456,6 +465,10 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 								local flowerName = _G.aipRandomEnt(flowers)
 								local flower = _G.aipSpawnPrefab(nil, flowerName, pt.x, pt.y, pt.z)
 								
+								if dev_mode then
+									_G.aipPrint("Create Puzzle:", flowerName)
+								end
+
 								flower:AddComponent("perishable")
 								flower.components.perishable:StartPerishing()
 								flower.components.perishable:SetPerishTime(TUNING.PERISH_MED)

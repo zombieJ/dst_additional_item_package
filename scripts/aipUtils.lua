@@ -318,8 +318,8 @@ function _G.aipFindNearEnts(inst, prefabNames, distance, includeInv)
 	end
 
 	return _G.aipFilterTable(prefabs, function(inst)
-        return inst.components.inventoryitem ~= nil and
-                inst.components.inventoryitem:GetGrandOwner() == nil
+        return	inst.components.inventoryitem == nil or
+				inst.components.inventoryitem:GetGrandOwner() == nil
     end)
 end
 
