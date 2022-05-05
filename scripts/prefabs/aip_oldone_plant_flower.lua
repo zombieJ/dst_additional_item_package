@@ -90,6 +90,7 @@ local function fn()
 
     inst:AddTag("NOCLICK")
     inst:AddTag("FX")
+    inst:AddTag("aip_olden_flower")
 
     inst.entity:SetPristine()
 

@@ -70,6 +70,8 @@ local function fn()
     local scale = 0.6
     inst.Transform:SetScale(scale, scale, scale)
 
+    inst:AddTag("aip_olden_flower")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

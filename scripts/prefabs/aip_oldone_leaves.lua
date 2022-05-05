@@ -53,6 +53,8 @@ local function fn()
     inst.AnimState:SetBuild("aip_oldone_leaves")
     inst.AnimState:PlayAnimation("idle")
 
+    inst:AddTag("aip_olden_flower")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
