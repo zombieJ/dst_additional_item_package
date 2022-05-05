@@ -699,6 +699,22 @@ function _G.aipFlingItem(loot, pt)
     end
 end
 
+function _G.aipGet(inst, paths)
+	local current = inst
+
+	if type(paths) == "string" then
+		paths = _G.aipSplit(paths, "|")
+	end
+
+	for i, path in ipairs(paths) do
+		if current ~= nil then
+			current = current[path]
+		end
+	end
+
+	return current
+end
+
 --------------------------------------- RPC ---------------------------------------
 -- RPC 发送时自动会带上 player 作为第一个参数
 function _G.aipRPC(funcName, ...)

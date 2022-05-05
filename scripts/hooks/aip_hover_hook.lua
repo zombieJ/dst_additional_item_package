@@ -9,7 +9,7 @@ end
 local Text = require "widgets/text"
 
 local function findFocusItem(self)
-    if self.focus then
+    if self ~= nil and self.focus then
         -- 找到物品啦
         if
             self.item ~= nil and
@@ -54,7 +54,7 @@ AddClassPostConstruct("widgets/hoverer", function(self)
 
         -- 物品栏里的物品
         local item = findFocusItem(
-            self.isFE and self.owner or self.owner.HUD.controls
+            self.isFE and self.owner or _G.aipGet(self, "owner|HUD|controls")
         )
 
         -- 鼠标 Hover 到的物品
