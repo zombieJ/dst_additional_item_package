@@ -437,6 +437,11 @@ end
 
 -- 是自然地皮
 function _G.isNaturalPoint(pt)
+	-- 没有给与有效点
+	if pt == nil then
+		return nil
+	end
+
 	local tile = _G.TheWorld.Map:GetTileAtPoint(pt.x, pt.y, pt.z)
 
 	local DEFAULT_VALID_TILE_TYPES = {
@@ -467,30 +472,29 @@ end
 -- 获取一个隐秘地点，如果是人工地皮就无效返回 nil
 function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
 	local tgtPT = nil
+	emptyDistance = emptyDistance or 0
 
 	-- 如果范围内存在物体，我们就找数量最少的地方
-	if emptyDistance ~= nil then
-		local tgtEntCnt = 99999999
+	local tgtEntCnt = 99999999
 
-		local mergedMaxDistance = maxDistance
-		if minDistance == maxDistance then
-			mergedMaxDistance = minDistance + 1
-		end
+	local mergedMaxDistance = maxDistance
+	if minDistance == maxDistance then
+		mergedMaxDistance = minDistance + 1
+	end
 
-		local step = 20 / (mergedMaxDistance - minDistance)
+	local step = 20 / (mergedMaxDistance - minDistance)
 
-		for distance = minDistance, maxDistance, step do
-			local pos = _G.aipGetSpawnPoint(pt, distance)
+	for distance = minDistance, maxDistance, step do
+		local pos = _G.aipGetSpawnPoint(pt, distance)
 
-			-- 如果不是自然地皮就跳过
-			pos = _G.isNaturalPoint(pos)
+		-- 如果不是自然地皮就跳过
+		pos = _G.isNaturalPoint(pos)
 
-			if pos ~= nil then
-				local ents = TheSim:FindEntities(pos.x, 0, pos.z, emptyDistance)
-				if #ents < tgtEntCnt then
-					tgtPT = pos
-					tgtEntCnt = #ents
-				end
+		if pos ~= nil then
+			local ents = TheSim:FindEntities(pos.x, 0, pos.z, emptyDistance)
+			if #ents < tgtEntCnt then
+				tgtPT = pos
+				tgtEntCnt = #ents
 			end
 		end
 	end
