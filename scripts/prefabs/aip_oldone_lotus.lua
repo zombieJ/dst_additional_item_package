@@ -31,11 +31,21 @@ local function initMatrix(inst)
         return
     end
 
-    inst._aipStones = {}
+    local pt = inst:GetPosition()
+
+    -- 强行移动到海里
+    local oceanPT = aipFindNearbyOcean(pt, 10)
+    if oceanPT ~= nil then
+        -- 转一圈，找到最远的点
+
+        inst.Transform:SetPosition(oceanPT:Get())
+        pt = oceanPT
+    end
 
     -- 初始化一圈矩阵
-    local cx, cy, cz = inst.Transform:GetWorldPosition()
-    local min = 7
+    inst._aipStones = {}
+
+    local min = 6
     local max = 8
     local count = math.random(min, max)
 
@@ -44,9 +54,9 @@ local function initMatrix(inst)
 
         local stone = aipSpawnPrefab(
             nil, "aip_oldone_lotus_leaf",
-            cx + math.cos(angle) * DIST,
-            cy,
-            cz + math.sin(angle) * DIST
+            pt.x + math.cos(angle) * DIST,
+            pt.y,
+            pt.z + math.sin(angle) * DIST
         )
 
         stone._aipMaster = inst

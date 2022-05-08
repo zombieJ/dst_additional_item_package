@@ -435,8 +435,74 @@ function _G.aipGetSpawnPoint(startPT, distance)
 	return nil
 end
 
+-- 找到靠近海边的点
+function _G.aipFindNearbyOcean(pt, dist)
+	local oceanPT = nil
+	
+	for i = 2, 100, 2 do
+		oceanPT = _G.FindNearbyOcean(pt, i)
+		if oceanPT ~= nil then
+			break
+		end
+	end
+
+	-- 根据海洋点开始转圈找最远的点
+	if oceanPT ~= nil then
+		local startAngle = 0
+
+		-- 第一次先找到陆地的点作为起点
+		for i = 0, 360 do
+			local angle = _G.PI * 2 * i / 360
+			local tgtX = oceanPT.x + math.cos(angle) * dist
+			local tgtZ = oceanPT.z + math.sin(angle) * dist
+
+			if _G.TheWorld.Map:IsAboveGroundAtPoint(tgtX, 0, tgtZ, false) then
+				startAngle = i
+				break
+			end
+		end
+
+		-- 转一圈，找到海洋的起点
+		for i = startAngle, startAngle + 360 do
+			local angle = _G.PI * 2 * i / 360
+			local tgtX = oceanPT.x + math.cos(angle) * dist
+			local tgtZ = oceanPT.z + math.sin(angle) * dist
+
+			if not _G.TheWorld.Map:IsAboveGroundAtPoint(tgtX, 0, tgtZ, false) then
+				startAngle = i
+				break
+			end
+		end
+
+		-- 转一圈，找到海洋的终点
+		local endAngle = 0
+		for i = startAngle, startAngle + 360 do
+			local angle = _G.PI * 2 * i / 360
+			local tgtX = oceanPT.x + math.cos(angle) * dist
+			local tgtZ = oceanPT.z + math.sin(angle) * dist
+
+			if _G.TheWorld.Map:IsAboveGroundAtPoint(tgtX, 0, tgtZ, false) then
+				endAngle = i
+				break
+			end
+		end
+
+		-- 中间点找到了
+		if startAngle ~= endAngle then
+			local angle = _G.PI * (startAngle + endAngle) / 360
+			return _G.Vector3(
+				oceanPT.x + math.cos(angle) * dist,
+				0,
+				oceanPT.z + math.sin(angle) * dist
+			)
+		end
+	end
+
+	return oceanPT
+end
+
 -- 是自然地皮
-function _G.isNaturalPoint(pt)
+function _G.aipIsNaturalPoint(pt)
 	-- 没有给与有效点
 	if pt == nil then
 		return nil
@@ -488,7 +554,7 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
 		local pos = _G.aipGetSpawnPoint(pt, distance)
 
 		-- 如果不是自然地皮就跳过
-		pos = _G.isNaturalPoint(pos)
+		pos = _G.aipIsNaturalPoint(pos)
 
 		if pos ~= nil then
 			local ents = TheSim:FindEntities(pos.x, 0, pos.z, emptyDistance)
@@ -503,7 +569,7 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
 		tgtPT = _G.aipGetSpawnPoint(pt, minDistance)
 
 		-- 如果不是自然地皮就跳过
-		tgtPT = _G.isNaturalPoint(tgtPT)
+		tgtPT = _G.aipIsNaturalPoint(tgtPT)
 	end
 
 	return tgtPT
