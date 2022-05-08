@@ -322,6 +322,15 @@ AddPrefabPostInit("reskin_tool", function(inst)
 	end
 end)
 
+------------------------------------------ 燧石 ------------------------------------------
+AddPrefabPostInit("flint", function(inst)
+	inst:AddTag("allow_action_on_impassable") -- 允许对海使用
+
+	if inst.components.aipc_water_drift == nil then
+		inst:AddComponent("aipc_water_drift")
+	end
+end)
+
 ------------------------------------------ 食物 ------------------------------------------
 AddPrefabPostInit("grass", function(inst)
 	if not _G.TheWorld.ismastersim then
