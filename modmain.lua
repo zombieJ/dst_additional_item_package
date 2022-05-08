@@ -133,6 +133,7 @@ PrefabFiles = {
 	"aip_oldone_salt_hole",
 	"aip_salt_fish",
 	"aip_oldone_stone_piece",
+	"aip_oldone_lotus",
 
 	-- Orbit
 	"aip_orbit",

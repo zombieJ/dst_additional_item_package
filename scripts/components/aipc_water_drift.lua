@@ -1,4 +1,5 @@
 local DEFAULT_SPEED = 10
+local MIN_SPEED = 6
 local SLOW_SEC_OCEAN = DEFAULT_SPEED * 0.25		-- 海洋衰减，水里减速的更慢
 local SLOW_SEC_LAND = DEFAULT_SPEED * 0.5		-- 地面衰减
 local MAX_DAMAGE = 50							-- 最大伤害，随着速度降低而增加
@@ -30,6 +31,12 @@ end
 function Drift:Throw(pos, doer)
 	self.doer = doer
 	self:RotateToTarget(pos)
+	local dist = aipDist(doer:GetPosition(), pos)
+	local maxDist = 3
+	local mergedDist = math.min(dist, maxDist)
+	self.speed = Remap(mergedDist,
+		0, maxDist,					-- 施法距离为 10，但是我们计算只按照 3 的距离来算
+		MIN_SPEED, DEFAULT_SPEED)	-- 均摊一下速度
 	self.inst:StartUpdatingComponent(self)
 end
 
@@ -76,6 +83,15 @@ function Drift:OnUpdate(dt)
 	if self.speed <= 0 or #ents > 0 then
 		self.inst:StopUpdatingComponent(self)
 
+		-- 告知附近的荷叶怪圈
+		local ents = aipFindNearEnts(self.inst, {"aip_oldone_lotus"}, 20)
+		for i, ent in ipairs(ents) do
+			if ent._aipCheckDrift ~= nil then
+				ent._aipCheckDrift(ent, self.inst, self.doer)
+			end
+		end
+
+		-- 删除元素
 		aipReplacePrefab(self.inst, "collapse_small")
 	end
 end
