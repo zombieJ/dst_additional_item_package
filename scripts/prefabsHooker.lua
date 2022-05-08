@@ -322,6 +322,15 @@ AddPrefabPostInit("reskin_tool", function(inst)
 	end
 end)
 
+------------------------------------------ 燧石 ------------------------------------------
+AddPrefabPostInit("flint", function(inst)
+	inst:AddTag("allow_action_on_impassable") -- 允许对海使用
+
+	if inst.components.aipc_water_drift == nil then
+		inst:AddComponent("aipc_water_drift")
+	end
+end)
+
 ------------------------------------------ 食物 ------------------------------------------
 AddPrefabPostInit("grass", function(inst)
 	if not _G.TheWorld.ismastersim then
@@ -433,6 +442,8 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 									"aip_four_flower",		-- 鲜花迷宫
 									"aip_watering_flower",	-- 枯萎鲜花
 									"aip_oldone_rock",		-- 石头谜团
+									"aip_oldone_salt_hole",	-- 小型盐洞
+									"aip_oldone_lotus",		-- 荷花水漂
 								}
 
 								-- 春天还有额外的几率出现春日谜团
@@ -469,6 +480,11 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 									end
 
 									table.insert(flowers, "aip_oldone_snowman")
+								end
+
+								-- 测试专用
+								if dev_mode then
+									flowers = { "aip_oldone_lotus", }
 								end
 
 								local flowerName = _G.aipRandomEnt(flowers)

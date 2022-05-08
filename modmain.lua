@@ -130,6 +130,10 @@ PrefabFiles = {
 	"aip_oldone_hot",
 	"aip_oldone_plant_flower",
 	"aip_oldone_leaves",
+	"aip_oldone_salt_hole",
+	"aip_salt_fish",
+	"aip_oldone_stone_piece",
+	"aip_oldone_lotus",
 
 	-- Orbit
 	"aip_orbit",
@@ -243,6 +247,7 @@ end)
 
 ------------------------------------- 玩家钩子 -------------------------------------
 modimport("scripts/hooks/aip_drive_hook")
+modimport("scripts/hooks/aip_drift_hook") -- 打水漂
 modimport("scripts/hooks/aip_transfer_hook")
 modimport("scripts/hooks/aip_oldone_hook")
 
