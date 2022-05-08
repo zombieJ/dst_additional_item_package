@@ -442,6 +442,7 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 									"aip_four_flower",		-- 鲜花迷宫
 									"aip_watering_flower",	-- 枯萎鲜花
 									"aip_oldone_rock",		-- 石头谜团
+									"aip_oldone_salt_hole",	-- 小型盐洞
 									"aip_oldone_lotus",		-- 荷花水漂
 								}
 
