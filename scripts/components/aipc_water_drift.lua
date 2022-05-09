@@ -7,8 +7,6 @@ local MAX_DAMAGE = 50							-- 最大伤害，随着速度降低而增加
 -- 一个只会飞行到目标地点的投掷物
 local Drift = Class(function(self, inst)
 	self.inst = inst
-	self.speed = DEFAULT_SPEED
-	self.doer = nil
 end)
 
 function Drift:Launch(pos, doer)
@@ -30,6 +28,7 @@ end
 -- 向一个方向扔出
 function Drift:Throw(pos, doer)
 	self.doer = doer
+	self.playSpeed = 1
 	self:RotateToTarget(pos)
 	local dist = aipDist(doer:GetPosition(), pos)
 	local maxDist = 3
@@ -53,6 +52,20 @@ function Drift:OnUpdate(dt)
 		0,
 		0
 	)
+
+	-- 根据速度设置播放速度
+	local speedPTG = self.speed / DEFAULT_SPEED
+	local playSpeed = 1
+	if speedPTG <= 0.2 then
+		playSpeed = 2
+	elseif speedPTG <= 0.5 then
+		playSpeed = 1.5
+	end
+
+	if playSpeed ~= self.playSpeed then
+		self.playSpeed = playSpeed
+		self.inst.AnimState:SetDeltaTimeMultiplier(playSpeed)
+	end
 
 	-- 判断是否撞击到目标
 	local ents = TheSim:FindEntities(

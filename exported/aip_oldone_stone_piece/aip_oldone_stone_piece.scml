@@ -2,15 +2,30 @@
 <spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
     <folder id="0" name="body">
         <file id="0" name="body/full.png" width="328" height="328" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="body/slash.png" width="328" height="328" pivot_x="0" pivot_y="1"/>
     </folder>
     <entity id="0" name="aip_oldone_stone_piece">
         <animation id="0" name="idle" length="300">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="full" folder="0" file="0" abs_x="1.978723" abs_y="26.051672" abs_pivot_x="0.521277" abs_pivot_y="0.448328" abs_angle="0" abs_scale_x="0.5" abs_scale_y="0.5" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="slash" folder="0" file="1" abs_x="0.993921" abs_y="12.191489" abs_pivot_x="0.506079" abs_pivot_y="0.308511" abs_angle="360" abs_scale_x="0.615399" abs_scale_y="0.615399" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
-                <key id="1" time="150">
+                <key id="1" time="40">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+                <key id="2" time="41">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="2" z_index="1"/>
+                </key>
+                <key id="3" time="150">
                     <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="2" z_index="1"/>
+                </key>
+                <key id="4" time="291">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="3" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="full">
@@ -18,7 +33,21 @@
                     <object folder="0" file="0" x="1.978723" y="26.051672" pivot_x="0.521277" pivot_y="0.448328" angle="0" scale_x="0.5" scale_y="0.5"/>
                 </key>
                 <key id="1" time="150" spin="0">
-                    <object folder="0" file="0" x="1.978723" y="44.051672" pivot_x="0.521277" pivot_y="0.448328" angle="0" scale_x="0.5" scale_y="0.5"/>
+                    <object folder="0" file="0" x="1.978723" y="60.051672" pivot_x="0.521277" pivot_y="0.448328" angle="0" scale_x="0.5" scale_y="0.5"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="slash">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="0.993921" y="12.191489" pivot_x="0.506079" pivot_y="0.308511" scale_x="0.615399" scale_y="0.615399"/>
+                </key>
+                <key id="1" time="40" spin="0">
+                    <object folder="0" file="1" x="-0.006079" y="3.191489" pivot_x="0.506079" pivot_y="0.308511" scale_x="0.726164" scale_y="0.729574"/>
+                </key>
+                <key id="2" time="41" spin="0">
+                    <object folder="0" file="1" x="-0.002233" y="3.226105" pivot_x="0.506079" pivot_y="0.308511" scale_x="0.01" scale_y="0.01"/>
+                </key>
+                <key id="3" time="291" spin="0">
+                    <object folder="0" file="1" x="0.959306" y="11.879951" pivot_x="0.506079" pivot_y="0.308511" scale_x="0.01" scale_y="0.01"/>
                 </key>
             </timeline>
         </animation>
