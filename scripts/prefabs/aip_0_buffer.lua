@@ -159,12 +159,12 @@ local function fn(data)
     inst.entity:SetPristine()
 
     -- 打印一些数据
-    if dev_mode then
-        inst:DoTaskInTime(0.5, function()
-            aipPrint("Create With GUID:", inst.GUID, inst.entity:GetParent() == Ents[inst.entity:GetParent().GUID])
-            aipPrint("Same one?", inst.entity:GetParent() == ThePlayer)
-        end)
-    end
+    -- if dev_mode then
+    --     inst:DoTaskInTime(0.5, function()
+    --         aipPrint("Create With GUID:", inst.GUID, inst.entity:GetParent() == Ents[inst.entity:GetParent().GUID])
+    --         aipPrint("Same one?", inst.entity:GetParent() == ThePlayer)
+    --     end)
+    -- end
 
     -- 将自己注册给父节点
     inst:DoTaskInTime(0.01, onRegisterParent)
