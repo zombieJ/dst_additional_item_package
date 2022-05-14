@@ -444,6 +444,8 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 									"aip_oldone_rock",		-- 石头谜团
 									"aip_oldone_salt_hole",	-- 小型盐洞
 									"aip_oldone_lotus",		-- 荷花水漂
+									"aip_oldone_pot",		-- 闹鬼陶罐
+									"aip_oldone_tree",		-- 旺盛之树
 								}
 
 								-- 春天还有额外的几率出现春日谜团
@@ -483,8 +485,8 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 								end
 
 								-- 测试专用
-								if dev_mode then
-									flowers = { "aip_oldone_lotus", }
+								if dev_mode then -- aip_oldone_tree
+									flowers = { "aip_oldone_tree" }
 								end
 
 								local flowerName = _G.aipRandomEnt(flowers)

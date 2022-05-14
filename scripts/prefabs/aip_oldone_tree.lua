@@ -23,10 +23,40 @@ local assets = {
 }
 
 ------------------------------------ 事件 ------------------------------------
-local function onWork(inst)
+local function doRemove(inst)
+    inst:RemoveTag("lightningrod")
+
+    inst.AnimState:PlayAnimation("dead")
+    inst:DoTaskInTime(2, function()
+        ErodeAway(inst, 0.5)
+    end)
+
+    inst:RemoveComponent("workable")
+    inst:RemoveComponent("burnable")
+
+    inst.SoundEmitter:PlaySound("dontstarve/forest/treeCrumble")
 end
 
-local function onFinish(inst)
+local function onFinish(inst, doer)
+    doRemove(inst)
+
+    -- 增加一点谜团因子
+    if doer ~= nil and doer.components.aipc_oldone ~= nil then
+        doer.components.aipc_oldone:DoDelta(1)
+    end
+end
+
+-- 雷击
+local function onlightning(inst)
+    doRemove(inst)
+
+    -- 增加模因因子
+    local players = aipFindNearPlayers(inst, 8)
+    for i, player in ipairs(players) do
+        if player ~= nil and player.components.aipc_oldone ~= nil then
+            player.components.aipc_oldone:DoDelta(2)
+        end
+    end
 end
 
 ------------------------------------ 实体 ------------------------------------
@@ -35,13 +65,20 @@ local function fn()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
+
+    MakeObstaclePhysics(inst, .2)
 
     inst.AnimState:SetBank("aip_oldone_tree")
     inst.AnimState:SetBuild("aip_oldone_tree")
-    inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:PlayAnimation("idle", true)
+    
+    local scale = 1.5
+    inst.Transform:SetScale(scale, scale, scale)
 
     inst:AddTag("aip_olden_flower")
+    inst:AddTag("lightningrod")
 
     inst.entity:SetPristine()
 
@@ -51,14 +88,15 @@ local function fn()
 
     inst:AddComponent("inspectable")
 
+    inst:ListenForEvent("lightningstrike", onlightning)
+
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.CHOP)
     inst.components.workable:SetWorkLeft(1)
-    inst.components.workable:SetOnWorkCallback(onWork)
     inst.components.workable:SetOnFinishCallback(onFinish)
 
     inst:AddComponent("hauntable")
-    MakeLargeBurnable(inst, TUNING.TREE_BURN_TIME)
+    MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
     MakeMediumPropagator(inst)
 
     inst.persists = false
