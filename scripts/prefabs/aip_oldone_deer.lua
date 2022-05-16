@@ -37,6 +37,17 @@ local function syncStatus(inst)
     end
 end
 
+local function spawnEye(inst)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local dist = math.random(2, 8)
+    local angle = math.random() * 2 * PI
+
+    aipSpawnPrefab(inst, "aip_oldone_deer_eye",
+        x + math.cos(angle) * dist, y,
+        z + math.sin(angle) * dist
+    )
+end
+
 local function onNear(inst, player)
     inst.components.aipc_timer:NamedInterval("PlayerNear", 3, function()
         local x, y, z = inst.Transform:GetWorldPosition()
@@ -62,6 +73,7 @@ local function onNear(inst, player)
         end
 
         syncStatus(inst)
+        spawnEye(inst)
     end)
 end
 
@@ -78,7 +90,7 @@ local function fn()
     inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
-    MakeInventoryPhysics(inst)
+    MakeObstaclePhysics(inst, 2)
 
     inst.AnimState:SetBank("aip_oldone_deer")
     inst.AnimState:SetBuild("aip_oldone_deer")
@@ -98,7 +110,6 @@ local function fn()
     inst.components.playerprox:SetOnPlayerFar(onFar)
 
     inst:AddComponent("aipc_timer")
-
 
     inst:AddComponent("temperature")
     inst.components.temperature.current = TheWorld.state.temperature
