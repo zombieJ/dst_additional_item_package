@@ -23,18 +23,23 @@ local assets = {
 	-- Asset("ATLAS", "images/inventoryimages/aip_22_fish.xml"),
 }
 
+------------------------------------ 实例 ------------------------------------
 local function fn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
+
+    inst:AddTag("aip_oldone_deer_eye")
 
     MakeInventoryPhysics(inst)
 
     inst.AnimState:SetBank("aip_oldone_deer_eye")
     inst.AnimState:SetBuild("aip_oldone_deer_eye")
-    inst.AnimState:PlayAnimation("idle", true)
+    inst.AnimState:PlayAnimation("spawn")
+    inst.AnimState:PushAnimation("idle", true)
 
     -- MakeInventoryFloatable(inst, "med", 0.3, 1)
 
@@ -43,6 +48,8 @@ local function fn()
     if not TheWorld.ismastersim then
         return inst
     end
+
+    inst.SoundEmitter:PlaySound("dontstarve/creatures/eyeplant/eye_emerge")
 
     inst:AddComponent("inspectable")
 

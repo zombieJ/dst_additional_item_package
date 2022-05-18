@@ -1,3 +1,4 @@
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 local language = aipGetModConfig("language")
 
 -- 文字描述
@@ -38,18 +39,36 @@ local function syncStatus(inst)
 end
 
 local function spawnEye(inst)
-    local x, y, z = inst.Transform:GetWorldPosition()
-    local dist = math.random(2, 8)
-    local angle = math.random() * 2 * PI
+    if inst._aipLevel < 2 then -- 温度不到不生娃
+        return
+    end
 
-    aipSpawnPrefab(inst, "aip_oldone_deer_eye",
-        x + math.cos(angle) * dist, y,
-        z + math.sin(angle) * dist
-    )
+    local x, y, z = inst.Transform:GetWorldPosition()
+
+    for d = 1, 3 do
+        local dist = d * 3 + 1
+        local count = 4 + d * 3
+
+        for i = 1, count do
+            local angle = (i - 1) / count * 2 * PI + PI / 4 * d
+            local tgtX = x + math.cos(angle) * dist
+            local tgtZ = z + math.sin(angle) * dist
+            local eyes = TheSim:FindEntities(tgtX, 0, tgtZ, 0.5, { "aip_oldone_deer_eye" })
+               
+            if #eyes == 0 then
+                aipSpawnPrefab(nil, "aip_oldone_deer_eye", tgtX, 0, tgtZ)
+                return
+            end
+        end
+    end
 end
 
 local function onNear(inst, player)
     inst.components.aipc_timer:NamedInterval("PlayerNear", 3, function()
+        -- 尝试生成菇茑
+        spawnEye(inst)
+
+        -- 温度变化
         local x, y, z = inst.Transform:GetWorldPosition()
         local fires = TheSim:FindEntities(x, y, z, 5, { "fire" })
         fires = aipFilterTable(fires, function(fire)
@@ -59,21 +78,35 @@ local function onNear(inst, player)
         -- 附近有火源 并且 自身温度 > 80 则可以变化（测试下来可以超过 80 度）
         local firing = #fires > 0
         local temperature = inst.components.temperature:GetCurrent()
-        --  and inst.components.temperature:GetCurrent() >= 80
         local offset = firing and 1 or -1
+
         inst._aipLevel = math.max(0, inst._aipLevel + offset)
         inst._aipLevel = math.min(2, inst._aipLevel)
 
-        if temperature < 80 then -- 80 度以下强制不会到最终阶段
+        if dev_mode then
+            aipPrint("Deer:", inst._aipLevel, temperature)
+        end
+
+        if temperature < 70 then -- 强制不会到最终阶段
             inst._aipLevel = math.min(1, inst._aipLevel)
         end
 
-        if temperature < 60 then -- 60 度以下一定是漆黑状态
+        if temperature < 50 then -- 一定是漆黑状态
             inst._aipLevel = 0
         end
 
         syncStatus(inst)
-        spawnEye(inst)
+
+        -- 温度不到，定期清理娃
+        if inst._aipLevel == 0 then
+            local eyes = TheSim:FindEntities(x, y, z, 15, { "aip_oldone_deer_eye" })
+            local eye = aipRandomEnt(eyes)
+
+            if eye ~= nil then
+                eye:ListenForEvent("animover", inst.Remove)
+                eye.AnimState:PlayAnimation("dead")
+            end
+        end
     end)
 end
 
@@ -90,7 +123,7 @@ local function fn()
     inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
-    MakeObstaclePhysics(inst, 2)
+    MakeObstaclePhysics(inst, 1)
 
     inst.AnimState:SetBank("aip_oldone_deer")
     inst.AnimState:SetBuild("aip_oldone_deer")
@@ -113,8 +146,8 @@ local function fn()
 
     inst:AddComponent("temperature")
     inst.components.temperature.current = TheWorld.state.temperature
-    inst.components.temperature.inherentinsulation = TUNING.INSULATION_MED
-    inst.components.temperature.inherentsummerinsulation = TUNING.INSULATION_MED
+    inst.components.temperature.inherentinsulation = 0 --TUNING.INSULATION_MED
+    inst.components.temperature.inherentsummerinsulation = 0 -- TUNING.INSULATION_MED
 
     MakeHauntableLaunch(inst)
 
