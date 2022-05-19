@@ -72,6 +72,14 @@ local function fn()
     inst.components.pickable.canbepicked = true
     inst.components.pickable.use_lootdropper_for_product = true
 
+    inst:AddComponent("stackable")
+    inst.components.stackable.maxsize = TUNING.STACK_SIZE_MEDITEM
+
+    inst:AddComponent("perishable")
+    inst.components.perishable:SetPerishTime(TUNING.PERISH_FAST)
+    inst.components.perishable:StartPerishing()
+    inst.components.perishable.onperishreplacement = "spoiled_food"
+
     MakeHauntableLaunch(inst)
 
     return inst
