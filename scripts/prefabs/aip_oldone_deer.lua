@@ -40,25 +40,33 @@ end
 
 local function spawnEye(inst)
     if inst._aipLevel < 2 then -- 温度不到不生娃
+        inst._aipSpawnDuration = 0
         return
     end
 
+    inst._aipSpawnDuration = inst._aipSpawnDuration + 1
+    if inst._aipSpawnDuration <= 1 then
+        return
+    end
+
+    inst._aipSpawnDuration = 0
     local x, y, z = inst.Transform:GetWorldPosition()
 
-    for d = 1, 3 do
-        local dist = d * 3 + 1
-        local count = 4 + d * 3
+    -- 随机层级找一个点
+    local d = math.random(1, 3)
+    local dist = d * 3 + 1
+    local count = 4 + d * 3
+    local startI = math.random(1, count)
 
-        for i = 1, count do
-            local angle = (i - 1) / count * 2 * PI + PI / 4 * d
-            local tgtX = x + math.cos(angle) * dist
-            local tgtZ = z + math.sin(angle) * dist
-            local eyes = TheSim:FindEntities(tgtX, 0, tgtZ, 0.5, { "aip_oldone_deer_eye" })
-               
-            if #eyes == 0 then
-                aipSpawnPrefab(nil, "aip_oldone_deer_eye", tgtX, 0, tgtZ)
-                return
-            end
+    for i = 1, count do
+        local angle = (i + startI) / count * 2 * PI + PI / 4 * d
+        local tgtX = x + math.cos(angle) * dist
+        local tgtZ = z + math.sin(angle) * dist
+        local ents = TheSim:FindEntities(tgtX, 0, tgtZ, 0.5)
+
+        if #ents == 0 then
+            aipSpawnPrefab(nil, "aip_oldone_deer_eye", tgtX, 0, tgtZ)
+            return
         end
     end
 end
@@ -152,6 +160,7 @@ local function fn()
     MakeHauntableLaunch(inst)
 
     inst._aipLevel = 0
+    inst._aipSpawnDuration = 0
 
     return inst
 end

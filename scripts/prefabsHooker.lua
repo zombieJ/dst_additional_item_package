@@ -549,7 +549,13 @@ end
 -- 粘衣赋值
 env.AddIngredientValues(
 	{"aip_oldone_plant_broken"},
-	{ indescribable = 1 }, -- tags
+	{ indescribable = 2 }, -- tags
 	false, -- cancook
 	false -- candry
+)
+
+-- 菇茑赋值
+env.AddIngredientValues(
+	{"aip_oldone_deer_eye_fruit"},
+	{ indescribable = 1, fruit = .5 } -- 是 迷因 也是 水果
 )

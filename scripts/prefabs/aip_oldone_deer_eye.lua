@@ -79,7 +79,7 @@ end
 
 ------------------------------------ 物品 ------------------------------------
 local function onEaten(inst, eater) -- 吃下鹿眼可以短暂获得真实效果
-    aipBufferPatch(inst, eater, "aip_see_eyes", 5)
+    aipBufferPatch(inst, eater, "aip_see_eyes", 7)
 end
 
 local function foodFn()
@@ -110,8 +110,9 @@ local function foodFn()
     inst.components.inventoryitem.imagename = "aip_oldone_deer_eye"
 
 	inst:AddComponent("edible")
-    inst.components.edible.hungervalue = 0
-    inst.components.edible.healthvalue = 0
+    inst.components.edible.hungervalue = 5
+    inst.components.edible.healthvalue = 1
+    inst.components.edible.sanityvalue = -1
     inst.components.edible.foodtype = FOODTYPE.GOODIES
 	inst.components.edible:SetOnEatenFn(onEaten)
 
