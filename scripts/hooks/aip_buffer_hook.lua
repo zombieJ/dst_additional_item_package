@@ -68,7 +68,12 @@ function _G.aipBufferPatch(source, inst, name, duration, info)
 	end
 
 	buffer._buffers[name].srcGUID = source ~= nil and source.GUID
-	buffer._buffers[name].duration = duration or 2
+
+	local mergedDuration = duration or 2
+	if buffer._buffers[name].duration ~= nil then -- 如果现有的更长就不替换
+		mergedDuration = math.max(mergedDuration, buffer._buffers[name].duration)
+	end
+	buffer._buffers[name].duration = mergedDuration
 	-- inst._buffers[name].fn = info.fn
 	-- inst._buffers[name].startFn = info.startFn
 	-- inst._buffers[name].endFn = info.endFn

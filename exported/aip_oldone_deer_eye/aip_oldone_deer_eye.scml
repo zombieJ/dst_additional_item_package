@@ -66,7 +66,65 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="1" name="spawn" length="300">
+        <animation id="1" name="item" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="grass" folder="0" file="0" abs_x="3.922829" abs_y="-5.375192" abs_pivot_x="0.577171" abs_pivot_y="0.684716" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="leaf-back" folder="0" file="1" abs_x="-29.698529" abs_y="-8.309293" abs_pivot_x="0.865196" abs_pivot_y="0.047388" abs_angle="14.164246" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="2" name="eye" folder="0" file="2" abs_x="2.676587" abs_y="5.821627" abs_pivot_x="0.632937" abs_pivot_y="0.202183" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2"/>
+                    <object_ref id="3" name="leaf-left" folder="0" file="3" abs_x="-1.179387" abs_y="-14.12062" abs_pivot_x="0.822244" abs_pivot_y="0.09681" abs_angle="32.402498" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3"/>
+                    <object_ref id="4" name="leaf-right" folder="0" file="4" abs_x="3.097527" abs_y="-16.547412" abs_pivot_x="0.307234" abs_pivot_y="0.095031" abs_angle="319.611818" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="0" z_index="4"/>
+                </key>
+                <key id="1" time="1500">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                    <object_ref id="2" timeline="2" key="1" z_index="2"/>
+                    <object_ref id="3" timeline="3" key="1" z_index="3"/>
+                    <object_ref id="4" timeline="4" key="1" z_index="4"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="grass">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="3.922829" y="-5.375192" pivot_x="0.577171" pivot_y="0.684716" angle="0"/>
+                </key>
+                <key id="1" time="1500" spin="0">
+                    <object folder="0" file="0" x="3.922829" y="-5.375192" pivot_x="0.577171" pivot_y="0.684716" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="leaf-back">
+                <key id="0" spin="-1">
+                    <object folder="0" file="1" x="-29.698529" y="-8.309293" pivot_x="0.865196" pivot_y="0.047388" angle="14.164246"/>
+                </key>
+                <key id="1" time="1500">
+                    <object folder="0" file="1" x="-25.698529" y="-11.309293" pivot_x="0.865196" pivot_y="0.047388" angle="356.335799"/>
+                </key>
+            </timeline>
+            <timeline id="2" name="eye">
+                <key id="0" spin="0">
+                    <object folder="0" file="2" x="2.676587" y="5.821627" pivot_x="0.632937" pivot_y="0.202183" angle="0"/>
+                </key>
+                <key id="1" time="1500" spin="0">
+                    <object folder="0" file="2" x="4.174075" y="3.821627" pivot_x="0.632937" pivot_y="0.202183" angle="0" scale_x="0.97" scale_y="0.97"/>
+                </key>
+            </timeline>
+            <timeline id="3" name="leaf-left">
+                <key id="0" spin="-1">
+                    <object folder="0" file="3" x="-1.179387" y="-14.12062" pivot_x="0.822244" pivot_y="0.09681" angle="32.402498"/>
+                </key>
+                <key id="1" time="1500">
+                    <object folder="0" file="3" x="-14.179387" y="-13.12062" pivot_x="0.822244" pivot_y="0.09681" angle="351.740934"/>
+                </key>
+            </timeline>
+            <timeline id="4" name="leaf-right">
+                <key id="0">
+                    <object folder="0" file="4" x="3.097527" y="-16.547412" pivot_x="0.307234" pivot_y="0.095031" angle="319.611818"/>
+                </key>
+                <key id="1" time="1500" spin="-1">
+                    <object folder="0" file="4" x="15.097527" y="-12.547412" pivot_x="0.307234" pivot_y="0.095031" angle="2.781799"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="spawn" length="300">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="grass" folder="0" file="0" abs_x="3.922829" abs_y="-14.375192" abs_pivot_x="0.577171" abs_pivot_y="0.684716" abs_angle="0" abs_scale_x="0.651995" abs_scale_y="0.207125" abs_a="1" timeline="0" key="0" z_index="0"/>
@@ -124,7 +182,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="2" name="dead" length="200">
+        <animation id="3" name="dead" length="200">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="grass" folder="0" file="0" abs_x="3.922829" abs_y="-5.375192" abs_pivot_x="0.577171" abs_pivot_y="0.684716" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
