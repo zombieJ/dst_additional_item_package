@@ -331,6 +331,21 @@ AddPrefabPostInit("flint", function(inst)
 	end
 end)
 
+------------------------------------------ 乌贼 ------------------------------------------
+local function onSquidDead(inst)
+	local chance = _G.aipBufferExist(inst, "oldonePoison") and 1 or 0.1
+
+	if math.random() <= chance then
+		_G.aipFlingItem(
+			_G.aipSpawnPrefab(inst, "aip_oldone_fisher")
+		)
+	end
+end
+
+AddPrefabPostInit("squid", function(inst)
+	inst:ListenForEvent("death", onSquidDead)
+end)
+
 ------------------------------------------ 食物 ------------------------------------------
 AddPrefabPostInit("grass", function(inst)
 	if not _G.TheWorld.ismastersim then
