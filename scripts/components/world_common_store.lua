@@ -179,7 +179,7 @@ function CommonStore:CreateSpiderden()
 	return spiderden
 end
 
--- 创建 古神蛛巢，随机找一个触手怪
+-- 创建 雕像，随机找一个触手怪
 function CommonStore:CreateMarble()
 	-- 只有地面可以有
 	if not TheWorld:HasTag("forest") then
@@ -212,6 +212,31 @@ function CommonStore:CreateMarble()
 	end
 
 	return marble
+end
+
+
+-- 创建 漆黑的鹿
+function CommonStore:CreateDeer()
+	-- 只有洞穴可以有
+	if not TheWorld:HasTag("cave") then
+		return
+	end
+
+	-- 有鹿就不去
+	if TheSim:FindFirstEntityWithTag("aip_oldone_deer") ~= nil then
+		return
+	end
+
+	local rocky = TheSim:FindFirstEntityWithTag("rocky")
+	if rocky == nil then
+		return
+	end
+
+	-- 石虾附近搞一个
+	local tgtPT = aipGetSecretSpawnPoint(rocky:GetPosition(), 5, 20, 5)
+	if tgtPT ~= nil then
+		aipSpawnPrefab(nil, "aip_oldone_deer", tgtPT.x, tgtPT.y, tgtPT.z)
+	end
 end
 
 function CommonStore:CreateSuWuMound(pos)
@@ -288,6 +313,11 @@ function CommonStore:PostWorld()
 	------------------------- 创建沼泽雕塑 -------------------------
 	self.inst:DoTaskInTime(3, function()
 		self:CreateMarble()
+	end)
+
+	------------------------- 创建漆黑的鹿 -------------------------
+	self.inst:DoTaskInTime(1, function()
+		self:CreateDeer()
 	end)
 
 	--------------------------- 开发模式 ---------------------------

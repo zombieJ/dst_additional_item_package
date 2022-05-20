@@ -62,11 +62,15 @@ local function spawnEye(inst)
         local angle = (i + startI) / count * 2 * PI + PI / 4 * d
         local tgtX = x + math.cos(angle) * dist
         local tgtZ = z + math.sin(angle) * dist
-        local ents = TheSim:FindEntities(tgtX, 0, tgtZ, 0.5)
 
-        if #ents == 0 then
-            aipSpawnPrefab(nil, "aip_oldone_deer_eye", tgtX, 0, tgtZ)
-            return
+        -- 海里不会生长
+        if TheWorld.Map:IsAboveGroundAtPoint(tgtX, 0, tgtZ) then
+            local ents = TheSim:FindEntities(tgtX, 0, tgtZ, 0.5)
+
+            if #ents == 0 then
+                aipSpawnPrefab(nil, "aip_oldone_deer_eye", tgtX, 0, tgtZ)
+                return
+            end
         end
     end
 end
@@ -136,6 +140,8 @@ local function fn()
     inst.AnimState:SetBank("aip_oldone_deer")
     inst.AnimState:SetBuild("aip_oldone_deer")
     inst.AnimState:PlayAnimation("idle")
+
+    inst:AddTag("aip_oldone_deer")
 
     inst.entity:SetPristine()
 

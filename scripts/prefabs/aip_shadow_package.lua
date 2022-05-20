@@ -52,9 +52,9 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SHADOW_PACKAGE = LANG.DESCRIBE or LANG_E
 STRINGS.NAMES.AIP_SHADOW_PAPER_PACKAGE = LANG.PAPER_NAME or LANG_ENG.PAPER_NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SHADOW_PAPER_PACKAGE = LANG.PAPER_DESCRIBE or LANG_ENG.PAPER_DESCRIBE
 
--- 配方
-local aip_shadow_package = Recipe("aip_shadow_package", {Ingredient("waxpaper", 1), Ingredient("nightmarefuel", 5), Ingredient("featherpencil", 1)}, RECIPETABS.MAGIC, TECH.LOST)
-aip_shadow_package.atlas = "images/inventoryimages/aip_shadow_package.xml"
+-- -- 配方
+-- local aip_shadow_package = Recipe("aip_shadow_package", {Ingredient("waxpaper", 1), Ingredient("nightmarefuel", 5), Ingredient("featherpencil", 1)}, RECIPETABS.MAGIC, TECH.LOST)
+-- aip_shadow_package.atlas = "images/inventoryimages/aip_shadow_package.xml"
 
 -----------------------------------------------------------
 local assets =

@@ -43,9 +43,9 @@ STRINGS.NAMES.AIP_SHADOW_CHEST = LANG.NAME or LANG_ENG.NAME
 STRINGS.RECIPE_DESC.AIP_SHADOW_CHEST = LANG.DESC or LANG_ENG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SHADOW_CHEST = LANG.DESCRIBE or LANG_ENG.DESCRIBE
 
--- 配方
-local aip_shadow_chest = Recipe("aip_shadow_chest", {Ingredient("aip_shadow_paper_package", 1, "images/inventoryimages/aip_shadow_paper_package.xml"), Ingredient("boards", 3)}, RECIPETABS.MAGIC, TECH.MAGIC_TWO, "aip_shadow_chest_placer")
-aip_shadow_chest.atlas = "images/inventoryimages/aip_shadow_package.xml" -- TODO 修改图标
+-- -- 配方
+-- local aip_shadow_chest = Recipe("aip_shadow_chest", {Ingredient("aip_shadow_paper_package", 1, "images/inventoryimages/aip_shadow_paper_package.xml"), Ingredient("boards", 3)}, RECIPETABS.MAGIC, TECH.MAGIC_TWO, "aip_shadow_chest_placer")
+-- aip_shadow_chest.atlas = "images/inventoryimages/aip_shadow_package.xml" -- TODO 修改图标
 
 ------------------------------------ 实例 ------------------------------------
 local assets =

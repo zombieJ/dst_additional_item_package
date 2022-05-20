@@ -65,7 +65,7 @@ local function getFn(data)
         inst.AnimState:SetBuild("aip_glass_minecar")
         inst.AnimState:PlayAnimation("idle")
 
-        MakeInventoryFloatable(inst, "large", nil, 0.75)
+        MakeInventoryFloatable(inst, "large", 0.7, 1)
 
         inst:AddTag("aip_glass_minecar")
 
