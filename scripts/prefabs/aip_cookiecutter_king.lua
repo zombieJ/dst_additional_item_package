@@ -149,7 +149,7 @@ end
 -- 延迟说话
 local function delayTalk(delay, talker, king, speech, knownSpeech, callback)
 	talker:DoTaskInTime(delay or 0, function()
-		if talker and talker.components.talker ~= nil then
+		if talker and talker.components.talker ~= nil and king ~= nil and king:IsValid() then
 			-- 寻找附近的玩家
 			local players = aipFindNearPlayers(king, 30)
 			local teaDrinkers = aipFilterTable(players, function(player)
