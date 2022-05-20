@@ -57,8 +57,10 @@ AddClassPostConstruct("widgets/hoverer", function(self)
             self.isFE and self.owner or _G.aipGet(self, "owner|HUD|controls")
         )
 
+        local IsActionsVisible = _G.aipGet(self, "owner|IsActionsVisible")
+
         -- 鼠标 Hover 到的物品
-        if item == nil and not self.isFE and self.owner:IsActionsVisible() then
+        if item == nil and not self.isFE and IsActionsVisible ~= nil and self.owner:IsActionsVisible() then
             lmb = self.owner.components.playercontroller:GetLeftMouseAction()
 
             if lmb ~= nil then

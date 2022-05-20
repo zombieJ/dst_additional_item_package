@@ -40,6 +40,20 @@ end
 	4 配置, 5 过滤
 ]]
 
+-------------------------------------- 废弃 --------------------------------------
+-- 【废弃】矿车
+rec("aip_mine_car", TECH.LOST, { CRAFTING_FILTERS.TOOLS },
+	{ Ingredient("boards", 5) })
+
+-- 【废弃】轨道
+rec("aip_orbit_item", TECH.LOST, { CRAFTING_FILTERS.TOOLS },
+{ Ingredient("boards", 1) })
+
+-- 【废弃】暗影打包带
+rec("aip_shadow_package", TECH.LOST, { CRAFTING_FILTERS.MAGIC },
+{ Ingredient("waxpaper", 1), Ingredient("nightmarefuel", 5), Ingredient("featherpencil", 1) })
+
+-------------------------------------- 原版 --------------------------------------
 -- 鱼刀
 rec("aip_fish_sword", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.WEAPONS },
 	{Ingredient("pondfish", 1),Ingredient("nightmarefuel", 2),Ingredient("rope", 1)})

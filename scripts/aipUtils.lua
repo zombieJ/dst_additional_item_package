@@ -324,6 +324,10 @@ function _G.aipFindNearEnts(inst, prefabNames, distance, includeInv)
 end
 
 function _G.aipFindNearPlayers(inst, dist)
+	if inst == nil then
+		return {}
+	end
+
 	-- local NOTAGS = { "FX", "NOCLICK", "DECOR", "playerghost", "INLIMBO" }
 	local x, y, z = inst.Transform:GetWorldPosition()
 	-- local ents = TheSim:FindEntities(x, 0, z, dist, { "player", "_health" }, NOTAGS)

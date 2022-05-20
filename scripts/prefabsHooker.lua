@@ -331,6 +331,21 @@ AddPrefabPostInit("flint", function(inst)
 	end
 end)
 
+------------------------------------------ 乌贼 ------------------------------------------
+local function onSquidDead(inst)
+	local chance = _G.aipBufferExist(inst, "oldonePoison") and 1 or 0.1
+
+	if math.random() <= chance then
+		_G.aipFlingItem(
+			_G.aipSpawnPrefab(inst, "aip_oldone_fisher")
+		)
+	end
+end
+
+AddPrefabPostInit("squid", function(inst)
+	inst:ListenForEvent("death", onSquidDead)
+end)
+
 ------------------------------------------ 食物 ------------------------------------------
 AddPrefabPostInit("grass", function(inst)
 	if not _G.TheWorld.ismastersim then
@@ -444,6 +459,8 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 									"aip_oldone_rock",		-- 石头谜团
 									"aip_oldone_salt_hole",	-- 小型盐洞
 									"aip_oldone_lotus",		-- 荷花水漂
+									"aip_oldone_pot",		-- 闹鬼陶罐
+									"aip_oldone_tree",		-- 旺盛之树
 								}
 
 								-- 春天还有额外的几率出现春日谜团
@@ -483,8 +500,8 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 								end
 
 								-- 测试专用
-								if dev_mode then
-									flowers = { "aip_oldone_lotus", }
+								if dev_mode then -- aip_oldone_tree
+									flowers = { "aip_oldone_tree" }
 								end
 
 								local flowerName = _G.aipRandomEnt(flowers)
@@ -532,7 +549,13 @@ end
 -- 粘衣赋值
 env.AddIngredientValues(
 	{"aip_oldone_plant_broken"},
-	{ indescribable = 1 }, -- tags
+	{ indescribable = 2 }, -- tags
 	false, -- cancook
 	false -- candry
+)
+
+-- 菇茑赋值
+env.AddIngredientValues(
+	{"aip_oldone_deer_eye_fruit"},
+	{ indescribable = 1, fruit = .5 } -- 是 迷因 也是 水果
 )

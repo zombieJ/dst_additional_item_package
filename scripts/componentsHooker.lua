@@ -362,3 +362,22 @@ AddComponentPostInit("witherable", function(self)
 		return originProtect(self, ...)
 	end
 end)
+
+
+-- 钓鱼不会断绳
+AddComponentPostInit("oceanfishingrod", function(self)
+	local originReel = self.Reel
+
+	function self:Reel(...)
+		local originTension = TUNING.OCEAN_FISHING.REELING_SNAP_TENSION
+		if self.fisher:HasTag("aip_oldone_good_fisher") then
+			-- 临时增加线的最大承受力，让它永远不会断
+			TUNING.OCEAN_FISHING.REELING_SNAP_TENSION = 999999
+		end
+
+		local ret = originReel(self, ...)
+
+		TUNING.OCEAN_FISHING.REELING_SNAP_TENSION = originTension
+		return ret
+	end
+end)
