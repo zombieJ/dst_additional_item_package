@@ -39,12 +39,12 @@ end
 
 --------------------------------- 收集 ---------------------------------
 local function triggerCollect(inst, hasWatcher)
-    local quickInterval = dev_mode and 2 or 5
+    local quickInterval = 5
     local longTimes = hasWatcher and 1 or 30 -- 一次性检查多少次
     local finalDuration = quickInterval * longTimes
 
     if dev_mode then
-        longTimes = longTimes * 5
+        finalDuration = 2
     end
 
     inst.components.aipc_timer:NamedInterval("Collect", finalDuration, function()
@@ -90,6 +90,10 @@ local function triggerCollect(inst, hasWatcher)
         end
 
         if targetPlant ~= nil then
+            if dev_mode then
+                aipPrint("Auto Pick:", targetPlant.prefab)
+            end
+
             if hasWatcher then
                 aipSpawnPrefab(targetPlant, "aip_shadow_wrapper").DoShow()
             end
@@ -102,10 +106,24 @@ local function triggerCollect(inst, hasWatcher)
 end
 
 local function onGotNewItem(inst, data)
+    local item = data.item
     -- 丢起物品
-    inst:DoTaskInTime(.1, function()
-        inst.components.inventory:DropItem(data.item, true, true, inst._aipTargetPos)
+    inst:DoTaskInTime(.001, function()
+        if
+            inst.components.inventory ~= nil and item ~=nil and item:IsValid() and
+            -- 确定是否有 replica
+            item.components.inventoryitem ~= nil and
+            item.replica.inventoryitem ~= nil
+        then
+            inst.components.inventory:DropItem(item, true, true, inst._aipTargetPos)
+        end
     end)
+end
+
+local function onInit(inst)
+    if inst.components.inventory ~= nil then
+        inst.components.inventory:DropEverything()
+    end
 end
 
 local function OnEntityWake(inst)
@@ -169,6 +187,8 @@ local function fn()
 
     inst.OnEntitySleep = OnEntitySleep
     inst.OnEntityWake = OnEntityWake
+
+    inst:DoTaskInTime(0.1, onInit)
 
     return inst
 end
