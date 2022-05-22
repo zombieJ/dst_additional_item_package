@@ -31,7 +31,10 @@ end
 
 ------------------------------- 事件 -------------------------------
 local function onSelect(inst, viewer)
-    if inst.aipRubik ~= nil and inst.aipRubik.components.aipc_rubik ~= nil then
+    if
+        inst.aipRubik ~= nil and inst.aipRubik.components.aipc_rubik ~= nil and
+        viewer ~= nil and viewer:HasTag("player")
+    then
         inst.aipRubik.components.aipc_rubik:Select(inst)
     end
 end

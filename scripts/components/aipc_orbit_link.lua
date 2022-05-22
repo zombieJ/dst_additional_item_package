@@ -113,6 +113,16 @@ function Linker:OnSave()
 			endX = endPt.x,
 			endZ = endPt.z,
 		}
+	elseif -- 兜底
+		self._startX ~= nil and self._startZ ~= nil and
+		self._endX ~= nil and self._endZ ~= nil
+	then
+		return {
+			startX = self._startX,
+			startZ = self._startZ,
+			endX = self._endX,
+			endZ = self._endZ,
+		}
 	end
 end
 
@@ -122,6 +132,11 @@ function Linker:OnLoad(data)
 		local startZ = data.startZ
 		local endX = data.endX
 		local endZ = data.endZ
+
+		self._startX = startX
+		self._startZ = startZ
+		self._endX = endX
+		self._endZ = endZ
 
 		-- 等物体载入完成后，再链接起来
 		self.inst:DoTaskInTime(1, function()
