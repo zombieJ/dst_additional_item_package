@@ -53,6 +53,8 @@ local function fn()
     inst.AnimState:SetBuild("aip_oldone_once")
     inst.AnimState:PlayAnimation("idle")
 
+    inst:AddTag("aip_olden_flower")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -63,6 +65,8 @@ local function fn()
     inst.components.inspectable.descriptionfn = onSelect
 
     MakeHauntableLaunch(inst)
+
+    inst.persists = false
 
     return inst
 end

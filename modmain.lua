@@ -140,6 +140,7 @@ PrefabFiles = {
 	"aip_oldone_deer_eye",
 	"aip_oldone_fisher",
 	"aip_oldone_once",
+	"aip_oldone_black",
 
 	-- Orbit
 	"aip_orbit",
