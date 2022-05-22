@@ -22,6 +22,24 @@ local assets = {
     Asset("ANIM", "anim/aip_oldone_once.zip"),
 }
 
+-------------------------------------- 事件 --------------------------------------
+local function onSelect(inst, viewer)
+    if
+        viewer ~= nil and viewer:HasTag("player")
+    then
+        inst.components.inspectable.descriptionfn = nil
+        if viewer ~= nil and viewer.components.aipc_oldone ~= nil then
+            viewer.components.aipc_oldone:DoDelta(1)
+        end
+
+        inst.AnimState:PlayAnimation("turn")
+        inst:ListenForEvent("animover", function()
+            aipReplacePrefab(inst, "aip_shadow_wrapper").DoShow()
+        end)
+    end
+end
+
+-------------------------------------- 实例 --------------------------------------
 local function fn()
     local inst = CreateEntity()
 
@@ -29,13 +47,11 @@ local function fn()
     inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
-    MakeInventoryPhysics(inst)
+    MakeObstaclePhysics(inst, 0.6)
 
     inst.AnimState:SetBank("aip_oldone_once")
     inst.AnimState:SetBuild("aip_oldone_once")
     inst.AnimState:PlayAnimation("idle")
-
-    MakeInventoryFloatable(inst, "med", 0.3, 1)
 
     inst.entity:SetPristine()
 
@@ -44,6 +60,7 @@ local function fn()
     end
 
     inst:AddComponent("inspectable")
+    inst.components.inspectable.descriptionfn = onSelect
 
     MakeHauntableLaunch(inst)
 

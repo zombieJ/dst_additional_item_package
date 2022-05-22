@@ -303,7 +303,7 @@ function _G.aipFindNearEnts(inst, prefabNames, distance, includeInv)
 		y = inst.y
 		z = inst.z
 	end
-	local ents = TheSim:FindEntities(x, 0, z, distance or 10)
+	local ents = _G.TheSim:FindEntities(x, 0, z, distance or 10)
 	local prefabs = {}
 
 	for _, ent in pairs(ents) do
@@ -330,7 +330,7 @@ function _G.aipFindNearPlayers(inst, dist)
 
 	-- local NOTAGS = { "FX", "NOCLICK", "DECOR", "playerghost", "INLIMBO" }
 	local x, y, z = inst.Transform:GetWorldPosition()
-	-- local ents = TheSim:FindEntities(x, 0, z, dist, { "player", "_health" }, NOTAGS)
+	-- local ents = _G.TheSim:FindEntities(x, 0, z, dist, { "player", "_health" }, NOTAGS)
 	-- return ents
 	return _G.FindPlayersInRange(x, y, z, dist, true)
 end
@@ -561,7 +561,7 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
 		pos = _G.aipIsNaturalPoint(pos)
 
 		if pos ~= nil then
-			local ents = TheSim:FindEntities(pos.x, 0, pos.z, emptyDistance)
+			local ents = _G.TheSim:FindEntities(pos.x, 0, pos.z, emptyDistance)
 			if #ents < tgtEntCnt then
 				tgtPT = pos
 				tgtEntCnt = #ents
@@ -636,7 +636,7 @@ function _G.aipValidateOceanPoint(pt, radius, prefabRadius)
 	end
 
 	-- 附近允许石头、漂流瓶
-	local ents = TheSim:FindEntities(pt.x, 0, pt.z, prefabRadius)
+	local ents = _G.TheSim:FindEntities(pt.x, 0, pt.z, prefabRadius)
 	for i, ent in ipairs(ents) do
 		if not table.contains({
 			"seastack",
@@ -661,7 +661,7 @@ function _G.aipGetTopologyPoint(tag, prefab, dist)
 			local z = node.cent[2]
 
 			-- 找到 匹配的物品
-			local ents = TheSim:FindEntities(x, 0, z, 40)
+			local ents = _G.TheSim:FindEntities(x, 0, z, 40)
 			local fissures = _G.aipFilterTable(ents, function(inst)
 				return inst.prefab == prefab
 			end)

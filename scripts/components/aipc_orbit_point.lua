@@ -14,13 +14,15 @@ local Point = Class(function(self, inst)
 	end
 
 	-- 创建的时候看看附近有没有车，放上来
-	self.inst:DoTaskInTime(0.1, function()
-		local minecars = aipFindNearEnts(self.inst, {"aip_glass_minecar"}, 0.5)
-		local minecar = minecars[1]
-		if minecar ~= nil then
-			self:SetMineCar(minecar)
-		end
-	end)
+	if TheWorld.ismastersim then
+		self.inst:DoTaskInTime(0.1, function()
+			local minecars = aipFindNearEnts(self.inst, {"aip_glass_minecar"}, 0.5)
+			local minecar = minecars[1]
+			if minecar ~= nil then
+				self:SetMineCar(minecar)
+			end
+		end)
+	end
 end)
 
 function disableMinecar(minecar)
