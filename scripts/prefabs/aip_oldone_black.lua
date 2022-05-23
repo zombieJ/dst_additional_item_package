@@ -24,10 +24,51 @@ local assets = {
 }
 
 ----------------------------- 事件 --------------------------------
-local BASE_DIST = dev_mode and 5 or 20
+local MIN_DIST = dev_mode and 5 or 30
+local MAX_DIST = dev_mode and 10 or 50
+
+local function OnRemoveEntity(inst)
+    if inst._aipHands then
+        for k, v in pairs(inst._aipHands) do
+            aipReplacePrefab(v, "aip_shadow_wrapper").DoShow(0.8)
+        end
+    end
+end
+
+local function checkResult(inst, doer)
+    local allClosed = true
+
+    if inst._aipHands then
+        for k, v in pairs(inst._aipHands) do
+            if v.components.activatable.inactive then
+                allClosed = false
+                break
+            end
+        end
+    else
+        allClosed = false
+    end
+
+    if allClosed then
+        -- 增加一点模因因子
+        if doer ~= nil and doer.components.aipc_oldone ~= nil then
+            doer.components.aipc_oldone:DoDelta(1)
+        end
+
+        -- 消失
+        aipRemove(inst)
+    end
+end
 
 local function toggleActive(inst, doer)
-    -- TODO
+    inst.AnimState:PlayAnimation("close")
+
+    -- 动画结束才判断
+    inst:ListenForEvent("animover", function()
+        if inst._aipMaster ~= nil then
+            checkResult(inst._aipMaster, doer)
+        end
+    end)
 end
 
 local function initMatrix(inst)
@@ -40,7 +81,7 @@ local function initMatrix(inst)
     local pt = inst:GetPosition()
 
     for i = 1, 3 do
-        local pos = aipGetSecretSpawnPoint(pt, BASE_DIST, BASE_DIST + 20, 3)
+        local pos = aipGetSecretSpawnPoint(pt, MIN_DIST, MAX_DIST, 3)
         if pos ~= nil then
             local hand = aipSpawnPrefab(nil, "aip_oldone_black", pos.x, pos.y, pos.z)
             table.insert(inst._aipHands, hand)
@@ -48,6 +89,8 @@ local function initMatrix(inst)
             hand._aipMaster = inst
         end
     end
+
+    inst.components.activatable.inactive = false
 end
 
 ----------------------------- 实例 --------------------------------
@@ -81,6 +124,8 @@ local function fn()
     inst.persists = false
 
     inst:DoTaskInTime(0.1, initMatrix)
+
+    inst.OnRemoveEntity = OnRemoveEntity
 
     return inst
 end
