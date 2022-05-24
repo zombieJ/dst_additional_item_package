@@ -25,6 +25,7 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_DEER_EYE_FRUIT = LANG.DESC_FRUIT
 local assets = {
     Asset("ANIM", "anim/aip_oldone_deer_eye.zip"),
 	Asset("ATLAS", "images/inventoryimages/aip_oldone_deer_eye.xml"),
+    Asset("ATLAS", "images/inventoryimages/aip_oldone_deer_eye_fruit.xml"),
 }
 
 ------------------------------------ 事件 ------------------------------------
@@ -106,8 +107,7 @@ local function foodFn()
     inst:AddComponent("inspectable")
     
 	inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_oldone_deer_eye.xml"
-    inst.components.inventoryitem.imagename = "aip_oldone_deer_eye"
+	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_oldone_deer_eye_fruit.xml"
 
 	inst:AddComponent("edible")
     inst.components.edible.hungervalue = 5
