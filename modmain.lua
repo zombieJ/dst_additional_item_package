@@ -141,6 +141,7 @@ PrefabFiles = {
 	"aip_oldone_fisher",
 	"aip_oldone_once",
 	"aip_oldone_black",
+	"aip_oldone_jellyfish",
 
 	-- Orbit
 	"aip_orbit",
