@@ -26,7 +26,8 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_JELLYFISH_STONE = LANG.WARN_DESC
 -- 资源
 local assets = {
     Asset("ANIM", "anim/aip_oldone_jellyfish.zip"),
-    Asset("ATLAS", "images/inventoryimages/aip_oldone_jellyfish.xml"),
+    Asset("ATLAS", "images/inventoryimages/aip_oldone_jellyfish_cold.xml"),
+    Asset("ATLAS", "images/inventoryimages/aip_oldone_jellyfish_hot.xml"),
 }
 
 ------------------------------ 事件 ------------------------------
@@ -91,6 +92,19 @@ local function fn()
 end
 
 ------------------------------ 暖石 ------------------------------
+local function HeatFn(inst, observer)
+    local worldTemp = TheWorld.state.temperature
+    local myHeat = worldTemp
+
+    if worldTemp > 60 then
+        myHeat = 10
+    elseif worldTemp < 10 then
+        myHeat = 60
+    end
+
+    return myHeat
+end
+
 local function stoneFn()
     local inst = CreateEntity()
 
@@ -123,6 +137,9 @@ local function stoneFn()
     inst.components.inventoryitem.imagename = "aip_oldone_jellyfish"
 
     inst:AddComponent("heater")
+    inst.components.heater.heatfn = HeatFn
+    inst.components.heater.carriedheatfn = HeatFn
+    inst.components.heater.carriedheatmultiplier = TUNING.HEAT_ROCK_CARRIED_BONUS_HEAT_FACTOR
 
     MakeHauntableLaunch(inst)
 
