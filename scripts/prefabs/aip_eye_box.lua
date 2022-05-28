@@ -34,17 +34,33 @@ local function OnCreate(inst)
 end
 
 local function GoToNewPlace(inst)
+    if inst._gone then
+        return
+    end
+
+    inst._gone = true
+    inst.persists = false
+
     inst.AnimState:PlayAnimation("work")
     inst:ListenForEvent("animover", function()
         local tree = aipFindRandomEnt("evergreen")
+        local newTgt = nil
 
         if tree ~= nil then
             local tgtPT = aipGetSecretSpawnPoint(tree:GetPosition(), 1, 10, 5)
             if tgtPT ~= nil then
-                aipSpawnPrefab(nil, "aip_eye_box", tgtPT.x, tgtPT.y, tgtPT.z)
+                newTgt = aipSpawnPrefab(nil, "aip_eye_box", tgtPT.x, tgtPT.y, tgtPT.z)
             end
+        end
 
-            inst:Remove()
+        if newTgt ~= nil then
+            -- 如果发现多个，全部清理掉
+            local eyeBoxes = aipFindEnts("aip_eye_box")
+            for k, v in pairs(eyeBoxes) do
+                if v ~= newTgt then
+                    aipRemove(v)
+                end
+            end
         end
     end)
 end
