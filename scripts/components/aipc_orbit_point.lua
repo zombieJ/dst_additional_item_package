@@ -104,6 +104,7 @@ function Point:OnRemoveEntity()
 	-- 矿车不能点击
 	self.minecar:RemoveTag("NOCLICK")
 	self.minecar:RemoveTag("fx")
+	self.minecar:Show()
 
 	if self.minecar.components.lootdropper ~= nil then
 		self.minecar.components.lootdropper:FlingItem(self.minecar, pt)
