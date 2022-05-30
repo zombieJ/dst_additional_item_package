@@ -16,7 +16,7 @@ const IMG_DES = 4;
 const IMAGES = [
 	[
 		'aip_blood_package', 'aip_plaster', 'aip_glass_minecar', 'aip_dou_tooth',
-		'aip_krampus_plus',
+		'aip_krampus_plus', 'aip_salt_fish', 'aip_oldone_jellyfish_cold', 'aip_oldone_jellyfish_hot',
 	],
 
 	[
@@ -48,15 +48,22 @@ const IMAGES = [
 
 	[
 		'aip_blue_glasses', 'aip_horse_head', 'aip_som', 'aip_joker_face',
-		'aip_wizard_hat',
+		'aip_wizard_hat', 'aip_oldone_fisher',
 	],
 
-	['aip_olden_tea_half', 'aip_suwu', 'aip_map', 'aip_shell_stone', 'aip_22_fish'],
+	[
+		'aip_olden_tea_half', 'aip_suwu', 'aip_map', 'aip_shell_stone', 'aip_22_fish',
+		'aip_oldone_thestral_fur',
+	],
 
 	[
 		'chesspiece_aip_doujiang_marble', 'chesspiece_aip_doujiang_stone', 'chesspiece_aip_doujiang_moonglass',
 		'chesspiece_aip_deer', 'chesspiece_aip_deer_stone', 'chesspiece_aip_deer_moonglass',
 		'chesspiece_aip_moon_marble', 'chesspiece_aip_moon_stone', 'chesspiece_aip_moon_moonglass',
+
+		'chesspiece_aip_mouth_marble', 'chesspiece_aip_mouth_stone', 'chesspiece_aip_mouth_moonglass',
+		'chesspiece_aip_octupus_marble', 'chesspiece_aip_octupus_stone', 'chesspiece_aip_octupus_moonglass',
+		'chesspiece_aip_fish_marble', 'chesspiece_aip_fish_stone', 'chesspiece_aip_fish_moonglass',
 	],
 
 	// 花蜜
@@ -70,12 +77,28 @@ const IMAGES = [
 		'aip_oldone_plant_broken', 'aip_oldone_plant_full', 'aip_oldone_durian',
 		'aip_oldone_wall_item', "aip_oldone_marble_head", "aip_oldone_marble_head_lock",
 		"aip_four_flower/body/bud", "aip_four_flower/body/open", "aip_watering_flower/body/bloom", "aip_oldone_rock/body/full",
+
+		'aip_oldone_snowman/body/spider',
+		'aip_oldone_snowman/body/rabbit',
+		'aip_oldone_snowman/body/snowman',
+
+		'aip_oldone_hot/body/full',
+		'aip_oldone_leaves/body/full',
+		'aip_oldone_salt_hole/body/full',
+		'aip_oldone_stone_piece/body/full',
+		'aip_oldone_lotus_leaf/body/full',
+		'aip_oldone_pot/body/full',
+		'aip_oldone_deer/body/half',
+		'aip_oldone_once/body/full',
+		'aip_oldone_black/body/open',
+		'aip_oldone_jellyfish/full/dry',
 	],
 
 	[
 		'aip_veggie_wheat', 'aip_veggie_wheat_cooked',
 		'aip_veggie_sunflower', 'aip_veggie_sunflower_cooked',
 		'aip_veggie_grape', 'aip_veggie_grape_cooked',
+		'aip_oldone_deer_eye_fruit',
 	],
 ];
 
