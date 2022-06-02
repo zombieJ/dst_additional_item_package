@@ -94,6 +94,7 @@ local assets =
 	Asset("ANIM", "anim/aip_woodener.zip"),
 	Asset("ATLAS", "images/inventoryimages/aip_woodener.xml"),
 	Asset("IMAGE", "images/inventoryimages/aip_woodener.tex"),
+	Asset("ATLAS", "images/aipStory/woodener.xml"),
 }
 
 local prefabs =

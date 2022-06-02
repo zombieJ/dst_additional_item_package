@@ -65,12 +65,19 @@ function CookbookPageCrockPot:InitLayout()
 	self:CreateDesc(1)
 end
 
+local IMG_MAX_WIDTH = 128
+
 function CookbookPageCrockPot:CreateDesc(index)
+	if self.currentIndex == index then
+		return
+	end
+
 	if self.descHolder ~= nil then
 		self.descHolder:Kill()
 	end
 
 	local descList = chinese[index].desc
+	self.currentIndex = index
 
 	-- 描述容器
 	self.descHolder = self.root:AddChild(Scroller(
@@ -82,9 +89,6 @@ function CookbookPageCrockPot:CreateDesc(index)
 	test:SetScale(0.05, 0.05, 0.05)
 	test:SetPosition(0, 0, 0)
 
-	-- 容器切割
-	-- self.descHolder:SetScissor(0, 0, DESC_CONTENT_WIDTH / 2, 200)
-
 	-- 计量器
 	local top = 0
 
@@ -92,9 +96,9 @@ function CookbookPageCrockPot:CreateDesc(index)
 		local contentHeight = 0
 
 		if type(descInfo) == "string" then -- 文本内容
-			local text = self.descHolder:PathChild(Text(UIFONT, 30))
+			local text = self.descHolder:PathChild(Text(UIFONT, 35))
 			text:SetHAlign(ANCHOR_LEFT)
-			text:SetMultilineTruncatedString(descInfo, 14, DESC_CONTENT_WIDTH, 999) -- 163
+			text:SetMultilineTruncatedString(descInfo, 14, DESC_CONTENT_WIDTH, 200) -- 163
 
 			local TW, TH = text:GetRegionSize()
 			text:SetPosition(TW / 2, top - TH / 2)
@@ -106,19 +110,40 @@ function CookbookPageCrockPot:CreateDesc(index)
 			local name = descInfo.name
 
 			if name ~= nil then
-				atlas = "images/inventoryimages/"..name..".xml"
-                image = name..".tex"
+				if softresolvefilepath("images/aipStory/"..name..".xml") ~= nil then
+					atlas = "images/aipStory/"..name..".xml"
+				elseif softresolvefilepath("images/inventoryimages/"..name..".xml") ~= nil then
+					atlas = "images/inventoryimages/"..name..".xml"
+				end
+
+				image = name..".tex"
 			end
 
 			local img = self.descHolder:PathChild(Image(atlas, image))
 
 			local w, h = img:GetSize()
+			local scale = 1
+
+			if descInfo.scale ~= nil then -- 使用设置的长宽比
+				scale = descInfo.scale
+			elseif w > IMG_MAX_WIDTH then -- 如果尺寸太大，我们拉回去
+				scale = IMG_MAX_WIDTH / w
+			end
+
+			-- 应用长宽
+			img:SetScale(scale, scale)
+			w = w * scale
+			h = h * scale
+
 			img:SetPosition(DESC_CONTENT_WIDTH / 2, top - h / 2)
 			contentHeight = h
 		end
 
 		top = top - contentHeight - DESC_OFFSET
 	end
+
+	-- 设置一下滚动高度
+	self.descHolder:SetScrollBound(-top)
 end
 
 return CookbookPageCrockPot
