@@ -137,6 +137,22 @@ function CookbookPageCrockPot:CreateDesc(index)
 
 			img:SetPosition(DESC_CONTENT_WIDTH / 2, top - h / 2)
 			contentHeight = h
+
+		elseif descInfo.type == "anim" then -- 动画
+			local anim = self.descHolder:PathChild(UIAnim())
+			anim:GetAnimState():SetBuild(descInfo.build)
+			anim:GetAnimState():SetBankAndPlayAnimation(
+				descInfo.bank or descInfo.build,
+				descInfo.anim or "idle", true
+			)
+			if descInfo.opacity ~= nil then
+				anim:GetAnimState():SetMultColour(1,1,1,descInfo.opacity)
+			end
+
+			anim:SetScale(descInfo.scale or 1)
+
+			anim:SetPosition(DESC_CONTENT_WIDTH / 2 + (descInfo.left or 0), top - descInfo.height)
+			contentHeight = descInfo.height
 		end
 
 		top = top - contentHeight - DESC_OFFSET
