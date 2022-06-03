@@ -1,4 +1,5 @@
 local Widget = require "widgets/widget"
+local Image = require "widgets/image"
 
 local Scroller = Class(Widget, function(self, x, y, width, height)
     Widget._ctor(self, "AIPScroller")
@@ -11,6 +12,14 @@ local Scroller = Class(Widget, function(self, x, y, width, height)
     self.visualHeight = height
     self.started = false
 
+    -- 背景板
+    self.black = self:AddChild(Image("images/global.xml", "square.tex"))
+    local bw, bh = self.black:GetSize()
+    self.black:SetScale(width / bw, height / bh)
+    self.black:SetPosition(width / 2, - height / 2)
+    self.black:SetTint(0,0,0,.01)
+
+    -- 容器
     self.holder = self:AddChild(Widget("contentRoot"))
     self.holder:Hide()
 
@@ -29,6 +38,7 @@ function Scroller:SetScrollBound(scrollBound) -- 滚动边界得是一个正数
     self:StartUpdating()
 end
 
+--------------------------------- 移动 ---------------------------------
 function Scroller:Offset(val)
     local x, y, z = self.holder:GetPosition():Get()
 
@@ -49,11 +59,15 @@ function Scroller:OnUpdate(dt)
         self.holder:Show()
     end
 
+    -- 聚焦方可滚动
+    local enabled = self:IsEnabled()
+    local focused = self.focus
+
     local up = TheInput:IsControlPressed(self.control_up)
     local down = TheInput:IsControlPressed(self.control_down)
 
-    -- 有按键就叠加
-    if up or down then
+    -- 有按键 & 悬浮 就叠加
+    if (up or down) and (enabled and focused) then
         self.controlDT = self.controlDT + dt
         self.scrollUp = up
     end
