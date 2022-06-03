@@ -31,6 +31,7 @@ Assets = {
 PrefabFiles = {
 	-- Meta
 	"aip_0_buffer",
+	"aip_0_preload",
 
 	-- vest
 	"aip_vest",
@@ -297,8 +298,6 @@ function PlayerPrefabPostInit(inst)
 end
 
 AddPlayerPostInit(PlayerPrefabPostInit)
-
-
 
 
 -- AddPlayerSgPostInit(function(self)
