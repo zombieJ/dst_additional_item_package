@@ -29,11 +29,14 @@ local CookbookPageCrockPot = Class(Widget, function(self, parent_screen, categor
 end)
 
 ----------------------------- 初始化布局 -----------------------------
-local TOP_OFFSET = 250
+local TOP_OFFSET = 275
 local MENU_LEFT = -380
+local MENU_TOP_OFFSET = 25
+local MENU_TOP_OFFSET_UNIT = 10 -- 菜单项的上侧会被切掉，这里设置一个偏移量
+local MENU_LEFT_OFFSET = 110
+local MENU_ITEM_HEIGHT = 55
 
 local DESC_LEFT = -240
-local DESC_TOP_OFFSET = 25
 local DESC_OFFSET = 30 -- 文本与文本之间的间距
 local DESC_CONTENT_WIDTH = 710
 local DESC_CONTENT_HEIGHT = 580
@@ -53,11 +56,19 @@ function CookbookPageCrockPot:InitLayout()
 	end
 
 	-- 55 是每个菜单的间距
-	local destLeftMenu = self.root:AddChild(Menu(menuList, -55, false, "carny_long"))
-	destLeftMenu:SetTextSize(35)
-	destLeftMenu:SetPosition(MENU_LEFT, TOP_OFFSET, 0)
+	local menuHeight = DESC_CONTENT_HEIGHT + MENU_TOP_OFFSET + MENU_TOP_OFFSET_UNIT
+	self.menuScroller = self.root:AddChild(Scroller(
+		0, -DESC_CONTENT_HEIGHT, DESC_CONTENT_WIDTH, menuHeight -- 切割范围
+	))
+	self.menuScroller:SetPosition(MENU_LEFT - MENU_LEFT_OFFSET, TOP_OFFSET + MENU_TOP_OFFSET_UNIT, 0)
+	-- self.menuScroller:SetScrollBound(MENU_ITEM_HEIGHT * #menuList)
+	self.menuScroller:SetScrollBound(2000)
 
-	-- local test = self.root:AddChild(ImageButton("images/quagmire_recipebook.xml", "cookbook_unknown.tex", "cookbook_unknown_selected.tex"))
+	local leftMenu = self.menuScroller:PathChild(Menu(menuList, -MENU_ITEM_HEIGHT, false, "carny_long"))
+	leftMenu:SetTextSize(35)
+	leftMenu:SetPosition(MENU_LEFT_OFFSET, -MENU_TOP_OFFSET - MENU_TOP_OFFSET_UNIT, 0)
+
+	-- local test = self.menuScroller:PathChild(ImageButton("images/quagmire_recipebook.xml", "cookbook_unknown.tex", "cookbook_unknown_selected.tex"))
 	-- test:SetScale(0.1, 0.1, 0.1)
 	-- test:SetPosition(0, 0, 0)
 
@@ -83,11 +94,11 @@ function CookbookPageCrockPot:CreateDesc(index)
 	self.descHolder = self.root:AddChild(Scroller(
 		0, -DESC_CONTENT_HEIGHT, DESC_CONTENT_WIDTH, DESC_CONTENT_HEIGHT -- 切割范围
 	))
-	self.descHolder:SetPosition(DESC_LEFT, TOP_OFFSET + DESC_TOP_OFFSET, 0)
+	self.descHolder:SetPosition(DESC_LEFT, TOP_OFFSET, 0)
 
-	local test = self.descHolder:AddChild(ImageButton("images/quagmire_recipebook.xml", "cookbook_unknown.tex", "cookbook_unknown_selected.tex"))
-	test:SetScale(0.05, 0.05, 0.05)
-	test:SetPosition(0, 0, 0)
+	-- local test = self.descHolder:AddChild(ImageButton("images/quagmire_recipebook.xml", "cookbook_unknown.tex", "cookbook_unknown_selected.tex"))
+	-- test:SetScale(0.05, 0.05, 0.05)
+	-- test:SetPosition(0, 0, 0)
 
 	-- 计量器
 	local top = 0
