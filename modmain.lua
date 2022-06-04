@@ -31,6 +31,7 @@ Assets = {
 PrefabFiles = {
 	-- Meta
 	"aip_0_buffer",
+	"aip_0_preload",
 
 	-- vest
 	"aip_vest",
@@ -142,6 +143,7 @@ PrefabFiles = {
 	"aip_oldone_once",
 	"aip_oldone_black",
 	"aip_oldone_jellyfish",
+	"aip_storybook",
 
 	-- Orbit
 	"aip_orbit",
@@ -258,6 +260,7 @@ modimport("scripts/hooks/aip_drive_hook")
 modimport("scripts/hooks/aip_drift_hook") -- 打水漂
 modimport("scripts/hooks/aip_transfer_hook")
 modimport("scripts/hooks/aip_oldone_hook")
+modimport("scripts/hooks/aip_story_hook")
 
 function PlayerPrefabPostInit(inst)
 	if not inst.components.aipc_player_client then
@@ -295,8 +298,6 @@ function PlayerPrefabPostInit(inst)
 end
 
 AddPlayerPostInit(PlayerPrefabPostInit)
-
-
 
 
 -- AddPlayerSgPostInit(function(self)

@@ -68,11 +68,26 @@ local CommonStore = Class(function(self, inst)
 	-- 记录所有的鱼点
 	self.fishShoals = {}
 
+	-- 是否赐予过 《额外物品包》这本书
+	self.storyBook = false
+
 	-- 后置世界计算
 	self:PostWorld()
 
 	self.inst:ListenForEvent("ms_registerfishshoal", onFishShoalAdded)
 end)
+
+function CommonStore:OnSave()
+    return {
+        storyBook = self.storyBook,
+    }
+end
+
+function CommonStore:OnLoad(data)
+	if data ~= nil then
+		self.storyBook = data.storyBook
+	end
+end
 
 function CommonStore:isShadowFollowing()
 	return self.shadow_follower_count > 0
@@ -257,6 +272,18 @@ end
 
 function CommonStore:PostWorld()
 	-- 我们在世界启动后做操作以防止世界没有准备好
+
+	--------------------------- 创建书本 ---------------------------
+	self.inst:DoTaskInTime(1, function()
+		if self.storyBook ~= true and TheWorld:HasTag("forest") then
+			local portal = TheSim:FindFirstEntityWithTag("multiplayer_portal")
+
+			if portal ~= nil then
+				aipSpawnPrefab(portal, "aip_storybook")
+				self.storyBook = true
+			end
+		end
+	end)
 
 	--------------------------- 创建图腾 ---------------------------
 	self.inst:DoTaskInTime(5, function()

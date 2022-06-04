@@ -346,6 +346,21 @@ AddPrefabPostInit("squid", function(inst)
 	inst:ListenForEvent("death", onSquidDead)
 end)
 
+----------------------------------------- 猪人房 -----------------------------------------
+local function onPigmanDead(inst)
+	local chance = dev_mode and 1 or 0.05
+
+	if math.random() <= chance then
+		_G.aipFlingItem(
+			_G.aipSpawnPrefab(inst, "aip_storybook")
+		)
+	end
+end
+
+AddPrefabPostInit("pigman", function(inst)
+	inst:ListenForEvent("death", onPigmanDead)
+end)
+
 ------------------------------------------ 食物 ------------------------------------------
 AddPrefabPostInit("grass", function(inst)
 	if not _G.TheWorld.ismastersim then
