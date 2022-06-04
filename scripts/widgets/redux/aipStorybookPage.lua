@@ -155,7 +155,8 @@ function CookbookPageCrockPot:CreateDesc(index)
 			anim:GetAnimState():SetBuild(descInfo.build)
 			anim:GetAnimState():SetBankAndPlayAnimation(
 				descInfo.bank or descInfo.build,
-				descInfo.anim or "idle", true
+				descInfo.anim or "idle",
+				descInfo.loop ~= false
 			)
 			if descInfo.opacity ~= nil then
 				anim:GetAnimState():SetMultColour(1,1,1,descInfo.opacity)
