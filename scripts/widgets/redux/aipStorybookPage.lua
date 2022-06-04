@@ -16,15 +16,15 @@ require("util")
 ----------------------------- 文本描述 -----------------------------
 local language = aipGetModConfig("language")
 
-local docs = {}
-local docPath = "aipStory/"..language..".lua"
 
-if softresolvefilepath(docPath) ~= nil then
-	docs = require "aipStory/"..language
-else
-	docs = require "aipStory/english"
-end
+-- 加载对应语言包
+local LANG_MAP = {
+	chinese = "aipStory/chinese",
+	default = "aipStory/english",
+}
 
+local langPath = LANG_MAP[language] or LANG_MAP["default"]
+local docs = require(langPath)
 
 -------------------------------------------------------------------------------------------------------
 local CookbookPageCrockPot = Class(Widget, function(self, parent_screen, category)

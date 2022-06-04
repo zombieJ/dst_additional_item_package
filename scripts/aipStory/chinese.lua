@@ -305,22 +305,31 @@ return {
 
             -- 焚烧炉
             {
-                type="img",
-                name="incinerator",
+                type="anim",
+                build="incinerator",
+                anim="consume",
+                scale=.4,
+                height=120,
             },
             "将多余的东西扔进“焚烧炉”付之一炬，得到的灰尘还能用来制作其他东西。真是一笔划算的买卖。",
 
             -- 贪婪观察者
             {
-                type="img",
-                name="dark_observer",
+                type="anim",
+                build="dark_observer",
+                anim="spell_ing",
+                scale=.25,
+                height=120,
             },
             "不知道为什么我制作了这个“贪婪观察者”，它似乎能够更加清晰的看到世界的危险。只要给予金块就可以在地图上看到那些巨大的危险生物的位置。",
             
             -- 雪人小屋
             {
-                type="img",
-                name="aip_igloo",
+                type="anim",
+                build="aip_igloo",
+                anim="sleep_loop",
+                scale=.3,
+                height=120,
             },
             "用一些冰堆砌的“雪人小屋”在低温环境非常耐用，甚至可以做到永久使用。",
         },

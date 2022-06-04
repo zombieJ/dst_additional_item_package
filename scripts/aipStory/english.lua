@@ -306,22 +306,31 @@ return {
 
             -- 焚烧炉
             {
-                type="img",
-                name="incinerator",
+                type="anim",
+                build="incinerator",
+                anim="consume",
+                scale=.4,
+                height=120,
             },
             "Toss the excess in the 'burner' and burn it down, and the dust can be used to make other things. It's a good deal.",
 
             -- 贪婪观察者
             {
-                type="img",
-                name="dark_observer",
+                type="anim",
+                build="dark_observer",
+                anim="spell_ing",
+                scale=.25,
+                height=120,
             },
             "I don't know why I made this 'greedy watcher', it seems to be able to see the dangers of the world more clearly. Just give gold nuggets to see the location of those huge dangerous creatures on the map.",
             
             -- 雪人小屋
             {
-                type="img",
-                name="aip_igloo",
+                type="anim",
+                build="aip_igloo",
+                anim="sleep_loop",
+                scale=.3,
+                height=120,
             },
             "A 'snowman hut' made of some ice is very durable at low temperatures and can even last forever.",
         },
