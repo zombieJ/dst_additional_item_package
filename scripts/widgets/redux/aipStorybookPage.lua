@@ -56,17 +56,18 @@ function CookbookPageCrockPot:InitLayout()
 	end
 
 	-- 55 是每个菜单的间距
-	local menuHeight = DESC_CONTENT_HEIGHT + MENU_TOP_OFFSET + MENU_TOP_OFFSET_UNIT
 	self.menuScroller = self.root:AddChild(Scroller(
-		0, -DESC_CONTENT_HEIGHT, DESC_CONTENT_WIDTH, menuHeight -- 切割范围
+		0, -DESC_CONTENT_HEIGHT,
+		MENU_LEFT_OFFSET * 2 + MENU_TOP_OFFSET_UNIT, DESC_CONTENT_HEIGHT + MENU_TOP_OFFSET_UNIT -- 切割范围
 	))
-	self.menuScroller:SetPosition(MENU_LEFT - MENU_LEFT_OFFSET, TOP_OFFSET + MENU_TOP_OFFSET_UNIT, 0)
-	-- self.menuScroller:SetScrollBound(MENU_ITEM_HEIGHT * #menuList)
-	self.menuScroller:SetScrollBound(2000)
+	self.menuScroller:SetPosition(
+		MENU_LEFT - MENU_LEFT_OFFSET,
+		TOP_OFFSET, 0)
+	self.menuScroller:SetScrollBound(MENU_ITEM_HEIGHT * #menuList + MENU_TOP_OFFSET_UNIT * 2)
 
 	local leftMenu = self.menuScroller:PathChild(Menu(menuList, -MENU_ITEM_HEIGHT, false, "carny_long"))
 	leftMenu:SetTextSize(35)
-	leftMenu:SetPosition(MENU_LEFT_OFFSET, -MENU_TOP_OFFSET - MENU_TOP_OFFSET_UNIT, 0)
+	leftMenu:SetPosition(MENU_LEFT_OFFSET, -MENU_TOP_OFFSET, 0)
 
 	-- local test = self.menuScroller:PathChild(ImageButton("images/quagmire_recipebook.xml", "cookbook_unknown.tex", "cookbook_unknown_selected.tex"))
 	-- test:SetScale(0.1, 0.1, 0.1)
@@ -162,7 +163,10 @@ function CookbookPageCrockPot:CreateDesc(index)
 
 			anim:SetScale(descInfo.scale or 1)
 
-			anim:SetPosition(DESC_CONTENT_WIDTH / 2 + (descInfo.left or 0), top - descInfo.height)
+			anim:SetPosition(
+				DESC_CONTENT_WIDTH / 2 + (descInfo.left or 0),
+				top - descInfo.height + (descInfo.top or 0)
+			)
 			contentHeight = descInfo.height
 		end
 

@@ -50,7 +50,7 @@ function Scroller:Offset(val)
 end
 
 local SCROLL_SCALE = 0.05
-local SCROLL_OFFSET = 100
+local SCROLL_OFFSET = 200
 
 function Scroller:OnUpdate(dt)
     -- 延迟展示
