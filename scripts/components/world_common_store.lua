@@ -280,6 +280,7 @@ function CommonStore:PostWorld()
 
 			if portal ~= nil then
 				aipSpawnPrefab(portal, "aip_storybook")
+				self.storyBook = true
 			end
 		end
 	end)
