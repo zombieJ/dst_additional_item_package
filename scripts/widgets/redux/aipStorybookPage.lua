@@ -14,7 +14,17 @@ local Scroller = require "widgets/redux/aipScroller"
 require("util")
 
 ----------------------------- 文本描述 -----------------------------
-local chinese = require "aipStory/chinese"
+local language = aipGetModConfig("language")
+
+local docs = {}
+local docPath = "aipStory/"..language..".lua"
+
+if softresolvefilepath(docPath) ~= nil then
+	docs = require "aipStory/"..language
+else
+	docs = require "aipStory/english"
+end
+
 
 -------------------------------------------------------------------------------------------------------
 local CookbookPageCrockPot = Class(Widget, function(self, parent_screen, category)
@@ -49,7 +59,7 @@ function CookbookPageCrockPot:InitLayout()
 
 	-- 生成文本
 	local menuList = {}
-	for i, info in pairs(chinese) do
+	for i, info in pairs(docs) do
 		table.insert(menuList, {text = info.name, cb = function()
 			self:CreateDesc(i)
 		end})
@@ -88,12 +98,12 @@ function CookbookPageCrockPot:CreateDesc(index)
 		self.descHolder:Kill()
 	end
 
-	local descList = chinese[index].desc
+	local descList = docs[index].desc
 	self.currentIndex = index
 
 	-- 描述容器
 	self.descHolder = self.root:AddChild(Scroller(
-		0, -DESC_CONTENT_HEIGHT, DESC_CONTENT_WIDTH, DESC_CONTENT_HEIGHT -- 切割范围
+		0, -DESC_CONTENT_HEIGHT, DESC_CONTENT_WIDTH, DESC_CONTENT_HEIGHT + 5 -- 切割范围
 	))
 	self.descHolder:SetPosition(DESC_LEFT, TOP_OFFSET, 0)
 
