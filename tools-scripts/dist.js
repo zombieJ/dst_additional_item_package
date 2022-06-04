@@ -65,6 +65,7 @@ async function doJob() {
 
 	console.log(chalk.cyan("Create related folder..."));
 	fs.ensureDirSync('package/images/inventoryimages');
+	fs.ensureDirSync('package/images/aipWidgets');
 	fs.ensureDirSync('package/minimap');
 
 	console.log(chalk.cyan("Copy resourse..."));
@@ -72,9 +73,18 @@ async function doJob() {
 	fs.copySync('anim', 'package/anim');
 	console.log(chalk.green("Copy resourse...anim done"));
 
-	fs.copySync('images/inventoryimages/', 'package/images/inventoryimages/', { filter(src) {
-		return src === 'images/inventoryimages/' || src.endsWith('.tex') || src.endsWith('.xml');
-	} });
+	function copyImgs(folder) {
+		fs.copySync(`images/${folder}/`, `package/images/${folder}/`, {
+			filter(src) {
+				return src === `images/${folder}/` || src.endsWith('.tex') || src.endsWith('.xml');
+			}
+		});
+	}
+
+	copyImgs('inventoryimages');
+	copyImgs('aipStory');
+
+
 	console.log(chalk.green("Copy resourse...inventoryimages done"));
 
 	fs.copySync('minimap/', 'package/minimap/', { filter(src) {
