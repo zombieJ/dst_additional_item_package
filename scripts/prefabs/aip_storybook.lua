@@ -4,11 +4,11 @@ local language = aipGetModConfig("language")
 local LANG_MAP = {
 	english = {
 		NAME = "'AIP Storybook'",
-		DESC = "An Adventurer's Notes",
+		DESC = "An Adventurer's Notes. Said to be a bestseller",
 	},
 	chinese = {
 		NAME = "《额外物品包》",
-		DESC = "一位冒险者的笔记",
+		DESC = "一位冒险者的笔记，据说是本畅销书",
 	},
 }
 
