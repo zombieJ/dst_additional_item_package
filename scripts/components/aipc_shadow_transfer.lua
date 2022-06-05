@@ -15,7 +15,7 @@ local Transfer = Class(function(self, inst)
 end)
 
 function Transfer:CanMark(target)
-	if not target or not target.Physics then
+	if not target then
 		return false
 	end
 
@@ -68,7 +68,11 @@ function Transfer:MoveTo(pt, doer)
 	end
 
 	-- 位移
-	self.target.Physics:Teleport(pt.x, pt.y, pt.z)
+	if self.target.Physics ~= nil then
+		self.target.Physics:Teleport(pt.x, pt.y, pt.z)
+	else
+		self.target.Transform:SetPosition(pt.x, pt.y, pt.z)
+	end
 	aipSpawnPrefab(self.target, "aip_shadow_wrapper").DoShow()
 
 	-- 直接替换掉

@@ -31,13 +31,17 @@ local AIPC_TRANSFER_MARK_ACTION = env.AddAction("AIPC_TRANSFER_MARK_ACTION", LAN
 	return true
 end)
 
+AIPC_TRANSFER_MARK_ACTION.rmb = true
+AIPC_TRANSFER_MARK_ACTION.priority = 999
+AIPC_TRANSFER_MARK_ACTION.mount_valid = true
+
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_TRANSFER_MARK_ACTION, "doshortaction"))
 AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_TRANSFER_MARK_ACTION, "doshortaction"))
 
 ------------------------------------ 绑定动作 ------------------------------------
 -- 对建筑打包
 env.AddComponentAction("USEITEM", "aipc_shadow_transfer", function(inst, doer, target, actions, right)
-	if not inst or not target then
+	if not inst or not target or not right then
 		return
 	end
 
