@@ -144,6 +144,7 @@ PrefabFiles = {
 	"aip_oldone_black",
 	"aip_oldone_jellyfish",
 	"aip_storybook",
+	"aip_oldone_thestral_watcher",
 
 	-- Orbit
 	"aip_orbit",
