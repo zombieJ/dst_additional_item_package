@@ -8,4 +8,5 @@ exported_done/**/*.zip
 exported/**/aip_armor_gambler.zip
 *.tmp
 tmp/
+_tmp/
 .DS_Store
