@@ -23,12 +23,9 @@ local getNectarValues = _G.require("utils/aip_nectar_util")
 local params = {}
 
 ----------------- 焚烧炉 -----------------
-params.incinerator =
-{
-	widget =
-	{
-		slotpos =
-		{
+params.incinerator = {
+	widget = {
+		slotpos = {
 			Vector3(0, 64 + 32 + 8 + 4, 0), 
 			Vector3(0, 32 + 4, 0),
 			Vector3(0, -(32 + 4), 0), 
@@ -69,10 +66,8 @@ function params.incinerator.widget.buttoninfo.validfn(inst)
 end
 
 --------------- 花蜜酿造机 ---------------
-params.aip_nectar_maker =
-{
-	widget =
-	{
+params.aip_nectar_maker = {
+	widget = {
 		slotpos = {},
 		animbank = "ui_icepack_2x3",
 		animbuild = "ui_icepack_2x3",
@@ -451,6 +446,38 @@ params.aip_krampus_plus = {
 for y = 0, 5 do
     table.insert(params.aip_krampus_plus.widget.slotpos, Vector3(-162, -75 * y + 170, 0))
     table.insert(params.aip_krampus_plus.widget.slotpos, Vector3(-162 + 75, -75 * y + 170, 0))
+end
+
+--------------- 复制试做型 ---------------
+params.aip_copier = {
+	widget = {
+		slotpos = {},
+		animbank = "ui_chest_3x3",
+		animbuild = "ui_chest_3x3",
+		pos = Vector3(0, 200, 0),
+		side_align_tip = 160,
+
+		buttoninfo = {
+			text = STRINGS.ACTIONS.CRAFT,
+			position = Vector3(0, -140, 0),
+		}
+	},
+	acceptsstacks = true,
+	type = "chest",
+}
+
+for y = 2, 0, -1 do
+	for x = 0, 2 do
+		table.insert(params.aip_copier.widget.slotpos, Vector3(80 * x - 80 * 2 + 80, 80 * y - 80 * 2 + 80, 0))
+	end
+end
+
+function params.aip_copier.widget.buttoninfo.fn(inst)
+	if inst.components.container ~= nil then
+		_G.BufferedAction(inst.components.container.opener, inst, AIP_ACTION):Do()
+	elseif inst.replica.container ~= nil and not inst.replica.container:IsBusy() then
+		_G.SendRPCToServer(_G.RPC.DoWidgetButtonAction, AIP_ACTION.code, inst, AIP_ACTION.mod_name)
+	end
 end
 
 ----------------------------------------------------------------------------------------------

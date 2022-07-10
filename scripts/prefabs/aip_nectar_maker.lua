@@ -107,7 +107,6 @@ local function onMakeNectar(inst, doer)
 	-- 创造花蜜
 	local nectar = SpawnPrefab("aip_nectar")
 	nectar.nectarValues = tagVals
-	nectar.refreshName()
 	inst.components.container:GiveItem(nectar)
 
 	startCook(inst, tagVals)

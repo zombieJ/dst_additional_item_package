@@ -61,10 +61,15 @@ AddClassPostConstruct("widgets/hoverer", function(self)
 
         -- 鼠标 Hover 到的物品
         if item == nil and not self.isFE and IsActionsVisible ~= nil and self.owner:IsActionsVisible() then
-            lmb = self.owner.components.playercontroller:GetLeftMouseAction()
+            local GetLeftMouseAction = _G.aipGet(self, "owner|components|playercontroller|GetLeftMouseAction")
 
-            if lmb ~= nil then
-                item = lmb.target
+            -- 变猴子会崩溃，修一下
+            if GetLeftMouseAction ~= nil then
+                lmb = self.owner.components.playercontroller:GetLeftMouseAction()
+
+                if lmb ~= nil then
+                    item = lmb.target
+                end
             end
         end
 
