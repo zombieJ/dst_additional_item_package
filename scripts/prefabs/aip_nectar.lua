@@ -308,7 +308,7 @@ local function onRefreshName(inst)
 	elseif purePTG <= 0.5 then
 		currentQuality = currentQuality - 0.1
 	elseif purePTG >= 0.95 then
-		currentQuality = currentQuality + Remap(purePTG, .95, 1, .7, 1.6)
+		currentQuality = currentQuality + Remap(purePTG, .95, 1, .7, 1.2)
 	elseif purePTG >= 0.9 then
 		currentQuality = currentQuality + 0.5
 	elseif purePTG >= 0.8 then
