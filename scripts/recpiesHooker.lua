@@ -241,3 +241,14 @@ rec("chesspiece_aip_fish_builder", TECH.LOST, { CRAFTING_FILTERS.CRAFTING_STATIO
 -- 榴星
 rec("aip_oldone_durian", TECH.LOST, { CRAFTING_FILTERS.WEAPONS },
 	{ Ingredient("durian", 1), Ingredient("aip_oldone_plant_full", 1, "images/inventoryimages/aip_oldone_plant_full.xml"), })
+
+-------------------------------------- 联动 --------------------------------------
+local modNames = _G.ModManager:GetEnabledServerModNames()
+
+-- 海洋传说
+if _G.aipInTable(modNames, "workshop-2827757831") then
+	-- 恒温水母
+	rec("aip_oldone_jellyfish", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.WINTER, CRAFTING_FILTERS.SUMMER },
+	{ Ingredient("saltrock", 5), Ingredient("rain_flower_stone", 1, "images/inventoryimages/rain_flower_stone.xml"), },
+	{ atlas = "images/inventoryimages/aip_oldone_jellyfish_cold.xml", image = "aip_oldone_jellyfish_cold.tex" })
+end
