@@ -123,6 +123,7 @@ return {
              " - Piranha Seeds: Attacks inflict lifesteal effects",
              " - Bee Stinger, Spider Nest, Walrus Tusk: increased attack damage",
              " - Food: After nectar expires, it does not turn into rot and turns into booze",
+             " - Burn: Burns the nectar will increase little quality, but it can only purify once",
 
             -- 花蜜
             {

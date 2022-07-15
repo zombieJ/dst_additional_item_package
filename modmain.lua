@@ -29,6 +29,9 @@ Assets = {
 
 -- 物品列表
 PrefabFiles = {
+	-- debug
+	"aip_copier",
+
 	-- Meta
 	"aip_0_buffer",
 	"aip_0_preload",

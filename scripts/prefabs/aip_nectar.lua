@@ -181,6 +181,12 @@ local function onRefreshName(inst)
 	local temperature = 0
 	local temperatureduration = 0
 
+	--------------- 清理提纯 ---------------
+	-- 如果提纯过了，就不能再提纯了
+	if nectarValues.purity ~= nil then
+		inst:RemoveComponent("burnable")
+	end
+
 	--------------- 配比统计 ---------------
 	local topTag = "tasteless"
 	local topTagVal = 0
@@ -189,7 +195,7 @@ local function onRefreshName(inst)
 	local tagBalance = false
 
 	for tag, tagVal in pairs (nectarValues) do
-		if tag ~= "exquisite" and tag ~= "generation" then
+		if tag ~= "exquisite" and tag ~= "generation" and tag ~= "purity" then
 			totalTagVal = totalTagVal + tagVal
 			totalTagCount = totalTagCount + 1
 
@@ -254,8 +260,9 @@ local function onRefreshName(inst)
 	-------------- 浮动提示框 --------------
 	-- 纯度
 	local aipInfo = ""
-	local purePTG = topTagVal / totalTagVal
-	if topTagVal == totalTagVal then
+	local mergedTopTagVal = topTagVal + (nectarValues.purity or 0)
+	local purePTG = mergedTopTagVal / totalTagVal
+	if purePTG > 0.99 then
 		aipInfo = aipStr(aipInfo, LANG_VALUE.absolute)
 	elseif purePTG < 0.5 then
 		aipInfo = aipStr(aipInfo, LANG_VALUE.impurity)
@@ -265,10 +272,10 @@ local function onRefreshName(inst)
 
 	-- 品质范围
 	local currentQuality = 1
-	local minQuality = 1
+	local minQuality = 0
 	local maxQuality = 1
 
-	--> 随着世代增加，最高品质也会增加
+	--> 随着世代增加，最高品质也会增加（但是之后会慢慢下降上限）
 	if nectarValues.generation <= 1 then
 		minQuality = 0
 		maxQuality = 2
@@ -281,6 +288,15 @@ local function onRefreshName(inst)
 	elseif nectarValues.generation <= 4 then
 		minQuality = 0
 		maxQuality = 5
+	elseif nectarValues.generation <= 5 then
+		minQuality = 0
+		maxQuality = 4
+	elseif nectarValues.generation <= 6 then
+		minQuality = 0
+		maxQuality = 3
+	elseif nectarValues.generation <= 7 then
+		minQuality = 0
+		maxQuality = 2
 	end
 
 	-- 品质计算
@@ -291,12 +307,16 @@ local function onRefreshName(inst)
 		currentQuality = currentQuality - 0.2
 	elseif purePTG <= 0.5 then
 		currentQuality = currentQuality - 0.1
-	elseif purePTG > 0.8 then
+	elseif purePTG >= 0.95 then
+		currentQuality = currentQuality + Remap(purePTG, .95, 1, .7, 1.2)
+	elseif purePTG >= 0.9 then
+		currentQuality = currentQuality + 0.5
+	elseif purePTG >= 0.8 then
 		currentQuality = currentQuality + 0.3
 	end
 	
 	--> 种类
-	currentQuality = currentQuality + math.min(1, totalTagCount * 0.2)
+	currentQuality = currentQuality + math.min(1.5, totalTagCount * 0.2)
 
 	--> 精酿
 	if nectarValues.exquisite then
@@ -321,6 +341,7 @@ local function onRefreshName(inst)
 	--> 可怕
 	currentQuality = currentQuality - (nectarValues.terrible or 0)
 
+	local realQuality = currentQuality
 	currentQuality = math.min(maxQuality, currentQuality)
 	currentQuality = math.max(minQuality, currentQuality)
 	currentQuality = math.floor(currentQuality)
@@ -456,6 +477,16 @@ local function onRefreshName(inst)
 	else
 		inst.Light:Enable(false)
 	end
+
+	return {
+		topTagVal = topTagVal,
+		totalTagVal = totalTagVal,
+		currentQuality = currentQuality,
+		realQuality = realQuality,
+		maxQuality = maxQuality,
+		minQuality = minQuality,
+		generation = nectarValues.generation,
+	}
 end
 
 --------------------------------- 腐烂 ---------------------------------
@@ -474,9 +505,28 @@ local function onPerish(inst)
 			inst.components.perishable:SetPercent(1)
 			inst.components.perishable:StartPerishing()
 
-			inst.refreshName()
+			onRefreshName(inst)
 		end)
 	end
+end
+
+--------------------------------- 提纯 ---------------------------------
+local function onBurnt(inst)
+	local data = onRefreshName(inst)
+
+	local nectarValues = inst.nectarValues or {}
+	local restVal = data.totalTagVal - data.topTagVal
+
+	-- 随机一定恢复度
+	restVal = restVal * math.random(3, 10) / 10
+	nectarValues.purity = restVal
+
+	local nextData = onRefreshName(inst)
+	aipPrint(
+		nextData.realQuality, nextData.currentQuality,
+		nextData.maxQuality, nextData.minQuality,
+		nextData.generation
+	)
 end
 
 --------------------------------- 存储 ---------------------------------
@@ -487,8 +537,6 @@ end
 local function onLoad(inst, data)
 	if data ~= nil and data.nectarValues then
 		inst.nectarValues = data.nectarValues
-
-		inst.refreshName()
 	end
 end
 
@@ -533,9 +581,7 @@ local function fn()
 
 	-----------------------------------------------------
 	inst.nectarValues = {}
-	inst.refreshName = function()
-		onRefreshName(inst)
-	end
+
 	-----------------------------------------------------
 	inst:AddComponent("inspectable")
 
@@ -552,20 +598,22 @@ local function fn()
 
 	-- 腐烂
 	inst:AddComponent("perishable")
-	inst.components.perishable:SetPerishTime(dev_mode and 20 or TUNING.PERISH_PRESERVED)
+	inst.components.perishable:SetPerishTime(TUNING.PERISH_PRESERVED)
 	inst.components.perishable:StartPerishing()
 	inst.components.perishable.perishfn = onPerish
 	inst.components.perishable.onperishreplacement = "spoiled_food"
 
-	-- 火焰传播者 - 不会着火
-	-- MakeSmallBurnable(inst)
-	-- MakeSmallPropagator(inst)
+	-- 点燃后会提纯
+	MakeSmallBurnable(inst, dev_mode and 3 or 30)
+	inst.components.burnable:SetOnBurntFn(onBurnt)
 
 	-- 作祟
 	MakeHauntableLaunch(inst)
 
 	inst.OnSave = onSave
 	inst.OnLoad = onLoad
+
+	inst:DoTaskInTime(0.1, onRefreshName)
 
 	return inst
 end

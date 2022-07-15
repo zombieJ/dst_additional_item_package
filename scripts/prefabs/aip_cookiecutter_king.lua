@@ -386,6 +386,8 @@ local function fn()
 		inst:AddComponent("boattrail")
 	end
 
+	inst.walksound = "wood"
+
 	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
@@ -407,6 +409,10 @@ local function fn()
     local playercollision = SpawnPrefab("boat_player_collision") -- 船手碰撞？似乎是让玩家站上面？
 	inst.components.hull:AttachEntityToBoat(playercollision, 0, 0)
     playercollision.collisionboat = inst
+
+	inst:AddComponent("health")
+	inst.components.health:SetMaxHealth(9999)
+	inst.components.health:SetInvincible(true)
 
 	-- 船体移动：移除就会掉水里
 	inst:AddComponent("boatphysics")
