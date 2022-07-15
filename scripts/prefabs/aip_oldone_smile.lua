@@ -36,7 +36,7 @@ local function fn()
 
     inst.AnimState:SetBank("aip_oldone_smile")
     inst.AnimState:SetBuild("aip_oldone_smile")
-    inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:PlayAnimation("idle", true)
 
     inst.entity:SetPristine()
 
