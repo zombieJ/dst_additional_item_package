@@ -1,3 +1,4 @@
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 local language = aipGetModConfig("language")
 
 -- 文字描述
@@ -40,6 +41,13 @@ local function toggleActive(inst, doer)
                 return false
             end
         end)
+
+        -- 召唤一个笑脸
+        local smile = TheSim:FindFirstEntityWithTag("aip_oldone_smile")
+        if smile == nil then
+            local pt = aipGetSpawnPoint(inst:GetPosition(), dev_mode and 5 or 12)
+            aipSpawnPrefab(inst, "aip_oldone_smile", pt.x, pt.y, pt.z)
+        end
     end
 end
 
