@@ -24,6 +24,9 @@ local assets = {
 }
 
 ---------------------------------- 事件 ----------------------------------
+local BOSS_POS = 15
+local BOSS_POS_DEV = 10
+
 -- 点击激活点
 local function toggleActive(inst, doer)
     if not inst.components.activatable.inactive then
@@ -47,7 +50,7 @@ local function toggleActive(inst, doer)
         -- 召唤一个笑脸
         local smile = TheSim:FindFirstEntityWithTag("aip_oldone_smile")
         if smile == nil then
-            local pt = aipGetSpawnPoint(inst:GetPosition(), dev_mode and 10 or 10)
+            local pt = aipGetSpawnPoint(inst:GetPosition(), dev_mode and BOSS_POS_DEV or BOSS_POS)
             aipSpawnPrefab(inst, "aip_oldone_smile", pt.x, pt.y, pt.z)
         end
     end

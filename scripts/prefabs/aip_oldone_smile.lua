@@ -36,7 +36,7 @@ local function doBrain(inst)
         -------------------------- 寻找地毯 --------------------------
         function()
             local pt = inst:GetPosition()
-            local watchers = TheSim:FindEntities(pt.x, pt.y, pt.z, 20, { "aip_oldone_smile_active" })
+            local watchers = TheSim:FindEntities(pt.x, pt.y, pt.z, 50, { "aip_oldone_smile_active" })
 
             local tgtPT = nil
 
@@ -58,6 +58,19 @@ local function doBrain(inst)
                 -- 慢慢显现
                 inst._aip_fade_cnt = math.min(1, inst._aip_fade_cnt + 0.08)
                 syncErosion(inst, inst._aip_fade_cnt)
+
+                -- 如果离玩家比较远就创建小幽魂
+                local players = aipFindNearPlayers(inst, 20)
+                players = aipFilterTable(players, function(player)
+                    return aipDist(inst, player) >= 8
+                end)
+
+                for i, player in ipairs(players) do
+                    local ghost = aipSpawnPrefab(player, "aip_oldone_sad")
+                    if ghost.components.homeseeker ~= nil then
+                        ghost.components.homeseeker:SetHome(inst)
+                    end
+                end
             end
 
             return tgtPT ~= nil
@@ -65,7 +78,7 @@ local function doBrain(inst)
 
         -------------------------- 慢慢消失 --------------------------
         function()
-            inst._aip_fade_cnt = math.max(0, inst._aip_fade_cnt - 0.04)
+            inst._aip_fade_cnt = math.max(0, inst._aip_fade_cnt - 0.02)
             syncErosion(inst, inst._aip_fade_cnt)
 
             if inst._aip_fade_cnt <= 0 then
@@ -110,6 +123,12 @@ local function fn()
     inst.components.locomotor:SetTriggersCreep(false)
     inst.components.locomotor.pathcaps = { ignorewalls = true, allowocean = true }
     inst.components.locomotor.walkspeed = TUNING.BEEQUEEN_SPEED
+
+    inst:AddComponent("health")
+    inst.components.health:SetMaxHealth(dev_mode and 100 or TUNING.LEIF_HEALTH)
+
+	inst:AddComponent("combat")
+    inst.components.combat.hiteffectsymbol = "body"
 
     -- 闪烁特效
     syncErosion(inst, 0)
