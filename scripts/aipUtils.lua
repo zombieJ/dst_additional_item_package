@@ -335,6 +335,21 @@ function _G.aipFindNearPlayers(inst, dist)
 	return _G.FindPlayersInRange(x, y, z, dist, true)
 end
 
+function _G.aipFindCloseEnt(inst, targetList)
+	local closeDist = nil
+	local closeTarget = nil
+
+	for i, target in ipairs(targetList) do
+		local dist = target:IsValid() and target:GetDistanceSqToInst(inst) or nil
+		if dist ~= nil and (closeDist == nil or dist < closeDist)  then
+			closeDist = dist
+			closeTarget = target
+		end
+	end
+
+	return closeTarget
+end
+
 -- 降级值如果没有的话
 function fb(value, defaultValue)
 	if value ~= nil then

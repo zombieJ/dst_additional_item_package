@@ -548,7 +548,7 @@ return {
                 type="img",
                 name="aip_shadow_transfer",
             },
-            "This 'moving stone puppet' is my favorite. It can directly mark the building and move it to a new place. It is quite convenient for moving.",
+            "This 'moving stone puppet' is my favorite. It can directly mark the building and move it to a new place. It is quite convenient for moving. Of couse, I need borrow something from Merm.",
 
             -- 月轨测量仪
             {

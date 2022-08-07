@@ -24,37 +24,54 @@ local assets = {
 
 ---------------------------------- 事件 ----------------------------------
 local function syncErosion(inst, alpha)
-    inst.AnimState:SetErosionParams(
-        math.min(1 - alpha, 1),
-        -0.125, -1.0)
+    local tgtAlpha = math.min(1 - alpha, 1)
+    tgtAlpha = math.max(tgtAlpha, 0)
+
+    inst.AnimState:SetErosionParams(tgtAlpha, -0.125, -1.0)
     inst.AnimState:SetMultColour(1, 1, 1, alpha)
-end
-
-local function fadeIn(inst)
-    inst._aip_fade_cnt = inst._aip_fade_cnt + 0.04
-    syncErosion(inst, inst._aip_fade_cnt)
-
-    if inst._aip_fade_cnt >= 1 then
-        return false
-    end
 end
 
 local function doBrain(inst)
     aipQueue({
-        -------------------------- 尚未启动 --------------------------
+        -------------------------- 寻找地毯 --------------------------
         function()
-            aipPrint("GGG@!!")
-            -- inst.components.locomotor:GoToPoint(
-            --     Vector3(0, 0, 0),
-            --     nil,
-            --     false
-            -- )
-            inst:ForceFacePoint(0, 0, 0)
-            inst.Physics:SetMotorVel(
-                1,
-                0,
-                0
-            )
+            local pt = inst:GetPosition()
+            local watchers = TheSim:FindEntities(pt.x, pt.y, pt.z, 20, { "aip_oldone_smile_active" })
+
+            local tgtPT = nil
+
+            -- 找附近激活的地毯
+            local closeWatcher = aipFindCloseEnt(inst, watchers)
+            if closeWatcher ~= nil then
+                tgtPT = closeWatcher:GetPosition()
+            end
+
+            -- 走向地毯
+            if tgtPT ~= nil then
+                inst:ForceFacePoint(tgtPT.x, 0, tgtPT.z)
+                inst.Physics:SetMotorVel(
+                    1,
+                    0,
+                    0
+                )
+
+                -- 慢慢显现
+                inst._aip_fade_cnt = math.min(1, inst._aip_fade_cnt + 0.08)
+                syncErosion(inst, inst._aip_fade_cnt)
+            end
+
+            return tgtPT ~= nil
+        end,
+
+        -------------------------- 慢慢消失 --------------------------
+        function()
+            inst._aip_fade_cnt = math.max(0, inst._aip_fade_cnt - 0.04)
+            syncErosion(inst, inst._aip_fade_cnt)
+
+            if inst._aip_fade_cnt <= 0 then
+                aipRemove(inst)
+            end
+
             return true
         end,
     })
@@ -97,7 +114,6 @@ local function fn()
     -- 闪烁特效
     syncErosion(inst, 0)
     inst._aip_fade_cnt = 0
-    inst.components.aipc_timer:NamedInterval("fadeIn", 0.1, fadeIn)
     inst.components.aipc_timer:NamedInterval("doBrain", 0.25, doBrain)
 
     MakeHauntableLaunch(inst)

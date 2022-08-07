@@ -29,6 +29,7 @@ local function toggleActive(inst, doer)
     if not inst.components.activatable.inactive then
         inst.AnimState:PlayAnimation("turn")
         inst.AnimState:PushAnimation("active", true)
+        inst:AddTag("aip_oldone_smile_active")
 
         -- 持续检测附近玩家
         inst.components.aipc_timer:NamedInterval("PlayerNear", 1, function()
@@ -37,6 +38,7 @@ local function toggleActive(inst, doer)
             if #players == 0 then
                 inst.components.activatable.inactive = true
                 inst.AnimState:PlayAnimation("idle", true)
+                inst:RemoveTag("aip_oldone_smile_active")
 
                 return false
             end
@@ -45,7 +47,7 @@ local function toggleActive(inst, doer)
         -- 召唤一个笑脸
         local smile = TheSim:FindFirstEntityWithTag("aip_oldone_smile")
         if smile == nil then
-            local pt = aipGetSpawnPoint(inst:GetPosition(), dev_mode and 5 or 12)
+            local pt = aipGetSpawnPoint(inst:GetPosition(), dev_mode and 10 or 10)
             aipSpawnPrefab(inst, "aip_oldone_smile", pt.x, pt.y, pt.z)
         end
     end
