@@ -24,8 +24,8 @@ local assets = {
 }
 
 ---------------------------------- 事件 ----------------------------------
-local BOSS_POS = 15
-local BOSS_POS_DEV = 10
+local BOSS_POS = 20
+local BOSS_POS_DEV = 20
 
 -- 点击激活点
 local function toggleActive(inst, doer)

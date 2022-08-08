@@ -11,6 +11,8 @@ local function GoHomeAction(inst)
        inst.components.homeseeker.home and
        inst.components.homeseeker.home:IsValid() then
         return BufferedAction(inst, inst.components.homeseeker.home, ACTIONS.GOHOME)
+    else
+        aipReplacePrefab(inst, "aip_shadow_wrapper").DoShow()
     end
 end
 

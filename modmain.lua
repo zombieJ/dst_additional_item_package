@@ -149,6 +149,7 @@ PrefabFiles = {
 	"aip_storybook",
 	"aip_oldone_thestral_watcher",
 	"aip_oldone_smile",
+	"aip_oldone_sad",
 
 	-- Orbit
 	"aip_orbit",

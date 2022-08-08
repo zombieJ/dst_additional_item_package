@@ -23,6 +23,21 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 -- 文字描述
 STRINGS.NAMES.AIP_OLDONE_SAD = LANG.NAME
 
+local SCALE = 0.6
+
+-- 杀死后恢复生命值
+local function onDeath(inst, data)
+	local afflicter = aipGet(data, "afflicter")
+	if
+		afflicter ~= nil and
+		afflicter:IsValid() and
+		afflicter.components.health ~= nil and
+		not afflicter.components.health:IsDead() and
+		afflicter.components.sanity ~= nil
+	then
+		afflicter.components.sanity:DoDelta(inst._aip_sanity or 0)
+	end
+end
 
 local function fn()
 	local inst = CreateEntity()
@@ -35,11 +50,12 @@ local function fn()
 	MakeFlyingCharacterPhysics(inst, 1, .5)
 
 	inst.Transform:SetTwoFaced()
-	-- inst.Transform:SetScale(2, 2, 2)
+	inst.Transform:SetScale(SCALE,SCALE,SCALE)
 
 	inst:AddTag("monster")
 	inst:AddTag("hostile")
 	inst:AddTag("notraptrigger")
+	inst:AddTag("aip_oldone_sad")
 
 	inst.AnimState:SetBank("aip_oldone_sad")
 	inst.AnimState:SetBuild("aip_oldone_sad")
@@ -55,7 +71,7 @@ local function fn()
 	inst:AddComponent("homeseeker")
 
 	inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
-	inst.components.locomotor.walkspeed = TUNING.CRAWLINGHORROR_SPEED / 2
+	inst.components.locomotor.walkspeed = TUNING.CRAWLINGHORROR_SPEED / 3
 	inst.components.locomotor:SetTriggersCreep(false)
 	inst.components.locomotor.pathcaps = { ignorecreep = true }
 
@@ -63,10 +79,12 @@ local function fn()
 	inst:SetBrain(brain)
 
     inst:AddComponent("health")
-    inst.components.health:SetMaxHealth(dev_mode and 1 or 100)
+    inst.components.health:SetMaxHealth(dev_mode and 1 or 66)
 
 	inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "body"
+
+	inst:ListenForEvent("death", onDeath)
 
 	inst.persists = false
 
