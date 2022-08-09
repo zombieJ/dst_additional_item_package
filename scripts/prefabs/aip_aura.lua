@@ -195,6 +195,13 @@ local list = {
 			end)
 		end,
 	},
+
+	{	-- 古神光环：并非真实的光环，播放一个循环转圈动画
+	name = "aip_aura_smiling",
+	assets = { Asset("ANIM", "anim/aip_aura_smiling.zip") },
+	range = false, -- 不安装光环组件
+	scale = 1.25,
+},
 }
 
 

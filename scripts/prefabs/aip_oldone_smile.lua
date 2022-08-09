@@ -7,10 +7,12 @@ local LANG_MAP = {
 	english = {
 		NAME = "Rift Smiler",
 		DESC = "Indescribable!",
+        THINK = "Something is leaving me!",
 	},
 	chinese = {
 		NAME = "裂隙笑颜",
 		DESC = "不可名状！",
+        THINK = "我似乎有了一些变化",
 	},
 }
 
@@ -18,11 +20,37 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 STRINGS.NAMES.AIP_OLDONE_SMILE = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_SMILE = LANG.DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_SMILE_THINK = LANG.THINK
 
 -- 资源
 local assets = {
     Asset("ANIM", "anim/aip_oldone_smile.zip"),
 }
+
+---------------------------------- BUFF ----------------------------------
+-- 不断随机让玩家身体部件消失
+aipBufferRegister("aip_oldone_smiling", {
+    startFn = function(source, inst, info)
+        -- inst.AnimState:Hide("HEAD")
+        -- if inst.components.talker ~= nil then
+        --     inst.components.talker:Say(
+        --         STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_SMILE_THINK
+        --     )
+        -- end
+
+        local aura = SpawnPrefab("aip_aura_smiling")
+        inst:AddChild(aura)
+        info.data.aura = aura
+    end,
+
+    -- 告知客机玩家不用再看了
+    endFn = function(source, inst, info)
+        -- inst.AnimState:Show("HEAD")
+        inst:RemoveChild(info.data.aura)
+    end,
+
+    showFX = true,
+})
 
 ---------------------------------- 事件 ----------------------------------
 local function syncErosion(inst, alpha)
@@ -34,11 +62,14 @@ local function syncErosion(inst, alpha)
 end
 
 local SPEED = TUNING.CRAWLINGHORROR_SPEED / 3 / 2 -- 移动很慢，但是很可怕 0.5
-local GHOST_RANGE = 5 -- 幽灵创建距离
+local GHOST_RANGE = dev_mode and 20 or 5 -- 幽灵创建距离
 
 local GHOST_REDUCE_HEALTH = dev_mode and 10 or 100  -- 每个幽灵扣除笑脸数值
 local GHOST_REDUCE_PLAYER = dev_mode and 80 or 25   -- 每个幽灵扣除玩家数值
 local MAX_HEALTH = GHOST_REDUCE_HEALTH * 25         -- 笑脸生命值
+
+local OLDONE_SEEN_TIME = dev_mode and 3 or 3
+local OLDONE_SEEN_AURA_TIME = OLDONE_SEEN_TIME + (dev_mode and 10 or 10)
 
 local function doBrain(inst)
     aipQueue({
@@ -70,42 +101,46 @@ local function doBrain(inst)
 
                 ---------------------- 如果离玩家比较远就创建小幽魂 ----------------------
                 local players = aipFindNearPlayers(inst, 20)
-                players = aipFilterTable(players, function(player)
-                    return aipDist(pt, player:GetPosition()) >= GHOST_RANGE
-                end)
 
                 for i, player in ipairs(players) do
-                    if
-                        player.components.timer ~= nil and
-                        not player.components.timer:TimerExists("aip_oldone_sading")
-                    then
-                        player.components.timer:StartTimer("aip_oldone_sading", 3)
+                    if aipDist(pt, player:GetPosition()) >= GHOST_RANGE then
+                        -- !!!!!!!!!!!!!!!!!!!!! 创建小幽魂 !!!!!!!!!!!!!!!!!!!!!
+                        if
+                            player.components.timer ~= nil and
+                            not player.components.timer:TimerExists("aip_oldone_sading")
+                        then
+                            player.components.timer:StartTimer("aip_oldone_sading", 3)
 
-                        local ghost = aipSpawnPrefab(player, "aip_oldone_sad")
-                        if ghost.components.homeseeker ~= nil then
-                            ghost.components.homeseeker:SetHome(inst)
+                            local ghost = aipSpawnPrefab(player, "aip_oldone_sad")
+                            if ghost.components.homeseeker ~= nil then
+                                ghost.components.homeseeker:SetHome(inst)
+                            end
+
+                            -- 扣除总量
+                            local restValue = GHOST_REDUCE_PLAYER
+                            ghost._aip_sanity = 0
+                            ghost._aip_hunger = 0
+
+                            -- 扣除玩家的理智值
+                            if player.components.sanity ~= nil then
+                                local validSanity = math.min(GHOST_REDUCE_PLAYER, player.components.sanity.current)
+                                player.components.sanity:DoDelta(-validSanity)
+                                ghost._aip_sanity = validSanity
+                                restValue = restValue - validSanity
+                            end
+
+                            -- 扣除玩家的饥饿
+                            restValue = restValue / 2 -- 失去饥饿为理智的 1/2
+                            if restValue > 0 and player.components.hunger ~= nil then
+                                local validHunger = math.min(restValue, player.components.hunger.current)
+                                player.components.hunger:DoDelta(-validHunger)
+                                ghost._aip_hunger = validHunger
+                            end
                         end
-
-                        -- 扣除总量
-                        local restValue = GHOST_REDUCE_PLAYER
-                        ghost._aip_sanity = 0
-                        ghost._aip_hunger = 0
-
-                        -- 扣除玩家的理智值
-                        if player.components.sanity ~= nil then
-                            local validSanity = math.min(GHOST_REDUCE_PLAYER, player.components.sanity.current)
-                            player.components.sanity:DoDelta(-validSanity)
-                            ghost._aip_sanity = validSanity
-                            restValue = restValue - validSanity
-                        end
-
-                        -- 扣除玩家的饥饿
-                        restValue = restValue / 2 -- 失去饥饿为理智的 1/2
-                        if restValue > 0 and player.components.hunger ~= nil then
-                            local validHunger = math.min(restValue, player.components.hunger.current)
-                            player.components.hunger:DoDelta(-validHunger)
-                            ghost._aip_hunger = validHunger
-                        end
+                    else
+                        -- !!!!!!!!!!!!!!!!!!!!!! 添加眼睛 !!!!!!!!!!!!!!!!!!!!!!
+                        aipBufferPatch(inst, player, "aip_see_eyes", OLDONE_SEEN_TIME)
+                        aipBufferPatch(inst, player, "aip_oldone_smiling", OLDONE_SEEN_AURA_TIME)
                     end
                 end
             else -- 没有地毯就停下来
