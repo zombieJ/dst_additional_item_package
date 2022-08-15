@@ -32,10 +32,10 @@ local function getFn(data)
 		inst.entity:AddNetwork()
 
 		if data.assets ~= nil then
-			inst.AnimState:SetBank(data.name)
-			inst.AnimState:SetBuild(data.name)
+			inst.AnimState:SetBank(data.build or data.name)
+			inst.AnimState:SetBuild(data.build or data.name)
 
-			inst.AnimState:PlayAnimation("idle", data.onAnimOver == nil)
+			inst.AnimState:PlayAnimation(data.anim or "idle", data.onAnimOver == nil)
 
 			inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
 			inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
@@ -196,12 +196,21 @@ local list = {
 		end,
 	},
 
+	-----------------------------------------------------------------------------------------
 	{	-- 古神光环：并非真实的光环，播放一个循环转圈动画
-	name = "aip_aura_smiling",
-	assets = { Asset("ANIM", "anim/aip_aura_smiling.zip") },
-	range = false, -- 不安装光环组件
-	scale = 1.25,
-},
+		name = "aip_aura_smiling",
+		assets = { Asset("ANIM", "anim/aip_aura_smiling.zip") },
+		range = false, -- 不安装光环组件
+		scale = 1.25,
+	},
+	{	-- 古神光环：并非真实的光环，播放一个循环转圈动画
+		name = "aip_aura_smiling_axe",
+		build = "aip_aura_smiling",
+		anim = "axe",
+		assets = { Asset("ANIM", "anim/aip_aura_smiling.zip") },
+		range = false, -- 不安装光环组件
+		scale = 1.25,
+	},
 }
 
 

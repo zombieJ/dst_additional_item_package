@@ -381,3 +381,25 @@ AddComponentPostInit("oceanfishingrod", function(self)
 		return ret
 	end
 end)
+
+-- 干活允许翻倍
+AddComponentPostInit("tool", function(self)
+	local originGetEffectiveness = self.GetEffectiveness
+
+	function self:GetEffectiveness(action, ...)
+		local num = originGetEffectiveness(self, action, ...)
+
+		if
+			action == _G.ACTIONS.CHOP and
+			self.inst.components.inventoryitem ~= nil and
+			_G.aipBufferExist(
+				self.inst.components.inventoryitem.owner,
+				"aip_oldone_smiling_axe"
+			)
+		then
+			num = num * 5
+		end
+
+		return num
+	end
+end)

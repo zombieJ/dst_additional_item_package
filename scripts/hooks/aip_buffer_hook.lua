@@ -28,6 +28,15 @@ function _G.aipBufferExist(inst, name)
 	)
 end
 
+-- 【服务端】删除 Buffer，实际上是剩余时间改为 0
+function _G.aipBufferRemove(inst, name)
+	if _G.aipBufferExist(inst, name) then
+		-- 找到 Buffer 对象
+		local buffer = _G.Ents[inst._aipBufferGUID]
+		buffer._buffers[name].duration = 0
+	end
+end
+
 -- 【服务端】创建 Buffer
 function _G.aipBufferPatch(source, inst, name, duration, info)
 	local buffer = nil

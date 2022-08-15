@@ -49,7 +49,23 @@ aipBufferRegister("aip_oldone_smiling", {
         inst:RemoveChild(info.data.aura)
     end,
 
-    showFX = true,
+    showFX = false,
+})
+
+-- 添加砍伐 Buffer
+aipBufferRegister("aip_oldone_smiling_axe", {
+    startFn = function(source, inst, info)
+        local aura = SpawnPrefab("aip_aura_smiling_axe")
+        inst:AddChild(aura)
+        info.data.aura = aura
+    end,
+
+    -- 告知客机玩家不用再看了
+    endFn = function(source, inst, info)
+        inst:RemoveChild(info.data.aura)
+    end,
+
+    showFX = false,
 })
 
 ---------------------------------- 事件 ----------------------------------
@@ -61,15 +77,19 @@ local function syncErosion(inst, alpha)
     inst.AnimState:SetMultColour(1, 1, 1, alpha)
 end
 
-local SPEED = TUNING.CRAWLINGHORROR_SPEED / 3 / 2 -- 移动很慢，但是很可怕 0.5
-local GHOST_RANGE = dev_mode and 20 or 5 -- 幽灵创建距离
+local PLAYER_DIST = 20
 
-local GHOST_REDUCE_HEALTH = dev_mode and 10 or 100  -- 每个幽灵扣除笑脸数值
-local GHOST_REDUCE_PLAYER = dev_mode and 80 or 25   -- 每个幽灵扣除玩家数值
-local MAX_HEALTH = GHOST_REDUCE_HEALTH * 25         -- 笑脸生命值
+local SPEED = dev_mode and 10 or TUNING.CRAWLINGHORROR_SPEED / 3 / 2 -- 移动很慢，但是很可怕 0.5
+local GHOST_RANGE = dev_mode and 20 or 5 -- 小幽灵创建距离
 
-local OLDONE_SEEN_TIME = dev_mode and 3 or 3
-local OLDONE_SEEN_AURA_TIME = OLDONE_SEEN_TIME + (dev_mode and 10 or 10)
+local GHOST_REDUCE_HEALTH = dev_mode and 10 or 100          -- 每个幽灵扣除笑脸数值
+local GHOST_REDUCE_PLAYER = dev_mode and 10 or 25           -- 每个幽灵扣除玩家数值
+local HEALTH_MULTIPLE = dev_mode and 1 or 25                -- 笑脸生命值倍率
+local MAX_HEALTH = GHOST_REDUCE_HEALTH * HEALTH_MULTIPLE    -- 笑脸生命值
+
+local OLDONE_SEEN_TIME = dev_mode and 3 or 3        -- 眼睛特效持续时间
+local OLDONE_SEEN_AURA_TIME = OLDONE_SEEN_TIME + (dev_mode and 10 or 10)    -- 检测光环持续时间
+local OLDONE_AURA_EXIST_TIME = 60 * 30                                      -- 奖励 Buffer 持续 30 分钟
 
 local function doBrain(inst)
     aipQueue({
@@ -100,7 +120,7 @@ local function doBrain(inst)
                 syncErosion(inst, inst._aip_fade_cnt)
 
                 ---------------------- 如果离玩家比较远就创建小幽魂 ----------------------
-                local players = aipFindNearPlayers(inst, 20)
+                local players = aipFindNearPlayers(inst, PLAYER_DIST)
 
                 for i, player in ipairs(players) do
                     if aipDist(pt, player:GetPosition()) >= GHOST_RANGE then
@@ -140,7 +160,11 @@ local function doBrain(inst)
                     else
                         -- !!!!!!!!!!!!!!!!!!!!!! 添加眼睛 !!!!!!!!!!!!!!!!!!!!!!
                         aipBufferPatch(inst, player, "aip_see_eyes", OLDONE_SEEN_TIME)
-                        aipBufferPatch(inst, player, "aip_oldone_smiling", OLDONE_SEEN_AURA_TIME)
+                        if -- 检查是否存在 Buffer
+                            not aipBufferExist(player, "aip_oldone_smiling_axe")
+                        then
+                            aipBufferPatch(inst, player, "aip_oldone_smiling", OLDONE_SEEN_AURA_TIME)
+                        end
                     end
                 end
             else -- 没有地毯就停下来
@@ -152,7 +176,7 @@ local function doBrain(inst)
 
         -------------------------- 慢慢消失 --------------------------
         function()
-            inst._aip_fade_cnt = math.max(0, inst._aip_fade_cnt - 0.04)
+            inst._aip_fade_cnt = math.max(0, inst._aip_fade_cnt - 0.03)
             syncErosion(inst, inst._aip_fade_cnt)
 
             if inst._aip_fade_cnt <= 0 then
@@ -183,6 +207,18 @@ local function eatSad(inst)
     end
 end
 
+-- 为附近被污染的人添加特效
+local function OnKilled(inst)
+    local players = aipFindNearPlayers(inst, PLAYER_DIST)
+
+    for i, player in ipairs(players) do
+        if aipBufferExist(player, "aip_oldone_smiling") then
+            aipBufferRemove(player, "aip_oldone_smiling")
+            aipBufferPatch(inst, player, "aip_oldone_smiling_axe", OLDONE_AURA_EXIST_TIME)
+        end
+    end
+end
+
 ---------------------------------- 实例 ----------------------------------
 local function fn()
     local inst = CreateEntity()
@@ -208,6 +244,8 @@ local function fn()
         return inst
     end
 
+    inst:AddComponent("sanityaura")
+
     inst:AddComponent("inspectable")
     inst:AddComponent("aipc_timer")
 
@@ -230,6 +268,8 @@ local function fn()
     inst.components.aipc_timer:NamedInterval("eatSad", 0.25, eatSad)
 
     MakeHauntableLaunch(inst)
+
+    inst:ListenForEvent("death", OnKilled)
 
     return inst
 end
