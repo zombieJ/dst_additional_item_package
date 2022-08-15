@@ -50,6 +50,8 @@ local function fn()
 	-- for simplebook component
 	inst:AddTag("simplebook")
 
+    inst:AddTag("bookcabinet_item")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
