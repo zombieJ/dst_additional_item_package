@@ -124,6 +124,11 @@ local function serverRefresh(inst)
 		if endFn ~= nil then
 			endFn(getSource(info.srcGUID), getParent(inst), { data = info.data })
 		end
+
+        -- 移除 FX
+        if info.fx ~= nil then
+            inst:RemoveChild(info.fx)
+        end
 	end
 
 	inst._buffers = aipFilterKeysTable(inst._buffers, rmNames)

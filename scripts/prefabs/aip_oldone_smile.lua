@@ -30,26 +30,22 @@ local assets = {
 ---------------------------------- BUFF ----------------------------------
 -- 不断随机让玩家身体部件消失
 aipBufferRegister("aip_oldone_smiling", {
-    startFn = function(source, inst, info)
-        -- inst.AnimState:Hide("HEAD")
-        -- if inst.components.talker ~= nil then
-        --     inst.components.talker:Say(
-        --         STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_SMILE_THINK
-        --     )
-        -- end
+    -- startFn = function(source, inst, info)
+    --     -- inst.AnimState:Hide("HEAD")
+    --     -- if inst.components.talker ~= nil then
+    --     --     inst.components.talker:Say(
+    --     --         STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_SMILE_THINK
+    --     --     )
+    --     -- end
+    -- end,
 
-        local aura = SpawnPrefab("aip_aura_smiling")
-        inst:AddChild(aura)
-        info.data.aura = aura
-    end,
-
-    -- 告知客机玩家不用再看了
-    endFn = function(source, inst, info)
-        -- inst.AnimState:Show("HEAD")
-        inst:RemoveChild(info.data.aura)
-    end,
+    -- -- 告知客机玩家不用再看了
+    -- endFn = function(source, inst, info)
+    --     -- inst.AnimState:Show("HEAD")
+    -- end,
 
     showFX = false,
+    fx = "aip_aura_smiling",
 })
 
 -- 添加砍伐 Buffer

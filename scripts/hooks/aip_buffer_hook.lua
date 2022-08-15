@@ -64,15 +64,24 @@ function _G.aipBufferPatch(source, inst, name, duration, info)
 	------------------------------- 添加数据 -------------------------------
 	if buffer._buffers[name] == nil then
 		-- 初始化 Buff
-		buffer._buffers[name] = {
+		local info = {
 			startTime = _G.GetTime(), -- 记录启动时间
 			data = {}, -- 一些额外的信息记录
 		}
+		buffer._buffers[name] = info
 
 		-- 全局启动函数
 		local startFn = _G.aipBufferFn(name, "startFn")
 		if startFn ~= nil then
-			startFn(source, inst, { data = buffer._buffers[name].data })
+			startFn(source, inst, { data = info.data })
+		end
+
+		-- 额外添加特效
+		local fxName = _G.aipBufferFn(name, "fx")
+		if fxName ~= nil then
+			local fx = _G.SpawnPrefab(fxName)
+			inst:AddChild(fx)
+			info.fx = fx
 		end
 	end
 
