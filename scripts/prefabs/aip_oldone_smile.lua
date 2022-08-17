@@ -50,18 +50,20 @@ aipBufferRegister("aip_oldone_smiling", {
 
 -- 添加砍伐 Buffer
 aipBufferRegister("aip_oldone_smiling_axe", {
-    startFn = function(source, inst, info)
-        local aura = SpawnPrefab("aip_aura_smiling_axe")
-        inst:AddChild(aura)
-        info.data.aura = aura
-    end,
-
-    -- 告知客机玩家不用再看了
-    endFn = function(source, inst, info)
-        inst:RemoveChild(info.data.aura)
-    end,
-
     showFX = false,
+    fx = "aip_aura_smiling_axe",
+})
+
+-- 添加攻击 Buffer
+aipBufferRegister("aip_oldone_smiling_attack", {
+    showFX = false,
+    fx = "aip_aura_smiling_attack",
+})
+
+-- 添加镐子 Buffer
+aipBufferRegister("aip_oldone_smiling_mine", {
+    showFX = false,
+    fx = "aip_aura_smiling_mine",
 })
 
 ---------------------------------- 事件 ----------------------------------
@@ -86,6 +88,24 @@ local MAX_HEALTH = GHOST_REDUCE_HEALTH * HEALTH_MULTIPLE    -- 笑脸生命值
 local OLDONE_SEEN_TIME = dev_mode and 3 or 3        -- 眼睛特效持续时间
 local OLDONE_SEEN_AURA_TIME = OLDONE_SEEN_TIME + (dev_mode and 10 or 10)    -- 检测光环持续时间
 local OLDONE_AURA_EXIST_TIME = 60 * 30                                      -- 奖励 Buffer 持续 30 分钟
+
+
+local BUFFS_GOOD = {
+    "aip_oldone_smiling_axe",
+    "aip_oldone_smiling_attack",
+    "aip_oldone_smiling_mine",
+}
+
+local BUFFS_ALL = aipTableSlice(BUFFS_GOOD)
+table.insert(BUFFS_ALL, "aip_oldone_smiling")
+
+local function hasBuff(inst, buffs)
+    local existBuffs = aipFilterTable(buffs, function(buff)
+        return aipBufferExist(inst, buff)
+    end)
+
+    return #existBuffs > 0
+end
 
 local function doBrain(inst)
     aipQueue({
@@ -157,7 +177,7 @@ local function doBrain(inst)
                         -- !!!!!!!!!!!!!!!!!!!!!! 添加眼睛 !!!!!!!!!!!!!!!!!!!!!!
                         aipBufferPatch(inst, player, "aip_see_eyes", OLDONE_SEEN_TIME)
                         if -- 检查是否存在 Buffer
-                            not aipBufferExist(player, "aip_oldone_smiling_axe")
+                            not hasBuff(player, BUFFS_ALL)
                         then
                             aipBufferPatch(inst, player, "aip_oldone_smiling", OLDONE_SEEN_AURA_TIME)
                         end
@@ -210,7 +230,9 @@ local function OnKilled(inst)
     for i, player in ipairs(players) do
         if aipBufferExist(player, "aip_oldone_smiling") then
             aipBufferRemove(player, "aip_oldone_smiling")
-            aipBufferPatch(inst, player, "aip_oldone_smiling_axe", OLDONE_AURA_EXIST_TIME)
+            local buff = aipRandomEnt(BUFFS_GOOD)
+            buff = dev_mode and "aip_oldone_smiling_mine" or buff
+            aipBufferPatch(inst, player, buff, OLDONE_AURA_EXIST_TIME)
         end
     end
 end

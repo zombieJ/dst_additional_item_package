@@ -38,6 +38,7 @@ local function getFn(data)
 			inst.AnimState:PlayAnimation(data.anim or "idle", data.onAnimOver == nil)
 
 			inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+			-- inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGroundFixed)
 			inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
 			inst.AnimState:SetSortOrder(0)
 		end
@@ -207,6 +208,22 @@ local list = {
 		name = "aip_aura_smiling_axe",
 		build = "aip_aura_smiling",
 		anim = "axe",
+		assets = { Asset("ANIM", "anim/aip_aura_smiling.zip") },
+		range = false, -- 不安装光环组件
+		scale = 1.25,
+	},
+	{	-- 古神光环：并非真实的光环，播放一个循环转圈动画
+		name = "aip_aura_smiling_attack",
+		build = "aip_aura_smiling",
+		anim = "attack",
+		assets = { Asset("ANIM", "anim/aip_aura_smiling.zip") },
+		range = false, -- 不安装光环组件
+		scale = 1.25,
+	},
+	{	-- 古神光环：并非真实的光环，播放一个循环转圈动画
+		name = "aip_aura_smiling_mine",
+		build = "aip_aura_smiling",
+		anim = "mine",
 		assets = { Asset("ANIM", "anim/aip_aura_smiling.zip") },
 		range = false, -- 不安装光环组件
 		scale = 1.25,

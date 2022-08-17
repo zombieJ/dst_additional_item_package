@@ -390,16 +390,44 @@ AddComponentPostInit("tool", function(self)
 		local num = originGetEffectiveness(self, action, ...)
 
 		if
-			action == _G.ACTIONS.CHOP and
 			self.inst.components.inventoryitem ~= nil and
-			_G.aipBufferExist(
-				self.inst.components.inventoryitem.owner,
-				"aip_oldone_smiling_axe"
+			(
+				action == _G.ACTIONS.CHOP and
+				_G.aipBufferExist(
+					self.inst.components.inventoryitem.owner,
+					"aip_oldone_smiling_axe"
+				)
+			) or (
+				action == _G.ACTIONS.MINE and
+				_G.aipBufferExist(
+					self.inst.components.inventoryitem.owner,
+					"aip_oldone_smiling_mine"
+				)
 			)
 		then
-			num = num * 5
+			num = num * 3
 		end
 
 		return num
+	end
+end)
+
+-- 伤害允许翻倍
+AddComponentPostInit("combat", function(self)
+	local originCalcDamage = self.CalcDamage
+
+	function self:CalcDamage(...)
+		local dmg = originCalcDamage(self, ...)
+
+		if
+			_G.aipBufferExist(
+				self.inst,
+				"aip_oldone_smiling_attack"
+			)
+		then
+			dmg = dmg * 2
+		end
+
+		return dmg
 	end
 end)
