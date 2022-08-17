@@ -224,11 +224,12 @@ local function eatSad(inst)
 end
 
 -- 为附近被污染的人添加特效
-local function OnKilled(inst)
+local function OnKilled(inst, data)
     local players = aipFindNearPlayers(inst, PLAYER_DIST)
+    local afflicter = aipGet(data, "afflicter")
 
     for i, player in ipairs(players) do
-        if aipBufferExist(player, "aip_oldone_smiling") then
+        if player == afflicter or aipBufferExist(player, "aip_oldone_smiling") then
             aipBufferRemove(player, "aip_oldone_smiling")
             local buff = aipRandomEnt(BUFFS_GOOD)
             buff = dev_mode and "aip_oldone_smiling_mine" or buff

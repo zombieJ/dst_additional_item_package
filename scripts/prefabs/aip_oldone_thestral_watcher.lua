@@ -48,10 +48,14 @@ local function toggleActive(inst, doer)
         end)
 
         -- 召唤一个笑脸
-        local smile = TheSim:FindFirstEntityWithTag("aip_oldone_smile")
-        if smile == nil then
-            local pt = aipGetSpawnPoint(inst:GetPosition(), dev_mode and BOSS_POS_DEV or BOSS_POS)
-            aipSpawnPrefab(inst, "aip_oldone_smile", pt.x, pt.y, pt.z)
+        if aipCommonStore().smileLeftDays <= 0 then
+            aipCommonStore().smileLeftDays = 3
+
+            local smile = TheSim:FindFirstEntityWithTag("aip_oldone_smile")
+            if smile == nil then
+                local pt = aipGetSpawnPoint(inst:GetPosition(), dev_mode and BOSS_POS_DEV or BOSS_POS)
+                aipSpawnPrefab(inst, "aip_oldone_smile", pt.x, pt.y, pt.z)
+            end
         end
     end
 end
