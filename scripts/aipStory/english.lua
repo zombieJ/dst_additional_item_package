@@ -769,6 +769,43 @@ return {
             },
             "I found that it really hated the regular hammering sound, so I made a marble contraption in a remote swamp. It hammered regularly. The sensitive-eared 'Sock Snake' was distracted by the sound, not at all Time is on my side, let me continue to explore this world. Hahahaha!",
 
+            -- 捆绑的头颅
+            {
+                type="anim",
+                build="aip_oldone_marble_head_lock",
+                bank="chesspiece",
+                anim="aipStruggle",
+                scale=.4,
+                height=120,
+            },
+            "Well, I don't know how the 'sock snake' moved the marble head over. It tied it up with its own fur, and now its pounding has only broken some trees.",
+
+            -- 地毯
+            {
+                type="img",
+                name="aip_oldone_thestral_watcher",
+            },
+            "I cut the fur off the stone to reset the device and tried to analyze the fur. I've found that it can temporarily associate something, but it's not stable. I tried making it a floor mat and activating it.",
+
+            -- 笑脸
+            {
+                type="anim",
+                build="aip_oldone_smile",
+                scale=.2,
+                height=300,
+            },
+            "Finally got to see it for what it is, I don't know what it is. It, it, it, family! leave, disappear!",
+
+            -- 光环
+            {
+                type="anim",
+                build="aip_aura_smiling",
+                scale=.4,
+                height=180,
+                top=80,
+            },
+            "I don't know what happened, I just vaguely remember seeing something like a halo as it got closer. Now that it's gone, the halo hasn't, on the contrary something has changed. What does the pattern above imply?",
+
             -- 漆黑的鹿
             {
                 type="anim",
