@@ -17,10 +17,13 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 STRINGS.NAMES.AIP_OLDONE_THESTRAL_WATCHER = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_WATCHER = LANG.DESC
+STRINGS.NAMES.AIP_OLDONE_THESTRAL_WATCHER_ITEM = LANG.NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_WATCHER_ITEM = LANG.DESC
 
 -- 资源
 local assets = {
     Asset("ANIM", "anim/aip_oldone_thestral_watcher.zip"),
+    Asset("ATLAS", "images/inventoryimages/aip_oldone_thestral_watcher.xml"),
 }
 
 ---------------------------------- 事件 ----------------------------------
@@ -94,4 +97,65 @@ local function fn()
     return inst
 end
 
-return Prefab("aip_oldone_thestral_watcher", fn, assets)
+---------------------------------- 物体 ----------------------------------
+local function alwaysCanBuild()
+    return true, false
+end
+
+-- 资源
+local itemAssets = {
+    Asset("ANIM", "anim/aip_22_fish.zip"),
+	Asset("ATLAS", "images/inventoryimages/aip_22_fish.xml"),
+    Asset("ATLAS", "images/inventoryimages/aip_oldone_thestral_watcher.xml"),
+}
+
+local function onDeploy(inst, pt)
+    aipSpawnPrefab(inst, "aip_oldone_thestral_watcher", pt.x, pt.y, pt.z)
+    aipRemove(inst)
+end
+
+local function itemFn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddNetwork()
+
+    MakeInventoryPhysics(inst)
+
+    inst.AnimState:SetBank("aip_22_fish")
+    inst.AnimState:SetBuild("aip_22_fish")
+    inst.AnimState:PlayAnimation("idle")
+
+    MakeInventoryFloatable(inst, "med", 0.05, 0.65)
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst:AddComponent("inspectable")
+    
+    inst:AddComponent("inventoryitem")
+	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_oldone_thestral_watcher.xml"
+    inst.components.inventoryitem.imagename = "aip_oldone_thestral_watcher"
+
+    inst:AddComponent("deployable")
+    inst.components.deployable.ondeploy = onDeploy
+    inst.components.deployable:SetDeploySpacing(DEPLOYSPACING.NONE)
+
+    inst:AddComponent("stackable")
+	inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM
+
+    MakeSmallBurnable(inst)
+    MakeSmallPropagator(inst)
+
+    return inst
+end
+
+return Prefab("aip_oldone_thestral_watcher", fn, assets),
+        Prefab("aip_oldone_thestral_watcher_item", itemFn, itemAssets),
+        MakePlacer(
+            "aip_oldone_thestral_watcher_item_placer", "aip_oldone_thestral_watcher", "aip_oldone_thestral_watcher", "idle", true
+        )

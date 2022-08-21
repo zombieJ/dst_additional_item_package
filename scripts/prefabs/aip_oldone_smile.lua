@@ -196,6 +196,9 @@ local function doBrain(inst)
             syncErosion(inst, inst._aip_fade_cnt)
 
             if inst._aip_fade_cnt <= 0 then
+                if not inst.components.health:IsDead() then
+                    aipCommonStore().smileLeftDays = 0 -- 消失后重置定制时间
+                end
                 aipRemove(inst)
             end
 
