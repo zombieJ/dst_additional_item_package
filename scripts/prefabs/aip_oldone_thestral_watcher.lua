@@ -104,8 +104,7 @@ end
 
 -- 资源
 local itemAssets = {
-    Asset("ANIM", "anim/aip_22_fish.zip"),
-	Asset("ATLAS", "images/inventoryimages/aip_22_fish.xml"),
+    Asset("ANIM", "anim/aip_oldone_thestral_watcher.zip"),
     Asset("ATLAS", "images/inventoryimages/aip_oldone_thestral_watcher.xml"),
 }
 
@@ -123,11 +122,11 @@ local function itemFn()
 
     MakeInventoryPhysics(inst)
 
-    inst.AnimState:SetBank("aip_22_fish")
-    inst.AnimState:SetBuild("aip_22_fish")
-    inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:SetBank("aip_oldone_thestral_watcher")
+    inst.AnimState:SetBuild("aip_oldone_thestral_watcher")
+    inst.AnimState:PlayAnimation("item")
 
-    MakeInventoryFloatable(inst, "med", 0.05, 0.65)
+    MakeInventoryFloatable(inst, "med", 0.2, 0.70)
 
     inst.entity:SetPristine()
 
