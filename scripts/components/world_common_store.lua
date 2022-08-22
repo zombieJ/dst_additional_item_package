@@ -75,6 +75,14 @@ local CommonStore = Class(function(self, inst)
 	self:PostWorld()
 
 	self.inst:ListenForEvent("ms_registerfishshoal", onFishShoalAdded)
+
+	-- 笑脸 BOSS 出现时间（小于等于 0 说明可以召唤，每天都会减少一次计时）
+	self.smileLeftDays = 0
+	inst:WatchWorldState("isnight", function(_, isnight)
+		if isnight then
+			self.smileLeftDays = math.min(self.smileLeftDays - 1)
+		end
+	end)
 end)
 
 function CommonStore:OnSave()

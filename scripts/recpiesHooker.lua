@@ -242,6 +242,16 @@ rec("chesspiece_aip_fish_builder", TECH.LOST, { CRAFTING_FILTERS.CRAFTING_STATIO
 rec("aip_oldone_durian", TECH.LOST, { CRAFTING_FILTERS.WEAPONS },
 	{ Ingredient("durian", 1), Ingredient("aip_oldone_plant_full", 1, "images/inventoryimages/aip_oldone_plant_full.xml"), })
 
+-- 绒线地垫
+rec("aip_oldone_thestral_watcher_item", TECH.MAGIC_TWO, { CRAFTING_FILTERS.MAGIC },
+	{
+		Ingredient("beefalowool", 2),
+		Ingredient("aip_oldone_thestral_fur", 1, "images/inventoryimages/aip_oldone_thestral_fur.xml"),
+	}, {
+		atlas = "images/inventoryimages/aip_oldone_thestral_watcher.xml",
+		image = "aip_oldone_thestral_watcher.tex",
+	})
+
 -------------------------------------- 联动 --------------------------------------
 local modNames = _G.ModManager:GetEnabledServerModNames()
 
