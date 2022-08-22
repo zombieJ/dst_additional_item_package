@@ -159,8 +159,7 @@ local function doBrain(inst)
 
                     -- 给手注入一些数据
                     hand:RemoveComponent("playerprox") -- 不会被踩熄灭
-                    hand:RemoveEventCallback("enterlight", hand.dissipatefn)
-                    hand:RemoveEventCallback("enterlight", hand.dissipatefn)
+                    hand:RemoveEventCallback("enterlight", hand.dissipatefn, inst.arm) -- 白天不消失
 
                     -- 鬼手抓到后归位
                     hand:ListenForEvent("startaction", function(_, data)
@@ -330,6 +329,28 @@ local function fn()
     return inst
 end
 
+--------------------------------- 破碎 ---------------------------------
+-- 测试使用，创建一个破碎的雕像
+local function brokenFn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddNetwork()
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst:DoTaskInTime(0.1, function()
+        local marble = aipReplacePrefab(inst, "aip_oldone_marble")
+        marble.components.health:Kill()
+    end)
+
+    return inst
+end
+
 --------------------------------- 马甲 ---------------------------------
 local function vestFn()
     local inst = CreateEntity()
@@ -363,4 +384,5 @@ local function vestFn()
 end
 
 return Prefab("aip_oldone_marble", fn, assets),
+Prefab("aip_oldone_marble_broken", brokenFn, assets),
     Prefab("aip_oldone_marble_vest", vestFn, {})

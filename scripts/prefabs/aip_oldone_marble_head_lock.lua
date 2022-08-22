@@ -134,6 +134,45 @@ local function OnEntitySleep(inst)
     triggerCollect(inst, false)
 end
 
+local function CanShaveTest(inst, shaver)
+    return true
+end
+
+-- 刮毛后会飞走
+local function onShaved(inst)
+    local replaced = aipReplacePrefab(inst, "aip_oldone_marble_head")
+    replaced:AddTag("FX")
+    replaced:AddTag("NOCLICK")
+
+    replaced.AnimState:PlayAnimation("aipJumpBack")
+    replaced:ListenForEvent("animover", replaced.Remove)
+
+    -- 复活破碎的雕像
+    local marbles = aipFindEnts("aip_oldone_marble")
+
+    -- 找到破碎的雕像
+    local broken = nil
+    for i, marble in ipairs(marbles) do
+        if marble.components.health ~= nil and marble.components.health:IsDead() then
+            broken = marble
+            break
+        end
+    end
+
+    -- 恢复破碎的雕像
+    if broken ~= nil then
+        broken.components.health:DoDelta(
+            broken.components.health.maxhealth,
+            true, "regen"
+        )
+
+        aipSpawnPrefab(broken, "aip_shadow_wrapper").DoShow()
+
+        broken.AnimState:PlayAnimation("back")
+        broken.AnimState:PushAnimation("idle", true)
+    end
+end
+
 --------------------------------- 实例 ---------------------------------
 
 local function fn()
@@ -180,6 +219,13 @@ local function fn()
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
+
+     -- 剃刀刮下后，就会飞走
+     inst:AddComponent("beard")
+     inst.components.beard.bits = 1
+     inst.components.beard.canshavetest = CanShaveTest
+     inst.components.beard.prize = "aip_oldone_thestral_fur"
+     inst:ListenForEvent("shaved", onShaved)
 
     inst:AddComponent("aipc_timer")
 
