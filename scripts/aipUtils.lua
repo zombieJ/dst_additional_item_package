@@ -693,7 +693,7 @@ function _G.aipGetTopologyPoint(tag, prefab, dist)
 end
 
 function entMatchNames(prefabNames, ent)
-	return ent ~= nil and ent:IsValid() and table.contains(prefabNames, ent.prefab)
+	return ent ~= nil and ent.IsValid ~= nil and ent:IsValid() and table.contains(prefabNames, ent.prefab)
 end
 
 -- 按照参数找到所有符合名字列表的 prefab（TheSim:FindFirstEntityWithTag("malbatross")）
