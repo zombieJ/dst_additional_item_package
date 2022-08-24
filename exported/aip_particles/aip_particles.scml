@@ -10,8 +10,8 @@
         <animation id="0" name="idle" length="240">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="circle" folder="0" file="1" abs_x="0.229088" abs_y="-0.000797" abs_pivot_x="0.500797" abs_pivot_y="0.500797" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
-                    <object_ref id="1" name="p1" folder="0" file="0" abs_x="0.444785" abs_y="-0.002862" abs_pivot_x="0.501644" abs_pivot_y="0.502862" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="0" name="circle" folder="0" file="1" abs_x="0.229088" abs_y="128.999203" abs_pivot_x="0.500797" abs_pivot_y="0.500797" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="p1" folder="0" file="0" abs_x="0.444785" abs_y="128.997138" abs_pivot_x="0.501644" abs_pivot_y="0.502862" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
                 <key id="1" time="80">
                     <object_ref id="0" timeline="0" key="0" z_index="0"/>
@@ -28,21 +28,21 @@
             </mainline>
             <timeline id="0" name="circle">
                 <key id="0" spin="0">
-                    <object folder="0" file="1" x="0.229088" y="-0.000797" pivot_x="0.500797" pivot_y="0.500797"/>
+                    <object folder="0" file="1" x="0.229088" y="128.999203" pivot_x="0.500797" pivot_y="0.500797" angle="0"/>
                 </key>
                 <key id="1" time="120" spin="0">
-                    <object folder="0" file="1" x="0.229088" y="-0.000797" pivot_x="0.500797" pivot_y="0.500797" scale_x="1.2" scale_y="1.2"/>
+                    <object folder="0" file="1" x="0.229088" y="127.999203" pivot_x="0.500797" pivot_y="0.500797" angle="0" scale_x="1.2" scale_y="1.2"/>
                 </key>
             </timeline>
             <timeline id="1" name="p1">
-                <key id="0" spin="0">
-                    <object folder="0" file="0" x="0.444785" y="-0.002862" pivot_x="0.501644" pivot_y="0.502862"/>
+                <key id="0" spin="-1">
+                    <object folder="0" file="0" x="0.444785" y="128.997138" pivot_x="0.501644" pivot_y="0.502862" angle="0"/>
                 </key>
-                <key id="1" time="80" spin="0">
-                    <object folder="0" file="2" x="0.444785" y="-0.002862" pivot_x="0.501644" pivot_y="0.502862"/>
+                <key id="1" time="80" spin="-1">
+                    <object folder="0" file="2" x="0.444785" y="127.997138" pivot_x="0.501644" pivot_y="0.502862" angle="226.932921" scale_x="0.833064" scale_y="0.833064"/>
                 </key>
-                <key id="2" time="160" spin="0">
-                    <object folder="0" file="3" x="0.444785" y="-0.002862" pivot_x="0.501644" pivot_y="0.502862"/>
+                <key id="2" time="160" spin="-1">
+                    <object folder="0" file="3" x="0.444785" y="127.997138" pivot_x="0.501644" pivot_y="0.502862" angle="125.58378" scale_x="1.134217" scale_y="1.134217"/>
                 </key>
             </timeline>
         </animation>
