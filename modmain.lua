@@ -153,6 +153,7 @@ PrefabFiles = {
 
 	-- 量子
 	"aip_particles",
+	"aip_particles_bottle",
 
 	-- Orbit
 	"aip_orbit",
