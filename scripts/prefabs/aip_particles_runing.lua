@@ -4,11 +4,11 @@ local language = aipGetModConfig("language")
 local LANG_MAP = {
 	english = {
 		NAME = "Entangled Particles",
-		DESC = "They will trigger on both time",
+		DESC = "Attack will trigger another one",
 	},
 	chinese = {
 		NAME = "纠缠粒子",
-		DESC = "触发一个时会触发另一个",
+		DESC = "攻击会触发另一个",
 	},
 }
 
@@ -24,7 +24,7 @@ local assets = {
     Asset("ATLAS", "images/inventoryimages/aip_particles_entangled_orange.xml"),
 }
 
------------------------------------ 方法 -----------------------------------
+----------------------------------- 马甲 -----------------------------------
 local function syncSkin(inst)
     if inst._aipEntangled then
         inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_particles_entangled_blue.xml"
@@ -35,7 +35,6 @@ local function syncSkin(inst)
     end
 end
 
------------------------------------ 马甲 -----------------------------------
 -- 马甲将会拆分成 2 个纠缠粒子
 local function vestFn()
     local inst = CreateEntity()
@@ -67,10 +66,72 @@ local function vestFn()
         particles[2]._aipEntangled = false
         syncSkin(particles[1])
         syncSkin(particles[2])
+
+        -- 创建相互关联
+        local uniqueId = os.time()
+        particles[1]._aipId = uniqueId
+        particles[2]._aipId = uniqueId
+        particles[1]._aipTarget = particles[2]
+        particles[2]._aipTarget = particles[1]
     end)
 
     return inst
 end
+
+----------------------------------- 方法 -----------------------------------
+-- 加载后关联粒子
+local function connectParticles(inst)
+    local store = aipCommonStore()
+    if store ~= nil then
+        if store.particles[inst._aipId] == nil then
+            store.particles[inst._aipId] = inst
+        else
+            inst._aipTarget = store.particles[inst._aipId]
+            inst._aipTarget._aipTarget = inst
+
+            table.remove(store.particles, inst._aipId)
+        end
+    end
+end
+
+-- 攻击触发另一个
+local function onHit(inst, attacker)
+    if inst._aipTarget == nil or not inst._aipTarget:IsValid() then
+        aipRemove(inst)
+        return
+    end
+
+    -- 不会死
+    if inst.components.health ~= nil then
+        inst.components.health:SetCurrentHealth(1)
+    end
+
+    -- 目标有个内置 CD 如果满足则触发
+    if inst.components.timer ~= nil and not inst.components.timer:TimerExists("aip_runing") then
+        inst.components.timer:StartTimer("aip_runing", .5)
+        aipSpawnPrefab(inst, "aip_shadow_wrapper").DoShow()
+
+        -- 触发目标粒子
+        if attacker ~= inst._aipTarget then     -- 如果不是自己来源则触发目标
+            inst:DoTaskInTime(0.1, function()
+                if inst._aipTarget ~= nil then
+                    inst._aipTarget.components.combat:GetAttacked(inst, 1)
+                end
+            end)
+        else                                    -- 如果是被联通的，则触发附近的元素
+            local x, y, z = inst.Transform:GetWorldPosition()
+            local particles = TheSim:FindEntities(x, y, z, 1, { "aip_particles" })
+            particles = aipFilterTable(particles, function(v)
+                return v ~= inst and v ~= inst._aipTarget
+            end)
+
+            for _, particle in ipairs(particles) do
+                particle.components.combat:GetAttacked(inst, 1)
+            end
+        end
+    end
+end
+
 
 ----------------------------------- 存取 -----------------------------------
 local function onSave(inst, data)
@@ -78,12 +139,14 @@ local function onSave(inst, data)
 
     data.entangled = inst._aipEntangled
     data.color = {r, g, b}
+    data.id = inst._aipId
 end
 
 local function onLoad(inst, data)
     if data ~= nil then
         inst._aipEntangled = data.entangled
         inst.AnimState:SetMultColour(data.color[1], data.color[2], data.color[3], 1)
+        inst._aipId = data.id
 
         syncSkin(inst)
     end
@@ -104,6 +167,8 @@ local function entangledFn()
     inst.AnimState:SetBuild("aip_particles_runing")
     inst.AnimState:PlayAnimation("idle", true)
 
+    inst:AddTag("aip_particles")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -115,8 +180,20 @@ local function entangledFn()
 	inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_particles_entangled_blue.xml"
 
+    inst:AddComponent("combat")
+    inst.components.combat.onhitfn = onHit
+
+    inst:AddComponent("health")
+    inst.components.health:SetMaxHealth(1)
+    inst.components.health.nofadeout = true
+    inst.components.health.canheal = false
+
+    inst:AddComponent("timer")
+
     inst.OnSave = onSave
     inst.OnLoad = onLoad
+
+    inst:DoTaskInTime(.1, connectParticles)
 
     return inst
 end

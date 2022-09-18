@@ -79,6 +79,9 @@ local CommonStore = Class(function(self, inst)
 	-- 是否赐予过 《额外物品包》这本书
 	self.storyBook = false
 
+	-- 粒子加载管理器
+	self.particles = {}
+
 	-- 后置世界计算
 	self:PostWorld()
 
