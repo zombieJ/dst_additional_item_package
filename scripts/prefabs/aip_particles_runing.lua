@@ -113,21 +113,21 @@ local function onHit(inst, attacker)
 
         -- 触发目标粒子
         if attacker ~= inst._aipTarget then     -- 如果不是自己来源则触发目标
-            inst:DoTaskInTime(0.1, function()
-                if inst._aipTarget ~= nil then
-                    inst._aipTarget.components.combat:GetAttacked(inst, 1)
+            if inst._aipTarget ~= nil then
+                inst._aipTarget.components.combat:GetAttacked(inst, 1)
+            end
+        else                                    -- 如果是被联通的，则触发附近的元素
+            inst:DoTaskInTime(0.1, function()   -- 联通是有延迟的
+                local x, y, z = inst.Transform:GetWorldPosition()
+                local particles = TheSim:FindEntities(x, y, z, 1, { "aip_particles" })
+                particles = aipFilterTable(particles, function(v)
+                    return v ~= inst and v ~= inst._aipTarget
+                end)
+
+                for _, particle in ipairs(particles) do
+                    particle.components.combat:GetAttacked(inst, 1)
                 end
             end)
-        else                                    -- 如果是被联通的，则触发附近的元素
-            local x, y, z = inst.Transform:GetWorldPosition()
-            local particles = TheSim:FindEntities(x, y, z, 1, { "aip_particles" })
-            particles = aipFilterTable(particles, function(v)
-                return v ~= inst and v ~= inst._aipTarget
-            end)
-
-            for _, particle in ipairs(particles) do
-                particle.components.combat:GetAttacked(inst, 1)
-            end
         end
     end
 end
