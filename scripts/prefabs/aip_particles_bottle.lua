@@ -5,13 +5,15 @@ local language = aipGetModConfig("language")
 local LANG_MAP = {
 	english = {
 		NAME = "Particle Limiter",
-        CHARGED = "Particle Limiter (Active)",
+        CHARGED = "Particle Limiter (Changed)",
 		DESC = "Save the particle for a long time",
+        DESC_CHARGED = "There is a turbulent energy in it",
 	},
 	chinese = {
 		NAME = "粒子限制器",
-        CHARGED = "粒子限制器（激活）",
+        CHARGED = "粒子限制器（充能）",
 		DESC = "将粒子可以长久保存",
+        DESC_CHARGED = "里面蕴藏着一份躁动的能量",
 	},
 }
 
@@ -19,6 +21,8 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 STRINGS.NAMES.AIP_PARTICLES_BOTTLE = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PARTICLES_BOTTLE = LANG.DESC
+STRINGS.NAMES.AIP_PARTICLES_BOTTLE_CHARGED = LANG.CHARGED
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PARTICLES_BOTTLE_CHARGED = LANG.DESC_CHARGED
 
 -- 资源
 local assets = {
@@ -28,36 +32,6 @@ local assets = {
 }
 
 ----------------------------------- 方法 -----------------------------------
--- 更新充能状态
-local function refreshStatus(inst)
-	-- 更新贴图
-	if inst._aipCharged then
-        inst.components.named:SetName(LANG.CHARGED)
-		inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_particles_bottle_charged.xml"
-		inst.components.inventoryitem:ChangeImageName("aip_particles_bottle_charged")
-		inst.AnimState:PlayAnimation("charged", true)
-        inst.Light:Enable(true)
-	else
-        inst.components.named:SetName(LANG.NAME)
-		inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_particles_bottle.xml"
-		inst.components.inventoryitem:ChangeImageName("aip_particles_bottle")
-		inst.AnimState:PlayAnimation("idle", false)
-        inst.Light:Enable(false)
-
-        -- 移除过期组件
-        inst:RemoveComponent("perishable")
-	end
-end
-
-local function syncPerishable(inst)
-    if inst.components.perishable == nil and inst._aipCharged then
-        inst:AddComponent("perishable")
-        inst.components.perishable:SetPerishTime(dev_mode and 10 or TUNING.PERISH_FAST)
-        inst.components.perishable:StartPerishing()
-        inst.components.perishable.onperishreplacement = "aip_particles_bottle"
-    end
-end
-
 local function canActOn(inst, doer, target)
 	return target.prefab == "aip_particles"
 end
@@ -65,27 +39,12 @@ end
 local function onDoTargetAction(inst, doer, target)
 	if target.prefab == "aip_particles" then
         aipRemove(target)
-        inst._aipCharged = true
-        syncPerishable(inst)
-        refreshStatus(inst)
+        aipReplacePrefab(inst, "aip_particles_bottle_charged")
     end
 end
 
--- 存取
-local function onSave(inst, data)
-	data._aipCharged = inst.charged
-end
-
-local function onLoad(inst, data)
-	if data ~= nil then
-		inst.charged = data._aipCharged
-        syncPerishable(inst)
-		refreshStatus(inst)
-	end
-end
-
------------------------------------ 实例 -----------------------------------
-local function fn()
+----------------------------------- 通用 -----------------------------------
+local function common()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -107,35 +66,59 @@ local function fn()
 
     MakeInventoryFloatable(inst, "med", 0.3, 1)
 
-    inst:AddComponent("aipc_action_client")
-	inst.components.aipc_action_client.canActOn = canActOn
-
-	inst:AddTag("_named")
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst:RemoveTag("_named")
-    inst:AddComponent("named")
-
-    inst:AddComponent("aipc_action")
-	inst.components.aipc_action.onDoTargetAction = onDoTargetAction
-
     inst:AddComponent("inspectable")
 
 	inst:AddComponent("inventoryitem")
-    refreshStatus(inst)
-
 
     MakeHauntableLaunch(inst)
-
-    inst.OnLoad = onLoad
-    inst.OnSave = onSave
 
     return inst
 end
 
-return Prefab("aip_particles_bottle", fn, assets)
+----------------------------------- 置空 -----------------------------------
+local function emptyFn()
+    local inst = common()
+
+    inst:AddComponent("aipc_action_client")
+	inst.components.aipc_action_client.canActOn = canActOn
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_particles_bottle.xml"
+
+    inst:AddComponent("aipc_action")
+	inst.components.aipc_action.onDoTargetAction = onDoTargetAction
+
+    return inst
+end
+
+----------------------------------- 充能 -----------------------------------
+local function fullFn()
+    local inst = common()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_particles_bottle_charged.xml"
+
+    inst:AddComponent("perishable")
+    inst.components.perishable:SetPerishTime(dev_mode and 10 or TUNING.PERISH_FAST)
+    inst.components.perishable:StartPerishing()
+    inst.components.perishable.onperishreplacement = "aip_particles_bottle"
+
+    return inst
+end
+
+
+
+return  Prefab("aip_particles_bottle", emptyFn, assets),
+        Prefab("aip_particles_bottle_charged", fullFn, assets)
