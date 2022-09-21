@@ -371,8 +371,17 @@ local function onMushroomAnimOver(inst)
 		)
 	then
 		inst._aipSpawned = true
-		_G.aipPrint("gogogo!")
 		_G.aipSpawnPrefab(inst, "aip_fx_splode").DoShow(null, 0.2)
+
+		-- 触发附近粒子联动
+		inst:DoTaskInTime(0.2, function()
+			local x, y, z = inst.Transform:GetWorldPosition()
+			local particles = TheSim:FindEntities(x, y, z, 1, { "aip_particles" })
+
+			for _, particle in ipairs(particles) do
+				particle.components.combat:GetAttacked(inst, 1)
+			end
+		end)
 	else
 		inst._aipSpawned = false
 	end

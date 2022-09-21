@@ -79,7 +79,7 @@ local splode_assets = {
 
 local prefabs = {}
 
-local function fn()
+local function splodeFn()
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()
@@ -110,4 +110,4 @@ local function fn()
 end
 
 return	Prefab("aip_shadow_wrapper", fn, assets, prefabs),
-		Prefab("aip_fx_splode", fn, splode_assets)
+		Prefab("aip_fx_splode", splodeFn, splode_assets)
