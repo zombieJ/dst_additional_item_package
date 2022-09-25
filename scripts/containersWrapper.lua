@@ -480,6 +480,24 @@ function params.aip_copier.widget.buttoninfo.fn(inst)
 	end
 end
 
+--------------- 怠惰的南瓜 ---------------
+params.aip_tricky_thrower = {
+    widget ={
+        slotpos = {},
+        animbank = "ui_chester_shadow_3x4",
+        animbuild = "ui_chester_shadow_3x4",
+        pos = Vector3(0, 220, 0),
+        side_align_tip = 160,
+    },
+    type = "chest",
+}
+
+for y = 2.5, -0.5, -1 do
+    for x = 0, 2 do
+        table.insert(params.aip_tricky_thrower.widget.slotpos, Vector3(75 * x - 75 * 2 + 75, 75 * y - 75 * 2 + 75, 0))
+    end
+end
+
 ----------------------------------------------------------------------------------------------
 local containers = _G.require "containers"
 local old_widgetsetup = containers.widgetsetup

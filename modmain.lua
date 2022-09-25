@@ -155,6 +155,7 @@ PrefabFiles = {
 	"aip_particles",
 	"aip_particles_bottle",
 	"aip_particles_runing",
+	"aip_tricky_thrower",
 
 	-- Orbit
 	"aip_orbit",
