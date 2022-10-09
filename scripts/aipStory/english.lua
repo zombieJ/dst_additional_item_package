@@ -815,7 +815,7 @@ return {
                 height=160,
             },
             "Under the ground, I found a strange deer-shaped stone, covered with eye-like textures, and it seemed to be some kind of mimetic creature. But it looked half-dead. After a period of research, I found that it was actually a It was inactive because it was too cool underground. So I lit some campfires around it to try and revive it.",
-        
+
             -- 菇茑
             {
                 type="anim",
@@ -823,7 +823,16 @@ return {
                 scale=.35,
                 height=50,
             },
-            "After warming up, a delicious 'mushroom' grew on the edge of the stone. However, it seems that it also contains 'bulb' toxins, so you should not eat more.",
+            "After warming up, a delicious 'lantern berry' grew on the edge of the stone. However, it seems that it also contains 'bulb' toxins, so you should not eat more.",
+
+            -- 怠惰的南瓜
+            {
+                type="anim",
+                build="aip_tricky_thrower",
+                scale=.35,
+                height=100,
+            },
+            "After using lantern berry to feed 'Jack Lantern', it mutates into a container. Interestingly, even the slightest blow can irritate it. So throw the things in your stomach to the place that is suitable for it, such as firepit~",
         },
     },
 
@@ -969,6 +978,44 @@ return {
                 top=10,
             },
             "Light this pile of fallen leaves and clean the yard.",
+        },
+    },
+
+    -- 量力而行
+    {
+        name = "Quantum Mechanics",
+        desc = {
+            -- 粒子
+            {
+                type="anim",
+                build="aip_particles",
+                anim="idle",
+                scale=.25,
+                height=60,
+            },
+
+            "On rainy days, I observed sometimes strange particle disturbances near the falling thunder. They will disappear soon.",
+
+            -- 粒子限制器
+            {
+                type="img",
+                name="aip_particles_bottle_charged",
+            },
+
+            "I made a 'particle limiter' rig and saved it successfully for a while.",
+
+            {
+                type="img",
+                name="aip_particles_entangled_blue",
+            },
+            {
+                type="img",
+                name="aip_particles_entangled_orange",
+            },
+
+            "After some exploration, I found that the stored particles can be split to form two entangled particles. When one of them is hit, the other is also affected.",
+
+            "What's more interesting is that the perturbation doesn't seem to require much energy to trigger. For example, the smoke produced by the mushroom when it germinates will also be disturbed, and even another pair of particles may be excited! Could this perturbation also work for 'lazy pumpkins'?",
         },
     },
 }

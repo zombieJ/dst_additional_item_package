@@ -123,7 +123,7 @@ local function onHit(inst, attacker)
         else                                    -- 如果是被联通的，则触发附近的元素
             inst:DoTaskInTime(0.1, function()   -- 联通是有延迟的
                 local x, y, z = inst.Transform:GetWorldPosition()
-                local particles = TheSim:FindEntities(x, y, z, 1, { "aip_particles" })
+                local particles = TheSim:FindEntities(x, y, z, 1.5, { "aip_particles" })
                 particles = aipFilterTable(particles, function(v)
                     return v ~= inst and v ~= inst._aipTarget
                 end)

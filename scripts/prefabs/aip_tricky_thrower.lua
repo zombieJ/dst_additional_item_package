@@ -20,6 +20,7 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_TRICKY_THROWER = LANG.DESC
 -- 资源
 local assets = {
     Asset("ANIM", "anim/aip_tricky_thrower.zip"),
+    Asset("ATLAS", "images/inventoryimages/aip_tricky_thrower.xml"),
 }
 
 ------------------------------------ 方法 ------------------------------------
@@ -119,6 +120,9 @@ local function fn()
     inst.AnimState:SetBuild("aip_tricky_thrower")
     inst.AnimState:PlayAnimation("idle", true)
 
+    -- 添加粒子标记，让南瓜可以被攻击到
+    inst:AddTag("aip_particles")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -145,4 +149,5 @@ local function fn()
     return inst
 end
 
-return Prefab("aip_tricky_thrower", fn, assets)
+return  Prefab("aip_tricky_thrower", fn, assets),
+        MakePlacer("aip_tricky_thrower_placer", "aip_tricky_thrower", "aip_tricky_thrower", "idle")

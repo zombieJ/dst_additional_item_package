@@ -234,7 +234,7 @@ local list = {
 		anim = "blue",
 		assets = { Asset("ANIM", "anim/aip_aura_entangled.zip") },
 		range = false, -- 不安装光环组件
-		scale = 1,
+		scale = .6,
 	},
 	{	-- 纠缠粒子光环 —— 橙：并非真实的光环，播放一个循环转圈动画
 		name = "aip_aura_entangled_orange",
@@ -242,7 +242,7 @@ local list = {
 		anim = "orange",
 		assets = { Asset("ANIM", "anim/aip_aura_entangled.zip") },
 		range = false, -- 不安装光环组件
-		scale = 1,
+		scale = .6,
 	},
 }
 

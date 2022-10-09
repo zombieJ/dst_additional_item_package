@@ -265,6 +265,11 @@ rec("aip_particles_vest_entangled", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.TOOLS }
 	},
 	{ atlas = "images/inventoryimages/aip_particles_entangled_blue.xml", image = "aip_particles_entangled_blue.tex" })
 
+-- 怠惰的南瓜
+rec("aip_tricky_thrower", TECH.MAGIC_TWO, { CRAFTING_FILTERS.STRUCTURES, CRAFTING_FILTERS.MAGIC },
+	{ Ingredient("pumpkin_lantern", 1), Ingredient("aip_oldone_deer_eye_fruit", 1, "images/inventoryimages/aip_oldone_deer_eye_fruit.xml"), },
+	"aip_tricky_thrower_placer")
+
 -------------------------------------- 联动 --------------------------------------
 local modNames = _G.ModManager:GetEnabledServerModNames()
 
