@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="splode">
+        <file id="0" name="splode/splode-0.png" width="353" height="231" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <folder id="1" name="puff_small">
+        <file id="0" name="puff_small/puff_small-0.png" width="476" height="299" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="puff_small/puff_small-1.png" width="423" height="370" pivot_x="0" pivot_y="1"/>
+        <file id="2" name="puff_small/puff_small-11.png" width="517" height="423" pivot_x="0" pivot_y="1"/>
+        <file id="3" name="puff_small/puff_small-13.png" width="520" height="424" pivot_x="0" pivot_y="1"/>
+        <file id="4" name="puff_small/puff_small-15.png" width="520" height="424" pivot_x="0" pivot_y="1"/>
+        <file id="5" name="puff_small/puff_small-17.png" width="511" height="388" pivot_x="0" pivot_y="1"/>
+        <file id="6" name="puff_small/puff_small-2.png" width="316" height="396" pivot_x="0" pivot_y="1"/>
+        <file id="7" name="puff_small/puff_small-3.png" width="359" height="416" pivot_x="0" pivot_y="1"/>
+        <file id="8" name="puff_small/puff_small-5.png" width="431" height="427" pivot_x="0" pivot_y="1"/>
+        <file id="9" name="puff_small/puff_small-7.png" width="455" height="405" pivot_x="0" pivot_y="1"/>
+        <file id="10" name="puff_small/puff_small-9.png" width="485" height="418" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_fx_splode">
+        <animation id="0" name="puff" length="333">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="puff_small-0" folder="1" file="0" abs_x="-0.509774" abs_y="0.49491" abs_pivot_x="0.550314" abs_pivot_y="0.248333" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="33">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+                <key id="2" time="67">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                </key>
+                <key id="3" time="100">
+                    <object_ref id="0" timeline="0" key="3" z_index="0"/>
+                </key>
+                <key id="4" time="133">
+                    <object_ref id="0" timeline="0" key="4" z_index="0"/>
+                </key>
+                <key id="5" time="167">
+                    <object_ref id="0" timeline="0" key="5" z_index="0"/>
+                </key>
+                <key id="6" time="200">
+                    <object_ref id="0" timeline="0" key="6" z_index="0"/>
+                </key>
+                <key id="7" time="233">
+                    <object_ref id="0" timeline="0" key="7" z_index="0"/>
+                </key>
+                <key id="8" time="267">
+                    <object_ref id="0" timeline="0" key="8" z_index="0"/>
+                </key>
+                <key id="9" time="300">
+                    <object_ref id="0" timeline="0" key="9" z_index="0"/>
+                </key>
+                <key id="10" time="333"/>
+            </mainline>
+            <timeline id="0" name="puff_small-0">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="-0.509774" y="0.49491" pivot_x="0.550314" pivot_y="0.248333"/>
+                </key>
+                <key id="1" time="33" spin="0">
+                    <object folder="1" file="1" x="-0.509774" y="40.49491" pivot_x="0.550314" pivot_y="0.248333"/>
+                </key>
+                <key id="2" time="67" spin="0">
+                    <object folder="1" file="6" x="-0.509774" y="66.088498" pivot_x="0.550314" pivot_y="0.248333"/>
+                </key>
+                <key id="3" time="100" spin="0">
+                    <object folder="1" file="7" x="-0.509774" y="102.768468" pivot_x="0.550314" pivot_y="0.248333"/>
+                </key>
+                <key id="4" time="133" spin="0">
+                    <object folder="1" file="8" x="-0.509774" y="121.018437" pivot_x="0.550314" pivot_y="0.248333"/>
+                </key>
+                <key id="5" time="167" spin="0">
+                    <object folder="1" file="9" x="-0.509774" y="119.292025" pivot_x="0.550314" pivot_y="0.248333"/>
+                </key>
+                <key id="6" time="200" spin="0">
+                    <object folder="1" file="10" x="-0.509774" y="122.585776" pivot_x="0.550314" pivot_y="0.248333"/>
+                </key>
+                <key id="7" time="233" spin="0">
+                    <object folder="1" file="2" x="-0.509774" y="132.549528" pivot_x="0.550314" pivot_y="0.248333"/>
+                </key>
+                <key id="8" time="267" spin="0">
+                    <object folder="1" file="4" x="-0.509774" y="135.695738" pivot_x="0.550314" pivot_y="0.248333"/>
+                </key>
+                <key id="9" time="300" spin="0">
+                    <object folder="1" file="5" x="-0.509774" y="131.608934" pivot_x="0.550314" pivot_y="0.248333"/>
+                </key>
+                <key id="10" time="333" spin="0">
+                    <object folder="1" file="5" x="-0.509774" y="131.608934" pivot_x="0.550314" pivot_y="0.248333"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

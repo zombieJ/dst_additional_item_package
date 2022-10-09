@@ -228,6 +228,22 @@ local list = {
 		range = false, -- 不安装光环组件
 		scale = 1.25,
 	},
+	{	-- 纠缠粒子光环 —— 蓝：并非真实的光环，播放一个循环转圈动画
+		name = "aip_aura_entangled_blue",
+		build = "aip_aura_entangled",
+		anim = "blue",
+		assets = { Asset("ANIM", "anim/aip_aura_entangled.zip") },
+		range = false, -- 不安装光环组件
+		scale = 1,
+	},
+	{	-- 纠缠粒子光环 —— 橙：并非真实的光环，播放一个循环转圈动画
+		name = "aip_aura_entangled_orange",
+		build = "aip_aura_entangled",
+		anim = "orange",
+		assets = { Asset("ANIM", "anim/aip_aura_entangled.zip") },
+		range = false, -- 不安装光环组件
+		scale = 1,
+	},
 }
 
 
