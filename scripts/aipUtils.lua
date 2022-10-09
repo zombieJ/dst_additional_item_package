@@ -376,27 +376,37 @@ function _G.aipSpawnPrefab(inst, prefab, tx, ty, tz)
 end
 
 -- 替换单位（如果是物品则替换对应物品栏），原生也有一个 ReplacePrefab
-function _G.aipReplacePrefab(inst, prefab, tx, ty, tz)
-	local tgt = _G.aipSpawnPrefab(inst, prefab, tx, ty, tz)
+function _G.aipReplacePrefab(inst, prefab, tx, ty, tz, count)
+	count = count or 1
 
-	if tgt == nil then
-		return nil
+	local items = {}
+	
+	-- 获取容器
+	local container = nil
+	local slot = nil
+	if inst.components.inventoryitem ~= nil then
+		container = inst.components.inventoryitem:GetContainer()
+		slot = inst.components.inventoryitem:GetSlotNum()
 	end
 
-	if inst.components.inventoryitem ~= nil then
-		local container = inst.components.inventoryitem:GetContainer()
-		local slot = inst.components.inventoryitem:GetSlotNum()
+	for i = 1, count do
+		local tgt = _G.aipSpawnPrefab(inst, prefab, tx, ty, tz)
 
-		inst:Remove()
+		if tgt == nil then
+			return nil
+		end
 
+		_G.aipRemove(inst)
+
+		-- 如果有容器，就给它
 		if container ~= nil then
 			container:GiveItem(tgt, slot)
 		end
-	else
-		inst:Remove()
+
+		table.insert(items, tgt)
 	end
 
-	return tgt
+	return #items <= 1 and items[1] or items
 end
 
 -- 获取一个可访达的路径，默认 40。TODO：优化一下避免在建筑附近生成

@@ -48,6 +48,14 @@ local function onFishShoalAdded(inst)
 	end
 end
 
+-- 世界打雷
+local function OnSendLightningStrike(inst, pos)
+	local pt = aipGetSpawnPoint(pos, 10)
+	if pt ~= nil then
+		aipSpawnPrefab(inst, "aip_particles", pt.x, pt.y, pt.z)
+	end
+end
+
 local CommonStore = Class(function(self, inst)
 	self.inst = inst
 	self.shadow_follower_count = 0
@@ -71,6 +79,9 @@ local CommonStore = Class(function(self, inst)
 	-- 是否赐予过 《额外物品包》这本书
 	self.storyBook = false
 
+	-- 粒子加载管理器
+	self.particles = {}
+
 	-- 后置世界计算
 	self:PostWorld()
 
@@ -83,6 +94,8 @@ local CommonStore = Class(function(self, inst)
 			self.smileLeftDays = math.min(self.smileLeftDays - 1)
 		end
 	end)
+
+	inst:ListenForEvent("ms_sendlightningstrike", OnSendLightningStrike, TheWorld)
 end)
 
 function CommonStore:OnSave()
