@@ -253,8 +253,17 @@ rec("aip_oldone_thestral_watcher_item", TECH.MAGIC_TWO, { CRAFTING_FILTERS.MAGIC
 	})
 
 ------------------------------------ 量子扰动 ------------------------------------
+-- 粒子限制器
 rec("aip_particles_bottle", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.TOOLS },
 	{ Ingredient("messagebottleempty", 1), Ingredient("transistor", 1), })
+
+-- 纠缠粒子
+rec("aip_particles_vest_entangled", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.TOOLS },
+	{
+		Ingredient("aip_particles_bottle_charged", 1, "images/inventoryimages/aip_particles_bottle_charged.xml"),
+		Ingredient("heatrock", 2),
+	},
+	{ atlas = "images/inventoryimages/aip_particles_entangled_blue.xml", image = "aip_particles_entangled_blue.tex" })
 
 -------------------------------------- 联动 --------------------------------------
 local modNames = _G.ModManager:GetEnabledServerModNames()

@@ -23,8 +23,88 @@ local assets = {
 }
 
 ------------------------------------ 方法 ------------------------------------
+local SEARCH_RANGE = 15
+
+local function markItem(inst, data)
+    inst._aipDropItem = data.item
+end
+
 local function onHit(inst, attacker)
-    
+    local x, y, z = inst.Transform:GetWorldPosition()
+
+    local ents = TheSim:FindEntities(
+                    x, y, z, SEARCH_RANGE,
+                    nil, { "INLIMBO", "NOCLICK", "ghost" }
+                )
+
+    -- 找到最近的需要充能的单位
+    local target = nil -- 需要充能的目标
+    local fuelItem = nil
+    local dist = nil
+
+    for _, ent in ipairs(ents) do
+        if
+            ent.components.fueled ~= nil and
+            ent.components.fueled:GetCurrentSection() < ent.components.fueled.sections
+        then
+             -- 需要充能
+             local allItems = inst.components.container:GetAllItems()
+
+             for _, item in ipairs(allItems) do -- 找可以充能的物品
+                if ent.components.fueled:CanAcceptFuelItem(item) then
+                    local targetDist = inst:GetDistanceSqToInst(ent)
+                    if target == nil or targetDist < dist then
+                        target = ent
+                        fuelItem = item
+                        dist = targetDist
+
+                        break
+                    end
+                end
+             end
+        end
+    end
+
+    -- 充能吧
+    if target ~= nil then
+        inst._aipDropItem = nil
+        inst.components.container:DropItem(fuelItem)
+        local pickOne = inst._aipDropItem
+
+        -- 投掷物理准备
+        if pickOne.components.complexprojectile == nil then
+            pickOne:AddComponent("complexprojectile")
+        end
+
+        if pickOne.Physics == nil then
+            pickOne.entity:AddPhysics()
+            MakeInventoryPhysics(pickOne)
+        end
+
+        -- 干掉物理
+        pickOne.Physics:SetMass(1)
+        pickOne.Physics:SetCapsule(0.2, 0.2)
+        pickOne.Physics:SetFriction(0)
+        pickOne.Physics:SetDamping(0)
+        pickOne.Physics:SetCollisionGroup(COLLISION.CHARACTERS)
+        pickOne.Physics:ClearCollisionMask()
+        pickOne.Physics:CollidesWith(COLLISION.GROUND)
+        pickOne.Physics:CollidesWith(COLLISION.OBSTACLES)
+        pickOne.Physics:CollidesWith(COLLISION.ITEMS)
+
+        -- 设置投掷参数
+        pickOne.components.complexprojectile:SetHorizontalSpeed(15)
+        pickOne.components.complexprojectile:SetGravity(-35)
+        pickOne.components.complexprojectile:SetLaunchOffset(Vector3(0, 2, 0))
+        pickOne.components.complexprojectile:SetOnHit(function()
+            target.components.fueled:TakeFuelItem(pickOne)
+        end)
+
+        -- 扔吧
+        pickOne.components.complexprojectile:Launch(target:GetPosition(), inst)
+        inst.AnimState:PlayAnimation("throw")
+        inst.AnimState:PushAnimation("idle", true)
+    end
 end
 
 ------------------------------------ 实例 ------------------------------------
@@ -37,7 +117,7 @@ local function fn()
 
     inst.AnimState:SetBank("aip_tricky_thrower")
     inst.AnimState:SetBuild("aip_tricky_thrower")
-    inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:PlayAnimation("idle", true)
 
     inst.entity:SetPristine()
 
@@ -49,10 +129,6 @@ local function fn()
 
     inst:AddComponent("container")
     inst.components.container:WidgetSetup("aip_tricky_thrower")
-    -- inst.components.container.onopenfn = onopen
-    -- inst.components.container.onclosefn = onclose
-    -- inst.components.container.skipclosesnd = true
-    -- inst.components.container.skipopensnd = true
 
     inst:AddComponent("combat")
     inst.components.combat.onhitfn = onHit
@@ -61,6 +137,8 @@ local function fn()
     inst.components.health:SetMaxHealth(100)
     inst.components.health.nofadeout = true
     inst.components.health:StartRegen(1, 10)
+
+    inst:ListenForEvent("dropitem", markItem)
 
     MakeHauntableLaunch(inst)
 

@@ -111,7 +111,7 @@ local function fullFn()
     inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_particles_bottle_charged.xml"
 
     inst:AddComponent("perishable")
-    inst.components.perishable:SetPerishTime(dev_mode and 10 or TUNING.PERISH_FAST)
+    inst.components.perishable:SetPerishTime(dev_mode and 20 or TUNING.PERISH_FAST)
     inst.components.perishable:StartPerishing()
     inst.components.perishable.onperishreplacement = "aip_particles_bottle"
 

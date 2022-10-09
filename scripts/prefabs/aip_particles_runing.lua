@@ -91,12 +91,16 @@ local function connectParticles(inst)
 
             table.remove(store.particles, inst._aipId)
         end
+
+        inst:SpawnChild(inst._aipEntangled and "aip_aura_entangled_blue" or "aip_aura_entangled_orange")
     end
 end
 
 -- 攻击触发另一个
 local function onHit(inst, attacker)
+    -- 目标没了，炸毁吧
     if inst._aipTarget == nil or not inst._aipTarget:IsValid() then
+        aipSpawnPrefab(inst, "aip_shadow_wrapper").DoShow()
         aipRemove(inst)
         return
     end
@@ -187,6 +191,7 @@ local function entangledFn()
     inst.components.health:SetMaxHealth(1)
     inst.components.health.nofadeout = true
     inst.components.health.canheal = false
+    inst.components.health.canmurder = false
 
     inst:AddComponent("timer")
 
