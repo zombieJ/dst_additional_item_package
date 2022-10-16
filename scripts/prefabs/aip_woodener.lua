@@ -170,7 +170,7 @@ local function CreatTree(inst)
 	if inst.components.container ~= nil then
 		-- 取一颗种子
 		local pinecone = inst.components.container:FindItem(function(v)
-			return v.prefab == "pinecone"
+			return v.components.deployable ~= nil
 		end)
 
 		-- 种子可以种就开始种植
@@ -183,10 +183,17 @@ local function CreatTree(inst)
 
 					-- 一次种一颗
 					if deployable then
-						local sapling = aipSpawnPrefab(inst, "pinecone_sapling", pt.x, pt.y, pt.z)
-						sapling:StartGrowing()
+						-- 不知道为什么松果、多枝树果种不出来，我们自己种
+						if pinecone._spawn_prefab ~= nil then
+							local sapling = aipSpawnPrefab(inst, pinecone._spawn_prefab, pt.x, pt.y, pt.z)
+							sapling:StartGrowing()
 
-						aipRemove(pinecone)
+							aipRemove(pinecone)
+						else
+							aipPrint("Deploy!", pinecone.prefab, pinecone._spawn_prefab)
+							local ret= pinecone.components.deployable:Deploy(pt, inst)
+							aipPrint("Result:", ret)
+						end
 
 						return
 					end

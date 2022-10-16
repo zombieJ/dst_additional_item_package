@@ -140,7 +140,10 @@ function params.aip_woodener.itemtestfn(container, item, slot)
 		item.prefab ~= "log" and
 		item.prefab ~= "livinglog" and
 		item.prefab ~= "driftwood_log" and
-		item.prefab ~= "pinecone"
+		item.prefab ~= "pinecone" and
+		item.prefab ~= "moonbutterfly" and
+		item.prefab ~= "acorn" and
+		item.prefab ~= "twiggy_nut"
 	then
 		return false, "AIP_WOODENER_LOG_ONLY"
 	end
