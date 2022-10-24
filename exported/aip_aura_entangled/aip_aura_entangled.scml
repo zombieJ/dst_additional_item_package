@@ -3,6 +3,7 @@
     <folder id="0" name="body">
         <file id="0" name="body/blue.png" width="200" height="200" pivot_x="0" pivot_y="1"/>
         <file id="1" name="body/orange.png" width="200" height="200" pivot_x="0" pivot_y="1"/>
+        <file id="2" name="body/double.png" width="200" height="200" pivot_x="0" pivot_y="1"/>
     </folder>
     <entity id="0" name="aip_aura_entangled">
         <animation id="0" name="blue" length="800">
@@ -19,7 +20,7 @@
                     <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0"/>
                 </key>
                 <key id="1" time="800">
-                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="270" scale_x="1" scale_y="1"/>
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="270"/>
                 </key>
             </timeline>
         </animation>
@@ -37,7 +38,35 @@
                     <object folder="0" file="1" pivot_x="0.5" pivot_y="0.5" angle="0"/>
                 </key>
                 <key id="1" time="800">
-                    <object folder="0" file="1" pivot_x="0.5" pivot_y="0.5" angle="270" scale_x="1" scale_y="1"/>
+                    <object folder="0" file="1" pivot_x="0.5" pivot_y="0.5" angle="270"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="echo" length="500">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="blue" folder="0" file="2" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="double" folder="0" file="2" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.7" abs_scale_y="0.7" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="500">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="blue">
+                <key id="0">
+                    <object folder="0" file="2" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+                <key id="1" time="500" spin="-1">
+                    <object folder="0" file="2" x="0" y="-0" pivot_x="0.5" pivot_y="0.5" angle="45"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="double">
+                <key id="0" spin="-1">
+                    <object folder="0" file="2" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.7" scale_y="0.7"/>
+                </key>
+                <key id="1" time="500">
+                    <object folder="0" file="2" x="-0" y="-0" pivot_x="0.5" pivot_y="0.5" angle="315" scale_x="0.7" scale_y="0.7"/>
                 </key>
             </timeline>
         </animation>
