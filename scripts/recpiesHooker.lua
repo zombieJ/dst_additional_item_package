@@ -273,6 +273,13 @@ rec("aip_particles_echo", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.TOOLS },
 	Ingredient("heatrock", 1), Ingredient("thulecite", 1),
 })
 
+-- 告密粒子
+rec("aip_particles_heart", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.TOOLS },
+{
+	Ingredient("aip_particles_bottle_charged", 1, "images/inventoryimages/aip_particles_bottle_charged.xml"),
+	Ingredient("heatrock", 1), Ingredient("reviver", 1),
+})
+
 
 -- 怠惰的南瓜
 rec("aip_tricky_thrower", TECH.MAGIC_TWO, { CRAFTING_FILTERS.STRUCTURES, CRAFTING_FILTERS.MAGIC },
