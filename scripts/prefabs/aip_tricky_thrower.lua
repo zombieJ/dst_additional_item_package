@@ -46,7 +46,7 @@ local function onHit(inst, attacker)
     for _, ent in ipairs(ents) do
         if
             ent.components.fueled ~= nil and
-            ent.components.fueled:GetCurrentSection() < ent.components.fueled.sections
+            ent.components.fueled:GetPercent() < 0.8    -- 低于80%才充能
         then
              -- 需要充能
              local allItems = inst.components.container:GetAllItems()

@@ -7,12 +7,16 @@ local LANG_MAP = {
 		DESC = "Attack will trigger another one",
         ECHO_NAME = "Echo Particles",
 		ECHO_DESC = "Triggers again after a period of time",
+        HEART_NAME = "Telltale Particles",
+		HEART_DESC = "Trigger when player is nearby",
 	},
 	chinese = {
 		NAME = "纠缠粒子",
 		DESC = "攻击会触发另一个",
         ECHO_NAME = "回响粒子",
 		ECHO_DESC = "间隔一段时间会再次触发",
+        HEART_NAME = "告密粒子",
+		HEART_DESC = "附近玩家靠近时触发",
 	},
 }
 
@@ -22,6 +26,8 @@ STRINGS.NAMES.AIP_PARTICLES_ENTANGLED = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PARTICLES_ENTANGLED = LANG.DESC
 STRINGS.NAMES.AIP_PARTICLES_ECHO = LANG.ECHO_NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PARTICLES_ECHO = LANG.ECHO_DESC
+STRINGS.NAMES.AIP_PARTICLES_HEART = LANG.HEART_NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PARTICLES_HEART = LANG.HEART_DESC
 
 -- 资源
 local assets = {
@@ -29,6 +35,7 @@ local assets = {
     Asset("ATLAS", "images/inventoryimages/aip_particles_entangled_blue.xml"),
     Asset("ATLAS", "images/inventoryimages/aip_particles_entangled_orange.xml"),
     Asset("ATLAS", "images/inventoryimages/aip_particles_echo.xml"),
+    Asset("ATLAS", "images/inventoryimages/aip_particles_heart.xml"),
 }
 
 -- =========================================================================
@@ -208,6 +215,25 @@ local function onEchoHit(inst, attacker)
 end
 
 -- =========================================================================
+-- ==                               告密粒子                               ==
+-- =========================================================================
+local function onNear(inst, player)
+    -- 只有在地上才会触发
+    if  inst.components.inventoryitem ~= nil and
+        inst.components.inventoryitem:GetGrandOwner() == nil then
+        triggerNearby(inst)
+        aipSpawnPrefab(inst, "aip_shadow_wrapper").DoShow()
+    end
+end
+
+local function wrapNearBy(inst)
+    inst:AddComponent("playerprox")
+	inst.components.playerprox:SetDist(4, 8)
+	inst.components.playerprox:SetOnPlayerNear(onNear)
+	-- inst.components.playerprox:SetOnPlayerFar(onFar)
+end
+
+-- =========================================================================
 -- ==                               共享实例                               ==
 -- =========================================================================
 local function commonFn(anim, onHitFn, postFn)
@@ -237,7 +263,7 @@ local function commonFn(anim, onHitFn, postFn)
 	inst:AddComponent("inventoryitem")
 
     inst:AddComponent("combat")
-    inst.components.combat.onhitfn = onHitFn
+    inst.components.combat.onhitfn = onHitFn or onCommonHit
 
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(1)
@@ -277,6 +303,18 @@ local function echoFn()
     end)
 end
 
+--------------------------------- 告密粒子 ---------------------------------
+local function heartFn()
+    return commonFn("heart", nil, function(inst)
+        setImg(inst, "aip_particles_heart")
+        wrapNearBy(inst)
+
+        -- inst:SpawnChild("aip_aura_entangled_echo")
+    end)
+end
+
+
 return  Prefab("aip_particles_vest_entangled", vestFn, assets),
         Prefab("aip_particles_entangled", entangledFn, assets),
-        Prefab("aip_particles_echo", echoFn, assets)
+        Prefab("aip_particles_echo", echoFn, assets),
+        Prefab("aip_particles_heart", heartFn, assets)
