@@ -362,33 +362,26 @@ AddPrefabPostInit("pigman", function(inst)
 end)
 
 ------------------------------------------ 蘑菇 ------------------------------------------
-local function onMushroomAnimOver(inst)
-	if
-		inst._aipSpawned ~= true and (
-			inst.AnimState:IsCurrentAnimation("red") or
-			inst.AnimState:IsCurrentAnimation("green") or
-			inst.AnimState:IsCurrentAnimation("blue")
-		)
-	then
-		inst._aipSpawned = true
-		_G.aipSpawnPrefab(inst, "aip_fx_splode").DoShow(null, 0.2)
-
-		-- 触发附近粒子联动
-		inst:DoTaskInTime(0.2, function()
-			local x, y, z = inst.Transform:GetWorldPosition()
-			local particles = TheSim:FindEntities(x, y, z, 1, { "aip_particles" })
-
-			for _, particle in ipairs(particles) do
-				particle.components.combat:GetAttacked(inst, 1)
-			end
-		end)
-	else
-		inst._aipSpawned = false
-	end
-end
-
 local function postMushroom(inst)
-	inst:ListenForEvent("animover", onMushroomAnimOver)
+	-- inst:ListenForEvent("animover", onMushroomAnimOver)
+	if inst.opentaskfn ~= nil then
+		local originOpenTaskFn = inst.opentaskfn
+		inst.opentaskfn = function(...)
+			_G.aipSpawnPrefab(inst, "aip_fx_splode").DoShow(null, 0.2)
+
+			-- 触发附近粒子联动
+			inst:DoTaskInTime(0.2, function()
+				local x, y, z = inst.Transform:GetWorldPosition()
+				local particles = TheSim:FindEntities(x, y, z, 1, { "aip_particles" })
+
+				for _, particle in ipairs(particles) do
+					particle.components.combat:GetAttacked(inst, 1)
+				end
+			end)
+
+			return originOpenTaskFn(...)
+		end
+	end
 end
 
 AddPrefabPostInit("red_mushroom", postMushroom)
