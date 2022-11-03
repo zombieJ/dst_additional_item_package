@@ -388,6 +388,31 @@ AddPrefabPostInit("red_mushroom", postMushroom)
 AddPrefabPostInit("green_mushroom", postMushroom)
 AddPrefabPostInit("blue_mushroom", postMushroom)
 
+
+------------------------------------------ 海带 ------------------------------------------
+local function bullkelpCanBeActOn(inst, doer)
+	return doer ~= nil and doer:HasTag("aip_xiaoyu_picker")
+end
+
+local function bullkelpOnDoAction(inst, doer)
+	if doer ~= nil and doer.components.inventory ~= nil then
+		local root = _G.aipReplacePrefab(inst, "bullkelp_root")
+		doer.components.inventory:GiveItem(root)
+	end
+end
+
+AddPrefabPostInit("bullkelp_plant", function(inst)
+	inst:AddComponent("aipc_action_client")
+	inst.components.aipc_action_client.canBeActOn = bullkelpCanBeActOn
+
+	if not _G.TheWorld.ismastersim then
+		return inst
+	end
+
+	inst:AddComponent("aipc_action")
+	inst.components.aipc_action.onDoAction = bullkelpOnDoAction
+end)
+
 ------------------------------------------ 食物 ------------------------------------------
 AddPrefabPostInit("grass", function(inst)
 	if not _G.TheWorld.ismastersim then

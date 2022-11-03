@@ -164,6 +164,7 @@ PrefabFiles = {
 	-- Dress
 	"aip_dress",
 	"aip_armor_gambler",
+	"aip_xiaoyu_hat",
 
 	-- Chesspiece
 	"aip_chesspiece",
