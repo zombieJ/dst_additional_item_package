@@ -9,13 +9,13 @@ local language = aipGetModConfig("language")
 
 local LANG_MAP = {
 	english = {
-		NAME = "Minecart",
+		NAME = "[Deprecated] Minecart",
 		REC_DESC = "Can drive on orbit with usage limit",
 		DESC = "Where will we go?",
 		leaveTips = "press 'X' to leave minecart",
 	},
 	chinese = {
-		NAME = "矿车",
+		NAME = "【废弃】矿车",
 		REC_DESC = "有限次数的轨道矿车",
 		DESC = "登船靠岸停稳！~",
 		leaveTips = "按'X'键离开矿车",

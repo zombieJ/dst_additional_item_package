@@ -16,7 +16,7 @@ local language = aipGetModConfig("language")
 
 local LANG_MAP = {
 	english = {
-		NAME = "Shadow Package",
+		NAME = "[Deprecated] Shadow Package",
 		DESC = "Package your building",
 		DESCRIBE = "It's wrapped with something!",
 
@@ -24,7 +24,7 @@ local LANG_MAP = {
 		PAPER_DESCRIBE = "Put it on a building",
 	},
 	chinese = {
-		NAME = "暗影打包带",
+		NAME = "【废弃】暗影打包带",
 		DESC = "用于打包你的建筑",
 		DESCRIBE = "它蕴含着某种东西",
 
