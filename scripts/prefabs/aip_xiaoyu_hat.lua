@@ -13,12 +13,12 @@ local PERISH_MAP = {
 
 local LANG_MAP = {
 	english = {
-		NAME = "Fisher Hat",
+		NAME = "Shark Hat",
 		DESC = "Advance ocean, more bullkelp!",
 	},
 	chinese = {
-		NAME = "小渔",
-		DESC = "无畏大海，更多海带！",
+		NAME = "鲨渔帽",
+		DESC = "小渔小渔，畅游大海，更多海带！",
 	},
 }
 
