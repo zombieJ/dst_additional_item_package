@@ -286,6 +286,11 @@ rec("aip_tricky_thrower", TECH.MAGIC_TWO, { CRAFTING_FILTERS.STRUCTURES, CRAFTIN
 	{ Ingredient("pumpkin_lantern", 1), Ingredient("aip_oldone_deer_eye_fruit", 1, "images/inventoryimages/aip_oldone_deer_eye_fruit.xml"), },
 	"aip_tricky_thrower_placer")
 
+-- 展示柜
+rec("aip_showcase", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.RESTORATION, CRAFTING_FILTERS.STRUCTURES, CRAFTING_FILTERS.CONTAINERS },
+{Ingredient("cutstone", 2), Ingredient("ash", 1)},
+"aip_showcase_placer")
+
 -------------------------------------- 联动 --------------------------------------
 local modNames = _G.ModManager:GetEnabledServerModNames()
 

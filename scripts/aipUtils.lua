@@ -186,6 +186,12 @@ end
 
 _G.aipGetModConfig = GetModConfigData
 
+function _G.aipGetAnimation(inst)
+	if inst ~= nil and inst.AnimState ~= nil and inst.entity.GetDebugString ~= nil then
+		return string.match(inst.entity:GetDebugString(), "anim: ([^ ]+) ")
+	end
+end
+
 function _G.aipGetAnimState(inst)
 	local match = false
 	local data = {}
