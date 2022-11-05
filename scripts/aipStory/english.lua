@@ -296,6 +296,13 @@ return {
                 name="aip_oldone_fisher",
             },
             "The 'Fisher Hat' dropped by the squid seems to be more likely to fall when the 'bulb' toxin is in it. I found that when wearing it, the fishing line for sea fishing did not break at all.",
+        
+            -- 鲨渔帽
+            {
+                type="img",
+                name="aip_xiaoyu_hat",
+            },
+            "I got this from Shark. It will help reduce damage on the ocean and take bullkelp directly.",
         },
     },
 
@@ -334,6 +341,16 @@ return {
                 height=120,
             },
             "A 'snowman hut' made of some ice is very durable at low temperatures and can even last forever.",
+
+            -- 展示柜
+            {
+                type="anim",
+                build="aip_showcase",
+                anim="stone",
+                scale=.3,
+                height=90,
+            },
+            "Put something to show on the showcase, but it do not prevent perish.",
         },
     },
 
@@ -1016,6 +1033,20 @@ return {
             "After some exploration, I found that the stored particles can be split to form two entangled particles. When one of them is hit, the other is also affected.",
 
             "What's more interesting is that the perturbation doesn't seem to require much energy to trigger. For example, the smoke produced by the mushroom when it germinates will also be disturbed, and even another pair of particles may be excited! Could this perturbation also work for 'lazy pumpkins'?",
+
+            -- 回响粒子
+            {
+                type="img",
+                name="aip_particles_echo",
+            },
+            "Echo Particles will repeat trigger after a while.",
+
+            -- 告密粒子
+            {
+                type="img",
+                name="aip_particles_heart",
+            },
+            "Telltale Particles will trigger when player is nearby. Funny~",
         },
     },
 }
