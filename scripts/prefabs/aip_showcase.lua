@@ -34,6 +34,54 @@ local assets = {
 }
 
 --------------------------------- 方法 ---------------------------------
+local function safeShowItem(inst, item)
+    if inst._aipItemVest == nil then
+        inst._aipItemVest = SpawnPrefab("aip_vest")
+        inst._aipItemVest.entity:SetParent(inst.entity)
+        inst._aipItemVest.entity:AddFollower()
+        inst._aipItemVest.Follower:FollowSymbol(inst.GUID, "swap_item", 0, 0, 0)
+    end
+
+    -- 设置动画效果
+    local vest = inst._aipItemVest
+    local bank = item.AnimState:GetCurrentBankName()
+    local build = item.AnimState:GetBuild()
+    local anim = aipGetAnimation(item)
+
+
+
+    if bank ~= nil and build ~= nil and anim ~= nil then
+        vest.AnimState:SetBank(bank)
+        vest.AnimState:SetBuild(build)
+        vest.AnimState:PlayAnimation(anim, false)
+        return true
+    else
+        inst.components.container:DropItem(item)
+        inst.components.talker:Say(STRINGS.AIP_SHOWCASE_DENEY)
+    end
+end
+
+local function dangerShowItem(inst, item)
+    item:ReturnToScene()
+
+    local pt = inst:GetPosition()
+    item.Transform:SetPosition(pt.x,pt.y + 1,pt.z)
+
+
+    -- item.entity:SetParent(inst.entity)
+    if item.Follower == nil then
+        item.entity:AddFollower()
+    end
+    item.Follower:FollowSymbol(inst.GUID, "swap_item", 0, -1, 0)
+
+
+    -- 让它不能点
+    item:AddTag("INLIMBO")
+    item:AddTag("NOCLICK")
+
+    return true
+end
+
 -- 刷新物品
 local function refreshShow(inst)
     local numslots = inst.components.container:GetNumSlots()
@@ -42,52 +90,27 @@ local function refreshShow(inst)
 
         -- 复制物品贴图
         if item ~= nil and item.components.inventoryitem ~= nil then
-            if inst._aipItemVest == nil then
-                local record = item:GetSaveRecord()
-                local newItem = SpawnSaveRecord(record)
-                newItem.persists = false
-
-                -- for k, v in pairs(newItem.components) do
-                --     newItem:RemoveComponent(k)
-                -- end
-
-                newItem.entity:SetParent(inst.entity)
-                newItem.entity:AddFollower()
-                newItem.Follower:FollowSymbol(inst.GUID, "swap_item", 0, 0, 0)
-
-                inst._aipItemVest = newItem
-
-
-                -- inst._aipItemVest = SpawnPrefab("aip_vest")
-                -- inst._aipItemVest.entity:SetParent(inst.entity)
-                -- inst._aipItemVest.entity:AddFollower()
-                -- inst._aipItemVest.Follower:FollowSymbol(inst.GUID, "swap_item", 0, 0, 0)
-            end
-
-            -- -- 设置动画效果
-            -- local vest = inst._aipItemVest
-            -- local bank = item.AnimState:GetCurrentBankName()
-            -- local build = item.AnimState:GetBuild()
-            -- local anim = aipGetAnimation(item)
-
-
-
-            -- if bank ~= nil and build ~= nil and anim ~= nil then
-            --     vest.AnimState:SetBank(bank)
-            --     vest.AnimState:SetBuild(build)
-            --     vest.AnimState:PlayAnimation(anim, true)
-            -- else
-            --     inst.components.container:DropItem(item)
-            --     inst.components.talker:Say(STRINGS.AIP_SHOWCASE_DENEY)
+            -- if safeShowItem(inst, item) then
+            --     return
             -- end
 
-            return
+            if dangerShowItem(inst, item) then
+                inst._aipTargetItem = item
+                return
+            end
         end
     end
 
-    if inst._aipItemVest ~= nil then
-        aipRemove(inst._aipItemVest)
-        inst._aipItemVest = nil
+    -- if inst._aipItemVest ~= nil then
+    --     aipRemove(inst._aipItemVest)
+    --     inst._aipItemVest = nil
+    -- end
+
+    if inst._aipTargetItem ~= nil then
+        inst._aipTargetItem.Follower:StopFollowing()
+        inst._aipTargetItem:RemoveTag("INLIMBO")
+        inst._aipTargetItem:RemoveTag("NOCLICK")
+        inst._aipTargetItem = nil
     end
 end
 
