@@ -31,6 +31,7 @@ local LANG_MAP = {
 		CAST = "Cast",
 		READ = "Read",
 		EAT = "Eat",
+		PICK = "Pick",
 	},
 	chinese = {
 		GIVE = "给予",
@@ -39,6 +40,7 @@ local LANG_MAP = {
 		CAST = "释放",
 		READ = "阅读",
 		EAT = "吃",
+		PICK = "捡起",
 	},
 }
 local LANG = LANG_MAP[language] or LANG_MAP.english

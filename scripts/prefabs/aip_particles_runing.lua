@@ -5,10 +5,18 @@ local LANG_MAP = {
 	english = {
 		NAME = "Entangled Particles",
 		DESC = "Attack will trigger another one",
+        ECHO_NAME = "Echo Particles",
+		ECHO_DESC = "Triggers again after a period of time",
+        HEART_NAME = "Telltale Particles",
+		HEART_DESC = "Trigger when player is nearby",
 	},
 	chinese = {
 		NAME = "纠缠粒子",
 		DESC = "攻击会触发另一个",
+        ECHO_NAME = "回响粒子",
+		ECHO_DESC = "间隔一段时间会再次触发",
+        HEART_NAME = "告密粒子",
+		HEART_DESC = "附近玩家靠近时触发",
 	},
 }
 
@@ -16,22 +24,56 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 STRINGS.NAMES.AIP_PARTICLES_ENTANGLED = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PARTICLES_ENTANGLED = LANG.DESC
+STRINGS.NAMES.AIP_PARTICLES_ECHO = LANG.ECHO_NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PARTICLES_ECHO = LANG.ECHO_DESC
+STRINGS.NAMES.AIP_PARTICLES_HEART = LANG.HEART_NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PARTICLES_HEART = LANG.HEART_DESC
 
 -- 资源
 local assets = {
     Asset("ANIM", "anim/aip_particles_runing.zip"),
     Asset("ATLAS", "images/inventoryimages/aip_particles_entangled_blue.xml"),
     Asset("ATLAS", "images/inventoryimages/aip_particles_entangled_orange.xml"),
+    Asset("ATLAS", "images/inventoryimages/aip_particles_echo.xml"),
+    Asset("ATLAS", "images/inventoryimages/aip_particles_heart.xml"),
 }
 
+-- =========================================================================
+-- ==                               共享方法                               ==
+-- =========================================================================
+local function setImg(inst, name)
+    inst.components.inventoryitem.atlasname = "images/inventoryimages/"..name..".xml"
+    inst.components.inventoryitem:ChangeImageName(name)
+end
+
+local function onCommonHit(inst)
+    -- 不会死
+    if inst.components.health ~= nil then
+        inst.components.health:SetCurrentHealth(1)
+    end
+end
+
+local function triggerNearby(inst)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local particles = TheSim:FindEntities(x, y, z, 1.5, { "aip_particles" })
+    particles = aipFilterTable(particles, function(v)
+        return v ~= inst and v ~= inst._aipTarget
+    end)
+
+    for _, particle in ipairs(particles) do
+        particle.components.combat:GetAttacked(inst, 1)
+    end
+end
+
+-- =========================================================================
+-- ==                               纠缠粒子                               ==
+-- =========================================================================
 ----------------------------------- 马甲 -----------------------------------
 local function syncSkin(inst)
     if inst._aipEntangled then
-        inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_particles_entangled_blue.xml"
-		inst.components.inventoryitem:ChangeImageName("aip_particles_entangled_blue")
+        setImg(inst, "aip_particles_entangled_blue")
     else
-        inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_particles_entangled_orange.xml"
-        inst.components.inventoryitem:ChangeImageName("aip_particles_entangled_orange")
+        setImg(inst, "aip_particles_entangled_orange")
     end
 end
 
@@ -96,18 +138,17 @@ local function connectParticles(inst)
     end
 end
 
+
+
 -- 攻击触发另一个
-local function onHit(inst, attacker)
+local function onEntangledHit(inst, attacker)
+    onCommonHit(inst)
+
     -- 目标没了，炸毁吧
     if inst._aipTarget == nil or not inst._aipTarget:IsValid() then
         aipSpawnPrefab(inst, "aip_shadow_wrapper").DoShow()
         aipRemove(inst)
         return
-    end
-
-    -- 不会死
-    if inst.components.health ~= nil then
-        inst.components.health:SetCurrentHealth(1)
     end
 
     -- 目标有个内置 CD 如果满足则触发
@@ -122,15 +163,7 @@ local function onHit(inst, attacker)
             end
         else                                    -- 如果是被联通的，则触发附近的元素
             inst:DoTaskInTime(0.1, function()   -- 联通是有延迟的
-                local x, y, z = inst.Transform:GetWorldPosition()
-                local particles = TheSim:FindEntities(x, y, z, 1.5, { "aip_particles" })
-                particles = aipFilterTable(particles, function(v)
-                    return v ~= inst and v ~= inst._aipTarget
-                end)
-
-                for _, particle in ipairs(particles) do
-                    particle.components.combat:GetAttacked(inst, 1)
-                end
+                triggerNearby(inst)
             end)
         end
     end
@@ -138,7 +171,7 @@ end
 
 
 ----------------------------------- 存取 -----------------------------------
-local function onSave(inst, data)
+local function onEntangledSave(inst, data)
     local r, g, b = inst.AnimState:GetMultColour()
 
     data.entangled = inst._aipEntangled
@@ -146,7 +179,7 @@ local function onSave(inst, data)
     data.id = inst._aipId
 end
 
-local function onLoad(inst, data)
+local function onEntangledLoad(inst, data)
     if data ~= nil then
         inst._aipEntangled = data.entangled
         inst.AnimState:SetMultColour(data.color[1], data.color[2], data.color[3], 1)
@@ -156,8 +189,54 @@ local function onLoad(inst, data)
     end
 end
 
------------------------------------ 实例 -----------------------------------
-local function entangledFn()
+
+-- =========================================================================
+-- ==                               回响粒子                               ==
+-- =========================================================================
+
+-- 攻击触发另一个
+local function onEchoHit(inst, attacker)
+    onCommonHit(inst)
+
+    -- 目标有个内置 CD 如果满足则触发
+    if inst.components.timer ~= nil and not inst.components.timer:TimerExists("aip_runing") then
+        inst.components.timer:StartTimer("aip_runing", 2)
+        aipSpawnPrefab(inst, "aip_shadow_wrapper").DoShow()
+
+        --触发的人不会触发
+        inst._aipTarget = attacker
+
+        -- 延迟 1s 触发
+        inst:DoTaskInTime(1, function()
+            triggerNearby(inst)
+            aipSpawnPrefab(inst, "aip_shadow_wrapper").DoShow()
+        end)
+    end
+end
+
+-- =========================================================================
+-- ==                               告密粒子                               ==
+-- =========================================================================
+local function onNear(inst, player)
+    -- 只有在地上才会触发
+    if  inst.components.inventoryitem ~= nil and
+        inst.components.inventoryitem:GetGrandOwner() == nil then
+        triggerNearby(inst)
+        aipSpawnPrefab(inst, "aip_shadow_wrapper").DoShow()
+    end
+end
+
+local function wrapNearBy(inst)
+    inst:AddComponent("playerprox")
+	inst.components.playerprox:SetDist(4, 8)
+	inst.components.playerprox:SetOnPlayerNear(onNear)
+	-- inst.components.playerprox:SetOnPlayerFar(onFar)
+end
+
+-- =========================================================================
+-- ==                               共享实例                               ==
+-- =========================================================================
+local function commonFn(anim, onHitFn, postFn)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -169,7 +248,7 @@ local function entangledFn()
 
     inst.AnimState:SetBank("aip_particles_runing")
     inst.AnimState:SetBuild("aip_particles_runing")
-    inst.AnimState:PlayAnimation("idle", true)
+    inst.AnimState:PlayAnimation(anim, true)
 
     inst:AddTag("aip_particles")
 
@@ -182,10 +261,9 @@ local function entangledFn()
     inst:AddComponent("inspectable")
 
 	inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_particles_entangled_blue.xml"
 
     inst:AddComponent("combat")
-    inst.components.combat.onhitfn = onHit
+    inst.components.combat.onhitfn = onHitFn or onCommonHit
 
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(1)
@@ -195,13 +273,48 @@ local function entangledFn()
 
     inst:AddComponent("timer")
 
-    inst.OnSave = onSave
-    inst.OnLoad = onLoad
 
-    inst:DoTaskInTime(.1, connectParticles)
+
+    if postFn ~= nil then
+        postFn(inst)
+    end
 
     return inst
 end
 
+--------------------------------- 纠缠粒子 ---------------------------------
+local function entangledFn()
+    return commonFn("idle", onEntangledHit, function(inst)
+        setImg(inst, "aip_particles_entangled_blue")
+
+        inst.OnSave = onEntangledSave
+        inst.OnLoad = onEntangledLoad
+    
+        inst:DoTaskInTime(.1, connectParticles)
+    end)
+end
+
+--------------------------------- 回响粒子 ---------------------------------
+local function echoFn()
+    return commonFn("echo", onEchoHit, function(inst)
+        setImg(inst, "aip_particles_echo")
+
+        inst:SpawnChild("aip_aura_entangled_echo")
+    end)
+end
+
+--------------------------------- 告密粒子 ---------------------------------
+local function heartFn()
+    return commonFn("heart", nil, function(inst)
+        setImg(inst, "aip_particles_heart")
+        wrapNearBy(inst)
+
+        -- inst:SpawnChild("aip_aura_entangled_echo")
+    end)
+end
+
+
 return  Prefab("aip_particles_vest_entangled", vestFn, assets),
-        Prefab("aip_particles_entangled", entangledFn, assets)
+        Prefab("aip_particles_entangled", entangledFn, assets),
+        Prefab("aip_particles_echo", echoFn, assets),
+        Prefab("aip_particles_heart", heartFn, assets)

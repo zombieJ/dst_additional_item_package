@@ -156,6 +156,7 @@ PrefabFiles = {
 	"aip_particles_bottle",
 	"aip_particles_runing",
 	"aip_tricky_thrower",
+	"aip_showcase",
 
 	-- Orbit
 	"aip_orbit",
@@ -164,6 +165,7 @@ PrefabFiles = {
 	-- Dress
 	"aip_dress",
 	"aip_armor_gambler",
+	"aip_xiaoyu_hat",
 
 	-- Chesspiece
 	"aip_chesspiece",

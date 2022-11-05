@@ -501,6 +501,21 @@ for y = 2.5, -0.5, -1 do
     end
 end
 
+----------------- 展示台 -----------------
+params.aip_showcase = {
+	widget ={
+        slotpos = {
+			Vector3(0, 0, 0),
+        },
+        animbank = "ui_chest_2x2",
+        animbuild = "ui_chest_2x2",
+        pos = Vector3(200, 0, 0),
+        side_align_tip = 120,
+    },
+    acceptsstacks = false,
+    type = "chest",
+}
+
 ----------------------------------------------------------------------------------------------
 local containers = _G.require "containers"
 local old_widgetsetup = containers.widgetsetup

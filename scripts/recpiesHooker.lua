@@ -265,10 +265,31 @@ rec("aip_particles_vest_entangled", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.TOOLS }
 	},
 	{ atlas = "images/inventoryimages/aip_particles_entangled_blue.xml", image = "aip_particles_entangled_blue.tex" })
 
+	
+-- 纠缠粒子
+rec("aip_particles_echo", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.TOOLS },
+{
+	Ingredient("aip_particles_bottle_charged", 1, "images/inventoryimages/aip_particles_bottle_charged.xml"),
+	Ingredient("heatrock", 1), Ingredient("thulecite", 1),
+})
+
+-- 告密粒子
+rec("aip_particles_heart", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.TOOLS },
+{
+	Ingredient("aip_particles_bottle_charged", 1, "images/inventoryimages/aip_particles_bottle_charged.xml"),
+	Ingredient("heatrock", 1), Ingredient("reviver", 1),
+})
+
+
 -- 怠惰的南瓜
 rec("aip_tricky_thrower", TECH.MAGIC_TWO, { CRAFTING_FILTERS.STRUCTURES, CRAFTING_FILTERS.MAGIC },
 	{ Ingredient("pumpkin_lantern", 1), Ingredient("aip_oldone_deer_eye_fruit", 1, "images/inventoryimages/aip_oldone_deer_eye_fruit.xml"), },
 	"aip_tricky_thrower_placer")
+
+-- 展示柜
+rec("aip_showcase", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.RESTORATION, CRAFTING_FILTERS.STRUCTURES, CRAFTING_FILTERS.CONTAINERS },
+{Ingredient("cutstone", 2), Ingredient("ash", 1)},
+"aip_showcase_placer")
 
 -------------------------------------- 联动 --------------------------------------
 local modNames = _G.ModManager:GetEnabledServerModNames()

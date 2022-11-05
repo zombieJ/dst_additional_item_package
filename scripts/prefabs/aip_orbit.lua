@@ -11,7 +11,7 @@ local language = aipGetModConfig("language")
 
 local LANG_MAP = {
 	["english"] = {
-		["NAME"] = "Orbit",
+		["NAME"] = "[Deprecated] Orbit",
 		["REC_DESC"] = "Play with the train!",
 		["DESC"] = "That's old style",
 
@@ -30,7 +30,7 @@ local LANG_MAP = {
 		},
 	},
 	["chinese"] = {
-		["NAME"] = "轨道模组",
+		["NAME"] = "【废弃】轨道模组",
 		["REC_DESC"] = "在饥荒里搭火车吧！",
 		["DESC"] = "古老的艺术",
 

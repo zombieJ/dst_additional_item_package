@@ -229,6 +229,15 @@ AddPrefabPostInit("merm", function(inst)
 	end
 end)
 
+------------------------------------------ 鲨鱼 ------------------------------------------
+AddPrefabPostInit("shark", function(inst)
+	-- 鲨鱼会掉落 小渔帽
+	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
+		inst.components.lootdropper:AddChanceLoot("aip_xiaoyu_hat", 1)
+	end
+end)
+
+
 ------------------------------------------ 牛牛 ------------------------------------------
 AddPrefabPostInit("beefalo", function(inst)
 	-- 概率性替换成螃蟹
@@ -362,38 +371,56 @@ AddPrefabPostInit("pigman", function(inst)
 end)
 
 ------------------------------------------ 蘑菇 ------------------------------------------
-local function onMushroomAnimOver(inst)
-	if
-		inst._aipSpawned ~= true and (
-			inst.AnimState:IsCurrentAnimation("red") or
-			inst.AnimState:IsCurrentAnimation("green") or
-			inst.AnimState:IsCurrentAnimation("blue")
-		)
-	then
-		inst._aipSpawned = true
-		_G.aipSpawnPrefab(inst, "aip_fx_splode").DoShow(null, 0.2)
-
-		-- 触发附近粒子联动
-		inst:DoTaskInTime(0.2, function()
-			local x, y, z = inst.Transform:GetWorldPosition()
-			local particles = TheSim:FindEntities(x, y, z, 1, { "aip_particles" })
-
-			for _, particle in ipairs(particles) do
-				particle.components.combat:GetAttacked(inst, 1)
-			end
-		end)
-	else
-		inst._aipSpawned = false
-	end
-end
-
 local function postMushroom(inst)
-	inst:ListenForEvent("animover", onMushroomAnimOver)
+	-- inst:ListenForEvent("animover", onMushroomAnimOver)
+	if inst.opentaskfn ~= nil then
+		local originOpenTaskFn = inst.opentaskfn
+		inst.opentaskfn = function(...)
+			_G.aipSpawnPrefab(inst, "aip_fx_splode").DoShow(null, 0.2)
+
+			-- 触发附近粒子联动
+			inst:DoTaskInTime(0.2, function()
+				local x, y, z = inst.Transform:GetWorldPosition()
+				local particles = TheSim:FindEntities(x, y, z, 1, { "aip_particles" })
+
+				for _, particle in ipairs(particles) do
+					particle.components.combat:GetAttacked(inst, 1)
+				end
+			end)
+
+			return originOpenTaskFn(...)
+		end
+	end
 end
 
 AddPrefabPostInit("red_mushroom", postMushroom)
 AddPrefabPostInit("green_mushroom", postMushroom)
 AddPrefabPostInit("blue_mushroom", postMushroom)
+
+
+------------------------------------------ 海带 ------------------------------------------
+local function bullkelpCanBeActOn(inst, doer)
+	return doer ~= nil and doer:HasTag("aip_xiaoyu_picker")
+end
+
+local function bullkelpOnDoAction(inst, doer)
+	if doer ~= nil and doer.components.inventory ~= nil then
+		local root = _G.aipReplacePrefab(inst, "bullkelp_root")
+		doer.components.inventory:GiveItem(root)
+	end
+end
+
+AddPrefabPostInit("bullkelp_plant", function(inst)
+	inst:AddComponent("aipc_action_client")
+	inst.components.aipc_action_client.canBeActOn = bullkelpCanBeActOn
+
+	if not _G.TheWorld.ismastersim then
+		return inst
+	end
+
+	inst:AddComponent("aipc_action")
+	inst.components.aipc_action.onDoAction = bullkelpOnDoAction
+end)
 
 ------------------------------------------ 食物 ------------------------------------------
 AddPrefabPostInit("grass", function(inst)
