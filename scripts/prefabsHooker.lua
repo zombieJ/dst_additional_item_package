@@ -231,7 +231,7 @@ end)
 
 ------------------------------------------ 鲨鱼 ------------------------------------------
 AddPrefabPostInit("shark", function(inst)
-	-- 鱼人会极低概率掉 22 磅重的鲶鱼
+	-- 鲨鱼会掉落 小渔帽
 	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
 		inst.components.lootdropper:AddChanceLoot("aip_xiaoyu_hat", 1)
 	end

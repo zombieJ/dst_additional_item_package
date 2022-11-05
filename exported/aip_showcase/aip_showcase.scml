@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="stand">
+        <file id="0" name="stand/stone.png" width="400" height="500" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <folder id="1" name="swap_item">
+        <file id="0" name="swap_item/swap_item.png" width="10" height="10" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_showcase">
+        <animation id="0" name="stone" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stone" folder="0" file="0" abs_x="-2.356319" abs_y="-5.048136" abs_pivot_x="0.507481" abs_pivot_y="0.222555" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-3.192537" abs_y="169.547378" abs_pivot_x="0.483708" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="stone">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_item">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="-3.192537" y="169.547378" pivot_x="0.483708" pivot_y="0.5" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

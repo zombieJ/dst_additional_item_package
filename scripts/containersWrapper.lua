@@ -501,6 +501,25 @@ for y = 2.5, -0.5, -1 do
     end
 end
 
+----------------- 展示台 -----------------
+params.aip_showcase = {
+	widget = {
+        slotpos = {},
+        animbank = "ui_chest_3x2",
+        animbuild = "ui_chest_3x2",
+        pos = Vector3(0, 200, 0),
+        side_align_tip = 160,
+    },
+	acceptsstacks = false,
+    type = "chest",
+}
+
+for y = 1, 0, -1 do
+    for x = 0, 2 do
+        table.insert(params.aip_showcase.widget.slotpos, Vector3(80 * x - 80 * 2 + 80, 80 * y - 80 * 2 + 120, 0))
+    end
+end
+
 ----------------------------------------------------------------------------------------------
 local containers = _G.require "containers"
 local old_widgetsetup = containers.widgetsetup
