@@ -1,5 +1,12 @@
 local language = aipGetModConfig("language")
 
+--[[
+元宝显示的是金子
+武器穿模
+换皮肤
+猪年的金腰带
+]]
+
 -- 文字描述
 local LANG_MAP = {
 	english = {
@@ -35,40 +42,49 @@ local function refreshShow(inst)
 
         -- 复制物品贴图
         if item ~= nil and item.components.inventoryitem ~= nil then
-            -- local imagename = item.components.inventoryitem.imagename or item.prefab
-            -- local texname = imagename..".tex"
-
-            -- inst.AnimState:OverrideSymbol(
-            --     "swap_item",
-            --     GetInventoryItemAtlas(texname), texname
-            -- )
             if inst._aipItemVest == nil then
-                inst._aipItemVest = SpawnPrefab("aip_vest")
-                inst._aipItemVest.entity:SetParent(inst.entity)
-                inst._aipItemVest.entity:AddFollower()
-                inst._aipItemVest.Follower:FollowSymbol(inst.GUID, "swap_item", 0, 0, 0)
+                local record = item:GetSaveRecord()
+                local newItem = SpawnSaveRecord(record)
+                newItem.persists = false
+
+                -- for k, v in pairs(newItem.components) do
+                --     newItem:RemoveComponent(k)
+                -- end
+
+                newItem.entity:SetParent(inst.entity)
+                newItem.entity:AddFollower()
+                newItem.Follower:FollowSymbol(inst.GUID, "swap_item", 0, 0, 0)
+
+                inst._aipItemVest = newItem
+
+
+                -- inst._aipItemVest = SpawnPrefab("aip_vest")
+                -- inst._aipItemVest.entity:SetParent(inst.entity)
+                -- inst._aipItemVest.entity:AddFollower()
+                -- inst._aipItemVest.Follower:FollowSymbol(inst.GUID, "swap_item", 0, 0, 0)
             end
 
-            -- 设置动画效果
-            local vest = inst._aipItemVest
-            local bank = item.AnimState:GetCurrentBankName()
-            local build = item.AnimState:GetBuild()
-            local anim = aipGetAnimation(item)
+            -- -- 设置动画效果
+            -- local vest = inst._aipItemVest
+            -- local bank = item.AnimState:GetCurrentBankName()
+            -- local build = item.AnimState:GetBuild()
+            -- local anim = aipGetAnimation(item)
 
-            if bank ~= nil and build ~= nil and anim ~= nil then
-                vest.AnimState:SetBank(bank)
-                vest.AnimState:SetBuild(build)
-                vest.AnimState:PlayAnimation(anim, true)
-            else
-                inst.components.container:DropItem(item)
-                inst.components.talker:Say(STRINGS.AIP_SHOWCASE_DENEY)
-            end
+
+
+            -- if bank ~= nil and build ~= nil and anim ~= nil then
+            --     vest.AnimState:SetBank(bank)
+            --     vest.AnimState:SetBuild(build)
+            --     vest.AnimState:PlayAnimation(anim, true)
+            -- else
+            --     inst.components.container:DropItem(item)
+            --     inst.components.talker:Say(STRINGS.AIP_SHOWCASE_DENEY)
+            -- end
 
             return
         end
     end
 
-    -- inst.AnimState:ClearOverrideSymbol("swap_item")
     if inst._aipItemVest ~= nil then
         aipRemove(inst._aipItemVest)
         inst._aipItemVest = nil
@@ -143,6 +159,8 @@ local function fn()
     inst:ListenForEvent("gotnewitem", refreshShow)
     inst:ListenForEvent("itemget", refreshShow)
     inst:ListenForEvent("itemlose", refreshShow)
+
+    inst:DoTaskInTime(0.1, refreshShow)
 
     return inst
 end
