@@ -34,52 +34,86 @@ local assets = {
 }
 
 --------------------------------- 方法 ---------------------------------
-local function safeShowItem(inst, item)
-    if inst._aipItemVest == nil then
-        inst._aipItemVest = SpawnPrefab("aip_vest")
-        inst._aipItemVest.entity:SetParent(inst.entity)
-        inst._aipItemVest.entity:AddFollower()
-        inst._aipItemVest.Follower:FollowSymbol(inst.GUID, "swap_item", 0, 0, 0)
+-- local function safeShowItem(inst, item)
+--     if inst._aipItemVest == nil then
+--         inst._aipItemVest = SpawnPrefab("aip_vest")
+--         inst._aipItemVest.entity:SetParent(inst.entity)
+--         inst._aipItemVest.entity:AddFollower()
+--         inst._aipItemVest.Follower:FollowSymbol(inst.GUID, "swap_item", 0, 0, 0)
+--     end
+
+--     -- 设置动画效果
+--     local vest = inst._aipItemVest
+--     local bank = item.AnimState:GetCurrentBankName()
+--     local build = item.AnimState:GetBuild()
+--     local anim = aipGetAnimation(item)
+
+
+
+--     if bank ~= nil and build ~= nil and anim ~= nil then
+--         vest.AnimState:SetBank(bank)
+--         vest.AnimState:SetBuild(build)
+--         vest.AnimState:PlayAnimation(anim, false)
+--         return true
+--     else
+--         inst.components.container:DropItem(item)
+--         inst.components.talker:Say(STRINGS.AIP_SHOWCASE_DENEY)
+--     end
+-- end
+
+local function lockItem(item, lock)
+    if item then
+        if lock then
+            -- 让它不能点
+            item:AddTag("INLIMBO")
+            item:AddTag("NOCLICK")
+        else
+            item:RemoveTag("INLIMBO")
+            item:RemoveTag("NOCLICK")
+        end
     end
+end
 
-    -- 设置动画效果
-    local vest = inst._aipItemVest
-    local bank = item.AnimState:GetCurrentBankName()
-    local build = item.AnimState:GetBuild()
-    local anim = aipGetAnimation(item)
+local function cleanup(inst)
+    if inst._aipTargetItem ~= nil then
+        -- inst._aipTargetItem._aipTask:Cancel()
 
+        inst._aipTargetItem.Follower:StopFollowing()
+        lockItem(inst._aipTargetItem, false)
 
-
-    if bank ~= nil and build ~= nil and anim ~= nil then
-        vest.AnimState:SetBank(bank)
-        vest.AnimState:SetBuild(build)
-        vest.AnimState:PlayAnimation(anim, false)
-        return true
-    else
-        inst.components.container:DropItem(item)
-        inst.components.talker:Say(STRINGS.AIP_SHOWCASE_DENEY)
+        inst._aipTargetItem = nil
     end
 end
 
 local function dangerShowItem(inst, item)
     item:ReturnToScene()
 
-    local pt = inst:GetPosition()
-    item.Transform:SetPosition(pt.x,pt.y + 1,pt.z)
-
-
-    -- item.entity:SetParent(inst.entity)
     if item.Follower == nil then
         item.entity:AddFollower()
     end
-    item.Follower:FollowSymbol(inst.GUID, "swap_item", 0, -1, 0)
+    item.Follower:FollowSymbol(inst.GUID, "swap_item", 0, 0, 0.1)
+    inst._aipTargetItem = item
 
+    -- item._aipTask = item:DoPeriodicTask(1, function()
+    --     -- local x, y, z = inst.Transform:GetWorldPosition()
+    --     -- item.Transform:SetPosition(0, 1, 0)
+    --     aipTypePrint("POS:", item:GetPosition(), inst:GetPosition())
+    -- end)
 
-    -- 让它不能点
-    item:AddTag("INLIMBO")
-    item:AddTag("NOCLICK")
+    -- item:DoTaskInTime(3, function()
+    --     aipPrint("Go!")
+    --     item.Follower:StopFollowing()
 
-    return true
+    --     local pt = inst:GetPosition()
+    --     local it = item:GetPosition()
+
+    --     -- item.Transform:SetPosition(it.x - pt.x, it.y - pt.y, it.z - pt.z)
+    --     item.Transform:SetPosition(0, it.y - pt.y, 0)
+    -- end)
+
+    lockItem(item, true)
+
+    -- return true
 end
 
 -- 刷新物品
@@ -94,10 +128,9 @@ local function refreshShow(inst)
             --     return
             -- end
 
-            if dangerShowItem(inst, item) then
-                inst._aipTargetItem = item
-                return
-            end
+            dangerShowItem(inst, item)
+                -- inst._aipTargetItem = item
+            return
         end
     end
 
@@ -106,12 +139,9 @@ local function refreshShow(inst)
     --     inst._aipItemVest = nil
     -- end
 
-    if inst._aipTargetItem ~= nil then
-        inst._aipTargetItem.Follower:StopFollowing()
-        inst._aipTargetItem:RemoveTag("INLIMBO")
-        inst._aipTargetItem:RemoveTag("NOCLICK")
-        inst._aipTargetItem = nil
-    end
+    cleanup(inst)
+
+    -- clearDangerItem(inst)
 end
 
 -- 损毁
@@ -121,6 +151,7 @@ local function onhammered(inst, worker)
         inst.components.container:DropEverything()
     end
 
+    cleanup(inst)
     aipReplacePrefab(inst, "collapse_small"):SetMaterial("wood")
 end
 
@@ -139,6 +170,7 @@ local function fn()
     inst.entity:AddNetwork()
 
     -- MakeInventoryPhysics(inst)
+    MakeObstaclePhysics(inst, .2)
 
     inst.AnimState:SetBank("aip_showcase")
     inst.AnimState:SetBuild("aip_showcase")
