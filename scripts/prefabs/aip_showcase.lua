@@ -12,11 +12,13 @@ local LANG_MAP = {
 	english = {
 		NAME = "Showcase",
 		DESC = "Show your case",
+        TALK_WARNING = "Do not put precious items to avoid BUG and loss",
         TALK_DENEY = "Can not show this",
 	},
 	chinese = {
 		NAME = "展示柜",
 		DESC = "展示你的物品",
+        TALK_WARNING = "请勿放入珍贵物品，以免 BUG 而丢失",
         TALK_DENEY = "抱歉，无法展示",
 	},
 }
@@ -25,6 +27,7 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 STRINGS.NAMES.AIP_SHOWCASE = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SHOWCASE = LANG.DESC
+STRINGS.AIP_SHOWCASE_WARNING = LANG.TALK_WARNING
 STRINGS.AIP_SHOWCASE_DENEY = LANG.TALK_DENEY
 
 -- 资源
@@ -128,6 +131,12 @@ local function refreshShow(inst)
             --     return
             -- end
 
+            -- 相同物品则不做处理
+            if item == inst._aipTargetItem then
+                return
+            end
+
+            inst.components.talker:Say(STRINGS.AIP_SHOWCASE_WARNING)
             dangerShowItem(inst, item)
                 -- inst._aipTargetItem = item
             return
