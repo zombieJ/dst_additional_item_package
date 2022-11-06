@@ -11,13 +11,19 @@ local language = aipGetModConfig("language")
 local LANG_MAP = {
 	english = {
 		NAME = "Showcase",
-		DESC = "Show your case",
+		DESC = "Show item on it but not keep fresh",
+        NAIL_NAME = "Nail Showcase",
+		NAIL_DESC = "Show item on it, will keep fresh",
+        DESCRIBE = "Show your case",
         TALK_WARNING = "Do not put precious items to avoid BUG and loss",
         TALK_DENEY = "Can not show this",
 	},
 	chinese = {
 		NAME = "展示柜",
-		DESC = "展示你的物品",
+		DESC = "用于展示一个物品，放入的内容不保鲜",
+        NAIL_NAME = "冰图钉展示柜",
+		NAIL_DESC = "用于展示一个物品，放入的内容不会腐烂",
+        DESCRIBE = "展示你的物品",
         TALK_WARNING = "请勿放入珍贵物品，以免 BUG 而丢失",
         TALK_DENEY = "抱歉，无法展示",
 	},
@@ -26,7 +32,11 @@ local LANG_MAP = {
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
 STRINGS.NAMES.AIP_SHOWCASE = LANG.NAME
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SHOWCASE = LANG.DESC
+STRINGS.RECIPE_DESC.AIP_SHOWCASE = LANG.DESC
+STRINGS.NAMES.AIP_SHOWCASE_NAIL = LANG.NAIL_NAME
+STRINGS.RECIPE_DESC.AIP_SHOWCASE_NAIL = LANG.NAIL_DESC
+
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SHOWCASE = LANG.DESCRIBE
 STRINGS.AIP_SHOWCASE_WARNING = LANG.TALK_WARNING
 STRINGS.AIP_SHOWCASE_DENEY = LANG.TALK_DENEY
 
@@ -34,6 +44,7 @@ STRINGS.AIP_SHOWCASE_DENEY = LANG.TALK_DENEY
 local assets = {
     Asset("ANIM", "anim/aip_showcase.zip"),
 	Asset("ATLAS", "images/inventoryimages/aip_showcase.xml"),
+    Asset("ATLAS", "images/inventoryimages/aip_showcase_nail.xml"),
 }
 
 --------------------------------- 方法 ---------------------------------
@@ -79,8 +90,6 @@ end
 
 local function cleanup(inst)
     if inst._aipTargetItem ~= nil then
-        -- inst._aipTargetItem._aipTask:Cancel()
-
         inst._aipTargetItem.Follower:StopFollowing()
         lockItem(inst._aipTargetItem, false)
 
@@ -97,26 +106,7 @@ local function dangerShowItem(inst, item)
     item.Follower:FollowSymbol(inst.GUID, "swap_item", 0, 0, 0.1)
     inst._aipTargetItem = item
 
-    -- item._aipTask = item:DoPeriodicTask(1, function()
-    --     -- local x, y, z = inst.Transform:GetWorldPosition()
-    --     -- item.Transform:SetPosition(0, 1, 0)
-    --     aipTypePrint("POS:", item:GetPosition(), inst:GetPosition())
-    -- end)
-
-    -- item:DoTaskInTime(3, function()
-    --     aipPrint("Go!")
-    --     item.Follower:StopFollowing()
-
-    --     local pt = inst:GetPosition()
-    --     local it = item:GetPosition()
-
-    --     -- item.Transform:SetPosition(it.x - pt.x, it.y - pt.y, it.z - pt.z)
-    --     item.Transform:SetPosition(0, it.y - pt.y, 0)
-    -- end)
-
     lockItem(item, true)
-
-    -- return true
 end
 
 -- 刷新物品
@@ -143,14 +133,7 @@ local function refreshShow(inst)
         end
     end
 
-    -- if inst._aipItemVest ~= nil then
-    --     aipRemove(inst._aipItemVest)
-    --     inst._aipItemVest = nil
-    -- end
-
     cleanup(inst)
-
-    -- clearDangerItem(inst)
 end
 
 -- 损毁
@@ -166,12 +149,12 @@ end
 
 -- 敲击
 local function onhit(inst, worker)
-    inst.AnimState:PlayAnimation("stone_hit")
-    inst.AnimState:PushAnimation("stone", false)
+    inst.AnimState:PlayAnimation(inst._aipAnim.."_hit")
+    inst.AnimState:PushAnimation(inst._aipAnim, false)
 end
 
 --------------------------------- 实例 ---------------------------------
-local function fn()
+local function createInst(anim, postFn)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -183,7 +166,9 @@ local function fn()
 
     inst.AnimState:SetBank("aip_showcase")
     inst.AnimState:SetBuild("aip_showcase")
-    inst.AnimState:PlayAnimation("stone")
+    inst.AnimState:PlayAnimation(anim)
+
+    inst._aipAnim = anim
 
     inst.entity:SetPristine()
 
@@ -200,12 +185,12 @@ local function fn()
     inst.components.talker.offset = Vector3(0, -500, 0)
 
     inst:AddComponent("container")
-	inst.components.container:WidgetSetup("aip_showcase")
-	-- inst.components.container.onopenfn = onopen
-	-- inst.components.container.onclosefn = onclose
-	inst.components.container.skipclosesnd = true
-	inst.components.container.skipopensnd = true
-	inst.components.container.canbeopened = true
+    inst.components.container:WidgetSetup("aip_showcase")
+    -- inst.components.container.onopenfn = onopen
+    -- inst.components.container.onclosefn = onclose
+    inst.components.container.skipclosesnd = true
+    inst.components.container.skipopensnd = true
+    inst.components.container.canbeopened = true
 
     -- 可以砸毁
     inst:AddComponent("lootdropper")
@@ -214,8 +199,6 @@ local function fn()
     inst.components.workable:SetWorkLeft(3)
     inst.components.workable:SetOnFinishCallback(onhammered)
     inst.components.workable:SetOnWorkCallback(onhit)
-
-    -- inst.AnimState:OverrideSymbol("swap_item", "aip_armor_gambler", "swap_body")
 
     MakeHauntableLaunch(inst)
 
@@ -226,8 +209,44 @@ local function fn()
 
     inst:DoTaskInTime(0.1, refreshShow)
 
+    if postFn ~= nil then
+        postFn(inst)
+    end
+
     return inst
 end
 
-return  Prefab("aip_showcase", fn, assets),
-        MakePlacer("aip_showcase_placer", "aip_showcase", "aip_showcase", "stone")
+-- ======================================================================
+---------------------------------- 实例 ----------------------------------
+-- ======================================================================
+
+-- return  Prefab("aip_showcase", stoneFn, assets),
+--         MakePlacer("aip_showcase_placer", "aip_showcase", "aip_showcase", "stone")
+
+local showcaseList = {
+    ---------------------------------- 石头 ----------------------------------
+    aip_showcase = {
+        anim = "stone",
+    },
+
+    ---------------------------------- 冰冻 ----------------------------------
+    aip_showcase_nail = {
+        anim = "nail",
+        postFn = function(inst)
+            inst:AddComponent("preserver")
+            inst.components.preserver:SetPerishRateMultiplier(0)
+        end,
+    },
+}
+
+local prefabs = {}
+for name, data in pairs(showcaseList) do
+    local function fn()
+        return createInst(data.anim, data.postFn)
+    end
+
+    table.insert(prefabs, Prefab(name, fn, assets))
+    table.insert(prefabs, MakePlacer(name.."_placer", "aip_showcase", "aip_showcase", data.anim))
+end
+
+return unpack(prefabs)

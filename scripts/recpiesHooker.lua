@@ -291,6 +291,11 @@ rec("aip_showcase", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.RESTORATION, CRAFTING_F
 {Ingredient("cutstone", 2), Ingredient("ash", 1)},
 "aip_showcase_placer")
 
+-- 图钉展示柜
+rec("aip_showcase_nail", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.RESTORATION, CRAFTING_FILTERS.STRUCTURES, CRAFTING_FILTERS.CONTAINERS },
+{Ingredient("ice", 12), Ingredient("pickaxe", 1), Ingredient("saltrock", 1)},
+"aip_showcase_nail_placer")
+
 -------------------------------------- 联动 --------------------------------------
 local modNames = _G.ModManager:GetEnabledServerModNames()
 
