@@ -154,7 +154,7 @@ local function onhit(inst, worker)
 end
 
 --------------------------------- 实例 ---------------------------------
-local function createInst(anim, postFn)
+local function createInst(name, anim, postFn)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -170,6 +170,12 @@ local function createInst(anim, postFn)
 
     inst._aipAnim = anim
 
+    inst:AddComponent("talker")
+    inst.components.talker.fontsize = 30
+    inst.components.talker.font = TALKINGFONT
+    inst.components.talker.colour = Vector3(.9, 1, .9)
+    inst.components.talker.offset = Vector3(0, -500, 0)
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -178,14 +184,8 @@ local function createInst(anim, postFn)
 
     inst:AddComponent("inspectable")
 
-    inst:AddComponent("talker")
-    inst.components.talker.fontsize = 30
-    inst.components.talker.font = TALKINGFONT
-    inst.components.talker.colour = Vector3(.9, 1, .9)
-    inst.components.talker.offset = Vector3(0, -500, 0)
-
     inst:AddComponent("container")
-    inst.components.container:WidgetSetup("aip_showcase")
+    inst.components.container:WidgetSetup(name)
     -- inst.components.container.onopenfn = onopen
     -- inst.components.container.onclosefn = onclose
     inst.components.container.skipclosesnd = true
@@ -242,7 +242,7 @@ local showcaseList = {
 local prefabs = {}
 for name, data in pairs(showcaseList) do
     local function fn()
-        return createInst(data.anim, data.postFn)
+        return createInst(name, data.anim, data.postFn)
     end
 
     table.insert(prefabs, Prefab(name, fn, assets))
