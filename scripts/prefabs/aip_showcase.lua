@@ -37,12 +37,17 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 STRINGS.NAMES.AIP_SHOWCASE = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_SHOWCASE = LANG.DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SHOWCASE = LANG.DESCRIBE
+
 STRINGS.NAMES.AIP_SHOWCASE_STONE = LANG.STONE_NAME
 STRINGS.RECIPE_DESC.AIP_SHOWCASE_STONE = LANG.STONE_DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SHOWCASE_STONE = LANG.DESCRIBE
+
 STRINGS.NAMES.AIP_SHOWCASE_NAIL = LANG.NAIL_NAME
 STRINGS.RECIPE_DESC.AIP_SHOWCASE_NAIL = LANG.NAIL_DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SHOWCASE_NAIL = LANG.DESCRIBE
 
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SHOWCASE = LANG.DESCRIBE
+
 STRINGS.AIP_SHOWCASE_WARNING = LANG.TALK_WARNING
 STRINGS.AIP_SHOWCASE_DENEY = LANG.TALK_DENEY
 
@@ -205,32 +210,16 @@ local function showItem(inst, item)
     -- 清理之前的物品
     dropItem(inst)
 
-    -- -- 清理所有者，并且只取一个
-    -- local one = item
-    -- if item.components.stackable ~= nil then
-    --     one = item.components.stackable:Get()
-    -- end
-
     -- 取出一个物品，并且重置 Owner 为展示柜
     if item.components.inventoryitem ~= nil then
-        -- item.components.inventoryitem:RemoveFromOwner(true)
-        local owner = item.components.inventoryitem.owner
-        local container = item.components.inventoryitem:GetContainer()
-
-        if container ~= nil then
-            local function dropItem(inst, data)
-                item = data.item
-            end
-
-            owner:ListenForEvent("dropitem", dropItem)
-            container:DropItem(item)
-            owner:RemoveEventCallback("dropitem", dropItem)
-        end
+        inst.components.container:GiveItem(item)
+        item = inst.components.container:GetItemInSlot(1)
+        inst.components.container:DropItem(item)
 
         item.components.inventoryitem:SetOwner(inst)
     end
 
-    item:ReturnToScene()
+    -- item:ReturnToScene()
 
     if item.Follower == nil then
         item.entity:AddFollower()
@@ -308,6 +297,13 @@ local function createInst(name, anim, postFn)
     inst:AddComponent("aipc_action")
 	inst.components.aipc_action.onDoAction = onDoAction
 
+    -- 放置物品
+    inst:AddComponent("container")
+    inst.components.container:WidgetSetup(name)
+    inst.components.container.skipclosesnd = true
+    inst.components.container.skipopensnd = true
+    inst.components.container.canbeopened = false
+
     -- 可以接受物品
     inst:AddComponent("trader")
     inst.components.trader:SetAbleToAcceptTest(AbleToAcceptTest)
@@ -349,12 +345,6 @@ local showcaseList = {
     aip_showcase = {
         anim = "stone",
         postFn = function(inst)
-            inst:AddComponent("container")
-            inst.components.container:WidgetSetup("aip_showcase")
-            inst.components.container.skipclosesnd = true
-            inst.components.container.skipopensnd = true
-            inst.components.container.canbeopened = true
-
             -- 丢弃物品后替换成新的展示柜
             inst:ListenForEvent("dropitem", function(inst, data)
                 local showcase = aipReplacePrefab(inst, "aip_showcase_stone")
