@@ -516,8 +516,6 @@ params.aip_showcase = {
     type = "chest",
 }
 
-params.aip_showcase_nail = params.aip_showcase
-
 ----------------------------------------------------------------------------------------------
 local containers = _G.require "containers"
 local old_widgetsetup = containers.widgetsetup

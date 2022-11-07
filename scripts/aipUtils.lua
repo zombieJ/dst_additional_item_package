@@ -778,6 +778,8 @@ function _G.aipFlingItem(loot, pt)
 	if loot ~= nil and loot:IsValid() then
         if pt ~= nil then
             loot.Transform:SetPosition(pt:Get())
+		else
+			pt = loot:GetPosition()
         end
 
         local min_speed =  0

@@ -31,7 +31,7 @@ local LANG_MAP = {
 		CAST = "Cast",
 		READ = "Read",
 		EAT = "Eat",
-		PICK = "Pick",
+		TAKE = "Take",
 	},
 	chinese = {
 		GIVE = "给予",
@@ -40,7 +40,7 @@ local LANG_MAP = {
 		CAST = "释放",
 		READ = "阅读",
 		EAT = "吃",
-		PICK = "捡起",
+		TAKE = "拿取",
 	},
 }
 local LANG = LANG_MAP[language] or LANG_MAP.english
@@ -125,10 +125,30 @@ local function beAction(act)
 	return true
 end
 
+-- 额外的拿取距离
+local function ExtraPickupRange(doer, dest)
+	if dest ~= nil then
+		local target_x, target_y, target_z = dest:GetPoint()
+
+		local is_on_water = _G.TheWorld.Map:IsOceanTileAtPoint(target_x, 0, target_z) and
+						not _G.TheWorld.Map:IsPassableAtPoint(target_x, 0, target_z)
+		if is_on_water then
+			return 0.75
+		end
+	end
+    return 0
+end
+
 local AIPC_BE_ACTION = env.AddAction("AIPC_BE_ACTION", LANG.USE, beAction)
+local AIPC_BE_TAKE_ACTION = env.AddAction("AIPC_BE_TAKE_ACTION", LANG.TAKE, beAction)
 local AIPC_BE_CAST_ACTION = env.AddAction("AIPC_BE_CAST_ACTION", LANG.CAST, beAction)
+
+AIPC_BE_TAKE_ACTION.extra_arrive_dist = ExtraPickupRange
+
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_BE_ACTION, "doshortaction"))
 AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_BE_ACTION, "doshortaction"))
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_BE_TAKE_ACTION, "doshortaction"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_BE_TAKE_ACTION, "doshortaction"))
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_BE_CAST_ACTION, "quicktele"))
 AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_BE_CAST_ACTION, "quicktele"))
 
@@ -140,6 +160,10 @@ env.AddComponentAction("SCENE", "aipc_action_client", function(inst, doer, actio
 
 	if inst.components.aipc_action_client:CanBeActOn(doer) then
 		table.insert(actions, _G.ACTIONS.AIPC_BE_ACTION)
+	end
+	
+	if inst.components.aipc_action_client:CanBeTakeOn(doer) then
+		table.insert(actions, _G.ACTIONS.AIPC_BE_TAKE_ACTION)
 	end
 end)
 

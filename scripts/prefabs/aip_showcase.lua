@@ -43,7 +43,7 @@ STRINGS.AIP_SHOWCASE_DENEY = LANG.TALK_DENEY
 -- 资源
 local assets = {
     Asset("ANIM", "anim/aip_showcase.zip"),
-	Asset("ATLAS", "images/inventoryimages/aip_showcase.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_showcase_stone.xml"),
     Asset("ATLAS", "images/inventoryimages/aip_showcase_nail.xml"),
 }
 
@@ -136,6 +136,17 @@ local function refreshShow(inst)
     cleanup(inst)
 end
 
+local function getItem(inst, data)
+    cleanup(inst)
+
+    inst:DoTaskInTime(0.1, function()
+        local item = data.item
+
+        inst.components.container:DropItem(item)
+        dangerShowItem(inst, item)
+    end)
+end
+
 -- 损毁
 local function onhammered(inst, worker)
     inst.components.lootdropper:DropLoot()
@@ -184,14 +195,6 @@ local function createInst(name, anim, postFn)
 
     inst:AddComponent("inspectable")
 
-    inst:AddComponent("container")
-    inst.components.container:WidgetSetup(name)
-    -- inst.components.container.onopenfn = onopen
-    -- inst.components.container.onclosefn = onclose
-    inst.components.container.skipclosesnd = true
-    inst.components.container.skipopensnd = true
-    inst.components.container.canbeopened = true
-
     -- 可以砸毁
     inst:AddComponent("lootdropper")
     inst:AddComponent("workable")
@@ -202,12 +205,12 @@ local function createInst(name, anim, postFn)
 
     MakeHauntableLaunch(inst)
 
-    inst:ListenForEvent("dropitem", refreshShow)
-    inst:ListenForEvent("gotnewitem", refreshShow)
-    inst:ListenForEvent("itemget", refreshShow)
-    inst:ListenForEvent("itemlose", refreshShow)
+    -- inst:ListenForEvent("dropitem", refreshShow)
+    -- inst:ListenForEvent("gotnewitem", refreshShow)
+    -- inst:ListenForEvent("itemget", getItem)
+    -- inst:ListenForEvent("itemlose", refreshShow)
 
-    inst:DoTaskInTime(0.1, refreshShow)
+    -- inst:DoTaskInTime(0.1, refreshShow)
 
     if postFn ~= nil then
         postFn(inst)
@@ -219,13 +222,26 @@ end
 -- ======================================================================
 ---------------------------------- 实例 ----------------------------------
 -- ======================================================================
-
--- return  Prefab("aip_showcase", stoneFn, assets),
---         MakePlacer("aip_showcase_placer", "aip_showcase", "aip_showcase", "stone")
-
 local showcaseList = {
-    ---------------------------------- 石头 ----------------------------------
+    ---------------------------------- 兼容 ----------------------------------
+    -- 原本的方法废弃了，这里做一个替换能力
     aip_showcase = {
+        anim = "stone",
+        postFn = function(inst)
+            inst:AddComponent("container")
+            inst.components.container:WidgetSetup("aip_showcase")
+            inst.components.container.skipclosesnd = true
+            inst.components.container.skipopensnd = true
+            inst.components.container.canbeopened = true
+
+            inst:DoTaskInTime(1, function()
+                inst.components.container:DropEverything()
+                aipReplacePrefab(inst, "aip_showcase_stone")
+            end)
+        end,
+    },
+    ---------------------------------- 石头 ----------------------------------
+    aip_showcase_stone = {
         anim = "stone",
     },
 
