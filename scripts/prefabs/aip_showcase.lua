@@ -10,8 +10,10 @@ local language = aipGetModConfig("language")
 -- 文字描述
 local LANG_MAP = {
 	english = {
-		NAME = "Showcase",
-		DESC = "Show item on it but not keep fresh",
+		NAME = "Vest",
+		DESC = "Will be repalced",
+        STONE_NAME = "Showcase",
+		STONE_DESC = "Show item on it but not keep fresh",
         NAIL_NAME = "Nail Showcase",
 		NAIL_DESC = "Show item on it, will keep fresh",
         DESCRIBE = "Show your case",
@@ -19,8 +21,10 @@ local LANG_MAP = {
         TALK_DENEY = "Can not show this",
 	},
 	chinese = {
-		NAME = "展示柜",
-		DESC = "用于展示一个物品，放入的内容不保鲜",
+		NAME = "马甲",
+		DESC = "会被替换哦",
+        STONE_NAME = "展示柜",
+		STONE_DESC = "用于展示一个物品，放入的内容不保鲜",
         NAIL_NAME = "冰图钉展示柜",
 		NAIL_DESC = "用于展示一个物品，放入的内容不会腐烂",
         DESCRIBE = "展示你的物品",
@@ -33,6 +37,8 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 STRINGS.NAMES.AIP_SHOWCASE = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_SHOWCASE = LANG.DESC
+STRINGS.NAMES.AIP_SHOWCASE_STONE = LANG.STONE_NAME
+STRINGS.RECIPE_DESC.AIP_SHOWCASE_STONE = LANG.STONE_DESC
 STRINGS.NAMES.AIP_SHOWCASE_NAIL = LANG.NAIL_NAME
 STRINGS.RECIPE_DESC.AIP_SHOWCASE_NAIL = LANG.NAIL_DESC
 
@@ -75,6 +81,96 @@ local assets = {
 --     end
 -- end
 
+-- local function lockItem(item, lock)
+--     if item then
+--         if lock then
+--             -- 让它不能点
+--             item:AddTag("INLIMBO")
+--             item:AddTag("NOCLICK")
+--         else
+--             item:RemoveTag("INLIMBO")
+--             item:RemoveTag("NOCLICK")
+--         end
+--     end
+-- end
+
+-- local function cleanup(inst)
+--     if inst._aipTargetItem ~= nil then
+--         inst._aipTargetItem.Follower:StopFollowing()
+--         lockItem(inst._aipTargetItem, false)
+
+--         inst._aipTargetItem = nil
+--     end
+-- end
+
+-- local function dangerShowItem(inst, item)
+--     item:ReturnToScene()
+
+--     if item.Follower == nil then
+--         item.entity:AddFollower()
+--     end
+--     item.Follower:FollowSymbol(inst.GUID, "swap_item", 0, 0, 0.1)
+--     inst._aipTargetItem = item
+
+--     lockItem(item, true)
+-- end
+
+-- -- 刷新物品
+-- local function refreshShow(inst)
+--     local numslots = inst.components.container:GetNumSlots()
+--     for slot = 1, numslots do
+--         local item = inst.components.container:GetItemInSlot(slot)
+
+--         -- 复制物品贴图
+--         if item ~= nil and item.components.inventoryitem ~= nil then
+--             -- if safeShowItem(inst, item) then
+--             --     return
+--             -- end
+
+--             -- 相同物品则不做处理
+--             if item == inst._aipTargetItem then
+--                 return
+--             end
+
+--             inst.components.talker:Say(STRINGS.AIP_SHOWCASE_WARNING)
+--             dangerShowItem(inst, item)
+--                 -- inst._aipTargetItem = item
+--             return
+--         end
+--     end
+
+--     cleanup(inst)
+-- end
+
+-- local function getItem(inst, data)
+--     cleanup(inst)
+
+--     inst:DoTaskInTime(0.1, function()
+--         local item = data.item
+
+--         inst.components.container:DropItem(item)
+--         dangerShowItem(inst, item)
+--     end)
+-- end
+
+-- 损毁
+local function onhammered(inst, worker)
+    -- inst.components.lootdropper:DropLoot()
+    -- if inst.components.container ~= nil then
+    --     inst.components.container:DropEverything()
+    -- end
+
+    -- cleanup(inst)
+    aipReplacePrefab(inst, "collapse_small"):SetMaterial("wood")
+end
+
+-- 敲击
+local function onhit(inst, worker)
+    inst.AnimState:PlayAnimation(inst._aipAnim.."_hit")
+    inst.AnimState:PushAnimation(inst._aipAnim, false)
+end
+
+--------------------------------- 绑定 ---------------------------------
 local function lockItem(item, lock)
     if item then
         if lock then
@@ -88,80 +184,91 @@ local function lockItem(item, lock)
     end
 end
 
-local function cleanup(inst)
-    if inst._aipTargetItem ~= nil then
-        inst._aipTargetItem.Follower:StopFollowing()
-        lockItem(inst._aipTargetItem, false)
+--丢弃物品
+local function dropItem(inst)
+    local item = inst._aipShowcaseItem
 
-        inst._aipTargetItem = nil
+    inst:RemoveTag("aip_showcase_active")
+    inst._aipShowcaseItem = nil
+
+    if item ~= nil then
+        lockItem(item, false)
+        item.Follower:StopFollowing()
+        aipFlingItem(item, inst:GetPosition())
+
+        return item
     end
 end
 
-local function dangerShowItem(inst, item)
+-- 展示物品
+local function showItem(inst, item)
+    -- 清理之前的物品
+    dropItem(inst)
+
+    -- -- 清理所有者，并且只取一个
+    -- local one = item
+    -- if item.components.stackable ~= nil then
+    --     one = item.components.stackable:Get()
+    -- end
+
+    -- 取出一个物品，并且重置 Owner 为展示柜
+    if item.components.inventoryitem ~= nil then
+        -- item.components.inventoryitem:RemoveFromOwner(true)
+        local owner = item.components.inventoryitem.owner
+        local container = item.components.inventoryitem:GetContainer()
+
+        if container ~= nil then
+            local function dropItem(inst, data)
+                item = data.item
+            end
+
+            owner:ListenForEvent("dropitem", dropItem)
+            container:DropItem(item)
+            owner:RemoveEventCallback("dropitem", dropItem)
+        end
+
+        item.components.inventoryitem:SetOwner(inst)
+    end
+
     item:ReturnToScene()
 
     if item.Follower == nil then
         item.entity:AddFollower()
     end
     item.Follower:FollowSymbol(inst.GUID, "swap_item", 0, 0, 0.1)
-    inst._aipTargetItem = item
 
     lockItem(item, true)
+
+    inst._aipShowcaseItem = item
+    inst:AddTag("aip_showcase_active")
 end
 
--- 刷新物品
-local function refreshShow(inst)
-    local numslots = inst.components.container:GetNumSlots()
-    for slot = 1, numslots do
-        local item = inst.components.container:GetItemInSlot(slot)
+--------------------------------- 交易 ---------------------------------
+local function AbleToAcceptTest(inst, item, giver)
+	return true
+end
 
-        -- 复制物品贴图
-        if item ~= nil and item.components.inventoryitem ~= nil then
-            -- if safeShowItem(inst, item) then
-            --     return
-            -- end
+local function AcceptTest(inst, item, giver)
+    return true
+end
 
-            -- 相同物品则不做处理
-            if item == inst._aipTargetItem then
-                return
-            end
+local function OnGetItemFromPlayer(inst, giver, item)
+    showItem(inst, item)
+end
 
-            inst.components.talker:Say(STRINGS.AIP_SHOWCASE_WARNING)
-            dangerShowItem(inst, item)
-                -- inst._aipTargetItem = item
-            return
+--------------------------------- 拿取 ---------------------------------
+local function canBeTakeOn(inst, doer)
+	return doer ~= nil and inst ~= nil and inst:HasTag("aip_showcase_active")
+end
+
+local function onDoAction(inst, doer)
+	if doer ~= nil and doer.components.inventory ~= nil and doer ~= nil then
+		local item = dropItem(inst)
+
+        if item ~= nil then
+            doer.components.inventory:GiveItem(item)
         end
-    end
-
-    cleanup(inst)
-end
-
-local function getItem(inst, data)
-    cleanup(inst)
-
-    inst:DoTaskInTime(0.1, function()
-        local item = data.item
-
-        inst.components.container:DropItem(item)
-        dangerShowItem(inst, item)
-    end)
-end
-
--- 损毁
-local function onhammered(inst, worker)
-    inst.components.lootdropper:DropLoot()
-    if inst.components.container ~= nil then
-        inst.components.container:DropEverything()
-    end
-
-    cleanup(inst)
-    aipReplacePrefab(inst, "collapse_small"):SetMaterial("wood")
-end
-
--- 敲击
-local function onhit(inst, worker)
-    inst.AnimState:PlayAnimation(inst._aipAnim.."_hit")
-    inst.AnimState:PushAnimation(inst._aipAnim, false)
+	end
 end
 
 --------------------------------- 实例 ---------------------------------
@@ -187,6 +294,9 @@ local function createInst(name, anim, postFn)
     inst.components.talker.colour = Vector3(.9, 1, .9)
     inst.components.talker.offset = Vector3(0, -500, 0)
 
+    inst:AddComponent("aipc_action_client")
+	inst.components.aipc_action_client.canBeTakeOn = canBeTakeOn
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -194,6 +304,17 @@ local function createInst(name, anim, postFn)
     end
 
     inst:AddComponent("inspectable")
+
+    inst:AddComponent("aipc_action")
+	inst.components.aipc_action.onDoAction = onDoAction
+
+    -- 可以接受物品
+    inst:AddComponent("trader")
+    inst.components.trader:SetAbleToAcceptTest(AbleToAcceptTest)
+    inst.components.trader:SetAcceptTest(AcceptTest)
+    inst.components.trader.onaccept = OnGetItemFromPlayer
+    inst.components.trader.deleteitemonaccept = false
+    -- inst.components.trader.onrefuse = OnRefuseItem
 
     -- 可以砸毁
     inst:AddComponent("lootdropper")
@@ -234,9 +355,16 @@ local showcaseList = {
             inst.components.container.skipopensnd = true
             inst.components.container.canbeopened = true
 
-            inst:DoTaskInTime(1, function()
+            -- 丢弃物品后替换成新的展示柜
+            inst:ListenForEvent("dropitem", function(inst, data)
+                local showcase = aipReplacePrefab(inst, "aip_showcase_stone")
+                showItem(showcase, data.item)
+            end)
+
+            -- 延迟丢弃
+            inst:DoTaskInTime(0.1, function()
                 inst.components.container:DropEverything()
-                aipReplacePrefab(inst, "aip_showcase_stone")
+                
             end)
         end,
     },
