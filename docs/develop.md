@@ -123,6 +123,10 @@ https://forums.kleientertainment.com/forums/topic/47818-how-to-compile-for-anims
 
 需要重命名 layer，改成 snow-0_0 就可以通过 Show / Hide 来控制了
 
+### mainfunctions
+
+lureplant 有个 OnEntitySleep OnLongUpdate 方法，当实体休眠时调用
+
 ### AnimateState 方法
 
 设置：

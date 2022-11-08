@@ -287,9 +287,9 @@ rec("aip_tricky_thrower", TECH.MAGIC_TWO, { CRAFTING_FILTERS.STRUCTURES, CRAFTIN
 	"aip_tricky_thrower_placer")
 
 -- 展示柜
-rec("aip_showcase_stone", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.RESTORATION, CRAFTING_FILTERS.STRUCTURES, CRAFTING_FILTERS.CONTAINERS },
+rec("aip_showcase", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.RESTORATION, CRAFTING_FILTERS.STRUCTURES, CRAFTING_FILTERS.CONTAINERS },
 {Ingredient("cutstone", 2), Ingredient("ash", 1)},
-"aip_showcase_stone_placer")
+"aip_showcase_placer")
 
 -- 图钉展示柜
 rec("aip_showcase_nail", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.RESTORATION, CRAFTING_FILTERS.STRUCTURES, CRAFTING_FILTERS.CONTAINERS },

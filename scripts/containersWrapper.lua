@@ -516,7 +516,6 @@ params.aip_showcase = {
     type = "chest",
 }
 
-params.aip_showcase_stone = params.aip_showcase
 params.aip_showcase_nail = params.aip_showcase
 
 ----------------------------------------------------------------------------------------------

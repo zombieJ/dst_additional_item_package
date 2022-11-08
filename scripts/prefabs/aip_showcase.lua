@@ -10,10 +10,8 @@ local language = aipGetModConfig("language")
 -- 文字描述
 local LANG_MAP = {
 	english = {
-		NAME = "Vest",
-		DESC = "Will be repalced",
-        STONE_NAME = "Showcase",
-		STONE_DESC = "Show item on it but not keep fresh",
+        NAME = "Showcase",
+		DESC = "Show item on it but not keep fresh",
         NAIL_NAME = "Nail Showcase",
 		NAIL_DESC = "Show item on it, will keep fresh",
         DESCRIBE = "Show your case",
@@ -21,10 +19,8 @@ local LANG_MAP = {
         TALK_DENEY = "Can not show this",
 	},
 	chinese = {
-		NAME = "马甲",
-		DESC = "会被替换哦",
-        STONE_NAME = "展示柜",
-		STONE_DESC = "用于展示一个物品，放入的内容不保鲜",
+        NAME = "展示柜",
+		DESC = "用于展示一个物品，放入的内容不保鲜",
         NAIL_NAME = "冰图钉展示柜",
 		NAIL_DESC = "用于展示一个物品，放入的内容不会腐烂",
         DESCRIBE = "展示你的物品",
@@ -39,14 +35,9 @@ STRINGS.NAMES.AIP_SHOWCASE = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_SHOWCASE = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SHOWCASE = LANG.DESCRIBE
 
-STRINGS.NAMES.AIP_SHOWCASE_STONE = LANG.STONE_NAME
-STRINGS.RECIPE_DESC.AIP_SHOWCASE_STONE = LANG.STONE_DESC
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SHOWCASE_STONE = LANG.DESCRIBE
-
 STRINGS.NAMES.AIP_SHOWCASE_NAIL = LANG.NAIL_NAME
 STRINGS.RECIPE_DESC.AIP_SHOWCASE_NAIL = LANG.NAIL_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SHOWCASE_NAIL = LANG.DESCRIBE
-
 
 STRINGS.AIP_SHOWCASE_WARNING = LANG.TALK_WARNING
 STRINGS.AIP_SHOWCASE_DENEY = LANG.TALK_DENEY
@@ -54,109 +45,11 @@ STRINGS.AIP_SHOWCASE_DENEY = LANG.TALK_DENEY
 -- 资源
 local assets = {
     Asset("ANIM", "anim/aip_showcase.zip"),
-	Asset("ATLAS", "images/inventoryimages/aip_showcase_stone.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_showcase.xml"),
     Asset("ATLAS", "images/inventoryimages/aip_showcase_nail.xml"),
 }
 
 --------------------------------- 方法 ---------------------------------
--- local function safeShowItem(inst, item)
---     if inst._aipItemVest == nil then
---         inst._aipItemVest = SpawnPrefab("aip_vest")
---         inst._aipItemVest.entity:SetParent(inst.entity)
---         inst._aipItemVest.entity:AddFollower()
---         inst._aipItemVest.Follower:FollowSymbol(inst.GUID, "swap_item", 0, 0, 0)
---     end
-
---     -- 设置动画效果
---     local vest = inst._aipItemVest
---     local bank = item.AnimState:GetCurrentBankName()
---     local build = item.AnimState:GetBuild()
---     local anim = aipGetAnimation(item)
-
-
-
---     if bank ~= nil and build ~= nil and anim ~= nil then
---         vest.AnimState:SetBank(bank)
---         vest.AnimState:SetBuild(build)
---         vest.AnimState:PlayAnimation(anim, false)
---         return true
---     else
---         inst.components.container:DropItem(item)
---         inst.components.talker:Say(STRINGS.AIP_SHOWCASE_DENEY)
---     end
--- end
-
--- local function lockItem(item, lock)
---     if item then
---         if lock then
---             -- 让它不能点
---             item:AddTag("INLIMBO")
---             item:AddTag("NOCLICK")
---         else
---             item:RemoveTag("INLIMBO")
---             item:RemoveTag("NOCLICK")
---         end
---     end
--- end
-
--- local function cleanup(inst)
---     if inst._aipTargetItem ~= nil then
---         inst._aipTargetItem.Follower:StopFollowing()
---         lockItem(inst._aipTargetItem, false)
-
---         inst._aipTargetItem = nil
---     end
--- end
-
--- local function dangerShowItem(inst, item)
---     item:ReturnToScene()
-
---     if item.Follower == nil then
---         item.entity:AddFollower()
---     end
---     item.Follower:FollowSymbol(inst.GUID, "swap_item", 0, 0, 0.1)
---     inst._aipTargetItem = item
-
---     lockItem(item, true)
--- end
-
--- -- 刷新物品
--- local function refreshShow(inst)
---     local numslots = inst.components.container:GetNumSlots()
---     for slot = 1, numslots do
---         local item = inst.components.container:GetItemInSlot(slot)
-
---         -- 复制物品贴图
---         if item ~= nil and item.components.inventoryitem ~= nil then
---             -- if safeShowItem(inst, item) then
---             --     return
---             -- end
-
---             -- 相同物品则不做处理
---             if item == inst._aipTargetItem then
---                 return
---             end
-
---             inst.components.talker:Say(STRINGS.AIP_SHOWCASE_WARNING)
---             dangerShowItem(inst, item)
---                 -- inst._aipTargetItem = item
---             return
---         end
---     end
-
---     cleanup(inst)
--- end
-
--- local function getItem(inst, data)
---     cleanup(inst)
-
---     inst:DoTaskInTime(0.1, function()
---         local item = data.item
-
---         inst.components.container:DropItem(item)
---         dangerShowItem(inst, item)
---     end)
--- end
 
 -- 损毁
 local function onhammered(inst, worker)
@@ -260,6 +153,35 @@ local function onDoAction(inst, doer)
 	end
 end
 
+--------------------------------- 存取 ---------------------------------
+local function onSave(inst, data)
+    local guidtable = {}
+
+    if inst._aipShowcaseItem ~= nil then
+        data.itemGUID = inst._aipShowcaseItem.GUID
+        table.insert(guidtable, inst._aipShowcaseItem.GUID)
+    end
+
+    return guidtable
+end
+
+local function onLoadPostPass(inst, newents, data)
+    -- 加载绑定的物品
+    if data ~= nil and data.itemGUID ~= nil then
+        local item = newents[data.itemGUID]
+        if item ~= nil then
+            showItem(inst, item.entity)
+        end
+
+    -- 如果里面放了东西，说明旧版本的，丢出来绑定
+    elseif not inst.components.container:IsEmpty() then
+        local item = inst.components.container:GetItemInSlot(1)
+        if item ~= nil then
+            showItem(inst, item)
+        end
+    end
+end
+
 --------------------------------- 实例 ---------------------------------
 local function createInst(name, anim, postFn)
     local inst = CreateEntity()
@@ -333,6 +255,10 @@ local function createInst(name, anim, postFn)
         postFn(inst)
     end
 
+    -- inst.OnLoad = onLoad
+    inst.OnSave = onSave
+    inst.OnLoadPostPass = onLoadPostPass
+
     return inst
 end
 
@@ -340,26 +266,8 @@ end
 ---------------------------------- 实例 ----------------------------------
 -- ======================================================================
 local showcaseList = {
-    ---------------------------------- 兼容 ----------------------------------
-    -- 原本的方法废弃了，这里做一个替换能力
-    aip_showcase = {
-        anim = "stone",
-        postFn = function(inst)
-            -- 丢弃物品后替换成新的展示柜
-            inst:ListenForEvent("dropitem", function(inst, data)
-                local showcase = aipReplacePrefab(inst, "aip_showcase_stone")
-                showItem(showcase, data.item)
-            end)
-
-            -- 延迟丢弃
-            inst:DoTaskInTime(0.1, function()
-                inst.components.container:DropEverything()
-                
-            end)
-        end,
-    },
     ---------------------------------- 石头 ----------------------------------
-    aip_showcase_stone = {
+    aip_showcase = {
         anim = "stone",
     },
 
