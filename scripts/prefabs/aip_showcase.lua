@@ -49,24 +49,6 @@ local assets = {
     Asset("ATLAS", "images/inventoryimages/aip_showcase_nail.xml"),
 }
 
---------------------------------- 方法 ---------------------------------
-
--- 损毁
-local function onhammered(inst, worker)
-    -- inst.components.lootdropper:DropLoot()
-    -- if inst.components.container ~= nil then
-    --     inst.components.container:DropEverything()
-    -- end
-
-    -- cleanup(inst)
-    aipReplacePrefab(inst, "collapse_small"):SetMaterial("wood")
-end
-
--- 敲击
-local function onhit(inst, worker)
-    inst.AnimState:PlayAnimation(inst._aipAnim.."_hit")
-    inst.AnimState:PushAnimation(inst._aipAnim, false)
-end
 
 --------------------------------- 绑定 ---------------------------------
 local function lockItem(item, lock)
@@ -75,9 +57,19 @@ local function lockItem(item, lock)
             -- 让它不能点
             item:AddTag("INLIMBO")
             item:AddTag("NOCLICK")
+            item:StopBrain()
+
+            if item.Physics then
+                item.Physics:SetActive(false)
+            end
         else
             item:RemoveTag("INLIMBO")
             item:RemoveTag("NOCLICK")
+            item:RestartBrain()
+
+            if item.Physics then
+                item.Physics:SetActive(true)
+            end
         end
     end
 end
@@ -116,8 +108,6 @@ local function showItem(inst, item)
         item.components.inventoryitem:SetOwner(inst)
     end
 
-    -- item:ReturnToScene()
-
     if item.Follower == nil then
         item.entity:AddFollower()
     end
@@ -129,18 +119,27 @@ local function showItem(inst, item)
     inst:AddTag("aip_showcase_active")
 end
 
---------------------------------- 交易 ---------------------------------
--- local function AbleToAcceptTest(inst, item, giver)
--- 	return true
--- end
+--------------------------------- 方法 ---------------------------------
 
--- local function AcceptTest(inst, item, giver)
---     return true
--- end
+-- 损毁
+local function onhammered(inst, worker)
+    inst.components.lootdropper:DropLoot()
 
--- local function OnGetItemFromPlayer(inst, giver, item)
---     showItem(inst, item)
--- end
+    dropItem(inst)
+    
+    -- if inst.components.container ~= nil then
+    --     inst.components.container:DropEverything()
+    -- end
+
+    -- cleanup(inst)
+    aipReplacePrefab(inst, "collapse_small"):SetMaterial("wood")
+end
+
+-- 敲击
+local function onhit(inst, worker)
+    inst.AnimState:PlayAnimation(inst._aipAnim.."_hit")
+    inst.AnimState:PushAnimation(inst._aipAnim, false)
+end
 
 --------------------------------- 拿取 ---------------------------------
 -- 给予
@@ -208,7 +207,6 @@ local function createInst(name, anim, postFn)
 
     inst:AddTag("aip_showcase")
 
-    -- MakeInventoryPhysics(inst)
     MakeObstaclePhysics(inst, .2)
 
     inst.AnimState:SetBank("aip_showcase")
@@ -246,12 +244,6 @@ local function createInst(name, anim, postFn)
     inst:AddComponent("aipc_action")
     inst.components.aipc_action.onDoGiveAction = onDoGiveAction
     inst.components.aipc_action.onDoAction = onDoAction
-    -- inst:AddComponent("trader")
-    -- inst.components.trader:SetAbleToAcceptTest(AbleToAcceptTest)
-    -- inst.components.trader:SetAcceptTest(AcceptTest)
-    -- inst.components.trader.onaccept = OnGetItemFromPlayer
-    -- inst.components.trader.deleteitemonaccept = false
-    -- inst.components.trader.onrefuse = OnRefuseItem
 
     -- 可以砸毁
     inst:AddComponent("lootdropper")
@@ -263,18 +255,10 @@ local function createInst(name, anim, postFn)
 
     MakeHauntableLaunch(inst)
 
-    -- inst:ListenForEvent("dropitem", refreshShow)
-    -- inst:ListenForEvent("gotnewitem", refreshShow)
-    -- inst:ListenForEvent("itemget", getItem)
-    -- inst:ListenForEvent("itemlose", refreshShow)
-
-    -- inst:DoTaskInTime(0.1, refreshShow)
-
     if postFn ~= nil then
         postFn(inst)
     end
 
-    -- inst.OnLoad = onLoad
     inst.OnSave = onSave
     inst.OnLoadPostPass = onLoadPostPass
 
