@@ -16,6 +16,10 @@ local function triggerComponentAction(player, item, target, targetPoint)
 			item.components.aipc_action:DoAction(player)
 		end
 	end
+
+	if item ~= nil and target ~= nil and target.components.aipc_action ~= nil then
+		target.components.aipc_action:DoGiveAction(player, item)
+	end
 end
 
 env.AddModRPCHandler(env.modname, "aipComponentAction", function(player, item, target, targetPoint)
@@ -48,7 +52,7 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 _G.STRINGS.ACTIONS.AIP_USE = LANG.USE
 
 -------------------- 对目标使用的技能 --------------------
-local AIPC_ACTION = env.AddAction("AIPC_ACTION", LANG.GIVE, function(act)
+local function actionFn(act)
 	local doer = act.doer
 	local item = act.invobject
 	local target = act.target
@@ -62,11 +66,23 @@ local AIPC_ACTION = env.AddAction("AIPC_ACTION", LANG.GIVE, function(act)
 	end
 
 	return true
-end)
+end
+
+-- 长动作
+local AIPC_ACTION = env.AddAction("AIPC_ACTION", LANG.GIVE, actionFn)
 AIPC_ACTION.priority = 1
 
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_ACTION, "dolongaction"))
 AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_ACTION, "dolongaction"))
+
+
+-- 短动作
+local AIPC_GIVE_ACTION = env.AddAction("AIPC_GIVE_ACTION", LANG.GIVE, actionFn)
+AIPC_GIVE_ACTION.priority = 1
+
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_GIVE_ACTION, "doshortaction"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_GIVE_ACTION, "doshortaction"))
+
 
 -- 角色使用 aipc_action_client 对某物使用
 env.AddComponentAction("USEITEM", "aipc_action_client", function(inst, doer, target, actions, right)
@@ -76,6 +92,21 @@ env.AddComponentAction("USEITEM", "aipc_action_client", function(inst, doer, tar
 
 	if inst.components.aipc_action_client:CanActOn(doer, target) then
 		table.insert(actions, _G.ACTIONS.AIPC_ACTION)
+	end
+end)
+
+
+-- 玩家拿着 inventoryitem 对目标 prefab 使用
+env.AddComponentAction("USEITEM", "inventoryitem", function(inst, doer, target, actions, right)
+	if not inst or not target then
+		return
+	end
+
+	if
+		target.components.aipc_action_client ~= nil and
+		target.components.aipc_action_client:CanBeGiveOn(doer, target, inst)
+	then
+		table.insert(actions, _G.ACTIONS.AIPC_GIVE_ACTION)
 	end
 end)
 

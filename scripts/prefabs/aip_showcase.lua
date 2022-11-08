@@ -105,6 +105,10 @@ local function showItem(inst, item)
 
     -- 取出一个物品，并且重置 Owner 为展示柜
     if item.components.inventoryitem ~= nil then
+        -- 移除 Owner
+        item = item.components.inventoryitem:RemoveFromOwner(false)
+
+        -- 重置 Owner
         inst.components.container:GiveItem(item)
         item = inst.components.container:GetItemInSlot(1)
         inst.components.container:DropItem(item)
@@ -126,19 +130,31 @@ local function showItem(inst, item)
 end
 
 --------------------------------- 交易 ---------------------------------
-local function AbleToAcceptTest(inst, item, giver)
-	return true
-end
+-- local function AbleToAcceptTest(inst, item, giver)
+-- 	return true
+-- end
 
-local function AcceptTest(inst, item, giver)
+-- local function AcceptTest(inst, item, giver)
+--     return true
+-- end
+
+-- local function OnGetItemFromPlayer(inst, giver, item)
+--     showItem(inst, item)
+-- end
+
+--------------------------------- 拿取 ---------------------------------
+-- 给予
+local function canBeGiveOn(inst, doer, item)
+    -- aipPrint("Check Give!", inst, doer, item)
     return true
 end
 
-local function OnGetItemFromPlayer(inst, giver, item)
+local function onDoGiveAction(inst, doer, item)
+    aipPrint("Give!", inst, doer, item)
     showItem(inst, item)
 end
 
---------------------------------- 拿取 ---------------------------------
+-- 拿取
 local function canBeTakeOn(inst, doer)
 	return doer ~= nil and inst ~= nil and inst:HasTag("aip_showcase_active")
 end
@@ -190,6 +206,8 @@ local function createInst(name, anim, postFn)
     inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
+    inst:AddTag("aip_showcase")
+
     -- MakeInventoryPhysics(inst)
     MakeObstaclePhysics(inst, .2)
 
@@ -207,6 +225,7 @@ local function createInst(name, anim, postFn)
 
     inst:AddComponent("aipc_action_client")
 	inst.components.aipc_action_client.canBeTakeOn = canBeTakeOn
+    inst.components.aipc_action_client.canBeGiveOn = canBeGiveOn
 
     inst.entity:SetPristine()
 
@@ -216,9 +235,6 @@ local function createInst(name, anim, postFn)
 
     inst:AddComponent("inspectable")
 
-    inst:AddComponent("aipc_action")
-	inst.components.aipc_action.onDoAction = onDoAction
-
     -- 放置物品
     inst:AddComponent("container")
     inst.components.container:WidgetSetup(name)
@@ -227,11 +243,14 @@ local function createInst(name, anim, postFn)
     inst.components.container.canbeopened = false
 
     -- 可以接受物品
-    inst:AddComponent("trader")
-    inst.components.trader:SetAbleToAcceptTest(AbleToAcceptTest)
-    inst.components.trader:SetAcceptTest(AcceptTest)
-    inst.components.trader.onaccept = OnGetItemFromPlayer
-    inst.components.trader.deleteitemonaccept = false
+    inst:AddComponent("aipc_action")
+    inst.components.aipc_action.onDoGiveAction = onDoGiveAction
+    inst.components.aipc_action.onDoAction = onDoAction
+    -- inst:AddComponent("trader")
+    -- inst.components.trader:SetAbleToAcceptTest(AbleToAcceptTest)
+    -- inst.components.trader:SetAcceptTest(AcceptTest)
+    -- inst.components.trader.onaccept = OnGetItemFromPlayer
+    -- inst.components.trader.deleteitemonaccept = false
     -- inst.components.trader.onrefuse = OnRefuseItem
 
     -- 可以砸毁
