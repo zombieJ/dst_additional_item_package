@@ -85,14 +85,21 @@ local function dropItem(inst)
     inst:RemoveTag("aip_showcase_active")
     inst._aipShowcaseItem = nil
 
-    if item ~= nil then
+    if item ~= nil and item:IsValid() then
         lockItem(item, false)
         item.Follower:StopFollowing()
         aipFlingItem(item, inst:GetPosition())
+        -- inst:RemoveEventCallback("onremove", onItemRemove, item)
 
         return item
     end
 end
+
+-- -- 移除物品相当于删除绑定
+-- local function onItemRemove(inst)
+--     aipPrint("Remove!", inst)
+--     dropItem(inst)
+-- end
 
 -- 展示物品
 local function showItem(inst, item)
@@ -105,9 +112,11 @@ local function showItem(inst, item)
         item = item.components.inventoryitem:RemoveFromOwner(false)
 
         -- 重置 Owner
+        inst._aipGiveLock = 1
         inst.components.container:GiveItem(item)
         item = inst.components.container:GetItemInSlot(1)
         inst.components.container:DropItem(item)
+        inst._aipGiveLock = nil
 
         item.components.inventoryitem:SetOwner(inst)
     end
@@ -121,6 +130,8 @@ local function showItem(inst, item)
 
     inst._aipShowcaseItem = item
     inst:AddTag("aip_showcase_active")
+
+    -- inst:ListenForEvent("onremove", onItemRemove, item)
 end
 
 --------------------------------- 方法 ---------------------------------
@@ -215,6 +226,15 @@ local function onLoad(inst, data)
     end
 end
 
+local function showContainerItem(inst)
+    if inst._aipGiveLock == nil and not inst.components.container:IsEmpty() then
+        local item = inst.components.container:GetItemInSlot(1)
+        if item ~= nil then
+            showItem(inst, item)
+        end
+    end
+end
+
 local function onLoadPostPass(inst, newents, data)
     -- 加载绑定的物品
     if data ~= nil and data.itemGUID ~= nil then
@@ -224,11 +244,8 @@ local function onLoadPostPass(inst, newents, data)
         end
 
     -- 如果里面放了东西，说明旧版本的，丢出来绑定
-    elseif not inst.components.container:IsEmpty() then
-        local item = inst.components.container:GetItemInSlot(1)
-        if item ~= nil then
-            showItem(inst, item)
-        end
+    else
+        showContainerItem(inst)
     end
 end
 
@@ -302,6 +319,8 @@ local function createInst(name, anim, postFn)
     inst.OnSave = onSave
     inst.OnLoad = onLoad
     inst.OnLoadPostPass = onLoadPostPass
+
+    inst:ListenForEvent("itemget", showContainerItem)
 
     return inst
 end
