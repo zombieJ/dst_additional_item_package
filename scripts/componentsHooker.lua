@@ -347,6 +347,22 @@ env.AddComponentAction("SCENE", "combat", function(inst, doer, actions, right)
 end)
 
 ------------------------------------- 特殊处理 -------------------------------------
+local ORIGIN_MINE_FN = _G.ACTIONS.MINE.fn
+local ORIGIN_MINE_VALID_FN = _G.ACTIONS.MINE.validfn
+
+-- 重写 MINE 的 fn 和 validfn
+_G.ACTIONS.MINE.validfn = function(act)
+	return ORIGIN_MINE_VALID_FN(act) or act.target:HasTag("aip_showcase")
+end
+
+_G.ACTIONS.MINE.fn = function(act)
+	return (
+		act.target._aipMineFn ~= nil and
+		act.target._aipMineFn(act.target)
+	) or ORIGIN_MINE_FN(act)
+end
+
+------------------------------------- 特殊处理 -------------------------------------
 -- 额外触发一个生命值时间出来
 AddComponentPostInit("health", function(self)
 	-- 生命变化钩子

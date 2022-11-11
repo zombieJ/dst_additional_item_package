@@ -2,7 +2,15 @@
 <spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
     <folder id="0" name="stand">
         <file id="0" name="stand/stone.png" width="400" height="500" pivot_x="0" pivot_y="1"/>
-        <file id="1" name="stand/nail.png" width="400" height="500" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="stand/ice.png" width="400" height="500" pivot_x="0" pivot_y="1"/>
+        <file id="2" name="stand/stone_circle.png" width="400" height="500" pivot_x="0" pivot_y="1"/>
+        <file id="3" name="stand/stone_broken.png" width="400" height="500" pivot_x="0" pivot_y="1"/>
+        <file id="4" name="stand/stone_button.png" width="400" height="500" pivot_x="0" pivot_y="1"/>
+        <file id="5" name="stand/stone_mix.png" width="400" height="500" pivot_x="0" pivot_y="1"/>
+        <file id="6" name="stand/ice_circle.png" width="400" height="500" pivot_x="0" pivot_y="1"/>
+        <file id="7" name="stand/ice_mix.png" width="400" height="500" pivot_x="0" pivot_y="1"/>
+        <file id="8" name="stand/ice_broken.png" width="400" height="500" pivot_x="0" pivot_y="1"/>
+        <file id="9" name="stand/ice_button.png" width="400" height="500" pivot_x="0" pivot_y="1"/>
     </folder>
     <folder id="1" name="swap_item">
         <file id="0" name="swap_item/swap_item.png" width="10" height="10" pivot_x="0" pivot_y="1"/>
@@ -64,7 +72,245 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="2" name="nail" length="100">
+        <animation id="2" name="stone_circle" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stone" folder="0" file="2" abs_x="-2.356319" abs_y="-5.048136" abs_pivot_x="0.507481" abs_pivot_y="0.222555" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-3.192537" abs_y="169.547378" abs_pivot_x="0.483708" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="stone">
+                <key id="0" spin="0">
+                    <object folder="0" file="2" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_item">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="-3.192537" y="169.547378" pivot_x="0.483708" pivot_y="0.5" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="3" name="stone_circle_hit" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stone" folder="0" file="2" abs_x="-2.356319" abs_y="-5.048136" abs_pivot_x="0.507481" abs_pivot_y="0.222555" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-3.192537" abs_y="169.547378" abs_pivot_x="0.483708" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="2" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="stone">
+                <key id="0" spin="-1">
+                    <object folder="0" file="2" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="1" time="100">
+                    <object folder="0" file="2" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="356.20542" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="0" file="2" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="9.662569" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_item">
+                <key id="0" spin="-1">
+                    <object folder="1" file="0" x="-3.192537" y="169.547378" pivot_x="0.483708" pivot_y="0.5" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="1" time="100">
+                    <object folder="1" file="0" x="8.363942" y="169.219959" pivot_x="0.483708" pivot_y="0.5" angle="356.20542" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="1" file="0" x="-32.469208" y="166.835813" pivot_x="0.483708" pivot_y="0.5" angle="9.662569" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="4" name="stone_broken" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stone" folder="0" file="3" abs_x="-2.356319" abs_y="-5.048136" abs_pivot_x="0.507481" abs_pivot_y="0.222555" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-3.192537" abs_y="169.547378" abs_pivot_x="0.483708" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="0" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="stone">
+                <key id="0" spin="0">
+                    <object folder="0" file="3" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="0" file="3" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_item">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="-3.192537" y="169.547378" pivot_x="0.483708" pivot_y="0.5" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="5" name="stone_broken_hit" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stone" folder="0" file="3" abs_x="-2.356319" abs_y="-5.048136" abs_pivot_x="0.507481" abs_pivot_y="0.222555" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-3.192537" abs_y="169.547378" abs_pivot_x="0.483708" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="2" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="stone">
+                <key id="0" spin="-1">
+                    <object folder="0" file="3" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="1" time="100">
+                    <object folder="0" file="3" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="356.20542" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="0" file="3" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="9.662569" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_item">
+                <key id="0" spin="-1">
+                    <object folder="1" file="0" x="-3.192537" y="169.547378" pivot_x="0.483708" pivot_y="0.5" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="1" time="100">
+                    <object folder="1" file="0" x="8.363942" y="169.219959" pivot_x="0.483708" pivot_y="0.5" angle="356.20542" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="1" file="0" x="-32.469208" y="166.835813" pivot_x="0.483708" pivot_y="0.5" angle="9.662569" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="6" name="stone_button" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stone" folder="0" file="4" abs_x="-2.356319" abs_y="-5.048136" abs_pivot_x="0.507481" abs_pivot_y="0.222555" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-3.192537" abs_y="169.547378" abs_pivot_x="0.483708" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="0" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="stone">
+                <key id="0" spin="0">
+                    <object folder="0" file="4" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="0" file="4" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_item">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="-3.192537" y="169.547378" pivot_x="0.483708" pivot_y="0.5" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="7" name="stone_button_hit" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stone" folder="0" file="4" abs_x="-2.356319" abs_y="-5.048136" abs_pivot_x="0.507481" abs_pivot_y="0.222555" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-3.192537" abs_y="169.547378" abs_pivot_x="0.483708" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="2" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="stone">
+                <key id="0" spin="-1">
+                    <object folder="0" file="4" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="1" time="100">
+                    <object folder="0" file="4" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="356.20542" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="0" file="4" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="9.662569" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_item">
+                <key id="0" spin="-1">
+                    <object folder="1" file="0" x="-3.192537" y="169.547378" pivot_x="0.483708" pivot_y="0.5" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="1" time="100">
+                    <object folder="1" file="0" x="8.363942" y="169.219959" pivot_x="0.483708" pivot_y="0.5" angle="356.20542" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="1" file="0" x="-32.469208" y="166.835813" pivot_x="0.483708" pivot_y="0.5" angle="9.662569" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="8" name="stone_mix" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stone" folder="0" file="5" abs_x="-2.356319" abs_y="-5.048136" abs_pivot_x="0.507481" abs_pivot_y="0.222555" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-3.192537" abs_y="169.547378" abs_pivot_x="0.483708" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="stone">
+                <key id="0" spin="0">
+                    <object folder="0" file="5" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_item">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="-3.192537" y="169.547378" pivot_x="0.483708" pivot_y="0.5" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="9" name="stone_mix_hit" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stone" folder="0" file="5" abs_x="-2.356319" abs_y="-5.048136" abs_pivot_x="0.507481" abs_pivot_y="0.222555" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-3.192537" abs_y="169.547378" abs_pivot_x="0.483708" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="2" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="stone">
+                <key id="0" spin="-1">
+                    <object folder="0" file="5" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="1" time="100">
+                    <object folder="0" file="5" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="356.20542" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="0" file="5" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="9.662569" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_item">
+                <key id="0" spin="-1">
+                    <object folder="1" file="0" x="-3.192537" y="169.547378" pivot_x="0.483708" pivot_y="0.5" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="1" time="100">
+                    <object folder="1" file="0" x="8.363942" y="169.219959" pivot_x="0.483708" pivot_y="0.5" angle="356.20542" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="1" file="0" x="-32.469208" y="166.835813" pivot_x="0.483708" pivot_y="0.5" angle="9.662569" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="10" name="ice" length="100">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="stone" folder="0" file="1" abs_x="-2.356319" abs_y="-5.048136" abs_pivot_x="0.507481" abs_pivot_y="0.222555" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="0" key="0" z_index="0"/>
@@ -89,7 +335,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="3" name="nail_hit" length="300">
+        <animation id="11" name="ice_hit" length="300">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="stone" folder="0" file="1" abs_x="-2.356319" abs_y="-5.048136" abs_pivot_x="0.507481" abs_pivot_y="0.222555" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="0" key="0" z_index="0"/>
@@ -113,6 +359,237 @@
                 </key>
                 <key id="2" time="200" spin="-1">
                     <object folder="0" file="1" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="9.662569" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_item">
+                <key id="0" spin="-1">
+                    <object folder="1" file="0" x="-3.192537" y="169.547378" pivot_x="0.483708" pivot_y="0.5" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="1" time="100">
+                    <object folder="1" file="0" x="8.363942" y="169.219959" pivot_x="0.483708" pivot_y="0.5" angle="356.20542" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="1" file="0" x="-32.469208" y="166.835813" pivot_x="0.483708" pivot_y="0.5" angle="9.662569" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="12" name="ice_circle" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stone" folder="0" file="6" abs_x="-2.356319" abs_y="-5.048136" abs_pivot_x="0.507481" abs_pivot_y="0.222555" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-3.192537" abs_y="169.547378" abs_pivot_x="0.483708" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="stone">
+                <key id="0" spin="0">
+                    <object folder="0" file="6" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_item">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="-3.192537" y="169.547378" pivot_x="0.483708" pivot_y="0.5" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="13" name="ice_circle_hit" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stone" folder="0" file="6" abs_x="-2.356319" abs_y="-5.048136" abs_pivot_x="0.507481" abs_pivot_y="0.222555" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-3.192537" abs_y="169.547378" abs_pivot_x="0.483708" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="2" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="stone">
+                <key id="0" spin="-1">
+                    <object folder="0" file="6" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="1" time="100">
+                    <object folder="0" file="6" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="356.20542" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="0" file="6" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="9.662569" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_item">
+                <key id="0" spin="-1">
+                    <object folder="1" file="0" x="-3.192537" y="169.547378" pivot_x="0.483708" pivot_y="0.5" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="1" time="100">
+                    <object folder="1" file="0" x="8.363942" y="169.219959" pivot_x="0.483708" pivot_y="0.5" angle="356.20542" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="1" file="0" x="-32.469208" y="166.835813" pivot_x="0.483708" pivot_y="0.5" angle="9.662569" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="14" name="ice_broken" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stone" folder="0" file="8" abs_x="-2.356319" abs_y="-5.048136" abs_pivot_x="0.507481" abs_pivot_y="0.222555" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-3.192537" abs_y="169.547378" abs_pivot_x="0.483708" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="0" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="stone">
+                <key id="0" spin="0">
+                    <object folder="0" file="8" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="0" file="8" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_item">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="-3.192537" y="169.547378" pivot_x="0.483708" pivot_y="0.5" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="15" name="ice_broken_hit" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stone" folder="0" file="8" abs_x="-2.356319" abs_y="-5.048136" abs_pivot_x="0.507481" abs_pivot_y="0.222555" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-3.192537" abs_y="169.547378" abs_pivot_x="0.483708" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="2" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="stone">
+                <key id="0" spin="-1">
+                    <object folder="0" file="8" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="1" time="100">
+                    <object folder="0" file="8" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="356.20542" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="0" file="8" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="9.662569" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_item">
+                <key id="0" spin="-1">
+                    <object folder="1" file="0" x="-3.192537" y="169.547378" pivot_x="0.483708" pivot_y="0.5" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="1" time="100">
+                    <object folder="1" file="0" x="8.363942" y="169.219959" pivot_x="0.483708" pivot_y="0.5" angle="356.20542" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="1" file="0" x="-32.469208" y="166.835813" pivot_x="0.483708" pivot_y="0.5" angle="9.662569" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="16" name="ice_button" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stone" folder="0" file="9" abs_x="-2.356319" abs_y="-5.048136" abs_pivot_x="0.507481" abs_pivot_y="0.222555" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-3.192537" abs_y="169.547378" abs_pivot_x="0.483708" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="stone">
+                <key id="0" spin="0">
+                    <object folder="0" file="9" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_item">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="-3.192537" y="169.547378" pivot_x="0.483708" pivot_y="0.5" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="17" name="ice_button_hit" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stone" folder="0" file="9" abs_x="-2.356319" abs_y="-5.048136" abs_pivot_x="0.507481" abs_pivot_y="0.222555" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-3.192537" abs_y="169.547378" abs_pivot_x="0.483708" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="2" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="stone">
+                <key id="0" spin="-1">
+                    <object folder="0" file="9" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="1" time="100">
+                    <object folder="0" file="9" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="356.20542" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="0" file="9" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="9.662569" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_item">
+                <key id="0" spin="-1">
+                    <object folder="1" file="0" x="-3.192537" y="169.547378" pivot_x="0.483708" pivot_y="0.5" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="1" time="100">
+                    <object folder="1" file="0" x="8.363942" y="169.219959" pivot_x="0.483708" pivot_y="0.5" angle="356.20542" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="1" file="0" x="-32.469208" y="166.835813" pivot_x="0.483708" pivot_y="0.5" angle="9.662569" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="18" name="ice_mix" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stone" folder="0" file="7" abs_x="-2.356319" abs_y="-5.048136" abs_pivot_x="0.507481" abs_pivot_y="0.222555" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-3.192537" abs_y="169.547378" abs_pivot_x="0.483708" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="stone">
+                <key id="0" spin="0">
+                    <object folder="0" file="7" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_item">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="-3.192537" y="169.547378" pivot_x="0.483708" pivot_y="0.5" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="19" name="ice_mix_hit" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stone" folder="0" file="7" abs_x="-2.356319" abs_y="-5.048136" abs_pivot_x="0.507481" abs_pivot_y="0.222555" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-3.192537" abs_y="169.547378" abs_pivot_x="0.483708" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="2" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="stone">
+                <key id="0" spin="-1">
+                    <object folder="0" file="7" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="1" time="100">
+                    <object folder="0" file="7" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="356.20542" scale_x="0.8" scale_y="0.8"/>
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="0" file="7" x="-2.356319" y="-5.048136" pivot_x="0.507481" pivot_y="0.222555" angle="9.662569" scale_x="0.8" scale_y="0.8"/>
                 </key>
             </timeline>
             <timeline id="1" name="swap_item">
