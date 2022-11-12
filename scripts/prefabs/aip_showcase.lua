@@ -1,12 +1,5 @@
 local language = aipGetModConfig("language")
 
---[[
-元宝显示的是金子
-武器穿模
-换皮肤
-猪年的金腰带
-]]
-
 -- 文字描述
 local LANG_MAP = {
 	english = {
@@ -103,15 +96,13 @@ local function dropItem(inst)
     inst:RemoveTag("aip_showcase_active")
     inst._aipShowcaseItem = nil
 
-    -- aipPrint("Drop Item:", inst, item)
+    if inst._aipEggTask ~= nil then
+        inst._aipEggTask:Cancel()
+        inst._aipEggTask = nil
+    end
+
     if item ~= nil and item:IsValid() then
         lockItem(item, false)
-        -- item.Follower:StopFollowing()
-        -- aipFlingItem(item, inst:GetPosition(), true)
-
-        -- 丢出来
-        -- local vest = aipSpawnPrefab(inst, "aip_showcase_vest")
-        -- vest.components.container:GiveItem(item)
 
         if inst._aipRemoveItemFn ~= nil then
             inst._aipRemoveItemFn(inst, item)
@@ -125,17 +116,9 @@ local function dropItem(inst)
     end
 end
 
--- -- 移除物品相当于删除绑定
--- local function onItemRemove(inst)
---     aipPrint("Remove!", inst)
---     dropItem(inst)
--- end
-
 -- 服务端有 BUG，如果同时放入 + 扔出的话，会导致物品在客户端看不见
 local function showItemNext(inst, item)
     inst.components.container:DropItem(item)
-
-    -- item.components.inventoryitem:SetOwner(inst)
 
     -- 跟随
     if item.Follower == nil then
@@ -145,6 +128,34 @@ local function showItemNext(inst, item)
 
     -- 锁定
     lockItem(item, true)
+
+    -- 如果是 棱镜 吉他，展示彩蛋
+    if item.prefab == "guitar_miguel" and PrefabExists("guitar_miguel_float_fx") then
+        inst._aipEggTask = inst:DoPeriodicTask(0.8, function()
+            local pt = inst:GetPosition()
+            inst._aipGuitarIndex = (inst._aipGuitarIndex or 0) + 1
+            if inst._aipGuitarIndex > 3 then
+                inst._aipGuitarIndex = 1
+            end
+
+            local theta1 = 0
+            local theta2 = 2 * PI / 3
+            local theta3 = theta2 * 2
+            local theta = {
+                theta1,
+                theta2,
+                theta3,
+            }
+
+            local the = theta[inst._aipGuitarIndex]
+            SpawnPrefab("guitar_miguel_float_fx").Transform:SetPosition(
+                pt.x + 1 * math.cos(the),
+                pt.y + 0.8 + math.random(),
+                pt.z - 1 * math.sin(the)
+            )
+
+        end)
+    end
 
     if inst._aipTakeItemFn ~= nil then
         inst._aipTakeItemFn(inst, item)
@@ -166,13 +177,8 @@ local function showItem(inst, item)
         return
     end
 
-    -- aipPrint("Show:", inst, item)
-
     -- 取出一个物品，并且重置 Owner 为展示柜
     if item.components.inventoryitem ~= nil then
-        -- item = aipGetOne(item)
-
-
         -- 移除 Owner
         item = item.components.inventoryitem:RemoveFromOwner(false) or item
 
@@ -236,12 +242,10 @@ end
 --------------------------------- 拿取 ---------------------------------
 -- 给予
 local function canBeGiveOn(inst, doer, item)
-    -- aipPrint("Check Give!", inst, doer, item)
     return true
 end
 
 local function onDoGiveAction(inst, doer, item)
-    -- aipPrint("Give!", inst, doer, item)
     showItem(inst, item)
 end
 
@@ -310,12 +314,10 @@ end
 --------------------------------- 马甲 ---------------------------------
 local function vestItemGet(inst)
     inst:DoTaskInTime(DROP_DELAY, function()
-        -- aipPrint("Vest Drop!", inst, inst.components.container:IsEmpty())
         local item = getContainerItem(inst)
         item:ReturnToScene()
         inst.components.container:DropEverything()
         item.Transform:SetPosition(inst.Transform:GetWorldPosition())
-        -- aipTypePrint("Item >", item)
 
         inst:DoTaskInTime(DROP_DELAY, function()
             inst:Remove()
@@ -448,10 +450,7 @@ local showcaseList = {
     ---------------------------------- 冰冻 ----------------------------------
     aip_showcase_ice = {
         anim = "ice",
-        -- postFn = function(inst)
-        --     inst:AddComponent("preserver")
-        --     inst.components.preserver:SetPerishRateMultiplier(0)
-        -- end,
+        -- postFn = function(inst)end,
         takeItemFn = function(inst, item)
             if item.components.perishable ~= nil then
                 item.components.perishable:StopPerishing()
