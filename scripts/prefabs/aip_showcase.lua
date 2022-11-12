@@ -54,6 +54,15 @@ local assets = {
 --------------------------------- 皮肤类型 ---------------------------------
 local skinList = {"circle","broken","button","mix"}
 
+--------------------------------- 方法 ---------------------------------
+local function onBuilt(inst)
+    if inst.components.talker ~= nil then
+        inst:DoTaskInTime(1, function()
+            inst.components.talker:Say(STRINGS.AIP_SHOWCASE_WARNING)
+        end)
+    end
+end
+
 --------------------------------- 绑定 ---------------------------------
 local function getContainerItem(inst)
     if inst.components.container ~= nil then
@@ -94,7 +103,7 @@ local function dropItem(inst)
     inst:RemoveTag("aip_showcase_active")
     inst._aipShowcaseItem = nil
 
-    aipPrint("Drop Item:", inst, item)
+    -- aipPrint("Drop Item:", inst, item)
     if item ~= nil and item:IsValid() then
         lockItem(item, false)
         -- item.Follower:StopFollowing()
@@ -232,7 +241,7 @@ local function canBeGiveOn(inst, doer, item)
 end
 
 local function onDoGiveAction(inst, doer, item)
-    aipPrint("Give!", inst, doer, item)
+    -- aipPrint("Give!", inst, doer, item)
     showItem(inst, item)
 end
 
@@ -256,6 +265,7 @@ local function onSave(inst, data)
     local guidtable = {}
 
     data._aipMineLeft = inst._aipMineLeft
+    data._aipAnim = inst._aipAnim
 
     if inst._aipShowcaseItem ~= nil then
         data.itemGUID = inst._aipShowcaseItem.GUID
@@ -268,6 +278,9 @@ end
 local function onLoad(inst, data)
     if data ~= nil then
         inst._aipMineLeft = data._aipMineLeft or MINE_LEFT
+        inst._aipAnim = data._aipAnim or inst._aipAnim
+
+        inst.AnimState:PushAnimation(inst._aipAnim, false)
     end
 end
 
@@ -297,12 +310,12 @@ end
 --------------------------------- 马甲 ---------------------------------
 local function vestItemGet(inst)
     inst:DoTaskInTime(DROP_DELAY, function()
-        aipPrint("Vest Drop!", inst, inst.components.container:IsEmpty())
+        -- aipPrint("Vest Drop!", inst, inst.components.container:IsEmpty())
         local item = getContainerItem(inst)
         item:ReturnToScene()
         inst.components.container:DropEverything()
         item.Transform:SetPosition(inst.Transform:GetWorldPosition())
-        aipTypePrint("Item >", item)
+        -- aipTypePrint("Item >", item)
 
         inst:DoTaskInTime(DROP_DELAY, function()
             inst:Remove()
@@ -313,8 +326,6 @@ end
 -- 容器马甲，只用于扔下东西
 local function vestFn()
     local inst = CreateEntity()
-
-    aipPrint("Vest CREATE!!!")
 
     inst.entity:AddTransform()
     inst.entity:AddNetwork()
@@ -419,6 +430,8 @@ local function createInst(name, data)
     inst.OnLoadPostPass = onLoadPostPass
 
     inst:ListenForEvent("itemget", showContainerItem)
+
+    inst:ListenForEvent("onbuilt", onBuilt)
 
     return inst
 end
