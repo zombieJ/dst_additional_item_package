@@ -504,3 +504,18 @@ AddComponentPostInit("combat", function(self)
 		return dmg
 	end
 end)
+
+
+-- 让玩家使用 AIPC_GIVE_ACTION 时，不会手持物品
+AddComponentPostInit("playercontroller", function(self)
+	local originDoActionAutoEquip = self.DoActionAutoEquip
+
+	function self:DoActionAutoEquip(buffaction, ...)
+		-- 跳过
+		if buffaction.action == AIPC_GIVE_ACTION then
+			return
+		end
+
+		return originDoActionAutoEquip(self, buffaction, ...)
+	end
+end)
