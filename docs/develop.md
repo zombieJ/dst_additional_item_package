@@ -123,6 +123,10 @@ https://forums.kleientertainment.com/forums/topic/47818-how-to-compile-for-anims
 
 需要重命名 layer，改成 snow-0_0 就可以通过 Show / Hide 来控制了
 
+### mainfunctions
+
+lureplant 有个 OnEntitySleep OnLongUpdate 方法，当实体休眠时调用
+
 ### AnimateState 方法
 
 设置：
@@ -235,3 +239,96 @@ Resume
 IsCurrentAnimation
 UseColourCube
 IsSymbolOverridden
+
+
+### Entity 方法
+
+AddAccountManager
+AddAnimState
+AddClientSleepable
+AddDebugRender
+AddDynamicShadow
+AddEnvelopeManager
+AddFollower
+AddFontManager
+AddGraphicsOptions
+AddGroundCreep
+AddGroundCreepEntity
+AddImage
+AddImageWidget
+AddLabel
+AddLight
+AddLightWatcher
+AddMap
+AddMapExplorer
+AddMapGenSim
+AddMapLayerManager
+AddMiniMap
+AddMiniMapEntity
+AddNetwork
+AddParticleEmitter
+AddPathfinder
+AddPhysics
+AddPhysicsWaker
+AddPostProcessor
+AddRoadManager
+AddShadowManager
+AddShardClient
+AddShardNetwork
+AddSoundEmitter
+AddStaticShadow
+AddTag
+AddTextEditWidget
+AddTextWidget
+AddTransform
+AddTwitchOptions
+AddUITransform
+AddVFXEffect
+AddVideoWidget
+AddWaveComponent
+
+
+CallPrefabConstructionComplete
+CanPredictMovement
+EnableMovementPrediction
+FlattenMovementPrediction
+FlushLocalDirtyNetVars
+FrustumCheck
+GetAnimStateData
+GetDebugString
+GetGUID
+GetHistoryData
+GetName
+GetParent
+GetPlatform
+GetPrefabName
+HasTag
+Hide
+IsAwake
+IsValid
+IsVisible
+LocalToWorldSpace
+LocalToWorldSpaceIncParent
+MoveToBack
+MoveToFront
+RemoveTag
+Retire
+SetAABB
+SetCanSleep
+SetClickable
+SetInLimbo
+SetIsPredictingMovement
+SetName
+SetParent
+SetPlatform
+SetPrefabName
+SetPristine
+SetSelected
+Show
+WorldToLocalSpace
+
+### Follower 方法
+
+SetOffset
+StopFollowing
+FollowSymbol

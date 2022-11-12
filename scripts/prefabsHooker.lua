@@ -412,7 +412,7 @@ end
 
 AddPrefabPostInit("bullkelp_plant", function(inst)
 	inst:AddComponent("aipc_action_client")
-	inst.components.aipc_action_client.canBeActOn = bullkelpCanBeActOn
+	inst.components.aipc_action_client.canBeTakeOn = bullkelpCanBeActOn
 
 	if not _G.TheWorld.ismastersim then
 		return inst

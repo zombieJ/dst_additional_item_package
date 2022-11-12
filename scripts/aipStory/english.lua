@@ -350,7 +350,17 @@ return {
                 scale=.3,
                 height=90,
             },
-            "Put something to show on the showcase, but it do not prevent perish.",
+            "Put something to show on the showcase, but it do not prevent perish. Can change style by pickaxe with one time.",
+        
+            -- 冰展示柜
+            {
+            type="anim",
+            build="aip_showcase",
+            anim="ice_mix",
+            scale=.3,
+            height=90,
+            },
+            "Of course. Ice one can keep fresh. Also workable with pickaxe.",
         },
     },
 

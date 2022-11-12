@@ -16,6 +16,10 @@ local function triggerComponentAction(player, item, target, targetPoint)
 			item.components.aipc_action:DoAction(player)
 		end
 	end
+
+	if item ~= nil and target ~= nil and target.components.aipc_action ~= nil then
+		target.components.aipc_action:DoGiveAction(player, item)
+	end
 end
 
 env.AddModRPCHandler(env.modname, "aipComponentAction", function(player, item, target, targetPoint)
@@ -31,7 +35,7 @@ local LANG_MAP = {
 		CAST = "Cast",
 		READ = "Read",
 		EAT = "Eat",
-		PICK = "Pick",
+		TAKE = "Take",
 	},
 	chinese = {
 		GIVE = "给予",
@@ -40,7 +44,7 @@ local LANG_MAP = {
 		CAST = "释放",
 		READ = "阅读",
 		EAT = "吃",
-		PICK = "捡起",
+		TAKE = "拿取",
 	},
 }
 local LANG = LANG_MAP[language] or LANG_MAP.english
@@ -48,7 +52,7 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 _G.STRINGS.ACTIONS.AIP_USE = LANG.USE
 
 -------------------- 对目标使用的技能 --------------------
-local AIPC_ACTION = env.AddAction("AIPC_ACTION", LANG.GIVE, function(act)
+local function actionFn(act)
 	local doer = act.doer
 	local item = act.invobject
 	local target = act.target
@@ -62,11 +66,23 @@ local AIPC_ACTION = env.AddAction("AIPC_ACTION", LANG.GIVE, function(act)
 	end
 
 	return true
-end)
+end
+
+-- 长动作
+local AIPC_ACTION = env.AddAction("AIPC_ACTION", LANG.GIVE, actionFn)
 AIPC_ACTION.priority = 1
 
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_ACTION, "dolongaction"))
 AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_ACTION, "dolongaction"))
+
+
+-- 短动作
+local AIPC_GIVE_ACTION = env.AddAction("AIPC_GIVE_ACTION", LANG.GIVE, actionFn)
+AIPC_GIVE_ACTION.priority = 1
+
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_GIVE_ACTION, "doshortaction"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_GIVE_ACTION, "doshortaction"))
+
 
 -- 角色使用 aipc_action_client 对某物使用
 env.AddComponentAction("USEITEM", "aipc_action_client", function(inst, doer, target, actions, right)
@@ -76,6 +92,21 @@ env.AddComponentAction("USEITEM", "aipc_action_client", function(inst, doer, tar
 
 	if inst.components.aipc_action_client:CanActOn(doer, target) then
 		table.insert(actions, _G.ACTIONS.AIPC_ACTION)
+	end
+end)
+
+
+-- 玩家拿着 inventoryitem 对目标 prefab 使用
+env.AddComponentAction("USEITEM", "inventoryitem", function(inst, doer, target, actions, right)
+	if not inst or not target then
+		return
+	end
+
+	if
+		target.components.aipc_action_client ~= nil and
+		target.components.aipc_action_client:CanBeGiveOn(doer, target, inst)
+	then
+		table.insert(actions, _G.ACTIONS.AIPC_GIVE_ACTION)
 	end
 end)
 
@@ -125,10 +156,30 @@ local function beAction(act)
 	return true
 end
 
+-- 额外的拿取距离
+local function ExtraPickupRange(doer, dest)
+	if dest ~= nil then
+		local target_x, target_y, target_z = dest:GetPoint()
+
+		local is_on_water = _G.TheWorld.Map:IsOceanTileAtPoint(target_x, 0, target_z) and
+						not _G.TheWorld.Map:IsPassableAtPoint(target_x, 0, target_z)
+		if is_on_water then
+			return 0.75
+		end
+	end
+    return 0
+end
+
 local AIPC_BE_ACTION = env.AddAction("AIPC_BE_ACTION", LANG.USE, beAction)
+local AIPC_BE_TAKE_ACTION = env.AddAction("AIPC_BE_TAKE_ACTION", LANG.TAKE, beAction)
 local AIPC_BE_CAST_ACTION = env.AddAction("AIPC_BE_CAST_ACTION", LANG.CAST, beAction)
+
+AIPC_BE_TAKE_ACTION.extra_arrive_dist = ExtraPickupRange
+
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_BE_ACTION, "doshortaction"))
 AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_BE_ACTION, "doshortaction"))
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_BE_TAKE_ACTION, "doshortaction"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_BE_TAKE_ACTION, "doshortaction"))
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_BE_CAST_ACTION, "quicktele"))
 AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_BE_CAST_ACTION, "quicktele"))
 
@@ -140,6 +191,10 @@ env.AddComponentAction("SCENE", "aipc_action_client", function(inst, doer, actio
 
 	if inst.components.aipc_action_client:CanBeActOn(doer) then
 		table.insert(actions, _G.ACTIONS.AIPC_BE_ACTION)
+	end
+	
+	if inst.components.aipc_action_client:CanBeTakeOn(doer) then
+		table.insert(actions, _G.ACTIONS.AIPC_BE_TAKE_ACTION)
 	end
 end)
 
@@ -292,6 +347,22 @@ env.AddComponentAction("SCENE", "combat", function(inst, doer, actions, right)
 end)
 
 ------------------------------------- 特殊处理 -------------------------------------
+local ORIGIN_MINE_FN = _G.ACTIONS.MINE.fn
+local ORIGIN_MINE_VALID_FN = _G.ACTIONS.MINE.validfn
+
+-- 重写 MINE 的 fn 和 validfn
+_G.ACTIONS.MINE.validfn = function(act)
+	return ORIGIN_MINE_VALID_FN(act) or act.target:HasTag("aip_showcase")
+end
+
+_G.ACTIONS.MINE.fn = function(act)
+	return (
+		act.target._aipMineFn ~= nil and
+		act.target._aipMineFn(act.target)
+	) or ORIGIN_MINE_FN(act)
+end
+
+------------------------------------- 特殊处理 -------------------------------------
 -- 额外触发一个生命值时间出来
 AddComponentPostInit("health", function(self)
 	-- 生命变化钩子
@@ -431,5 +502,20 @@ AddComponentPostInit("combat", function(self)
 		end
 
 		return dmg
+	end
+end)
+
+
+-- 让玩家使用 AIPC_GIVE_ACTION 时，不会手持物品
+AddComponentPostInit("playercontroller", function(self)
+	local originDoActionAutoEquip = self.DoActionAutoEquip
+
+	function self:DoActionAutoEquip(buffaction, ...)
+		-- 跳过
+		if buffaction.action == AIPC_GIVE_ACTION then
+			return
+		end
+
+		return originDoActionAutoEquip(self, buffaction, ...)
 	end
 end)
