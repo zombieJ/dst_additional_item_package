@@ -780,6 +780,11 @@ end
 -- 丢弃物品，产生一个物理抛下的效果
 function _G.aipFlingItem(loot, pt)
 	if loot ~= nil and loot:IsValid() then
+		-- 丢出的物品会重置一下 owner
+		if loot.components.inventoryitem ~= nil then
+			loot.components.inventoryitem:SetOwner(nil)
+		end
+
         if pt ~= nil then
             loot.Transform:SetPosition(pt:Get())
 		else

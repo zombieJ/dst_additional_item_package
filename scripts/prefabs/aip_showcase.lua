@@ -94,11 +94,15 @@ local function dropItem(inst)
     inst:RemoveTag("aip_showcase_active")
     inst._aipShowcaseItem = nil
 
+    aipPrint("Drop Item:", inst, item)
     if item ~= nil and item:IsValid() then
         lockItem(item, false)
         item.Follower:StopFollowing()
-        aipFlingItem(item, inst:GetPosition())
-        -- inst:RemoveEventCallback("onremove", onItemRemove, item)
+        -- aipFlingItem(item, inst:GetPosition())
+
+        -- 丢出来
+        local vest = aipSpawnPrefab(inst, "aip_showcase_vest")
+        vest.components.container:GiveItem(item)
 
         if inst._aipRemoveItemFn ~= nil then
             inst._aipRemoveItemFn(inst, item)
@@ -117,7 +121,6 @@ end
 -- 服务端有 BUG，如果同时放入 + 扔出的话，会导致物品在客户端看不见
 local function showItemNext(inst, item)
     inst.components.container:DropItem(item)
-    inst._aipGiveLock = nil
 
     -- item.components.inventoryitem:SetOwner(inst)
 
@@ -137,6 +140,9 @@ local function showItemNext(inst, item)
     inst._aipShowcaseItem = item
     inst:AddTag("aip_showcase_active")
 end
+
+local DROP_DELAY = 1
+local DROP_CONTINUE_DELAY = DROP_DELAY + 0.5
 
 -- 展示物品
 local function showItem(inst, item)
@@ -158,14 +164,13 @@ local function showItem(inst, item)
         item = item.components.inventoryitem:RemoveFromOwner(false) or item
 
         -- 重置 Owner
-        inst._aipGiveLock = 1
-        local giveRet = inst.components.container:GiveItem(item)
-        item = getContainerItem(inst)
+        local vest = aipSpawnPrefab(inst, "aip_showcase_vest")
+        vest.components.container:GiveItem(item)
+        item = getContainerItem(vest)
 
-        inst:DoTaskInTime(0.1, function()
+        inst:DoTaskInTime(DROP_CONTINUE_DELAY, function()
             showItemNext(inst, item)
         end)
-        
     end
     -- inst:ListenForEvent("onremove", onItemRemove, item)
 end
@@ -223,7 +228,7 @@ local function canBeGiveOn(inst, doer, item)
 end
 
 local function onDoGiveAction(inst, doer, item)
-    -- aipPrint("Give!", inst, doer, item)
+    aipPrint("Give!", inst, doer, item)
     showItem(inst, item)
 end
 
@@ -263,7 +268,7 @@ local function onLoad(inst, data)
 end
 
 local function showContainerItem(inst)
-    if inst._aipGiveLock == nil and not inst.components.container:IsEmpty() then
+    if not inst.components.container:IsEmpty() then
         local item = getContainerItem(inst)
         if item ~= nil then
             showItem(inst, item)
@@ -283,6 +288,51 @@ local function onLoadPostPass(inst, newents, data)
     else
         showContainerItem(inst)
     end
+end
+
+--------------------------------- 马甲 ---------------------------------
+local function vestItemGet(inst)
+    inst:DoTaskInTime(DROP_DELAY, function()
+        aipPrint("Vest Drop!", inst, inst.components.container:IsEmpty())
+        local item = getContainerItem(inst)
+        item:ReturnToScene()
+        inst.components.container:DropEverything()
+        aipTypePrint("Item >", item)
+
+        inst:DoTaskInTime(DROP_DELAY, function()
+            inst:Remove()
+        end)
+    end)
+end
+
+-- 容器马甲，只用于扔下东西
+local function vestFn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddNetwork()
+
+    inst:AddTag("fx")
+    inst:AddTag("NOCLICK")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst:AddComponent("inspectable")
+
+    -- 放置物品
+    inst:AddComponent("container")
+    inst.components.container:WidgetSetup("aip_showcase_vest")
+    inst.components.container.skipclosesnd = true
+    inst.components.container.skipopensnd = true
+    inst.components.container.canbeopened = false
+
+    inst:ListenForEvent("itemget", vestItemGet)
+
+    return inst
 end
 
 --------------------------------- 实例 ---------------------------------
@@ -395,7 +445,9 @@ local showcaseList = {
     },
 }
 
-local prefabs = {}
+local prefabs = {
+    Prefab("aip_showcase_vest", vestFn, assets)
+}
 for name, data in pairs(showcaseList) do
     local function fn()
         return createInst(name, data)

@@ -517,6 +517,7 @@ params.aip_showcase = {
 }
 
 params.aip_showcase_ice = params.aip_showcase
+params.aip_showcase_vest = params.aip_showcase
 
 ----------------------------------------------------------------------------------------------
 local containers = _G.require "containers"
