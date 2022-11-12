@@ -55,6 +55,15 @@ local assets = {
 local skinList = {"circle","broken","button","mix"}
 
 --------------------------------- 绑定 ---------------------------------
+local function getContainerItem(inst)
+    if inst.components.container ~= nil then
+        local all = inst.components.container:GetAllItems()
+        -- aipTypePrint("Get Item:", all)
+
+        return all[1]
+    end
+end
+
 local function lockItem(item, lock)
     if item then
         if lock then
@@ -91,6 +100,10 @@ local function dropItem(inst)
         aipFlingItem(item, inst:GetPosition())
         -- inst:RemoveEventCallback("onremove", onItemRemove, item)
 
+        if inst._aipRemoveItemFn ~= nil then
+            inst._aipRemoveItemFn(inst, item)
+        end
+
         return item
     end
 end
@@ -101,36 +114,59 @@ end
 --     dropItem(inst)
 -- end
 
--- 展示物品
-local function showItem(inst, item)
-    -- 清理之前的物品
-    dropItem(inst)
+-- 服务端有 BUG，如果同时放入 + 扔出的话，会导致物品在客户端看不见
+local function showItemNext(inst, item)
+    inst.components.container:DropItem(item)
+    inst._aipGiveLock = nil
 
-    -- 取出一个物品，并且重置 Owner 为展示柜
-    if item.components.inventoryitem ~= nil then
-        -- 移除 Owner
-        item = item.components.inventoryitem:RemoveFromOwner(false)
+    -- item.components.inventoryitem:SetOwner(inst)
 
-        -- 重置 Owner
-        inst._aipGiveLock = 1
-        inst.components.container:GiveItem(item)
-        item = inst.components.container:GetItemInSlot(1)
-        inst.components.container:DropItem(item)
-        inst._aipGiveLock = nil
-
-        item.components.inventoryitem:SetOwner(inst)
-    end
-
+    -- 跟随
     if item.Follower == nil then
         item.entity:AddFollower()
     end
     item.Follower:FollowSymbol(inst.GUID, "swap_item", 0, 0, 0.1)
 
+    -- 锁定
     lockItem(item, true)
+
+    if inst._aipTakeItemFn ~= nil then
+        inst._aipTakeItemFn(inst, item)
+    end
 
     inst._aipShowcaseItem = item
     inst:AddTag("aip_showcase_active")
+end
 
+-- 展示物品
+local function showItem(inst, item)
+    -- 清理之前的物品
+    dropItem(inst)
+
+    if item == nil then
+        return
+    end
+
+    -- aipPrint("Show:", inst, item)
+
+    -- 取出一个物品，并且重置 Owner 为展示柜
+    if item.components.inventoryitem ~= nil then
+        -- item = aipGetOne(item)
+
+
+        -- 移除 Owner
+        item = item.components.inventoryitem:RemoveFromOwner(false) or item
+
+        -- 重置 Owner
+        inst._aipGiveLock = 1
+        local giveRet = inst.components.container:GiveItem(item)
+        item = getContainerItem(inst)
+
+        inst:DoTaskInTime(0.1, function()
+            showItemNext(inst, item)
+        end)
+        
+    end
     -- inst:ListenForEvent("onremove", onItemRemove, item)
 end
 
@@ -228,7 +264,7 @@ end
 
 local function showContainerItem(inst)
     if inst._aipGiveLock == nil and not inst.components.container:IsEmpty() then
-        local item = inst.components.container:GetItemInSlot(1)
+        local item = getContainerItem(inst)
         if item ~= nil then
             showItem(inst, item)
         end
@@ -250,7 +286,9 @@ local function onLoadPostPass(inst, newents, data)
 end
 
 --------------------------------- 实例 ---------------------------------
-local function createInst(name, anim, postFn)
+local function createInst(name, data)
+    local anim = data.anim
+
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -311,9 +349,12 @@ local function createInst(name, anim, postFn)
 
     inst._aipMineFn = mineFn -- 通过 componentsHooker 注入的额外挖掘技能
     inst._aipMineLeft = MINE_LEFT
+
+    inst._aipTakeItemFn = data.takeItemFn
+    inst._aipRemoveItemFn = data.removeItemFn
     
-    if postFn ~= nil then
-        postFn(inst)
+    if data.postFn ~= nil then
+        data.postFn(inst)
     end
 
     inst.OnSave = onSave
@@ -337,9 +378,19 @@ local showcaseList = {
     ---------------------------------- 冰冻 ----------------------------------
     aip_showcase_ice = {
         anim = "ice",
-        postFn = function(inst)
-            inst:AddComponent("preserver")
-            inst.components.preserver:SetPerishRateMultiplier(0)
+        -- postFn = function(inst)
+        --     inst:AddComponent("preserver")
+        --     inst.components.preserver:SetPerishRateMultiplier(0)
+        -- end,
+        takeItemFn = function(inst, item)
+            if item.components.perishable ~= nil then
+                item.components.perishable:StopPerishing()
+            end
+        end,
+        removeItemFn = function(inst, item)
+            if item.components.perishable ~= nil then
+                item.components.perishable:StartPerishing()
+            end
         end,
     },
 }
@@ -347,7 +398,7 @@ local showcaseList = {
 local prefabs = {}
 for name, data in pairs(showcaseList) do
     local function fn()
-        return createInst(name, data.anim, data.postFn)
+        return createInst(name, data)
     end
 
     table.insert(prefabs, Prefab(name, fn, assets))

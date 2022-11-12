@@ -763,13 +763,17 @@ function _G.aipCommonStore()
 	return _G.TheWorld.components ~= nil and _G.TheWorld.components.world_common_store
 end
 
+function _G.aipGetOne(inst)
+	if inst.components.stackable ~= nil then
+		return inst.components.stackable:Get()
+	end
+
+	return inst
+end
+
 function _G.aipRemove(inst)
 	if inst ~= nil and inst:IsValid() then
-		if inst.components.stackable ~= nil then
-			inst.components.stackable:Get():Remove()
-		else
-			inst:Remove()
-		end
+		_G.aipGetOne(inst):Remove()
 	end
 end
 
