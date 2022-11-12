@@ -777,41 +777,43 @@ function _G.aipRemove(inst)
 	end
 end
 
+function _G.aipCopy(item)
+	local record = item:GetSaveRecord()
+	local newItem = _G.SpawnSaveRecord(record)
+
+	return newItem
+end
+
 -- 丢弃物品，产生一个物理抛下的效果
 function _G.aipFlingItem(loot, pt)
 	if loot ~= nil and loot:IsValid() then
-		-- 丢出的物品会重置一下 owner
-		if loot.components.inventoryitem ~= nil then
-			loot.components.inventoryitem:SetOwner(nil)
-		end
-
         if pt ~= nil then
             loot.Transform:SetPosition(pt:Get())
 		else
 			pt = loot:GetPosition()
         end
 
-        local min_speed =  0
-        local max_speed = 2
-        local y_speed = 8
-        local y_speed_variance = 4
+		local min_speed =  0
+		local max_speed = 2
+		local y_speed = 8
+		local y_speed_variance = 4
 
-        if loot.Physics ~= nil then
-            local angle = math.random() * 2 * _G.PI
-            local speed = min_speed + math.random() * (max_speed - min_speed)
-            if loot:IsAsleep() then
-                local radius = .5 * speed
-                loot.Transform:SetPosition(
-                    pt.x + math.cos(angle) * radius,
-                    0,
-                    pt.z - math.sin(angle) * radius
-                )
-            else
-                local sinangle = math.sin(angle)
-                local cosangle = math.cos(angle)
-                loot.Physics:SetVel(speed * cosangle, _G.GetRandomWithVariance(y_speed, y_speed_variance), speed * -sinangle)
-            end
-        end
+		if loot.Physics ~= nil then
+			local angle = math.random() * 2 * _G.PI
+			local speed = min_speed + math.random() * (max_speed - min_speed)
+			if loot:IsAsleep() then
+				local radius = .5 * speed
+				loot.Transform:SetPosition(
+					pt.x + math.cos(angle) * radius,
+					0,
+					pt.z - math.sin(angle) * radius
+				)
+			else
+				local sinangle = math.sin(angle)
+				local cosangle = math.cos(angle)
+				loot.Physics:SetVel(speed * cosangle, _G.GetRandomWithVariance(y_speed, y_speed_variance), speed * -sinangle)
+			end
+		end
     end
 end
 

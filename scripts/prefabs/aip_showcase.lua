@@ -97,18 +97,22 @@ local function dropItem(inst)
     aipPrint("Drop Item:", inst, item)
     if item ~= nil and item:IsValid() then
         lockItem(item, false)
-        item.Follower:StopFollowing()
-        -- aipFlingItem(item, inst:GetPosition())
+        -- item.Follower:StopFollowing()
+        -- aipFlingItem(item, inst:GetPosition(), true)
 
         -- 丢出来
-        local vest = aipSpawnPrefab(inst, "aip_showcase_vest")
-        vest.components.container:GiveItem(item)
+        -- local vest = aipSpawnPrefab(inst, "aip_showcase_vest")
+        -- vest.components.container:GiveItem(item)
 
         if inst._aipRemoveItemFn ~= nil then
             inst._aipRemoveItemFn(inst, item)
         end
 
-        return item
+        local copy = aipCopy(item)
+        aipFlingItem(copy, inst:GetPosition())
+        item:Remove()
+
+        return copy
     end
 end
 
@@ -141,8 +145,8 @@ local function showItemNext(inst, item)
     inst:AddTag("aip_showcase_active")
 end
 
-local DROP_DELAY = 1
-local DROP_CONTINUE_DELAY = DROP_DELAY + 0.5
+local DROP_DELAY = 0.05
+local DROP_CONTINUE_DELAY = DROP_DELAY + 0.05
 
 -- 展示物品
 local function showItem(inst, item)
@@ -297,6 +301,7 @@ local function vestItemGet(inst)
         local item = getContainerItem(inst)
         item:ReturnToScene()
         inst.components.container:DropEverything()
+        item.Transform:SetPosition(inst.Transform:GetWorldPosition())
         aipTypePrint("Item >", item)
 
         inst:DoTaskInTime(DROP_DELAY, function()
@@ -308,6 +313,8 @@ end
 -- 容器马甲，只用于扔下东西
 local function vestFn()
     local inst = CreateEntity()
+
+    aipPrint("Vest CREATE!!!")
 
     inst.entity:AddTransform()
     inst.entity:AddNetwork()

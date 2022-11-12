@@ -54,9 +54,7 @@ local function onCopy(inst, doer)
 	-- 价值分析
 	for k, item in pairs(inst.components.container.slots) do
         if item ~= nil and item:IsValid() then
-            local record = item:GetSaveRecord()
-            local newItem = SpawnSaveRecord(record)
-            aipFlingItem(newItem, inst:GetPosition())
+            aipFlingItem(aipCopy(item), inst:GetPosition())
         end
 	end
 end
