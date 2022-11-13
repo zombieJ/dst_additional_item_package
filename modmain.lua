@@ -157,6 +157,7 @@ PrefabFiles = {
 	"aip_particles_runing",
 	"aip_tricky_thrower",
 	"aip_showcase",
+	"aip_jump_paper",
 
 	-- Orbit
 	"aip_orbit",
