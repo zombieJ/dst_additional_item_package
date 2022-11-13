@@ -199,6 +199,25 @@ local function getFn(data)
 	return fn
 end
 
+---------------------------------- 方法 ----------------------------------
+local function chop_tree(inst, chopper, chopsleft, numchops)
+    if not (chopper ~= nil and chopper:HasTag("playerghost")) then
+        inst.SoundEmitter:PlaySound(
+            chopper ~= nil and chopper:HasTag("beaver") and
+            "dontstarve/characters/woodie/beaver_chop_tree" or
+            "dontstarve/wilson/use_axe_tree"
+        )
+    end
+
+    inst.AnimState:PlayAnimation("hit")
+    inst.AnimState:PushAnimation("idle", true)
+end
+
+local function chop_down_tree(inst, chopper)
+	aipFlingItem(aipSpawnPrefab(inst, "aip_cost_lamp"))
+    aipReplacePrefab(inst, "collapse_small"):SetMaterial("wood")
+end
+
 ---------------------------------- 特例 ----------------------------------
 local list = {
 	{	-- 火焰守卫：长时间光亮
@@ -415,6 +434,12 @@ local list = {
 		postFn = function(inst)
 			local aura = SpawnPrefab("aip_aura_cost")
 			inst:AddChild(aura)
+
+			inst:AddComponent("workable")
+			inst.components.workable:SetWorkLeft(5)
+			inst.components.workable:SetWorkAction(ACTIONS.CHOP)
+			inst.components.workable:SetOnWorkCallback(chop_tree)
+			inst.components.workable:SetOnFinishCallback(chop_down_tree)
 		end,
 	}
 }

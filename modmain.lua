@@ -158,6 +158,7 @@ PrefabFiles = {
 	"aip_tricky_thrower",
 	"aip_showcase",
 	"aip_jump_paper",
+	"aip_cost_lamp",
 
 	-- Orbit
 	"aip_orbit",
