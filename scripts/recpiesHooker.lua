@@ -136,6 +136,10 @@ rec("incinerator", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.LIGHT },
 rec("popcorngun", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.WEAPONS },
 	{Ingredient("corn", 2),Ingredient("houndstooth", 4),Ingredient("silk", 3)})
 
+-- 弹跳符
+rec("aip_jump_paper", TECH.MAGIC_TWO, { CRAFTING_FILTERS.WEAPONS },
+	{Ingredient("aip_veggie_wheat", 1, "images/inventoryimages/aip_veggie_wheat.xml"),Ingredient("boomerang", 1),Ingredient("papyrus", 1)})
+
 -------------------------------------- 雕塑 --------------------------------------
 -- 月光星尘雕像
 rec("chesspiece_aip_moon_builder", TECH.SCULPTING_ONE, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.DECOR },

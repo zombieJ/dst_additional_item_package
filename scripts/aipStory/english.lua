@@ -94,6 +94,13 @@ return {
                 name="aip_oldone_durian",
             },
             "I tried to combine 'Durian' and 'Bulb', they have a magical chemical reaction. Can be thrown like 'Bulb', but more durable. I'm going to give it another name \"'Durian' Star\"",
+        
+            -- 弹跳符
+            {
+                type="img",
+                name="aip_jump_paper",
+            },
+            "Rice Amulet can jump between enemies once. Same as boomerang, do not get hurt when it returns.",
         },
     },
 
@@ -1005,6 +1012,15 @@ return {
                 top=10,
             },
             "Light this pile of fallen leaves and clean the yard.",
+
+            -- 饭团食盒
+            {
+                type="anim",
+                build="aip_oldone_rice",
+                scale=.25,
+                height=80,
+            },
+            "I leave a rick box, can you fill it? Of course, rice ball is very viscous and can be used to repair ships. I guess you must be reluctant to let it go.",
         },
     },
 
