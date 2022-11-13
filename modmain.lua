@@ -135,6 +135,7 @@ PrefabFiles = {
 	"aip_oldone_plant_flower",
 	"aip_oldone_leaves",
 	"aip_oldone_salt_hole",
+	"aip_oldone_rice",
 	"aip_salt_fish",
 	"aip_oldone_stone_piece",
 	"aip_oldone_lotus",
