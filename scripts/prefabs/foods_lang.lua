@@ -92,6 +92,10 @@ local LANG_MAP = {
 			NAME = "Leather Jelly",
 			DESC = "Not safe to eat",
 		},
+		AIP_FOOD_RICE_BALLS = {
+			NAME = "Chestnut Rice",
+			DESC = "Satisfy hunger and fix boat",
+		},
 	},
 	spanish = {
 		EGG_PANCAKE = {
@@ -465,6 +469,10 @@ local LANG_MAP = {
 		AIP_FOOD_LEATHER_JELLY = {
 			NAME = "皮质果冻",
 			DESC = "不可食用！",
+		},
+		AIP_FOOD_RICE_BALLS = {
+			NAME = "栗饭团",
+			DESC = "充饥修船皆可用",
 		},
 	},
 }
