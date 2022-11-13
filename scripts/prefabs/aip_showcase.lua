@@ -435,6 +435,8 @@ local function createInst(name, data)
 
     inst:ListenForEvent("onbuilt", onBuilt)
 
+    inst:ListenForEvent("onremove", dropItem)
+
     return inst
 end
 
