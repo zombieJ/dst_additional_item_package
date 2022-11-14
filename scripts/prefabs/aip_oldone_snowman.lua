@@ -171,7 +171,7 @@ local function onunequip(inst, owner)
 end
 
 local function onBallDropped(inst)
-    if inst._aipMaster.aipCollect ~= nil then
+    if inst._aipMaster ~= nil and inst._aipMaster.aipCollect ~= nil then
         inst._aipMaster.aipCollect(inst._aipMaster)
     end
 end
