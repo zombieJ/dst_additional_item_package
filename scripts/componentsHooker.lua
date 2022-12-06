@@ -104,7 +104,7 @@ env.AddComponentAction("USEITEM", "inventoryitem", function(inst, doer, target, 
 
 	if
 		target.components.aipc_action_client ~= nil and
-		target.components.aipc_action_client:CanBeGiveOn(doer, target, inst)
+		target.components.aipc_action_client:CanBeGiveOn(doer, inst)
 	then
 		table.insert(actions, _G.ACTIONS.AIPC_GIVE_ACTION)
 	end
