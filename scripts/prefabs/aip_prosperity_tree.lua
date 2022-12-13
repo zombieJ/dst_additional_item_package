@@ -18,8 +18,13 @@ STRINGS.NAMES.AIP_PROSPERITY_TREE = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PROSPERITY_TREE = LANG.DESC
 
 -- 资源
+local prefabs = {
+    "cane_harlequin_fx",
+}
+
 local assets = {
     Asset("ANIM", "anim/aip_prosperity_tree.zip"),
+    Asset("ANIM", "anim/aip_prosperity_tree_leaf.zip"),
 }
 
 ------------------------------------ 数据 ------------------------------------
@@ -53,16 +58,33 @@ local function syncFoods(inst)
     initData(inst)
 
     for key, data in pairs(inst._aipFoods) do
-        -- 创建挂载食物
-        if data.prefab == nil then
-            local clone = aipSpawnPrefab(inst, data.name)
-            local symbol = tree_data[key]
+        local symbol = tree_data[key]
+
+        -- 创建挂载叶子
+        if data.leaf == nil then
+            local clone = aipSpawnPrefab(inst, "aip_prosperity_tree_leaf")
 
             if clone.Follower == nil then
                 clone.entity:AddFollower()
             end
 
-            local scale = 0.65
+            local scale = 0.8
+            clone.Transform:SetScale(scale, scale, scale)
+
+            clone.Follower:FollowSymbol(inst.GUID, symbol, 0, 0, 0.05)
+
+            data.leaf = clone
+        end
+
+        -- 创建挂载食物
+        if data.prefab == nil then
+            local clone = aipSpawnPrefab(inst, data.name)
+
+            if clone.Follower == nil then
+                clone.entity:AddFollower()
+            end
+
+            local scale = 0.8
             clone.Transform:SetScale(scale, scale, scale)
 
             clone:AddTag("fx")
@@ -74,7 +96,7 @@ local function syncFoods(inst)
         end
 
         -- 同步进度
-        data.prefab.AnimState:SetMultColour(1, 1, 1, 0.6 + data.ptg * 0.3)
+        data.prefab.AnimState:OverrideMultColour(1, 1, 1, 0.6 + data.ptg * 0.3)
     end
 end
 
@@ -117,6 +139,7 @@ local function OnIsDay(inst, isday)
 
     local total = #tree_data
     local foodIndex = math.random(total)
+
     if inst._aipFoods[foodIndex] ~= nil then
         inst._aipFoods[foodIndex].ptg = math.min(inst._aipFoods[foodIndex].ptg + 0.4, 1)
     else
@@ -176,4 +199,33 @@ local function fn()
     return inst
 end
 
-return Prefab("aip_prosperity_tree", fn, assets)
+-- ==========================================================================
+-- ==                                 叶子                                 ==
+-- ==========================================================================
+local function leafFn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddNetwork()
+
+    inst.AnimState:SetBank("aip_prosperity_tree_leaf")
+    inst.AnimState:SetBuild("aip_prosperity_tree_leaf")
+    inst.AnimState:PlayAnimation("idle", true)
+
+    inst:AddTag("fx")
+    inst:AddTag("NOCLICK")
+    inst.persists = false
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    return inst
+end
+
+return Prefab("aip_prosperity_tree", fn, assets, prefabs),
+        Prefab("aip_prosperity_tree_leaf", leafFn, assets)

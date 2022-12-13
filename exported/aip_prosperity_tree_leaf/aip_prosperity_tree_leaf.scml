@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="full">
+        <file id="0" name="full/leaf_4.png" width="58" height="47" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="full/leaf_3.png" width="103" height="39" pivot_x="0" pivot_y="1"/>
+        <file id="2" name="full/leaf_2.png" width="81" height="76" pivot_x="0" pivot_y="1"/>
+        <file id="3" name="full/leaf_1.png" width="109" height="62" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_prosperity_tree_leaf">
+        <animation id="0" name="idle" length="3000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="leaf_4" folder="0" file="0" abs_x="-10.135593" abs_y="6.28125" abs_pivot_x="0.635593" abs_pivot_y="0.21875" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="leaf_2" folder="0" file="2" abs_x="-13" abs_y="15" abs_pivot_x="0" abs_pivot_y="1" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="2" name="leaf_3" folder="0" file="1" abs_x="5.4375" abs_y="11.8125" abs_pivot_x="0.0625" abs_pivot_y="0.6875" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2"/>
+                    <object_ref id="3" name="leaf_1" folder="0" file="3" abs_x="8.55" abs_y="11.587302" abs_pivot_x="0.95" abs_pivot_y="0.912698" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3"/>
+                </key>
+                <key id="1" time="1500">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                    <object_ref id="2" timeline="2" key="1" z_index="2"/>
+                    <object_ref id="3" timeline="3" key="1" z_index="3"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="leaf_4">
+                <key id="0" spin="-1">
+                    <object folder="0" file="0" x="-10.135593" y="6.28125" pivot_x="0.635593" pivot_y="0.21875" angle="0"/>
+                </key>
+                <key id="1" time="1500">
+                    <object folder="0" file="0" x="-10.135593" y="6.28125" pivot_x="0.635593" pivot_y="0.21875" angle="353.623861" scale_x="1" scale_y="1"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="leaf_2">
+                <key id="0">
+                    <object folder="0" file="2" x="-13" y="15" angle="0"/>
+                </key>
+                <key id="1" time="1500" spin="-1">
+                    <object folder="0" file="2" x="-13" y="15" angle="4.053554"/>
+                </key>
+            </timeline>
+            <timeline id="2" name="leaf_3">
+                <key id="0">
+                    <object folder="0" file="1" x="5.4375" y="11.8125" pivot_x="0.0625" pivot_y="0.6875" angle="0"/>
+                </key>
+                <key id="1" time="1500" spin="-1">
+                    <object folder="0" file="1" x="5.4375" y="11.8125" pivot_x="0.0625" pivot_y="0.6875" angle="3.274138"/>
+                </key>
+            </timeline>
+            <timeline id="3" name="leaf_1">
+                <key id="0" spin="-1">
+                    <object folder="0" file="3" x="8.55" y="11.587302" pivot_x="0.95" pivot_y="0.912698" angle="0"/>
+                </key>
+                <key id="1" time="1500">
+                    <object folder="0" file="3" x="8.55" y="11.587302" pivot_x="0.95" pivot_y="0.912698" angle="352.501786" scale_x="1"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>
