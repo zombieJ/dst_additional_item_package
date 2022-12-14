@@ -7,7 +7,7 @@
         <file id="3" name="full/leaf_1.png" width="109" height="62" pivot_x="0" pivot_y="1"/>
     </folder>
     <entity id="0" name="aip_prosperity_tree_leaf">
-        <animation id="0" name="idle" length="3000">
+        <animation id="0" name="idle1" length="3000">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="leaf_4" folder="0" file="0" abs_x="-10.135593" abs_y="6.28125" abs_pivot_x="0.635593" abs_pivot_y="0.21875" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
@@ -27,7 +27,7 @@
                     <object folder="0" file="0" x="-10.135593" y="6.28125" pivot_x="0.635593" pivot_y="0.21875" angle="0"/>
                 </key>
                 <key id="1" time="1500">
-                    <object folder="0" file="0" x="-10.135593" y="6.28125" pivot_x="0.635593" pivot_y="0.21875" angle="353.623861" scale_x="1" scale_y="1"/>
+                    <object folder="0" file="0" x="-10.135593" y="6.28125" pivot_x="0.635593" pivot_y="0.21875" angle="353.623861"/>
                 </key>
             </timeline>
             <timeline id="1" name="leaf_2">
@@ -51,7 +51,113 @@
                     <object folder="0" file="3" x="8.55" y="11.587302" pivot_x="0.95" pivot_y="0.912698" angle="0"/>
                 </key>
                 <key id="1" time="1500">
-                    <object folder="0" file="3" x="8.55" y="11.587302" pivot_x="0.95" pivot_y="0.912698" angle="352.501786" scale_x="1"/>
+                    <object folder="0" file="3" x="8.55" y="11.587302" pivot_x="0.95" pivot_y="0.912698" angle="352.501786"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="1" name="idle2" length="4000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="leaf_4_000" folder="0" file="0" abs_x="6.745763" abs_y="-2.677083" abs_pivot_x="0.754237" abs_pivot_y="0.177083" abs_angle="151.922542" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="leaf_2_000" folder="0" file="2" abs_x="-10" abs_y="3" abs_pivot_x="0" abs_pivot_y="1" abs_angle="48.700543" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="2" name="leaf_1_000" folder="0" file="3" abs_x="4.586364" abs_y="6.555556" abs_pivot_x="0.913636" abs_pivot_y="0.944444" abs_angle="329.430302" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2"/>
+                    <object_ref id="3" name="leaf_3_000" folder="0" file="1" abs_x="7.466346" abs_y="10.8375" abs_pivot_x="0.033654" abs_pivot_y="0.6625" abs_angle="228.819077" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3"/>
+                </key>
+                <key id="1" time="2002">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                    <object_ref id="2" timeline="2" key="1" z_index="2"/>
+                    <object_ref id="3" timeline="3" key="1" z_index="3"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="leaf_4_000">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="6.745763" y="-2.677083" pivot_x="0.754237" pivot_y="0.177083" angle="151.922542" scale_x="1"/>
+                </key>
+                <key id="1" time="2002" spin="0">
+                    <object folder="0" file="0" x="8.745763" y="-9.677083" pivot_x="0.754237" pivot_y="0.177083" angle="151.922542" scale_x="1"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="leaf_2_000">
+                <key id="0" spin="-1">
+                    <object folder="0" file="2" x="-10" y="3" angle="48.700543" scale_x="1"/>
+                </key>
+                <key id="1" time="2002">
+                    <object folder="0" file="2" x="-10" y="3" angle="38.820076"/>
+                </key>
+            </timeline>
+            <timeline id="2" name="leaf_1_000">
+                <key id="0">
+                    <object folder="0" file="3" x="4.586364" y="6.555556" pivot_x="0.913636" pivot_y="0.944444" angle="329.430302" scale_x="1" scale_y="1"/>
+                </key>
+                <key id="1" time="2002" spin="-1">
+                    <object folder="0" file="3" x="4.586364" y="6.555556" pivot_x="0.913636" pivot_y="0.944444" angle="344.635112" scale_x="1" scale_y="1"/>
+                </key>
+            </timeline>
+            <timeline id="3" name="leaf_3_000">
+                <key id="0">
+                    <object folder="0" file="1" x="7.466346" y="10.8375" pivot_x="0.033654" pivot_y="0.6625" angle="228.819077" scale_x="1"/>
+                </key>
+                <key id="1" time="2002" spin="-1">
+                    <object folder="0" file="1" x="4.466346" y="1.8375" pivot_x="0.033654" pivot_y="0.6625" angle="236.6094" scale_x="1"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="idle3" length="2600">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="leaf_4_001" folder="0" file="0" abs_x="2.745763" abs_y="4.364583" abs_pivot_x="0.754237" abs_pivot_y="0.135417" abs_angle="240.203114" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="leaf_2_001" folder="0" file="2" abs_x="-8" abs_y="10" abs_pivot_x="0" abs_pivot_y="1" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="2" name="leaf_2_002" folder="0" file="2" abs_x="17" abs_y="5" abs_pivot_x="0" abs_pivot_y="1" abs_angle="231.179924" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2"/>
+                    <object_ref id="3" name="leaf_1_001" folder="0" file="3" abs_x="22.560789" abs_y="3.289622" abs_pivot_x="0.909091" abs_pivot_y="0.870968" abs_angle="129.002451" abs_scale_x="0.658515" abs_scale_y="1.302502" abs_a="1" timeline="3" key="0" z_index="3"/>
+                    <object_ref id="4" name="leaf_3_001" folder="0" file="1" abs_x="9.379808" abs_y="-4.2125" abs_pivot_x="0.120192" abs_pivot_y="0.7125" abs_angle="238.985354" abs_scale_x="0.870052" abs_scale_y="1.188806" abs_a="1" timeline="4" key="0" z_index="4"/>
+                </key>
+                <key id="1" time="1306">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                    <object_ref id="2" timeline="2" key="1" z_index="2"/>
+                    <object_ref id="3" timeline="3" key="1" z_index="3"/>
+                    <object_ref id="4" timeline="4" key="1" z_index="4"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="leaf_4_001">
+                <key id="0" spin="-1">
+                    <object folder="0" file="0" x="2.745763" y="4.364583" pivot_x="0.754237" pivot_y="0.135417" angle="240.203114" scale_x="1"/>
+                </key>
+                <key id="1" time="1306">
+                    <object folder="0" file="0" x="2.745763" y="4.364583" pivot_x="0.754237" pivot_y="0.135417" angle="226.745853" scale_x="1"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="leaf_2_001">
+                <key id="0" spin="-1">
+                    <object folder="0" file="2" x="-8" y="10"/>
+                </key>
+                <key id="1" time="1306">
+                    <object folder="0" file="2" x="-8" y="10" angle="349.114473" scale_x="1" scale_y="1"/>
+                </key>
+            </timeline>
+            <timeline id="2" name="leaf_2_002">
+                <key id="0">
+                    <object folder="0" file="2" x="17" y="5" angle="231.179924" scale_x="1" scale_y="1"/>
+                </key>
+                <key id="1" time="1306" spin="-1">
+                    <object folder="0" file="2" x="17" y="5" angle="237.572445" scale_x="1" scale_y="1"/>
+                </key>
+            </timeline>
+            <timeline id="3" name="leaf_1_001">
+                <key id="0" spin="-1">
+                    <object folder="0" file="3" x="22.560789" y="3.289622" pivot_x="0.909091" pivot_y="0.870968" angle="129.002451" scale_x="0.658515" scale_y="1.302502"/>
+                </key>
+                <key id="1" time="1306">
+                    <object folder="0" file="3" x="22.560789" y="3.289622" pivot_x="0.909091" pivot_y="0.870968" angle="110.801443" scale_x="0.658515" scale_y="1.302502"/>
+                </key>
+            </timeline>
+            <timeline id="4" name="leaf_3_001">
+                <key id="0">
+                    <object folder="0" file="1" x="9.379808" y="-4.2125" pivot_x="0.120192" pivot_y="0.7125" angle="238.985354" scale_x="0.870052" scale_y="1.188806"/>
+                </key>
+                <key id="1" time="1306" spin="-1">
+                    <object folder="0" file="1" x="9.379808" y="-4.2125" pivot_x="0.120192" pivot_y="0.7125" angle="241.033678" scale_x="0.870052" scale_y="1.188806"/>
                 </key>
             </timeline>
         </animation>

@@ -96,7 +96,9 @@ local function syncFoods(inst)
         end
 
         -- 同步进度
-        data.prefab.AnimState:OverrideMultColour(1, 1, 1, 0.6 + data.ptg * 0.3)
+        -- data.prefab.AnimState:OverrideMultColour(1, 1, 1, 0.6 + data.ptg * 0.3)
+        local prefabScale = math.min(1, 0.2 + data.ptg * 0.8)
+        data.prefab.Transform:SetScale(prefabScale, prefabScale, prefabScale)
     end
 end
 
@@ -124,7 +126,8 @@ local function onDoGiveAction(inst, doer, item)
     inst._aipFoods[foodIndex] = {
         name = item.prefab,
         ptg = 0,
-        prefab = nil, -- 绑定的元素，不会保存
+        prefab = nil,   -- 绑定的元素，不会保存
+        leaf = nil,     -- 绑定叶子
     }
 
     aipRemove(item)
@@ -151,6 +154,25 @@ local function OnIsDay(inst, isday)
     end
 
     syncFoods(inst)
+end
+
+-------------------------- 存取 --------------------------
+local function onSave(inst, data)
+    data._aipFoods = {}
+
+    for key, value in pairs(inst._aipFoods) do
+        data._aipFoods[key] = {
+            name = value.name,
+            ptg = value.ptg,
+        }
+    end
+end
+
+local function onLoad(inst, data)
+	if data ~= nil and data._aipFoods ~= nil then
+        inst._aipFoods = data._aipFoods
+        syncFoods(inst)
+    end
 end
 
 ------------------------------------ 实体 ------------------------------------
@@ -196,6 +218,9 @@ local function fn()
 
     initData(inst)
 
+    inst.OnLoad = onLoad
+	inst.OnSave = onSave
+
     return inst
 end
 
@@ -212,7 +237,7 @@ local function leafFn()
 
     inst.AnimState:SetBank("aip_prosperity_tree_leaf")
     inst.AnimState:SetBuild("aip_prosperity_tree_leaf")
-    inst.AnimState:PlayAnimation("idle", true)
+    inst.AnimState:PlayAnimation("idle"..tostring(math.random(3)), true)
 
     inst:AddTag("fx")
     inst:AddTag("NOCLICK")
