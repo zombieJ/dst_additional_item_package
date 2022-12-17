@@ -292,6 +292,8 @@ local function onDeploy(inst, pt, deployer)
 	local tgt = SpawnPrefab("aip_prosperity_tree")
 	tgt.Transform:SetPosition(pt.x, pt.y, pt.z)
 
+    aipSpawnPrefab(tgt, "aip_shadow_wrapper").DoShow()
+
 	aipRemove(inst)
 end
 
