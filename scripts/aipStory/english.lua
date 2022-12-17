@@ -1075,4 +1075,30 @@ return {
             "Telltale Particles will trigger when player is nearby. Funny~",
         },
     },
+
+    -- 世界掉落
+    {
+        name = "World Drop",
+        desc = {
+            "In this world, creature occasionally drop rare items. These things are not restricted by specific biological types, but drop randomly, and the probability is surprisingly low.",
+        
+            -- 繁荣之种
+            {
+                type="img",
+                name="aip_prosperity_seed",
+            },
+
+            "It looks like it's made of moonlight glass, but it's really a seed. The planted 'Prosperity Tree' has the ability to reproduce.",
+
+            -- 繁荣之树
+            {
+                type="anim",
+                build="aip_prosperity_tree",
+                scale=.3,
+                height=260,
+            },
+
+            "After giving it the fruit and vegetables it grows, it will remember its entity. And grow some every day, drop when the growth is complete and grow again. The 'Pickaxe' will turn back into 'Seed of Prosperity' after hitting it.",
+        }
+    },
 }
