@@ -396,6 +396,34 @@ local food_recipes = {
 			aipBufferPatch(inst, eater, "aip_see_eyes", dev_mode and 20 or 120)
 		end,
 	},
+
+	-- 量力而行
+	aip_food_rice_balls = { -- 栗饭团，栗子 + 粮食
+		test = function(cooker, names, tags)
+			return (
+				(names.acorn or names.acorn_cooked) and
+				tags.starch and tags.starch >= 3
+			)
+		end,
+		stacksize = 2,
+		priority = 99,
+		weight = 1,
+		foodtype = FOODTYPE.VEGGIE,
+		health = 5,
+		hunger = HU * 50,
+		sanity = 0,
+		perishtime = PER * 30,
+		cooktime = dev_mode and CO or CO * 20,
+		postFn = function(inst)
+			inst:AddComponent("boatpatch")
+			inst.components.boatpatch.patch_type = "treegrowth"
+
+			inst:AddComponent("repairer")
+			inst.components.repairer.repairmaterial = MATERIALS.WOOD
+			inst.components.repairer.healthrepairvalue = TUNING.REPAIR_LOGS_HEALTH * 2
+			inst.components.repairer.boatrepairsound = "turnoftides/common/together/boat/repair_with_wood"
+		end,
+	},
 }
 
 --------------------------------------------------
@@ -488,6 +516,10 @@ for name,data in pairs(food_recipes) do
 			if data.goldvalue ~= nil then
 				inst:AddComponent("tradable")
 				inst.components.tradable.goldvalue = data.goldvalue
+			end
+
+			if data.postFn ~= nil then
+				data.postFn(inst)
 			end
 
 			-- 物品栏

@@ -519,6 +519,33 @@ params.aip_showcase = {
 params.aip_showcase_ice = params.aip_showcase
 params.aip_showcase_vest = params.aip_showcase
 
+------------------ 饭盒 ------------------
+params.aip_oldone_rice = {
+    widget = {
+        slotpos = {},
+        animbank = "ui_tacklecontainer_3x2",
+        animbuild = "ui_tacklecontainer_3x2",
+        pos = Vector3(0, 200, 0),
+        side_align_tip = 160,
+    },
+	acceptsstacks = false,
+    type = "chest",
+}
+
+for y = 1, 0, -1 do
+    for x = 0, 2 do
+        table.insert(
+			params.aip_oldone_rice.widget.slotpos,
+			Vector3(80 * x - 80 * 2 + 80, 80 * y - 80 * 2 + 120, 0)
+		)
+    end
+end
+
+function params.aip_oldone_rice.itemtestfn(container, item, slot)
+	return item.prefab == "aip_food_rice_balls"
+end
+
+
 ----------------------------------------------------------------------------------------------
 local containers = _G.require "containers"
 local old_widgetsetup = containers.widgetsetup

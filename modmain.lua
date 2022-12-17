@@ -135,6 +135,7 @@ PrefabFiles = {
 	"aip_oldone_plant_flower",
 	"aip_oldone_leaves",
 	"aip_oldone_salt_hole",
+	"aip_oldone_rice",
 	"aip_salt_fish",
 	"aip_oldone_stone_piece",
 	"aip_oldone_lotus",
@@ -157,6 +158,9 @@ PrefabFiles = {
 	"aip_particles_runing",
 	"aip_tricky_thrower",
 	"aip_showcase",
+	"aip_jump_paper",
+	"aip_cost_lamp",
+	"aip_prosperity_tree",
 
 	-- Orbit
 	"aip_orbit",

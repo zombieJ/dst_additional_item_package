@@ -169,7 +169,7 @@ local DROP_DELAY = 0.05
 local DROP_CONTINUE_DELAY = DROP_DELAY + 0.05
 
 -- 展示物品
-local function showItem(inst, item)
+local function showItem(inst, item, doer)
     -- 清理之前的物品
     dropItem(inst)
 
@@ -187,9 +187,20 @@ local function showItem(inst, item)
         vest.components.container:GiveItem(item)
         item = getContainerItem(vest)
 
-        inst:DoTaskInTime(DROP_CONTINUE_DELAY, function()
-            showItemNext(inst, item)
-        end)
+        if item == nil then
+            -- 如果没放进去说明是比较特殊的物品，我们还给人家
+            if doer ~= nil then
+                if doer.components.container ~= nil then
+					doer.components.container:GiveItem(item)
+				elseif doer.components.inventory ~= nil then
+					doer.components.inventory:GiveItem(item)
+				end
+            end
+        else
+            inst:DoTaskInTime(DROP_CONTINUE_DELAY, function()
+                showItemNext(inst, item)
+            end)
+        end
     end
     -- inst:ListenForEvent("onremove", onItemRemove, item)
 end
@@ -246,7 +257,7 @@ local function canBeGiveOn(inst, doer, item)
 end
 
 local function onDoGiveAction(inst, doer, item)
-    showItem(inst, item)
+    showItem(inst, item, doer)
 end
 
 -- 拿取
@@ -368,7 +379,7 @@ local function createInst(name, data)
     inst:AddTag("aip_showcase")
     inst:AddTag(ACTIONS.MINE.id.."_workable") -- 强制可挖掘
 
-    MakeObstaclePhysics(inst, .2)
+    MakeObstaclePhysics(inst, .15)
 
     inst.AnimState:SetBank("aip_showcase")
     inst.AnimState:SetBuild("aip_showcase")
