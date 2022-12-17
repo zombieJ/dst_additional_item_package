@@ -6,13 +6,13 @@ local LANG_MAP = {
 		NAME = "Prosperity Tree",
 		DESC = "Offer Is Take. It need some veggie",
         SEED_NAME = "Prosperity Seed",
-        SEED_DESC = "",
+        SEED_DESC = "Plant It!",
 	},
 	chinese = {
 		NAME = "繁荣之树",
 		DESC = "供奉即索取，它需要一些蔬果",
         SEED_NAME = "繁荣之种",
-        SEED_DESC = "",
+        SEED_DESC = "种下它！",
 	},
 }
 
@@ -93,6 +93,10 @@ local function syncFoods(inst)
 
             if clone.Follower == nil then
                 clone.entity:AddFollower()
+            end
+
+            if clone.components.perishable ~= nil then
+                clone.components.perishable:StopPerishing()
             end
 
             local scale = 0.8
@@ -188,6 +192,15 @@ local function onFinish(inst, doer)
     aipReplacePrefab(inst, "aip_shadow_wrapper").DoShow()
 end
 
+local function onRemove(inst)
+    initData(inst)
+
+    for key, data in pairs(inst._aipFoods) do
+        aipRemove(data.prefab)
+        aipRemove(data.leaf)
+    end
+end
+
 -------------------------- 存取 --------------------------
 local function onSave(inst, data)
     data._aipFoods = {}
@@ -247,6 +260,7 @@ local function fn()
     MakeMediumPropagator(inst)
 
     inst:WatchWorldState("isday", OnIsDay)
+    inst:ListenForEvent("onremove", onRemove)
 
     initData(inst)
 
