@@ -57,6 +57,8 @@ end
 local function syncFoods(inst)
     initData(inst)
 
+    local needResync = false
+
     for key, data in pairs(inst._aipFoods) do
         local symbol = tree_data[key]
 
@@ -97,8 +99,22 @@ local function syncFoods(inst)
 
         -- 同步进度
         -- data.prefab.AnimState:OverrideMultColour(1, 1, 1, 0.6 + data.ptg * 0.3)
-        local prefabScale = math.min(1, 0.2 + data.ptg * 0.8)
+        local prefabScale = math.min(1, 0.4 + data.ptg * 0.6)
         data.prefab.Transform:SetScale(prefabScale, prefabScale, prefabScale)
+
+        -- 如果食物成熟，则掉落
+        if data.ptg >= 1 then
+            data.ptg = 0
+
+            local clone = aipSpawnPrefab(inst, data.name)
+            aipFlingItem(clone)
+
+            needResync = true
+        end
+    end
+
+    if needResync then
+        syncFoods(inst)
     end
 end
 
