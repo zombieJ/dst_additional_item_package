@@ -497,6 +497,7 @@ end
 
 if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 	AddPrefabPostInit("world", function (inst)
+		-----------------------------------------------------------
 		if additional_food then
 			-- 季节变换时，生成向日葵
 			inst:WatchWorldState("season", function ()
@@ -504,6 +505,7 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 			end)
 		end
 
+		-----------------------------------------------------------
 		inst:WatchWorldState("isnight", function(_, isnight)
 			if isnight then
 				-- 每天都有一定概率给玩家附近生成一个 怪异的球茎（最多 3 个）
@@ -602,6 +604,7 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 			end
 		end)
 
+		-----------------------------------------------------------
 		-- 每个季节变换都会在 猪王 附近重置一条 袜子蛇
 		inst:WatchWorldState("season", function ()
 			inst:DoTaskInTime(1.5, function() -- 延迟生效以防卡顿
@@ -615,6 +618,18 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 					end
 				end
 			end)
+		end)
+
+		-----------------------------------------------------------
+		-- 世界掉落
+		inst:ListenForEvent("entity_death", function (world, data)
+			if data ~= nil and data.inst ~= nil and data.afflicter ~= nil and data.afflicter:HasTag("player") then
+				if math.random() <= (dev_mode and 1 or .001) then
+					_G.aipFlingItem(
+						_G.aipSpawnPrefab(data.inst, "aip_prosperity_seed")
+					)
+				end
+			end
 		end)
 	end)
 end

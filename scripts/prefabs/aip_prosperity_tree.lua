@@ -4,11 +4,15 @@ local language = aipGetModConfig("language")
 local LANG_MAP = {
 	english = {
 		NAME = "Prosperity Tree",
-		DESC = "Offer Is Take",
+		DESC = "Offer Is Take. It need some veggie",
+        SEED_NAME = "Prosperity Seed",
+        SEED_DESC = "",
 	},
 	chinese = {
 		NAME = "繁荣之树",
-		DESC = "供奉即索取",
+		DESC = "供奉即索取，它需要一些蔬果",
+        SEED_NAME = "繁荣之种",
+        SEED_DESC = "",
 	},
 }
 
@@ -16,6 +20,9 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 STRINGS.NAMES.AIP_PROSPERITY_TREE = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PROSPERITY_TREE = LANG.DESC
+STRINGS.NAMES.AIP_PROSPERITY_SEED = LANG.SEED_NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PROSPERITY_SEED = LANG.SEED_DESC
+
 
 -- 资源
 local prefabs = {
@@ -25,6 +32,8 @@ local prefabs = {
 local assets = {
     Asset("ANIM", "anim/aip_prosperity_tree.zip"),
     Asset("ANIM", "anim/aip_prosperity_tree_leaf.zip"),
+    Asset("ANIM", "anim/aip_prosperity_seed.zip"),
+    Asset("ATLAS", "images/inventoryimages/aip_prosperity_seed.xml"),
 }
 
 ------------------------------------ 数据 ------------------------------------
@@ -172,6 +181,13 @@ local function OnIsDay(inst, isday)
     syncFoods(inst)
 end
 
+local function onFinish(inst, doer)
+    aipFlingItem(
+        aipSpawnPrefab(inst, "aip_prosperity_seed")
+    )
+    aipReplacePrefab(inst, "aip_shadow_wrapper").DoShow()
+end
+
 -------------------------- 存取 --------------------------
 local function onSave(inst, data)
     data._aipFoods = {}
@@ -221,10 +237,10 @@ local function fn()
     inst:AddComponent("aipc_action")
     inst.components.aipc_action.onDoGiveAction = onDoGiveAction
 
-    -- inst:AddComponent("workable")
-    -- inst.components.workable:SetWorkAction(ACTIONS.CHOP)
-    -- inst.components.workable:SetWorkLeft(1)
-    -- inst.components.workable:SetOnFinishCallback(onFinish)
+    inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.MINE)
+    inst.components.workable:SetWorkLeft(3)
+    inst.components.workable:SetOnFinishCallback(onFinish)
 
     inst:AddComponent("hauntable")
     MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
@@ -268,5 +284,50 @@ local function leafFn()
     return inst
 end
 
+
+-- ==========================================================================
+-- ==                                 种子                                 ==
+-- ==========================================================================
+local function onDeploy(inst, pt, deployer)
+	local tgt = SpawnPrefab("aip_prosperity_tree")
+	tgt.Transform:SetPosition(pt.x, pt.y, pt.z)
+
+	aipRemove(inst)
+end
+
+local function seedFn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddNetwork()
+
+    MakeInventoryPhysics(inst)
+
+    inst.AnimState:SetBank("aip_prosperity_seed")
+    inst.AnimState:SetBuild("aip_prosperity_seed")
+    inst.AnimState:PlayAnimation("idle")
+
+    MakeInventoryFloatable(inst, "med", 0.3, 1)
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst:AddComponent("inspectable")
+    
+	inst:AddComponent("inventoryitem")
+	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_prosperity_seed.xml"
+
+    inst:AddComponent("deployable")
+    inst.components.deployable:SetDeployMode(DEPLOYMODE.PLANT)
+    inst.components.deployable.ondeploy = onDeploy
+
+    return inst
+end
+
 return Prefab("aip_prosperity_tree", fn, assets, prefabs),
-        Prefab("aip_prosperity_tree_leaf", leafFn, assets)
+        Prefab("aip_prosperity_tree_leaf", leafFn, assets),
+        Prefab("aip_prosperity_seed", seedFn, assets)

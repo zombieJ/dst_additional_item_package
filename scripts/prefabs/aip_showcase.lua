@@ -379,7 +379,7 @@ local function createInst(name, data)
     inst:AddTag("aip_showcase")
     inst:AddTag(ACTIONS.MINE.id.."_workable") -- 强制可挖掘
 
-    MakeObstaclePhysics(inst, .2)
+    MakeObstaclePhysics(inst, .15)
 
     inst.AnimState:SetBank("aip_showcase")
     inst.AnimState:SetBuild("aip_showcase")
