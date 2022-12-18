@@ -628,6 +628,7 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 					local itemList = {
 						"aip_prosperity_seed",
 						"aip_bloodstone",
+						"aip_liver",
 					}
 
 					_G.aipFlingItem(

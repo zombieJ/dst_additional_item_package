@@ -162,6 +162,7 @@ PrefabFiles = {
 	"aip_cost_lamp",
 	"aip_prosperity_tree",
 	"aip_bloodstone",
+	"aip_liver",
 
 	-- Orbit
 	"aip_orbit",
