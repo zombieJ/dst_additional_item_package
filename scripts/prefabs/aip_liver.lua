@@ -17,6 +17,8 @@ local LANG_MAP = {
 		DESC_GOLD = "Pointless collection challenges and no prizes",
         NAME_GEM = "Gem Liver",
 		DESC_GEM = "Pointless collection challenges and no prizes",
+        NAME_OPALPRECIOUS = "Opalprecious Liver",
+		DESC_OPALPRECIOUS = "Seems like Opalprecious but not is",
 	},
 	chinese = {
         DESC_SUCCESS = "集齐了，没然后了",
@@ -31,6 +33,8 @@ local LANG_MAP = {
 		DESC_GOLD = "金子制品很不错，但是它本身不过毫无用处",
         NAME_GEM = "宝石肝",
 		DESC_GEM = "制作的宝石很有用，但是这个没用",
+        NAME_OPALPRECIOUS = "虹光肝",
+		DESC_OPALPRECIOUS = "长得像虹光宝石，不过也仅仅是长得像而已",
 	},
 }
 
@@ -46,7 +50,16 @@ local function useOne(inst)
     end
 end
 
-local data = {
+local data = {}
+
+local function getRndLiver()
+    local names = aipTableKeys(data)
+    local name = aipRandomEnt(names)
+
+    return "aip_liver_"..name
+end
+
+data = {
     grass = {
         onEquip = function(inst, owner)
             inst._aip_work_fn = function(owner, data)
@@ -133,6 +146,22 @@ local data = {
             owner:RemoveEventCallback("makerecipe", inst._aip_work_fn)
         end,
     },
+    opalprecious = {
+        finiteuses = false,
+
+        postFn = function(inst)
+            inst:AddComponent("edible")
+            inst.components.edible.healthvalue = 999
+            inst.components.edible.hungervalue = 999
+            inst.components.edible.sanityvalue = 999
+
+            inst.components.edible:SetOnEatenFn(function(inst, eater)
+                aipFlingItem(
+                    aipSpawnPrefab(eater, getRndLiver())
+                )
+            end)
+        end
+    },
 }
 
 ----------------------------------- 方法 -----------------------------------
@@ -168,10 +197,16 @@ local function commonFn(name, key, info)
         inst:AddComponent("inspectable")
         inst.components.inspectable.descriptionfn = getDesc
 
-        inst:AddComponent("equippable")
-        inst.components.equippable.equipslot = EQUIPSLOTS.BODY
-        inst.components.equippable:SetOnEquip(info.onEquip)
-        inst.components.equippable:SetOnUnequip(info.onUnequip)
+        if info.onEquip ~= nil or info.onUnequip ~= nil then
+            inst:AddComponent("equippable")
+            inst.components.equippable.equipslot = EQUIPSLOTS.BODY
+            inst.components.equippable:SetOnEquip(info.onEquip)
+            inst.components.equippable:SetOnUnequip(info.onUnequip)
+        end
+
+        if info.postFn ~= nil then
+            info.postFn(inst)
+        end
 
         inst:AddComponent("inventoryitem")
         inst.components.inventoryitem.atlasname = "images/inventoryimages/"..name..".xml"
@@ -181,9 +216,11 @@ local function commonFn(name, key, info)
 
         MakeHauntableLaunch(inst)
 
-        inst:AddComponent("finiteuses")
-        inst.components.finiteuses:SetMaxUses(TUNING.AIP_LIVER_USES)
-        inst.components.finiteuses:SetUses(TUNING.AIP_LIVER_USES)
+        if info.finiteuses ~= false then
+            inst:AddComponent("finiteuses")
+            inst.components.finiteuses:SetMaxUses(TUNING.AIP_LIVER_USES)
+            inst.components.finiteuses:SetUses(TUNING.AIP_LIVER_USES)
+        end
 
         return inst
     end
@@ -204,10 +241,7 @@ local function liverFn()
     end
 
     inst:DoTaskInTime(0.01, function()
-        local names = aipTableKeys(data)
-        local name = aipRandomEnt(names)
-
-        aipReplacePrefab(inst, "aip_liver_"..name)
+        aipReplacePrefab(inst, getRndLiver())
     end)
 
     return inst
