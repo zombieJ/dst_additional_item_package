@@ -1099,6 +1099,44 @@ return {
             },
 
             "After giving it the fruit and vegetables it grows, it will remember its entity. And grow some every day, drop when the growth is complete and grow again. The 'Pickaxe' will turn back into 'Seed of Prosperity' after hitting it.",
-        }
+
+            -- 草肝
+            {
+                type="img",
+                name="aip_liver_grass",
+            },
+            -- 木肝
+            {
+                type="img",
+                name="aip_liver_log",
+            },
+            -- 石肝
+            {
+                type="img",
+                name="aip_liver_stone",
+            },
+            "A liver model made of useless materials. In my world, it is said that letting players do meaningless repetitive things is the 'liver'. Doing the relevant things by category will lower the percentage, but nothing will happen to 0%.",
+
+            -- 金肝
+            {
+                type="img",
+                name="aip_liver_gold",
+            },
+            "The same useless liver model, if gold is used to make items, the percentage will be reduced. That's all.",
+
+            -- 宝石肝
+            {
+                type="img",
+                name="aip_liver_gem",
+            },
+            "Yet another useless liver model that reduces percentage when crafting gems.",
+
+            -- 虹光肝
+            {
+                type="img",
+                name="aip_liver_opalprecious",
+            },
+            "The only liver model of any value, it restores a lot of 3D when eaten. And randomly drop a liver model.",
+        },
     },
 }
