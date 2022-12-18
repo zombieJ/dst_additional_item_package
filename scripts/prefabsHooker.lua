@@ -625,8 +625,13 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 		inst:ListenForEvent("entity_death", function (world, data)
 			if data ~= nil and data.inst ~= nil and data.afflicter ~= nil and data.afflicter:HasTag("player") then
 				if math.random() <= (dev_mode and 1 or .001) then
+					local itemList = {
+						"aip_prosperity_seed",
+						"aip_bloodstone",
+					}
+
 					_G.aipFlingItem(
-						_G.aipSpawnPrefab(data.inst, "aip_prosperity_seed")
+						_G.aipSpawnPrefab(data.inst, _G.aipRandomEnt(itemList))
 					)
 				end
 			end

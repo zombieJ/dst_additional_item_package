@@ -161,6 +161,7 @@ PrefabFiles = {
 	"aip_jump_paper",
 	"aip_cost_lamp",
 	"aip_prosperity_tree",
+	"aip_bloodstone",
 
 	-- Orbit
 	"aip_orbit",
