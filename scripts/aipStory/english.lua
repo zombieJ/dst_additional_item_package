@@ -1137,6 +1137,13 @@ return {
                 name="aip_liver_opalprecious",
             },
             "The only liver model of any value, it restores a lot of 3D when eaten. And randomly drop a liver model.",
+        
+            -- 奥卡姆剃刀
+            {
+                type="img",
+                name="aip_ockham_razor",
+            },
+            "Ockham's Razor like an ordinary razor, and at the same time has a certain combat effectiveness, but its damage will decrease with the number of times it is used. Fortunately, the durability can be restored with charged particles.",
         },
     },
 }

@@ -73,6 +73,7 @@ PrefabFiles = {
 	"aip_dou_inscription_package",
 	"aip_dou_element_guard",
 	"aip_aura",
+	"aip_ockham_razor",
 
 	-- Scepter
 	"aip_dou_opal",
