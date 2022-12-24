@@ -629,6 +629,7 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 						"aip_prosperity_seed",
 						"aip_bloodstone",
 						"aip_liver",
+						"aip_ockham_razor",
 					}
 
 					_G.aipFlingItem(

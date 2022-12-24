@@ -512,7 +512,10 @@ AddComponentPostInit("playercontroller", function(self)
 
 	function self:DoActionAutoEquip(buffaction, ...)
 		-- 跳过
-		if buffaction.action == AIPC_GIVE_ACTION then
+		if
+			buffaction.action == AIPC_GIVE_ACTION or
+			buffaction.action == _G.ACTIONS.SHAVE
+		then
 			return
 		end
 

@@ -79,7 +79,7 @@ end
 local function onFueled(inst, item, doer)
 	if inst.components.finiteuses ~= nil then
 		inst.components.finiteuses:SetPercent(
-			Math.min(1,(1 + inst.components.finiteuses:GetPercent()) / 2 + 0.1)
+			math.min(1,(1 + inst.components.finiteuses:GetPercent()) / 2 + 0.1)
 		)
 	end
 end
