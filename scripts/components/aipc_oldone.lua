@@ -11,7 +11,7 @@ local function OnIsDay(inst, isday)
     if inst.components.health ~= nil then
 		local restHealth = inst.components.health:GetMaxWithPenalty() - inst.components.health.currenthealth
 
-		inst.components.health:DoDelta(restHealth)
+		inst.components.health:DoDelta(factor)
 		factor = factor - restHealth
 
 		aipSpawnPrefab(inst, "farm_plant_happy")
