@@ -630,6 +630,7 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 						"aip_bloodstone",
 						"aip_liver",
 						"aip_ockham_razor",
+						"aip_aztecs_coin",
 					}
 
 					_G.aipFlingItem(

@@ -164,6 +164,7 @@ PrefabFiles = {
 	"aip_prosperity_tree",
 	"aip_bloodstone",
 	"aip_liver",
+	"aip_aztecs_coin",
 
 	-- Orbit
 	"aip_orbit",
