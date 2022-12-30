@@ -165,6 +165,7 @@ PrefabFiles = {
 	"aip_bloodstone",
 	"aip_liver",
 	"aip_aztecs_coin",
+	"aip_steel_ball",
 
 	-- Orbit
 	"aip_orbit",

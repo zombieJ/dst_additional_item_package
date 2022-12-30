@@ -264,7 +264,7 @@ local function doCastAction(act)
 	-- local item = act.invobject
 	local pos = act.pos
 	local target = act.target
-	local item = _G.aipGetActionableItem(doer)
+	local item = _G.aipGetActionableItem(doer) or act.invobject -- 非装备的物品就会拿在鼠标上
 
 	if _G.TheNet:GetIsServer() then
 		-- server
