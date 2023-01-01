@@ -1144,6 +1144,20 @@ return {
                 name="aip_ockham_razor",
             },
             "Ockham's Razor like an ordinary razor, and at the same time has a certain combat effectiveness, but its damage will decrease with the number of times it is used. Fortunately, the durability can be restored with charged particles.",
+
+                -- 阿兹特克金币
+                {
+                    type="img",
+                    name="aip_aztecs_coin",
+                },
+                "Aztecs Coin is cursed that grants a gold nugget at the cost of life each time when use.",
+    
+                -- 回旋铁球
+                {
+                    type="img",
+                    name="aip_steel_ball",
+                },
+                "A steel ball with whirling power. After being thrown out, it will help you transfer damage to trees, stones, etc. with CD.",
         },
     },
 }
