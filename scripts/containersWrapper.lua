@@ -545,6 +545,27 @@ function params.aip_oldone_rice.itemtestfn(container, item, slot)
 	return item.prefab == "aip_food_rice_balls"
 end
 
+------------------ 吹箭 ------------------
+params.aip_blowdart = {
+    widget = {
+        slotpos = {
+            Vector3(0,   32 + 4,  0),
+        },
+        slotbg = {
+            { image = "slingshot_ammo_slot.tex" },
+        },
+        animbank = "ui_cookpot_1x2",
+        animbuild = "ui_cookpot_1x2",
+        pos = Vector3(0, 15, 0),
+    },
+    usespecificslotsforitems = true,
+    type = "hand_inv",
+    excludefromcrafting = true,
+}
+
+function params.aip_blowdart.itemtestfn(container, item, slot)
+	return item.prefab == "stinger"
+end
 
 ----------------------------------------------------------------------------------------------
 local containers = _G.require "containers"

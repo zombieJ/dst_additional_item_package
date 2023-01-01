@@ -140,6 +140,10 @@ rec("popcorngun", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.WEAPONS },
 rec("aip_jump_paper", TECH.MAGIC_TWO, { CRAFTING_FILTERS.WEAPONS },
 	{Ingredient("aip_veggie_wheat", 1, "images/inventoryimages/aip_veggie_wheat.xml"),Ingredient("boomerang", 1),Ingredient("papyrus", 1)})
 
+-- 蜂刺吹箭
+rec("aip_blowdart", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.WEAPONS },
+	{Ingredient("aip_veggie_wheat", 1, "images/inventoryimages/aip_veggie_wheat.xml"),Ingredient("goldnugget", 2),Ingredient("rope", 1)})
+
 -------------------------------------- 雕塑 --------------------------------------
 -- 月光星尘雕像
 rec("chesspiece_aip_moon_builder", TECH.SCULPTING_ONE, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.DECOR },

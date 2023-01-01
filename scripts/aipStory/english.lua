@@ -101,6 +101,13 @@ return {
                 name="aip_jump_paper",
             },
             "Rice Amulet can jump between enemies once. Same as boomerang, do not get hurt when it returns.",
+        
+            -- 蜂刺吹箭
+            {
+                type="img",
+                name="aip_blowdart",
+            },
+            "Blow darts with Stinger as ammunition, can be used multiple times, but the damage is not high.",
         },
     },
 
