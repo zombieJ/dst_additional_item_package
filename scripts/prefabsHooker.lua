@@ -630,7 +630,14 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 						"aip_bloodstone",
 						"aip_liver",
 						"aip_ockham_razor",
+						"aip_aztecs_coin",
+						"aip_steel_ball",
 					}
+
+					-- 测试专用，只会掉落最后一个物品
+					if dev_mode then
+						itemList = { itemList[#itemList] }
+					end
 
 					_G.aipFlingItem(
 						_G.aipSpawnPrefab(data.inst, _G.aipRandomEnt(itemList))
