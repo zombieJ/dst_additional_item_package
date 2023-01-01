@@ -22,7 +22,31 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="1" name="in" length="200">
+        <animation id="1" name="out" length="400">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="aip_aura_steel" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.5" abs_scale_y="0.5" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="200">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+                <key id="2" time="400">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="aip_aura_steel">
+                <key id="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.5" scale_y="0.5"/>
+                </key>
+                <key id="1" time="200">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="120" scale_x="0.255" scale_y="0.255"/>
+                </key>
+                <key id="2" time="400">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="240" scale_x="0.01" scale_y="0.01"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="in" length="400">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="aip_aura_steel" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.01" abs_scale_y="0.01" abs_a="1" timeline="0" key="0" z_index="0"/>
@@ -30,13 +54,19 @@
                 <key id="1" time="200">
                     <object_ref id="0" timeline="0" key="1" z_index="0"/>
                 </key>
+                <key id="2" time="400">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                </key>
             </mainline>
             <timeline id="0" name="aip_aura_steel">
                 <key id="0">
                     <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.01" scale_y="0.01"/>
                 </key>
-                <key id="1" time="200" spin="-1">
-                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="120" scale_x="0.5" scale_y="0.5"/>
+                <key id="1" time="200">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="120" scale_x="0.255" scale_y="0.255"/>
+                </key>
+                <key id="2" time="400">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="240" scale_x="0.5" scale_y="0.5"/>
                 </key>
             </timeline>
         </animation>

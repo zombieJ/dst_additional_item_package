@@ -1,6 +1,7 @@
 local CD = 5
 local DIV = 15
-local DIST = 3
+local DIST = 3		-- 铁球检测范围
+local MAX_DIST = 11	-- 超出这个长度就回来
 
 local function onHealthDelta(owner, data)
 	local sb = owner.components.aipc_steel_ball
@@ -74,10 +75,12 @@ local SteelBall = Class(function(self, inst)
 	self.aura = nil
 	self.canSteel = nil
 	self.syncTask = nil
+	self.intervalBallTask = nil
 
 	inst:ListenForEvent("aip_healthdelta", onHealthDelta)
 end)
 
+----------------------------------- 状态 -----------------------------------
 function SteelBall:CanSteel()
 	return self.canSteel
 end
@@ -90,7 +93,7 @@ function SteelBall:SyncState()
 
 	-- 如果没有球则不行
 	if #self.balls == 0 then
-		self.canSteel = false
+		self.canSteel = nil
 	end
 
 	if self.canSteel and self.aura == nil then
@@ -99,27 +102,63 @@ function SteelBall:SyncState()
 		self.aura.AnimState:PushAnimation("idle", true)
 		self.inst:AddChild(self.aura)
 	elseif not self.canSteel and self.aura ~= nil then
-		aipSpawnPrefab(self.inst, "aip_shadow_wrapper").DoShow()
-		self.aura:Remove()
+		-- aipSpawnPrefab(self.inst, "aip_shadow_wrapper").DoShow()
+		-- self.aura:Remove()
+		self.aura:ListenForEvent("animover", self.aura.Remove)
+		self.aura.AnimState:PlayAnimation("out")
 		self.aura = nil
+	end
+
+	-- 同步检测铁球是否在距离内
+	if self.canSteel and self.intervalBallTask == nil then
+		self.intervalBallTask = self.inst:DoPeriodicTask(1, function()
+			local dropBalls = {}
+
+			for _, ball in pairs(self.balls) do
+				if ball ~= nil and ball:IsValid() then
+					local dist = self.inst:GetDistanceSqToInst(ball)
+
+					if math.sqrt(dist) > MAX_DIST then
+						ball.components.aipc_float:MoveToInst(self.inst, function()
+							self:Unregister(ball)
+							aipFlingItem(
+								aipReplacePrefab(ball, "aip_steel_ball")
+							)
+						end)
+					end
+				end
+			end
+		end)
+	elseif not self.canSteel and self.intervalBallTask ~= nil then
+		self.intervalBallTask:Cancel()
+		self.intervalBallTask = nil
 	end
 end
 
+----------------------------------- 注册 -----------------------------------
+-- 添加铁球
 function SteelBall:Register(ball)
 	table.insert(self.balls, ball)
 	self:SyncState()
 end
 
+-- 移除铁球
 function SteelBall:Unregister(ball)
 	aipTableRemove(self.balls, ball)
 	self:SyncState()
 end
 
+----------------------------------- 清理 -----------------------------------
 function SteelBall:OnRemoveEntity()
 	self.inst:RemoveEventCallback("aip_healthdelta", onHealthDelta)
 	if self.syncTask ~= nil then
 		self.syncTask:Cancel()
 		self.syncTask = nil
+	end
+
+	if self.intervalBallTask ~= nil then
+		self.intervalBallTask:Cancel()
+		self.intervalBallTask = nil
 	end
 end
 
