@@ -26,6 +26,16 @@ function Float:GoToPoint(pt)
 	self.inst:StartUpdatingComponent(self)
 end
 
+-- 停止
+function Float:Stop()
+	self.targetPos = nil
+	self.targetInst = nil
+	self.arriveCallback = nil
+
+	self.inst:StopUpdatingComponent(self)
+	self.inst.Physics:Stop()
+end
+
 -- 飞向目标
 function Float:MoveToPoint(pt, callback)
 	self.targetPos = pt

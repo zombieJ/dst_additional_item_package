@@ -66,6 +66,7 @@ local function onPickUp(inst)
         inst.AnimState:PlayAnimation("idle")
     end
 
+    inst.components.aipc_float:Stop()
     inst._aipDoer = nil
 end
 
