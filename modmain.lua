@@ -167,6 +167,7 @@ PrefabFiles = {
 	"aip_aztecs_coin",
 	"aip_steel_ball",
 	"aip_blowdart",
+	"aip_forever",
 
 	-- Orbit
 	"aip_orbit",

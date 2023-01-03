@@ -23,6 +23,11 @@ function Transfer:CanMark(target)
 		return false
 	end
 
+	-- 特殊物品可以搬走
+	if aipInTable({ "aip_forever" }, target.prefab) then
+		return true
+	end
+
 	-- 只有建筑可以被搬运
 	if not target:HasTag("structure") then
 		return false
