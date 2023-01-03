@@ -1152,19 +1152,29 @@ return {
             },
             "Ockham's Razor like an ordinary razor, and at the same time has a certain combat effectiveness, but its damage will decrease with the number of times it is used. Fortunately, the durability can be restored with charged particles.",
 
-                -- 阿兹特克金币
-                {
-                    type="img",
-                    name="aip_aztecs_coin",
-                },
-                "Aztecs Coin is cursed that grants a gold nugget at the cost of life each time when use.",
-    
-                -- 回旋铁球
-                {
-                    type="img",
-                    name="aip_steel_ball",
-                },
-                "A steel ball with whirling power. After being thrown out, it will help you transfer damage to trees, stones, etc. with CD.",
+            -- 阿兹特克金币
+            {
+                type="img",
+                name="aip_aztecs_coin",
+            },
+            "Aztecs Coin is cursed that grants a gold nugget at the cost of life each time when use.",
+
+            -- 回旋铁球
+            {
+                type="img",
+                name="aip_steel_ball",
+            },
+            "A steel ball with whirling power. After being thrown out, it will help you transfer damage to trees, stones, etc. with CD.",
+        
+            -- 永恒之井
+            {
+                type="anim",
+                build="aip_forever",
+                scale=.35,
+                height=170,
+                top=20,
+            },
+            "A well full of vitality that grows a normal or demonic flower nearby every day. If you give petals, you can directly grow the corresponding flower but may fail to turn into a butterfly.",
         },
     },
 }

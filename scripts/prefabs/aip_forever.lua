@@ -61,24 +61,39 @@ local function tryGenFlower(inst, prefab)
     -- 循环 5 次找到可以种花的地点
     for i = 1, 5 do
         if genFlower(inst, prefab) then
-            return
+            return true
         end
     end
 
-    aipSpawnPrefab(
-        aipSpawnPrefab(inst, "butterfly"), "aip_shadow_wrapper"
-    ).DoShow()
+    return false
 end
 
 -- 获得花瓣
 local function onDoGiveAction(inst, doer, item)
-    tryGenFlower(inst, item.prefab == "petals_evil" and "flower_evil" or "planted_flower")
+    local flowerPrefab = item.prefab == "petals_evil" and "flower_evil" or "planted_flower"
+    local isSuccess = tryGenFlower(inst, flowerPrefab)
     aipRemove(item)
+
+    -- 失败则生成一只蝴蝶
+    if not isSuccess then
+        aipSpawnPrefab(
+            aipSpawnPrefab(inst, "butterfly"), "aip_shadow_wrapper"
+        ).DoShow()
+    end
 end
 
 local function onhammered(inst, worker)
     local fx = aipReplacePrefab(inst, "collapse_small")
     fx:SetMaterial("wood")
+end
+
+-- 夜晚会长出花朵
+local function OnIsDay(inst, isday)
+    if isday then
+        return
+    end
+
+    tryGenFlower(inst)
 end
 
 ------------------------------------ 实例 ------------------------------------
@@ -116,6 +131,8 @@ local function fn()
     inst.components.workable:SetOnFinishCallback(onhammered)
 
     inst:AddComponent("inspectable")
+
+    inst:WatchWorldState("isday", OnIsDay)
 
     MakeHauntableLaunch(inst)
 
