@@ -1175,6 +1175,14 @@ return {
                 top=20,
             },
             "A well full of vitality that grows a normal or demonic flower nearby every day. If you give petals, you can directly grow the corresponding flower but may fail to turn into a butterfly.",
+        
+            -- 光荣之手
+            {
+                type="img",
+                name="aip_glory_hand",
+            },
+            "'Hand of Glory' will summon a light source for everyone, so that friends without torches can see clearly ahead in the dark. It can be fueled by 'Nightmare Fuel'.",
+            
         },
     },
 }
