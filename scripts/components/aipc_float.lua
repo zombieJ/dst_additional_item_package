@@ -5,6 +5,7 @@ local Float = Class(function(self, inst)
 	self.targetInst = nil
 	self.speed = 6
 	self.ySpeed = 6
+	self.offset = Vector3(0, 0, 0)
 
 	self.arriveCallback = nil -- 每次调用 MoveTo 都会重置这个方法
 end)
@@ -60,6 +61,9 @@ function Float:OnUpdate(dt)
 	if not targetPos then
 		return
 	end
+
+	-- 添加偏移量
+	targetPos = targetPos + self.offset
 
 	-- 水平方向的距离
 	local dist = aipDist(pos, targetPos)
