@@ -168,6 +168,7 @@ PrefabFiles = {
 	"aip_steel_ball",
 	"aip_blowdart",
 	"aip_forever",
+	"aip_glory_hand",
 
 	-- Orbit
 	"aip_orbit",
