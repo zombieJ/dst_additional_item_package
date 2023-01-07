@@ -42,6 +42,7 @@ local Driver = Class(function(self, player)
 	self.orbitPoint = nil
 	self.nextOrbitPoint = nil
 	self.speed = 10
+	self.speedMulti = 0.3 -- 速度修正，如上下坡会加减速度
 	self.ySpeed = 20
 end)
 
@@ -235,10 +236,18 @@ function Driver:OnUpdate(dt)
 		targetY = targetY + hackOffsetY
 	end
 
+	-- 根据上下坡加减速度
+	local speedX  = self.speed
+	if targetPos.y > sourcePos.y then
+		speedX = speedX - self.speed * self.speedMulti
+	elseif targetPos.y < sourcePos.y then
+		speedX = speedX + self.speed * self.speedMulti
+	end
+
 	-- 向目标移动
 	self.inst:ForceFacePoint(targetPos.x, 0, targetPos.z)
 	self.inst.Physics:SetMotorVel(
-		self.speed,
+		speedX,
 		(targetY - pos.y) * self.ySpeed,
 		0)
 
