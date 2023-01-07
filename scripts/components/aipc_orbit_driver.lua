@@ -4,10 +4,10 @@ local language = aipGetModConfig("language")
 -- 文字描述
 local LANG_MAP = {
 	english = {
-		EXIT = "Arrow key to move. Press X to exit",
+		EXIT = "Arrow key to move. X to exit. V to switch view.",
 	},
 	chinese = {
-		EXIT = "方向键控制，X 键退出",
+		EXIT = "方向键控制，X 键退出，V 键切换视角",
 	},
 }
 
@@ -163,6 +163,9 @@ function Driver:StopDrive()
 end
 
 function Driver:AbortDrive()
+	-- 镜头回归
+	TheCamera:SetFlyView(false)
+
 	self:StopDrive()
 	self.inst.sg:GoToState("idle")
 	self.inst:RemoveTag("aip_orbit_driver")

@@ -102,6 +102,7 @@ local KEY_RIGHT = 100
 local KEY_DOWN = 115
 local KEY_LEFT = 97
 local KEY_EXIT = 120
+local KEY_V = 118
 
 local keys = { KEY_UP, KEY_RIGHT, KEY_DOWN, KEY_LEFT, KEY_EXIT }
 
@@ -156,6 +157,23 @@ for i, keyCode in ipairs(keys) do
 		_G.aipRPC("driveMineCar", x, z, keyCode == KEY_EXIT)
 	end)
 end
+
+-- 监听是否切换视野
+_G.TheInput:AddKeyDownHandler(KEY_V, function()
+	local player = _G.ThePlayer
+
+	if
+		not player
+		or player.HUD:IsConsoleScreenOpen()
+		or player.HUD:IsChatInputScreenOpen()
+		or not player:HasTag("aip_orbit_driver")
+	then
+		return
+	end
+
+	-- 切换视野
+	_G.TheCamera:TriggerFlyView("driver")
+end)
 
 ---------------------------------------------------------------------------------
 --                                   司机组件                                   --
