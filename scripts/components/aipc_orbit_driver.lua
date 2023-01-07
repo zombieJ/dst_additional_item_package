@@ -41,8 +41,8 @@ local Driver = Class(function(self, player)
 	self.minecar = nil
 	self.orbitPoint = nil
 	self.nextOrbitPoint = nil
-	self.speed = 10
-	self.speedMulti = 0.3 -- 速度修正，如上下坡会加减速度
+	self.speed = 15
+	self.speedMulti = 0.25 -- 速度修正，如上下坡会加减速度
 	self.ySpeed = 20
 end)
 

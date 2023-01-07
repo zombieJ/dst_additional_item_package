@@ -132,6 +132,7 @@ AddClassPostConstruct("cameras/followcamera", function(inst)
 			self._aipOriginMinDist = self.mindist
 			self._aipOriginMaxDist = self.maxdist
 			self._aipOriginHeadingtarget = self.headingtarget
+			self._aipOriginHeadinggain = self.headinggain
 
 			-- 锁定距离
 			local myDist = mode == "driver" and distDriver or dist
@@ -139,10 +140,12 @@ AddClassPostConstruct("cameras/followcamera", function(inst)
 			self.mindist = myDist
 			self.maxdist = myDist + 20
 			self.pangain = 999999 -- 完全跟随玩家
+			self.headinggain = 5
 		else
 			self.mindist = self._aipOriginMinDist
 			self.maxdist = self._aipOriginMaxDist
 			self.headingtarget = self._aipOriginHeadingtarget
+			self.headinggain = self._aipOriginHeadinggain
 			self:SetDefault()
 		end
 
@@ -154,7 +157,9 @@ AddClassPostConstruct("cameras/followcamera", function(inst)
 		-- 缓慢变更到目标距离
 		if self._aipFlying then
 			self.distance = self.distance * 0.75 + self.mindist * 0.25
-			self.headingtarget = normalize(180 - _G.ThePlayer:GetRotation())
+
+			local headingtarget = normalize(180 - _G.ThePlayer:GetRotation())
+			self.headingtarget = headingtarget
 		end
 
 		return OriginUpdate(self, dt, _G.unpack(arg))
