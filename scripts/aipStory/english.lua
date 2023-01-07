@@ -596,12 +596,15 @@ return {
                 type="img",
                 name="aip_track_tool",
             },
+            "'Track Measurer' make a track that can cross the sea, and you can drive it with the 'Glass Mine Cart'.",
+            "In addition, use 'Red Gem' upgrade to increases track, and use 'Blue Gem' upgrade to decreases track.",
+
             -- 玻璃矿车
             {
                 type="img",
                 name="aip_glass_minecar",
             },
-            "Through the 'Lunar Orbit Measuring Instrument', a track that can cross the sea can be produced, and with the 'glass minecart', the cross-sea movement can be realized.",
+            "Place the 'Glass Mine Cart' on the node created by the 'Track Measurer' and ride it. The arrow keys control the direction, X to exit the mine car, and V to switch the view.",
 
             -- 劣质的飞行图腾
             {

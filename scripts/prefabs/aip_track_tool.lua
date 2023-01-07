@@ -18,14 +18,14 @@ local LANG_MAP = {
 		NAME = "Track Measurer",
 		NAME_HIGH = "Track Measurer (Hight)",
 		NAME_LOW = "Track Measurer (Low)",
-		REC_DESC = "Create a shadow track",
+		REC_DESC = "Create a moon track. Can be upgrade by blue or red gem.",
 		DESC = "Mixed with moon and shadow",
 	},
 	chinese = {
 		NAME = "月轨测量仪",
 		NAME_HIGH = "月轨测量仪(升轨)",
 		NAME_LOW = "月轨测量仪(降轨)",
-		REC_DESC = "制作一条暗影轨道",
+		REC_DESC = "制作一条月亮轨道，工具可用 蓝、红 宝石升级",
 		DESC = "暗影与月光的奇艺融合",
 	},
 }
