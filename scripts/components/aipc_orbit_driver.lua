@@ -35,7 +35,7 @@ local function findPoints(current, excluded)
 	return orbitPointList
 end
 
------------------------------------ 双端通用组件 -----------------------------------
+----------------------------------- 服务端 -----------------------------------
 local Driver = Class(function(self, player)
 	self.inst = player
 	self.minecar = nil
@@ -87,6 +87,8 @@ function Driver:UseMineCar(minecar, orbitPoint)
 	self.inst:AddTag("aip_orbit_driver")
 
 	MakeGhostPhysics(self.inst, 1, .5)
+
+	self.inst.components.aipc_orbit_driver_client.isDriving:set(true)
 
 	return true
 end
@@ -164,7 +166,7 @@ end
 
 function Driver:AbortDrive()
 	-- 镜头回归
-	TheCamera:SetFlyView(false)
+	-- TheCamera:SetFlyView(false)
 
 	self:StopDrive()
 	self.inst.sg:GoToState("idle")
@@ -201,6 +203,8 @@ function Driver:AbortDrive()
 	self.minecar = nil
 	self.orbitPoint = nil
 	self.nextOrbitPoint = nil
+
+	self.inst.components.aipc_orbit_driver_client.isDriving:set(false)
 end
 
 function Driver:OnUpdate(dt)

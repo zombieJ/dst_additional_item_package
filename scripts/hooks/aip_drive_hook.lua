@@ -179,6 +179,10 @@ end)
 --                                   司机组件                                   --
 ---------------------------------------------------------------------------------
 AddPlayerPostInit(function(player)
+	if not player.components.aipc_orbit_driver then
+		player:AddComponent("aipc_orbit_driver_client")
+	end
+
 	if not _G.TheWorld.ismastersim then
 		return
 	end

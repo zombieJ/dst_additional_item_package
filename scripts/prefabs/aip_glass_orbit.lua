@@ -53,8 +53,9 @@ local function pointFn()
 	-- inst.AnimState:SetSortOrder(3)
 
     -- 如果在空中则不用担心遮挡玩家
-    inst:DoTaskInTime(0.1, function()
+    inst:DoTaskInTime(1, function()
         local pt = inst:GetPosition()
+        -- aipTypePrint("Y:", pt, TheNet:IsDedicated())
 
         if pt.y == 0 then
             inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
@@ -66,11 +67,15 @@ local function pointFn()
 
             inst._aip_columns = {}
             for i = 0, pt.y, 0.5 do
-                table.insert(
-                    inst._aip_columns,
-                    aipSpawnPrefab(inst, "aip_glass_orbit_column", nil, i)
-                )
+                local column = aipSpawnPrefab(inst, "aip_glass_orbit_column", nil, i)
+                table.insert(inst._aip_columns, column)
+
+                -- aipTypePrint(i, column:GetPosition())
+                local cols = TheSim:FindEntities(pt.x, pt.y, pt.z, 5, { "aip_glass_orbit_column" })
+                aipPrint("Column Count:", #cols)
             end
+
+
 
             inst.OnRemoveEntity = onPointRemove
         end
@@ -113,6 +118,7 @@ local function columnFn()
     inst.AnimState:SetBuild("aip_glass_orbit_column")
     inst.AnimState:PlayAnimation("idle")
 
+    inst:AddTag("aip_glass_orbit_column")
     inst:AddTag("NOCLICK")
     inst:AddTag("fx")
 
@@ -147,7 +153,7 @@ local function orbitFn()
 
     -- inst.entity:SetPristine()
 
-    inst:DoTaskInTime(0.1, function()
+    inst:DoTaskInTime(1, function()
         if inst:GetPosition().y == 0 then
             inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
 	        inst.AnimState:SetSortOrder(2)
