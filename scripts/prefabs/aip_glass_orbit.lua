@@ -22,9 +22,18 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_GLASS_ORBIT_POINT = LANG.DESC
 -- 资源
 local assets = {
     Asset("ANIM", "anim/aip_glass_orbit.zip"),
+    Asset("ANIM", "anim/aip_glass_orbit_column.zip"),
 }
 
 ------------------------------------ 实例：端节点 ------------------------------------
+local function onPointRemove(inst)
+    if inst._aip_columns ~= nil then
+        for _, column in pairs(inst._aip_columns) do
+            column:Remove()
+        end
+    end
+end
+
 local function pointFn()
     local inst = CreateEntity()
 
@@ -40,8 +49,32 @@ local function pointFn()
     -- inst.AnimState:SetRayTestOnBB(true)
 
     inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
-	inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
-	inst.AnimState:SetSortOrder(3)
+	-- inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
+	-- inst.AnimState:SetSortOrder(3)
+
+    -- 如果在空中则不用担心遮挡玩家
+    inst:DoTaskInTime(0.1, function()
+        local pt = inst:GetPosition()
+
+        if pt.y == 0 then
+            inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
+	        inst.AnimState:SetSortOrder(3)
+        else
+            if TheNet:IsDedicated() then  -- 专服不需要轨道贴图
+                return
+            end
+
+            inst._aip_columns = {}
+            for i = 0, pt.y, 0.5 do
+                table.insert(
+                    inst._aip_columns,
+                    aipSpawnPrefab(inst, "aip_glass_orbit_column", nil, i)
+                )
+            end
+
+            inst.OnRemoveEntity = onPointRemove
+        end
+    end)
 
     inst:AddTag("aip_glass_orbit_point")
 
@@ -63,7 +96,31 @@ local function pointFn()
 
     -- 轨道相关实体注册
     -- -- inst.aipId = tostring(os.time())..tostring(math.random())
-    inst.aipPoints = {}
+    -- inst.aipPoints = {}
+
+    return inst
+end
+
+----------------------------------- 实例：玩家可见高度点 -----------------------------------
+-- 空中轨道的话，仅仅是 端节点 玩家很难去对准，所以我们要画一个柱子标记一下
+local function columnFn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+
+    inst.AnimState:SetBank("aip_glass_orbit_column")
+    inst.AnimState:SetBuild("aip_glass_orbit_column")
+    inst.AnimState:PlayAnimation("idle")
+
+    inst:AddTag("NOCLICK")
+    inst:AddTag("fx")
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.persists = false
 
     return inst
 end
@@ -78,8 +135,8 @@ local function orbitFn()
     -- inst.entity:AddNetwork()
 
     inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
-	inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
-	inst.AnimState:SetSortOrder(2)
+	-- inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
+	-- inst.AnimState:SetSortOrder(2)
 
     inst.AnimState:SetBank("aip_glass_orbit")
     inst.AnimState:SetBuild("aip_glass_orbit")
@@ -89,6 +146,13 @@ local function orbitFn()
     inst:AddTag("fx")
 
     -- inst.entity:SetPristine()
+
+    inst:DoTaskInTime(0.1, function()
+        if inst:GetPosition().y == 0 then
+            inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
+	        inst.AnimState:SetSortOrder(2)
+        end
+    end)
 
     if not TheWorld.ismastersim then
         return inst
@@ -130,6 +194,7 @@ local function linkFn()
     return inst
 end
 
-return	Prefab("aip_glass_orbit", orbitFn, assets),
-		Prefab("aip_glass_orbit_point", pointFn, assets),
+return	Prefab("aip_glass_orbit_point", pointFn, assets),
+        Prefab("aip_glass_orbit_column", columnFn, assets),
+        Prefab("aip_glass_orbit", orbitFn, assets),
         Prefab("aip_glass_orbit_link", linkFn, assets)

@@ -84,6 +84,7 @@ PrefabFiles = {
 	"incinerator",
 	"aip_woodener",
 	"aip_glass_chest",
+	"aip_protected_mark",
 
 	-- 诡影迷踪
 	"aip_dou_totem",

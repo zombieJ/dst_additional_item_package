@@ -1,3 +1,4 @@
+-- 新版矿车
 local language = aipGetModConfig("language")
 
 -- 文字描述
@@ -16,7 +17,7 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_MINECAR_EXIT = LANG.EXIT
 
 ------------------------------------ 无状态方法 ------------------------------------
 local function findPoints(current, excluded)
-	local linkList = aipFindNearEnts(current, { "aip_glass_orbit_link" }, 15)
+	local linkList = aipFindNearEnts(current, { "aip_glass_orbit_link" }, 25)
 
 	local includedLinks = aipFilterTable(linkList, function(link)
 		return	link.components.aipc_orbit_link ~= nil and
@@ -41,6 +42,7 @@ local Driver = Class(function(self, player)
 	self.orbitPoint = nil
 	self.nextOrbitPoint = nil
 	self.speed = 10
+	self.ySpeed = 20
 end)
 
 -- 是否可以开车状态
@@ -198,16 +200,47 @@ function Driver:AbortDrive()
 end
 
 function Driver:OnUpdate(dt)
+	local hackY = 0.05
+	local hackOffsetY = 0.1
+
+	local pos = self.inst:GetPosition()
+	local sourcePos = self.orbitPoint ~= nil and self.orbitPoint:GetPosition() or nil
+
+	-- 如果是空中的，则要保持空中飞行状态
+	if
+		self.orbitPoint ~= nil and
+		self.nextOrbitPoint == nil and
+		sourcePos.y > hackY
+	then
+		local targetY = sourcePos.y + hackOffsetY
+		self.inst.Physics:SetMotorVel(0, (targetY - pos.y) * self.ySpeed, 0)
+		return
+	end
+
 	-- TODO: 如果运动无效，应该断开移动才对
 	if self.orbitPoint == nil or self.nextOrbitPoint == nil then
 		self:StopDrive()
 		return
 	end
 
-	-- 向目标移动
+	-- 数据准备
 	local targetPos = self.nextOrbitPoint:GetPosition()
+
+	local totalDist = aipDist(sourcePos, targetPos)
+	local currentDist = aipDist(pos, sourcePos)
+	local targetY = sourcePos.y + (targetPos.y - sourcePos.y) * currentDist / totalDist
+
+	-- 防止玩家被轨道挡起来，提升一下高度
+	if targetY > hackY then
+		targetY = targetY + hackOffsetY
+	end
+
+	-- 向目标移动
 	self.inst:ForceFacePoint(targetPos.x, 0, targetPos.z)
-	self.inst.Physics:SetMotorVel(self.speed, 0, 0)
+	self.inst.Physics:SetMotorVel(
+		self.speed,
+		(targetY - pos.y) * self.ySpeed,
+		0)
 
 	-- 如果到达了就选择下一个目标
 	local playerPos = self.inst:GetPosition()
@@ -222,7 +255,9 @@ function Driver:OnUpdate(dt)
 
 		if #points == 1 then
 			self.nextOrbitPoint = points[1]
-		else
+
+		-- 如果在地面上，则停止驾驶
+		elseif targetPos.y <= hackY then
 			self:StopDrive()
 			return
 		end

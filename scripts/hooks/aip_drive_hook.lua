@@ -146,7 +146,7 @@ for i, keyCode in ipairs(keys) do
 		-- 计算方向
 		local dir = GetWorldControllerVector()
 		local x = 0
-		local y = 0
+		local z = 0
 		if dir then
 			x = dir.x
 			z = dir.z
@@ -169,3 +169,23 @@ AddPlayerPostInit(function(player)
 		player:AddComponent("aipc_orbit_driver")
 	end
 end)
+
+---------------------------------------------------------------------------------
+--                                   全局方法                                   --
+---------------------------------------------------------------------------------
+function _G.aipFindOrbitPoint(pt)
+	local NEAR_DIST = 2
+	local ents = _G.TheSim:FindEntities(pt.x, 0, pt.z, 30 + NEAR_DIST, { "aip_glass_orbit_point" })
+	local tgt = nil
+	local tgtDist = nil
+
+	for k, ent in pairs(ents) do
+		local dist = _G.aipDist(pt, ent:GetPosition())
+		if dist < NEAR_DIST and (tgtDist == nil or dist < tgtDist) then
+			tgtDist = dist
+			tgt = ent
+		end
+	end
+	
+	return tgt
+end
