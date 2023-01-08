@@ -70,9 +70,7 @@ local function pointFn()
                 local column = aipSpawnPrefab(inst, "aip_glass_orbit_column", nil, i)
                 table.insert(inst._aip_columns, column)
 
-                -- aipTypePrint(i, column:GetPosition())
                 local cols = TheSim:FindEntities(pt.x, pt.y, pt.z, 5, { "aip_glass_orbit_column" })
-                aipPrint("Column Count:", #cols)
             end
 
 

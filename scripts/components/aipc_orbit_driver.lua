@@ -42,8 +42,10 @@ local Driver = Class(function(self, player)
 	self.orbitPoint = nil
 	self.nextOrbitPoint = nil
 	self.speed = 15
-	self.speedMulti = 0.25 -- 速度修正，如上下坡会加减速度
+	self.speedMulti = 0.25	-- 速度修正，如上下坡会加减速度
 	self.ySpeed = 20
+
+	self.lastRotate = nil	-- 上一次的角度，如果大反转，说明已经超出去了
 end)
 
 -- 是否可以开车状态
@@ -97,7 +99,7 @@ end
 -- 如果没有在运行，则找下一个可过去的点开过去
 function Driver:DriveFromPoint(angle)
 	self.nextOrbitPoint = nil
-	
+	self.lastRotate = nil
 
 	-- 找到附近所有的连接器，对应的端点
 	local orbitPointList = findPoints(self.orbitPoint)
@@ -258,25 +260,43 @@ function Driver:OnUpdate(dt)
 		(targetY - pos.y) * self.ySpeed,
 		0)
 
+	-- 角度变化也可能是已经到了
+	local rotate = self.inst.Transform:GetRotation()
+	local largeTurn = false
+
+	if self.lastRotate ~= nil then
+		local rotateDiff = rotate - self.lastRotate
+		rotateDiff = (rotateDiff + 360 + 180) % 360 - 180
+		largeTurn = math.abs(rotateDiff) > 90
+	end
+
 	-- 如果到达了就选择下一个目标
 	local playerPos = self.inst:GetPosition()
 	local dist = aipDist(playerPos, targetPos)
-	if dist < .5 then
+
+	if dist < .5 or largeTurn then
 		-- 矿车位移到玩家位置
 		self.minecar.Physics:Teleport(playerPos.x, playerPos.y, playerPos.z)
 
 		local points = findPoints(self.nextOrbitPoint, self.orbitPoint)
 		self.orbitPoint = self.nextOrbitPoint
 		self.nextOrbitPoint = nil
+		self.lastRotate = nil
 
 		if #points == 1 then
 			self.nextOrbitPoint = points[1]
+
+			local nextPoint = self.nextOrbitPoint:GetPosition()
+			self.inst:ForceFacePoint(nextPoint.x, 0, nextPoint.z)
 
 		-- 如果在地面上，则停止驾驶
 		elseif targetPos.y <= hackY then
 			self:StopDrive()
 			return
 		end
+
+	else
+		self.lastRotate = rotate
 	end
 end
 
