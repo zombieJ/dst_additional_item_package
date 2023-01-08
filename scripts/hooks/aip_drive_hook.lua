@@ -102,6 +102,7 @@ local KEY_RIGHT = 100
 local KEY_DOWN = 115
 local KEY_LEFT = 97
 local KEY_EXIT = 120
+local KEY_V = 118
 
 local keys = { KEY_UP, KEY_RIGHT, KEY_DOWN, KEY_LEFT, KEY_EXIT }
 
@@ -146,7 +147,7 @@ for i, keyCode in ipairs(keys) do
 		-- 计算方向
 		local dir = GetWorldControllerVector()
 		local x = 0
-		local y = 0
+		local z = 0
 		if dir then
 			x = dir.x
 			z = dir.z
@@ -157,10 +158,31 @@ for i, keyCode in ipairs(keys) do
 	end)
 end
 
+-- 监听是否切换视野
+_G.TheInput:AddKeyDownHandler(KEY_V, function()
+	local player = _G.ThePlayer
+
+	if
+		not player
+		or player.HUD:IsConsoleScreenOpen()
+		or player.HUD:IsChatInputScreenOpen()
+		or not player:HasTag("aip_orbit_driver")
+	then
+		return
+	end
+
+	-- 切换视野
+	_G.TheCamera:TriggerFlyView("driver")
+end)
+
 ---------------------------------------------------------------------------------
 --                                   司机组件                                   --
 ---------------------------------------------------------------------------------
 AddPlayerPostInit(function(player)
+	if not player.components.aipc_orbit_driver then
+		player:AddComponent("aipc_orbit_driver_client")
+	end
+
 	if not _G.TheWorld.ismastersim then
 		return
 	end
@@ -169,3 +191,23 @@ AddPlayerPostInit(function(player)
 		player:AddComponent("aipc_orbit_driver")
 	end
 end)
+
+---------------------------------------------------------------------------------
+--                                   全局方法                                   --
+---------------------------------------------------------------------------------
+function _G.aipFindOrbitPoint(pt)
+	local NEAR_DIST = 2
+	local ents = _G.TheSim:FindEntities(pt.x, 0, pt.z, 30 + NEAR_DIST, { "aip_glass_orbit_point" })
+	local tgt = nil
+	local tgtDist = nil
+
+	for k, ent in pairs(ents) do
+		local dist = _G.aipDist(pt, ent:GetPosition())
+		if dist < NEAR_DIST and (tgtDist == nil or dist < tgtDist) then
+			tgtDist = dist
+			tgt = ent
+		end
+	end
+	
+	return tgt
+end

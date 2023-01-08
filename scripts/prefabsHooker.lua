@@ -632,16 +632,42 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 						"aip_ockham_razor",
 						"aip_aztecs_coin",
 						"aip_steel_ball",
+						"structure",
+						"aip_glory_hand",
+					}
+
+					local structureList = {
+						"aip_forever",
 					}
 
 					-- 测试专用，只会掉落最后一个物品
 					if dev_mode then
 						itemList = { itemList[#itemList] }
+						structureList = { structureList[#structureList] }
 					end
 
-					_G.aipFlingItem(
-						_G.aipSpawnPrefab(data.inst, _G.aipRandomEnt(itemList))
-					)
+					-- 当随机到建筑时，再从建筑池里抽取一个
+					local rndPrefab = _G.aipRandomEnt(itemList)
+					if rndPrefab == "structure" then
+						rndPrefab = _G.aipRandomEnt(structureList)
+
+						-- 建筑会飞到附近生成
+						local targetPT = _G.aipGetSpawnPoint(data.inst:GetPosition(), 5)
+
+						local proj = _G.aipSpawnPrefab(data.inst, "aip_projectile")
+						proj.components.aipc_projectile:GoToPoint(targetPT, function()
+							_G.aipSpawnPrefab(proj, rndPrefab)
+							_G.aipSpawnPrefab(proj, "aip_shadow_wrapper").DoShow()
+							
+						end)
+					else
+						-- 物品则直接掉落
+						_G.aipFlingItem(
+							_G.aipSpawnPrefab(data.inst, rndPrefab)
+						)
+					end
+
+
 				end
 			end
 		end)

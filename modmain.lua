@@ -84,6 +84,7 @@ PrefabFiles = {
 	"incinerator",
 	"aip_woodener",
 	"aip_glass_chest",
+	"aip_protected_mark",
 
 	-- 诡影迷踪
 	"aip_dou_totem",
@@ -166,6 +167,9 @@ PrefabFiles = {
 	"aip_liver",
 	"aip_aztecs_coin",
 	"aip_steel_ball",
+	"aip_blowdart",
+	"aip_forever",
+	"aip_glory_hand",
 
 	-- Orbit
 	"aip_orbit",

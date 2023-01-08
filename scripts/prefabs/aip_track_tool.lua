@@ -16,12 +16,16 @@ local DAMAGE_MAP = {
 local LANG_MAP = {
 	english = {
 		NAME = "Track Measurer",
-		REC_DESC = "Create a shadow track",
+		NAME_HIGH = "Track Measurer (Hight)",
+		NAME_LOW = "Track Measurer (Low)",
+		REC_DESC = "Create a moon track. Can be upgrade by blue or red gem.",
 		DESC = "Mixed with moon and shadow",
 	},
 	chinese = {
 		NAME = "月轨测量仪",
-		REC_DESC = "制作一条暗影轨道",
+		NAME_HIGH = "月轨测量仪(升轨)",
+		NAME_LOW = "月轨测量仪(降轨)",
+		REC_DESC = "制作一条月亮轨道，工具可用 蓝、红 宝石升级",
 		DESC = "暗影与月光的奇艺融合",
 	},
 }
@@ -33,6 +37,8 @@ TUNING.AIP_TRACK_TOOLE_DAMAGE =  DAMAGE_MAP[weapon_damage]
 -- 资源
 local assets = {
 	Asset("ATLAS", "images/inventoryimages/aip_track_tool.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_track_tool_high.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_track_tool_low.xml"),
 	Asset("ANIM", "anim/aip_track_tool.zip"),
 	Asset("ANIM", "anim/aip_track_tool_swap.zip"),
 	Asset("ANIM", "anim/aip_glass_orbit_point.zip"),
@@ -42,6 +48,8 @@ local prefabs = {}
 
 -- 文字描述
 STRINGS.NAMES.AIP_TRACK_TOOL = LANG.NAME
+STRINGS.NAMES.AIP_TRACK_TOOL_HIGH = LANG.NAME_HIGH
+STRINGS.NAMES.AIP_TRACK_TOOL_LOW = LANG.NAME_LOW
 STRINGS.RECIPE_DESC.AIP_TRACK_TOOL = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_TRACK_TOOL = LANG.DESC
 
@@ -76,10 +84,8 @@ local function canActOn(inst, doer, target)
 end
 
 -- 寻找附近的标记点
-local function findNearByPoint(pt)
-	local ents = TheSim:FindEntities(pt.x, 0, pt.z, 2, { "aip_glass_orbit_point" })
-	return ents[1]
-end
+local MAX_HEIGHT = 10
+local NEAR_DIST = 2
 
 -- 在点制造轨道
 local function onDoPointAction(inst, creator, targetPos)
@@ -93,16 +99,21 @@ local function onDoPointAction(inst, creator, targetPos)
 	inst.components.finiteuses:Use()
 
 	-- 起始点：如果附近有点就不创建
-	local startP = findNearByPoint(startPos)
+	local startP = aipFindOrbitPoint(startPos)
 	if startP == nil then
 		startP = aipSpawnPrefab(creator, "aip_glass_orbit_point")
 		aipSpawnPrefab(startP, "aip_shadow_wrapper").DoShow()
 	end
 
+	local startPT = startP:GetPosition()
+
 	-- 目的地：如果附近有点就不创建
-	local endP = findNearByPoint(targetPos)
+	local endP = aipFindOrbitPoint(targetPos)
 	if endP == nil then
-		endP = aipSpawnPrefab(nil, "aip_glass_orbit_point", targetPos.x, 0, targetPos.z)
+		local y = startPT.y + (inst._aip_offset or 0)
+		y = math.max(y, 0)
+		y = math.min(y, MAX_HEIGHT)
+		endP = aipSpawnPrefab(nil, "aip_glass_orbit_point", targetPos.x, y, targetPos.z)
 		aipSpawnPrefab(endP, "aip_shadow_wrapper").DoShow()
 	end
 
@@ -151,8 +162,31 @@ local function CreateRail(inst, target, pos)
 	onDoPointAction(inst, owner, pos)
 end
 
+--------------------------------- 变化 ---------------------------------
+-- 只允许 蓝宝石 和 红宝石
+local function canBeGiveOn(inst, doer, item)
+    return aipInTable({"redgem", "bluegem"}, item.prefab)
+end
+
+-- 给予宝石变化物品
+local function onDoGiveAction(inst, doer, item)
+	local uses = inst.components.finiteuses:GetUses()
+	local tool = nil
+
+	if item.prefab == "redgem" then
+		tool = aipReplacePrefab(inst, "aip_track_tool_high")
+	elseif item.prefab == "bluegem" then
+		tool = aipReplacePrefab(inst, "aip_track_tool_low")
+	end
+
+	if tool ~= nil then
+		tool.components.finiteuses:SetUses(uses)
+    	aipRemove(item)
+	end
+end
+
 --------------------------------- 实例 ---------------------------------
-local function fn()
+local function commonFn(postFn)
 	local inst = CreateEntity()
 
 	inst.entity:AddTransform()
@@ -170,6 +204,7 @@ local function fn()
 	inst:AddComponent("aipc_action_client")
 	inst.components.aipc_action_client.canActOnPoint = canActOnPoint
 	inst.components.aipc_action_client.canActOn = canActOn
+	inst.components.aipc_action_client.canBeGiveOn = canBeGiveOn
 
 	-- 双端通用的匹配
 	inst:AddComponent("aipc_fueled")
@@ -192,12 +227,12 @@ local function fn()
 	inst:AddComponent("inspectable")
 
 	inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_track_tool.xml"
 
 	-- -- 施法
     inst:AddComponent("aipc_action")
     inst.components.aipc_action.onDoPointAction = onDoPointAction
 	inst.components.aipc_action.onDoTargetAction = onDoTargetAction
+	inst.components.aipc_action.onDoGiveAction = onDoGiveAction
 
 	MakeHauntableLaunch(inst)
 
@@ -205,7 +240,32 @@ local function fn()
 	inst.components.equippable:SetOnEquip(onequip)
 	inst.components.equippable:SetOnUnequip(onunequip)
 
+	postFn(inst)
+
 	return inst
 end
 
-return	Prefab("aip_track_tool", fn, assets)
+--------------------------------- 高低 ---------------------------------
+local function fn()
+	return commonFn(function(inst)
+		inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_track_tool.xml"
+	end)
+end
+
+local function highFn()
+	return commonFn(function(inst)
+		inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_track_tool_high.xml"
+		inst._aip_offset = 2
+	end)
+end
+
+local function lowFn()
+	return commonFn(function(inst)
+		inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_track_tool_low.xml"
+		inst._aip_offset = -2
+	end)
+end
+
+return	Prefab("aip_track_tool", fn, assets),
+	Prefab("aip_track_tool_high", highFn, assets),
+	Prefab("aip_track_tool_low", lowFn, assets)

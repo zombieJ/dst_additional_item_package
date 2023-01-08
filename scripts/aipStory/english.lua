@@ -101,6 +101,13 @@ return {
                 name="aip_jump_paper",
             },
             "Rice Amulet can jump between enemies once. Same as boomerang, do not get hurt when it returns.",
+        
+            -- 蜂刺吹箭
+            {
+                type="img",
+                name="aip_blowdart",
+            },
+            "Blow darts with Stinger as ammunition, can be used multiple times, but the damage is not high.",
         },
     },
 
@@ -589,12 +596,15 @@ return {
                 type="img",
                 name="aip_track_tool",
             },
+            "'Track Measurer' make a track that can cross the sea, and you can drive it with the 'Glass Mine Cart'.",
+            "In addition, use 'Red Gem' upgrade to increases track, and use 'Blue Gem' upgrade to decreases track.",
+
             -- 玻璃矿车
             {
                 type="img",
                 name="aip_glass_minecar",
             },
-            "Through the 'Lunar Orbit Measuring Instrument', a track that can cross the sea can be produced, and with the 'glass minecart', the cross-sea movement can be realized.",
+            "Place the 'Glass Mine Cart' on the node created by the 'Track Measurer' and ride it. The arrow keys control the direction, X to exit the mine car, and V to switch the view.",
 
             -- 劣质的飞行图腾
             {
@@ -1145,19 +1155,37 @@ return {
             },
             "Ockham's Razor like an ordinary razor, and at the same time has a certain combat effectiveness, but its damage will decrease with the number of times it is used. Fortunately, the durability can be restored with charged particles.",
 
-                -- 阿兹特克金币
-                {
-                    type="img",
-                    name="aip_aztecs_coin",
-                },
-                "Aztecs Coin is cursed that grants a gold nugget at the cost of life each time when use.",
-    
-                -- 回旋铁球
-                {
-                    type="img",
-                    name="aip_steel_ball",
-                },
-                "A steel ball with whirling power. After being thrown out, it will help you transfer damage to trees, stones, etc. with CD.",
+            -- 阿兹特克金币
+            {
+                type="img",
+                name="aip_aztecs_coin",
+            },
+            "Aztecs Coin is cursed that grants a gold nugget at the cost of life each time when use.",
+
+            -- 回旋铁球
+            {
+                type="img",
+                name="aip_steel_ball",
+            },
+            "A steel ball with whirling power. After being thrown out, it will help you transfer damage to trees, stones, etc. with CD.",
+        
+            -- 永恒之井
+            {
+                type="anim",
+                build="aip_forever",
+                scale=.35,
+                height=170,
+                top=20,
+            },
+            "A well full of vitality that grows a normal or demonic flower nearby every day. If you give petals, you can directly grow the corresponding flower but may fail to turn into a butterfly.",
+        
+            -- 光荣之手
+            {
+                type="img",
+                name="aip_glory_hand",
+            },
+            "'Hand of Glory' will summon a light source for everyone, so that friends without torches can see clearly ahead in the dark. It can be fueled by 'Nightmare Fuel'.",
+            
         },
     },
 }

@@ -28,7 +28,8 @@ function Linker:Link(startP, endP)
 	local startPt = startP:GetPosition()
 	local endPt = endP:GetPosition()
 
-	local str = aipCommonStr(false, "|", startPt.x, startPt.z, endPt.x, endPt.z)
+	local str = aipCommonStr(false, "|",
+		startPt.x, startPt.y, startPt.z, endPt.x, endPt.y, endPt.z)
 	self.pointStr:set(str)
 
 	if TheWorld.ismastersim then
@@ -58,8 +59,8 @@ function Linker:SyncPath()
 
 	-- 根据网络记录复原轨道所需信息
 	local list = aipSplit(self.pointStr:value(), "|")
-	local startPt = Vector3(tonumber(list[1]), 0, tonumber(list[2]))
-	local endPt = Vector3(tonumber(list[3]), 0, tonumber(list[4]))
+	local startPt = Vector3(tonumber(list[1]), tonumber(list[2]), tonumber(list[3]))
+	local endPt = Vector3(tonumber(list[4]), tonumber(list[5]), tonumber(list[6]))
 
 	local ORBIT_DIST = 0.6
 	local dist = aipDist(startPt, endPt)
@@ -69,9 +70,10 @@ function Linker:SyncPath()
 	-- 绘制轨道
 	for i = 1, count - 1 do
 		local x = startPt.x + (endPt.x - startPt.x) * i / count
+		local y = startPt.y + (endPt.y - startPt.y) * i / count
 		local z = startPt.z + (endPt.z - startPt.z) * i / count
 
-		local orbit = aipSpawnPrefab(nil, "aip_glass_orbit", x, 0, z)
+		local orbit = aipSpawnPrefab(nil, "aip_glass_orbit", x, y, z)
 		orbit:ForceFacePoint(endPt)
 
 		table.insert(self.orbits, orbit)
@@ -140,8 +142,11 @@ function Linker:OnLoad(data)
 
 		-- 等物体载入完成后，再链接起来
 		self.inst:DoTaskInTime(1, function()
-			local startP = TheSim:FindEntities(startX, 0, startZ, 0.1, {"aip_glass_orbit_point"})[1]
-			local endP = TheSim:FindEntities(endX, 0, endZ, 0.1, {"aip_glass_orbit_point"})[1]
+			-- local startP = aipFindOrbitPoint(startX, 0, startZ, 0.1, {"aip_glass_orbit_point"})[1]
+			-- local endP = aipFindOrbitPoint(endX, 0, endZ, 0.1, {"aip_glass_orbit_point"})[1]
+
+			local startP = aipFindOrbitPoint(Vector3(startX, 0, startZ))
+			local endP = aipFindOrbitPoint(Vector3(endX, 0, endZ))
 	
 			if startP and endP then
 				self:Link(startP, endP)

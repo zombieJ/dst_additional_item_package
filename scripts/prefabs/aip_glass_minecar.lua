@@ -10,11 +10,13 @@ local list = {
                 NAME = "Glass Minecar",
                 DESC = "Takes where you go",
                 RECIPE_DESC = "Works on the glass orbit",
+                TOO_FAR = "Too high to put",
             },
             chinese = {
                 NAME = "玻璃矿车",
                 DESC = "可以带去想要去的地方",
                 RECIPE_DESC = "可以使用玻璃轨道的矿车",
+                TOO_FAR = "太高了！",
             },
         },
         assets = {
@@ -33,6 +35,21 @@ local function canActOn(inst, doer, target)
 end
 
 local function onDoTargetAction(inst, doer, target)
+    if inst == nil or target == nil then
+        return
+    end
+
+    -- 太远了就不让安装
+    if target:GetPosition().y > 1 then
+        if doer.components.talker ~= nil then
+            doer.components.talker:Say(
+                STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_MINECAR_TOO_FAR
+            )
+        end
+
+        return
+    end
+
     if target.components.aipc_orbit_point ~= nil then
         target.components.aipc_orbit_point:SetMineCar(inst)
     end
@@ -48,6 +65,7 @@ local function getFn(data)
     STRINGS.NAMES[upStr] = LANG.NAME
     STRINGS.RECIPE_DESC[upStr] = LANG.REC_DESC
     STRINGS.CHARACTERS.GENERIC.DESCRIBE[upStr] = LANG.DESC
+    STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_MINECAR_TOO_FAR = LANG.TOO_FAR
 
     local function fn()
         local inst = CreateEntity()
