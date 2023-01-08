@@ -138,6 +138,7 @@ function Driver:DriveBack(angle)
 		local tmpOrbitPoint = self.nextOrbitPoint
 		self.nextOrbitPoint = self.orbitPoint
 		self.orbitPoint = tmpOrbitPoint
+		self.lastRotate = nil
 	end
 end
 
@@ -254,11 +255,9 @@ function Driver:OnUpdate(dt)
 	end
 
 	-- 向目标移动
+	local ySpeed = (targetY - pos.y) * self.ySpeed
 	self.inst:ForceFacePoint(targetPos.x, 0, targetPos.z)
-	self.inst.Physics:SetMotorVel(
-		speedX,
-		(targetY - pos.y) * self.ySpeed,
-		0)
+	self.inst.Physics:SetMotorVel(speedX, ySpeed, 0)
 
 	-- 角度变化也可能是已经到了
 	local rotate = self.inst.Transform:GetRotation()
@@ -274,11 +273,12 @@ function Driver:OnUpdate(dt)
 	local playerPos = self.inst:GetPosition()
 	local dist = aipDist(playerPos, targetPos)
 
-	if dist < .5 or largeTurn then
+	if dist < .2 or largeTurn then
 		-- 矿车位移到玩家位置
-		self.minecar.Physics:Teleport(playerPos.x, playerPos.y, playerPos.z)
+		self.minecar.Physics:Teleport(targetPos.x, targetPos.y, targetPos.z)
 
 		local points = findPoints(self.nextOrbitPoint, self.orbitPoint)
+		local lastRotate = self.lastRotate
 		self.orbitPoint = self.nextOrbitPoint
 		self.nextOrbitPoint = nil
 		self.lastRotate = nil
@@ -289,12 +289,21 @@ function Driver:OnUpdate(dt)
 			local nextPoint = self.nextOrbitPoint:GetPosition()
 			self.inst:ForceFacePoint(nextPoint.x, 0, nextPoint.z)
 
-		-- 如果在地面上，则停止驾驶
-		elseif targetPos.y <= hackY then
-			self:StopDrive()
-			return
-		end
+		else
+			-- 没有新的地点，我们就重置一下位置 和 角度
+			self.inst.Physics:Teleport(targetPos.x, playerPos.y, targetPos.z)
+			self.inst.Physics:SetMotorVel(0, ySpeed, 0)
 
+			if lastRotate ~= nil then
+				self.inst.Transform:SetRotation(lastRotate)
+			end
+
+			-- 如果在地面上，则停止驾驶
+			if targetPos.y <= hackY then
+				self:StopDrive()
+				return
+			end
+		end
 	else
 		self.lastRotate = rotate
 	end
