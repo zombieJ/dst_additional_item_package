@@ -623,8 +623,19 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 		-----------------------------------------------------------
 		-- 世界掉落
 		inst:ListenForEvent("entity_death", function (world, data)
-			if data ~= nil and data.inst ~= nil and data.afflicter ~= nil and data.afflicter:HasTag("player") then
-				if math.random() <= (dev_mode and 1 or .001) then
+			local aipc_oldone = _G.aipGet(data, "afflicter|components|aipc_oldone")
+
+			if
+				data ~= nil and data.inst ~= nil and
+				aipc_oldone ~= nil and data.afflicter:HasTag("player")
+			then
+				-- 玩家如果没有遇到过世界掉落，第一次概率会变得更高一些
+				local chance = aipc_oldone:GetWorldDropTimes() == 0 and .01 or .001
+
+				if math.random() <= (dev_mode and 1 or chance) then
+					-- 玩家掉落计数
+					aipc_oldone:DoWorldDropTimesDelta(1)
+
 					local itemList = {
 						"aip_prosperity_seed",
 						"aip_bloodstone",

@@ -59,6 +59,10 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OCKHAM_RAZOR = LANG.DESC
 
 --------------------------------- 方法 ---------------------------------
 local function calcDamage(inst, attacker, target)
+	if aipGet(inst, "components|finiteuses") == nil then
+		return 0
+	end
+
 	local ptg = inst.components.finiteuses:GetPercent()
 	return MIN_DMG + (MAX_DMG - MIN_DMG) * ptg
 end
