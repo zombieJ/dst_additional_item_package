@@ -95,7 +95,7 @@ local function onbuilt(inst)
 end
 
 local function onRemove(inst)
-    aipTableRemove(TheWorld.components.world_common_store.flyTotems, inst)
+    aipTableRemove(aipCommonStore().flyTotems, inst)
 end
 
 local function canBeActOn(inst, doer)
@@ -104,8 +104,8 @@ end
 
 local function onOpenPicker(inst, doer)
     -- 如果是假图腾就检查是否豆酱图腾由能量
-    if inst.aipFake == true and TheWorld.components.world_common_store then
-        local douTotem = TheWorld.components.world_common_store:FindDouTotem()
+    if inst.aipFake == true and aipCommonStore() then
+        local douTotem = aipCommonStore():FindDouTotem()
 
         -- 没有的话就不让飞行了
         if not douTotem or not douTotem.components.fueled or douTotem.components.fueled:IsEmpty() then
@@ -140,8 +140,8 @@ end
 
 ---------------------------------- 燃料 ----------------------------------
 local function ontakefuel(inst)
-    if TheWorld.components.world_common_store then
-        local douTotem = TheWorld.components.world_common_store:FindDouTotem()
+    if aipCommonStore() then
+        local douTotem = aipCommonStore():FindDouTotem()
 
         -- 给链接图腾补充燃料
         if douTotem and douTotem.components.fueled then
@@ -207,10 +207,36 @@ local function startSpell(inst, targetTotem)
         startTranslate(inst, targetTotem)
 
         -- 如果是劣质图腾则消耗一下使用寿命
-        if inst.aipFake == true and TheWorld.components.world_common_store then
-            local douTotem = TheWorld.components.world_common_store:FindDouTotem()
-            douTotem.components.fueled:DoDelta(-1, inst)
+        if inst.aipFake == true and aipCommonStore() then
+            local douTotem = aipCommonStore():FindDouTotem()
+
+            if douTotem then -- 如果玩家 T 出来的，图腾其实不存在
+                douTotem.components.fueled:DoDelta(-1, inst)
+            end
         end
+    end
+end
+
+-- 被粒子激活
+local function onParticlesTrigger(inst)
+    -- 不会死
+    if inst.components.health ~= nil then
+        inst.components.health:SetCurrentHealth(1)
+    end
+
+    local store = aipCommonStore()
+
+    if store:MarkTotem() == nil then
+        store:MarkTotem(inst)
+
+    else -- 飞行吧
+        if store:MarkTotem() ~= inst then
+            startSpell(inst, store:MarkTotem())
+            startSpell(store:MarkTotem(), inst)
+        end
+
+        -- 清理
+        store:MarkTotem(false)
     end
 end
 
@@ -237,6 +263,9 @@ local function genTotem(buildName, fake)
 
         inst:AddTag("structure")
         inst:AddTag("aip_fly_totem")
+
+        -- 添加粒子标记，使其可以被攻击
+        inst:AddTag("aip_particles")
 
         --Sneak these into pristine state for optimization
         inst:AddTag("_writeable")
@@ -266,6 +295,9 @@ local function genTotem(buildName, fake)
         inst.components.workable:SetWorkLeft(4)
         inst.components.workable:SetOnFinishCallback(onhammered)
         inst.components.workable:SetOnWorkCallback(onhit)
+
+        -- 可以被粒子触发
+        inst._aip_particles_trigger = onParticlesTrigger
 
         -- 玩家靠近
         inst:AddComponent("playerprox")
@@ -297,7 +329,7 @@ local function genTotem(buildName, fake)
         inst:ListenForEvent("onbuilt", onbuilt)
 
         -- 全局注册飞行图腾
-        table.insert(TheWorld.components.world_common_store.flyTotems, inst)
+        table.insert(aipCommonStore().flyTotems, inst)
         inst:ListenForEvent("onremove", onRemove)
 
         return inst

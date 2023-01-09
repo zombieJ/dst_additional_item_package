@@ -274,7 +274,7 @@ rec("aip_particles_vest_entangled", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.TOOLS }
 	{ atlas = "images/inventoryimages/aip_particles_entangled_blue.xml", image = "aip_particles_entangled_blue.tex" })
 
 	
--- 纠缠粒子
+-- 回声粒子
 rec("aip_particles_echo", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.TOOLS },
 {
 	Ingredient("aip_particles_bottle_charged", 1, "images/inventoryimages/aip_particles_bottle_charged.xml"),

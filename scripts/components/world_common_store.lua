@@ -72,6 +72,7 @@ local CommonStore = Class(function(self, inst)
 
 	-- 记录所有的飞行点
 	self.flyTotems = {}
+	self.flyTotemMarked = nil -- 被标记的飞行图腾
 
 	-- 记录所有的鱼点
 	self.fishShoals = {}
@@ -97,6 +98,42 @@ local CommonStore = Class(function(self, inst)
 
 	inst:ListenForEvent("ms_sendlightningstrike", OnSendLightningStrike, TheWorld)
 end)
+
+function CommonStore:CleanTotem()
+	if self.flyTotemMarked ~= nil then
+		aipRemove(self.flyTotemMarked._aip_trigger_aura)
+		self.flyTotemMarked = nil
+	end
+
+	if self.flyTotemMarkTask ~= nil then
+		self.flyTotemMarkTask:Cancel()
+		self.flyTotemMarkTask = nil
+	end
+end
+
+function CommonStore:MarkTotem(totem)
+	if totem ~= nil then
+		self:CleanTotem()
+	end
+
+	if totem == false then
+		self.flyTotemMarked = nil
+	elseif totem ~= nil then
+    	self.flyTotemMarked = totem
+
+		-- 特效标记
+		local aura = SpawnPrefab("aip_aura_trigger")
+		totem:AddChild(aura)
+		totem._aip_trigger_aura = aura
+
+		-- 3 秒没继续就清理掉
+		self.flyTotemMarkTask = self.inst:DoTaskInTime(5, function()
+			self:CleanTotem()
+		end)
+	end
+
+	return self.flyTotemMarked
+end
 
 function CommonStore:OnSave()
     return {

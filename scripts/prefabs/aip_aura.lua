@@ -252,9 +252,15 @@ local list = {
 		range = false, -- 不安装光环组件
 		scale = 1,
 	},
-	{	-- 回旋光环：并非真实的光环，播放一个循环转圈动画
+	{	-- 回旋光环：并非真实的光环，播放一个循环转圈动画（回旋铁球）
 		name = "aip_aura_steel",
 		assets = { Asset("ANIM", "anim/aip_aura_steel.zip") },
+		range = false, -- 不安装光环组件
+		scale = 1.25,
+	},
+	{	-- 触发光环：并非真实的光环，播放一个循环转圈动画（粒子触发的标记）
+		name = "aip_aura_trigger",
+		assets = { Asset("ANIM", "anim/aip_aura_trigger.zip") },
 		range = false, -- 不安装光环组件
 		scale = 1.25,
 	},
