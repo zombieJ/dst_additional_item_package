@@ -189,6 +189,7 @@ local function startTranslate(inst, targetTotem)
 
     -- 传送玩家
     local players = aipFindNearPlayers(inst, 3)
+
     for i, player in ipairs(players) do
         if player.components.aipc_flyer_sc ~= nil then
             player.components.aipc_flyer_sc:FlyTo(targetTotem)

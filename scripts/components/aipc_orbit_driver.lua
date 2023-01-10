@@ -15,7 +15,24 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_MINECAR_EXIT = LANG.EXIT
 
+----------------------------------- 服务端 -----------------------------------
+local function onFlyDirty(inst)
+	if
+		inst.components.aipc_flyer_sc ~= nil and
+		not inst.components.aipc_flyer_sc:IsFlying() and
+		inst.components.aipc_orbit_driver ~= nil
+	then	-- 我们准备继续驾驶了
+		inst.components.aipc_orbit_driver:TryContinue()
+	end
+end
+
+
 ------------------------------------ 无状态方法 ------------------------------------
+local function findClosestPoint(inst)
+	local linkList = aipFindNearEnts(inst, { "aip_glass_orbit_point" }, 3)
+	return linkList[1]
+end
+
 local function findPoints(current, excluded)
 	local linkList = aipFindNearEnts(current, { "aip_glass_orbit_link" }, 25)
 
@@ -46,6 +63,8 @@ local Driver = Class(function(self, player)
 	self.ySpeed = 20
 
 	self.lastRotate = nil	-- 上一次的角度，如果大反转，说明已经超出去了
+
+	self.inst:ListenForEvent("aipc_flyer_flying_dirty", onFlyDirty)
 end)
 
 -- 是否可以开车状态
@@ -93,6 +112,32 @@ function Driver:UseMineCar(minecar, orbitPoint)
 	self.inst.components.aipc_orbit_driver_client.isDriving:set(true)
 
 	return true
+end
+
+function Driver:isDriving()
+	return self.minecar ~= nil
+end
+
+-- 尝试继续驾驶，比如被飞行图腾带走了。落地后可以再找一下附近的轨道点，继续开下去。
+function Driver:TryContinue()
+	if self:isDriving() then
+		local orbitPoint = findClosestPoint(self.inst)
+
+		if orbitPoint ~= nil then
+			self.orbitPoint = orbitPoint
+
+			local nextPoints = findPoints(orbitPoint)
+			if #nextPoints == 1 then
+				self.nextOrbitPoint = nextPoints[1]
+
+				local pt = self.orbitPoint:GetPosition()
+				self.inst.Physics:Teleport(pt.x, pt.y, pt.z)
+
+				-- 标记完了，走吧
+				self.inst:StartUpdatingComponent(self)
+			end
+		end
+	end
 end
 
 ------------------------------- 开车啦 ------------------------------------------------
@@ -211,6 +256,15 @@ function Driver:AbortDrive()
 end
 
 function Driver:OnUpdate(dt)
+	-- 如果是飞行状态，我们就暂时停手
+	if
+		self.inst.components.aipc_flyer_sc ~= nil and
+		self.inst.components.aipc_flyer_sc:IsFlying()
+	then
+		self:StopDrive()
+		return
+	end
+
 	local hackY = 0.05
 	local hackOffsetY = 0.1
 
