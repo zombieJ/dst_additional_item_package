@@ -113,29 +113,53 @@ local function normalize(angle)
     return angle
 end
 
+local function initViewMode(inst)
+	inst._aipFlyModes = inst._aipFlyModes or {}
+end
+
 -- 镜头锁定
 AddClassPostConstruct("cameras/followcamera", function(inst)
 	local dist = 32 -- 16 -- 8
 	local distDriver = 12
 
+	function inst:Init()
+	end
+
 	function inst:TriggerFlyView(mode)
-		self:SetFlyView(not self._aipFlying, mode)
+		mode = mode or "fly"
+		initViewMode(self)
+
+		-- self:SetFlyView(not self._aipFlying, mode)
+		self:SetFlyView(not self._aipFlyModes[mode], mode)
 	end
 
 	function inst:SetFlyView(flying, mode)
+		mode = mode or "fly"
+		initViewMode(self)
+
 		-- 设置过了就不设了
-		if self._aipFlying == flying then
+		if self._aipFlyModes[mode] == flying then
 			return
 		end
+		self._aipFlyModes[mode] = flying
 
-		if flying then
+		-- 遍历列表，看看是不是需要飞行
+		local needFly = false
+		for k, v in pairs(self._aipFlyModes) do
+			if v then
+				needFly = true
+				break
+			end
+		end
+
+		-- 根据优先级锁定距离
+		local myDist = self._aipFlyModes.fly == true and dist or distDriver
+
+		if needFly then
 			self._aipOriginMinDist = self.mindist
 			self._aipOriginMaxDist = self.maxdist
 			self._aipOriginHeadingtarget = self.headingtarget
 			self._aipOriginHeadinggain = self.headinggain
-
-			-- 锁定距离
-			local myDist = mode == "driver" and distDriver or dist
 
 			self.mindist = myDist
 			self.maxdist = myDist + 20
@@ -149,7 +173,7 @@ AddClassPostConstruct("cameras/followcamera", function(inst)
 			self:SetDefault()
 		end
 
-		self._aipFlying = flying
+		self._aipFlying = needFly
 	end
 
 	local OriginUpdate = inst.Update

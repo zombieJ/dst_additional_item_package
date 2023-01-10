@@ -213,9 +213,6 @@ function Driver:StopDrive()
 end
 
 function Driver:AbortDrive()
-	-- 镜头回归
-	-- TheCamera:SetFlyView(false)
-
 	self:StopDrive()
 	self.inst.sg:GoToState("idle")
 	self.inst:RemoveTag("aip_orbit_driver")
