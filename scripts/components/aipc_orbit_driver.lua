@@ -305,6 +305,14 @@ function Driver:OnUpdate(dt)
 		speedX = speedX + self.speed * self.speedMulti
 	end
 
+	-- 如果玩家在读标识牌则减速
+	if
+		self.inst.components.timer ~= nil and
+		self.inst.components.timer:TimerExists("aip_reading_sign")
+	then
+		speedX = speedX * 0.1
+	end
+
 	-- 向目标移动
 	local ySpeed = (targetY - pos.y) * self.ySpeed
 	self.inst:ForceFacePoint(targetPos.x, 0, targetPos.z)

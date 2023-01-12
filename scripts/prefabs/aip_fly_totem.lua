@@ -1,3 +1,5 @@
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
+
 -- 配置
 local language = aipGetModConfig("language")
 
@@ -102,13 +104,32 @@ local function canBeActOn(inst, doer)
 	return not inst:HasTag("writeable")
 end
 
+-- 检查是否有燃料可以飞行
+local function canFly()
+    -- 测试模式下总是可以飞行
+    if dev_mode then
+        return true
+    end
+
+    local douTotem = aipCommonStore():FindDouTotem()
+
+    -- 没有的话就不让飞行了
+    if
+        not douTotem or
+        not douTotem.components.fueled or
+        douTotem.components.fueled:IsEmpty()
+    then
+        return false
+    end
+
+    return true
+end
+
 local function onOpenPicker(inst, doer)
     -- 如果是假图腾就检查是否豆酱图腾由能量
     if inst.aipFake == true and aipCommonStore() then
-        local douTotem = aipCommonStore():FindDouTotem()
-
         -- 没有的话就不让飞行了
-        if not douTotem or not douTotem.components.fueled or douTotem.components.fueled:IsEmpty() then
+        if not canFly() then
             if doer.components.talker then
                 doer.components.talker:Say(
                     STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FAKE_FLY_TOTEM_NO_POWER
@@ -220,9 +241,9 @@ end
 
 -- 被粒子激活
 local function onParticlesTrigger(inst)
-    -- 不会死
-    if inst.components.health ~= nil then
-        inst.components.health:SetCurrentHealth(1)
+    -- 没有燃料了，不能飞
+    if inst.aipFake == true and not canFly() then
+        return
     end
 
     local store = aipCommonStore()

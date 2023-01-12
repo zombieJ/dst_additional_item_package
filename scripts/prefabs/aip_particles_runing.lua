@@ -62,7 +62,7 @@ local function triggerNearby(inst)
 
     for _, particle in ipairs(particles) do
         if particle._aip_particles_trigger ~= nil then
-            particle._aip_particles_trigger(particle)
+            particle._aip_particles_trigger(particle, inst)
         elseif particle.components.combat ~= nil then
             particle.components.combat:GetAttacked(inst, 1)
         end

@@ -422,6 +422,38 @@ AddPrefabPostInit("bullkelp_plant", function(inst)
 	inst.components.aipc_action.onDoAction = bullkelpOnDoAction
 end)
 
+------------------------------------------ 标牌 ------------------------------------------
+local function onSignTrigger(inst, trigger)
+	if inst ~= nil and inst.components.inspectable ~= nil then
+		local players = _G.aipFindNearPlayers(trigger, 5)
+
+		for _, player in ipairs(players) do
+			-- 把告示牌的内容念出来
+			if player.components.talker ~= nil then
+				player.components.talker:Say(
+					inst.components.inspectable:GetDescription(player)
+				)
+			end
+
+			-- 降低玩家的车载速度
+			if player.components.timer ~= nil then
+				player.components.timer:StartTimer("aip_reading_sign", 2)
+			end
+		end
+	end
+end
+
+AddPrefabPostInit("homesign", function(inst)
+	-- 可以被粒子触发
+	inst:AddTag("aip_particles")
+
+	if not _G.TheWorld.ismastersim then
+		return inst
+	end
+
+	inst._aip_particles_trigger = onSignTrigger
+end)
+
 ------------------------------------------ 食物 ------------------------------------------
 AddPrefabPostInit("grass", function(inst)
 	if not _G.TheWorld.ismastersim then

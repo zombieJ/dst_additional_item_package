@@ -156,10 +156,12 @@ AddClassPostConstruct("cameras/followcamera", function(inst)
 		local myDist = self._aipFlyModes.fly == true and dist or distDriver
 
 		if needFly then
-			self._aipOriginMinDist = self.mindist
-			self._aipOriginMaxDist = self.maxdist
-			self._aipOriginHeadingtarget = self.headingtarget
-			self._aipOriginHeadinggain = self.headinggain
+			if self._aipOriginMinDist == nil then
+				self._aipOriginMinDist = self.mindist
+				self._aipOriginMaxDist = self.maxdist
+				self._aipOriginHeadingtarget = self.headingtarget
+				self._aipOriginHeadinggain = self.headinggain
+			end
 
 			self.mindist = myDist
 			self.maxdist = myDist + 20
@@ -171,6 +173,8 @@ AddClassPostConstruct("cameras/followcamera", function(inst)
 			self.headingtarget = self._aipOriginHeadingtarget
 			self.headinggain = self._aipOriginHeadinggain
 			self:SetDefault()
+
+			self._aipOriginMinDist = nil
 		end
 
 		self._aipFlying = needFly
