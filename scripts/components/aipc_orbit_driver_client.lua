@@ -11,7 +11,7 @@ local Driver = Class(function(self, player)
 		-- 仅对当前玩家锁定屏幕 & 同步更新速度保持稳定
 		if self.inst == ThePlayer then
 			if not self.isDriving:value() then
-				TheCamera:SetFlyView(false)
+				TheCamera:SetFlyView(false, "driver")
 			end
 		end
 	end)

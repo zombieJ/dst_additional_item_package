@@ -94,9 +94,10 @@ function Flyer:IsFlying()
 end
 
 function Flyer:RotateToTarget(dest)
-	local angle = aipGetAngle(self.inst:GetPosition(), dest)
-	self.inst.Transform:SetRotation(angle)
-	self.inst:FacePoint(dest)
+	-- local angle = aipGetAngle(self.inst:GetPosition(), dest)
+	-- self.inst.Transform:SetRotation(angle)
+	-- self.inst:FacePoint(dest)
+	self.inst:ForceFacePoint(dest.x, 0, dest.z)
 end
 
 function Flyer:FlyTo(target)
@@ -127,7 +128,6 @@ function Flyer:FlyTo(target)
 	end
 
 	------------------ 开始飞行 ------------------
-
 	-- 创建特效
 	local effect = SpawnPrefab("aip_eagle_effect")
 	effect.Transform:SetPosition(self.inst.Transform:GetWorldPosition())
@@ -267,7 +267,10 @@ function Flyer:OnServerUpdate(dt)
 
 		self.inst.Physics:SetMotorVel(speed,ySpeed,0)
 
-		if distance < 4 or self.lastDistance < distance then
+		if
+			distance < 2 or
+			(distance < 8 and self.lastDistance < distance) -- 距离很近了，可能反超
+		then
 			self:End()
 		else
 			self:RotateToTarget(pos)

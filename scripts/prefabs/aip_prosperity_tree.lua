@@ -139,6 +139,12 @@ local function onDoGiveAction(inst, doer, item)
     local cnt = #tree_data
     local foodIndex = math.random(cnt)
 
+    -- 如果和之前相同，我们再随机一次
+    while(foodIndex == inst._aipLastIndex)
+    do
+        foodIndex = math.random(cnt)
+    end
+
     for i = 1, cnt do
         if inst._aipFoods[i] == nil then
             foodIndex = i
@@ -161,6 +167,8 @@ local function onDoGiveAction(inst, doer, item)
 
     aipRemove(item)
     syncFoods(inst)
+
+    inst._aipLastIndex = foodIndex
 end
 
 -- 每天提升一点食物价值

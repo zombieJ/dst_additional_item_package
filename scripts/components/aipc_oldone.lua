@@ -38,6 +38,7 @@ local Oldone = Class(function(self, inst)
 	self.inst = inst
 
 	self.factor = 0
+	self.worldDropTimes = 0 -- 记录玩家世界掉落次数
 
 	self.inst:WatchWorldState("isday", OnIsDay)
 end)
@@ -62,16 +63,27 @@ function Oldone:DoDelta(amount)
 	end
 end
 
+function Oldone:GetWorldDropTimes()
+	return self.worldDropTimes or 0
+end
+
+
+function Oldone:DoWorldDropTimesDelta(offset)
+	self.worldDropTimes = self:GetWorldDropTimes() + offset
+end
+
 ------------------------------- 存取 -------------------------------
 function Oldone:OnSave()
     return {
         factor = self.factor,
+		worldDropTimes = self.worldDropTimes,
     }
 end
 
 function Oldone:OnLoad(data)
 	if data.factor ~= nil then
 		self.factor = data.factor
+		self.worldDropTimes = data.worldDropTimes
 	end
 end
 
