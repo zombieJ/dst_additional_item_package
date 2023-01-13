@@ -310,7 +310,7 @@ function Driver:OnUpdate(dt)
 		self.inst.components.timer ~= nil and
 		self.inst.components.timer:TimerExists("aip_reading_sign")
 	then
-		speedX = speedX * 0.1
+		speedX = speedX * 0.4
 	end
 
 	-- 向目标移动

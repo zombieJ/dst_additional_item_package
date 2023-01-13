@@ -426,18 +426,22 @@ end)
 local function onSignTrigger(inst, trigger)
 	if inst ~= nil and inst.components.inspectable ~= nil then
 		local players = _G.aipFindNearPlayers(trigger, 5)
+		local triggerPT = trigger:GetPosition()
 
 		for _, player in ipairs(players) do
-			-- 把告示牌的内容念出来
-			if player.components.talker ~= nil then
-				player.components.talker:Say(
-					inst.components.inspectable:GetDescription(player)
-				)
-			end
+			-- 木牌是不会在天上的
+			if player:GetPosition().y < 1 then
+				-- 把告示牌的内容念出来
+				if player.components.talker ~= nil then
+					player.components.talker:Say(
+						inst.components.inspectable:GetDescription(player)
+					)
+				end
 
-			-- 降低玩家的车载速度
-			if player.components.timer ~= nil then
-				player.components.timer:StartTimer("aip_reading_sign", 2)
+				-- 降低玩家的车载速度
+				if player.components.timer ~= nil then
+					player.components.timer:StartTimer("aip_reading_sign", 2)
+				end
 			end
 		end
 	end
