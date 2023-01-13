@@ -135,6 +135,8 @@ function Driver:TryContinue()
 
 				-- 标记完了，走吧
 				self.inst:StartUpdatingComponent(self)
+			else
+				self:AbortDrive()
 			end
 		end
 	end
