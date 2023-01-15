@@ -172,6 +172,9 @@ PrefabFiles = {
 	"aip_glory_hand",
 	"aip_stone_mask",
 
+	-- 懵懵宠宠
+	"aip_pet",
+
 	-- Orbit
 	"aip_orbit",
 	"aip_mine_car",
