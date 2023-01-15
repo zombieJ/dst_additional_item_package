@@ -170,6 +170,7 @@ PrefabFiles = {
 	"aip_blowdart",
 	"aip_forever",
 	"aip_glory_hand",
+	"aip_stone_mask",
 
 	-- Orbit
 	"aip_orbit",

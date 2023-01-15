@@ -1186,6 +1186,12 @@ return {
             },
             "'Hand of Glory' will summon a light source for everyone, so that friends without torches can see clearly ahead in the dark. It can be fueled by 'Nightmare Fuel'.",
             
+            -- 石鬼面
+            {
+                type="img",
+                name="aip_stone_mask",
+            },
+            "This broken mask still has some magical powers, and when used it fears nearby creatures if possible.",
         },
     },
 }

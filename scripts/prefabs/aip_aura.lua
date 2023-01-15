@@ -264,6 +264,16 @@ local list = {
 		range = false, -- 不安装光环组件
 		scale = 1.25,
 	},
+	{	-- 恐惧光环：并非真实的光环，播放一个扩散动画后消失
+		name = "aip_aura_scared",
+		assets = { Asset("ANIM", "anim/aip_aura_scared.zip") },
+		range = false, -- 不安装光环组件
+		fade = false,
+		scale = 2,
+		onAnimOver = function(inst)
+			inst:Remove()
+		end,
+	},
 }
 
 

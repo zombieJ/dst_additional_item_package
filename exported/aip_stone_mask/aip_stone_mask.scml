@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="full">
+        <file id="0" name="full/full.png" width="200" height="300" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_stone_mask">
+        <animation id="0" name="idle" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="full" folder="0" file="0" abs_x="-1.895522" abs_y="-2.687708" abs_pivot_x="0.395522" abs_pivot_y="0.187708" abs_angle="360" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="full">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-1.895522" y="-2.687708" pivot_x="0.395522" pivot_y="0.187708" scale_x="0.75" scale_y="0.75"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>
