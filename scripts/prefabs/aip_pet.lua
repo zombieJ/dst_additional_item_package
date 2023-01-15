@@ -45,7 +45,19 @@ local function createPet(name, info)
         local inst = CreateEntity()
 
         inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddSoundEmitter()
+        inst.entity:AddDynamicShadow()
         inst.entity:AddNetwork()
+
+        MakeFlyingCharacterPhysics(inst, 1, .5)
+
+        inst.DynamicShadow:SetSize(1, .75)
+        inst.Transform:SetFourFaced()
+
+        inst.AnimState:SetBank(info.bank)
+        inst.AnimState:SetBuild(info.build)
+        inst.AnimState:PlayAnimation(info.anim)
 
         inst.entity:SetPristine()
 
@@ -53,11 +65,12 @@ local function createPet(name, info)
             return inst
         end
 
-        -- 创建一个目标动物
-        inst:DoTaskInTime(.1, function()
-            local pet = aipSpawnPrefab(inst, info.origin)
-            toBePet(pet)
-        end)
+        inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
+        inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED
+        inst.components.locomotor.walkspeed = TUNING.WILSON_WALK_SPEED
+
+        inst:SetStateGraph(info.sg)
+        inst:SetBrain(brain)
 
         inst.persists = false
 
@@ -70,9 +83,10 @@ end
 ----------------------------------- 列表 -----------------------------------
 local data = {
     rabbit = {
-        -- bank = "rabbit",
-        -- build = "rabbit_build",
-        -- anim = "idle",
+        bank = "rabbit",
+        build = "rabbit_build",
+        anim = "idle",
+        sg = "SGrabbit",
         origin = "rabbit",
     },
 }

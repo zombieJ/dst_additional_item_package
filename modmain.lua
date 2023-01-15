@@ -173,6 +173,7 @@ PrefabFiles = {
 	"aip_stone_mask",
 
 	-- 懵懵宠宠
+	"aip_pet_catcher",
 	"aip_pet",
 
 	-- Orbit
