@@ -28,7 +28,12 @@ local assets = {
 
 ----------------------------------- 方法 -----------------------------------
 local function onHit(inst, attacker, target)
-    local aura = aipReplacePrefab(inst, "aip_fx_splode").DoShow(nil, 0.3)
+    local aura = aipReplacePrefab(inst, "aip_fx_splode").DoShow(nil, 0.5)
+
+    local ent = aipFindNearEnts(inst, { "rabbit" }, 3)[1]
+    if ent ~= nil then
+        aipRemove(ent)
+    end
 end
 
 ----------------------------------- 实例 -----------------------------------
