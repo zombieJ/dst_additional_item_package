@@ -376,7 +376,7 @@ local function postMushroom(inst)
 	if inst.opentaskfn ~= nil then
 		local originOpenTaskFn = inst.opentaskfn
 		inst.opentaskfn = function(...)
-			_G.aipSpawnPrefab(inst, "aip_fx_splode").DoShow(null, 0.2)
+			_G.aipSpawnPrefab(inst, "aip_fx_splode").DoShow(nil, 0.2)
 
 			-- 触发附近粒子联动
 			inst:DoTaskInTime(0.2, function()
