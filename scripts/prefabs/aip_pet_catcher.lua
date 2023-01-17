@@ -32,6 +32,10 @@ local assets = {
 	Asset("ATLAS", "images/inventoryimages/aip_pet_catcher.xml"),
 }
 
+local petConfig = require("configurations/aip_pet")
+local QUALITY_COLORS = petConfig.QUALITY_COLORS
+local QUALITY_LANG = petConfig.QUALITY_LANG
+
 ----------------------------------- 方法 -----------------------------------
 local function onHit(inst, attacker, target)
     local aura = aipReplacePrefab(inst, "aip_fx_splode").DoShow(nil, 0.5)
@@ -43,16 +47,36 @@ local function onHit(inst, attacker, target)
         local chance = ent.components.aipc_petable:GetQualityChance()
         if math.random() <= chance then
             aipRemove(ent)
+            local quality = ent.components.aipc_petable:GetQuality()
 
-            if attacker and attacker.components.talker ~= nil then
-                attacker.components.talker:Say(
-                    STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_CATCHER_SUCCESS
+            if attacker then
+                -- 记录宠物
+                if attacker.components.aipc_pet_owner ~= nil then
+                    attacker.components.aipc_pet_owner:AddPet(ent)
+                end
+
+                -- 一个灵魂飞向玩家
+                local color = QUALITY_COLORS[quality]
+                local proj = aipSpawnPrefab(ent, "aip_projectile")
+                proj.components.aipc_info_client:SetByteArray( -- 调整颜色
+                    "aip_projectile_color",
+                    {color[1] / 256 * 10, color[2] / 256 * 10, color[3] / 256 * 10, 10}
                 )
+                proj.components.aipc_projectile:GoToTarget(attacker)
+
+                -- 说话
+                if attacker.components.talker ~= nil then
+                    attacker.components.talker:Say(
+                        STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_CATCHER_SUCCESS..
+                        QUALITY_LANG[quality]
+                    )
+                end
             end
         else
             -- 临时展示一下光环
             ent.components.aipc_petable:ShowClientAura()
 
+            -- 说话
             if attacker and attacker.components.talker ~= nil then
                 attacker.components.talker:Say(
                     STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_CATCHER_ESCAPE

@@ -1,24 +1,9 @@
-local fly_totem = aipGetModConfig("fly_totem")
 local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 local VISIBLE_DURAION = dev_mode and 3 or 10
 
--- 我们复用花蜜的颜色
-local aip_nectar_config = require("prefabs/aip_nectar_config")
-local NEC_COLORS = aip_nectar_config.QUALITY_COLORS
 
-local QUALITY_COLORS = {
-	-- 普通 1
-	{ 255, 255, 255 },
-	-- 优秀 2
-	NEC_COLORS.quality_2,
-	-- 精良 3
-	NEC_COLORS.quality_3,
-	-- 杰出 4
-	NEC_COLORS.quality_4,
-	-- 完美 5
-	NEC_COLORS.quality_5,
-}
+local QUALITY_COLORS = require("configurations/aip_pet").QUALITY_COLORS
 
 local function syncClientAura(inst)
 	if inst.components.aipc_petable ~= nil then
