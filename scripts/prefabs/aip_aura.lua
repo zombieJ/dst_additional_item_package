@@ -57,7 +57,10 @@ local function getFn(data)
 		inst:AddTag("NOCLICK")
 		inst:AddTag("FX")
 
-		inst.entity:SetPristine()
+		-- 服务端同步
+		if data.pristine ~= false then
+			inst.entity:SetPristine()
+		end
 
 		inst.persists = false
 
@@ -273,6 +276,14 @@ local list = {
 		onAnimOver = function(inst)
 			inst:Remove()
 		end,
+	},
+	{	-- BUFF 光环：并非真实的光环，提供一个颜色底，用于动物抓捕的等级识别
+		name = "aip_aura_buffer",
+		build = "aip_buffer",
+		assets = { Asset("ANIM", "anim/aip_buffer.zip") },
+		range = false, -- 不安装光环组件
+		scale = 1,
+		pristine = false, -- 客户端 Only
 	},
 }
 

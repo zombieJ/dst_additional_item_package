@@ -6,11 +6,15 @@ local LANG_MAP = {
 		NAME = "Pet Sweets",
         REC_DESC = "Catch small animals. The higher the quality of the small animals, the harder to catch.",
 		DESC = "Catch small animals",
+        SUCCESS = "It works!",
+        ESCAPE = "Not work as expected",
 	},
 	chinese = {
-		NAME = "宠物甜品",
+		NAME = "动物甜品",
         REC_DESC = "用于捕捉小动物，品质越高的小动物越难捕捉",
 		DESC = "用于捕捉小动物",
+        SUCCESS = "成功啦！",
+        ESCAPE = "没有吸引到它",
 	},
 }
 
@@ -19,6 +23,8 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 STRINGS.NAMES.AIP_PET_CATCHER = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_PET_CATCHER = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_CATCHER = LANG.DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_CATCHER_SUCCESS = LANG.SUCCESS
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_CATCHER_ESCAPE = LANG.ESCAPE
 
 -- 资源
 local assets = {
@@ -29,10 +35,30 @@ local assets = {
 ----------------------------------- 方法 -----------------------------------
 local function onHit(inst, attacker, target)
     local aura = aipReplacePrefab(inst, "aip_fx_splode").DoShow(nil, 0.5)
+    local pt = inst:GetPosition()
 
-    local ent = aipFindNearEnts(inst, { "rabbit" }, 3)[1]
+    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 3, {"aip_petable"})
+    local ent = ents[1]
     if ent ~= nil then
-        aipRemove(ent)
+        local chance = ent.components.aipc_petable:GetQualityChance()
+        if math.random() <= chance then
+            aipRemove(ent)
+
+            if attacker and attacker.components.talker ~= nil then
+                attacker.components.talker:Say(
+                    STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_CATCHER_SUCCESS
+                )
+            end
+        else
+            -- 临时展示一下光环
+            ent.components.aipc_petable:ShowClientAura()
+
+            if attacker and attacker.components.talker ~= nil then
+                attacker.components.talker:Say(
+                    STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_CATCHER_ESCAPE
+                )
+            end
+        end
     end
 end
 
@@ -57,6 +83,9 @@ local function fn()
     if not TheWorld.ismastersim then
         return inst
     end
+
+    inst:AddComponent("stackable")
+	inst.components.stackable.maxsize = TUNING.STACK_SIZE_MEDITEM
 
     inst:AddComponent("complexprojectile")
     inst.components.complexprojectile:SetHorizontalSpeed(15)

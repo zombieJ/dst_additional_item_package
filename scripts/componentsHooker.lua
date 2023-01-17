@@ -410,19 +410,6 @@ AddComponentPostInit("writeable", function(self)
 	end
 end)
 
--- 治疗允许回调
-AddComponentPostInit("healer", function(self)
-	local originHeal = self.Heal
-
-	function self:Heal(target, ...)
-		if self.onHealTarget ~= nil then
-			self.onHealTarget(self.inst, target)
-		end
-
-		return originHeal(self, target, ...)
-	end
-end)
-
 -- 浇水允许回调
 AddComponentPostInit("witherable", function(self)
 	local originProtect = self.Protect

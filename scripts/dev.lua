@@ -19,10 +19,11 @@ function PlayerPrefabPostInit(inst)
 
     inst.components.aipc_timer:Interval(0.3, function()
         if not inst.components.health:IsDead() and inst.components.health.currenthealth < 50 then
-            inst.components.health:DoDelta(50)
+            inst.components.health:SetCurrentHealth(50)
         end
         if inst.components.sanity.current < 30 then
-            inst.components.sanity:DoDelta(30)
+            inst.components.sanity.current = 30
+            inst.components.sanity:DoDelta(0)
         end
     end)
 end

@@ -49,6 +49,12 @@ STRINGS.RECIPE_DESC.AIP_PLASTER = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PLASTER = LANG.DESCRIBE
 
 -----------------------------------------------------------
+local function onHeal(inst, target)
+	local limit = TUNING.OVERHEAT_TEMP - 10
+	if target.components.temperature ~= nil and target.components.temperature:GetCurrent() > limit then
+		target.components.temperature:SetTemperature(limit)
+	end
+end
 
 local function fn()
 	local inst = CreateEntity()
@@ -79,12 +85,7 @@ local function fn()
 
 	inst:AddComponent("healer")
 	inst.components.healer:SetHealthAmount(HEAL_MAP[survival_effect])
-	inst.components.healer.onHealTarget = function(inst, target)
-		local limit = TUNING.OVERHEAT_TEMP - 10
-		if target.components.temperature ~= nil and target.components.temperature:GetCurrent() > limit then
-			target.components.temperature:SetTemperature(limit)
-		end
-	end
+	inst.components.healer.onhealfn = onHeal
 
 	MakeHauntableLaunch(inst)
 

@@ -173,6 +173,11 @@ end)
 
 ------------------------------------------ 兔子 ------------------------------------------
 AddPrefabPostInit("rabbit", function(inst)
+	-- 宠物抓捕
+	if inst.components.aipc_petable == nil then
+		inst:AddComponent("aipc_petable")
+	end
+
 	-- 兔子会极低概率掉落西游人物卡
 	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
 		inst.components.lootdropper:AddChanceLoot("aip_xiyou_card_myth_yutu", dev_mode and 1 or 0.001)
