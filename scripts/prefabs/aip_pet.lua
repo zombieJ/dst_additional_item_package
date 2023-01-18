@@ -2,38 +2,10 @@ local language = aipGetModConfig("language")
 
 local brain = require("brains/aip_pet_brain")
 
------------------------------------ 方法 -----------------------------------
--- 移除非必要组件，替换大脑
-local function toBePet(inst)
-    -- 更新 tag
-    local tags = {
-        "animal", "prey", "rabbit", "smallcreature", "canbetrapped",
-        "cattoy", "catfood", "stunnedbybomb", "cookable", "small_livestock",
-        "show_spoilage",
-    }
-
-    for _, tag in pairs(tags) do
-        inst:RemoveTag(tag)
-    end
-
-    inst:AddTag("aip_pet")
-
-    -- 更新 component
-    local components = {
-        "aipc_not_exist",
-        "eater", "inventoryitem", "sanityaura", "cookable", "knownlocations",
-        "timer", "health", "lootdropper", "combat", "inspectable", "sleeper", "tradable"
-    }
-
-    for _, component in pairs(components) do
-        inst:RemoveComponent(component)
-    end
-
-    inst.OnEntityWake = nil
-	inst.OnEntitySleep = nil
-
-    inst:SetBrain(brain)
-end
+local rabbitsounds = {
+    scream = "dontstarve/rabbit/scream",
+    hurt = "dontstarve/rabbit/scream_short",
+}
 
 ----------------------------------- 实例 -----------------------------------
 local function createPet(name, info)
@@ -59,11 +31,15 @@ local function createPet(name, info)
         inst.AnimState:SetBuild(info.build)
         inst.AnimState:PlayAnimation(info.anim)
 
+        inst:AddComponent("aipc_petable")
+
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
             return inst
         end
+
+        inst.sounds = info.sounds
 
         inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
         inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED
@@ -87,6 +63,7 @@ local data = {
         build = "rabbit_build",
         anim = "idle",
         sg = "SGrabbit",
+        sounds = rabbitsounds,
         origin = "rabbit",
     },
 }

@@ -41,7 +41,12 @@ local function onHit(inst, attacker, target)
     local aura = aipReplacePrefab(inst, "aip_fx_splode").DoShow(nil, 0.5)
     local pt = inst:GetPosition()
 
+    -- 寻找野生的
     local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 3, {"aip_petable"})
+    ents = aipFilterTable(ents, function (ent)
+        return ent.components.aipc_petable ~= nil and ent.components.aipc_petable.owner == nil
+    end)
+
     local ent = ents[1]
     if ent ~= nil then
         local chance = ent.components.aipc_petable:GetQualityChance()
@@ -54,15 +59,6 @@ local function onHit(inst, attacker, target)
                 if attacker.components.aipc_pet_owner ~= nil then
                     attacker.components.aipc_pet_owner:AddPet(ent)
                 end
-
-                -- 一个灵魂飞向玩家
-                local color = QUALITY_COLORS[quality]
-                local proj = aipSpawnPrefab(ent, "aip_projectile")
-                proj.components.aipc_info_client:SetByteArray( -- 调整颜色
-                    "aip_projectile_color",
-                    {color[1] / 256 * 10, color[2] / 256 * 10, color[3] / 256 * 10, 10}
-                )
-                proj.components.aipc_projectile:GoToTarget(attacker)
 
                 -- 说话
                 if attacker.components.talker ~= nil then

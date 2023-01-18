@@ -2,8 +2,7 @@ local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 local VISIBLE_DURAION = dev_mode and 3 or 10
 
-
-local QUALITY_COLORS = require("configurations/aip_pet").QUALITY_COLORS
+local petConfig = require("configurations/aip_pet")
 
 local function syncClientAura(inst)
 	if inst.components.aipc_petable ~= nil then
@@ -16,6 +15,12 @@ local Petable = Class(function(self, inst)
 	self.inst = inst
 	self.aura = nil
 	self.auraTask = nil
+
+	-- 宠物信息，因为总是被赋值，所以这里不用保存
+	self.data = nil
+
+	--主人，默认为空
+	self.owner = nil
 
 	self.inst:AddTag("aip_petable")
 
@@ -67,7 +72,7 @@ function Petable:ShowAura()
 			self.aura = SpawnPrefab("aip_aura_buffer")
 			self.inst:AddChild(self.aura)
 
-			local color = QUALITY_COLORS[self:GetQuality()]
+			local color = petConfig.QUALITY_COLORS[self:GetQuality()]
 			self.aura.AnimState:OverrideMultColour(color[1] / 255, color[2] / 255, color[3] / 255, 1)
 		end
 
@@ -79,6 +84,37 @@ function Petable:ShowAura()
 			self:CleanAura()
 		end)
 	end
+end
+
+-- 随机宠物信息
+function Petable:GetInfo()
+	local prefab = self.inst.prefab
+	local quality = self.inst.components.aipc_petable:GetQuality()
+
+	local data = {
+		prefab = prefab,		-- 名字
+		quality = quality,		-- 品质
+		skills = {},			-- 技能
+	}
+
+	-- 根据品质等级添加对应数量的技能
+	for i = 1, quality do
+		local rndSkill = aipRandomEnt(petConfig.SKILL_LIST)
+
+		if data.skills[rndSkill] == nil then
+			data.skills[rndSkill] = { quality = math.random(quality) }
+		else -- 如果已经有了，就再重新抽一次
+			i = i - 1
+		end
+	end
+
+	return data
+end
+
+-- 设置宠物信息（临时设置，不保存）
+function Petable:SetInfo(data, owner)
+	self.owner = owner
+	self.data = data
 end
 
 function Petable:OnSave()

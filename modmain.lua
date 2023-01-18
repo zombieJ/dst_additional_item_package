@@ -328,6 +328,10 @@ function PlayerPrefabPostInit(inst)
 	if not inst.components.aipc_oldone then
 		inst:AddComponent("aipc_oldone")
 	end
+
+	if not inst.components.aipc_pet_owner then
+		inst:AddComponent("aipc_pet_owner")
+	end
 end
 
 AddPlayerPostInit(PlayerPrefabPostInit)
