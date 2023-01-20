@@ -26,7 +26,7 @@ local function onSelect(inst, viewer)
         viewer.components.aipc_pet_owner ~= nil
     then
         -- 加一个切割前缀强制服务器触发
-        local dataStr = json.encode(inst.components.aipc_petable:GetInfo().skills)
+        local dataStr = json.encode(inst.components.aipc_petable:GetInfo())
         viewer.player_classified.aip_pet_info:set(tostring(os.time()).."|"..dataStr)
     end
 end

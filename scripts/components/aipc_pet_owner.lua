@@ -35,6 +35,8 @@ function PetOwner:ShowPet()
 		local petPrefab = "aip_pet_"..petData.prefab
 		local pet = aipSpawnPrefab(self.inst, petPrefab)
 		pet.components.aipc_petable:SetInfo(petData, self.inst)
+
+		aipSpawnPrefab(pet, "aip_shadow_wrapper").DoShow()
 	end
 end
 

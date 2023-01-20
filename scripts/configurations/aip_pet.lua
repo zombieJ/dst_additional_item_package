@@ -19,18 +19,18 @@ local QUALITY_COLORS = {
 
 local QUALITY_LANG = {
     english = {
-		"Normal Pet",
-		"Nice Pet",
-		"Great Pet",
-		"Outstanding Pet",
-		"Perfect Pet",
+		"Normal",
+		"Nice",
+		"Great",
+		"Outstanding",
+		"Perfect",
 	},
 	chinese = {
-        "普通宠物",
-		"优秀宠物",
-		"精良宠物",
-		"杰出宠物",
-		"完美宠物",
+        "普通",
+		"优秀",
+		"精良",
+		"杰出",
+		"完美",
     },
 }
 
@@ -60,6 +60,21 @@ local SKILL_LANG = {
 	},
 }
 
+local SKILL_DESC_LANG = {
+	english = {
+		shedding = "Shedding",
+		aggressive = "Aggressive",
+		conservative = "Conservative",
+		cowardly = "Cowardly",
+	},
+	chinese = {
+		shedding = "每隔一段时间会掉落物品",
+		aggressive = "提升你的战斗伤害",
+		conservative = "减免你受到的伤害",
+		cowardly = "当你被攻击时提升移动速度",
+	},
+}
+
 local SKILL_LIST = {}
 for name, v in pairs(SKILL_LANG.english) do
 	table.insert(SKILL_LIST, name)
@@ -69,5 +84,6 @@ return {
     QUALITY_COLORS = QUALITY_COLORS,
     QUALITY_LANG = QUALITY_LANG[language] or QUALITY_LANG.english,
 	SKILL_LANG = SKILL_LANG[language] or SKILL_LANG.english,
+	SKILL_DESC_LANG = SKILL_DESC_LANG[language] or SKILL_DESC_LANG.english,
 	SKILL_LIST = SKILL_LIST,
 }

@@ -1,3 +1,30 @@
+-- 直接复制的小木牌：scripts\widgets\writeablewidget.lua
+
+local language = aipGetModConfig("language")
+
+-- 文字描述
+local LANG_MAP = {
+	english = {
+		PREV = "Previous",
+        TOGGLE = "Show/Hide",
+        SHOW = "Show",
+        HIDE = "Hide",
+		NEXT = "Next",
+	},
+	chinese = {
+		PREV = "上一个",
+        TOGGLE = "显/隐",
+        SHOW = "显示",
+        HIDE = "隐藏",
+		NEXT = "下一个",
+	},
+}
+
+local LANG = LANG_MAP[language] or LANG_MAP.english
+
+local petConfig = require("configurations/aip_pet")
+
+-------------------------------------------------------------------------
 local Screen = require "widgets/screen"
 local Widget = require "widgets/widget"
 local Text = require "widgets/text"
@@ -6,24 +33,46 @@ local Menu = require "widgets/menu"
 local UIAnim = require "widgets/uianim"
 local ImageButton = require "widgets/imagebutton"
 
-local function oncancel(doer, widget)
+local function onmiddle(inst, doer, widget)
     if not widget.isopen then
         return
-	end
+    end
+
+    widget.config.toggleBtn.cb(inst, doer, widget)
+end
+
+local function oncancel(widget, doer)
+    if not widget.isopen then
+        return
+    end
 
     doer.HUD:CloseAIPPetInfo()
 end
 
-local PetInfoScreen = Class(Screen, function(self, owner, petSkillInfo)
-    Screen._ctor(self, "AIP_PetInfoScreen")
+local PetInfoWidget = Class(Screen, function(self, owner, petInfo)
+    Screen._ctor(self, "SignWriter")
+
+    self.petInfo = petInfo
 
     self.owner = owner
-
-    self.petSkillInfo = petSkillInfo
+    local config = {
+        prompt = STRINGS.SIGNS.MENU.PROMPT,
+        animbank = "ui_board_5x3",
+        animbuild = "ui_board_5x3",
+        menuoffset = Vector3(6, -70, 0),
+    
+        prevBtn = { text = LANG.PREV, cb = nil, control = CONTROL_CANCEL },
+        toggleBtn = { text = LANG.TOGGLE, cb = function(inst, doer, widget)
+                -- widget:OverrideText( SignGenerator(inst, doer) )
+            end, control = CONTROL_MENU_MISC_2 },
+        nextBtn = { text = LANG.NEXT, cb = nil, control = CONTROL_ACCEPT },
+    
+        --defaulttext = SignGenerator,
+    }
+    self.config = config
 
     self.isopen = false
 
-	----------------------------------- 以下直接抄的木板代码 -----------------------------------
     self._scrnw, self._scrnh = TheSim:GetScreenSize()
 
     self:SetScaleMode(SCALEMODE_PROPORTIONAL)
@@ -45,11 +94,10 @@ local PetInfoScreen = Class(Screen, function(self, owner, petSkillInfo)
         end
     end, owner.HUD.inst)
 
-	self.root = self.scalingroot:AddChild(Widget("writeablewidgetroot"))
-	local scale = 0.8
-    self.root:SetScale(scale, scale, scale)
+    self.root = self.scalingroot:AddChild(Widget("writeablewidgetroot"))
+    self.root:SetScale(.6, .6, .6)
 
-	-- 不可见的透明背景：mask
+    -- secretly this thing is a modal Screen, it just LOOKS like a widget
     self.black = self.root:AddChild(Image("images/global.xml", "square.tex"))
     self.black:SetVRegPoint(ANCHOR_MIDDLE)
     self.black:SetHRegPoint(ANCHOR_MIDDLE)
@@ -58,41 +106,37 @@ local PetInfoScreen = Class(Screen, function(self, owner, petSkillInfo)
     self.black:SetScaleMode(SCALEMODE_FILLSCREEN)
     self.black:SetTint(0, 0, 0, 0)
     self.black.OnMouseButton = function(inst, button, down, x, y)
-        if down == true then
-            oncancel(self.owner, self)
+        if down then
+            oncancel(self, self.owner)
         end
     end
 
-	-- 木板 UI
     self.bganim = self.root:AddChild(UIAnim())
     self.bganim:SetScale(1, 1, 1)
     self.bgimage = self.root:AddChild(Image())
-	self.bganim:SetScale(1, 1, 1)
+    self.bganim:SetScale(1, 1, 1)
 
-	self.bganim:GetAnimState():SetBank("ui_board_5x3")
-    self.bganim:GetAnimState():SetBuild("ui_board_5x3")
+    ------------------------------ 刷新按钮 ------------------------------
+    self:RefreshStatus()
+    self:RefreshControls()
 
-    -------------------------------------- 展示目的地列表 --------------------------------------
-    self.buttons = {}
-    table.insert(self.buttons, { text = "Left", cb = function()
-        -- oncancel(self.writeable, self.owner, self)
-    end, control = CONTROL_FOCUS_LEFT })
+    if config.bgatlas ~= nil and config.bgimage ~= nil then
+        self.bgimage:SetTexture(config.bgatlas, config.bgimage)
+    end
 
-    table.insert(self.buttons, { text = "Right", cb = function()
-        -- onaccept(self.writeable, self.owner, self)
-    end, control = CONTROL_FOCUS_RIGHT })
+    if config.animbank ~= nil then
+        self.bganim:GetAnimState():SetBank(config.animbank)
+    end
 
-    local spacing = 150
-    self.menu = self.root:AddChild(Menu(self.buttons, spacing, true, "none"))
-    self.menu:SetTextSize(40)
-    local w = self.menu:AutoSpaceByText(15)
-    local menuoffset = Vector3(6, -70, 0)
-    self.menu:SetPosition(menuoffset.x - .5 * w, menuoffset.y, menuoffset.z)
-    
-    -- self:RenderInfo()
+    if config.animbuild ~= nil then
+        self.bganim:GetAnimState():SetBuild(config.animbuild)
+    end
 
-	----------------------------------- 以下直接抄的木板代码 -----------------------------------
-	self.root:SetPosition(0, 150, 0)
+    if config.pos ~= nil then
+        self.root:SetPosition(config.pos)
+    else
+        self.root:SetPosition(0, 150, 0)
+    end
 
     self.isopen = true
     self:Show()
@@ -102,40 +146,134 @@ local PetInfoScreen = Class(Screen, function(self, owner, petSkillInfo)
     else
         self.bganim:GetAnimState():PlayAnimation("open")
     end
+
+    SetAutopaused(true)
 end)
 
-function PetInfoScreen:RenderInfo()
-    -- if self.petMenu ~= nil then
-    --     self.petMenu:Kill()
-    -- end
+------------------------------ 更新描述 ------------------------------
+function PetInfoWidget:RefreshStatus()
+    -- self.petInfo
+    if self.infoPanel ~= nil then
+        self.infoPanel:Kill()
+    end
 
-    -- local petList = {}
-    -- table.insert(petList, {
-    --     text = '~~~',
-    --     cb = function()
-    --         aipPrint("Click TODO")
-    --     end,
-    -- })
+    self.infoPanel = self.root:AddChild(Widget("petInfoRoot"))
+    self.infoPanel:SetPosition(0, 130)
 
-    -- self.petMenu = self.root:AddChild(Menu(petList, -55, false, "carny_long"))
-    -- self.petMenu:SetTextSize(35)
-	-- self.petMenu:SetPosition(-350, 130, 0)
+    -- 名字
+    local color = petConfig.QUALITY_COLORS[self.petInfo.quality]
+    local upperCase = string.upper(self.petInfo.prefab)
+    local name_str = STRINGS.NAMES[upperCase].."("..petConfig.QUALITY_LANG[self.petInfo.quality]..")"
+    local text = self.infoPanel:AddChild(Text(UIFONT, 50, name_str))
+    text:SetHAlign(ANCHOR_LEFT)
+    text:SetColour(color[1] / 255, color[2] / 255, color[3] / 255, 1)
+
+    -- 技能列表
+    local offsetTop = -80
+    local DESC_CONTENT_WIDTH = 450
+    for skillName, skillData in pairs(self.petInfo.skills) do
+        local skill_str = petConfig.SKILL_LANG[skillName].."("..petConfig.QUALITY_LANG[skillData.quality].."):"
+        skill_str = skill_str..petConfig.SKILL_DESC_LANG[skillName]
+        local skillText = self.infoPanel:AddChild(Text(UIFONT, 35))
+        
+        skillText:SetMultilineTruncatedString(skill_str, 14, DESC_CONTENT_WIDTH, 200) -- 163
+        skillText:SetHAlign(ANCHOR_LEFT)
+        skillText:SetVAlign(ANCHOR_TOP)
+        skillText:SetPosition(0, offsetTop)
+
+        local TW, TH = text:GetRegionSize()
+
+        offsetTop = offsetTop - TH - 10
+    end
 end
 
-function PetInfoScreen:Close()
-	if self.isopen then
-		if self.bgimage.texture then
-			self.bgimage:Hide()
-		else
-			self.bganim:GetAnimState():PlayAnimation("close")
-		end
+------------------------------ 更新按钮 ------------------------------
+function PetInfoWidget:RefreshControls()
+    if self.menu ~= nil then
+        self.menu:Kill()
+    end
 
-		self.black:Kill()
+    self.buttons = {}
+    table.insert(self.buttons, {
+        text = self.config.prevBtn.text,
+        cb = function()
+        end,
+        control = self.config.prevBtn.control,
+    })
 
-		self.isopen = false
+    if self.config.toggleBtn ~= nil then
+        table.insert(self.buttons, {
+            text = self.config.toggleBtn.text,
+            cb = function()
+            end,
+            control = self.config.toggleBtn.control,
+        })
+    end
 
-		self.inst:DoTaskInTime(.3, function() TheFrontEnd:PopScreen(self) end)
-	end
+    table.insert(self.buttons, {
+        text = self.config.nextBtn.text,
+        cb = function()
+        end,
+        control = self.config.nextBtn.control,
+    })
+
+    local menuoffset = self.config.menuoffset or Vector3(0, 0, 0)
+    if TheInput:ControllerAttached() then
+        local spacing = 150
+        self.menu = self.root:AddChild(Menu(self.buttons, spacing, true, "none"))
+        self.menu:SetTextSize(40)
+        local w = self.menu:AutoSpaceByText(15)
+        self.menu:SetPosition(menuoffset.x - .5 * w, menuoffset.y, menuoffset.z)
+    else
+        local spacing = 110
+        self.menu = self.root:AddChild(Menu(self.buttons, spacing, true, "small"))
+        self.menu:SetTextSize(35)
+        self.menu:SetPosition(menuoffset.x - .5 * spacing * (#self.buttons - 1), menuoffset.y, menuoffset.z)
+    end
 end
 
-return PetInfoScreen
+function PetInfoWidget:OnBecomeActive()
+    self._base.OnBecomeActive(self)
+end
+
+function PetInfoWidget:Close()
+    if self.isopen then
+        if self.bgimage.texture then
+            self.bgimage:Hide()
+        else
+            self.bganim:GetAnimState():PlayAnimation("close")
+        end
+
+        self.black:Kill()
+        self.menu:Kill()
+        self.infoPanel:Kill()
+
+        self.isopen = false
+
+        self.inst:DoTaskInTime(.3, function() TheFrontEnd:PopScreen(self) end)
+    end
+end
+
+function PetInfoWidget:OnControl(control, down)
+    if PetInfoWidget._base.OnControl(self,control, down) then return true end
+
+    if not down then
+        for i, v in ipairs(self.buttons) do
+            if control == v.control and v.cb ~= nil then
+                v.cb()
+                return true
+            end
+        end
+        if control == CONTROL_OPEN_DEBUG_CONSOLE then
+            return true
+        end
+    end
+end
+
+function PetInfoWidget:OnDestroy()
+    SetAutopaused(false)
+
+	PetInfoWidget._base.OnDestroy(self)
+end
+
+return PetInfoWidget
