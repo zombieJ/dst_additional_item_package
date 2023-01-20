@@ -1,17 +1,43 @@
 local language = aipGetModConfig("language")
 
 local brain = require("brains/aip_pet_brain")
+local petConfig = require("configurations/aip_pet")
 
 local rabbitsounds = {
     scream = "dontstarve/rabbit/scream",
     hurt = "dontstarve/rabbit/scream_short",
 }
 
+----------------------------------- 说明 -----------------------------------
+-- 名字带上品质
+local function syncPetInfo(inst)
+    if inst.components.aipc_petable and inst.components.aipc_info_client then
+        local quality = inst.components.aipc_petable:GetQuality()
+		inst.components.aipc_info_client:SetString("aip_info", aipStr(petConfig.QUALITY_LANG[quality]))
+		inst.components.aipc_info_client:SetByteArray("aip_info_color", petConfig.QUALITY_COLORS[quality])
+	end
+end
+
+-- 检查时弹出窗口
+local function onSelect(inst, viewer)
+    if
+        viewer ~= nil and inst ~= nil and
+        inst.components.aipc_petable ~= nil and
+        viewer.components.aipc_pet_owner ~= nil
+    then
+        -- 加一个切割前缀强制服务器触发
+        local dataStr = json.encode(inst.components.aipc_petable:GetInfo().skills)
+        viewer.player_classified.aip_pet_info:set(tostring(os.time()).."|"..dataStr)
+    end
+end
+
 ----------------------------------- 实例 -----------------------------------
 local function createPet(name, info)
     local upperCase = string.upper(name)
     local upperOrigin = string.upper(info.origin)
+
     STRINGS.NAMES[upperCase] = STRINGS.NAMES[upperOrigin]
+    STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperCase] = STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperOrigin]
 
     local function fn()
         local inst = CreateEntity()
@@ -32,12 +58,21 @@ local function createPet(name, info)
         inst.AnimState:PlayAnimation(info.anim)
 
         inst:AddComponent("aipc_petable")
+        inst:AddComponent("aipc_info_client")
+
+        inst:AddTag("_named")
 
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
             return inst
         end
+
+        inst:RemoveTag("_named")
+
+        inst:AddComponent("named")
+        inst:AddComponent("inspectable")
+        inst.components.inspectable.descriptionfn = onSelect
 
         inst.sounds = info.sounds
 
@@ -49,6 +84,8 @@ local function createPet(name, info)
         inst:SetBrain(brain)
 
         inst.persists = false
+
+        inst:DoTaskInTime(.1, syncPetInfo)
 
         return inst
     end

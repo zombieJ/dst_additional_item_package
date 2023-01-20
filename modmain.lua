@@ -267,6 +267,7 @@ modimport("scripts/houseWrapper.lua")
 modimport("scripts/sgHooker.lua")
 modimport("scripts/hooks/aip_hover_hook.lua")
 modimport("scripts/hooks/aip_buffer_hook.lua")
+modimport("scripts/hooks/aip_pet_hook.lua")
 
 ------------------------------------- 测试专用 -------------------------------------
 if dev_mode then
@@ -327,10 +328,6 @@ function PlayerPrefabPostInit(inst)
 	-- 古神低语
 	if not inst.components.aipc_oldone then
 		inst:AddComponent("aipc_oldone")
-	end
-
-	if not inst.components.aipc_pet_owner then
-		inst:AddComponent("aipc_pet_owner")
 	end
 end
 

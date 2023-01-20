@@ -19,18 +19,18 @@ local QUALITY_COLORS = {
 
 local QUALITY_LANG = {
     english = {
-		"Normal Quality",
-		"Nice Quality",
-		"Great Quality",
-		"Outstanding Quality",
-		"Perfect Quality",
+		"Normal Pet",
+		"Nice Pet",
+		"Great Pet",
+		"Outstanding Pet",
+		"Perfect Pet",
 	},
 	chinese = {
-        "普通品质",
-		"优秀品质",
-		"精良品质",
-		"杰出品质",
-		"完美品质",
+        "普通宠物",
+		"优秀宠物",
+		"精良宠物",
+		"杰出宠物",
+		"完美宠物",
     },
 }
 

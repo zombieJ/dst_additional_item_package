@@ -86,8 +86,12 @@ function Petable:ShowAura()
 	end
 end
 
--- 随机宠物信息
+-- 获取宠物信息，没有就随机（宠物信息是抓到时才会生成的）
 function Petable:GetInfo()
+	if self.data ~= nil then
+		return self.data
+	end
+
 	local prefab = self.inst.prefab
 	local quality = self.inst.components.aipc_petable:GetQuality()
 
@@ -107,6 +111,8 @@ function Petable:GetInfo()
 			i = i - 1
 		end
 	end
+
+	self.data = data
 
 	return data
 end

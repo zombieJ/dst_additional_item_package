@@ -29,11 +29,37 @@ function PetOwner:ShowPet()
 	end
 
 	local petData = self.pets[1]
+	aipTypePrint("Show Pet:", petData)
+
 	if petData ~= nil then
 		local petPrefab = "aip_pet_"..petData.prefab
 		local pet = aipSpawnPrefab(self.inst, petPrefab)
 		pet.components.aipc_petable:SetInfo(petData, self.inst)
 	end
+end
+
+------------------------------ 存取 ------------------------------
+function PetOwner:OnSave()
+    local data = {
+        pets = self.pets,
+    }
+
+	aipTypePrint("Save:", data.pets)
+
+	return data
+end
+
+function PetOwner:OnLoad(data)
+	aipTypePrint("load:", data)
+	if data ~= nil then
+		self.pets = data.pets or {}
+		aipTypePrint("load 1:", data.pets)
+		aipTypePrint("load 2:", self.pets)
+	end
+
+	self.inst:DoTaskInTime(1, function()
+		self:ShowPet()
+	end)
 end
 
 return PetOwner
