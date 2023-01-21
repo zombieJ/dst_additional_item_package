@@ -113,6 +113,7 @@ function Petable:GetInfo()
 			data.skills[rndSkill] = {
 				-- 随机技能质量
 				quality = i == sameQualitySkill and quality or math.random(quality),
+				lv = 1,
 			}
 		else -- 如果已经有了，就再重新抽一次
 			i = i - 1

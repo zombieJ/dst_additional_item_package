@@ -190,7 +190,8 @@ function PetInfoWidget:RefreshStatus()
     -- 技能列表
     local offsetTop = -30
     for skillName, skillData in pairs(petInfo.skills) do
-        local skill_str = "["..petConfig.QUALITY_LANG[skillData.quality].."]"..petConfig.SKILL_LANG[skillName]..":"
+        -- local skill_str = "["..petConfig.QUALITY_LANG[skillData.quality].."]"..petConfig.SKILL_LANG[skillName]..":"
+        local skill_str = petConfig.SKILL_LANG[skillName].."[Lv."..tostring(skillData.lv).."]: "
         skill_str = skill_str..petConfig.SKILL_DESC_LANG[skillName]
         local skillText = self.infoPanel:AddChild(Text(UIFONT, 40))
 
@@ -238,10 +239,6 @@ function PetInfoWidget:RefreshControls()
             text = self.config.toggleBtn.text,
             cb = function()
                 if self.canClick then
-                    aipPrint("BTN:", self.current)
-                    for i, pi in ipairs(self.petInfos) do
-                        aipPrint("PI:", i, pi.id)
-                    end
                     local petInfo = self.petInfos[self.current]
                     if petInfo ~= nil then
                         aipRPC("aipTogglePet", petInfo.id)

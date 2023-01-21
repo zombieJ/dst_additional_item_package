@@ -17,6 +17,12 @@ function PetOwner:FillInfo()
 
 	for i, petData in ipairs(self.pets) do
 		petData.id = petData.id or (os.time() + i)
+
+		-- 补充等级
+		petData.skills = petData.skills or {}
+		for skillName, skillData in pairs(petData.skills) do
+			skillData.lv = skillData.lv or 1
+		end
 	end
 end
 
