@@ -49,26 +49,30 @@ local function oncancel(widget, doer)
     doer.HUD:CloseAIPPetInfo()
 end
 
-local PetInfoWidget = Class(Screen, function(self, owner, petInfo)
+local config = {
+    prompt = STRINGS.SIGNS.MENU.PROMPT,
+    animbank = "ui_board_5x3",
+    animbuild = "ui_board_5x3",
+    menuoffset = Vector3(6, -165, 0),
+
+    prevBtn = { text = LANG.PREV, cb = function()
+        end, control = CONTROL_CANCEL },
+    toggleBtn = { text = LANG.TOGGLE, cb = function(inst, doer, widget)
+        end, control = CONTROL_MENU_MISC_2 },
+    nextBtn = { text = LANG.NEXT, cb = function()
+        end, control = CONTROL_ACCEPT },
+
+}
+
+local PetInfoWidget = Class(Screen, function(self, owner, data)
     Screen._ctor(self, "SignWriter")
 
-    self.petInfo = petInfo
+    self.current = data.current or 1
+    self.petInfos = data.petInfos or {}
+    self.petOwner = data.owner or false
 
+    
     self.owner = owner
-    local config = {
-        prompt = STRINGS.SIGNS.MENU.PROMPT,
-        animbank = "ui_board_5x3",
-        animbuild = "ui_board_5x3",
-        menuoffset = Vector3(6, -70, 0),
-    
-        prevBtn = { text = LANG.PREV, cb = nil, control = CONTROL_CANCEL },
-        toggleBtn = { text = LANG.TOGGLE, cb = function(inst, doer, widget)
-                -- widget:OverrideText( SignGenerator(inst, doer) )
-            end, control = CONTROL_MENU_MISC_2 },
-        nextBtn = { text = LANG.NEXT, cb = nil, control = CONTROL_ACCEPT },
-    
-        --defaulttext = SignGenerator,
-    }
     self.config = config
 
     self.isopen = false
@@ -147,48 +151,64 @@ local PetInfoWidget = Class(Screen, function(self, owner, petInfo)
         self.bganim:GetAnimState():PlayAnimation("open")
     end
 
-    SetAutopaused(true)
+    -- SetAutopaused(true)
 end)
 
 ------------------------------ 更新描述 ------------------------------
 function PetInfoWidget:RefreshStatus()
-    -- self.petInfo
     if self.infoPanel ~= nil then
         self.infoPanel:Kill()
     end
+
+    local DESC_CONTENT_WIDTH = 470
+    local petInfo = self.petInfos[self.current] or {}
 
     self.infoPanel = self.root:AddChild(Widget("petInfoRoot"))
     self.infoPanel:SetPosition(0, 130)
 
     -- 名字
-    local color = petConfig.QUALITY_COLORS[self.petInfo.quality]
-    local upperCase = string.upper(self.petInfo.prefab)
-    local name_str = STRINGS.NAMES[upperCase].."("..petConfig.QUALITY_LANG[self.petInfo.quality]..")"
+    local color = petConfig.QUALITY_COLORS[petInfo.quality]
+    local upperCase = string.upper(petInfo.prefab)
+    local name_str = STRINGS.NAMES[upperCase].."["..petConfig.QUALITY_LANG[petInfo.quality].."]"
     local text = self.infoPanel:AddChild(Text(UIFONT, 50, name_str))
     text:SetHAlign(ANCHOR_LEFT)
     text:SetColour(color[1] / 255, color[2] / 255, color[3] / 255, 1)
+    local nameW, nameH = text:GetRegionSize()
+    text:SetPosition(nameW / 2 - DESC_CONTENT_WIDTH / 2, 0)
+
+    -- ID
+    local id_str = "ID:"..petInfo.id.."("..tostring(self.current).."/"..tostring(#self.petInfos)..")"
+    local idText = self.infoPanel:AddChild(Text(UIFONT, 30, id_str))
+    idText:SetHAlign(ANCHOR_LEFT)
+    local idW, idH = idText:GetRegionSize()
+    idText:SetPosition(DESC_CONTENT_WIDTH / 2 - idW / 2, 0)
 
     -- 技能列表
-    local offsetTop = -80
-    local DESC_CONTENT_WIDTH = 450
-    for skillName, skillData in pairs(self.petInfo.skills) do
-        local skill_str = petConfig.SKILL_LANG[skillName].."("..petConfig.QUALITY_LANG[skillData.quality].."):"
+    local offsetTop = -30
+    for skillName, skillData in pairs(petInfo.skills) do
+        local skill_str = "["..petConfig.QUALITY_LANG[skillData.quality].."]"..petConfig.SKILL_LANG[skillName]..":"
         skill_str = skill_str..petConfig.SKILL_DESC_LANG[skillName]
-        local skillText = self.infoPanel:AddChild(Text(UIFONT, 35))
-        
+        local skillText = self.infoPanel:AddChild(Text(UIFONT, 40))
+
         skillText:SetMultilineTruncatedString(skill_str, 14, DESC_CONTENT_WIDTH, 200) -- 163
         skillText:SetHAlign(ANCHOR_LEFT)
-        skillText:SetVAlign(ANCHOR_TOP)
-        skillText:SetPosition(0, offsetTop)
 
-        local TW, TH = text:GetRegionSize()
+        local skillClr = petConfig.QUALITY_COLORS[skillData.quality]
+        skillText:SetColour(skillClr[1] / 255, skillClr[2] / 255, skillClr[3] / 255, 1)
 
-        offsetTop = offsetTop - TH - 10
+        local TW, TH = skillText:GetRegionSize()
+        skillText:SetPosition(TW / 2 - DESC_CONTENT_WIDTH / 2, offsetTop - TH / 2)
+
+        offsetTop = offsetTop - TH - 5
     end
 end
 
 ------------------------------ 更新按钮 ------------------------------
 function PetInfoWidget:RefreshControls()
+    if self.petOwner ~= true then
+        return
+    end
+
     if self.menu ~= nil then
         self.menu:Kill()
     end
@@ -197,6 +217,12 @@ function PetInfoWidget:RefreshControls()
     table.insert(self.buttons, {
         text = self.config.prevBtn.text,
         cb = function()
+            -- 上一个
+            self.current = self.current - 1
+            if self.current < 1 then
+                self.current = #self.petInfos
+            end
+            self:RefreshStatus()
         end,
         control = self.config.prevBtn.control,
     })
@@ -205,6 +231,7 @@ function PetInfoWidget:RefreshControls()
         table.insert(self.buttons, {
             text = self.config.toggleBtn.text,
             cb = function()
+                
             end,
             control = self.config.toggleBtn.control,
         })
@@ -213,6 +240,12 @@ function PetInfoWidget:RefreshControls()
     table.insert(self.buttons, {
         text = self.config.nextBtn.text,
         cb = function()
+            -- 下一个
+            self.current = self.current + 1
+            if self.current > #self.petInfos then
+                self.current = 1
+            end
+            self:RefreshStatus()
         end,
         control = self.config.nextBtn.control,
     })
@@ -221,13 +254,13 @@ function PetInfoWidget:RefreshControls()
     if TheInput:ControllerAttached() then
         local spacing = 150
         self.menu = self.root:AddChild(Menu(self.buttons, spacing, true, "none"))
-        self.menu:SetTextSize(40)
+        self.menu:SetTextSize(45)
         local w = self.menu:AutoSpaceByText(15)
         self.menu:SetPosition(menuoffset.x - .5 * w, menuoffset.y, menuoffset.z)
     else
         local spacing = 110
         self.menu = self.root:AddChild(Menu(self.buttons, spacing, true, "small"))
-        self.menu:SetTextSize(35)
+        self.menu:SetTextSize(40)
         self.menu:SetPosition(menuoffset.x - .5 * spacing * (#self.buttons - 1), menuoffset.y, menuoffset.z)
     end
 end
@@ -245,7 +278,9 @@ function PetInfoWidget:Close()
         end
 
         self.black:Kill()
-        self.menu:Kill()
+        if self.menu ~= nil then
+            self.menu:Kill()
+        end
         self.infoPanel:Kill()
 
         self.isopen = false
@@ -271,7 +306,7 @@ function PetInfoWidget:OnControl(control, down)
 end
 
 function PetInfoWidget:OnDestroy()
-    SetAutopaused(false)
+    -- SetAutopaused(false)
 
 	PetInfoWidget._base.OnDestroy(self)
 end

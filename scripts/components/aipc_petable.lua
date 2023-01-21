@@ -96,17 +96,24 @@ function Petable:GetInfo()
 	local quality = self.inst.components.aipc_petable:GetQuality()
 
 	local data = {
+		id = os.time(),			-- ID
 		prefab = prefab,		-- 名字
 		quality = quality,		-- 品质
 		skills = {},			-- 技能
 	}
+
+	-- 必定有一个技能和自身的质量相等
+	local sameQualitySkill = math.random(quality)
 
 	-- 根据品质等级添加对应数量的技能
 	for i = 1, quality do
 		local rndSkill = aipRandomEnt(petConfig.SKILL_LIST)
 
 		if data.skills[rndSkill] == nil then
-			data.skills[rndSkill] = { quality = math.random(quality) }
+			data.skills[rndSkill] = {
+				-- 随机技能质量
+				quality = i == sameQualitySkill and quality or math.random(quality),
+			}
 		else -- 如果已经有了，就再重新抽一次
 			i = i - 1
 		end

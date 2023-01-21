@@ -37,7 +37,7 @@ local QUALITY_LANG = {
 -- 掉毛：待在身边时，掉落对应物品
 -- 好斗：待在身边时，会提升玩家伤害
 -- 保守：待在身边时，会减免玩家受到的伤害
--- 怯懦：待在身边时，玩家受到伤害会提升移动速度
+-- 谨慎：待在身边时，玩家受到伤害会提升移动速度
 -- 冰凉：待在身边时，玩家不会过热
 -- 温暖：待在身边时，玩家不会过冷
 -- 陪伴：待在身边时，提升附近玩家的 san 值
@@ -50,13 +50,13 @@ local SKILL_LANG = {
 		shedding = "Shedding",
 		aggressive = "Aggressive",
 		conservative = "Conservative",
-		cowardly = "Cowardly",
+		cowardly = "Cautious",
 	},
 	chinese = {
 		shedding = "掉毛",
 		aggressive = "好斗",
 		conservative = "保守",
-		cowardly = "怯懦",
+		cowardly = "谨慎",
 	},
 }
 

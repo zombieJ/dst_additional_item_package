@@ -17,10 +17,10 @@ AddPrefabPostInit("player_classified", function(inst)
 		local petSkillInfoStr = _G.aipSplit(inst.aip_pet_info:value(), "|")[2]
 
 		if _G.ThePlayer ~= nil and inst == _G.ThePlayer.player_classified and petSkillInfoStr ~= "" then
-			local petSkillInfo = _G.json.decode(petSkillInfoStr)
-			_G.aipTypePrint("petSkillInfo:", petSkillInfo)
+			local data = _G.json.decode(petSkillInfoStr)
+			_G.aipTypePrint("petSkillInfo:", data)
 			-- _G.ThePlayer.HUD:OpenAIPDestination(inst, flyTotemId)
-			_G.ThePlayer.HUD:OpenAIPPetInfo(inst, petSkillInfo)
+			_G.ThePlayer.HUD:OpenAIPPetInfo(inst, data)
 		end
 	end)
 end)

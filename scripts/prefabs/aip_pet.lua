@@ -25,8 +25,25 @@ local function onSelect(inst, viewer)
         inst.components.aipc_petable ~= nil and
         viewer.components.aipc_pet_owner ~= nil
     then
+        -- 获取宠物信息
+        local petInfo = inst.components.aipc_petable:GetInfo()
+        local msgData = {
+            current = 1,
+            petInfos = { petInfo },
+        }
+        
+
+        -- 如果是同一个主人，其他的宠物也能看到
+        if inst.components.aipc_petable.owner == viewer then
+            msgData.owner = true
+            msgData.petInfos = viewer.components.aipc_pet_owner:GetInfos()
+            msgData.current = aipTableIndex(msgData.petInfos, function(v)
+                return v.id == petInfo.id
+            end)
+        end
+
         -- 加一个切割前缀强制服务器触发
-        local dataStr = json.encode(inst.components.aipc_petable:GetInfo())
+        local dataStr = json.encode(msgData)
         viewer.player_classified.aip_pet_info:set(tostring(os.time()).."|"..dataStr)
     end
 end

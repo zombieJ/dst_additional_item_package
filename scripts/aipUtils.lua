@@ -75,6 +75,8 @@ function _G.aipTableIndex(tbl, item)
 	for i, v in ipairs(tbl) do
 		if v == item then
 			return i
+		elseif type(item) == "function" and item(v) then
+			return i
 		end
 	end
 
