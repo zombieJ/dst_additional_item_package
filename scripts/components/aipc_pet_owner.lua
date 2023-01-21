@@ -20,6 +20,28 @@ function PetOwner:FillInfo()
 	end
 end
 
+-- 切换宠物，如果已经展示则隐藏
+function PetOwner:TogglePet(petId)
+	self:FillInfo()
+
+	if
+		self.showPet ~= nil and
+		self.showPet.components.aipc_petable:GetInfo().id == petId
+	then
+		-- 相同则隐藏
+		self:HidePet()
+	else
+		-- 不同则展示
+		local index = aipTableIndex(self.pets, function(v)
+			return v.id == petId
+		end)
+
+		if index ~= nil then
+			self:ShowPet(index)
+		end
+	end
+end
+
 -- 添加宠物
 function PetOwner:AddPet(pet)
 	if pet and pet.components.aipc_petable ~= nil then
@@ -31,13 +53,19 @@ function PetOwner:AddPet(pet)
 	self:ShowPet(#self.pets)
 end
 
+-- 隐藏宠物
+function PetOwner:HidePet()
+	if self.showPet ~= nil then
+		aipReplacePrefab(self.showPet, "aip_shadow_wrapper").DoShow()
+		self.showPet = nil
+	end
+end
+
 -- 展示宠物
 function PetOwner:ShowPet(index)
 	self:FillInfo()
 
-	if self.showPet ~= nil then
-		aipRemove(self.showPet)
-	end
+	self:HidePet()
 
 	local petData = self.pets[index or 1]
 	aipTypePrint("Show Pet:", petData)

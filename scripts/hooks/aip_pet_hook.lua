@@ -42,3 +42,12 @@ function PlayerHud:CloseAIPPetInfo()
 		self.aipPetInfoScreen = nil
 	end
 end
+
+---------------------------------- 切换宠物 ----------------------------------
+env.AddModRPCHandler(env.modname, "aipTogglePet", function(player, petId)
+	_G.aipTypePrint("TogglePet:", petId)
+
+	if player ~= nil and player.components.aipc_pet_owner ~= nil then
+		player.components.aipc_pet_owner:TogglePet(petId)
+	end
+end)

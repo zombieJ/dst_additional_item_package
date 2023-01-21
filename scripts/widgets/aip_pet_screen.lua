@@ -152,6 +152,10 @@ local PetInfoWidget = Class(Screen, function(self, owner, data)
     end
 
     -- SetAutopaused(true)
+
+    self.inst:DoTaskInTime(1, function(inst)
+        self.canClick = true
+    end)
 end)
 
 ------------------------------ 更新描述 ------------------------------
@@ -216,13 +220,15 @@ function PetInfoWidget:RefreshControls()
     self.buttons = {}
     table.insert(self.buttons, {
         text = self.config.prevBtn.text,
-        cb = function()
-            -- 上一个
-            self.current = self.current - 1
-            if self.current < 1 then
-                self.current = #self.petInfos
+        cb = function(inst, button, down)
+            if self.canClick then
+                -- 上一个
+                self.current = self.current - 1
+                if self.current < 1 then
+                    self.current = #self.petInfos
+                end
+                self:RefreshStatus()
             end
-            self:RefreshStatus()
         end,
         control = self.config.prevBtn.control,
     })
@@ -231,7 +237,16 @@ function PetInfoWidget:RefreshControls()
         table.insert(self.buttons, {
             text = self.config.toggleBtn.text,
             cb = function()
-                
+                if self.canClick then
+                    aipPrint("BTN:", self.current)
+                    for i, pi in ipairs(self.petInfos) do
+                        aipPrint("PI:", i, pi.id)
+                    end
+                    local petInfo = self.petInfos[self.current]
+                    if petInfo ~= nil then
+                        aipRPC("aipTogglePet", petInfo.id)
+                    end
+                end
             end,
             control = self.config.toggleBtn.control,
         })
@@ -240,12 +255,14 @@ function PetInfoWidget:RefreshControls()
     table.insert(self.buttons, {
         text = self.config.nextBtn.text,
         cb = function()
-            -- 下一个
-            self.current = self.current + 1
-            if self.current > #self.petInfos then
-                self.current = 1
+            if self.canClick then
+                -- 下一个
+                self.current = self.current + 1
+                if self.current > #self.petInfos then
+                    self.current = 1
+                end
+                self:RefreshStatus()
             end
-            self:RefreshStatus()
         end,
         control = self.config.nextBtn.control,
     })

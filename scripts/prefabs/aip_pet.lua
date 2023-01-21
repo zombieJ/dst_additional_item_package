@@ -40,6 +40,7 @@ local function onSelect(inst, viewer)
             msgData.current = aipTableIndex(msgData.petInfos, function(v)
                 return v.id == petInfo.id
             end)
+            aipPrint("Current pet index: "..msgData.current)
         end
 
         -- 加一个切割前缀强制服务器触发
