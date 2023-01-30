@@ -121,6 +121,8 @@ local PetInfoWidget = Class(Screen, function(self, owner, data)
     self.bganim:SetScale(1, 1, 1)
 
     ------------------------------ 刷新按钮 ------------------------------
+    self.isopen = true
+
     self:RefreshStatus()
     self:RefreshControls()
 
@@ -142,7 +144,6 @@ local PetInfoWidget = Class(Screen, function(self, owner, data)
         self.root:SetPosition(0, 150, 0)
     end
 
-    self.isopen = true
     self:Show()
 
     if self.bgimage.texture then
@@ -162,7 +163,18 @@ end)
 function PetInfoWidget:RefreshStatus()
     if self.infoPanel ~= nil then
         self.infoPanel:Kill()
+        self.infoPanel = nil
     end
+
+    if not self.isopen then
+        return
+    end
+
+    local SKILL_MAX_LEVEL = petConfig.SKILL_MAX_LEVEL
+    local QUALITY_COLORS = petConfig.QUALITY_COLORS
+    local QUALITY_LANG = petConfig.QUALITY_LANG
+    local SKILL_LANG = petConfig.SKILL_LANG
+    local SKILL_DESC_LANG = petConfig.SKILL_DESC_LANG
 
     local DESC_CONTENT_WIDTH = 470
     local petInfo = self.petInfos[self.current] or {}
@@ -171,9 +183,9 @@ function PetInfoWidget:RefreshStatus()
     self.infoPanel:SetPosition(0, 130)
 
     -- 名字
-    local color = petConfig.QUALITY_COLORS[petInfo.quality]
+    local color = QUALITY_COLORS[petInfo.quality]
     local upperCase = string.upper(petInfo.prefab)
-    local name_str = STRINGS.NAMES[upperCase].."["..petConfig.QUALITY_LANG[petInfo.quality].."]"
+    local name_str = STRINGS.NAMES[upperCase].."["..QUALITY_LANG[petInfo.quality].."]"
     local text = self.infoPanel:AddChild(Text(UIFONT, 50, name_str))
     text:SetHAlign(ANCHOR_LEFT)
     text:SetColour(color[1] / 255, color[2] / 255, color[3] / 255, 1)
@@ -191,14 +203,29 @@ function PetInfoWidget:RefreshStatus()
     local offsetTop = -30
     for skillName, skillData in pairs(petInfo.skills) do
         -- local skill_str = "["..petConfig.QUALITY_LANG[skillData.quality].."]"..petConfig.SKILL_LANG[skillName]..":"
-        local skill_str = petConfig.SKILL_LANG[skillName].."[Lv."..tostring(skillData.lv).."]: "
-        skill_str = skill_str..petConfig.SKILL_DESC_LANG[skillName]
+        local skillQuality = skillData.quality
+        
+        -- 技能名
+        local skill_str = SKILL_LANG[skillName]
+
+        -- 技能等级
+        local maxLevel = SKILL_MAX_LEVEL[skillName][skillQuality]
+        skill_str = skill_str.."[Lv."..tostring(skillData.lv).."]"
+
+        if maxLevel == skillData.lv then
+            skill_str = skill_str.."[MAX]"
+        end
+
+        skill_str = skill_str..": "
+
+        -- 技能描述
+        skill_str = skill_str..SKILL_DESC_LANG[skillName]
         local skillText = self.infoPanel:AddChild(Text(UIFONT, 40))
 
         skillText:SetMultilineTruncatedString(skill_str, 14, DESC_CONTENT_WIDTH, 200) -- 163
         skillText:SetHAlign(ANCHOR_LEFT)
 
-        local skillClr = petConfig.QUALITY_COLORS[skillData.quality]
+        local skillClr = QUALITY_COLORS[skillQuality]
         skillText:SetColour(skillClr[1] / 255, skillClr[2] / 255, skillClr[3] / 255, 1)
 
         local TW, TH = skillText:GetRegionSize()
@@ -295,7 +322,9 @@ function PetInfoWidget:Close()
         if self.menu ~= nil then
             self.menu:Kill()
         end
-        self.infoPanel:Kill()
+        if self.infoPane ~= nil then
+            self.infoPanel:Kill()
+        end
 
         self.isopen = false
 

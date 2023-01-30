@@ -51,12 +51,14 @@ local SKILL_LANG = {
 		aggressive = "Aggressive",
 		conservative = "Conservative",
 		cowardly = "Cautious",
+		accompany = "Accompany",
 	},
 	chinese = {
 		shedding = "掉毛",
 		aggressive = "好斗",
 		conservative = "保守",
 		cowardly = "谨慎",
+		accompany = "陪伴",
 	},
 }
 
@@ -66,13 +68,24 @@ local SKILL_DESC_LANG = {
 		aggressive = "Aggressive",
 		conservative = "Conservative",
 		cowardly = "Cowardly",
+		accompany = "Accompany",
 	},
 	chinese = {
-		shedding = "每隔一段时间会掉落物品",
+		shedding = "定期会掉落物品",
 		aggressive = "提升你的战斗伤害",
 		conservative = "减免你受到的伤害",
-		cowardly = "当你被攻击时提升移动速度",
+		cowardly = "受到伤害时提升移动速度",
+		accompany = "恢复附近玩家理智值",
 	},
+}
+
+-- 技能最大等级（不同品质的技能最大等级不同）
+local SKILL_MAX_LEVEL = {
+	shedding = { 1, 2, 3, 4, 5 },
+	aggressive = { 9, 12, 15, 18, 20 },
+	conservative = { 9, 12, 15, 18, 20 },
+	cowardly = { 2, 4, 6, 8, 10 },
+	accompany = { 5, 6, 7, 8, 10 },
 }
 
 local SKILL_LIST = {}
@@ -86,4 +99,5 @@ return {
 	SKILL_LANG = SKILL_LANG[language] or SKILL_LANG.english,
 	SKILL_DESC_LANG = SKILL_DESC_LANG[language] or SKILL_DESC_LANG.english,
 	SKILL_LIST = SKILL_LIST,
+	SKILL_MAX_LEVEL = SKILL_MAX_LEVEL,
 }

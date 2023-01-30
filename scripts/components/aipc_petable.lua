@@ -102,23 +102,30 @@ function Petable:GetInfo()
 		skills = {},			-- 技能
 	}
 
-	-- 必定有一个技能和自身的质量相等
-	local sameQualitySkill = math.random(quality)
-
 	-- 根据品质等级添加对应数量的技能
-	for i = 1, quality do
+	local skillCnt = 0
+	for i = 1, 99 do -- 循环 99 次，理论上可能有人抓到不满足数量技能的宠物，但是概率极低
 		local rndSkill = aipRandomEnt(petConfig.SKILL_LIST)
 
 		if data.skills[rndSkill] == nil then
+			local skillQuality = math.random(quality - 1, quality)
+
 			data.skills[rndSkill] = {
 				-- 随机技能质量
-				quality = i == sameQualitySkill and quality or math.random(quality),
+				quality = skillQuality,
 				lv = 1,
 			}
-		else -- 如果已经有了，就再重新抽一次
-			i = i - 1
+		
+			skillCnt = skillCnt + 1
+		end
+
+		-- 到达对应数量了
+		if skillCnt >= quality then
+			break
 		end
 	end
+
+	-- TODO: 如果 skillCnt 小于 quality 则给予 闪光 特效
 
 	self.data = data
 

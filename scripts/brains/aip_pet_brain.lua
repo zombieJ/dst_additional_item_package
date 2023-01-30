@@ -1,6 +1,6 @@
 require "behaviours/wander"
 
-local MIN_FOLLOW_DIST = 2
+local MIN_FOLLOW_DIST = 0.5
 local TARGET_FOLLOW_DIST = 3
 local MAX_FOLLOW_DIST = 8
 
