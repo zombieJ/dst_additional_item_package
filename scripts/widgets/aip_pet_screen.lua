@@ -202,9 +202,8 @@ function PetInfoWidget:RefreshStatus()
     -- 技能列表
     local offsetTop = -30
     for skillName, skillData in pairs(petInfo.skills) do
-        -- local skill_str = "["..petConfig.QUALITY_LANG[skillData.quality].."]"..petConfig.SKILL_LANG[skillName]..":"
         local skillQuality = skillData.quality
-        
+
         -- 技能名
         local skill_str = SKILL_LANG[skillName]
 
