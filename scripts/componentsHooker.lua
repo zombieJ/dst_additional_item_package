@@ -476,9 +476,10 @@ end)
 AddComponentPostInit("combat", function(self)
 	local originCalcDamage = self.CalcDamage
 
-	function self:CalcDamage(...)
-		local dmg = originCalcDamage(self, ...)
+	function self:CalcDamage(target, weapon, multiplier, ...)
+		local dmg = originCalcDamage(self, target, weapon, multiplier, ...)
 
+		-- 古神 攻击 buff
 		if
 			_G.aipBufferExist(
 				self.inst,
@@ -486,6 +487,26 @@ AddComponentPostInit("combat", function(self)
 			)
 		then
 			dmg = dmg * 2
+		end
+
+		-- 宠物主人攻击 buff
+		if self.inst.components.aipc_pet_owner ~= nil then
+			local skillInfo, skillLv = self.inst.components.aipc_pet_owner:GetSkillInfo("aggressive")
+
+			if skillInfo ~= nil then
+				local multi = 1 + skillInfo.multi * skillLv
+				dmg = dmg * multi
+			end
+		end
+
+		-- 目标如果是宠物主人，那伤害要减少
+		if target ~= nil and target.components.aipc_pet_owner ~= nil then
+			local skillInfo, skillLv = target.components.aipc_pet_owner:GetSkillInfo("conservative")
+
+			if skillInfo ~= nil then
+				local multi = 1 - skillInfo.multi * skillLv
+				dmg = dmg * multi
+			end
 		end
 
 		return dmg

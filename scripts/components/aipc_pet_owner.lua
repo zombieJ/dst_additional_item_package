@@ -9,6 +9,7 @@ local PetOwner = Class(function(self, inst)
 	self.pets = {}
 
 	self.showPet = nil
+	self.petData = nil		-- 临时存储展示的宠物信息用于快速查询
 end)
 
 -- 补一下数据
@@ -65,6 +66,8 @@ function PetOwner:HidePet()
 		aipReplacePrefab(self.showPet, "aip_shadow_wrapper").DoShow()
 		self.showPet = nil
 	end
+
+	self.petData = nil
 end
 
 -- 展示宠物
@@ -74,7 +77,7 @@ function PetOwner:ShowPet(index)
 	self:HidePet()
 
 	local petData = self.pets[index or 1]
-	aipTypePrint("Show Pet:", petData)
+	self.petData = petData
 
 	if petData ~= nil then
 		local petPrefab = "aip_pet_"..petData.prefab
@@ -84,6 +87,17 @@ function PetOwner:ShowPet(index)
 		aipSpawnPrefab(pet, "aip_shadow_wrapper").DoShow()
 		self.showPet = pet
 	end
+end
+
+-- 获取宠物能力对应的数据，会额外包含 lv，如果没有技能则返回 nil
+function PetOwner:GetSkillInfo(skill)
+	local skillLv = aipGet(self.petData, "skills|"..skill.."|lv")
+
+	if skillLv ~= nil then
+		return petConfig.SKILL_CONSTANT[skill], skillLv
+	end
+
+	return nil
 end
 
 ------------------------------ 数据 ------------------------------
@@ -98,17 +112,12 @@ function PetOwner:OnSave()
         pets = self.pets,
     }
 
-	aipTypePrint("Save:", data.pets)
-
 	return data
 end
 
 function PetOwner:OnLoad(data)
-	aipTypePrint("load:", data)
 	if data ~= nil then
 		self.pets = data.pets or {}
-		aipTypePrint("load 1:", data.pets)
-		aipTypePrint("load 2:", self.pets)
 	end
 
 	self:FillInfo()

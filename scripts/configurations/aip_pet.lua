@@ -1,4 +1,5 @@
 local language = aipGetModConfig("language")
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 local aip_nectar_config = require("prefabs/aip_nectar_config")
 local NEC_COLORS = aip_nectar_config.QUALITY_COLORS
@@ -82,15 +83,40 @@ local SKILL_DESC_LANG = {
 -- 技能最大等级（不同品质的技能最大等级不同）
 local SKILL_MAX_LEVEL = {
 	shedding = { 1, 2, 3, 4, 5 },
-	aggressive = { 9, 12, 15, 18, 20 },
-	conservative = { 9, 12, 15, 18, 20 },
+	aggressive = { 5, 10, 15, 20, 25 },
+	conservative = { 4, 8, 12, 16, 20 },
 	cowardly = { 2, 4, 6, 8, 10 },
 	accompany = { 5, 6, 7, 8, 10 },
+}
+
+-- 不同技能对应的数值
+local SKILL_CONSTANT = {
+	aggressive = {
+		multi = 0.01,	-- 每个等级增伤 1%
+	},
+	conservative = {
+		multi = 0.01,	-- 每个等级减伤 1%
+	},
+	cowardly = {
+		multi = 0.01,	-- 每个等级增速 1%
+		duration = 10,	-- 持续 10s
+	},
 }
 
 local SKILL_LIST = {}
 for name, v in pairs(SKILL_LANG.english) do
 	table.insert(SKILL_LIST, name)
+end
+
+-- 开发模式固定技能列表
+if dev_mode then
+	SKILL_LIST = {
+		-- "shedding",
+		"aggressive",
+		"conservative",
+		"cowardly",
+		-- "accompany",
+	}
 end
 
 return {
@@ -100,4 +126,5 @@ return {
 	SKILL_DESC_LANG = SKILL_DESC_LANG[language] or SKILL_DESC_LANG.english,
 	SKILL_LIST = SKILL_LIST,
 	SKILL_MAX_LEVEL = SKILL_MAX_LEVEL,
+	SKILL_CONSTANT = SKILL_CONSTANT,
 }
