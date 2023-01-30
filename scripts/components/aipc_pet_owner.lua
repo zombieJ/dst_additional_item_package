@@ -2,7 +2,44 @@ local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 local petConfig = require("configurations/aip_pet")
 
+---------------------------------------------------------------------
+local function OnAttacked(inst)
+	if inst ~= nil and inst.components.aipc_pet_owner ~= nil then
+		inst.components.aipc_pet_owner:Attacked()
+	end
+end
 
+local function StopSpeed(inst)
+	if inst.components.locomotor then
+		inst.components.locomotor:RemoveExternalSpeedMultiplier(
+			inst, "aipc_pet_owner_speed"
+		)
+	end
+end
+
+local function OnTimerDone(inst, data)
+	data = data or {}
+
+	if not inst.components.aipc_pet_owner then
+		return
+	end
+
+	-- 宠物
+	local pet = inst.components.aipc_pet_owner.showPet
+
+	-- 不再加速
+	if data.name == "aipc_pet_owner_speed" then
+		StopSpeed(inst)
+	end
+
+	-- 定期掉落物品，同时循环再掉落
+	if data.name == "aipc_pet_owner_shedding" and pet then
+		aipFlingItem(aipSpawnPrefab(pet, "seeds"))
+		inst.components.aipc_pet_owner:StartShedding()
+	end
+end
+
+---------------------------------------------------------------------
 -- 双端通用，抓捕宠物组件
 local PetOwner = Class(function(self, inst)
 	self.inst = inst
@@ -10,6 +47,9 @@ local PetOwner = Class(function(self, inst)
 
 	self.showPet = nil
 	self.petData = nil		-- 临时存储展示的宠物信息用于快速查询
+
+	self.inst:ListenForEvent("attacked", OnAttacked)
+	self.inst:ListenForEvent("timerdone", OnTimerDone)
 end)
 
 -- 补一下数据
@@ -68,6 +108,13 @@ function PetOwner:HidePet()
 	end
 
 	self.petData = nil
+
+	-- 停止加速
+	StopSpeed(self.inst)
+
+	-- 停止掉毛
+	self:EnsureTimer()
+	self.inst.components.timer:StopTimer("aipc_pet_owner_shedding")
 end
 
 -- 展示宠物
@@ -86,6 +133,12 @@ function PetOwner:ShowPet(index)
 
 		aipSpawnPrefab(pet, "aip_shadow_wrapper").DoShow()
 		self.showPet = pet
+
+		-- 尝试掉毛
+		self:StartShedding()
+
+		-- 尝试光环
+		self:StartAura()
 	end
 end
 
@@ -98,6 +151,61 @@ function PetOwner:GetSkillInfo(skill)
 	end
 
 	return nil
+end
+
+------------------------------ 杂项 ------------------------------
+function PetOwner:EnsureTimer()
+	if not self.inst.components.timer then
+		self.inst:AddComponent("timer")
+	end
+end
+
+-- 被攻击
+function PetOwner:Attacked()
+	self:EnsureTimer()
+
+	-- 触发 谨慎 效果
+	local skillInfo, skillLv = self:GetSkillInfo("cowardly")
+	if skillInfo ~= nil and self.inst.components.locomotor ~= nil then
+		local multi = 1 + skillInfo.multi * skillLv
+
+		-- 添加计时器
+		self.inst.components.timer:StopTimer("aipc_pet_owner_speed")
+		self.inst.components.timer:StartTimer("aipc_pet_owner_speed", skillInfo.duration)
+
+		-- 重置一下速度叠加
+		self.inst.components.locomotor:RemoveExternalSpeedMultiplier(
+			self.inst, "aipc_pet_owner_speed"
+		)
+		self.inst.components.locomotor:SetExternalSpeedMultiplier(
+			self.inst, "aipc_pet_owner_speed", multi
+		)
+	end
+end
+
+-- 掉落物品
+function PetOwner:StartShedding()
+	local skillInfo, skillLv = self:GetSkillInfo("shedding")
+
+	if skillInfo ~= nil then
+		self:EnsureTimer()
+		local timeout = skillInfo.base - skillInfo.multi * skillLv
+		self.inst.components.timer:StartTimer("aipc_pet_owner_shedding", timeout)
+	end
+end
+
+-- 添加一些光环
+function PetOwner:StartAura()
+	local skillInfo, skillLv = self:GetSkillInfo("accompany")
+
+	if skillInfo ~= nil and self.showPet ~= nil then
+		if self.showPet.components.sanityaura == nil then
+			self.showPet:AddComponent("sanityaura")
+		end
+
+		-- 给宠物添加一个光环
+		self.showPet.components.sanityaura.aura = skillInfo.unit * skillLv
+	end
 end
 
 ------------------------------ 数据 ------------------------------
@@ -125,5 +233,13 @@ function PetOwner:OnLoad(data)
 		self:ShowPet()
 	end)
 end
+
+function PetOwner:OnRemoveEntity()
+	self:HidePet()
+	self.inst:RemoveEventCallback("attacked", OnAttacked)
+	self.inst:RemoveEventCallback("timerdone", OnTimerDone)
+end
+
+PetOwner.OnRemoveFromEntity = PetOwner.OnRemoveEntity
 
 return PetOwner

@@ -48,14 +48,14 @@ local QUALITY_LANG = {
 
 local SKILL_LANG = {
 	english = {
-		shedding = "Shedding",
+		shedding = "Picker",
 		aggressive = "Aggressive",
 		conservative = "Conservative",
 		cowardly = "Cautious",
 		accompany = "Accompany",
 	},
 	chinese = {
-		shedding = "掉毛",
+		shedding = "捡拾",
 		aggressive = "好斗",
 		conservative = "保守",
 		cowardly = "谨慎",
@@ -72,7 +72,7 @@ local SKILL_DESC_LANG = {
 		accompany = "Accompany",
 	},
 	chinese = {
-		shedding = "定期会掉落物品",
+		shedding = "会定期丢出捡到的物品",
 		aggressive = "提升你的战斗伤害",
 		conservative = "减免你受到的伤害",
 		cowardly = "受到伤害时提升移动速度",
@@ -89,17 +89,28 @@ local SKILL_MAX_LEVEL = {
 	accompany = { 5, 6, 7, 8, 10 },
 }
 
+local dt = TUNING.TOTAL_DAY_TIME
+local dt_base = dt * 6
+local san = TUNING.DAPPERNESS_TINY / 1.33	-- 1 点 san / 分钟
+
 -- 不同技能对应的数值
 local SKILL_CONSTANT = {
+	shedding = {
+		base = dt_base,								-- 默认掉落为 6 天
+		multi = dev_mode and (dt_base - 10) or dt,	-- 每个等级减少 1 天
+	},
 	aggressive = {
-		multi = 0.01,	-- 每个等级增伤 1%
+		multi = 0.01,								-- 每个等级增伤 1%
 	},
 	conservative = {
-		multi = 0.01,	-- 每个等级减伤 1%
+		multi = 0.01,								-- 每个等级减伤 1%
 	},
 	cowardly = {
-		multi = 0.01,	-- 每个等级增速 1%
-		duration = 10,	-- 持续 10s
+		multi = dev_mode and 1 or 0.01,				-- 每个等级增速 1%
+		duration = 6,								-- 持续 6s
+	},
+	accompany = {
+		unit = dev_mode and san * 9 or san * .5,	-- 每分钟恢复 0.5 点理智
 	},
 }
 
@@ -111,11 +122,11 @@ end
 -- 开发模式固定技能列表
 if dev_mode then
 	SKILL_LIST = {
-		-- "shedding",
-		"aggressive",
-		"conservative",
+		"shedding",
+		-- "aggressive",
+		-- "conservative",
 		"cowardly",
-		-- "accompany",
+		"accompany",
 	}
 end
 
