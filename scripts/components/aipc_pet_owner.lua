@@ -92,7 +92,7 @@ end
 -- 添加宠物
 function PetOwner:AddPet(pet)
 	if pet and pet.components.aipc_petable ~= nil then
-		local data = pet.components.aipc_petable:GetInfo()
+		local data = pet.components.aipc_petable:GetInfo(self.inst)
 
 		table.insert(self.pets, data)
 	end

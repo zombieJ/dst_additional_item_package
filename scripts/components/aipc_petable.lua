@@ -87,7 +87,7 @@ function Petable:ShowAura()
 end
 
 -- 获取宠物信息，没有就随机（宠物信息是抓到时才会生成的）
-function Petable:GetInfo()
+function Petable:GetInfo(seer)
 	if self.data ~= nil then
 		return self.data
 	end
@@ -102,6 +102,13 @@ function Petable:GetInfo()
 		self.inst.components.inventoryitem.imagename == "rabbit_winter"
 	then
 		subPrefab = "_winter"
+	end
+
+	if
+		seer ~= nil and seer.components.sanity ~= nil and
+		seer.components.sanity:IsInsanityMode()
+	then
+		subPrefab = "_crazy"
 	end
 
 	local data = {

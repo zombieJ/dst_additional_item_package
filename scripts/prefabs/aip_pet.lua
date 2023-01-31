@@ -141,6 +141,17 @@ local data = {
         },
         origin = "rabbit",
     },
+    rabbit_crazy = {
+        bank = "rabbit",
+        build = "beard_monster",
+        anim = "idle",
+        sg = "SGrabbit",
+        sounds = {
+            scream = "dontstarve/rabbit/scream",
+            hurt = "dontstarve/rabbit/scream_short",
+        },
+        origin = "rabbit",
+    },
 }
 local prefabs = {}
 
