@@ -37,6 +37,20 @@ local QUALITY_COLORS = petConfig.QUALITY_COLORS
 local QUALITY_LANG = petConfig.QUALITY_LANG
 
 ----------------------------------- 方法 -----------------------------------
+local function canActOn()
+    return true, true
+end
+
+local function onDoTargetAction(inst, doer, target)
+    if target ~= nil then
+        aipPrint("Throw:", inst, doer, target)
+        aipRemove(inst)
+
+        local clone = aipSpawnPrefab(doer, "aip_pet_catcher")
+        clone.components.complexprojectile:Launch(target:GetPosition(), doer)
+    end
+end
+
 local function onHit(inst, attacker, target)
     local aura = aipReplacePrefab(inst, "aip_fx_splode").DoShow(nil, 0.5)
     local pt = inst:GetPosition()
@@ -98,11 +112,17 @@ local function fn()
 
     MakeInventoryFloatable(inst, "med", 0.3, 1)
 
+    inst:AddComponent("aipc_action_client")
+	inst.components.aipc_action_client.canActOn = canActOn
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
+
+    inst:AddComponent("aipc_action")
+	inst.components.aipc_action.onDoTargetAction = onDoTargetAction
 
     inst:AddComponent("stackable")
 	inst.components.stackable.maxsize = TUNING.STACK_SIZE_MEDITEM

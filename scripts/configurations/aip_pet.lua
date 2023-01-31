@@ -27,11 +27,11 @@ local QUALITY_LANG = {
 		"Perfect",
 	},
 	chinese = {
-        "普通",
-		"优秀",
-		"精良",
-		"杰出",
-		"完美",
+        "普通的",
+		"优秀的",
+		"精良的",
+		"杰出的",
+		"完美的",
     },
 }
 
@@ -63,33 +63,6 @@ local SKILL_LANG = {
 	},
 }
 
-local SKILL_DESC_LANG = {
-	english = {
-		shedding = "Shedding",
-		aggressive = "Aggressive",
-		conservative = "Conservative",
-		cowardly = "Cowardly",
-		accompany = "Accompany",
-	},
-	chinese = {
-		shedding = "会定期丢出捡到的物品",
-		aggressive = "提升你的战斗伤害",
-		conservative = "减免你受到的伤害",
-		cowardly = "受到伤害时提升移动速度 SPD%，持续 DUR 秒",
-		accompany = "恢复附近玩家理智值",
-	},
-}
-
--- 技能文字描述的计算
-local SKILL_DESC_VARS = {
-	cowardly = function(info, lv)
-		return {
-			SPD = info.multi * lv * 100,
-			DUR = info.duration,
-		}
-	end,
-}
-
 -- 技能最大等级（不同品质的技能最大等级不同）
 local SKILL_MAX_LEVEL = {
 	shedding = { 1, 2, 3, 4, 5 },
@@ -107,7 +80,7 @@ local san = TUNING.DAPPERNESS_TINY / 1.33	-- 1 点 san / 分钟
 local SKILL_CONSTANT = {
 	shedding = {
 		base = dt_base,								-- 默认掉落为 6 天
-		multi = dev_mode and (dt_base - 10) or dt,	-- 每个等级减少 1 天
+		multi = dev_mode and (dt_base - 20) or dt,	-- 每个等级减少 1 天
 	},
 	aggressive = {
 		multi = 0.01,								-- 每个等级增伤 1%
@@ -124,6 +97,53 @@ local SKILL_CONSTANT = {
 	},
 }
 
+local SKILL_DESC_LANG = {
+	english = {
+		shedding = "Shedding",
+		aggressive = "Aggressive",
+		conservative = "Conservative",
+		cowardly = "Cowardly",
+		accompany = "Accompany",
+	},
+	chinese = {
+		shedding = "每隔 DAY 天会丢出捡到的物品",
+		aggressive = "提升你的战斗伤害 ATK%",
+		conservative = "减免你受到的伤害 PTC%",
+		cowardly = "受到伤害时提升移动速度 SPD%，持续 DUR 秒",
+		accompany = "恢复附近玩家理智值 SAN 点/分",
+	},
+}
+
+-- 技能文字描述的计算
+local SKILL_DESC_VARS = {
+	shedding = function(info, lv)
+		return {
+			DAY = (info.base - info.multi * lv) / dt_base,
+		}
+	end,
+	aggressive = function(info, lv)
+		return {
+			ATK = info.multi * lv * 100,
+		}
+	end,
+	conservative = function(info, lv)
+		return {
+			PTC = info.multi * lv * 100,
+		}
+	end,
+	cowardly = function(info, lv)
+		return {
+			SPD = info.multi * lv * 100,
+			DUR = info.duration,
+		}
+	end,
+	accompany = function(info, lv)
+		return {
+			SAN = info.unit * lv / san,
+		}
+	end,
+}
+
 local SKILL_LIST = {}
 for name, v in pairs(SKILL_LANG.english) do
 	table.insert(SKILL_LIST, name)
@@ -133,9 +153,9 @@ end
 if dev_mode then
 	SKILL_LIST = {
 		"shedding",
-		-- "aggressive",
-		-- "conservative",
-		"cowardly",
+		"aggressive",
+		"conservative",
+		-- "cowardly",
 		"accompany",
 	}
 end

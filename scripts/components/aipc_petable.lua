@@ -27,7 +27,7 @@ local Petable = Class(function(self, inst)
 	self.syncAura = net_event(inst.GUID, "aipc_petable.sync_aura")
 	self.quality = net_tinybyte(inst.GUID, "aipc_petable.quality", "aipc_petable.quality_dirty")
 	if TheWorld.ismastersim then
-		self.quality:set(dev_mode and 3 or 1)
+		self.quality:set(dev_mode and 4 or 1)
 	end
 	if not TheNet:IsDedicated() then
         inst:ListenForEvent("aipc_petable.sync_aura", syncClientAura)

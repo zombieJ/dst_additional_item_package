@@ -75,6 +75,13 @@ AIPC_ACTION.priority = 1
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_ACTION, "dolongaction"))
 AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_ACTION, "dolongaction"))
 
+-- 远动作
+local AIPC_REMOTE_ACTION = env.AddAction("AIPC_REMOTE_ACTION", LANG.USE, actionFn)
+AIPC_REMOTE_ACTION.priority = 1
+AIPC_REMOTE_ACTION.distance = 10
+
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_REMOTE_ACTION, "throw"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_REMOTE_ACTION, "throw"))
 
 -- 短动作
 local AIPC_GIVE_ACTION = env.AddAction("AIPC_GIVE_ACTION", LANG.GIVE, actionFn)
@@ -90,8 +97,13 @@ env.AddComponentAction("USEITEM", "aipc_action_client", function(inst, doer, tar
 		return
 	end
 
-	if inst.components.aipc_action_client:CanActOn(doer, target) then
-		table.insert(actions, _G.ACTIONS.AIPC_ACTION)
+	local canActOn, remoteAction = inst.components.aipc_action_client:CanActOn(doer, target)
+	if canActOn then
+		if remoteAction == true then
+			table.insert(actions, _G.ACTIONS.AIPC_REMOTE_ACTION)
+		else
+			table.insert(actions, _G.ACTIONS.AIPC_ACTION)
+		end
 	end
 end)
 

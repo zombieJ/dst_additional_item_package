@@ -116,9 +116,9 @@ local PetInfoWidget = Class(Screen, function(self, owner, data)
     end
 
     self.bganim = self.root:AddChild(UIAnim())
-    self.bganim:SetScale(1, 1, 1)
+    self.bganim:SetScale(1.5, 1.5, 1)
     self.bgimage = self.root:AddChild(Image())
-    self.bganim:SetScale(1, 1, 1)
+    self.bganim:SetScale(1.5, 1.5, 1)
 
     ------------------------------ 刷新按钮 ------------------------------
     self.isopen = true
@@ -178,17 +178,17 @@ function PetInfoWidget:RefreshStatus()
     local SKILL_DESC_VARS = petConfig.SKILL_DESC_VARS
     local SKILL_CONSTANT = petConfig.SKILL_CONSTANT
 
-    local DESC_CONTENT_WIDTH = 470
+    local DESC_CONTENT_WIDTH = 700 -- 470
     local petInfo = self.petInfos[self.current] or {}
 
     self.infoPanel = self.root:AddChild(Widget("petInfoRoot"))
-    self.infoPanel:SetPosition(0, 130)
+    self.infoPanel:SetPosition(0, 200)
 
     -- 名字
     local color = QUALITY_COLORS[petInfo.quality]
     local upperCase = string.upper(petInfo.prefab)
-    local name_str = STRINGS.NAMES[upperCase].."["..QUALITY_LANG[petInfo.quality].."]"
-    local text = self.infoPanel:AddChild(Text(UIFONT, 50, name_str))
+    local name_str = "["..QUALITY_LANG[petInfo.quality].."] "..STRINGS.NAMES[upperCase]
+    local text = self.infoPanel:AddChild(Text(UIFONT, 60, name_str))
     text:SetHAlign(ANCHOR_LEFT)
     text:SetColour(color[1] / 255, color[2] / 255, color[3] / 255, 1)
     local nameW, nameH = text:GetRegionSize()
@@ -196,7 +196,7 @@ function PetInfoWidget:RefreshStatus()
 
     -- ID
     local id_str = "ID:"..petInfo.id.."("..tostring(self.current).."/"..tostring(#self.petInfos)..")"
-    local idText = self.infoPanel:AddChild(Text(UIFONT, 30, id_str))
+    local idText = self.infoPanel:AddChild(Text(UIFONT, 40, id_str))
     idText:SetHAlign(ANCHOR_LEFT)
     local idW, idH = idText:GetRegionSize()
     idText:SetPosition(DESC_CONTENT_WIDTH / 2 - idW / 2, 0)
@@ -228,11 +228,11 @@ function PetInfoWidget:RefreshStatus()
         if func ~= nil then
             local vars = func(skillConstant, skillData.lv)
             for key, value in pairs(vars) do
-                skill_str = string.gsub(skill_str, key, value)
+                skill_str = string.gsub(skill_str, key, string.format("%.1f", value))
             end
         end
 
-        local skillText = self.infoPanel:AddChild(Text(UIFONT, 40))
+        local skillText = self.infoPanel:AddChild(Text(UIFONT, 50))
 
         skillText:SetMultilineTruncatedString(skill_str, 14, DESC_CONTENT_WIDTH, 200) -- 163
         skillText:SetHAlign(ANCHOR_LEFT)
@@ -243,7 +243,7 @@ function PetInfoWidget:RefreshStatus()
         local TW, TH = skillText:GetRegionSize()
         skillText:SetPosition(TW / 2 - DESC_CONTENT_WIDTH / 2, offsetTop - TH / 2)
 
-        offsetTop = offsetTop - TH - 5
+        offsetTop = offsetTop - TH - 10
     end
 end
 
