@@ -75,9 +75,19 @@ local SKILL_DESC_LANG = {
 		shedding = "会定期丢出捡到的物品",
 		aggressive = "提升你的战斗伤害",
 		conservative = "减免你受到的伤害",
-		cowardly = "受到伤害时提升移动速度",
+		cowardly = "受到伤害时提升移动速度 SPD%，持续 DUR 秒",
 		accompany = "恢复附近玩家理智值",
 	},
+}
+
+-- 技能文字描述的计算
+local SKILL_DESC_VARS = {
+	cowardly = function(info, lv)
+		return {
+			SPD = info.multi * lv * 100,
+			DUR = info.duration,
+		}
+	end,
 }
 
 -- 技能最大等级（不同品质的技能最大等级不同）
@@ -135,6 +145,7 @@ return {
     QUALITY_LANG = QUALITY_LANG[language] or QUALITY_LANG.english,
 	SKILL_LANG = SKILL_LANG[language] or SKILL_LANG.english,
 	SKILL_DESC_LANG = SKILL_DESC_LANG[language] or SKILL_DESC_LANG.english,
+	SKILL_DESC_VARS = SKILL_DESC_VARS,
 	SKILL_LIST = SKILL_LIST,
 	SKILL_MAX_LEVEL = SKILL_MAX_LEVEL,
 	SKILL_CONSTANT = SKILL_CONSTANT,

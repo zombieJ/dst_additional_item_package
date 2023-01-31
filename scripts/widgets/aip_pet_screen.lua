@@ -175,6 +175,8 @@ function PetInfoWidget:RefreshStatus()
     local QUALITY_LANG = petConfig.QUALITY_LANG
     local SKILL_LANG = petConfig.SKILL_LANG
     local SKILL_DESC_LANG = petConfig.SKILL_DESC_LANG
+    local SKILL_DESC_VARS = petConfig.SKILL_DESC_VARS
+    local SKILL_CONSTANT = petConfig.SKILL_CONSTANT
 
     local DESC_CONTENT_WIDTH = 470
     local petInfo = self.petInfos[self.current] or {}
@@ -219,6 +221,17 @@ function PetInfoWidget:RefreshStatus()
 
         -- 技能描述
         skill_str = skill_str..SKILL_DESC_LANG[skillName]
+
+        -- 技能变量替换
+        local skillConstant = SKILL_CONSTANT[skillName] or {}
+        local func = SKILL_DESC_VARS[skillName]
+        if func ~= nil then
+            local vars = func(skillConstant, skillData.lv)
+            for key, value in pairs(vars) do
+                skill_str = string.gsub(skill_str, key, value)
+            end
+        end
+
         local skillText = self.infoPanel:AddChild(Text(UIFONT, 40))
 
         skillText:SetMultilineTruncatedString(skill_str, 14, DESC_CONTENT_WIDTH, 200) -- 163
