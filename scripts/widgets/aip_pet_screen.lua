@@ -179,6 +179,7 @@ function PetInfoWidget:RefreshStatus()
     local SKILL_CONSTANT = petConfig.SKILL_CONSTANT
 
     local DESC_CONTENT_WIDTH = 700 -- 470
+    local SKILL_DESC_WIDTH = DESC_CONTENT_WIDTH - 30    -- 技能描述更短一些
     local petInfo = self.petInfos[self.current] or {}
 
     self.infoPanel = self.root:AddChild(Widget("petInfoRoot"))
@@ -202,7 +203,7 @@ function PetInfoWidget:RefreshStatus()
     idText:SetPosition(DESC_CONTENT_WIDTH / 2 - idW / 2, 0)
 
     -- 技能列表
-    local offsetTop = -30
+    local offsetTop = -50
     for skillName, skillData in pairs(petInfo.skills) do
         local skillQuality = skillData.quality
 
@@ -217,6 +218,7 @@ function PetInfoWidget:RefreshStatus()
             skill_str = skill_str.."[MAX]"
         end
 
+        local skill_name_str = skill_str
         skill_str = skill_str..": "
 
         -- 技能描述
@@ -234,15 +236,23 @@ function PetInfoWidget:RefreshStatus()
 
         local skillText = self.infoPanel:AddChild(Text(UIFONT, 50))
 
-        skillText:SetMultilineTruncatedString(skill_str, 14, DESC_CONTENT_WIDTH, 200) -- 163
+        skillText:SetMultilineTruncatedString(skill_str, 14, SKILL_DESC_WIDTH, 200) -- 163
         skillText:SetHAlign(ANCHOR_LEFT)
 
-        local skillClr = QUALITY_COLORS[skillQuality]
-        skillText:SetColour(skillClr[1] / 255, skillClr[2] / 255, skillClr[3] / 255, 1)
-
         local TW, TH = skillText:GetRegionSize()
-        skillText:SetPosition(TW / 2 - DESC_CONTENT_WIDTH / 2, offsetTop - TH / 2)
+        skillText:SetPosition(TW / 2 - SKILL_DESC_WIDTH / 2, offsetTop - TH / 2)
 
+        -- 技能名字用颜色覆盖
+        local colorSkillText = self.infoPanel:AddChild(Text(UIFONT, 50, skill_name_str))
+        colorSkillText:SetHAlign(ANCHOR_LEFT)
+
+        local skillClr = QUALITY_COLORS[skillQuality]
+        colorSkillText:SetColour(skillClr[1] / 255, skillClr[2] / 255, skillClr[3] / 255, 1)
+
+        local SCW, SCH = colorSkillText:GetRegionSize()
+        colorSkillText:SetPosition(SCW / 2 - SKILL_DESC_WIDTH / 2, offsetTop - SCH / 2)
+
+        -- 偏移位置
         offsetTop = offsetTop - TH - 10
     end
 end

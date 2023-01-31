@@ -3,11 +3,6 @@ local language = aipGetModConfig("language")
 local brain = require("brains/aip_pet_brain")
 local petConfig = require("configurations/aip_pet")
 
-local rabbitsounds = {
-    scream = "dontstarve/rabbit/scream",
-    hurt = "dontstarve/rabbit/scream_short",
-}
-
 ----------------------------------- 说明 -----------------------------------
 -- 名字带上品质
 local function syncPetInfo(inst)
@@ -49,6 +44,12 @@ local function onSelect(inst, viewer)
     end
 end
 
+local function OnNamedByWriteable(inst, new_name, writer)
+    if inst.components.named ~= nil then
+        inst.components.named:SetName(new_name, writer ~= nil and writer.userid or nil)
+    end
+end
+
 ----------------------------------- 实例 -----------------------------------
 local function createPet(name, info)
     local upperCase = string.upper(name)
@@ -79,6 +80,7 @@ local function createPet(name, info)
         inst:AddComponent("aipc_info_client")
 
         inst:AddTag("_named")
+        -- inst:AddTag("_writeable")
 
         inst.entity:SetPristine()
 
@@ -87,10 +89,14 @@ local function createPet(name, info)
         end
 
         inst:RemoveTag("_named")
+        -- inst:RemoveTag("_writeable")
 
         inst:AddComponent("named")
         inst:AddComponent("inspectable")
         inst.components.inspectable.descriptionfn = onSelect
+
+        -- inst:AddComponent("writeable")
+        -- inst.components.writeable:SetOnWrittenFn(OnNamedByWriteable)
 
         inst.sounds = info.sounds
 
@@ -118,7 +124,21 @@ local data = {
         build = "rabbit_build",
         anim = "idle",
         sg = "SGrabbit",
-        sounds = rabbitsounds,
+        sounds = {
+            scream = "dontstarve/rabbit/scream",
+            hurt = "dontstarve/rabbit/scream_short",
+        },
+        origin = "rabbit",
+    },
+    rabbit_winter = {
+        bank = "rabbit",
+        build = "rabbit_winter_build",
+        anim = "idle",
+        sg = "SGrabbit",
+        sounds = {
+            scream = "dontstarve/rabbit/winterscream",
+            hurt = "dontstarve/rabbit/winterscream_short",
+        },
         origin = "rabbit",
     },
 }

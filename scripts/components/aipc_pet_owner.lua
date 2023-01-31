@@ -127,7 +127,7 @@ function PetOwner:ShowPet(index)
 	self.petData = petData
 
 	if petData ~= nil then
-		local petPrefab = "aip_pet_"..petData.prefab
+		local petPrefab = "aip_pet_"..petData.prefab..(petData.subPrefab or "")
 		local pet = aipSpawnPrefab(self.inst, petPrefab)
 		pet.components.aipc_petable:SetInfo(petData, self.inst)
 

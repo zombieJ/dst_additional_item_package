@@ -43,7 +43,6 @@ end
 
 local function onDoTargetAction(inst, doer, target)
     if target ~= nil then
-        aipPrint("Throw:", inst, doer, target)
         aipRemove(inst)
 
         local clone = aipSpawnPrefab(doer, "aip_pet_catcher")
@@ -51,6 +50,7 @@ local function onDoTargetAction(inst, doer, target)
     end
 end
 
+-- 捕捉
 local function onHit(inst, attacker, target)
     local aura = aipReplacePrefab(inst, "aip_fx_splode").DoShow(nil, 0.5)
     local pt = inst:GetPosition()

@@ -27,7 +27,7 @@ local Petable = Class(function(self, inst)
 	self.syncAura = net_event(inst.GUID, "aipc_petable.sync_aura")
 	self.quality = net_tinybyte(inst.GUID, "aipc_petable.quality", "aipc_petable.quality_dirty")
 	if TheWorld.ismastersim then
-		self.quality:set(dev_mode and 4 or 1)
+		self.quality:set(dev_mode and 3 or 1)
 	end
 	if not TheNet:IsDedicated() then
         inst:ListenForEvent("aipc_petable.sync_aura", syncClientAura)
@@ -93,11 +93,21 @@ function Petable:GetInfo()
 	end
 
 	local prefab = self.inst.prefab
-	local quality = self.inst.components.aipc_petable:GetQuality()
+	local subPrefab = nil
+	local quality = self:GetQuality()
+
+	-- TODO: 抽一个方法出来
+	if
+		self.inst.components.inventoryitem ~= nil and
+		self.inst.components.inventoryitem.imagename == "rabbit_winter"
+	then
+		subPrefab = "_winter"
+	end
 
 	local data = {
 		id = os.time(),			-- ID
 		prefab = prefab,		-- 名字
+		subPrefab = subPrefab,	-- 子名字（比如 兔子是 _winter）
 		quality = quality,		-- 品质
 		skills = {},			-- 技能
 	}
@@ -136,6 +146,7 @@ end
 function Petable:SetInfo(data, owner)
 	self.owner = owner
 	self.data = data
+	self:SetQuality(data.quality)
 end
 
 function Petable:OnSave()
