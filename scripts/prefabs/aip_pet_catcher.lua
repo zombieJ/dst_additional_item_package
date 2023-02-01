@@ -64,6 +64,15 @@ local function onHit(inst, attacker, target)
     local ent = ents[1]
     if ent ~= nil then
         local chance = ent.components.aipc_petable:GetQualityChance()
+
+        -- 如果有 游说 技能宠物，则提升捕捉概率
+        if attacker ~= nil and attacker.components.aipc_pet_owner ~= nil then
+            local skillInfo, skillLv = attacker.components.aipc_pet_owner:GetSkillInfo("eloquence")
+            if skillInfo ~= nil then
+                chance = chance + skillInfo.multi * skillLv
+            end
+        end
+
         if math.random() <= chance then
             aipRemove(ent)
             local quality = ent.components.aipc_petable:GetQuality()

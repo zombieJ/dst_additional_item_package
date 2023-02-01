@@ -13,6 +13,10 @@ end
 
 -- 随机品质等级：普通，优秀，精良，杰出，完美
 local qualityChances = { 100, 5, 1, 0.1, 0 }
+if dev_mode then
+	qualityChances = { 0, 0, 1, 0, 0 }
+end
+
 local function randomQuality()
 	return aipRandomLoot(qualityChances) or 1
 end

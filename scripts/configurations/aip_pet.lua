@@ -35,16 +35,32 @@ local QUALITY_LANG = {
     },
 }
 
+-- 口渴：待在身边时，玩家会快速恢复潮湿度
+-- 闪光：没有特殊效果，但是相当稀有。宠物会发出光芒。
+
 -- 掉毛：待在身边时，掉落对应物品
 -- 好斗：待在身边时，会提升玩家伤害
 -- 保守：待在身边时，会减免玩家受到的伤害
 -- 谨慎：待在身边时，玩家受到伤害会提升移动速度
+-- 陪伴：待在身边时，提升附近玩家的 san 值
+-- 孤狼：待在身边时，玩家砍树会提升速度
+
+-- 改命：受到致死伤害时，改为恢复生命值。该效果每 10 分钟只能触发一次
+-- 铁胃：免疫食物带来的生命损失负面效果
+-- 游说：提升收腹宠物概率
+
+
+-- 专属技能
 -- 冰凉：待在身边时，玩家不会过热
 -- 温暖：待在身边时，玩家不会过冷
--- 陪伴：待在身边时，提升附近玩家的 san 值
--- 口渴：待在身边时，玩家会快速恢复潮湿度
--- 顶撞：待在身边时，玩家砍树会提升速度
--- 闪光：没有特殊效果，但是相当稀有。宠物会发出光芒。
+-- 治愈：时不时会治愈玩家生命值
+-- 专情：如果是唯一拥有的宠物，则有一定概率提升你抓捕的宠物品质 1 级
+-- 恐惧：当你处于疯狂状态时，攻击有概率时目标恐惧
+-- 引雷：像避雷针一样吸引闪电
+-- 针灸：提升治疗药物的效果
+-- 蝶舞：受到攻击有概率免疫这次伤害
+-- 嗜血：每次攻击都会恢复的生命值
+
 
 local SKILL_LANG = {
 	english = {
@@ -54,6 +70,7 @@ local SKILL_LANG = {
 		cowardly = "Cautious",
 		accompany = "Accompany",
 		alone = "Long Wolf",
+		eloquence = "Eloquence",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -62,6 +79,7 @@ local SKILL_LANG = {
 		cowardly = "谨慎",
 		accompany = "陪伴",
 		alone = "孤狼",
+		eloquence = "游说",
 	},
 }
 
@@ -73,6 +91,7 @@ local SKILL_MAX_LEVEL = {
 	cowardly = { 2, 4, 6, 8, 10 },
 	accompany = { 5, 6, 7, 8, 10 },
 	alone = { 1, 2, 3, 4, 5 },
+	eloquence = { 2, 4, 6, 8, 10 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME
@@ -101,6 +120,9 @@ local SKILL_CONSTANT = {
 	alone = {
 		multi = dev_mode and 10 or 0.3,				-- 每个等级提升效率
 	},
+	eloquence = {
+		multi = dev_mode and 1 or 0.01,				-- 每个等级提升概率
+	}
 }
 
 local SKILL_DESC_LANG = {
@@ -111,6 +133,7 @@ local SKILL_DESC_LANG = {
 		cowardly = "Increase your SPD% when attacked (DUR seconds)",
 		accompany = "Recover SAN points/minute for nearby players",
 		alone = "Increase work effect(chop, mine) WRK% when no other players nearby",
+		eloquence = "Increase catch chance of pets by PTG%",
 	},
 	chinese = {
 		shedding = "每隔 DAY 天会丢出捡到的物品",
@@ -119,6 +142,7 @@ local SKILL_DESC_LANG = {
 		cowardly = "受到伤害时提升移动速度 SPD%，持续 DUR 秒",
 		accompany = "恢复附近玩家理智值 SAN 点/分",
 		alone = "如果附近没有其他玩家，则提升砍伐、采矿工作效率 WRK%",
+		eloquence = "提升捕捉宠物概率 PTG%",
 	},
 }
 
@@ -155,6 +179,11 @@ local SKILL_DESC_VARS = {
 			WRK = info.multi * lv * 100,
 		}
 	end,
+	eloquence = function(info, lv)
+		return {
+			PTG = info.multi * lv * 100,
+		}
+	end,
 }
 
 local SKILL_LIST = {}
@@ -165,12 +194,13 @@ end
 -- 开发模式固定技能列表
 if dev_mode then
 	SKILL_LIST = {
-		"shedding",
+		-- "shedding",
 		-- "aggressive",
 		-- "conservative",
 		-- "cowardly",
-		-- "accompany",
-		-- "alone",
+		"accompany",
+		"alone",
+		"eloquence",
 	}
 end
 
