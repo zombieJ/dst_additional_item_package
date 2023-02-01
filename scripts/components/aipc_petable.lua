@@ -1,13 +1,36 @@
 local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
-local VISIBLE_DURAION = dev_mode and 3 or 10
+local VISIBLE_DURAION = dev_mode and 10 or 30
 
 local petConfig = require("configurations/aip_pet")
+local petPrefabs = require("configurations/aip_pet_prefabs")
 
 local function syncClientAura(inst)
 	if inst.components.aipc_petable ~= nil then
 		inst.components.aipc_petable:ShowAura()
 	end
+end
+
+-- 随机品质等级：普通，优秀，精良，杰出，完美
+local qualityChances = { 100, 5, 1, 0.1, 0 }
+local function randomQuality()
+	local total = 0
+
+	for i, chance in ipairs(qualityChances) do
+		total = total + chance
+	end
+
+	local rnd = math.random() * total
+	local cur = 0
+	for i, chance in ipairs(qualityChances) do
+		if rnd <= chance then
+			return i
+		end
+
+		rnd = rnd - chance
+	end
+
+	return 1
 end
 
 -- 双端通用，宠物组件
@@ -27,7 +50,7 @@ local Petable = Class(function(self, inst)
 	self.syncAura = net_event(inst.GUID, "aipc_petable.sync_aura")
 	self.quality = net_tinybyte(inst.GUID, "aipc_petable.quality", "aipc_petable.quality_dirty")
 	if TheWorld.ismastersim then
-		self.quality:set(dev_mode and 3 or 1)
+		self.quality:set(randomQuality())
 	end
 	if not TheNet:IsDedicated() then
         inst:ListenForEvent("aipc_petable.sync_aura", syncClientAura)
@@ -92,24 +115,10 @@ function Petable:GetInfo(seer)
 		return self.data
 	end
 
-	local prefab = self.inst.prefab
-	local subPrefab = nil
 	local quality = self:GetQuality()
 
-	-- TODO: 抽一个方法出来
-	if
-		self.inst.components.inventoryitem ~= nil and
-		self.inst.components.inventoryitem.imagename == "rabbit_winter"
-	then
-		subPrefab = "_winter"
-	end
-
-	if
-		seer ~= nil and seer.components.sanity ~= nil and
-		seer.components.sanity:IsInsanityMode()
-	then
-		subPrefab = "_crazy"
-	end
+	-- 获取宠物种类
+	local prefab, subPrefab = petPrefabs.getPrefab(self.inst)
 
 	local data = {
 		id = os.time(),			-- ID

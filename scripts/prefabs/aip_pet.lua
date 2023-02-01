@@ -2,6 +2,7 @@ local language = aipGetModConfig("language")
 
 local brain = require("brains/aip_pet_brain")
 local petConfig = require("configurations/aip_pet")
+local petPrefabs = require("configurations/aip_pet_prefabs")
 
 ----------------------------------- 说明 -----------------------------------
 -- 名字带上品质
@@ -118,44 +119,10 @@ local function createPet(name, info)
 end
 
 ----------------------------------- 列表 -----------------------------------
-local data = {
-    rabbit = {
-        bank = "rabbit",
-        build = "rabbit_build",
-        anim = "idle",
-        sg = "SGrabbit",
-        sounds = {
-            scream = "dontstarve/rabbit/scream",
-            hurt = "dontstarve/rabbit/scream_short",
-        },
-        origin = "rabbit",
-    },
-    rabbit_winter = {
-        bank = "rabbit",
-        build = "rabbit_winter_build",
-        anim = "idle",
-        sg = "SGrabbit",
-        sounds = {
-            scream = "dontstarve/rabbit/winterscream",
-            hurt = "dontstarve/rabbit/winterscream_short",
-        },
-        origin = "rabbit",
-    },
-    rabbit_crazy = {
-        bank = "rabbit",
-        build = "beard_monster",
-        anim = "idle",
-        sg = "SGrabbit",
-        sounds = {
-            scream = "dontstarve/rabbit/scream",
-            hurt = "dontstarve/rabbit/scream_short",
-        },
-        origin = "rabbit",
-    },
-}
+
 local prefabs = {}
 
-for name, info in pairs(data) do
+for name, info in pairs(petPrefabs.PREFABS) do
     local prefabName = "aip_pet_"..name
     local prefab = Prefab(prefabName, createPet(prefabName, info), {})
     table.insert(prefabs, prefab)
