@@ -219,7 +219,7 @@ function PetInfoWidget:RefreshStatus()
         end
 
         local skill_name_str = skill_str
-        skill_str = skill_str..": "
+        skill_str = skill_str..":"
 
         -- 技能描述
         skill_str = skill_str..SKILL_DESC_LANG[skillName]

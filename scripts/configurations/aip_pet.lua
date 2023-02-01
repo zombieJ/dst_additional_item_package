@@ -53,6 +53,7 @@ local SKILL_LANG = {
 		conservative = "Conservative",
 		cowardly = "Cautious",
 		accompany = "Accompany",
+		alone = "Long Wolf",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -60,6 +61,7 @@ local SKILL_LANG = {
 		conservative = "保守",
 		cowardly = "谨慎",
 		accompany = "陪伴",
+		alone = "孤狼",
 	},
 }
 
@@ -70,6 +72,7 @@ local SKILL_MAX_LEVEL = {
 	conservative = { 4, 8, 12, 16, 20 },
 	cowardly = { 2, 4, 6, 8, 10 },
 	accompany = { 5, 6, 7, 8, 10 },
+	alone = { 1, 2, 3, 4, 5 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME
@@ -95,15 +98,19 @@ local SKILL_CONSTANT = {
 	accompany = {
 		unit = dev_mode and san * 9 or san * .5,	-- 每分钟恢复 0.5 点理智
 	},
+	alone = {
+		multi = dev_mode and 10 or 0.3,				-- 每个等级提升效率
+	},
 }
 
 local SKILL_DESC_LANG = {
 	english = {
-		shedding = "Shedding",
-		aggressive = "Aggressive",
-		conservative = "Conservative",
-		cowardly = "Cowardly",
-		accompany = "Accompany",
+		shedding = "Drop items every DAY days",
+		aggressive = "Increase your ATK% damage",
+		conservative = "Reduce your getting damage PTC%",
+		cowardly = "Increase your SPD% when attacked (DUR seconds)",
+		accompany = "Recover SAN points/minute for nearby players",
+		alone = "Increase work effect(chop, mine) WRK% when no other players nearby",
 	},
 	chinese = {
 		shedding = "每隔 DAY 天会丢出捡到的物品",
@@ -111,6 +118,7 @@ local SKILL_DESC_LANG = {
 		conservative = "减免你受到的伤害 PTC%",
 		cowardly = "受到伤害时提升移动速度 SPD%，持续 DUR 秒",
 		accompany = "恢复附近玩家理智值 SAN 点/分",
+		alone = "如果附近没有其他玩家，则提升砍伐、采矿工作效率 WRK%",
 	},
 }
 
@@ -142,6 +150,11 @@ local SKILL_DESC_VARS = {
 			SAN = info.unit * lv / san,
 		}
 	end,
+	alone = function(info, lv)
+		return {
+			WRK = info.multi * lv * 100,
+		}
+	end,
 }
 
 local SKILL_LIST = {}
@@ -152,11 +165,12 @@ end
 -- 开发模式固定技能列表
 if dev_mode then
 	SKILL_LIST = {
-		"shedding",
-		"aggressive",
-		"conservative",
+		-- "shedding",
+		-- "aggressive",
+		-- "conservative",
 		-- "cowardly",
-		"accompany",
+		-- "accompany",
+		"alone",
 	}
 end
 

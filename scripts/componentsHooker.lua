@@ -461,23 +461,45 @@ AddComponentPostInit("tool", function(self)
 	function self:GetEffectiveness(action, ...)
 		local num = originGetEffectiveness(self, action, ...)
 
-		if
-			self.inst.components.inventoryitem ~= nil and
-			(
-				action == _G.ACTIONS.CHOP and
-				_G.aipBufferExist(
-					self.inst.components.inventoryitem.owner,
-					"aip_oldone_smiling_axe"
+		-- 找一下玩家
+		if self.inst.components.inventoryitem ~= nil then
+			local owner = self.inst.components.inventoryitem.owner
+
+			if
+				(
+					action == _G.ACTIONS.CHOP and
+					_G.aipBufferExist(
+						owner,
+						"aip_oldone_smiling_axe"
+					)
+				) or (
+					action == _G.ACTIONS.MINE and
+					_G.aipBufferExist(
+						owner,
+						"aip_oldone_smiling_mine"
+					)
 				)
-			) or (
-				action == _G.ACTIONS.MINE and
-				_G.aipBufferExist(
-					self.inst.components.inventoryitem.owner,
-					"aip_oldone_smiling_mine"
-				)
-			)
-		then
-			num = num * 3
+			then
+				num = num * 3
+			end
+
+			-- 宠物主人孤狼 buff
+			if
+				(action == _G.ACTIONS.CHOP or action == _G.ACTIONS.MINE) and
+				owner ~= nil and owner.components.aipc_pet_owner ~= nil
+			then
+				local players = _G.aipFindNearPlayers(owner, 20)
+
+				-- 只有一个玩家，这一下就特别有效
+				if #players <= 1 then
+					local skillInfo, skillLv = owner.components.aipc_pet_owner:GetSkillInfo("alone")
+
+					if skillInfo ~= nil then
+						local multi = 1 + skillInfo.multi * skillLv
+						num = num * multi
+					end
+				end
+			end
 		end
 
 		return num

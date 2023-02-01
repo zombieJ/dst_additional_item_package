@@ -63,6 +63,7 @@ function PetOwner:FillInfo()
 		petData.skills = petData.skills or {}
 		for skillName, skillData in pairs(petData.skills) do
 			skillData.lv = skillData.lv or 1
+			skillData.quality = math.max(1, skillData.quality or 1)
 		end
 	end
 end
