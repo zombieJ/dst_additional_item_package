@@ -247,7 +247,11 @@ function PetInfoWidget:RefreshStatus()
         colorSkillText:SetHAlign(ANCHOR_LEFT)
 
         local skillClr = QUALITY_COLORS[skillQuality]
-        colorSkillText:SetColour(skillClr[1] / 255, skillClr[2] / 255, skillClr[3] / 255, 1)
+        if skillClr ~= nil then
+            colorSkillText:SetColour(skillClr[1] / 255, skillClr[2] / 255, skillClr[3] / 255, 1)
+        else
+            aipPrint("Not Found Color:", skillQuality)
+        end
 
         local SCW, SCH = colorSkillText:GetRegionSize()
         colorSkillText:SetPosition(SCW / 2 - SKILL_DESC_WIDTH / 2, offsetTop - SCH / 2)

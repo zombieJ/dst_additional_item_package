@@ -59,6 +59,8 @@ local function createPet(name, info)
     STRINGS.NAMES[upperCase] = STRINGS.NAMES[upperOrigin]
     STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperCase] = STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperOrigin]
 
+    local scale = info.scale or 0.75
+
     local function fn()
         local inst = CreateEntity()
 
@@ -72,6 +74,7 @@ local function createPet(name, info)
 
         inst.DynamicShadow:SetSize(1, .75)
         inst.Transform:SetFourFaced()
+        inst.Transform:SetScale(scale, scale, scale)
 
         inst.AnimState:SetBank(info.bank)
         inst.AnimState:SetBuild(info.build)
@@ -82,6 +85,12 @@ local function createPet(name, info)
 
         inst:AddTag("_named")
         -- inst:AddTag("_writeable")
+
+        if info.tags ~= nil then
+            for _, tag in ipairs(info.tags) do
+                inst:AddTag(tag)
+            end
+        end
 
         inst.entity:SetPristine()
 
@@ -104,6 +113,7 @@ local function createPet(name, info)
         inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
         inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED
         inst.components.locomotor.walkspeed = TUNING.WILSON_WALK_SPEED
+        inst.components.locomotor.pathcaps = { ignorecreep = true, allowocean = true }
 
         inst:SetStateGraph(info.sg)
         inst:SetBrain(brain)
@@ -111,6 +121,10 @@ local function createPet(name, info)
         inst.persists = false
 
         inst:DoTaskInTime(.1, syncPetInfo)
+
+        if info.postInit ~= nil then
+            info.postInit(inst)
+        end
 
         return inst
     end

@@ -184,6 +184,21 @@ AddPrefabPostInit("rabbit", function(inst)
 	end
 end)
 
+------------------------------------------ 蜘蛛 ------------------------------------------
+local spiderList = {
+	"spider", "spider_warrior", "spider_hider", "spider_healer",
+	"spider_spitter", "spider_dropper", "spider_moon", "spider_water"
+}
+
+for i, prefab in ipairs(spiderList) do
+	AddPrefabPostInit(prefab, function(inst)
+		-- 宠物抓捕
+		if inst.components.aipc_petable == nil then
+			inst:AddComponent("aipc_petable")
+		end
+	end)
+end
+
 ------------------------------------------ 猴子 ------------------------------------------
 AddPrefabPostInit("monkey", function(inst)
 	-- 猴子会概率掉落西游人物卡

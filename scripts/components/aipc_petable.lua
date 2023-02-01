@@ -118,7 +118,7 @@ function Petable:GetInfo(seer)
 	local quality = self:GetQuality()
 
 	-- 获取宠物种类
-	local prefab, subPrefab = petPrefabs.getPrefab(self.inst)
+	local prefab, subPrefab = petPrefabs.getPrefab(self.inst, seer)
 
 	local data = {
 		id = os.time(),			-- ID
@@ -134,7 +134,7 @@ function Petable:GetInfo(seer)
 		local rndSkill = aipRandomEnt(petConfig.SKILL_LIST)
 
 		if data.skills[rndSkill] == nil then
-			local skillQuality = math.random(quality - 1, quality)
+			local skillQuality = math.max(1, math.random(quality - 1, quality))
 
 			data.skills[rndSkill] = {
 				-- 随机技能质量
