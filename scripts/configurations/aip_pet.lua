@@ -83,7 +83,7 @@ local san = TUNING.DAPPERNESS_TINY / 1.33	-- 1 点 san / 分钟
 local SKILL_CONSTANT = {
 	shedding = {
 		base = dt_base,								-- 默认掉落为 6 天
-		multi = dev_mode and (dt_base - 20) or dt,	-- 每个等级减少 1 天
+		multi = dev_mode and (dt_base - 10) or dt,	-- 每个等级减少 1 天
 	},
 	aggressive = {
 		multi = 0.01,								-- 每个等级增伤 1%
@@ -165,12 +165,12 @@ end
 -- 开发模式固定技能列表
 if dev_mode then
 	SKILL_LIST = {
-		-- "shedding",
+		"shedding",
 		-- "aggressive",
 		-- "conservative",
 		-- "cowardly",
 		-- "accompany",
-		"alone",
+		-- "alone",
 	}
 end
 

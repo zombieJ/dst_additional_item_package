@@ -14,23 +14,7 @@ end
 -- 随机品质等级：普通，优秀，精良，杰出，完美
 local qualityChances = { 100, 5, 1, 0.1, 0 }
 local function randomQuality()
-	local total = 0
-
-	for i, chance in ipairs(qualityChances) do
-		total = total + chance
-	end
-
-	local rnd = math.random() * total
-	local cur = 0
-	for i, chance in ipairs(qualityChances) do
-		if rnd <= chance then
-			return i
-		end
-
-		rnd = rnd - chance
-	end
-
-	return 1
+	return aipRandomLoot(qualityChances) or 1
 end
 
 -- 双端通用，宠物组件

@@ -1,6 +1,7 @@
 local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 local petConfig = require("configurations/aip_pet")
+local petPrefabs = require("configurations/aip_pet_prefabs")
 
 ---------------------------------------------------------------------
 local function OnAttacked(inst)
@@ -34,7 +35,14 @@ local function OnTimerDone(inst, data)
 
 	-- 定期掉落物品，同时循环再掉落
 	if data.name == "aipc_pet_owner_shedding" and pet then
-		aipFlingItem(aipSpawnPrefab(pet, "seeds"))
+		-- 在随机表格中添加种子
+		local lootTbl = petPrefabs.SHEDDING_LOOT[pet._aipPetPrefab]
+
+		lootTbl = aipCloneTable(lootTbl or {})
+		lootTbl.seeds = 1
+
+		local lootPrefab = aipRandomLoot(lootTbl)
+		aipFlingItem(aipSpawnPrefab(pet, lootPrefab))
 		inst.components.aipc_pet_owner:StartShedding()
 	end
 end
@@ -128,8 +136,10 @@ function PetOwner:ShowPet(index)
 	self.petData = petData
 
 	if petData ~= nil then
-		local petPrefab = "aip_pet_"..petData.prefab..(petData.subPrefab or "")
+		local fullname = petData.prefab..(petData.subPrefab or "")
+		local petPrefab = "aip_pet_"..fullname
 		local pet = aipSpawnPrefab(self.inst, petPrefab)
+		pet._aipPetPrefab = fullname
 		pet.components.aipc_petable:SetInfo(petData, self.inst)
 
 		aipSpawnPrefab(pet, "aip_shadow_wrapper").DoShow()
