@@ -190,6 +190,62 @@ local PREFABS = {
         sounds = houndSounds,
         postInit = houndPostInit("hound"),
     },
+
+    -- 黏土
+    clayhound = {
+        bank = "clayhound",
+        build = "clayhound",
+        anim = "idle",
+        sg = "SGhound",
+        origin = "clayhound",
+        scale = 0.6,
+        sounds = {
+            pant = "dontstarve/creatures/together/clayhound/pant",
+            attack = "dontstarve/creatures/together/clayhound/attack",
+            bite = "dontstarve/creatures/together/clayhound/bite",
+            bark = "dontstarve/creatures/together/clayhound/bark",
+            death = "dontstarve/creatures/together/clayhound/death",
+            sleep = "dontstarve/creatures/together/clayhound/sleep",
+            growl = "dontstarve/creatures/together/clayhound/growl",
+            howl = "dontstarve/creatures/together/clayhound/howl",
+            hurt = "dontstarve/creatures/hound/hurt",
+        },
+        tags = { "clay" },
+    },
+
+    -- 僵尸
+    mutatedhound = {
+        bank = "hound",
+        build = "hound_mutated",
+        anim = "idle",
+        sg = "SGhound",
+        origin = "mutatedhound",
+        scale = 0.6,
+        sounds = houndSounds,
+        postInit = houndPostInit("hound"),
+    },
+
+    -- 鲜花
+    hedgehound = {
+        bank = "hound",
+        build = "hound_hedge_ocean",
+        anim = "idle",
+        sg = "SGhound",
+        origin = "hedgehound",
+        scale = 0.6,
+        sounds = {
+            pant = "dontstarve/creatures/hound/pant",
+            attack = "dontstarve/creatures/hound/attack",
+            bite = "dontstarve/creatures/hound/bite",
+            bark = "dontstarve/creatures/hound/bark",
+            death = "stageplay_set/briar_wolf/destroyed",
+            sleep = "dontstarve/creatures/hound/sleep",
+            growl = "dontstarve/creatures/hound/growl",
+            howl = "dontstarve/creatures/together/clayhound/howl",
+            hurt = "dontstarve/creatures/hound/hurt",
+        },
+        postInit = houndPostInit("hound"),
+    },
 }
 
 -- 掉毛概率
@@ -246,6 +302,11 @@ local function getPrefab(inst, seer)
 			subPrefab = "_crazy"
 		end
 	end
+
+    ------------------------- 猎犬 -------------------------
+    if prefab == "moonhound" then
+        prefab = "hound"
+    end
 
 	return prefab, subPrefab
 end

@@ -111,8 +111,8 @@ local function createPet(name, info)
         inst.sounds = info.sounds
 
         inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
-        inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED
-        inst.components.locomotor.walkspeed = TUNING.WILSON_WALK_SPEED
+        inst.components.locomotor.runspeed = TUNING.HOUND_SPEED -- TUNING.WILSON_RUN_SPEED
+        inst.components.locomotor.walkspeed = TUNING.HOUND_SPEED -- TUNING.WILSON_WALK_SPEED
         inst.components.locomotor.pathcaps = { ignorecreep = true, allowocean = true }
 
         inst:SetStateGraph(info.sg)

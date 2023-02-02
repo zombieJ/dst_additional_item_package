@@ -188,7 +188,7 @@ function PetInfoWidget:RefreshStatus()
     -- 名字
     local color = QUALITY_COLORS[petInfo.quality]
     local upperCase = string.upper(petInfo.prefab)
-    local name_str = "["..QUALITY_LANG[petInfo.quality].."] "..STRINGS.NAMES[upperCase]
+    local name_str = "["..QUALITY_LANG[petInfo.quality].."] "..(STRINGS.NAMES[upperCase] or "UNKNOWN")
     local text = self.infoPanel:AddChild(Text(UIFONT, 60, name_str))
     text:SetHAlign(ANCHOR_LEFT)
     text:SetColour(color[1] / 255, color[2] / 255, color[3] / 255, 1)
