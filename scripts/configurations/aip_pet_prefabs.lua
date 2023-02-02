@@ -1,5 +1,31 @@
 local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
+------------------------------- 猎犬 -------------------------------
+local function houndPostInit(bank)
+    return function(inst)
+        -- SG 用了，加一下不要挂
+        inst:AddComponent("follower")
+
+        inst:AddComponent("amphibiouscreature")
+        inst.components.amphibiouscreature:SetBanks(bank, bank.."_water")
+        inst.components.amphibiouscreature:SetEnterWaterFn(function(inst)
+            inst.components.locomotor.hop_distance = 4
+        end)
+    end
+end
+
+local houndSounds = {
+    pant = "dontstarve/creatures/hound/pant",
+    attack = "dontstarve/creatures/hound/attack",
+    bite = "dontstarve/creatures/hound/bite",
+    bark = "dontstarve/creatures/hound/bark",
+    death = "dontstarve/creatures/hound/death",
+    sleep = "dontstarve/creatures/hound/sleep",
+    growl = "dontstarve/creatures/hound/growl",
+    howl = "dontstarve/creatures/together/clayhound/howl",
+    hurt = "dontstarve/creatures/hound/hurt",
+}
+
 local PREFABS = {
 	----------------------------- 兔子 -----------------------------
     rabbit = {
@@ -126,6 +152,43 @@ local PREFABS = {
                 inst.AnimState:SetBuild("spider_water")
             end)
         end,
+    },
+
+    ----------------------------- 猎犬 -----------------------------
+    -- 猎犬
+    hound = {
+        bank = "hound",
+        build = "hound_ocean",
+        anim = "idle",
+        sg = "SGhound",
+        origin = "hound",
+        scale = 0.6,
+        sounds = houndSounds,
+        postInit = houndPostInit("hound"),
+    },
+
+    -- 火狗
+    firehound = {
+        bank = "hound",
+        build = "hound_red_ocean",
+        anim = "idle",
+        sg = "SGhound",
+        origin = "firehound",
+        scale = 0.6,
+        sounds = houndSounds,
+        postInit = houndPostInit("hound"),
+    },
+
+    -- 冰狗
+    icehound = {
+        bank = "hound",
+        build = "hound_ice_ocean",
+        anim = "idle",
+        sg = "SGhound",
+        origin = "icehound",
+        scale = 0.6,
+        sounds = houndSounds,
+        postInit = houndPostInit("hound"),
     },
 }
 

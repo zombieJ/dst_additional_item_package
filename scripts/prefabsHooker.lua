@@ -199,6 +199,24 @@ for i, prefab in ipairs(spiderList) do
 	end)
 end
 
+
+------------------------------------------ 猎犬 ------------------------------------------
+local houndList = {
+	"hound", "firehound", "icehound","moonhound", -- 月岛猎犬（外表和猎犬一样）
+	"clayhound",	-- 黏土
+	"mutatedhound",	-- 僵尸
+	"hedgehound",	-- 鲜花
+}
+
+for i, prefab in ipairs(houndList) do
+	AddPrefabPostInit(prefab, function(inst)
+		-- 宠物抓捕
+		if inst.components.aipc_petable == nil then
+			inst:AddComponent("aipc_petable")
+		end
+	end)
+end
+
 ------------------------------------------ 猴子 ------------------------------------------
 AddPrefabPostInit("monkey", function(inst)
 	-- 猴子会概率掉落西游人物卡
