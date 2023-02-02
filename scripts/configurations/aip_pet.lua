@@ -54,6 +54,7 @@ local QUALITY_LANG = {
 -- 专属技能
 -- 冰凉：待在身边时，玩家不会过热
 -- 温暖：待在身边时，玩家不会过冷
+
 -- 治愈：时不时会治愈玩家生命值
 -- 恐惧：当你处于疯狂状态时，攻击有概率时目标恐惧
 -- 引雷：像避雷针一样吸引闪电
@@ -72,6 +73,8 @@ local SKILL_LANG = {
 		alone = "Long Wolf",
 		eloquence = "Eloquence",
 		insight = "Insight",
+		cool = "Ice-Cold",
+		hot = "Fiery",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -82,6 +85,8 @@ local SKILL_LANG = {
 		alone = "孤狼",
 		eloquence = "游说",
 		insight = "伯乐",
+		cool = "冰凉",
+		hot = "炙热",
 	},
 }
 
@@ -95,6 +100,8 @@ local SKILL_MAX_LEVEL = {
 	alone = { 1, 2, 3, 4, 5 },
 	eloquence = { 2, 4, 6, 8, 10 },
 	insight = { 5, 10, 15, 20, 25 },
+	cool = { 1, 1, 1, 1, 1 },
+	hot = { 1, 1, 1, 1, 1 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME
@@ -129,6 +136,14 @@ local SKILL_CONSTANT = {
 	insight = {
 		multi = dev_mode and 1 or 0.01,				-- 每个等级提升概率
 	},
+	cool = {
+		special = true,								-- 专属技能，不会被随机到
+		heat = dev_mode and -1000 or -100,			-- 降低 100 点温度
+	},
+	hot = {
+		special = true,								-- 专属技能，不会被随机到
+		heat = dev_mode and 1000 or 100,			-- 增加 100 点温度
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -141,6 +156,8 @@ local SKILL_DESC_LANG = {
 		alone = "Increase work effect(chop, mine) WRK% when no other players nearby",
 		eloquence = "Increase catch chance of pets by PTG%",
 		insight = "Has PTG% chance to increase catch pet quality. Be 100% if this is your only pet",
+		cool = "It's cool. Take care to not to close",
+		hot = "It's hot. Take care to not to close",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -150,7 +167,9 @@ local SKILL_DESC_LANG = {
 		accompany = "恢复附近玩家理智值SAN点/分",
 		alone = "如果附近没有其他玩家，则提升砍伐、采矿工作效率WRK%",
 		eloquence = "提升捕捉宠物概率PTG%",
-		insight = "有PTG%概率提升捕捉宠物的品质，如果这是你唯一的宠物则为100%概率。",
+		insight = "有PTG%概率提升捕捉宠物的品质，如果这是你唯一的宠物则为100%概率",
+		cool = "散发着寒气，小心靠近被冻着哦",
+		hot = "冒着热气，靠太近小心被烫伤哦",
 	},
 }
 
@@ -200,8 +219,10 @@ local SKILL_DESC_VARS = {
 }
 
 local SKILL_LIST = {}
-for name, v in pairs(SKILL_LANG.english) do
-	table.insert(SKILL_LIST, name)
+for name, v in pairs(SKILL_CONSTANT) do
+	if not v.special then -- 专属技能不会被随机到
+		table.insert(SKILL_LIST, name)
+	end
 end
 
 -- 开发模式固定技能列表
@@ -212,9 +233,9 @@ if dev_mode then
 		-- "conservative",
 		-- "cowardly",
 		-- "accompany",
-		"alone",
-		"eloquence",
-		"insight",
+		-- "alone",
+		-- "eloquence",
+		-- "insight",
 	}
 end
 

@@ -160,6 +160,9 @@ function PetOwner:ShowPet(index)
 		-- 尝试光环
 		self:StartAura()
 
+		-- 尝试温度
+		self:StartHeater()
+
 		return pet
 	end
 end
@@ -227,6 +230,28 @@ function PetOwner:StartAura()
 
 		-- 给宠物添加一个光环
 		self.showPet.components.sanityaura.aura = skillInfo.unit * skillLv
+	end
+end
+
+-- 添加温度控制器
+function PetOwner:StartHeater()
+	local coolSkillInfo, coolSkillLv = self:GetSkillInfo("cool")
+	local hotSkillInfo, hotSkillLv = self:GetSkillInfo("hot")
+
+	local skillInfo = coolSkillInfo or hotSkillInfo
+	local skillLv = coolSkillLv or hotSkillLv
+
+	if skillInfo ~= nil and self.showPet ~= nil then
+		if self.showPet.components.heater == nil then
+			self.showPet:AddComponent("heater")
+		end
+
+		-- 温度变化
+		local heat = skillInfo.heat * skillLv
+		self.showPet.components.heater.heat = heat
+		if heat < 0 then
+			self.showPet.components.heater:SetThermics(false, true)
+		end
 	end
 end
 

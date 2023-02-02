@@ -120,12 +120,16 @@ function Petable:GetInfo(seer)
 		skills = {},			-- 技能
 	}
 
+	-- 获取随机技能列表
+	local petSkillList = petPrefabs.getSkills(prefab, subPrefab) or {}
+	local skillList = aipTableConcat(petConfig.SKILL_LIST, petSkillList)
+
 	-- 根据品质等级添加对应数量的技能
 	local skillCnt = 0
 	for i = 1, 99 do -- 循环 99 次，理论上可能有人抓到不满足数量技能的宠物，但是概率极低
-		local rndSkill = aipRandomEnt(petConfig.SKILL_LIST)
+		local rndSkill = aipRandomEnt(skillList)
 
-		if data.skills[rndSkill] == nil then
+		if rndSkill ~= nil and data.skills[rndSkill] == nil then
 			local skillQuality = math.max(1, math.random(quality - 1, quality))
 
 			data.skills[rndSkill] = {

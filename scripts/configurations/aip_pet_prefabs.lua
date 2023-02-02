@@ -333,8 +333,30 @@ local function getPrefab(inst, seer)
 	return prefab, subPrefab
 end
 
+-- 获取宠物专属技能
+local function getSkills(prefab, subPrefab)
+    ------------------------- 兔子 -------------------------
+    if prefab == "rabbit" and subPrefab == "_crazy" then
+        return {
+            "cool",
+        }
+    end
+
+    ------------------------- 猎犬 -------------------------
+    if prefab == "icehound" then
+        return {
+            "cool",
+        }
+    elseif prefab == "firehound" then
+        return {
+            "hot",
+        }
+    end
+end
+
 return {
 	PREFABS = PREFABS,
 	getPrefab = getPrefab,
+    getSkills = getSkills,
     SHEDDING_LOOT = SHEDDING_LOOT,
 }
