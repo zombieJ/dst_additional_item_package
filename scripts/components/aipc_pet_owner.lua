@@ -39,7 +39,8 @@ local function OnTimerDone(inst, data)
 		local lootTbl = petPrefabs.SHEDDING_LOOT[pet._aipPetPrefab]
 
 		lootTbl = aipCloneTable(lootTbl or {})
-		lootTbl.seeds = 1
+		lootTbl.seeds = 0.5
+		lootTbl.ash = 0.5
 
 		local lootPrefab = aipRandomLoot(lootTbl)
 		aipFlingItem(aipSpawnPrefab(pet, lootPrefab))

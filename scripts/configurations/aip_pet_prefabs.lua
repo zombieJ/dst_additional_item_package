@@ -275,6 +275,28 @@ local SHEDDING_LOOT = {
     spider_moon = {         -- 10% 概率掉月光玻璃
         moonglass = 0.1
     },
+
+    ------------------------- 猎犬 -------------------------
+    hound = {
+        houndstooth = 0.05, -- 5% 概率掉犬牙
+    },
+    firehound = {
+        houndstooth = 0.05, -- 5% 概率掉犬牙
+        redgem = 0.01,      -- 1% 概率掉红宝石
+    },
+    icehound = {
+        houndstooth = 0.05, -- 5% 概率掉犬牙
+        bluegem = 0.01,     -- 1% 概率掉蓝宝石
+    },
+	clayhound = {
+        redpouch = 0.05,    -- 5% 概率掉红袋子
+    },
+	mutatedhound = {
+        houndstooth = 0.1,  -- 10% 概率掉犬牙
+    },
+	hedgehound = {
+        petals = 0.5,         -- 50% 概率掉花瓣
+    },
 }
 
 SHEDDING_LOOT.spider_hider = SHEDDING_LOOT.spider_warrior       -- 洞穴蜘蛛
