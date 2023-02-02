@@ -61,6 +61,10 @@ function Petable:SetQuality(val)
 	end
 end
 
+function Petable:DeltaQuality(delta)
+	self:SetQuality(self:GetQuality() + delta)
+end
+
 function Petable:CleanAura()
 	if self.aura ~= nil then
 		aipRemove(self.aura)

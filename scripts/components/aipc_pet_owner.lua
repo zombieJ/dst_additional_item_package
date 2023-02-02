@@ -98,15 +98,23 @@ function PetOwner:TogglePet(petId)
 	end
 end
 
+function PetOwner:Count()
+	return #self.pets
+end
+
 -- 添加宠物
-function PetOwner:AddPet(pet)
+function PetOwner:AddPet(pet, qualityOffset)
 	if pet and pet.components.aipc_petable ~= nil then
+		if qualityOffset and qualityOffset ~= 0 then
+			pet.components.aipc_petable:DeltaQuality(qualityOffset)
+		end
+
 		local data = pet.components.aipc_petable:GetInfo(self.inst)
 
 		table.insert(self.pets, data)
 	end
 
-	self:ShowPet(#self.pets)
+	return self:ShowPet(#self.pets)
 end
 
 -- 隐藏宠物
@@ -150,6 +158,8 @@ function PetOwner:ShowPet(index)
 
 		-- 尝试光环
 		self:StartAura()
+
+		return pet
 	end
 end
 

@@ -54,7 +54,7 @@ local QUALITY_LANG = {
 -- 冰凉：待在身边时，玩家不会过热
 -- 温暖：待在身边时，玩家不会过冷
 -- 治愈：时不时会治愈玩家生命值
--- 专情：如果是唯一拥有的宠物，则有一定概率提升你抓捕的宠物品质 1 级
+-- 伯乐：有一定概率提升你抓捕的宠物品质 1 级，如果只有一个宠物，则一定提升
 -- 恐惧：当你处于疯狂状态时，攻击有概率时目标恐惧
 -- 引雷：像避雷针一样吸引闪电
 -- 针灸：提升治疗药物的效果
@@ -71,6 +71,7 @@ local SKILL_LANG = {
 		accompany = "Accompany",
 		alone = "Long Wolf",
 		eloquence = "Eloquence",
+		insight = "Insight",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -80,6 +81,7 @@ local SKILL_LANG = {
 		accompany = "陪伴",
 		alone = "孤狼",
 		eloquence = "游说",
+		insight = "伯乐",
 	},
 }
 
@@ -92,6 +94,7 @@ local SKILL_MAX_LEVEL = {
 	accompany = { 5, 6, 7, 8, 10 },
 	alone = { 1, 2, 3, 4, 5 },
 	eloquence = { 2, 4, 6, 8, 10 },
+	insight = { 5, 10, 15, 20, 25 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME
@@ -122,7 +125,10 @@ local SKILL_CONSTANT = {
 	},
 	eloquence = {
 		multi = dev_mode and 1 or 0.01,				-- 每个等级提升概率
-	}
+	},
+	insight = {
+		multi = dev_mode and 1 or 0.01,				-- 每个等级提升概率
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -134,15 +140,17 @@ local SKILL_DESC_LANG = {
 		accompany = "Recover SAN points/minute for nearby players",
 		alone = "Increase work effect(chop, mine) WRK% when no other players nearby",
 		eloquence = "Increase catch chance of pets by PTG%",
+		insight = "Has PTG% chance to increase catch pet quality. Be 100% if this is your only pet",
 	},
 	chinese = {
-		shedding = "每隔 DAY 天会丢出捡到的物品",
-		aggressive = "提升你的战斗伤害 ATK%",
-		conservative = "减免你受到的伤害 PTC%",
-		cowardly = "受到伤害时提升移动速度 SPD%，持续 DUR 秒",
-		accompany = "恢复附近玩家理智值 SAN 点/分",
-		alone = "如果附近没有其他玩家，则提升砍伐、采矿工作效率 WRK%",
-		eloquence = "提升捕捉宠物概率 PTG%",
+		shedding = "每隔DAY天会丢出捡到的物品",
+		aggressive = "提升你的战斗伤害ATK%",
+		conservative = "减免你受到的伤害PTC%",
+		cowardly = "受到伤害时提升移动速度SPD%，持续DUR秒",
+		accompany = "恢复附近玩家理智值SAN点/分",
+		alone = "如果附近没有其他玩家，则提升砍伐、采矿工作效率WRK%",
+		eloquence = "提升捕捉宠物概率PTG%",
+		insight = "有PTG%概率提升捕捉宠物的品质，如果这是你唯一的宠物则为100%概率。",
 	},
 }
 
@@ -184,6 +192,11 @@ local SKILL_DESC_VARS = {
 			PTG = info.multi * lv * 100,
 		}
 	end,
+	insight = function(info, lv)
+		return {
+			PTG = info.multi * lv * 100,
+		}
+	end,
 }
 
 local SKILL_LIST = {}
@@ -198,9 +211,10 @@ if dev_mode then
 		-- "aggressive",
 		-- "conservative",
 		-- "cowardly",
-		"accompany",
+		-- "accompany",
 		"alone",
 		"eloquence",
+		"insight",
 	}
 end
 

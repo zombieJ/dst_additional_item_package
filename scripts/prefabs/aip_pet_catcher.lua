@@ -75,12 +75,30 @@ local function onHit(inst, attacker, target)
 
         if math.random() <= chance then
             aipRemove(ent)
-            local quality = ent.components.aipc_petable:GetQuality()
+
+            -- 伯乐 宠物有概率提升品质
+            local enhanceQuality = 0
+            if attacker ~= nil and attacker.components.aipc_pet_owner ~= nil then
+                local skillInfo, skillLv = attacker.components.aipc_pet_owner:GetSkillInfo("insight")
+                if skillInfo ~= nil then
+                    local enhanceQualityChance = skillInfo.multi * skillLv
+
+                    -- 如果是唯一的宠物，则 100%
+                    if attacker.components.aipc_pet_owner:Count() <= 1 then
+                        enhanceQualityChance = 1
+                    end
+
+                    enhanceQuality = math.random() <= enhanceQualityChance and 1 or 0
+                end
+            end
 
             if attacker then
+                local quality = ent.components.aipc_petable:GetQuality()
+
                 -- 记录宠物
                 if attacker.components.aipc_pet_owner ~= nil then
-                    attacker.components.aipc_pet_owner:AddPet(ent)
+                    local pet = attacker.components.aipc_pet_owner:AddPet(ent, enhanceQuality)
+                    quality = pet.components.aipc_petable:GetQuality()
                 end
 
                 -- 说话
