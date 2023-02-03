@@ -4,6 +4,20 @@ local brain = require("brains/aip_pet_brain")
 local petConfig = require("configurations/aip_pet")
 local petPrefabs = require("configurations/aip_pet_prefabs")
 
+-- 文字描述
+local LANG_MAP = {
+	english = {
+        REMOVE = "It's gone!",
+	},
+	chinese = {
+		REMOVE = "它被气走了！",
+	},
+}
+
+local LANG = LANG_MAP[language] or LANG_MAP.english
+
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_REMOVE = LANG.REMOVE
+
 ----------------------------------- 说明 -----------------------------------
 -- 名字带上品质
 local function syncPetInfo(inst)
@@ -48,6 +62,29 @@ end
 local function OnNamedByWriteable(inst, new_name, writer)
     if inst.components.named ~= nil then
         inst.components.named:SetName(new_name, writer ~= nil and writer.userid or nil)
+    end
+end
+
+-- 可接受食物
+local function ShouldAcceptItem(inst, item)
+    return item and item.components.edible ~= nil
+end
+
+-- 从玩家获取物品
+local function OnGetItemFromPlayer(inst, giver, item)
+    if item and item.components.edible ~= nil then
+        -- 榴莲糖会赶走小动物
+        if item.prefab == "durian_sugar" and giver and giver.components.aipc_pet_owner then
+            local ret = giver.components.aipc_pet_owner:RemovePet(
+                inst.components.aipc_petable:GetInfo().id
+            )
+
+            if ret and giver.components.talker then
+                giver.components.talker:Say(
+                    STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_REMOVE
+                )
+            end
+        end
     end
 end
 
@@ -114,6 +151,12 @@ local function createPet(name, info)
         inst.components.locomotor.runspeed = TUNING.HOUND_SPEED -- TUNING.WILSON_RUN_SPEED
         inst.components.locomotor.walkspeed = TUNING.HOUND_SPEED -- TUNING.WILSON_WALK_SPEED
         inst.components.locomotor.pathcaps = { ignorecreep = true, allowocean = true }
+
+        -- 小动物可以靠吃东西提升等级
+        inst:AddComponent("trader")
+        inst.components.trader:SetAcceptTest(ShouldAcceptItem)
+        inst.components.trader.onaccept = OnGetItemFromPlayer
+        inst.components.trader.deleteitemonaccept = false
 
         inst:SetStateGraph(info.sg)
         inst:SetBrain(brain)

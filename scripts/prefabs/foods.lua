@@ -513,8 +513,8 @@ for name,data in pairs(food_recipes) do
 			inst.wet_prefix = data.wet_prefix
 
 			-- 是否可以交易
+			inst:AddComponent("tradable")
 			if data.goldvalue ~= nil then
-				inst:AddComponent("tradable")
 				inst.components.tradable.goldvalue = data.goldvalue
 			end
 

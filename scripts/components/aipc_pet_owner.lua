@@ -123,6 +123,22 @@ function PetOwner:AddPet(pet, qualityOffset)
 	return self:ShowPet(#self.pets)
 end
 
+-- 移除宠物
+function PetOwner:RemovePet(id)
+	-- 先藏起来
+	if self.showPet ~= nil and self.showPet.components.aipc_petable:GetInfo().id == id then
+		self:HidePet()
+	end
+
+	-- 移除
+	local originLen = #self.pets
+	self.pets = aipFilterTable(self.pets, function(v)
+		return v.id ~= id
+	end)
+
+	return originLen ~= #self.pets
+end
+
 -- 隐藏宠物
 function PetOwner:HidePet()
 	if self.showPet ~= nil then

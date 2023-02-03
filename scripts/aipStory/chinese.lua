@@ -1,3 +1,6 @@
+local petConfig = require("configurations/aip_pet")
+local PET_QUALITY_COLORS = petConfig.QUALITY_COLORS
+
 return {
     -- 序言
     {
@@ -215,6 +218,13 @@ return {
                 name="aip_olden_tea_half",
             },
             "我在海里捡到的瓶子里发现了这个配方，但是味道并不怎么样。喝下会有奇艺的感觉，好像鱼群都在说话似的。",
+
+             -- 明目药膏
+             {
+                type="img",
+                name="aip_fig_salve",
+            },
+            "“明目药膏”通过脸部吸收进行治疗，因而在吸收完成前连续使用，效果会变得很差。同时，它还能让我更清晰的观察小动物的品质。",
 
             -- 心悦锄
             {
@@ -1192,5 +1202,65 @@ return {
             },
             "这个破损的面具仍然有着一些魔力，使用时会恐惧附近的生物（如果可能的话）。",
         }
+    },
+
+    -- 动物之友
+    {
+        name = "动物之友",
+        desc = {
+            "我发现除了 岩石巢穴 可以找到特殊的宠物外，其实野外的一些小动物也可以被驯服。只需要一些特殊的食物就可以了。",
+
+            -- 小动物甜品
+            {
+                type="img",
+                name="aip_pet_catcher",
+            },
+            "“小动物甜品”非常的甜腻，投掷给小动物时有一定概率驯服它。但是随着小动物的品质提升，驯服成功率也逐渐下降。这时就需要多准备一些甜品了。当然了，我能管理的小动物其实也是有限的。",
+
+            -- 明目药膏
+            {
+                type="img",
+                name="aip_fig_salve",
+            },
+            "“明目药膏”可以提升观察能力，使我在一段时间内可以看清小动物的品质。根据脚下的光圈颜色分别为：",
+
+            "-- 普通品质",
+            {
+                type="txt",
+                text="-- 优秀品质",
+                color = PET_QUALITY_COLORS[2],
+            },
+            {
+                type="txt",
+                text="-- 精良品质",
+                color = PET_QUALITY_COLORS[3],
+            },
+            {
+                type="txt",
+                text="-- 杰出品质",
+                color = PET_QUALITY_COLORS[4],
+            },
+            {
+                type="txt",
+                text="-- 完美品质",
+                color = PET_QUALITY_COLORS[5],
+            },
+
+            "小动物有自己的技能。随着品质提升，技能数与最大等级都会提升。但是相应的，高品质的小动物可遇不可求。",
+
+            -- 小动物纸盒
+            {
+                type="img",
+                name="aip_pet_trigger",
+            },
+            "小动物喜欢这个纸盒子，使用它可以放出或收起小动物。",
+
+            -- 榴莲糖
+            {
+                type="img",
+                name="durian_sugar",
+            },
+            "虽然小动物可以吃一些食物，但是千万不要喂食“榴莲糖”。它们会因为非常抗拒这个食物而离开你！",
+        },
     },
 }

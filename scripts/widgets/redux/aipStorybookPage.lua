@@ -117,10 +117,21 @@ function CookbookPageCrockPot:CreateDesc(index)
 	for i, descInfo in ipairs(descList) do
 		local contentHeight = 0
 
-		if type(descInfo) == "string" then -- 文本内容
+		if type(descInfo) == "string" or descInfo.type == "txt" then -- 文本内容
+			local descObj = type(descInfo) == "string" and {text = descInfo} or descInfo
+
 			local text = self.descHolder:PathChild(Text(UIFONT, 35))
 			text:SetHAlign(ANCHOR_LEFT)
-			text:SetMultilineTruncatedString(descInfo, 14, DESC_CONTENT_WIDTH, 200) -- 163
+			text:SetMultilineTruncatedString(descObj.text, 14, DESC_CONTENT_WIDTH, 200) -- 163
+
+			if descObj.color then
+				text:SetColour(
+					descObj.color[1] / 255,
+					descObj.color[2] / 255,
+					descObj.color[3] / 255,
+					(descObj.color[4] or 255) / 255
+				)
+			end
 
 			local TW, TH = text:GetRegionSize()
 			text:SetPosition(TW / 2, top - TH / 2)

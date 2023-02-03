@@ -3,7 +3,7 @@ local language = aipGetModConfig("language")
 -- 文字描述
 local LANG_MAP = {
 	english = {
-		NAME = "Animal Sweets",
+		NAME = "Animal Dessert",
         REC_DESC = "Catch small animals. The higher the quality of the small animals, the harder to catch.",
 		DESC = "Catch small animals",
         SUCCESS = "It works!",
