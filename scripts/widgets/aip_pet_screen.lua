@@ -210,11 +210,12 @@ function PetInfoWidget:RefreshStatus()
         -- 技能名
         local skill_str = SKILL_LANG[skillName]
 
-        -- 技能等级
+        -- 技能等级（取整显示）
+        local skillLv = math.floor(skillData.lv)
         local maxLevel = SKILL_MAX_LEVEL[skillName][skillQuality]
-        skill_str = skill_str.."[Lv."..tostring(skillData.lv).."]"
+        skill_str = skill_str.."[Lv."..tostring(skillLv).."]"
 
-        if maxLevel == skillData.lv then
+        if maxLevel == skillLv then
             skill_str = skill_str.."[MAX]"
         end
 
@@ -228,7 +229,7 @@ function PetInfoWidget:RefreshStatus()
         local skillConstant = SKILL_CONSTANT[skillName] or {}
         local func = SKILL_DESC_VARS[skillName]
         if func ~= nil then
-            local vars = func(skillConstant, skillData.lv)
+            local vars = func(skillConstant, skillLv)
             for key, value in pairs(vars) do
                 skill_str = string.gsub(skill_str, key, string.format("%.1f", value))
             end

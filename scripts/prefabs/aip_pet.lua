@@ -73,16 +73,27 @@ end
 -- 从玩家获取物品
 local function OnGetItemFromPlayer(inst, giver, item)
     if item and item.components.edible ~= nil then
-        -- 榴莲糖会赶走小动物
-        if item.prefab == "durian_sugar" and giver and giver.components.aipc_pet_owner then
-            local ret = giver.components.aipc_pet_owner:RemovePet(
-                inst.components.aipc_petable:GetInfo().id
-            )
+        -- 吃掉物品
+        aipRemove(item)
 
-            if ret and giver.components.talker then
-                giver.components.talker:Say(
-                    STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_REMOVE
-                )
+        if giver and giver.components.aipc_pet_owner then
+            local petId = inst.components.aipc_petable:GetInfo().id
+
+            -- 榴莲糖会赶走小动物
+            if item.prefab == "durian_sugar"  then
+                local ret = giver.components.aipc_pet_owner:RemovePet(petId)
+
+                if ret and giver.components.talker then
+                    giver.components.talker:Say(
+                        STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_REMOVE
+                    )
+                end
+            
+            -- 提升小动物技能等级
+            else
+                local aipc_pet_owner = aipGet(inst, "components|aipc_petable|owner|components|aipc_pet_owner")
+                aipPrint("aipc_pet_owner:", aipc_pet_owner)
+                aipc_pet_owner:UpgradePet(petId)
             end
         end
     end

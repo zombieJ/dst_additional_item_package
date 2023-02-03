@@ -1261,7 +1261,8 @@ return {
                 type="img",
                 name="durian_sugar",
             },
-            "Although small animals can eat some food, but do not feed 'durian sugar'. They will leave you because they are very resistant to this food!",
+            "Although I can feed small animals to increase ability, but do not feed 'durian sugar'. They will leave you because they are very resistant to this food!",
+            "Note that one food a day is enough. Too many foods will get less benefits.",
         },
     },
 }

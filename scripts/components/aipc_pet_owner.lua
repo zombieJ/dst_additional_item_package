@@ -50,6 +50,19 @@ local function OnTimerDone(inst, data)
 	end
 end
 
+-- 每天重置一下喂食效率
+local function OnIsDay(inst, isday)
+    if isday then
+        return
+    end
+
+    if inst and inst.components.aipc_pet_owner then
+		for _, petData in ipairs(inst.components.aipc_pet_owner.pets) do
+			petData.upgradeEffect = 1
+		end
+	end
+end
+
 ---------------------------------------------------------------------
 -- 双端通用，抓捕宠物组件
 local PetOwner = Class(function(self, inst)
@@ -61,6 +74,8 @@ local PetOwner = Class(function(self, inst)
 
 	self.inst:ListenForEvent("attacked", OnAttacked)
 	self.inst:ListenForEvent("timerdone", OnTimerDone)
+
+	self.inst:WatchWorldState("isday", OnIsDay)
 end)
 
 -- 补一下数据
@@ -69,6 +84,7 @@ function PetOwner:FillInfo()
 
 	for i, petData in ipairs(self.pets) do
 		petData.id = petData.id or (os.time() + i)
+		petData.upgradeEffect = petData.upgradeEffect or 1
 
 		-- 补充等级
 		petData.skills = petData.skills or {}
@@ -80,7 +96,7 @@ function PetOwner:FillInfo()
 end
 
 -- 切换宠物，已经显示的则不做操作
-function PetOwner:TogglePet(petId)
+function PetOwner:TogglePet(petId, showEffect)
 	self:FillInfo()
 
 	if
@@ -95,7 +111,7 @@ function PetOwner:TogglePet(petId)
 		end)
 
 		if index ~= nil then
-			self:ShowPet(index)
+			return self:ShowPet(index, showEffect)
 		end
 	end
 end
@@ -140,9 +156,13 @@ function PetOwner:RemovePet(id)
 end
 
 -- 隐藏宠物
-function PetOwner:HidePet()
+function PetOwner:HidePet(showEffect)
 	if self.showPet ~= nil then
-		aipReplacePrefab(self.showPet, "aip_shadow_wrapper").DoShow()
+		if showEffect == false then
+			aipRemove(self.showPet)
+		else
+			aipReplacePrefab(self.showPet, "aip_shadow_wrapper").DoShow()
+		end
 		self.showPet = nil
 	end
 
@@ -157,7 +177,7 @@ function PetOwner:HidePet()
 end
 
 -- 展示宠物
-function PetOwner:ShowPet(index)
+function PetOwner:ShowPet(index, showEffect)
 	self:FillInfo()
 
 	self:HidePet()
@@ -172,7 +192,9 @@ function PetOwner:ShowPet(index)
 		pet._aipPetPrefab = fullname
 		pet.components.aipc_petable:SetInfo(petData, self.inst)
 
-		aipSpawnPrefab(pet, "aip_shadow_wrapper").DoShow()
+		if showEffect ~= false then
+			aipSpawnPrefab(pet, "aip_shadow_wrapper").DoShow()
+		end
 		self.showPet = pet
 
 		-- 尝试掉毛
@@ -197,6 +219,45 @@ function PetOwner:GetSkillInfo(skill)
 	end
 
 	return nil
+end
+
+-- 升级宠物
+function PetOwner:UpgradePet(id)
+	local petData = aipFilterTable(self.pets, function(v)
+		return v.id == id
+	end)[1]
+
+	if petData ~= nil then
+		local skillCnt = aipCountTable(petData.skills)
+		local skillIndex = math.random(1, skillCnt)
+		local upgradeEffect = petData.upgradeEffect or 1
+
+		local i = 1
+		for skillName, skillData in pairs(petData.skills) do
+			if i == skillIndex then
+				skillData.lv = skillData.lv + upgradeEffect
+				break
+			end
+			i = i + 1
+		end
+
+		aipTypePrint("Skill:", skillIndex, petData.skills)
+
+		-- 如果是当前宠物，则重新渲染
+		if self.showPet and self.showPet.components.aipc_petable:GetInfo().id == id then
+			local pt = self.showPet:GetPosition()
+			self:HidePet(false)
+			local nextPet = self:TogglePet(id, false)
+
+			if nextPet then
+				nextPet.Transform:SetPosition(pt:Get())
+				aipSpawnPrefab(nextPet, "farm_plant_happy")
+			end
+		end
+
+		-- 一天内的喂食效果后续会减少
+		petData.upgradeEffect = 0.1
+	end
 end
 
 ------------------------------ 杂项 ------------------------------
@@ -236,6 +297,7 @@ function PetOwner:StartShedding()
 	if skillInfo ~= nil then
 		self:EnsureTimer()
 		local timeout = skillInfo.base - skillInfo.multi * skillLv
+		timeout = math.max(timeout, 10)	-- 最少 10 秒
 		self.inst.components.timer:StartTimer("aipc_pet_owner_shedding", timeout)
 	end
 end
