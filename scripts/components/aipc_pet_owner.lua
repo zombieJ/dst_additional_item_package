@@ -228,20 +228,33 @@ function PetOwner:UpgradePet(id)
 	end)[1]
 
 	if petData ~= nil then
-		local skillCnt = aipCountTable(petData.skills)
-		local skillIndex = math.random(1, skillCnt)
 		local upgradeEffect = petData.upgradeEffect or 1
 
-		local i = 1
+		-- 收集一下可以升级的技能列表
+		local canUpgradeSkillNames = {}
 		for skillName, skillData in pairs(petData.skills) do
-			if i == skillIndex then
-				skillData.lv = skillData.lv + upgradeEffect
-				break
+			local maxLevel = petConfig.SKILL_MAX_LEVEL[skillName] or {}
+			local maxLv = maxLevel[skillData.quality] or 1
+
+			if skillData.lv < maxLv then
+				table.insert(canUpgradeSkillNames, skillName)
 			end
-			i = i + 1
 		end
 
-		aipTypePrint("Skill:", skillIndex, petData.skills)
+		-- 随机升级一个技能
+		local upgradeSkillName = aipRandomEnt(canUpgradeSkillNames)
+		for skillName, skillData in pairs(petData.skills) do
+			if skillName == upgradeSkillName then
+				local maxLevel = petConfig.SKILL_MAX_LEVEL[skillName] or {}
+
+				-- 有最高等级限制
+				skillData.lv = skillData.lv + upgradeEffect
+				skillData.lv = math.min(skillData.lv, maxLevel[skillData.quality] or 1)
+				break
+			end
+		end
+
+		aipTypePrint("Skill:", upgradeSkillName, canUpgradeSkillNames)
 
 		-- 如果是当前宠物，则重新渲染
 		if self.showPet and self.showPet.components.aipc_petable:GetInfo().id == id then
@@ -256,7 +269,7 @@ function PetOwner:UpgradePet(id)
 		end
 
 		-- 一天内的喂食效果后续会减少
-		petData.upgradeEffect = 0.1
+		petData.upgradeEffect = dev_mode and 0.9 or 0.1
 	end
 end
 

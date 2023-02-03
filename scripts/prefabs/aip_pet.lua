@@ -80,7 +80,7 @@ local function OnGetItemFromPlayer(inst, giver, item)
             local petId = inst.components.aipc_petable:GetInfo().id
 
             -- 榴莲糖会赶走小动物
-            if item.prefab == "durian_sugar"  then
+            if item.prefab == "durian_sugar" then
                 local ret = giver.components.aipc_pet_owner:RemovePet(petId)
 
                 if ret and giver.components.talker then
