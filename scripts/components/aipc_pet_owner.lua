@@ -3,6 +3,8 @@ local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 local petConfig = require("configurations/aip_pet")
 local petPrefabs = require("configurations/aip_pet_prefabs")
 
+local MAX_PET_COUNT = 5
+
 ---------------------------------------------------------------------
 local function OnAttacked(inst)
 	if inst ~= nil and inst.components.aipc_pet_owner ~= nil then
@@ -77,7 +79,7 @@ function PetOwner:FillInfo()
 	end
 end
 
--- 切换宠物，如果已经展示则隐藏
+-- 切换宠物，已经显示的则不做操作
 function PetOwner:TogglePet(petId)
 	self:FillInfo()
 
@@ -85,8 +87,7 @@ function PetOwner:TogglePet(petId)
 		self.showPet ~= nil and
 		self.showPet.components.aipc_petable:GetInfo().id == petId
 	then
-		-- 相同则隐藏
-		self:HidePet()
+		return
 	else
 		-- 不同则展示
 		local index = aipTableIndex(self.pets, function(v)
@@ -105,6 +106,10 @@ end
 
 -- 添加宠物
 function PetOwner:AddPet(pet, qualityOffset)
+	if self:IsFull() then
+		return
+	end
+
 	if pet and pet.components.aipc_petable ~= nil then
 		if qualityOffset and qualityOffset ~= 0 then
 			pet.components.aipc_petable:DeltaQuality(qualityOffset)
@@ -253,6 +258,14 @@ function PetOwner:StartHeater()
 			self.showPet.components.heater:SetThermics(false, true)
 		end
 	end
+end
+
+function PetOwner:IsFull()
+	return #self.pets >= MAX_PET_COUNT
+end
+
+function PetOwner:IsEmpty()
+	return #self.pets <= 0
 end
 
 ------------------------------ 数据 ------------------------------

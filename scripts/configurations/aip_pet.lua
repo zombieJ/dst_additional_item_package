@@ -105,7 +105,7 @@ local SKILL_MAX_LEVEL = {
 }
 
 local dt = TUNING.TOTAL_DAY_TIME
-local dt_base = dt * 6
+local dt_base = dt * 7
 local san = TUNING.DAPPERNESS_TINY / 1.33	-- 1 点 san / 分钟
 
 -- 不同技能对应的数值

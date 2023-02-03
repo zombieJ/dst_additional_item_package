@@ -3,18 +3,20 @@ local language = aipGetModConfig("language")
 -- 文字描述
 local LANG_MAP = {
 	english = {
-		NAME = "Pet Sweets",
+		NAME = "Animal Sweets",
         REC_DESC = "Catch small animals. The higher the quality of the small animals, the harder to catch.",
 		DESC = "Catch small animals",
         SUCCESS = "It works!",
         ESCAPE = "Not work as expected",
+        FULL = "I have too many pets",
 	},
 	chinese = {
-		NAME = "动物甜品",
+		NAME = "小动物甜品",
         REC_DESC = "用于捕捉小动物，品质越高的小动物越难捕捉",
 		DESC = "用于捕捉小动物",
         SUCCESS = "成功啦！",
         ESCAPE = "没有吸引到它",
+        FULL = "我已经有太多宠物了",
 	},
 }
 
@@ -25,6 +27,7 @@ STRINGS.RECIPE_DESC.AIP_PET_CATCHER = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_CATCHER = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_CATCHER_SUCCESS = LANG.SUCCESS
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_CATCHER_ESCAPE = LANG.ESCAPE
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_CATCHER_FULL = LANG.FULL
 
 -- 资源
 local assets = {
@@ -53,6 +56,19 @@ end
 -- 捕捉
 local function onHit(inst, attacker, target)
     local aura = aipReplacePrefab(inst, "aip_fx_splode").DoShow(nil, 0.5)
+
+    if not attacker or not attacker.components.aipc_pet_owner then
+        return
+    elseif attacker.components.aipc_pet_owner:IsFull() then
+        if attacker.components.talker ~= nil then
+            attacker.components.talker:Say(
+                STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_CATCHER_FULL
+            )
+        end
+
+        return
+    end
+
     local pt = inst:GetPosition()
 
     -- 寻找野生的
@@ -66,11 +82,9 @@ local function onHit(inst, attacker, target)
         local chance = ent.components.aipc_petable:GetQualityChance()
 
         -- 如果有 游说 技能宠物，则提升捕捉概率
-        if attacker ~= nil and attacker.components.aipc_pet_owner ~= nil then
-            local skillInfo, skillLv = attacker.components.aipc_pet_owner:GetSkillInfo("eloquence")
-            if skillInfo ~= nil then
-                chance = chance + skillInfo.multi * skillLv
-            end
+        local skillInfo, skillLv = attacker.components.aipc_pet_owner:GetSkillInfo("eloquence")
+        if skillInfo ~= nil then
+            chance = chance + skillInfo.multi * skillLv
         end
 
         if math.random() <= chance then
@@ -78,43 +92,37 @@ local function onHit(inst, attacker, target)
 
             -- 伯乐 宠物有概率提升品质
             local enhanceQuality = 0
-            if attacker ~= nil and attacker.components.aipc_pet_owner ~= nil then
-                local skillInfo, skillLv = attacker.components.aipc_pet_owner:GetSkillInfo("insight")
-                if skillInfo ~= nil then
-                    local enhanceQualityChance = skillInfo.multi * skillLv
+            local skillInfo, skillLv = attacker.components.aipc_pet_owner:GetSkillInfo("insight")
+            if skillInfo ~= nil then
+                local enhanceQualityChance = skillInfo.multi * skillLv
 
-                    -- 如果是唯一的宠物，则 100%
-                    if attacker.components.aipc_pet_owner:Count() <= 1 then
-                        enhanceQualityChance = 1
-                    end
-
-                    enhanceQuality = math.random() <= enhanceQualityChance and 1 or 0
+                -- 如果是唯一的宠物，则 100%
+                if attacker.components.aipc_pet_owner:Count() <= 1 then
+                    enhanceQualityChance = 1
                 end
+
+                enhanceQuality = math.random() <= enhanceQualityChance and 1 or 0
             end
 
-            if attacker then
-                local quality = ent.components.aipc_petable:GetQuality()
+            local quality = ent.components.aipc_petable:GetQuality()
 
-                -- 记录宠物
-                if attacker.components.aipc_pet_owner ~= nil then
-                    local pet = attacker.components.aipc_pet_owner:AddPet(ent, enhanceQuality)
-                    quality = pet.components.aipc_petable:GetQuality()
-                end
+            -- 记录宠物
+            local pet = attacker.components.aipc_pet_owner:AddPet(ent, enhanceQuality)
+            quality = pet.components.aipc_petable:GetQuality()
 
-                -- 说话
-                if attacker.components.talker ~= nil then
-                    attacker.components.talker:Say(
-                        STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_CATCHER_SUCCESS..
-                        QUALITY_LANG[quality]
-                    )
-                end
+            -- 说话
+            if attacker.components.talker ~= nil then
+                attacker.components.talker:Say(
+                    STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_CATCHER_SUCCESS..
+                    QUALITY_LANG[quality]
+                )
             end
         else
             -- 临时展示一下光环
             ent.components.aipc_petable:ShowClientAura()
 
             -- 说话
-            if attacker and attacker.components.talker ~= nil then
+            if attacker.components.talker ~= nil then
                 attacker.components.talker:Say(
                     STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_CATCHER_ESCAPE
                 )

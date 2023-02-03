@@ -6,14 +6,14 @@ local language = aipGetModConfig("language")
 local LANG_MAP = {
 	english = {
 		PREV = "Previous",
-        TOGGLE = "Show/Hide",
+        TOGGLE = "Change",
         SHOW = "Show",
         HIDE = "Hide",
 		NEXT = "Next",
 	},
 	chinese = {
 		PREV = "上一个",
-        TOGGLE = "显/隐",
+        TOGGLE = "切换",
         SHOW = "显示",
         HIDE = "隐藏",
 		NEXT = "下一个",

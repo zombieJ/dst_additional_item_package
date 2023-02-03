@@ -1,16 +1,18 @@
 local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 ------------------------------- 猎犬 -------------------------------
-local function houndPostInit(bank)
+local function houndPostInit(bank, skipSwim)
     return function(inst)
         -- SG 用了，加一下不要挂
         inst:AddComponent("follower")
 
-        inst:AddComponent("amphibiouscreature")
-        inst.components.amphibiouscreature:SetBanks(bank, bank.."_water")
-        inst.components.amphibiouscreature:SetEnterWaterFn(function(inst)
-            inst.components.locomotor.hop_distance = 4
-        end)
+        if skipSwim ~= true then
+            inst:AddComponent("amphibiouscreature")
+            inst.components.amphibiouscreature:SetBanks(bank, bank.."_water")
+            inst.components.amphibiouscreature:SetEnterWaterFn(function(inst)
+                inst.components.locomotor.hop_distance = 4
+            end)
+        end
     end
 end
 
@@ -211,6 +213,7 @@ local PREFABS = {
             hurt = "dontstarve/creatures/hound/hurt",
         },
         tags = { "clay" },
+        postInit = houndPostInit("hound", true),
     },
 
     -- 僵尸

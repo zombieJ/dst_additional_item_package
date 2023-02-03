@@ -176,6 +176,7 @@ PrefabFiles = {
 	-- 懵懵宠宠
 	"aip_pet_catcher",
 	"aip_pet",
+	"aip_pet_trigger",
 
 	-- Orbit
 	"aip_orbit",
