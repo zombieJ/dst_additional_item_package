@@ -67,7 +67,7 @@ local function lightenAllPlayer(inst)
 end
 
 local function onTakeFuel(inst)
-    if inst._aipFireList == nil then
+    if inst._aipFireList == nil and inst.components.equippable:IsEquipped() then
         lightenAllPlayer(inst)
     end
 end

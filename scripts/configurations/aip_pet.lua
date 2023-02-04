@@ -177,7 +177,7 @@ local SKILL_DESC_LANG = {
 local SKILL_DESC_VARS = {
 	shedding = function(info, lv)
 		return {
-			DAY = (info.base - info.multi * lv) / dt_base,
+			DAY = (info.base - info.multi * lv) / dt,
 		}
 	end,
 	aggressive = function(info, lv)
