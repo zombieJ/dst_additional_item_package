@@ -228,14 +228,14 @@ end
 -- 开发模式固定技能列表
 if dev_mode then
 	SKILL_LIST = {
-		-- "shedding",
-		-- "aggressive",
-		-- "conservative",
-		-- "cowardly",
-		-- "accompany",
-		-- "alone",
-		-- "eloquence",
-		-- "insight",
+		"shedding",
+		"aggressive",
+		"conservative",
+		"cowardly",
+		"accompany",
+		"alone",
+		"eloquence",
+		"insight",
 	}
 end
 

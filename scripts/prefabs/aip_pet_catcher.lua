@@ -37,7 +37,6 @@ local assets = {
 
 local petConfig = require("configurations/aip_pet")
 local QUALITY_COLORS = petConfig.QUALITY_COLORS
-local QUALITY_LANG = petConfig.QUALITY_LANG
 
 ----------------------------------- 方法 -----------------------------------
 local function canActOn()
@@ -113,8 +112,7 @@ local function onHit(inst, attacker, target)
             -- 说话
             if attacker.components.talker ~= nil then
                 attacker.components.talker:Say(
-                    STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_CATCHER_SUCCESS..
-                    QUALITY_LANG[quality]
+                    STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_CATCHER_SUCCESS
                 )
             end
         else

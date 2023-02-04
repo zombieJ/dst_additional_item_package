@@ -320,11 +320,15 @@ local function getPrefab(inst, seer)
 			subPrefab = "_winter"
 		end
 
-		if
-			seer ~= nil and seer.components.sanity ~= nil and
-			seer.components.sanity:IsInsanityMode()
-		then
-			subPrefab = "_crazy"
+		if seer ~= nil and seer.components.sanity ~= nil then
+            local sanityVal = seer:HasTag("dappereffects") and TUNING.DAPPER_BEARDLING_SANITY or TUNING.BEARDLING_SANITY
+            local isinsane =    seer.components.sanity:IsInsanityMode() and
+                                seer.replica.sanity:GetPercent() <= sanityVal
+
+            -- 如果理智值太低，则变成疯兔
+            if isinsane then
+			    subPrefab = "_crazy"
+            end
 		end
 	end
 
