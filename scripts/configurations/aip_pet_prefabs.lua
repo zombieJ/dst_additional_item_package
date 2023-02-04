@@ -349,6 +349,13 @@ local function getSkills(prefab, subPrefab)
         }
     end
 
+    ------------------------- 蜘蛛 -------------------------
+    if prefab == "spider_healer" then
+        return {
+            "cure",
+        }
+    end
+
     ------------------------- 猎犬 -------------------------
     if prefab == "icehound" then
         return {

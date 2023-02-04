@@ -30,6 +30,11 @@ local function OnTimerDone(inst, data)
 	-- 宠物
 	local pet = inst.components.aipc_pet_owner.showPet
 
+	-- 检测距离
+	if data.name == "aipc_pet_owner_distance" and pet then
+		inst.components.aipc_pet_owner:StartDistanceCheck()
+	end
+
 	-- 不再加速
 	if data.name == "aipc_pet_owner_speed" then
 		StopSpeed(inst)
@@ -47,6 +52,11 @@ local function OnTimerDone(inst, data)
 		local lootPrefab = aipRandomLoot(lootTbl)
 		aipFlingItem(aipSpawnPrefab(pet, lootPrefab))
 		inst.components.aipc_pet_owner:StartShedding()
+	end
+
+	-- 治疗
+	if data.name == "aipc_pet_owner_cure" and pet then
+		inst.components.aipc_pet_owner:StartCure(true)
 	end
 end
 
@@ -167,13 +177,19 @@ function PetOwner:HidePet(showEffect)
 	end
 
 	self.petData = nil
+	self:EnsureTimer()
+
+	-- 停止距离检测
+	self.inst.components.timer:StopTimer("aipc_pet_owner_distance")
 
 	-- 停止加速
 	StopSpeed(self.inst)
 
 	-- 停止掉毛
-	self:EnsureTimer()
 	self.inst.components.timer:StopTimer("aipc_pet_owner_shedding")
+
+	-- 停止治疗
+	self.inst.components.timer:StopTimer("aipc_pet_owner_cure")
 end
 
 -- 展示宠物
@@ -197,6 +213,9 @@ function PetOwner:ShowPet(index, showEffect)
 		end
 		self.showPet = pet
 
+		-- 距离检测
+		self:StartDistanceCheck()
+
 		-- 尝试掉毛
 		self:StartShedding()
 
@@ -205,6 +224,9 @@ function PetOwner:ShowPet(index, showEffect)
 
 		-- 尝试温度
 		self:StartHeater()
+
+		-- 尝试治愈
+		self:StartCure()
 
 		return pet
 	end
@@ -303,6 +325,27 @@ function PetOwner:Attacked()
 	end
 end
 
+-- 距离检测
+function PetOwner:StartDistanceCheck()
+	if self.showPet then
+		local playerPT = self.inst:GetPosition()
+		local petPT = self.showPet:GetPosition()
+		local dist = aipDist(playerPT, petPT)
+		local MAX_DIST = 30
+
+		-- 超过距离就飞过去
+		if dist > MAX_DIST then
+			local angle = aipGetAngle(playerPT, petPT)
+			local nextPetPT = aipAngleDist(playerPT, angle, MAX_DIST)
+
+			self.showPet.Transform:SetPosition(nextPetPT:Get())
+		end
+
+		self:EnsureTimer()
+		self.inst.components.timer:StartTimer("aipc_pet_owner_distance", 5)
+	end
+end
+
 -- 掉落物品
 function PetOwner:StartShedding()
 	local skillInfo, skillLv = self:GetSkillInfo("shedding")
@@ -348,6 +391,42 @@ function PetOwner:StartHeater()
 		if heat < 0 then
 			self.showPet.components.heater:SetThermics(false, true)
 		end
+	end
+end
+
+-- 开始持续的恢复生命值
+function PetOwner:StartCure(doCure)
+	local skillInfo, skillLv = self:GetSkillInfo("cure")
+
+	if skillInfo ~= nil and self.inst.components.health ~= nil then
+		local ptg = self.inst.components.health:GetPercent()
+		local maxPtg = skillInfo.max + skillInfo.maxMulti * skillLv
+
+		-- 如果生命值低于阈值，发射飞弹治疗目标
+		if
+			doCure and ptg < maxPtg and
+			self.showPet and not self.inst.components.health:IsDead()
+		then
+			local delta = skillInfo.multi * skillLv
+			
+			local proj = aipSpawnPrefab(self.showPet, "aip_projectile")
+			proj.components.aipc_info_client:SetByteArray( -- 调整颜色
+				"aip_projectile_color", { 0, 10, 3, 5 }
+			)
+
+			proj.components.aipc_projectile:GoToTarget(self.inst, function()
+				if
+					self.inst.components.health ~= nil and
+					not self.inst.components.health:IsDead() and
+					self.inst:IsValid() and not self.inst:IsInLimbo()
+				then
+					self.inst.components.health:DoDelta(delta)
+				end
+			end)
+		end
+
+		self:EnsureTimer()
+		self.inst.components.timer:StartTimer("aipc_pet_owner_cure", skillInfo.interval)
 	end
 end
 

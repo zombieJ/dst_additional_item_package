@@ -54,8 +54,8 @@ local QUALITY_LANG = {
 -- 专属技能
 -- 冰凉：待在身边时，玩家不会过热
 -- 温暖：待在身边时，玩家不会过冷
-
 -- 治愈：时不时会治愈玩家生命值
+
 -- 恐惧：当你处于疯狂状态时，攻击有概率时目标恐惧
 -- 引雷：像避雷针一样吸引闪电
 -- 针灸：提升治疗药物的效果
@@ -75,6 +75,7 @@ local SKILL_LANG = {
 		insight = "Insight",
 		cool = "Ice-Cold",
 		hot = "Fiery",
+		cure = "Cure",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -87,6 +88,7 @@ local SKILL_LANG = {
 		insight = "伯乐",
 		cool = "冰凉",
 		hot = "炙热",
+		cure = "治愈",
 	},
 }
 
@@ -102,47 +104,55 @@ local SKILL_MAX_LEVEL = {
 	insight = { 5, 10, 15, 20, 25 },
 	cool = { 1, 1, 1, 1, 1 },
 	hot = { 1, 1, 1, 1, 1 },
+	cure = { 1, 2, 3, 4, 5 },
 }
 
-local dt = TUNING.TOTAL_DAY_TIME
-local dt_base = dt * 7
+local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
+local dt_base = dt * 3.5
 local san = TUNING.DAPPERNESS_TINY / 1.33	-- 1 点 san / 分钟
 
 -- 不同技能对应的数值
 local SKILL_CONSTANT = {
 	shedding = {
-		base = dt_base,								-- 默认掉落为 6 天
-		multi = dev_mode and (dt_base - 10) or dt,	-- 每个等级减少 1 天
+		base = dt_base,									-- 默认掉落为 3.5 天
+		multi = dev_mode and dt_base or (dt / 2),		-- 每个等级减少 0.5 天
 	},
 	aggressive = {
-		multi = 0.01,								-- 每个等级增伤 1%
+		multi = 0.01,									-- 每个等级增伤 1%
 	},
 	conservative = {
-		multi = 0.01,								-- 每个等级减伤 1%
+		multi = 0.01,									-- 每个等级减伤 1%
 	},
 	cowardly = {
-		multi = dev_mode and 1 or 0.01,				-- 每个等级增速 1%
-		duration = 6,								-- 持续 6s
+		multi = dev_mode and 1 or 0.01,					-- 每个等级增速 1%
+		duration = 6,									-- 持续 6s
 	},
 	accompany = {
-		unit = dev_mode and san * 9 or san * .5,	-- 每分钟恢复 0.5 点理智
+		unit = dev_mode and san * 9 or san * .5,		-- 每分钟恢复 0.5 点理智
 	},
 	alone = {
-		multi = dev_mode and 10 or 0.3,				-- 每个等级提升效率
+		multi = dev_mode and 10 or 0.3,					-- 每个等级提升效率
 	},
 	eloquence = {
-		multi = dev_mode and 1 or 0.01,				-- 每个等级提升概率
+		multi = dev_mode and 1 or 0.01,					-- 每个等级提升概率
 	},
 	insight = {
-		multi = dev_mode and 1 or 0.01,				-- 每个等级提升概率
+		multi = dev_mode and 1 or 0.01,					-- 每个等级提升概率
 	},
 	cool = {
-		special = true,								-- 专属技能，不会被随机到
-		heat = dev_mode and -1000 or -100,			-- 降低 100 点温度
+		special = true,									-- 专属技能，不会被随机到
+		heat = dev_mode and -1000 or -100,				-- 降低 100 点温度
 	},
 	hot = {
-		special = true,								-- 专属技能，不会被随机到
-		heat = dev_mode and 1000 or 100,			-- 增加 100 点温度
+		special = true,									-- 专属技能，不会被随机到
+		heat = dev_mode and 1000 or 100,				-- 增加 100 点温度
+	},
+	cure = {
+		special = true,									-- 专属技能，不会被随机到
+		multi = 1,										-- 治愈量
+		interval = 5,									-- 每隔 5 秒
+		max = dev_mode and 0.5 or 0.25,					-- 低于 25% 生命值时才会触发
+		maxMulti = 0.05,								-- 每级别提升 5%
 	},
 }
 
@@ -158,6 +168,7 @@ local SKILL_DESC_LANG = {
 		insight = "Has PTG% chance to increase catch pet quality. Be 100% if this is your only pet",
 		cool = "It's cool. Take care to not to close",
 		hot = "It's hot. Take care to not to close",
+		cure = "Cure HLT point health every ITV seconds when health is lower than PTG%",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -170,6 +181,7 @@ local SKILL_DESC_LANG = {
 		insight = "有PTG%概率提升捕捉宠物的品质，如果这是你唯一的宠物则为100%概率",
 		cool = "散发着寒气，小心靠近被冻着哦",
 		hot = "冒着热气，靠太近小心被烫伤哦",
+		cure = "当生命值低于PTG%时，每隔ITV秒恢复HLT点生命值",
 	},
 }
 
@@ -216,6 +228,13 @@ local SKILL_DESC_VARS = {
 			PTG = info.multi * lv * 100,
 		}
 	end,
+	cure = function(info, lv)
+		return {
+			PTG = (info.max + info.maxMulti * lv) * 100,
+			ITV = info.interval,
+			HLT = info.multi * lv,
+		}
+	end,
 }
 
 local SKILL_LIST = {}
@@ -228,14 +247,14 @@ end
 -- 开发模式固定技能列表
 if dev_mode then
 	SKILL_LIST = {
-		"shedding",
-		"aggressive",
-		"conservative",
-		"cowardly",
-		"accompany",
-		"alone",
-		"eloquence",
-		"insight",
+		-- "shedding",
+		-- "aggressive",
+		-- "conservative",
+		-- "cowardly",
+		-- "accompany",
+		-- "alone",
+		-- "eloquence",
+		-- "insight",
 	}
 end
 
