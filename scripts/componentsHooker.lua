@@ -75,6 +75,13 @@ AIPC_ACTION.priority = 1
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_ACTION, "dolongaction"))
 AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_ACTION, "dolongaction"))
 
+-- 远动作
+local AIPC_REMOTE_ACTION = env.AddAction("AIPC_REMOTE_ACTION", LANG.USE, actionFn)
+AIPC_REMOTE_ACTION.priority = 1
+AIPC_REMOTE_ACTION.distance = 10
+
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_REMOTE_ACTION, "throw"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_REMOTE_ACTION, "throw"))
 
 -- 短动作
 local AIPC_GIVE_ACTION = env.AddAction("AIPC_GIVE_ACTION", LANG.GIVE, actionFn)
@@ -90,8 +97,13 @@ env.AddComponentAction("USEITEM", "aipc_action_client", function(inst, doer, tar
 		return
 	end
 
-	if inst.components.aipc_action_client:CanActOn(doer, target) then
-		table.insert(actions, _G.ACTIONS.AIPC_ACTION)
+	local canActOn, remoteAction = inst.components.aipc_action_client:CanActOn(doer, target)
+	if canActOn then
+		if remoteAction == true then
+			table.insert(actions, _G.ACTIONS.AIPC_REMOTE_ACTION)
+		else
+			table.insert(actions, _G.ACTIONS.AIPC_ACTION)
+		end
 	end
 end)
 
@@ -410,19 +422,6 @@ AddComponentPostInit("writeable", function(self)
 	end
 end)
 
--- 治疗允许回调
-AddComponentPostInit("healer", function(self)
-	local originHeal = self.Heal
-
-	function self:Heal(target, ...)
-		if self.onHealTarget ~= nil then
-			self.onHealTarget(self.inst, target)
-		end
-
-		return originHeal(self, target, ...)
-	end
-end)
-
 -- 浇水允许回调
 AddComponentPostInit("witherable", function(self)
 	local originProtect = self.Protect
@@ -462,23 +461,45 @@ AddComponentPostInit("tool", function(self)
 	function self:GetEffectiveness(action, ...)
 		local num = originGetEffectiveness(self, action, ...)
 
-		if
-			self.inst.components.inventoryitem ~= nil and
-			(
-				action == _G.ACTIONS.CHOP and
-				_G.aipBufferExist(
-					self.inst.components.inventoryitem.owner,
-					"aip_oldone_smiling_axe"
+		-- 找一下玩家
+		if self.inst.components.inventoryitem ~= nil then
+			local owner = self.inst.components.inventoryitem.owner
+
+			if
+				(
+					action == _G.ACTIONS.CHOP and
+					_G.aipBufferExist(
+						owner,
+						"aip_oldone_smiling_axe"
+					)
+				) or (
+					action == _G.ACTIONS.MINE and
+					_G.aipBufferExist(
+						owner,
+						"aip_oldone_smiling_mine"
+					)
 				)
-			) or (
-				action == _G.ACTIONS.MINE and
-				_G.aipBufferExist(
-					self.inst.components.inventoryitem.owner,
-					"aip_oldone_smiling_mine"
-				)
-			)
-		then
-			num = num * 3
+			then
+				num = num * 3
+			end
+
+			-- 宠物主人孤狼 buff
+			if
+				(action == _G.ACTIONS.CHOP or action == _G.ACTIONS.MINE) and
+				owner ~= nil and owner.components.aipc_pet_owner ~= nil
+			then
+				local players = _G.aipFindNearPlayers(owner, 20)
+
+				-- 只有一个玩家，这一下就特别有效
+				if #players <= 1 then
+					local skillInfo, skillLv = owner.components.aipc_pet_owner:GetSkillInfo("alone")
+
+					if skillInfo ~= nil then
+						local multi = 1 + skillInfo.multi * skillLv
+						num = num * multi
+					end
+				end
+			end
 		end
 
 		return num
@@ -489,9 +510,10 @@ end)
 AddComponentPostInit("combat", function(self)
 	local originCalcDamage = self.CalcDamage
 
-	function self:CalcDamage(...)
-		local dmg = originCalcDamage(self, ...)
+	function self:CalcDamage(target, weapon, multiplier, ...)
+		local dmg = originCalcDamage(self, target, weapon, multiplier, ...)
 
+		-- 古神 攻击 buff
 		if
 			_G.aipBufferExist(
 				self.inst,
@@ -499,6 +521,26 @@ AddComponentPostInit("combat", function(self)
 			)
 		then
 			dmg = dmg * 2
+		end
+
+		-- 宠物主人攻击 buff
+		if self.inst.components.aipc_pet_owner ~= nil then
+			local skillInfo, skillLv = self.inst.components.aipc_pet_owner:GetSkillInfo("aggressive")
+
+			if skillInfo ~= nil then
+				local multi = 1 + skillInfo.multi * skillLv
+				dmg = dmg * multi
+			end
+		end
+
+		-- 目标如果是宠物主人，那伤害要减少
+		if target ~= nil and target.components.aipc_pet_owner ~= nil then
+			local skillInfo, skillLv = target.components.aipc_pet_owner:GetSkillInfo("conservative")
+
+			if skillInfo ~= nil then
+				local multi = 1 - skillInfo.multi * skillLv
+				dmg = dmg * multi
+			end
 		end
 
 		return dmg

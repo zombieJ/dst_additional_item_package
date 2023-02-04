@@ -60,6 +60,7 @@ PrefabFiles = {
 	"aip_dragon_tail",
 	"aip_dragon_footprint",
 	"aip_krampus_plus",
+	"aip_fig_salve",
 
 	-- Weapon
 	"popcorngun",
@@ -172,6 +173,11 @@ PrefabFiles = {
 	"aip_glory_hand",
 	"aip_stone_mask",
 
+	-- 懵懵宠宠
+	"aip_pet_catcher",
+	"aip_pet",
+	"aip_pet_trigger",
+
 	-- Orbit
 	"aip_orbit",
 	"aip_mine_car",
@@ -262,6 +268,7 @@ modimport("scripts/houseWrapper.lua")
 modimport("scripts/sgHooker.lua")
 modimport("scripts/hooks/aip_hover_hook.lua")
 modimport("scripts/hooks/aip_buffer_hook.lua")
+modimport("scripts/hooks/aip_pet_hook.lua")
 
 ------------------------------------- 测试专用 -------------------------------------
 if dev_mode then

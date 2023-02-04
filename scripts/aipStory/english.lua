@@ -1,3 +1,6 @@
+local petConfig = require("configurations/aip_pet")
+local PET_QUALITY_COLORS = petConfig.QUALITY_COLORS
+
 return {
     -- 序言
     {
@@ -217,6 +220,13 @@ return {
                 name="aip_olden_tea_half",
             },
             "I found this recipe in a bottle I found in the sea, but it didn't taste very good. Drinking it will feel like a strange art, as if the fish are talking.",
+
+            -- 明目药膏
+            {
+                type="img",
+                name="aip_fig_salve",
+            },
+            "'Fig Salve' is absorbed through the face for treatment, so if it is used continuously before the absorption is complete, the effect will become poor. At the same time, it also allows me to observe the quality of small animals more clearly.",
 
             -- 心悦锄
             {
@@ -1192,6 +1202,67 @@ return {
                 name="aip_stone_mask",
             },
             "This broken mask still has some magical powers, and when used it fears nearby creatures if possible.",
+        },
+    },
+
+    -- 动物之友
+    {
+        name = "动物之友",
+        desc = {
+            "I found that in addition to the special pets that can be found in the rock lair, some small animals in the wild can also be tamed. All it takes is some special food.",
+
+            -- 小动物甜品
+            {
+                type="img",
+                name="aip_pet_catcher",
+            },
+            "'Animal Dessert' is very sweet and greasy, there is a certain probability of taming it when thrown to it. However, as the quality of small animals improves, the success rate of taming gradually decreases. That's when you need to prepare more desserts. Of course, the small animals I can manage are actually limited.",
+
+            -- 明目药膏
+            {
+                type="img",
+                name="aip_fig_salve",
+            },
+            "'Fig Salve' can improve the ability of observation, so that I can see the quality of small animals clearly for a period of time. According to the color of the aperture under the feet are:",
+
+            "- Normal",
+            {
+                type="txt",
+                text="- Nice",
+                color = PET_QUALITY_COLORS[2],
+            },
+            {
+                type="txt",
+                text="- Great",
+                color = PET_QUALITY_COLORS[3],
+            },
+            {
+                type="txt",
+                text="- Outstanding",
+                color = PET_QUALITY_COLORS[4],
+            },
+            {
+                type="txt",
+                text="- Perfect",
+                color = PET_QUALITY_COLORS[5],
+            },
+
+            "Small animals have their own skills. As the quality increases, the number of skills and the maximum level will increase. But correspondingly, high-quality small animals are hard to come by.",
+
+            -- 小动物纸盒
+            {
+                type="img",
+                name="aip_pet_trigger",
+            },
+            "Small animals love this paper box, which can be used to release or put away small animals.",
+
+            -- 榴莲糖
+            {
+                type="img",
+                name="durian_sugar",
+            },
+            "Although I can feed small animals to increase ability, but do not feed 'durian sugar'. They will leave you because they are very resistant to this food!",
+            "Note that one food a day is enough. Too many foods will get less benefits.",
         },
     },
 }

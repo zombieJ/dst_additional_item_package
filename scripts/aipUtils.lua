@@ -71,9 +71,20 @@ function _G.aipTableSlice(tbl, start, len)
 	return list
 end
 
+function _G.aipTableConcat(tbl1, tbl2)
+	local list = _G.aipTableSlice(tbl1)
+
+	for i, v in ipairs(tbl2) do
+		table.insert(list, v)
+	end
+	return list
+end
+
 function _G.aipTableIndex(tbl, item)
 	for i, v in ipairs(tbl) do
 		if v == item then
+			return i
+		elseif type(item) == "function" and item(v) then
 			return i
 		end
 	end
@@ -92,6 +103,14 @@ function _G.aipFilterTable(originTbl, filterFn)
 	return tbl
 end
 
+-- 复制 KV 表格
+function _G.aipCloneTable(originTbl)
+	local tbl = {}
+	for k, v in pairs(originTbl) do
+		tbl[k] = v
+	end
+	return tbl
+end
 
 -- 按照 key 过滤表格
 function _G.aipFilterKeysTable(originTbl, keys)
@@ -831,6 +850,27 @@ function _G.aipGet(inst, paths)
 	end
 
 	return current
+end
+
+-- 随机概率表中的事物，例如 { a = 1, b = 0.1 }
+function _G.aipRandomLoot(lootTbl)
+	local total = 0
+
+	for i, chance in pairs(lootTbl) do
+		total = total + chance
+	end
+
+	local rnd = math.random() * total
+	local cur = 0
+	for key, chance in pairs(lootTbl) do
+		if rnd <= chance then
+			return key
+		end
+
+		rnd = rnd - chance
+	end
+
+	return nil
 end
 
 --------------------------------------- RPC ---------------------------------------

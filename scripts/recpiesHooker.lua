@@ -304,6 +304,26 @@ rec("aip_showcase_ice", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.RESTORATION, CRAFTI
 {Ingredient("ice", 8), Ingredient("saltrock", 1)},
 "aip_showcase_ice_placer")
 
+------------------------------------ 萌萌宠宠 ------------------------------------
+-- 明目药膏
+rec("aip_fig_salve", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.RESTORATION },
+	{Ingredient("fig", 1), Ingredient("aip_leaf_note", 1, "images/inventoryimages/aip_leaf_note.xml")})
+
+-- 宠物甜品
+rec("aip_pet_catcher", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.TOOLS },
+	{
+		Ingredient("aip_veggie_wheat", 1, "images/inventoryimages/aip_veggie_wheat.xml"),
+		Ingredient("pomegranate", 1),
+		Ingredient("lightbulb", 1),
+	})
+
+-- 宠物盒子
+rec("aip_pet_trigger", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.TOOLS },
+	{
+		Ingredient("papyrus", 2),
+		Ingredient("silk", 1),
+	})
+
 -------------------------------------- 联动 --------------------------------------
 local modNames = _G.ModManager:GetEnabledServerModNames()
 

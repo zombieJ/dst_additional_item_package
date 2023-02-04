@@ -15,3 +15,4 @@ local layout = {
 
 writeables.AddLayout("aip_fly_totem", layout)
 writeables.AddLayout("aip_fake_fly_totem", layout)
+writeables.AddLayout("aip_pet_rabbit", layout)

@@ -173,11 +173,49 @@ end)
 
 ------------------------------------------ 兔子 ------------------------------------------
 AddPrefabPostInit("rabbit", function(inst)
+	-- 宠物抓捕
+	if inst.components.aipc_petable == nil then
+		inst:AddComponent("aipc_petable")
+	end
+
 	-- 兔子会极低概率掉落西游人物卡
 	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
 		inst.components.lootdropper:AddChanceLoot("aip_xiyou_card_myth_yutu", dev_mode and 1 or 0.001)
 	end
 end)
+
+------------------------------------------ 蜘蛛 ------------------------------------------
+local spiderList = {
+	"spider", "spider_warrior", "spider_hider", "spider_healer",
+	"spider_spitter", "spider_dropper", "spider_moon", "spider_water"
+}
+
+for i, prefab in ipairs(spiderList) do
+	AddPrefabPostInit(prefab, function(inst)
+		-- 宠物抓捕
+		if inst.components.aipc_petable == nil then
+			inst:AddComponent("aipc_petable")
+		end
+	end)
+end
+
+
+------------------------------------------ 猎犬 ------------------------------------------
+local houndList = {
+	"hound", "firehound", "icehound","moonhound", -- 月岛猎犬（外表和猎犬一样）
+	"clayhound",	-- 黏土
+	"mutatedhound",	-- 僵尸
+	"hedgehound",	-- 鲜花
+}
+
+for i, prefab in ipairs(houndList) do
+	AddPrefabPostInit(prefab, function(inst)
+		-- 宠物抓捕
+		if inst.components.aipc_petable == nil then
+			inst:AddComponent("aipc_petable")
+		end
+	end)
+end
 
 ------------------------------------------ 猴子 ------------------------------------------
 AddPrefabPostInit("monkey", function(inst)
