@@ -1224,25 +1224,25 @@ return {
             },
             "“明目药膏”可以提升观察能力，使我在一段时间内可以看清小动物的品质。根据脚下的光圈颜色分别为：",
 
-            "-- 普通品质",
+            "- 普通品质",
             {
                 type="txt",
-                text="-- 优秀品质",
+                text="- 优秀品质",
                 color = PET_QUALITY_COLORS[2],
             },
             {
                 type="txt",
-                text="-- 精良品质",
+                text="- 精良品质",
                 color = PET_QUALITY_COLORS[3],
             },
             {
                 type="txt",
-                text="-- 杰出品质",
+                text="- 杰出品质",
                 color = PET_QUALITY_COLORS[4],
             },
             {
                 type="txt",
-                text="-- 完美品质",
+                text="- 完美品质",
                 color = PET_QUALITY_COLORS[5],
             },
 

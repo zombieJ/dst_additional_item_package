@@ -1225,25 +1225,25 @@ return {
             },
             "'Fig Salve' can improve the ability of observation, so that I can see the quality of small animals clearly for a period of time. According to the color of the aperture under the feet are:",
 
-            "-- Normal",
+            "- Normal",
             {
                 type="txt",
-                text="-- Nice",
+                text="- Nice",
                 color = PET_QUALITY_COLORS[2],
             },
             {
                 type="txt",
-                text="-- Great",
+                text="- Great",
                 color = PET_QUALITY_COLORS[3],
             },
             {
                 type="txt",
-                text="-- Outstanding",
+                text="- Outstanding",
                 color = PET_QUALITY_COLORS[4],
             },
             {
                 type="txt",
-                text="-- Perfect",
+                text="- Perfect",
                 color = PET_QUALITY_COLORS[5],
             },
 
