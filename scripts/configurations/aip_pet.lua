@@ -55,6 +55,7 @@ local QUALITY_LANG = {
 -- 冰凉：待在身边时，玩家不会过热
 -- 温暖：待在身边时，玩家不会过冷
 -- 治愈：时不时会治愈玩家生命值
+-- 泷泓：落水的掉落物品惩罚转为被冰冻
 
 -- 恐惧：当你处于疯狂状态时，攻击有概率时目标恐惧
 -- 引雷：像避雷针一样吸引闪电
@@ -76,6 +77,7 @@ local SKILL_LANG = {
 		cool = "Ice-Cold",
 		hot = "Fiery",
 		cure = "Cure",
+		winterSwim = "Winter-Swimer",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -89,6 +91,7 @@ local SKILL_LANG = {
 		cool = "冰凉",
 		hot = "炙热",
 		cure = "治愈",
+		winterSwim = "泷泓",
 	},
 }
 
@@ -105,6 +108,7 @@ local SKILL_MAX_LEVEL = {
 	cool = { 1, 1, 1, 1, 1 },
 	hot = { 1, 1, 1, 1, 1 },
 	cure = { 1, 2, 3, 4, 5 },
+	winterSwim = { 1, 1, 1, 1, 1 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -154,6 +158,10 @@ local SKILL_CONSTANT = {
 		max = dev_mode and 0.5 or 0.25,					-- 低于 25% 生命值时才会触发
 		maxMulti = 0.05,								-- 每级别提升 5%
 	},
+	winterSwim = {
+		special = true,									-- 专属技能，不会被随机到
+		goldern = true,									-- 金色技能
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -169,6 +177,7 @@ local SKILL_DESC_LANG = {
 		cool = "It's cool. Take care to not to close",
 		hot = "It's hot. Take care to not to close",
 		cure = "Cure HLT point health every ITV seconds when health is lower than PTG%",
+		winterSwim = "Replace drowning punishment with freezing",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -182,6 +191,7 @@ local SKILL_DESC_LANG = {
 		cool = "散发着寒气，小心靠近被冻着哦",
 		hot = "冒着热气，靠太近小心被烫伤哦",
 		cure = "当生命值低于PTG%时，每隔ITV秒恢复HLT点生命值",
+		winterSwim = "落水惩罚不再失去生命值与物品，转而变为被冰冻状态",
 	},
 }
 

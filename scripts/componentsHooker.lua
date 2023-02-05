@@ -564,3 +564,95 @@ AddComponentPostInit("playercontroller", function(self)
 		return originDoActionAutoEquip(self, buffaction, ...)
 	end
 end)
+
+-- 阻止掉落物品
+AddComponentPostInit("drownable", function(self)
+	local originOnFallInOcean = self.OnFallInOcean
+	local originDropInventory = self.DropInventory
+	local originTakeDrowningDamage = self.TakeDrowningDamage
+
+	-- 落水
+	function self:OnFallInOcean(...)
+		local inv = self.inst.components.inventory
+
+		if inv ~= nil then
+			-- 如果有宠物能力，则不掉落
+			if self.inst.components.aipc_pet_owner ~= nil then
+				local skillInfo = self.inst.components.aipc_pet_owner:GetSkillInfo("winterSwim")
+
+				if skillInfo ~= nil then
+					-- 存储原始数据
+					local active_item = inv:GetActiveItem()
+					local handitem = inv:GetEquippedItem(_G.EQUIPSLOTS.HANDS)
+
+					local active_keepondrown = nil
+					local handitem_keepondrown = nil
+
+					-- 强制不能掉落
+					if active_item ~= nil then
+						active_keepondrown = active_item.components.inventoryitem.keepondrown
+						active_item.components.inventoryitem.keepondrown = true
+					end
+
+					if handitem ~= nil then
+						handitem_keepondrown = handitem.components.inventoryitem.keepondrown
+						handitem.components.inventoryitem.keepondrown = true
+					end
+
+					-- 调用原生方法
+					local ret = originOnFallInOcean(self, ...)
+
+					-- 恢复物品数据
+					if active_item ~= nil then
+						active_item.components.inventoryitem.keepondrown = active_keepondrown
+					end
+
+					if handitem ~= nil then
+						handitem.components.inventoryitem.keepondrown = handitem_keepondrown
+					end
+
+					return ret
+				end
+			end
+		end
+		
+
+		
+
+		return originOnFallInOcean(self, ...)
+	end
+
+	-- 掉落物品
+	function self:DropInventory(...)
+		-- 如果有宠物能力，则不掉落
+		if self.inst.components.aipc_pet_owner ~= nil then
+			local skillInfo = self.inst.components.aipc_pet_owner:GetSkillInfo("winterSwim")
+
+			if skillInfo ~= nil then
+				return false
+			end
+		end
+
+		-- 返回原生的方法
+		originDropInventory(self, ...)
+	end
+
+	-- 受到伤害
+	function self:TakeDrowningDamage(...)
+		-- 如果有宠物能力，则不掉血
+		if self.inst.components.aipc_pet_owner ~= nil then
+			local skillInfo = self.inst.components.aipc_pet_owner:GetSkillInfo("winterSwim")
+
+			if skillInfo ~= nil then
+				-- 转为冻结玩家
+				if self.inst.components.freezable ~= nil then
+					self.inst.components.freezable:Freeze()
+				end
+				return false
+			end
+		end
+
+		-- 返回原生的方法
+		return originTakeDrowningDamage(self, ...)
+	end
+end)

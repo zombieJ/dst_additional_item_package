@@ -356,6 +356,12 @@ local function getSkills(prefab, subPrefab)
         }
     end
 
+    if prefab == "spider_water" then
+        return {
+            "winterSwim",
+        }
+    end
+
     ------------------------- 猎犬 -------------------------
     if prefab == "icehound" then
         return {
