@@ -56,10 +56,10 @@ local QUALITY_LANG = {
 -- 温暖：待在身边时，玩家不会过冷
 -- 治愈：时不时会治愈玩家生命值
 -- 泷泓：落水的掉落物品惩罚转为被冰冻
+-- 针灸：提升治疗药物的效果
 
 -- 恐惧：当你处于疯狂状态时，攻击有概率时目标恐惧
 -- 引雷：像避雷针一样吸引闪电
--- 针灸：提升治疗药物的效果
 -- 蝶舞：受到攻击有概率免疫这次伤害
 -- 嗜血：每次攻击都会恢复的生命值
 
@@ -78,6 +78,7 @@ local SKILL_LANG = {
 		hot = "Fiery",
 		cure = "Cure",
 		winterSwim = "Winter-Swimer",
+		acupuncture = "Acupuncture",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -92,6 +93,7 @@ local SKILL_LANG = {
 		hot = "炙热",
 		cure = "治愈",
 		winterSwim = "泷泓",
+		acupuncture = "针灸",
 	},
 }
 
@@ -109,6 +111,7 @@ local SKILL_MAX_LEVEL = {
 	hot = { 1, 1, 1, 1, 1 },
 	cure = { 1, 2, 3, 4, 5 },
 	winterSwim = { 1, 1, 1, 1, 1 },
+	acupuncture = { 10, 20, 30, 40, 50 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -162,6 +165,10 @@ local SKILL_CONSTANT = {
 		special = true,									-- 专属技能，不会被随机到
 		goldern = true,									-- 金色技能
 	},
+	acupuncture = {
+		special = true,									-- 专属技能，不会被随机到
+		multi = dev_mode and 1 or 0.01,					-- 每个等级提升 1% 效果
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -178,6 +185,7 @@ local SKILL_DESC_LANG = {
 		hot = "It's hot. Take care to not to close",
 		cure = "Cure HLT point health every ITV seconds when health is lower than PTG%",
 		winterSwim = "Replace drowning punishment with freezing",
+		acupuncture = "Increase the effect of acupuncture by PTG%",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -192,6 +200,7 @@ local SKILL_DESC_LANG = {
 		hot = "冒着热气，靠太近小心被烫伤哦",
 		cure = "当生命值低于PTG%时，每隔ITV秒恢复HLT点生命值",
 		winterSwim = "落水惩罚不再失去生命值与物品，转而变为被冰冻状态",
+		acupuncture = "提升物品治疗效果PTG%",
 	},
 }
 
@@ -245,6 +254,11 @@ local SKILL_DESC_VARS = {
 			HLT = info.multi * lv,
 		}
 	end,
+	acupuncture = function(info, lv)
+		return {
+			PTG = info.multi * lv * 100,
+		}
+	end,
 }
 
 local SKILL_LIST = {}
@@ -257,7 +271,7 @@ end
 -- 开发模式固定技能列表
 if dev_mode then
 	SKILL_LIST = {
-		-- "shedding",
+		"shedding",
 		-- "aggressive",
 		-- "conservative",
 		-- "cowardly",

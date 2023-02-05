@@ -656,3 +656,33 @@ AddComponentPostInit("drownable", function(self)
 		return originTakeDrowningDamage(self, ...)
 	end
 end)
+
+-- 治疗支持动态
+AddComponentPostInit("healer", function(self)
+	local originHeal = self.Heal
+
+	-- 治疗可以改变
+	function self:Heal(target, ...)
+		local originHealth = self.health
+
+		-- 允许额外的变化
+		if self.aipGetHealth ~= nil then
+			self.health = self.aipGetHealth(self.inst, target, originHealth) or originHealth
+		end
+
+		-- 如果有宠物技能，则增加效果
+		if target ~= nil and target.components.aipc_pet_owner ~= nil then
+			local skillInfo, skillLv = target.components.aipc_pet_owner:GetSkillInfo("acupuncture")
+
+			if skillInfo ~= nil then
+				local multi = 1 + skillInfo.multi * skillLv
+				self.health = self.health * multi
+			end
+		end
+
+		local ret = originHeal(self, target, ...)
+
+		self.health = originHealth
+		return ret
+	end
+end)

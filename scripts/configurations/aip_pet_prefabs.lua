@@ -249,6 +249,41 @@ local PREFABS = {
         },
         postInit = houndPostInit("hound"),
     },
+
+    ----------------------------- 蜜蜂 -----------------------------
+    -- 蜜蜂
+	bee = {
+        bank = "bee",
+        build = "bee_build",
+        anim = "bee",
+        sg = "SGbee",
+        origin = "bee",
+        scale = 0.8,
+        sounds = {
+            takeoff = "dontstarve/bee/bee_takeoff",
+            attack = "dontstarve/bee/bee_attack",
+            buzz = "dontstarve/bee/bee_fly_LP",
+            hit = "dontstarve/bee/bee_hurt",
+            death = "dontstarve/bee/bee_death",
+        },
+    },
+
+    -- 杀人蜂
+    killerbee = {
+        bank = "bee",
+        build = "bee_angry_build",
+        anim = "bee",
+        sg = "SGbee",
+        origin = "killerbee",
+        scale = 0.8,
+        sounds = {
+            takeoff = "dontstarve/bee/killerbee_takeoff",
+            attack = "dontstarve/bee/killerbee_attack",
+            buzz = "dontstarve/bee/killerbee_fly_LP",
+            hit = "dontstarve/bee/killerbee_hurt",
+            death = "dontstarve/bee/killerbee_death",
+        },
+    },
 }
 
 -- 掉毛概率
@@ -298,7 +333,15 @@ local SHEDDING_LOOT = {
         houndstooth = 0.1,  -- 10% 概率掉犬牙
     },
 	hedgehound = {
-        petals = 0.5,         -- 50% 概率掉花瓣
+        petals = 0.5,       -- 50% 概率掉花瓣
+    },
+
+    ------------------------- 蜜蜂 -------------------------
+    bee = {
+        honey = 0.05,       -- 5% 概率掉蜂蜜
+    },
+    killerbee = {
+        stinger = 0.05,     -- 5% 概率掉蜂刺
     },
 }
 
@@ -337,6 +380,16 @@ local function getPrefab(inst, seer)
         prefab = "hound"
     end
 
+    ------------------------- 蜜蜂 -------------------------
+	if prefab == "bee" then
+		if
+			inst.components.inventoryitem ~= nil and
+			inst.components.inventoryitem.imagename == "killerbee"
+		then
+			prefab = "killerbee"
+		end
+	end
+
 	return prefab, subPrefab
 end
 
@@ -370,6 +423,13 @@ local function getSkills(prefab, subPrefab)
     elseif prefab == "firehound" then
         return {
             "hot",
+        }
+    end
+
+    ------------------------- 蜜蜂 -------------------------
+    if prefab == "bee" or prefab == "killerbee" then
+        return {
+            "acupuncture",
         }
     end
 end
