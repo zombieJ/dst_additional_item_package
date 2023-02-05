@@ -686,3 +686,24 @@ AddComponentPostInit("healer", function(self)
 		return ret
 	end
 end)
+
+-- 食物
+AddComponentPostInit("edible", function(self)
+	local originGetHealth = self.GetHealth
+
+	-- 食物健康影响
+	function self:GetHealth(eater, ...)
+		local health = originGetHealth(self, eater, ...)
+
+		-- 如果有宠物技能，则免疫伤害
+		if eater ~= nil and eater.components.aipc_pet_owner ~= nil then
+			local skillInfo, skillLv = eater.components.aipc_pet_owner:GetSkillInfo("taster")
+
+			if skillInfo ~= nil and health < 0 then
+				health = 0
+			end
+		end
+
+		return health
+	end
+end)

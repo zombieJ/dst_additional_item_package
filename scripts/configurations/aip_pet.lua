@@ -45,9 +45,9 @@ local QUALITY_LANG = {
 -- 陪伴：待在身边时，提升附近玩家的 san 值
 -- 孤狼：待在身边时，玩家砍树会提升速度
 -- 伯乐：有一定概率提升你抓捕的宠物品质 1 级，如果只有一个宠物，则一定提升
+-- 铁胃：免疫食物带来的生命损失负面效果
 
 -- 改命：受到致死伤害时，改为恢复生命值。该效果每 10 分钟只能触发一次
--- 铁胃：免疫食物带来的生命损失负面效果
 -- 游说：提升收腹宠物概率
 
 
@@ -79,6 +79,7 @@ local SKILL_LANG = {
 		cure = "Cure",
 		winterSwim = "Winter-Swimer",
 		acupuncture = "Acupuncture",
+		taster = "Cast-Iron Stomach",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -94,6 +95,7 @@ local SKILL_LANG = {
 		cure = "治愈",
 		winterSwim = "泷泓",
 		acupuncture = "针灸",
+		taster = "铁胃",
 	},
 }
 
@@ -112,6 +114,7 @@ local SKILL_MAX_LEVEL = {
 	cure = { 1, 2, 3, 4, 5 },
 	winterSwim = { 1, 1, 1, 1, 1 },
 	acupuncture = { 10, 20, 30, 40, 50 },
+	taster = { 1, 1, 1, 1, 1 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -186,6 +189,7 @@ local SKILL_DESC_LANG = {
 		cure = "Cure HLT point health every ITV seconds when health is lower than PTG%",
 		winterSwim = "Replace drowning punishment with freezing",
 		acupuncture = "Increase the effect of acupuncture by PTG%",
+		taster = "Food will not reduce your health",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -201,6 +205,7 @@ local SKILL_DESC_LANG = {
 		cure = "当生命值低于PTG%时，每隔ITV秒恢复HLT点生命值",
 		winterSwim = "落水惩罚不再失去生命值与物品，转而变为被冰冻状态",
 		acupuncture = "提升物品治疗效果PTG%",
+		taster = "免疫食物造成的生命损失",
 	},
 }
 
@@ -271,7 +276,7 @@ end
 -- 开发模式固定技能列表
 if dev_mode then
 	SKILL_LIST = {
-		"shedding",
+		-- "shedding",
 		-- "aggressive",
 		-- "conservative",
 		-- "cowardly",
@@ -279,6 +284,7 @@ if dev_mode then
 		-- "alone",
 		-- "eloquence",
 		-- "insight",
+		"taster",
 	}
 end
 

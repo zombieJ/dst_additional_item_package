@@ -237,7 +237,7 @@ function PetOwner:GetSkillInfo(skill)
 	local skillLv = aipGet(self.petData, "skills|"..skill.."|lv")
 
 	if skillLv ~= nil then
-		return petConfig.SKILL_CONSTANT[skill], skillLv
+		return petConfig.SKILL_CONSTANT[skill] or {}, skillLv
 	end
 
 	return nil
