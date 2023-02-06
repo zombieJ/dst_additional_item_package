@@ -525,12 +525,35 @@ AddComponentPostInit("combat", function(self)
 
 		-- 宠物主人攻击 buff
 		if self.inst.components.aipc_pet_owner ~= nil then
+			local petDmgMulti = 0
+
+			-- 好斗
 			local skillInfo, skillLv = self.inst.components.aipc_pet_owner:GetSkillInfo("aggressive")
 
 			if skillInfo ~= nil then
 				local multi = 1 + skillInfo.multi * skillLv
-				dmg = dmg * multi
+				petDmgMulti = petDmgMulti + multi
 			end
+
+			-- 逐月
+			local lunaInfo, lunaLv = self.inst.components.aipc_pet_owner:GetSkillInfo("luna")
+			if lunaInfo ~= nil then
+				-- 月岛地皮
+				local tile = _G.TheWorld.Map:GetTileAtPoint(
+					self.inst.Transform:GetWorldPosition()
+				)
+
+				if tile == _G.GROUND.METEOR then
+					petDmgMulti = petDmgMulti + lunaInfo.land * lunaLv
+				end
+
+				-- 满月
+				if _G.TheWorld.state.isfullmoon then
+					petDmgMulti = petDmgMulti + lunaInfo.full * lunaLv
+				end
+			end
+
+			dmg = dmg * (1 + petDmgMulti)
 		end
 
 		-- 目标如果是宠物主人，那伤害要减少

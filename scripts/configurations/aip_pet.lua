@@ -57,6 +57,7 @@ local QUALITY_LANG = {
 -- 治愈：时不时会治愈玩家生命值
 -- 泷泓：落水的掉落物品惩罚转为被冰冻
 -- 针灸：提升治疗药物的效果
+-- 逐月：在月岛地皮，伤害提升 100%
 
 -- 恐惧：当你处于疯狂状态时，攻击有概率时目标恐惧
 -- 引雷：像避雷针一样吸引闪电
@@ -80,6 +81,7 @@ local SKILL_LANG = {
 		winterSwim = "Winter-Swimer",
 		acupuncture = "Acupuncture",
 		taster = "Cast-Iron Stomach",
+		luna = "Luna",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -96,6 +98,7 @@ local SKILL_LANG = {
 		winterSwim = "泷泓",
 		acupuncture = "针灸",
 		taster = "铁胃",
+		luna = "逐月",
 	},
 }
 
@@ -115,6 +118,7 @@ local SKILL_MAX_LEVEL = {
 	winterSwim = { 1, 1, 1, 1, 1 },
 	acupuncture = { 10, 20, 30, 40, 50 },
 	taster = { 1, 1, 1, 1, 1 },
+	luna = { 1, 1, 1, 1, 1 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -172,6 +176,12 @@ local SKILL_CONSTANT = {
 		special = true,									-- 专属技能，不会被随机到
 		multi = dev_mode and 1 or 0.01,					-- 每个等级提升 1% 效果
 	},
+	luna = {
+		special = true,
+		goldern = true,
+		land = 0.44,									-- 月岛地皮增伤
+		full = 0.58,									-- 满月增伤
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -190,6 +200,7 @@ local SKILL_DESC_LANG = {
 		winterSwim = "Replace drowning punishment with freezing",
 		acupuncture = "Increase the effect of acupuncture by PTG%",
 		taster = "Food will not reduce your health",
+		luna = "Increase your damage by LND% on the moon land and FUL% on full moon",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -206,6 +217,7 @@ local SKILL_DESC_LANG = {
 		winterSwim = "落水惩罚不再失去生命值与物品，转而变为被冰冻状态",
 		acupuncture = "提升物品治疗效果PTG%",
 		taster = "免疫食物造成的生命损失",
+		luna = "在月岛地皮伤害提升LND%，满月伤害提升FUL%",
 	},
 }
 
@@ -264,6 +276,12 @@ local SKILL_DESC_VARS = {
 			PTG = info.multi * lv * 100,
 		}
 	end,
+	luna = function(info, lv)
+		return {
+			LND = info.land * lv * 100,
+			FUL = info.full * lv * 100,
+		}
+	end,
 }
 
 local SKILL_LIST = {}
@@ -284,7 +302,7 @@ if dev_mode then
 		-- "alone",
 		-- "eloquence",
 		-- "insight",
-		"taster",
+		-- "taster",
 	}
 end
 

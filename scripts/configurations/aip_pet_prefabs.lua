@@ -407,11 +407,13 @@ local function getSkills(prefab, subPrefab)
         return {
             "cure",
         }
-    end
-
-    if prefab == "spider_water" then
+    elseif prefab == "spider_water" then
         return {
             "winterSwim",
+        }
+    elseif prefab == "spider_moon" then
+        return {
+            "luna",
         }
     end
 
