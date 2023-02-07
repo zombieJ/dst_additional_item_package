@@ -91,6 +91,7 @@ end
 
 --丢弃物品
 local function dropItem(inst)
+    inst._aipLoadedItemPrefab = nil
     local item = inst._aipShowcaseItem
 
     inst:RemoveTag("aip_showcase_active")
@@ -288,9 +289,12 @@ local function onSave(inst, data)
 
     data._aipMineLeft = inst._aipMineLeft
     data._aipAnim = inst._aipAnim
+    data.itemGUID = nil
+    data.itemPrefab = nil
 
     if inst._aipShowcaseItem ~= nil then
         data.itemGUID = inst._aipShowcaseItem.GUID
+        data.itemPrefab = inst._aipShowcaseItem.prefab
         table.insert(guidtable, inst._aipShowcaseItem.GUID)
     end
 
@@ -301,6 +305,7 @@ local function onLoad(inst, data)
     if data ~= nil then
         inst._aipMineLeft = data._aipMineLeft or MINE_LEFT
         inst._aipAnim = data._aipAnim or inst._aipAnim
+        inst._aipLoadedItemPrefab = data.itemPrefab
 
         inst.AnimState:PushAnimation(inst._aipAnim, false)
     end
@@ -320,13 +325,24 @@ local function onLoadPostPass(inst, newents, data)
     if data ~= nil and data.itemGUID ~= nil then
         local item = newents[data.itemGUID]
         if item ~= nil then
-            aipPrint("Showcase Load Item:", item)
             showItem(inst, item.entity)
         end
 
     -- 如果里面放了东西，说明旧版本的，丢出来绑定
     else
         showContainerItem(inst)
+    end
+end
+
+-- 兜底加载物品，如果是回档，这些东西会掉下来
+local function fallbackLoadItem(inst)
+    if inst._aipLoadedItemPrefab ~= nil and not inst._aipShowcaseItem then
+        local item = aipFindNearEnts(inst, { inst._aipLoadedItemPrefab }, 2)[1]
+        if item ~= nil then
+            showItem(inst, item)
+        end
+
+        inst._aipLoadedItemPrefab = nil
     end
 end
 
@@ -449,6 +465,8 @@ local function createInst(name, data)
     inst.OnSave = onSave
     inst.OnLoad = onLoad
     inst.OnLoadPostPass = onLoadPostPass
+
+    inst:DoTaskInTime(1, fallbackLoadItem)
 
     inst:ListenForEvent("itemget", showContainerItem)
 
