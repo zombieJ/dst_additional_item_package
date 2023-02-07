@@ -199,6 +199,9 @@ local animalList = {
 	-- 蜜蜂
 	"bee",
 	"killerbee",
+
+	-- 曼德拉草
+	"mandrake_active",
 }
 
 for i, prefab in ipairs(animalList) do

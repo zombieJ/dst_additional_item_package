@@ -255,7 +255,7 @@ local PREFABS = {
 	bee = {
         bank = "bee",
         build = "bee_build",
-        anim = "bee",
+        anim = "idle",
         sg = "SGbee",
         origin = "bee",
         scale = 0.8,
@@ -272,7 +272,7 @@ local PREFABS = {
     killerbee = {
         bank = "bee",
         build = "bee_angry_build",
-        anim = "bee",
+        anim = "idle",
         sg = "SGbee",
         origin = "killerbee",
         scale = 0.8,
@@ -283,6 +283,16 @@ local PREFABS = {
             hit = "dontstarve/bee/killerbee_hurt",
             death = "dontstarve/bee/killerbee_death",
         },
+    },
+
+    --------------------------- 曼德拉草 ---------------------------
+	mandrake_active = {
+        bank = "mandrake",
+        build = "mandrake",
+        anim = "idle_loop",
+        sg = "SGMandrake",
+        origin = "mandrake_active",
+        scale = 0.9,
     },
 }
 
@@ -342,6 +352,10 @@ local SHEDDING_LOOT = {
     },
     killerbee = {
         stinger = 0.05,     -- 5% 概率掉蜂刺
+    },
+
+    ------------------------ 曼德拉 ------------------------
+    mandrake_active = {     -- 什么都不掉
     },
 }
 
@@ -432,6 +446,13 @@ local function getSkills(prefab, subPrefab)
     if prefab == "bee" or prefab == "killerbee" then
         return {
             "acupuncture",
+        }
+    end
+
+    ------------------------- 曼德拉 -------------------------
+    if prefab == "mandrake_active" then
+        return {
+            "hypnosis",
         }
     end
 end

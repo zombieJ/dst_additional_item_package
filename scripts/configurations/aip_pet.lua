@@ -58,6 +58,7 @@ local QUALITY_LANG = {
 -- 泷泓：落水的掉落物品惩罚转为被冰冻
 -- 针灸：提升治疗药物的效果
 -- 逐月：在月岛地皮，伤害提升 100%
+-- 催眠：当你被攻击时有概率让攻击者睡眠
 
 -- 恐惧：当你处于疯狂状态时，攻击有概率时目标恐惧
 -- 引雷：像避雷针一样吸引闪电
@@ -82,6 +83,7 @@ local SKILL_LANG = {
 		acupuncture = "Acupuncture",
 		taster = "Cast-Iron Stomach",
 		luna = "Luna",
+		hypnosis = "Hypnosis",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -99,6 +101,7 @@ local SKILL_LANG = {
 		acupuncture = "针灸",
 		taster = "铁胃",
 		luna = "逐月",
+		hypnosis = "催眠",
 	},
 }
 
@@ -119,6 +122,7 @@ local SKILL_MAX_LEVEL = {
 	acupuncture = { 10, 20, 30, 40, 50 },
 	taster = { 1, 1, 1, 1, 1 },
 	luna = { 1, 1, 1, 1, 1 },
+	hypnosis = { 5, 10, 15, 20, 25 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -182,6 +186,10 @@ local SKILL_CONSTANT = {
 		land = 0.44,									-- 月岛地皮增伤
 		full = 0.58,									-- 满月增伤
 	},
+	hypnosis = {
+		special = true,
+		multi = dev_mode and 0.4 or 0.01,				-- 每个等级提升 1% 效果
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -201,6 +209,7 @@ local SKILL_DESC_LANG = {
 		acupuncture = "Increase the effect of acupuncture by PTG%",
 		taster = "Food will not reduce your health",
 		luna = "Increase your damage by LND% on the moon land and FUL% on full moon",
+		hypnosis = "Has PTG% chance to hypnotize who attack you",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -218,6 +227,7 @@ local SKILL_DESC_LANG = {
 		acupuncture = "提升物品治疗效果PTG%",
 		taster = "免疫食物造成的生命损失",
 		luna = "在月岛地皮伤害提升LND%，满月伤害提升FUL%",
+		hypnosis = "有PTG%概率让攻击你的生物睡着",
 	},
 }
 
@@ -280,6 +290,11 @@ local SKILL_DESC_VARS = {
 		return {
 			LND = info.land * lv * 100,
 			FUL = info.full * lv * 100,
+		}
+	end,
+	hypnosis = function(info, lv)
+		return {
+			PTG = info.multi * lv * 100,
 		}
 	end,
 }

@@ -6,9 +6,9 @@ local petPrefabs = require("configurations/aip_pet_prefabs")
 local MAX_PET_COUNT = 5
 
 ---------------------------------------------------------------------
-local function OnAttacked(inst)
+local function OnAttacked(inst, data)
 	if inst ~= nil and inst.components.aipc_pet_owner ~= nil then
-		inst.components.aipc_pet_owner:Attacked()
+		inst.components.aipc_pet_owner:Attacked(data)
 	end
 end
 
@@ -303,8 +303,10 @@ function PetOwner:EnsureTimer()
 end
 
 -- 被攻击
-function PetOwner:Attacked()
+function PetOwner:Attacked(data)
 	self:EnsureTimer()
+	
+	local attacker = aipGet(data, 'attacker')
 
 	-- 触发 谨慎 效果
 	local skillInfo, skillLv = self:GetSkillInfo("cowardly")
@@ -322,6 +324,25 @@ function PetOwner:Attacked()
 		self.inst.components.locomotor:SetExternalSpeedMultiplier(
 			self.inst, "aipc_pet_owner_speed", multi
 		)
+	end
+
+	-- 触发 睡眠 效果
+	local hypnosisInfo, hypnosisLv = self:GetSkillInfo("hypnosis")
+	if hypnosisInfo ~= nil and attacker ~= nil then
+		local multi = hypnosisInfo.multi * hypnosisLv
+
+		-- 睡 5 秒
+		local SLEEP_TIME = TUNING.PANFLUTE_SLEEPTIME / 4
+
+		if math.random() < multi then
+			if attacker.components.sleeper ~= nil then
+				attacker.components.sleeper:AddSleepiness(10, SLEEP_TIME)
+			elseif attacker.components.grogginess ~= nil then
+				attacker.components.grogginess:AddGrogginess(10, SLEEP_TIME)
+			else
+				attacker:PushEvent("knockedout")
+			end
+		end
 	end
 end
 
