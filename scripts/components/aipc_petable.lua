@@ -126,6 +126,8 @@ function Petable:GetInfo(seer)
 
 	-- 根据品质等级添加对应数量的技能
 	local skillCnt = 0
+	local maxSkillCnt = math.min(quality, 4)	-- 最多 4 个技能
+
 	for i = 1, 99 do -- 循环 99 次，理论上可能有人抓到不满足数量技能的宠物，但是概率极低
 		local rndSkill = aipRandomEnt(skillList)
 
@@ -142,7 +144,7 @@ function Petable:GetInfo(seer)
 		end
 
 		-- 到达对应数量了
-		if skillCnt >= quality then
+		if skillCnt >= maxSkillCnt then
 			break
 		end
 	end

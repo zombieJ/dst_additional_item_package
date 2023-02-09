@@ -124,6 +124,8 @@ local function createPet(name, info)
 
         if info.face == 2 then
             inst.Transform:SetTwoFaced()
+        elseif info.face == 6 then
+            inst.Transform:SetSixFaced()
         else
             inst.Transform:SetFourFaced()
         end

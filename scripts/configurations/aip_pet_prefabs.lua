@@ -295,7 +295,6 @@ local PREFABS = {
         scale = 0.9,
     },
 
-    
     ----------------------------- 蝴蝶 -----------------------------
 	butterfly = {
         bank = "butterfly",
@@ -306,6 +305,29 @@ local PREFABS = {
         scale = 1,
         face = 2,
         bb = true,
+    },
+
+    --------------------------- 编织暗影 ---------------------------
+    -- 爪
+    stalker_minion1 = {
+        bank = "stalker_minion",
+        build = "stalker_minion",
+        anim = "idle",
+        sg = "SGstalker_minion",
+        origin = "stalker_minion",
+        scale = 0.8,
+        face = 6,
+    },
+
+    -- 牙
+    stalker_minion2 = {
+        bank = "stalker_minion_2",
+        build = "stalker_minion_2",
+        anim = "idle",
+        sg = "SGstalker_minion",
+        origin = "stalker_minion",
+        scale = 0.8,
+        face = 6,
     },
 }
 
@@ -375,12 +397,19 @@ local SHEDDING_LOOT = {
     butterfly = {
         petals = 0.5,       -- 50% 概率掉花瓣
     },
+
+    ----------------------- 编织暗影 -----------------------
+    stalker_minion1 = {
+        nightmarefuel = .05,    -- 5% 概率掉噩梦燃料
+    },
 }
 
 SHEDDING_LOOT.spider_hider = SHEDDING_LOOT.spider_warrior       -- 洞穴蜘蛛
 SHEDDING_LOOT.spider_spitter = SHEDDING_LOOT.spider_warrior     -- 喷射蜘蛛
 SHEDDING_LOOT.spider_dropper = SHEDDING_LOOT.spider             -- 垂线蜘蛛
 SHEDDING_LOOT.spider_water = SHEDDING_LOOT.spider_warrior       -- 海生蜘蛛
+
+SHEDDING_LOOT.stalker_minion2 = SHEDDING_LOOT.stalker_minion1   -- 编织暗影
 
 local function getPrefab(inst, seer)
 	local prefab = inst.prefab
@@ -478,6 +507,13 @@ local function getSkills(prefab, subPrefab)
     if prefab == "butterfly" then
         return {
             "dancer",
+        }
+    end
+
+    ------------------------- 编织暗影 -------------------------
+    if prefab == "stalker_minion1" or prefab == "stalker_minion2" then
+        return {
+            "d4c",
         }
     end
 end

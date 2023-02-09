@@ -71,7 +71,10 @@ local function onHit(inst, attacker, target)
     local pt = inst:GetPosition()
 
     -- 寻找野生的
-    local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 3, {"aip_petable"})
+    local ents = TheSim:FindEntities(
+        pt.x, pt.y, pt.z, 3,
+        {"aip_petable"}, { "FX", "NOCLICK", "DECOR", "INLIMBO" }
+    )
     ents = aipFilterTable(ents, function (ent)
         return ent.components.aipc_petable ~= nil and ent.components.aipc_petable.owner == nil
     end)

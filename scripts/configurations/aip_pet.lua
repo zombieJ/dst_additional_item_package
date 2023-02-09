@@ -60,6 +60,7 @@ local QUALITY_LANG = {
 -- 逐月：在月岛地皮，伤害提升 100%
 -- 催眠：当你被攻击时有概率让攻击者睡眠
 -- 蝶舞：受到攻击有概率免疫这次伤害
+-- D4C：将死时，你的身边会出现一个短暂的虫洞，跳入后会从另一个虫洞跳出并且恢复全部生命值
 
 -- 恐惧：当你处于疯狂状态时，攻击有概率时目标恐惧
 -- 引雷：像避雷针一样吸引闪电
@@ -86,6 +87,7 @@ local SKILL_LANG = {
 		hypnosis = "Hypnosis",
 		sponge = "Sponge",
 		dancer = "Dancer",
+		d4c = "D4C",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -106,6 +108,7 @@ local SKILL_LANG = {
 		hypnosis = "催眠",
 		sponge = "海绵",
 		dancer = "蝶舞",
+		d4c = "恶行易施",
 	},
 }
 
@@ -129,6 +132,7 @@ local SKILL_MAX_LEVEL = {
 	hypnosis = { 5, 10, 15, 20, 25 },
 	sponge = { 5, 6, 7, 8, 10 },
 	dancer = { 5, 6, 7, 8, 10 },
+	d4c = { 1, 1, 1, 1, 1 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -204,6 +208,11 @@ local SKILL_CONSTANT = {
 		special = true,
 		multi = dev_mode and 1 or 0.01,					-- 每个等级提升 1% 效果
 	},
+	d4c = {
+		special = true,
+		goldern = true,
+		duration = dev_mode and 20 or 3,				-- 持续时间
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -225,6 +234,7 @@ local SKILL_DESC_LANG = {
 		luna = "Increase your damage by LND% on the moon land and FUL% on full moon",
 		hypnosis = "Has PTG% chance to hypnotize who attack you",
 		sponge = "Convert PNT points moisture to hunger every ITV seconds",
+		d4c = "Before the fact of death is confirmed, you can be resurrected with full blood by jumping into the space rift",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -245,6 +255,7 @@ local SKILL_DESC_LANG = {
 		hypnosis = "有PTG%概率让攻击你的生物睡着",
 		sponge = "每隔ITV秒转化PNT点雨露值为饥饿值",
 		dancer = "有PTG%概率免疫受到的伤害",
+		d4c = "死亡事实确认前跳入空间裂隙就可以满血复活",
 	},
 }
 
@@ -323,6 +334,11 @@ local SKILL_DESC_VARS = {
 	dancer = function(info, lv)
 		return {
 			PTG = info.multi * lv * 100,
+		}
+	end,
+	d4c = function(info, lv)
+		return {
+			DUR = info.duration,
 		}
 	end,
 }

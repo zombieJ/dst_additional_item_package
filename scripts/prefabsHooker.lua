@@ -205,6 +205,9 @@ local animalList = {
 
 	-- 蝴蝶
 	"butterfly",
+
+	-- 编织暗影
+	"stalker_minion1", "stalker_minion2",
 }
 
 for i, prefab in ipairs(animalList) do
