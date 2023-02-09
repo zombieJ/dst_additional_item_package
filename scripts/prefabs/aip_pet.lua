@@ -121,7 +121,17 @@ local function createPet(name, info)
         MakeFlyingCharacterPhysics(inst, 1, .5)
 
         inst.DynamicShadow:SetSize(1, .75)
-        inst.Transform:SetFourFaced()
+
+        if info.face == 2 then
+            inst.Transform:SetTwoFaced()
+        else
+            inst.Transform:SetFourFaced()
+        end
+
+        if info.bb then
+            inst.AnimState:SetRayTestOnBB(true)
+        end
+
         inst.Transform:SetScale(scale, scale, scale)
 
         inst.AnimState:SetBank(info.bank)

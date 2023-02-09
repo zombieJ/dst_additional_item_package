@@ -294,6 +294,19 @@ local PREFABS = {
         origin = "mandrake_active",
         scale = 0.9,
     },
+
+    
+    ----------------------------- 蝴蝶 -----------------------------
+	butterfly = {
+        bank = "butterfly",
+        build = "butterfly_basic",
+        anim = "idle",
+        sg = "SGbutterfly",
+        origin = "butterfly",
+        scale = 1,
+        face = 2,
+        bb = true,
+    },
 }
 
 -- 掉毛概率
@@ -356,6 +369,11 @@ local SHEDDING_LOOT = {
 
     ------------------------ 曼德拉 ------------------------
     mandrake_active = {     -- 什么都不掉
+    },
+
+    ------------------------- 蝴蝶 -------------------------
+    butterfly = {
+        petals = 0.5,       -- 50% 概率掉花瓣
     },
 }
 
@@ -453,6 +471,13 @@ local function getSkills(prefab, subPrefab)
     if prefab == "mandrake_active" then
         return {
             "hypnosis",
+        }
+    end
+
+    ------------------------- 蝴蝶 -------------------------
+    if prefab == "butterfly" then
+        return {
+            "dancer",
         }
     end
 end

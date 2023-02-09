@@ -59,10 +59,10 @@ local QUALITY_LANG = {
 -- 针灸：提升治疗药物的效果
 -- 逐月：在月岛地皮，伤害提升 100%
 -- 催眠：当你被攻击时有概率让攻击者睡眠
+-- 蝶舞：受到攻击有概率免疫这次伤害
 
 -- 恐惧：当你处于疯狂状态时，攻击有概率时目标恐惧
 -- 引雷：像避雷针一样吸引闪电
--- 蝶舞：受到攻击有概率免疫这次伤害
 -- 嗜血：每次攻击都会恢复的生命值
 
 
@@ -84,6 +84,8 @@ local SKILL_LANG = {
 		taster = "Cast-Iron Stomach",
 		luna = "Luna",
 		hypnosis = "Hypnosis",
+		sponge = "Sponge",
+		dancer = "Dancer",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -102,6 +104,8 @@ local SKILL_LANG = {
 		taster = "铁胃",
 		luna = "逐月",
 		hypnosis = "催眠",
+		sponge = "海绵",
+		dancer = "蝶舞",
 	},
 }
 
@@ -123,6 +127,8 @@ local SKILL_MAX_LEVEL = {
 	taster = { 1, 1, 1, 1, 1 },
 	luna = { 1, 1, 1, 1, 1 },
 	hypnosis = { 5, 10, 15, 20, 25 },
+	sponge = { 5, 6, 7, 8, 10 },
+	dancer = { 5, 6, 7, 8, 10 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -190,6 +196,14 @@ local SKILL_CONSTANT = {
 		special = true,
 		multi = dev_mode and 0.4 or 0.01,				-- 每个等级提升 1% 效果
 	},
+	sponge = {
+		multi = 1,										-- 每个等级吸收 1 点雨露
+		interval = 5,									-- 间隔 5 秒
+	},
+	dancer = {
+		special = true,
+		multi = dev_mode and 1 or 0.01,					-- 每个等级提升 1% 效果
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -210,6 +224,7 @@ local SKILL_DESC_LANG = {
 		taster = "Food will not reduce your health",
 		luna = "Increase your damage by LND% on the moon land and FUL% on full moon",
 		hypnosis = "Has PTG% chance to hypnotize who attack you",
+		sponge = "Convert PNT points moisture to hunger every ITV seconds",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -228,6 +243,8 @@ local SKILL_DESC_LANG = {
 		taster = "免疫食物造成的生命损失",
 		luna = "在月岛地皮伤害提升LND%，满月伤害提升FUL%",
 		hypnosis = "有PTG%概率让攻击你的生物睡着",
+		sponge = "每隔ITV秒转化PNT点雨露值为饥饿值",
+		dancer = "有PTG%概率免疫受到的伤害",
 	},
 }
 
@@ -297,6 +314,17 @@ local SKILL_DESC_VARS = {
 			PTG = info.multi * lv * 100,
 		}
 	end,
+	sponge = function(info, lv)
+		return {
+			PNT = info.multi * lv,
+			ITV = info.interval,
+		}
+	end,
+	dancer = function(info, lv)
+		return {
+			PTG = info.multi * lv * 100,
+		}
+	end,
 }
 
 local SKILL_LIST = {}
@@ -318,6 +346,7 @@ if dev_mode then
 		-- "eloquence",
 		-- "insight",
 		-- "taster",
+		-- "sponge",
 	}
 end
 

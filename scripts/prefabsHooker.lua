@@ -202,6 +202,9 @@ local animalList = {
 
 	-- 曼德拉草
 	"mandrake_active",
+
+	-- 蝴蝶
+	"butterfly",
 }
 
 for i, prefab in ipairs(animalList) do

@@ -556,13 +556,32 @@ AddComponentPostInit("combat", function(self)
 			dmg = dmg * (1 + petDmgMulti)
 		end
 
-		-- 目标如果是宠物主人，那伤害要减少
+		-- 目标如果是宠物主人
 		if target ~= nil and target.components.aipc_pet_owner ~= nil then
+			-- 伤害减少
 			local skillInfo, skillLv = target.components.aipc_pet_owner:GetSkillInfo("conservative")
 
 			if skillInfo ~= nil then
 				local multi = 1 - skillInfo.multi * skillLv
 				dmg = dmg * multi
+			end
+
+			-- 蝶舞有概率免疫
+			local dancerInfo, dancerLv = target.components.aipc_pet_owner:GetSkillInfo("dancer")
+
+			if dancerInfo ~= nil then
+				if math.random() < dancerInfo.multi * dancerLv then
+					dmg = 0
+
+					-- 播放音效
+					if target.SoundEmitter ~= nil then
+						target.SoundEmitter:PlaySound("dontstarve/common/staff_blink")
+					end
+
+					-- 播放特效
+					local fx = _G.SpawnPrefab("shadow_shield2")
+					fx.entity:SetParent(target.entity)
+				end
 			end
 		end
 

@@ -58,6 +58,11 @@ local function OnTimerDone(inst, data)
 	if data.name == "aipc_pet_owner_cure" and pet then
 		inst.components.aipc_pet_owner:StartCure(true)
 	end
+
+	-- 海绵
+	if data.name == "aipc_pet_owner_drink" and pet then
+		inst.components.aipc_pet_owner:StartDrink(true)
+	end
 end
 
 -- 每天重置一下喂食效率
@@ -190,6 +195,9 @@ function PetOwner:HidePet(showEffect)
 
 	-- 停止治疗
 	self.inst.components.timer:StopTimer("aipc_pet_owner_cure")
+
+	-- 停止海绵
+	self.inst.components.timer:StopTimer("aipc_pet_owner_drink")
 end
 
 -- 展示宠物
@@ -227,6 +235,9 @@ function PetOwner:ShowPet(index, showEffect)
 
 		-- 尝试治愈
 		self:StartCure()
+
+		-- 尝试海绵
+		self:StartDrink()
 
 		return pet
 	end
@@ -275,8 +286,6 @@ function PetOwner:UpgradePet(id)
 				break
 			end
 		end
-
-		aipTypePrint("Skill:", upgradeSkillName, canUpgradeSkillNames)
 
 		-- 如果是当前宠物，则重新渲染
 		if self.showPet and self.showPet.components.aipc_petable:GetInfo().id == id then
@@ -448,6 +457,28 @@ function PetOwner:StartCure(doCure)
 
 		self:EnsureTimer()
 		self.inst.components.timer:StartTimer("aipc_pet_owner_cure", skillInfo.interval)
+	end
+end
+
+-- 开始吸收雨露值
+function PetOwner:StartDrink(doCure)
+	local skillInfo, skillLv = self:GetSkillInfo("sponge")
+
+	if skillInfo ~= nil and self.inst.components.moisture ~= nil then
+		local moisture = self.inst.components.moisture:GetMoisture()
+		moisture = math.min(moisture, skillInfo.multi * skillLv)
+
+		-- 减少雨露，增加饥饿值
+		if doCure and moisture > 0 then
+			self.inst.components.moisture:DoDelta(-moisture)
+
+			if self.inst.components.hunger ~= nil then
+				self.inst.components.hunger:DoDelta(moisture)
+			end
+		end
+
+		self:EnsureTimer()
+		self.inst.components.timer:StartTimer("aipc_pet_owner_drink", skillInfo.interval)
 	end
 end
 
