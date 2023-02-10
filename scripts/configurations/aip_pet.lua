@@ -211,7 +211,7 @@ local SKILL_CONSTANT = {
 	d4c = {
 		special = true,
 		goldern = true,
-		duration = dev_mode and 20 or 3,				-- 持续时间
+		percent = dev_mode and 0.5 or 0.1,				-- 恢复百分比
 	},
 }
 
@@ -234,7 +234,7 @@ local SKILL_DESC_LANG = {
 		luna = "Increase your damage by LND% on the moon land and FUL% on full moon",
 		hypnosis = "Has PTG% chance to hypnotize who attack you",
 		sponge = "Convert PNT points moisture to hunger every ITV seconds",
-		d4c = "Before the fact of death is confirmed, you can be resurrected with full blood by jumping into the space rift",
+		d4c = "When health < PTG%, jump into wormhole will recover full health. One times per day",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -255,7 +255,7 @@ local SKILL_DESC_LANG = {
 		hypnosis = "有PTG%概率让攻击你的生物睡着",
 		sponge = "每隔ITV秒转化PNT点雨露值为饥饿值",
 		dancer = "有PTG%概率免疫受到的伤害",
-		d4c = "死亡事实确认前跳入空间裂隙就可以满血复活",
+		d4c = "当生命值小于PTG%时跳入虫洞会恢复至满血，每天限1次",
 	},
 }
 
@@ -338,7 +338,7 @@ local SKILL_DESC_VARS = {
 	end,
 	d4c = function(info, lv)
 		return {
-			DUR = info.duration,
+			PTG = info.percent * 100,
 		}
 	end,
 }

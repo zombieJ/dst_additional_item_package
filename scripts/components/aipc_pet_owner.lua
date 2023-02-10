@@ -74,6 +74,27 @@ local function OnIsDay(inst, isday)
     if inst and inst.components.aipc_pet_owner then
 		for _, petData in ipairs(inst.components.aipc_pet_owner.pets) do
 			petData.upgradeEffect = 1
+			
+			-- 恶行易施 计数器
+			if petData.skills.d4c ~= nil then
+				petData.skills.d4c.done = nil
+			end
+		end
+	end
+end
+
+-- 玩家跳虫洞
+local function OnWormholeTravel(inst)
+	if inst and inst.components.aipc_pet_owner then
+		local skillInfo, skillLv, skill = inst.components.aipc_pet_owner:GetSkillInfo("d4c")
+
+		if skillInfo ~= nil and skill.done == nil and inst.components.health ~= nil then
+			inst.components.health:SetPercent(1)
+			skill.done = true
+
+			-- 播放特效
+			local fx = SpawnPrefab("shadow_shield2")
+			fx.entity:SetParent(inst.entity)
 		end
 	end
 end
@@ -89,6 +110,7 @@ local PetOwner = Class(function(self, inst)
 
 	self.inst:ListenForEvent("attacked", OnAttacked)
 	self.inst:ListenForEvent("timerdone", OnTimerDone)
+	self.inst:ListenForEvent("wormholespit", OnWormholeTravel)
 
 	self.inst:WatchWorldState("isday", OnIsDay)
 end)
@@ -99,6 +121,8 @@ function PetOwner:FillInfo()
 
 	for i, petData in ipairs(self.pets) do
 		petData.id = petData.id or (os.time() + i)
+
+		-- 喂食 计数器
 		petData.upgradeEffect = petData.upgradeEffect or 1
 
 		-- 补充等级
@@ -244,11 +268,12 @@ function PetOwner:ShowPet(index, showEffect)
 end
 
 -- 获取宠物能力对应的数据，会额外包含 lv，如果没有技能则返回 nil
-function PetOwner:GetSkillInfo(skill)
-	local skillLv = aipGet(self.petData, "skills|"..skill.."|lv")
+function PetOwner:GetSkillInfo(skillName)
+	local skill = aipGet(self.petData, "skills|"..skillName)
 
-	if skillLv ~= nil then
-		return petConfig.SKILL_CONSTANT[skill] or {}, skillLv
+	if skill ~= nil then
+		local skillLv = skill.lv
+		return petConfig.SKILL_CONSTANT[skillName] or {}, skillLv, skill
 	end
 
 	return nil
