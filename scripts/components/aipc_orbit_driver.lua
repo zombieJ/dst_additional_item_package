@@ -65,6 +65,15 @@ local Driver = Class(function(self, player)
 	self.lastRotate = nil	-- 上一次的角度，如果大反转，说明已经超出去了
 
 	self.inst:ListenForEvent("aipc_flyer_flying_dirty", onFlyDirty)
+
+	-- 死亡、被攻击、落水 都退出开车状态
+	local function stopDrving()
+		self:AbortDrive()
+	end
+
+	self.inst:ListenForEvent("death", stopDrving)
+	self.inst:ListenForEvent("attacked", stopDrving)
+	self.inst:ListenForEvent("onsink", stopDrving)
 end)
 
 -- 是否可以开车状态
@@ -222,28 +231,30 @@ function Driver:AbortDrive()
 	MakeCharacterPhysics(self.inst, 75, .5)
 
 	-- 矿车掉落
-	local pt = self.inst:GetPosition()
-	self.minecar:Show()
-	self.inst.Physics:Teleport(pt.x, pt.y, pt.z)
-	self.minecar.Physics:Teleport(pt.x, pt.y, pt.z)
+	if self.minecar ~= nil then
+		local pt = self.inst:GetPosition()
+		self.minecar:Show()
+		self.inst.Physics:Teleport(pt.x, pt.y, pt.z)
+		self.minecar.Physics:Teleport(pt.x, pt.y, pt.z)
 
-	self.minecar:RemoveTag("NOCLICK")
-	self.minecar:RemoveTag("fx")
+		self.minecar:RemoveTag("NOCLICK")
+		self.minecar:RemoveTag("fx")
 
-	if self.minecar.components.lootdropper ~= nil then
-		self.minecar.components.lootdropper:FlingItem(self.minecar, pt)
-	end
+		if self.minecar.components.lootdropper ~= nil then
+			self.minecar.components.lootdropper:FlingItem(self.minecar, pt)
+		end
 
-	if self.minecar.components.inventoryitem ~= nil then
-		self.minecar.components.inventoryitem.canbepickedup = true
-	end
+		if self.minecar.components.inventoryitem ~= nil then
+			self.minecar.components.inventoryitem.canbepickedup = true
+		end
 
-	-- 用完即弃
-	if self.minecar.components.finiteuses ~= nil then
-		self.minecar.components.finiteuses:Use()
+		-- 用完即弃
+		if self.minecar.components.finiteuses ~= nil then
+			self.minecar.components.finiteuses:Use()
 
-		if self.minecar.components.finiteuses:GetUses() <= 0 then
-			aipReplacePrefab(self.minecar, "collapse_big")
+			if self.minecar.components.finiteuses:GetUses() <= 0 then
+				aipReplacePrefab(self.minecar, "collapse_big")
+			end
 		end
 	end
 

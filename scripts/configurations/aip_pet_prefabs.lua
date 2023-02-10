@@ -249,6 +249,86 @@ local PREFABS = {
         },
         postInit = houndPostInit("hound"),
     },
+
+    ----------------------------- 蜜蜂 -----------------------------
+    -- 蜜蜂
+	bee = {
+        bank = "bee",
+        build = "bee_build",
+        anim = "idle",
+        sg = "SGbee",
+        origin = "bee",
+        scale = 0.8,
+        sounds = {
+            takeoff = "dontstarve/bee/bee_takeoff",
+            attack = "dontstarve/bee/bee_attack",
+            buzz = "dontstarve/bee/bee_fly_LP",
+            hit = "dontstarve/bee/bee_hurt",
+            death = "dontstarve/bee/bee_death",
+        },
+    },
+
+    -- 杀人蜂
+    killerbee = {
+        bank = "bee",
+        build = "bee_angry_build",
+        anim = "idle",
+        sg = "SGbee",
+        origin = "killerbee",
+        scale = 0.8,
+        sounds = {
+            takeoff = "dontstarve/bee/killerbee_takeoff",
+            attack = "dontstarve/bee/killerbee_attack",
+            buzz = "dontstarve/bee/killerbee_fly_LP",
+            hit = "dontstarve/bee/killerbee_hurt",
+            death = "dontstarve/bee/killerbee_death",
+        },
+    },
+
+    --------------------------- 曼德拉草 ---------------------------
+	mandrake_active = {
+        bank = "mandrake",
+        build = "mandrake",
+        anim = "idle_loop",
+        sg = "SGMandrake",
+        origin = "mandrake_active",
+        scale = 0.9,
+    },
+
+    ----------------------------- 蝴蝶 -----------------------------
+	butterfly = {
+        bank = "butterfly",
+        build = "butterfly_basic",
+        anim = "idle",
+        sg = "SGbutterfly",
+        origin = "butterfly",
+        scale = 1,
+        face = 2,
+        bb = true,
+    },
+
+    --------------------------- 编织暗影 ---------------------------
+    -- 爪
+    stalker_minion1 = {
+        bank = "stalker_minion",
+        build = "stalker_minion",
+        anim = "idle",
+        sg = "SGstalker_minion",
+        origin = "stalker_minion",
+        scale = 0.8,
+        face = 6,
+    },
+
+    -- 牙
+    stalker_minion2 = {
+        bank = "stalker_minion_2",
+        build = "stalker_minion_2",
+        anim = "idle",
+        sg = "SGstalker_minion",
+        origin = "stalker_minion",
+        scale = 0.8,
+        face = 6,
+    },
 }
 
 -- 掉毛概率
@@ -298,7 +378,29 @@ local SHEDDING_LOOT = {
         houndstooth = 0.1,  -- 10% 概率掉犬牙
     },
 	hedgehound = {
-        petals = 0.5,         -- 50% 概率掉花瓣
+        petals = 0.5,       -- 50% 概率掉花瓣
+    },
+
+    ------------------------- 蜜蜂 -------------------------
+    bee = {
+        honey = 0.05,       -- 5% 概率掉蜂蜜
+    },
+    killerbee = {
+        stinger = 0.05,     -- 5% 概率掉蜂刺
+    },
+
+    ------------------------ 曼德拉 ------------------------
+    mandrake_active = {     -- 什么都不掉
+    },
+
+    ------------------------- 蝴蝶 -------------------------
+    butterfly = {
+        petals = 0.5,       -- 50% 概率掉花瓣
+    },
+
+    ----------------------- 编织暗影 -----------------------
+    stalker_minion1 = {
+        nightmarefuel = .05,    -- 5% 概率掉噩梦燃料
     },
 }
 
@@ -306,6 +408,8 @@ SHEDDING_LOOT.spider_hider = SHEDDING_LOOT.spider_warrior       -- 洞穴蜘蛛
 SHEDDING_LOOT.spider_spitter = SHEDDING_LOOT.spider_warrior     -- 喷射蜘蛛
 SHEDDING_LOOT.spider_dropper = SHEDDING_LOOT.spider             -- 垂线蜘蛛
 SHEDDING_LOOT.spider_water = SHEDDING_LOOT.spider_warrior       -- 海生蜘蛛
+
+SHEDDING_LOOT.stalker_minion2 = SHEDDING_LOOT.stalker_minion1   -- 编织暗影
 
 local function getPrefab(inst, seer)
 	local prefab = inst.prefab
@@ -337,6 +441,16 @@ local function getPrefab(inst, seer)
         prefab = "hound"
     end
 
+    ------------------------- 蜜蜂 -------------------------
+	if prefab == "bee" then
+		if
+			inst.components.inventoryitem ~= nil and
+			inst.components.inventoryitem.imagename == "killerbee"
+		then
+			prefab = "killerbee"
+		end
+	end
+
 	return prefab, subPrefab
 end
 
@@ -349,6 +463,21 @@ local function getSkills(prefab, subPrefab)
         }
     end
 
+    ------------------------- 蜘蛛 -------------------------
+    if prefab == "spider_healer" then
+        return {
+            "cure",
+        }
+    elseif prefab == "spider_water" then
+        return {
+            "winterSwim",
+        }
+    elseif prefab == "spider_moon" then
+        return {
+            "luna",
+        }
+    end
+
     ------------------------- 猎犬 -------------------------
     if prefab == "icehound" then
         return {
@@ -357,6 +486,34 @@ local function getSkills(prefab, subPrefab)
     elseif prefab == "firehound" then
         return {
             "hot",
+        }
+    end
+
+    ------------------------- 蜜蜂 -------------------------
+    if prefab == "bee" or prefab == "killerbee" then
+        return {
+            "acupuncture",
+        }
+    end
+
+    ------------------------- 曼德拉 -------------------------
+    if prefab == "mandrake_active" then
+        return {
+            "hypnosis",
+        }
+    end
+
+    ------------------------- 蝴蝶 -------------------------
+    if prefab == "butterfly" then
+        return {
+            "dancer",
+        }
+    end
+
+    ------------------------- 编织暗影 -------------------------
+    if prefab == "stalker_minion1" or prefab == "stalker_minion2" then
+        return {
+            "d4c",
         }
     end
 end

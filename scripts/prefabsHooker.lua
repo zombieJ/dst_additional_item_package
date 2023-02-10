@@ -184,31 +184,33 @@ AddPrefabPostInit("rabbit", function(inst)
 	end
 end)
 
------------------------------------------- 蜘蛛 ------------------------------------------
-local spiderList = {
+----------------------------------------- 小动物 -----------------------------------------
+local animalList = {
+	-- 蜘蛛
 	"spider", "spider_warrior", "spider_hider", "spider_healer",
-	"spider_spitter", "spider_dropper", "spider_moon", "spider_water"
-}
+	"spider_spitter", "spider_dropper", "spider_moon", "spider_water",
 
-for i, prefab in ipairs(spiderList) do
-	AddPrefabPostInit(prefab, function(inst)
-		-- 宠物抓捕
-		if inst.components.aipc_petable == nil then
-			inst:AddComponent("aipc_petable")
-		end
-	end)
-end
-
-
------------------------------------------- 猎犬 ------------------------------------------
-local houndList = {
+	-- 猎犬
 	"hound", "firehound", "icehound","moonhound", -- 月岛猎犬（外表和猎犬一样）
 	"clayhound",	-- 黏土
 	"mutatedhound",	-- 僵尸
 	"hedgehound",	-- 鲜花
+
+	-- 蜜蜂
+	"bee",
+	"killerbee",
+
+	-- 曼德拉草
+	"mandrake_active",
+
+	-- 蝴蝶
+	"butterfly",
+
+	-- 编织暗影
+	"stalker_minion1", "stalker_minion2",
 }
 
-for i, prefab in ipairs(houndList) do
+for i, prefab in ipairs(animalList) do
 	AddPrefabPostInit(prefab, function(inst)
 		-- 宠物抓捕
 		if inst.components.aipc_petable == nil then

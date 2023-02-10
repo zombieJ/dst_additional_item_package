@@ -63,18 +63,14 @@ aipBufferRegister("aip_see_petable", {
 })
 
 -- 治疗时判断一下之前有没有治疗过，同时添加一个 buff
-local function onHeal(inst, target)
-	if not aipBufferExist(target, "aip_see_petable") then
-		if target.components.health ~= nil then
-			target.components.health:DoDelta(
-				HEAL_MAP[survival_effect],
-				false,
-				inst.prefab
-			)
-		end
+local function getHealth(inst, target)
+	local existBuff = aipBufferExist(target, "aip_see_petable")
+	aipBufferPatch(inst, target, "aip_see_petable", dev_mode and 10 or 120)
+
+	if not existBuff then
+		return HEAL_MAP[survival_effect]
 	end
 
-	aipBufferPatch(inst, target, "aip_see_petable", dev_mode and 10 or 120)
 end
 
 -------------------------------------- 实例 --------------------------------------
@@ -107,7 +103,7 @@ local function fn()
 
 	inst:AddComponent("healer")
 	inst.components.healer:SetHealthAmount(1)
-	inst.components.healer.onhealfn = onHeal
+	inst.components.healer.aipGetHealth = getHealth
 
 	MakeHauntableLaunch(inst)
 

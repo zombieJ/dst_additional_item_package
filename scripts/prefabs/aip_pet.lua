@@ -121,7 +121,19 @@ local function createPet(name, info)
         MakeFlyingCharacterPhysics(inst, 1, .5)
 
         inst.DynamicShadow:SetSize(1, .75)
-        inst.Transform:SetFourFaced()
+
+        if info.face == 2 then
+            inst.Transform:SetTwoFaced()
+        elseif info.face == 6 then
+            inst.Transform:SetSixFaced()
+        else
+            inst.Transform:SetFourFaced()
+        end
+
+        if info.bb then
+            inst.AnimState:SetRayTestOnBB(true)
+        end
+
         inst.Transform:SetScale(scale, scale, scale)
 
         inst.AnimState:SetBank(info.bank)
@@ -159,8 +171,10 @@ local function createPet(name, info)
         inst.sounds = info.sounds
 
         inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
-        inst.components.locomotor.runspeed = TUNING.HOUND_SPEED -- TUNING.WILSON_RUN_SPEED
-        inst.components.locomotor.walkspeed = TUNING.HOUND_SPEED -- TUNING.WILSON_WALK_SPEED
+        inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED
+        inst.components.locomotor.walkspeed = TUNING.WILSON_WALK_SPEED
+        -- inst.components.locomotor.runspeed = TUNING.HOUND_SPEED -- TUNING.WILSON_RUN_SPEED
+        -- inst.components.locomotor.walkspeed = TUNING.HOUND_SPEED -- TUNING.WILSON_WALK_SPEED
         inst.components.locomotor.pathcaps = { ignorecreep = true, allowocean = true }
 
         -- 小动物可以靠吃东西提升等级

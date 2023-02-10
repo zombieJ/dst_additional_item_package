@@ -57,6 +57,14 @@ local function onToggle(inst, marked)
 	end
 end
 
+-- 如果是错误加载，则直接删除
+local function cleanUp(inst)
+    local pt = inst:GetPosition()
+    if pt.x == 0 and pt.y == 0 and pt.z == 0 then
+        inst:Remove()
+    end
+end
+
 ------------------------------------ 实例 ------------------------------------
 local function fn()
     local inst = CreateEntity()
@@ -87,6 +95,8 @@ local function fn()
     inst.components.inventoryitem.imagename = "aip_shadow_transfer"
 
     MakeHauntableLaunch(inst)
+
+    inst:DoTaskInTime(1, cleanUp)
 
     return inst
 end

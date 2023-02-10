@@ -525,21 +525,63 @@ AddComponentPostInit("combat", function(self)
 
 		-- 宠物主人攻击 buff
 		if self.inst.components.aipc_pet_owner ~= nil then
+			local petDmgMulti = 0
+
+			-- 好斗
 			local skillInfo, skillLv = self.inst.components.aipc_pet_owner:GetSkillInfo("aggressive")
 
 			if skillInfo ~= nil then
 				local multi = 1 + skillInfo.multi * skillLv
-				dmg = dmg * multi
+				petDmgMulti = petDmgMulti + multi
 			end
+
+			-- 逐月
+			local lunaInfo, lunaLv = self.inst.components.aipc_pet_owner:GetSkillInfo("luna")
+			if lunaInfo ~= nil then
+				-- 月岛地皮
+				local tile = _G.TheWorld.Map:GetTileAtPoint(
+					self.inst.Transform:GetWorldPosition()
+				)
+
+				if tile == _G.GROUND.METEOR then
+					petDmgMulti = petDmgMulti + lunaInfo.land * lunaLv
+				end
+
+				-- 满月
+				if _G.TheWorld.state.isfullmoon then
+					petDmgMulti = petDmgMulti + lunaInfo.full * lunaLv
+				end
+			end
+
+			dmg = dmg * (1 + petDmgMulti)
 		end
 
-		-- 目标如果是宠物主人，那伤害要减少
+		-- 目标如果是宠物主人
 		if target ~= nil and target.components.aipc_pet_owner ~= nil then
+			-- 伤害减少
 			local skillInfo, skillLv = target.components.aipc_pet_owner:GetSkillInfo("conservative")
 
 			if skillInfo ~= nil then
 				local multi = 1 - skillInfo.multi * skillLv
 				dmg = dmg * multi
+			end
+
+			-- 蝶舞有概率免疫
+			local dancerInfo, dancerLv = target.components.aipc_pet_owner:GetSkillInfo("dancer")
+
+			if dancerInfo ~= nil then
+				if math.random() < dancerInfo.multi * dancerLv then
+					dmg = 0
+
+					-- 播放音效
+					if target.SoundEmitter ~= nil then
+						target.SoundEmitter:PlaySound("dontstarve/common/staff_blink")
+					end
+
+					-- 播放特效
+					local fx = _G.SpawnPrefab("shadow_shield2")
+					fx.entity:SetParent(target.entity)
+				end
 			end
 		end
 
@@ -562,5 +604,148 @@ AddComponentPostInit("playercontroller", function(self)
 		end
 
 		return originDoActionAutoEquip(self, buffaction, ...)
+	end
+end)
+
+-- 阻止掉落物品
+AddComponentPostInit("drownable", function(self)
+	local originOnFallInOcean = self.OnFallInOcean
+	local originDropInventory = self.DropInventory
+	local originTakeDrowningDamage = self.TakeDrowningDamage
+
+	-- 落水
+	function self:OnFallInOcean(...)
+		local inv = self.inst.components.inventory
+
+		if inv ~= nil then
+			-- 如果有宠物能力，则不掉落
+			if self.inst.components.aipc_pet_owner ~= nil then
+				local skillInfo = self.inst.components.aipc_pet_owner:GetSkillInfo("winterSwim")
+
+				if skillInfo ~= nil then
+					-- 存储原始数据
+					local active_item = inv:GetActiveItem()
+					local handitem = inv:GetEquippedItem(_G.EQUIPSLOTS.HANDS)
+
+					local active_keepondrown = nil
+					local handitem_keepondrown = nil
+
+					-- 强制不能掉落
+					if active_item ~= nil then
+						active_keepondrown = active_item.components.inventoryitem.keepondrown
+						active_item.components.inventoryitem.keepondrown = true
+					end
+
+					if handitem ~= nil then
+						handitem_keepondrown = handitem.components.inventoryitem.keepondrown
+						handitem.components.inventoryitem.keepondrown = true
+					end
+
+					-- 调用原生方法
+					local ret = originOnFallInOcean(self, ...)
+
+					-- 恢复物品数据
+					if active_item ~= nil then
+						active_item.components.inventoryitem.keepondrown = active_keepondrown
+					end
+
+					if handitem ~= nil then
+						handitem.components.inventoryitem.keepondrown = handitem_keepondrown
+					end
+
+					return ret
+				end
+			end
+		end
+		
+
+		
+
+		return originOnFallInOcean(self, ...)
+	end
+
+	-- 掉落物品
+	function self:DropInventory(...)
+		-- 如果有宠物能力，则不掉落
+		if self.inst.components.aipc_pet_owner ~= nil then
+			local skillInfo = self.inst.components.aipc_pet_owner:GetSkillInfo("winterSwim")
+
+			if skillInfo ~= nil then
+				return false
+			end
+		end
+
+		-- 返回原生的方法
+		originDropInventory(self, ...)
+	end
+
+	-- 受到伤害
+	function self:TakeDrowningDamage(...)
+		-- 如果有宠物能力，则不掉血
+		if self.inst.components.aipc_pet_owner ~= nil then
+			local skillInfo = self.inst.components.aipc_pet_owner:GetSkillInfo("winterSwim")
+
+			if skillInfo ~= nil then
+				-- 转为冻结玩家
+				if self.inst.components.freezable ~= nil then
+					self.inst.components.freezable:Freeze()
+				end
+				return false
+			end
+		end
+
+		-- 返回原生的方法
+		return originTakeDrowningDamage(self, ...)
+	end
+end)
+
+-- 治疗支持动态
+AddComponentPostInit("healer", function(self)
+	local originHeal = self.Heal
+
+	-- 治疗可以改变
+	function self:Heal(target, ...)
+		local originHealth = self.health
+
+		-- 允许额外的变化
+		if self.aipGetHealth ~= nil then
+			self.health = self.aipGetHealth(self.inst, target, originHealth) or originHealth
+		end
+
+		-- 如果有宠物技能，则增加效果
+		if target ~= nil and target.components.aipc_pet_owner ~= nil then
+			local skillInfo, skillLv = target.components.aipc_pet_owner:GetSkillInfo("acupuncture")
+
+			if skillInfo ~= nil then
+				local multi = 1 + skillInfo.multi * skillLv
+				self.health = self.health * multi
+			end
+		end
+
+		local ret = originHeal(self, target, ...)
+
+		self.health = originHealth
+		return ret
+	end
+end)
+
+-- 食物
+AddComponentPostInit("edible", function(self)
+	local originGetHealth = self.GetHealth
+
+	-- 食物健康影响
+	function self:GetHealth(eater, ...)
+		local health = originGetHealth(self, eater, ...)
+
+		-- 如果有宠物技能，则免疫伤害
+		if eater ~= nil and eater.components.aipc_pet_owner ~= nil then
+			local skillInfo, skillLv = eater.components.aipc_pet_owner:GetSkillInfo("taster")
+
+			if skillInfo ~= nil and health < 0 then
+				health = 0
+			end
+		end
+
+		return health
 	end
 end)

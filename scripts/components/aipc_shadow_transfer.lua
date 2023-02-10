@@ -105,6 +105,8 @@ function Transfer:MoveTo(pt, doer)
 	if self.onToggle ~= nil then
 		self.onToggle(self.inst, false)
 	end
+
+	aipRemove(self.inst)
 end
 
 return Transfer

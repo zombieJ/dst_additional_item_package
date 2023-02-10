@@ -6,9 +6,9 @@ local petPrefabs = require("configurations/aip_pet_prefabs")
 local MAX_PET_COUNT = 5
 
 ---------------------------------------------------------------------
-local function OnAttacked(inst)
+local function OnAttacked(inst, data)
 	if inst ~= nil and inst.components.aipc_pet_owner ~= nil then
-		inst.components.aipc_pet_owner:Attacked()
+		inst.components.aipc_pet_owner:Attacked(data)
 	end
 end
 
@@ -30,6 +30,11 @@ local function OnTimerDone(inst, data)
 	-- 宠物
 	local pet = inst.components.aipc_pet_owner.showPet
 
+	-- 检测距离
+	if data.name == "aipc_pet_owner_distance" and pet then
+		inst.components.aipc_pet_owner:StartDistanceCheck()
+	end
+
 	-- 不再加速
 	if data.name == "aipc_pet_owner_speed" then
 		StopSpeed(inst)
@@ -48,6 +53,16 @@ local function OnTimerDone(inst, data)
 		aipFlingItem(aipSpawnPrefab(pet, lootPrefab))
 		inst.components.aipc_pet_owner:StartShedding()
 	end
+
+	-- 治疗
+	if data.name == "aipc_pet_owner_cure" and pet then
+		inst.components.aipc_pet_owner:StartCure(true)
+	end
+
+	-- 海绵
+	if data.name == "aipc_pet_owner_drink" and pet then
+		inst.components.aipc_pet_owner:StartDrink(true)
+	end
 end
 
 -- 每天重置一下喂食效率
@@ -59,6 +74,27 @@ local function OnIsDay(inst, isday)
     if inst and inst.components.aipc_pet_owner then
 		for _, petData in ipairs(inst.components.aipc_pet_owner.pets) do
 			petData.upgradeEffect = 1
+			
+			-- 恶行易施 计数器
+			if petData.skills.d4c ~= nil then
+				petData.skills.d4c.done = nil
+			end
+		end
+	end
+end
+
+-- 玩家跳虫洞
+local function OnWormholeTravel(inst)
+	if inst and inst.components.aipc_pet_owner then
+		local skillInfo, skillLv, skill = inst.components.aipc_pet_owner:GetSkillInfo("d4c")
+
+		if skillInfo ~= nil and skill.done == nil and inst.components.health ~= nil then
+			inst.components.health:SetPercent(1)
+			skill.done = true
+
+			-- 播放特效
+			local fx = SpawnPrefab("shadow_shield2")
+			fx.entity:SetParent(inst.entity)
 		end
 	end
 end
@@ -74,6 +110,7 @@ local PetOwner = Class(function(self, inst)
 
 	self.inst:ListenForEvent("attacked", OnAttacked)
 	self.inst:ListenForEvent("timerdone", OnTimerDone)
+	self.inst:ListenForEvent("wormholespit", OnWormholeTravel)
 
 	self.inst:WatchWorldState("isday", OnIsDay)
 end)
@@ -84,6 +121,8 @@ function PetOwner:FillInfo()
 
 	for i, petData in ipairs(self.pets) do
 		petData.id = petData.id or (os.time() + i)
+
+		-- 喂食 计数器
 		petData.upgradeEffect = petData.upgradeEffect or 1
 
 		-- 补充等级
@@ -167,13 +206,22 @@ function PetOwner:HidePet(showEffect)
 	end
 
 	self.petData = nil
+	self:EnsureTimer()
+
+	-- 停止距离检测
+	self.inst.components.timer:StopTimer("aipc_pet_owner_distance")
 
 	-- 停止加速
 	StopSpeed(self.inst)
 
 	-- 停止掉毛
-	self:EnsureTimer()
 	self.inst.components.timer:StopTimer("aipc_pet_owner_shedding")
+
+	-- 停止治疗
+	self.inst.components.timer:StopTimer("aipc_pet_owner_cure")
+
+	-- 停止海绵
+	self.inst.components.timer:StopTimer("aipc_pet_owner_drink")
 end
 
 -- 展示宠物
@@ -197,6 +245,9 @@ function PetOwner:ShowPet(index, showEffect)
 		end
 		self.showPet = pet
 
+		-- 距离检测
+		self:StartDistanceCheck()
+
 		-- 尝试掉毛
 		self:StartShedding()
 
@@ -206,16 +257,23 @@ function PetOwner:ShowPet(index, showEffect)
 		-- 尝试温度
 		self:StartHeater()
 
+		-- 尝试治愈
+		self:StartCure()
+
+		-- 尝试海绵
+		self:StartDrink()
+
 		return pet
 	end
 end
 
 -- 获取宠物能力对应的数据，会额外包含 lv，如果没有技能则返回 nil
-function PetOwner:GetSkillInfo(skill)
-	local skillLv = aipGet(self.petData, "skills|"..skill.."|lv")
+function PetOwner:GetSkillInfo(skillName)
+	local skill = aipGet(self.petData, "skills|"..skillName)
 
-	if skillLv ~= nil then
-		return petConfig.SKILL_CONSTANT[skill], skillLv
+	if skill ~= nil then
+		local skillLv = skill.lv
+		return petConfig.SKILL_CONSTANT[skillName] or {}, skillLv, skill
 	end
 
 	return nil
@@ -254,8 +312,6 @@ function PetOwner:UpgradePet(id)
 			end
 		end
 
-		aipTypePrint("Skill:", upgradeSkillName, canUpgradeSkillNames)
-
 		-- 如果是当前宠物，则重新渲染
 		if self.showPet and self.showPet.components.aipc_petable:GetInfo().id == id then
 			local pt = self.showPet:GetPosition()
@@ -281,8 +337,10 @@ function PetOwner:EnsureTimer()
 end
 
 -- 被攻击
-function PetOwner:Attacked()
+function PetOwner:Attacked(data)
 	self:EnsureTimer()
+	
+	local attacker = aipGet(data, 'attacker')
 
 	-- 触发 谨慎 效果
 	local skillInfo, skillLv = self:GetSkillInfo("cowardly")
@@ -300,6 +358,46 @@ function PetOwner:Attacked()
 		self.inst.components.locomotor:SetExternalSpeedMultiplier(
 			self.inst, "aipc_pet_owner_speed", multi
 		)
+	end
+
+	-- 触发 睡眠 效果
+	local hypnosisInfo, hypnosisLv = self:GetSkillInfo("hypnosis")
+	if hypnosisInfo ~= nil and attacker ~= nil then
+		local multi = hypnosisInfo.multi * hypnosisLv
+
+		-- 睡 5 秒
+		local SLEEP_TIME = TUNING.PANFLUTE_SLEEPTIME / 4
+
+		if math.random() < multi then
+			if attacker.components.sleeper ~= nil then
+				attacker.components.sleeper:AddSleepiness(10, SLEEP_TIME)
+			elseif attacker.components.grogginess ~= nil then
+				attacker.components.grogginess:AddGrogginess(10, SLEEP_TIME)
+			else
+				attacker:PushEvent("knockedout")
+			end
+		end
+	end
+end
+
+-- 距离检测
+function PetOwner:StartDistanceCheck()
+	if self.showPet then
+		local playerPT = self.inst:GetPosition()
+		local petPT = self.showPet:GetPosition()
+		local dist = aipDist(playerPT, petPT)
+		local MAX_DIST = 30
+
+		-- 超过距离就飞过去
+		if dist > MAX_DIST then
+			local angle = aipGetAngle(playerPT, petPT)
+			local nextPetPT = aipAngleDist(playerPT, angle, MAX_DIST)
+
+			self.showPet.Transform:SetPosition(nextPetPT:Get())
+		end
+
+		self:EnsureTimer()
+		self.inst.components.timer:StartTimer("aipc_pet_owner_distance", 5)
 	end
 end
 
@@ -348,6 +446,64 @@ function PetOwner:StartHeater()
 		if heat < 0 then
 			self.showPet.components.heater:SetThermics(false, true)
 		end
+	end
+end
+
+-- 开始持续的恢复生命值
+function PetOwner:StartCure(doCure)
+	local skillInfo, skillLv = self:GetSkillInfo("cure")
+
+	if skillInfo ~= nil and self.inst.components.health ~= nil then
+		local ptg = self.inst.components.health:GetPercent()
+		local maxPtg = skillInfo.max + skillInfo.maxMulti * skillLv
+
+		-- 如果生命值低于阈值，发射飞弹治疗目标
+		if
+			doCure and ptg < maxPtg and
+			self.showPet and not self.inst.components.health:IsDead()
+		then
+			local delta = skillInfo.multi * skillLv
+			
+			local proj = aipSpawnPrefab(self.showPet, "aip_projectile")
+			proj.components.aipc_info_client:SetByteArray( -- 调整颜色
+				"aip_projectile_color", { 0, 10, 3, 5 }
+			)
+
+			proj.components.aipc_projectile:GoToTarget(self.inst, function()
+				if
+					self.inst.components.health ~= nil and
+					not self.inst.components.health:IsDead() and
+					self.inst:IsValid() and not self.inst:IsInLimbo()
+				then
+					self.inst.components.health:DoDelta(delta)
+				end
+			end)
+		end
+
+		self:EnsureTimer()
+		self.inst.components.timer:StartTimer("aipc_pet_owner_cure", skillInfo.interval)
+	end
+end
+
+-- 开始吸收雨露值
+function PetOwner:StartDrink(doCure)
+	local skillInfo, skillLv = self:GetSkillInfo("sponge")
+
+	if skillInfo ~= nil and self.inst.components.moisture ~= nil then
+		local moisture = self.inst.components.moisture:GetMoisture()
+		moisture = math.min(moisture, skillInfo.multi * skillLv)
+
+		-- 减少雨露，增加饥饿值
+		if doCure and moisture > 0 then
+			self.inst.components.moisture:DoDelta(-moisture)
+
+			if self.inst.components.hunger ~= nil then
+				self.inst.components.hunger:DoDelta(moisture)
+			end
+		end
+
+		self:EnsureTimer()
+		self.inst.components.timer:StartTimer("aipc_pet_owner_drink", skillInfo.interval)
 	end
 end
 

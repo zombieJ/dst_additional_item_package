@@ -307,7 +307,7 @@ rec("aip_showcase_ice", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.RESTORATION, CRAFTI
 ------------------------------------ 萌萌宠宠 ------------------------------------
 -- 明目药膏
 rec("aip_fig_salve", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.RESTORATION },
-	{Ingredient("fig", 2), Ingredient("aip_leaf_note", 2, "images/inventoryimages/aip_leaf_note.xml")})
+	{Ingredient("fig", 1), Ingredient("aip_leaf_note", 2, "images/inventoryimages/aip_leaf_note.xml")})
 
 -- 宠物甜品
 rec("aip_pet_catcher", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.TOOLS },
