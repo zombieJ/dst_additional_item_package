@@ -457,7 +457,7 @@ end
 -- 获取宠物专属技能
 local function getSkills(prefab, subPrefab)
     ------------------------- 兔子 -------------------------
-    if prefab == "rabbit" and subPrefab == "_crazy" then
+    if prefab == "rabbit" and subPrefab == "_winter" then
         return {
             "cool",
         }

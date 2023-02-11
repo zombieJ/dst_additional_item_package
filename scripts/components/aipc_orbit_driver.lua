@@ -226,12 +226,13 @@ end
 
 function Driver:AbortDrive()
 	self:StopDrive()
-	self.inst.sg:GoToState("idle")
 	self.inst:RemoveTag("aip_orbit_driver")
 	MakeCharacterPhysics(self.inst, 75, .5)
 
 	-- 矿车掉落
 	if self.minecar ~= nil then
+		self.inst.sg:GoToState("idle")
+
 		local pt = self.inst:GetPosition()
 		self.minecar:Show()
 		self.inst.Physics:Teleport(pt.x, pt.y, pt.z)
