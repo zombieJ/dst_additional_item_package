@@ -211,6 +211,9 @@ local function chop_tree(inst, chopper, chopsleft, numchops)
 
     inst.AnimState:PlayAnimation("hit")
     inst.AnimState:PushAnimation("idle", true)
+
+	-- 如果不是玩家，则重置剩余数
+	
 end
 
 local function chop_down_tree(inst, chopper)

@@ -59,6 +59,52 @@ local function onCopy(inst, doer)
 	end
 end
 
+-- 检查时打印统计信息
+local function onSelect()
+    local function toList(tbl)
+        local clone = {}
+        for k, v in pairs(tbl) do
+            table.insert(clone, { k = k, v = v })
+        end
+        table.sort(clone, function(a, b) return a.v > b.v end)
+        return clone
+    end
+
+    if TheWorld._aipDevUpdateListTotal ~= nil then
+        aipPrint("========== 世界更新统计（总量） ==========")
+        local list = toList(TheWorld._aipDevUpdateListTotal)
+        for _, data in ipairs(list) do
+            aipPrint(data.k..": "..data.v.."("..TheWorld._aipDevUpdateTimesListTotal[data.k]..")")
+        end
+    end
+
+    if TheWorld._aipDevUpdateList ~= nil then
+        aipPrint("========== 世界更新统计（当前）==========")
+        local list = toList(TheWorld._aipDevUpdateList)
+        for _, data in ipairs(list) do
+            aipPrint(data.k..": "..data.v.."("..TheWorld._aipDevUpdateTimesList[data.k]..")")
+        end
+    end
+
+    if TheWorld._aipDevWalkingList ~= nil then
+        aipPrint("========== 世界更新统计（运行）==========")
+        local map = {}
+        for cmpName, cmpKVs in pairs(TheWorld._aipDevWalkingList) do
+            map[cmpName] = 0
+            for k, v in pairs(cmpKVs) do
+                if v == true then
+                    map[cmpName] = map[cmpName] + 1
+                end
+            end
+        end
+
+        local list = toList(map)
+        for _, data in ipairs(list) do
+            aipPrint(data.k..": "..data.v)
+        end
+    end
+end
+
 ------------------------------ 实例 ------------------------------
 local function fn()
     local inst = CreateEntity()
@@ -80,6 +126,7 @@ local function fn()
     end
 
     inst:AddComponent("inspectable")
+    inst.components.inspectable.descriptionfn = onSelect
 
     -- 容器
 	inst:AddComponent("container")

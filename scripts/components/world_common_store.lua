@@ -259,16 +259,19 @@ function CommonStore:CreateMarble()
 		return
 	end
 
+	-- 计算一下生成时间
+	local now = GetTime()
+
 	-- 存在且没有坐标就跳过
 	local marble = TheSim:FindFirstEntityWithTag("aip_oldone_marble")
 	if marble ~= nil then
 		return marble
 	end
 
-	-- 如果没有雕像则在沼泽创造
+	-- 如果没有雕像则在沼泽创造（寻找蚊子池塘）
 	if marble == nil then
 		for i = 1, 10 do
-			local reeds = aipFindRandomEnt("reeds")
+			local reeds = aipFindRandomEnt("pond_mos")
 
 			if reeds ~= nil then
 				local rx, ry, rz = reeds.Transform:GetWorldPosition()
@@ -283,6 +286,10 @@ function CommonStore:CreateMarble()
 			end
 		end
 	end
+
+	-- 计算时间差
+	local diff = GetTime() - now
+	aipPrint("Create Marble cost time: " .. diff)
 
 	return marble
 end

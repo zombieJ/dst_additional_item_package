@@ -756,10 +756,46 @@ function _G.aipFindEnts(...)
 	return list
 end
 
-function _G.aipFindRandomEnt(...)
-	local list = _G.aipFindEnts(...)
+------------ find ents 可能会比较消耗性能，我们做一个时间换空间的版本 ------------
+-- 统计 Prefabs 数量
+function _G.aipCountEnts(...)
+	local cnt = 0
 
-	return _G.aipRandomEnt(list)
+	for _, ent in pairs(_G.Ents) do
+		-- 检测图腾
+		if entMatchNames(arg, ent) then
+			cnt = cnt + 1
+		end
+	end
+
+	return cnt
+end
+
+-- 寻找满足条件的第 index 个 Prefab
+function _G.aipIndexEnts(index, ...)
+	local cnt = 0
+
+	for _, ent in pairs(_G.Ents) do
+		-- 检测图腾
+		if entMatchNames(arg, ent) then
+			cnt = cnt + 1
+
+			if cnt == index then
+				return ent
+			end
+		end
+	end
+end
+
+-- 先统计数量，然后随机一个
+function _G.aipFindRandomEnt(...)
+	local cnt = _G.aipCountEnts(...)
+	if cnt == 0 then
+		return nil
+	end
+
+	local randomIndex = math.random(1, cnt)
+	return _G.aipIndexEnts(randomIndex, ...)
 end
 
 -- 是暗影生物

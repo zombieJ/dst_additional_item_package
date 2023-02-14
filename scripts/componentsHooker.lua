@@ -1,6 +1,8 @@
 local _G = GLOBAL
 local language = _G.aipGetModConfig("language")
 
+local dev_mode = _G.aipGetModConfig("dev_mode") == "enabled"
+
 env.AddReplicableComponent("aipc_buffer")
 
 ----------------------------------- 通用组件行为 -----------------------------------
@@ -375,8 +377,16 @@ _G.ACTIONS.MINE.fn = function(act)
 end
 
 ------------------------------------- 特殊处理 -------------------------------------
+local function AipPostComp(componentName, callback)
+	AddComponentPostInit(componentName, callback)
+
+	if dev_mode then
+		_G.aipPrint("添加组件钩子：" .. componentName)
+	end
+end
+
 -- 额外触发一个生命值时间出来
-AddComponentPostInit("health", function(self)
+AipPostComp("health", function(self)
 	-- 生命变化钩子
 	local originDoDelta = self.DoDelta
 
@@ -410,7 +420,7 @@ AddComponentPostInit("health", function(self)
 end)
 
 -- writeable 完成时额外触发一个事件
-AddComponentPostInit("writeable", function(self)
+AipPostComp("writeable", function(self)
 	local originEndWriting = self.EndWriting
 
 	function self:EndWriting(...)
@@ -423,7 +433,7 @@ AddComponentPostInit("writeable", function(self)
 end)
 
 -- 浇水允许回调
-AddComponentPostInit("witherable", function(self)
+AipPostComp("witherable", function(self)
 	local originProtect = self.Protect
 
 	function self:Protect(...)
@@ -437,7 +447,7 @@ end)
 
 
 -- 钓鱼不会断绳
-AddComponentPostInit("oceanfishingrod", function(self)
+AipPostComp("oceanfishingrod", function(self)
 	local originReel = self.Reel
 
 	function self:Reel(...)
@@ -455,7 +465,7 @@ AddComponentPostInit("oceanfishingrod", function(self)
 end)
 
 -- 干活允许翻倍
-AddComponentPostInit("tool", function(self)
+AipPostComp("tool", function(self)
 	local originGetEffectiveness = self.GetEffectiveness
 
 	function self:GetEffectiveness(action, ...)
@@ -507,7 +517,7 @@ AddComponentPostInit("tool", function(self)
 end)
 
 -- 伤害允许翻倍
-AddComponentPostInit("combat", function(self)
+AipPostComp("combat", function(self)
 	local originCalcDamage = self.CalcDamage
 
 	function self:CalcDamage(target, weapon, multiplier, ...)
@@ -591,7 +601,7 @@ end)
 
 
 -- 让玩家使用 AIPC_GIVE_ACTION 时，不会手持物品
-AddComponentPostInit("playercontroller", function(self)
+AipPostComp("playercontroller", function(self)
 	local originDoActionAutoEquip = self.DoActionAutoEquip
 
 	function self:DoActionAutoEquip(buffaction, ...)
@@ -608,7 +618,7 @@ AddComponentPostInit("playercontroller", function(self)
 end)
 
 -- 阻止掉落物品
-AddComponentPostInit("drownable", function(self)
+AipPostComp("drownable", function(self)
 	local originOnFallInOcean = self.OnFallInOcean
 	local originDropInventory = self.DropInventory
 	local originTakeDrowningDamage = self.TakeDrowningDamage
@@ -700,7 +710,7 @@ AddComponentPostInit("drownable", function(self)
 end)
 
 -- 治疗支持动态
-AddComponentPostInit("healer", function(self)
+AipPostComp("healer", function(self)
 	local originHeal = self.Heal
 
 	-- 治疗可以改变
@@ -730,7 +740,7 @@ AddComponentPostInit("healer", function(self)
 end)
 
 -- 食物
-AddComponentPostInit("edible", function(self)
+AipPostComp("edible", function(self)
 	local originGetHealth = self.GetHealth
 
 	-- 食物健康影响
