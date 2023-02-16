@@ -288,6 +288,29 @@ rec("aip_particles_heart", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.TOOLS },
 	Ingredient("heatrock", 1), Ingredient("reviver", 1),
 })
 
+-- 晨曦粒子
+rec("aip_particles_morning", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.TOOLS },
+{
+	Ingredient("aip_particles_bottle_charged", 1, "images/inventoryimages/aip_particles_bottle_charged.xml"),
+	Ingredient("heatrock", 1), Ingredient("red_cap", 1),
+})
+
+-- 黄昏粒子
+rec("aip_particles_dusk", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.TOOLS },
+{
+	Ingredient("aip_particles_bottle_charged", 1, "images/inventoryimages/aip_particles_bottle_charged.xml"),
+	Ingredient("heatrock", 1), Ingredient("green_cap", 1),
+})
+
+-- 漆黑粒子
+rec("aip_particles_night", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.TOOLS },
+{
+	Ingredient("aip_particles_bottle_charged", 1, "images/inventoryimages/aip_particles_bottle_charged.xml"),
+	Ingredient("heatrock", 1), Ingredient("blue_cap", 1),
+})
+
+
+
 
 -- 怠惰的南瓜
 rec("aip_tricky_thrower", TECH.MAGIC_TWO, { CRAFTING_FILTERS.STRUCTURES, CRAFTING_FILTERS.MAGIC },

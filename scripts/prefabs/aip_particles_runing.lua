@@ -9,6 +9,13 @@ local LANG_MAP = {
 		ECHO_DESC = "Triggers again after a period of time",
         HEART_NAME = "Telltale Particles",
 		HEART_DESC = "Trigger when player is nearby",
+
+        MORNING_NAME = "Morning Particles",
+		MORNING_DESC = "Trigger when moring",
+        NIGHT_NAME = "Night Particles",
+		NIGHT_DESC = "Trigger when night",
+        DUSK_NAME = "Dusk Particles",
+		DUSK_DESC = "Trigger when dusk",
 	},
 	chinese = {
 		NAME = "纠缠粒子",
@@ -17,6 +24,13 @@ local LANG_MAP = {
 		ECHO_DESC = "间隔一段时间会再次触发",
         HEART_NAME = "告密粒子",
 		HEART_DESC = "附近玩家靠近时触发",
+
+        MORNING_NAME = "晨曦粒子",
+		MORNING_DESC = "在清晨来临触发",
+        NIGHT_NAME = "漆黑粒子",
+		NIGHT_DESC = "在夜晚来临触发",
+        DUSK_NAME = "黄昏粒子",
+		DUSK_DESC = "在黄昏来临触发",
 	},
 }
 
@@ -30,6 +44,13 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PARTICLES_ECHO = LANG.ECHO_DESC
 STRINGS.NAMES.AIP_PARTICLES_HEART = LANG.HEART_NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PARTICLES_HEART = LANG.HEART_DESC
 
+STRINGS.NAMES.AIP_PARTICLES_MORNING = LANG.MORNING_NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PARTICLES_MORNING = LANG.MORNING_DESC
+STRINGS.NAMES.AIP_PARTICLES_NIGHT = LANG.NIGHT_NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PARTICLES_NIGHT = LANG.NIGHT_DESC
+STRINGS.NAMES.AIP_PARTICLES_DUSK = LANG.DUSK_NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PARTICLES_DUSK = LANG.DUSK_DESC
+
 -- 资源
 local assets = {
     Asset("ANIM", "anim/aip_particles_runing.zip"),
@@ -37,6 +58,9 @@ local assets = {
     Asset("ATLAS", "images/inventoryimages/aip_particles_entangled_orange.xml"),
     Asset("ATLAS", "images/inventoryimages/aip_particles_echo.xml"),
     Asset("ATLAS", "images/inventoryimages/aip_particles_heart.xml"),
+    Asset("ATLAS", "images/inventoryimages/aip_particles_morning.xml"),
+    Asset("ATLAS", "images/inventoryimages/aip_particles_night.xml"),
+    Asset("ATLAS", "images/inventoryimages/aip_particles_dusk.xml"),
 }
 
 -- =========================================================================
@@ -239,6 +263,21 @@ local function wrapNearBy(inst)
 end
 
 -- =========================================================================
+-- ==                               清晨粒子                               ==
+-- =========================================================================
+local function OnPhase(inst, phase)
+    if phase == inst._aipPhase then
+        triggerNearby(inst)
+        aipSpawnPrefab(inst, "aip_shadow_wrapper").DoShow()
+    end
+end
+
+local function triggerOnPhase(inst, phase)
+    inst._aipPhase = phase
+    inst:WatchWorldState("phase", OnPhase)
+end
+
+-- =========================================================================
 -- ==                               共享实例                               ==
 -- =========================================================================
 local function commonFn(anim, onHitFn, postFn)
@@ -318,8 +357,33 @@ local function heartFn()
     end)
 end
 
+--------------------------------- 清晨粒子 ---------------------------------
+local function morningFn()
+    return commonFn("morning", nil, function(inst)
+        setImg(inst, "aip_particles_morning")
+        triggerOnPhase(inst, "day")
+    end)
+end
+
+local function nightFn()
+    return commonFn("night", nil, function(inst)
+        setImg(inst, "aip_particles_night")
+        triggerOnPhase(inst, "night")
+    end)
+end
+
+local function duskFn()
+    return commonFn("dusk", nil, function(inst)
+        setImg(inst, "aip_particles_dusk")
+        triggerOnPhase(inst, "dusk")
+    end)
+end
+
 
 return  Prefab("aip_particles_vest_entangled", vestFn, assets),
         Prefab("aip_particles_entangled", entangledFn, assets),
         Prefab("aip_particles_echo", echoFn, assets),
-        Prefab("aip_particles_heart", heartFn, assets)
+        Prefab("aip_particles_heart", heartFn, assets),
+        Prefab("aip_particles_morning", morningFn, assets),
+        Prefab("aip_particles_night", nightFn, assets),
+        Prefab("aip_particles_dusk", duskFn, assets)

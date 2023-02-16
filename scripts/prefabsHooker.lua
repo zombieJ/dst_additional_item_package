@@ -411,31 +411,31 @@ AddPrefabPostInit("pigman", function(inst)
 end)
 
 ------------------------------------------ 蘑菇 ------------------------------------------
-local function postMushroom(inst)
-	-- inst:ListenForEvent("animover", onMushroomAnimOver)
-	if inst.opentaskfn ~= nil then
-		local originOpenTaskFn = inst.opentaskfn
-		inst.opentaskfn = function(...)
-			_G.aipSpawnPrefab(inst, "aip_fx_splode").DoShow(nil, 0.2)
+-- local function postMushroom(inst)
+-- 	-- inst:ListenForEvent("animover", onMushroomAnimOver)
+-- 	if inst.opentaskfn ~= nil then
+-- 		local originOpenTaskFn = inst.opentaskfn
+-- 		inst.opentaskfn = function(...)
+-- 			_G.aipSpawnPrefab(inst, "aip_fx_splode").DoShow(nil, 0.2)
 
-			-- 触发附近粒子联动
-			inst:DoTaskInTime(0.2, function()
-				local x, y, z = inst.Transform:GetWorldPosition()
-				local particles = TheSim:FindEntities(x, y, z, 1, { "aip_particles" })
+-- 			-- 触发附近粒子联动
+-- 			inst:DoTaskInTime(0.2, function()
+-- 				local x, y, z = inst.Transform:GetWorldPosition()
+-- 				local particles = TheSim:FindEntities(x, y, z, 1, { "aip_particles" })
 
-				for _, particle in ipairs(particles) do
-					particle.components.combat:GetAttacked(inst, 1)
-				end
-			end)
+-- 				for _, particle in ipairs(particles) do
+-- 					particle.components.combat:GetAttacked(inst, 1)
+-- 				end
+-- 			end)
 
-			return originOpenTaskFn(...)
-		end
-	end
-end
+-- 			return originOpenTaskFn(...)
+-- 		end
+-- 	end
+-- end
 
-AddPrefabPostInit("red_mushroom", postMushroom)
-AddPrefabPostInit("green_mushroom", postMushroom)
-AddPrefabPostInit("blue_mushroom", postMushroom)
+-- AddPrefabPostInit("red_mushroom", postMushroom)
+-- AddPrefabPostInit("green_mushroom", postMushroom)
+-- AddPrefabPostInit("blue_mushroom", postMushroom)
 
 
 ------------------------------------------ 海带 ------------------------------------------
