@@ -1093,6 +1093,27 @@ return {
                 name="aip_particles_heart",
             },
             "Telltale Particles will trigger when player is nearby. Funny~",
+
+            -- 晨曦粒子
+            {
+                type="img",
+                name="aip_particles_morning",
+            },
+            "Morning particles will trigger on morning. Good morning!",
+
+            -- 黄昏粒子
+            {
+                type="img",
+                name="aip_particles_dusk",
+            },
+            "Dusk particles will trigger on dusk. It's time to go home.",
+
+            -- 漆黑粒子
+            {
+                type="img",
+                name="aip_particles_night",
+            },
+            "Night particles will trigger on night. Is campfire still on?",
         },
     },
 

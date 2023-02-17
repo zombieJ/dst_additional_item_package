@@ -1086,12 +1086,33 @@ return {
             },
             "回响粒子 在被触发后，过一段时间会再次触发。看起来可以用于制作什么延迟装置。",
 
-             -- 告密粒子
-             {
+            -- 告密粒子
+            {
                 type="img",
                 name="aip_particles_heart",
             },
             "告密粒子 在玩家靠近时会触发，很有趣的机制~",
+
+            -- 晨曦粒子
+            {
+                type="img",
+                name="aip_particles_morning",
+            },
+            "晨曦粒子 在天亮时会触发。早上好！",
+
+            -- 黄昏粒子
+            {
+                type="img",
+                name="aip_particles_dusk",
+            },
+            "黄昏粒子 在黄昏时会触发。是时候回家了。",
+
+            -- 漆黑粒子
+            {
+                type="img",
+                name="aip_particles_night",
+            },
+            "漆黑粒子 在夜晚时会触发。希望我有点过火。",
         },
     },
 
