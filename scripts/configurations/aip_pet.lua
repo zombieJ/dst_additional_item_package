@@ -61,6 +61,7 @@ local QUALITY_LANG = {
 -- 催眠：当你被攻击时有概率让攻击者睡眠
 -- 蝶舞：受到攻击有概率免疫这次伤害
 -- D4C：将死时，你的身边会出现一个短暂的虫洞，跳入后会从另一个虫洞跳出并且恢复全部生命值
+-- 掘地：黄昏时会在玩家身边挖掘一个临时的洞穴通向最后一次做饭的地方
 
 -- 恐惧：当你处于疯狂状态时，攻击有概率时目标恐惧
 -- 引雷：像避雷针一样吸引闪电
@@ -92,6 +93,7 @@ local SKILL_LANG = {
 		sponge = "Sponge",
 		dancer = "Dancer",
 		d4c = "D4C",
+		dig = "Digger",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -113,6 +115,7 @@ local SKILL_LANG = {
 		sponge = "海绵",
 		dancer = "蝶舞",
 		d4c = "恶行易施",
+		dig = "掘地",
 	},
 }
 
@@ -137,6 +140,7 @@ local SKILL_MAX_LEVEL = {
 	sponge = { 5, 6, 7, 8, 10 },
 	dancer = { 5, 6, 7, 8, 10 },
 	d4c = { 1, 1, 1, 1, 1 },
+	dig = { 1, 2, 3, 4, 5 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -217,6 +221,11 @@ local SKILL_CONSTANT = {
 		goldern = true,
 		percent = dev_mode and 0.5 or 0.1,				-- 恢复百分比
 	},
+	dig = {
+		special = true,
+		duration = 25,									-- 维持 25 秒
+		durationUnit = 5,								-- 每个等级增加 5 秒
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -239,6 +248,7 @@ local SKILL_DESC_LANG = {
 		hypnosis = "Has PTG% chance to hypnotize who attack you",
 		sponge = "Convert PNT points moisture to hunger every ITV seconds",
 		d4c = "When health < PTG%, jump into wormhole will recover full health. One times per day",
+		dig = "Dig a hole to the place you last use cookpot when dusk. Exist for DUR seconds",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -260,6 +270,7 @@ local SKILL_DESC_LANG = {
 		sponge = "每隔ITV秒转化PNT点雨露值为饥饿值",
 		dancer = "有PTG%概率免疫受到的伤害",
 		d4c = "当生命值小于PTG%时跳入虫洞会恢复至满血，每天限1次",
+		dig = "黄昏时会在玩家身边挖掘一个持续DUR秒的洞穴通向最后一次做饭的地方",
 	},
 }
 
@@ -343,6 +354,11 @@ local SKILL_DESC_VARS = {
 	d4c = function(info, lv)
 		return {
 			PTG = info.percent * 100,
+		}
+	end,
+	dig = function(info, lv)
+		return {
+			DUR = info.duration + info.durationUnit * lv,
 		}
 	end,
 }

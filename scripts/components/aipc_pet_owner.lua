@@ -65,20 +65,62 @@ local function OnTimerDone(inst, data)
 	end
 end
 
--- 每天重置一下喂食效率
-local function OnIsDay(inst, isday)
-    if isday then
-        return
-    end
+-- 开始烹饪
+local function OnStartCooking(inst, data)
+	inst._aipLastCookpot = aipGet(data, "cookpot")
+end
 
-    if inst and inst.components.aipc_pet_owner then
-		for _, petData in ipairs(inst.components.aipc_pet_owner.pets) do
-			petData.upgradeEffect = 1
-			
-			-- 恶行易施 计数器
-			if petData.skills.d4c ~= nil then
-				petData.skills.d4c.done = nil
+-- 时间阶段变化
+local function OnPhase(inst, phase)
+	if not inst.components.aipc_pet_owner then
+		return
+	end
+
+	local pet = inst.components.aipc_pet_owner.showPet
+
+	-- 每天白天重置一下宠物的喂食计数器
+	if phase ~= "day" then
+		if inst then
+			for _, petData in ipairs(inst.components.aipc_pet_owner.pets) do
+				petData.upgradeEffect = 1
+				
+				-- 恶行易施 计数器
+				if petData.skills.d4c ~= nil then
+					petData.skills.d4c.done = nil
+				end
 			end
+		end
+	end
+
+	-- 如果是黄昏则制作一个虫洞
+	if phase == "dusk" then
+		local skillInfo, skillLv = inst.components.aipc_pet_owner:GetSkillInfo("dig")
+
+		if skillInfo ~= nil and inst._aipLastCookpot ~= nil and inst._aipLastCookpot:IsValid() then
+			local src = aipSpawnPrefab(pet, "wormhole_limited_1")
+			local tgt = aipSpawnPrefab(inst._aipLastCookpot, "wormhole_limited_1")
+			src.persists = false
+			tgt.persists = false
+
+			src.components.teleporter:Target(tgt)
+			tgt.components.teleporter:Target(src)
+
+			aipSpawnPrefab(src, "aip_shadow_wrapper").DoShow()
+
+			-- 藏起来
+			tgt.AnimState:OverrideMultColour(0, 0, 0, 0)
+			tgt.Transform:SetScale(0.1, 0.1, 0.1)
+
+			-- 自动移除
+			local rmTime = skillInfo.duration + skillInfo.durationUnit * skillLv
+			src:DoTaskInTime(rmTime, function(inst)
+				if src:IsAsleep() then
+					src:Remove()
+				else
+					src.sg:GoToState("death")
+				end
+			end)
+			tgt:DoTaskInTime(rmTime, tgt.Remove)
 		end
 	end
 end
@@ -111,8 +153,9 @@ local PetOwner = Class(function(self, inst)
 	self.inst:ListenForEvent("attacked", OnAttacked)
 	self.inst:ListenForEvent("timerdone", OnTimerDone)
 	self.inst:ListenForEvent("wormholespit", OnWormholeTravel)
+	self.inst:ListenForEvent("aipStartCooking", OnStartCooking)
 
-	self.inst:WatchWorldState("isday", OnIsDay)
+	self.inst:WatchWorldState("phase", OnPhase)
 end)
 
 -- 补一下数据

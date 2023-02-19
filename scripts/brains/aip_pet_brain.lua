@@ -19,7 +19,10 @@ function PetBrain:OnStart()
 			local owner = aipGet(self.inst, "components|aipc_petable|owner")
 
 			return owner
-		end, MIN_FOLLOW_DIST, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST),
+		end, MIN_FOLLOW_DIST, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST,
+			-- 有的小动物不能跑
+			self.inst._aipCanRun
+		),
 		-- 漫步
 
 		Wander(self.inst, function()

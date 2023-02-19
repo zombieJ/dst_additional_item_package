@@ -759,3 +759,22 @@ AipPostComp("edible", function(self)
 		return health
 	end
 end)
+
+-- 烹饪
+AipPostComp("stewer", function(self)
+	local originStartCooking = self.StartCooking
+
+	-- 食物健康影响
+	function self:StartCooking(doer, ...)
+		local ret = originStartCooking(self, doer, ...)
+
+		-- 额外触发一个事件
+		if doer ~= nil then
+			doer:PushEvent("aipStartCooking",
+				{cookpot = self.inst}
+			)
+		end
+
+		return ret
+	end
+end)

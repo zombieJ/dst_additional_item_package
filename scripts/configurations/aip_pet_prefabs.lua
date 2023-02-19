@@ -329,6 +329,26 @@ local PREFABS = {
         scale = 0.8,
         face = 6,
     },
+
+    ----------------------------- 鼹鼠 -----------------------------
+    -- 鼹鼠
+	mole = {
+        bank = "mole",
+        build = "mole_build",
+        anim = "idle_under",
+        sg = "SGmole",
+        origin = "mole",
+        postInit = function(inst)
+            inst._aipCanRun = false
+
+            inst.SetUnderPhysics = function()
+                inst.isunder = true
+            end
+            inst.SetAbovePhysics = function()
+                inst.isunder = false
+            end
+        end,
+    },
 }
 
 -- 掉毛概率
@@ -401,6 +421,14 @@ local SHEDDING_LOOT = {
     ----------------------- 编织暗影 -----------------------
     stalker_minion1 = {
         nightmarefuel = .05,    -- 5% 概率掉噩梦燃料
+    },
+
+    ------------------------- 鼹鼠 -------------------------
+    mole = {
+        rocks = 0.5,
+        flint = 0.2,
+        nitre = 0.2,
+        goldnugget = 0.05,
     },
 }
 
@@ -514,6 +542,13 @@ local function getSkills(prefab, subPrefab)
     if prefab == "stalker_minion1" or prefab == "stalker_minion2" then
         return {
             "d4c",
+        }
+    end
+
+    ------------------------- 鼹鼠 -------------------------
+    if prefab == "mole" then
+        return {
+            "dig",
         }
     end
 end
