@@ -602,7 +602,8 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
 		mergedMaxDistance = minDistance + 1
 	end
 
-	local step = 20 / (mergedMaxDistance - minDistance)
+	-- 固定 20 步
+	local step = (mergedMaxDistance - minDistance) / 20
 
 	for distance = minDistance, maxDistance, step do
 		local pos = _G.aipGetSpawnPoint(pt, distance)
