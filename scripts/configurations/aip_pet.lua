@@ -62,6 +62,7 @@ local QUALITY_LANG = {
 -- 蝶舞：受到攻击有概率免疫这次伤害
 -- D4C：将死时，你的身边会出现一个短暂的虫洞，跳入后会从另一个虫洞跳出并且恢复全部生命值
 -- 掘地：黄昏时会在玩家身边挖掘一个临时的洞穴通向最后一次做饭的地方
+-- 茸茸：与植物对话时会使其生长的更快、更好
 
 -- 恐惧：当你处于疯狂状态时，攻击有概率时目标恐惧
 -- 引雷：像避雷针一样吸引闪电
@@ -94,6 +95,7 @@ local SKILL_LANG = {
 		dancer = "Dancer",
 		d4c = "D4C",
 		dig = "Digger",
+		ge = "Gold Experience",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -116,6 +118,7 @@ local SKILL_LANG = {
 		dancer = "蝶舞",
 		d4c = "恶行易施",
 		dig = "掘地",
+		ge = "茸茸",
 	},
 }
 
@@ -141,6 +144,7 @@ local SKILL_MAX_LEVEL = {
 	dancer = { 5, 6, 7, 8, 10 },
 	d4c = { 1, 1, 1, 1, 1 },
 	dig = { 1, 2, 3, 4, 5 },
+	ge = { 1, 2, 3, 4, 5 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -226,6 +230,11 @@ local SKILL_CONSTANT = {
 		duration = 25,									-- 维持 25 秒
 		durationUnit = 5,								-- 每个等级增加 5 秒
 	},
+	ge = {
+		special = true,
+		goldern = true,
+		rate = dev_mode 1 or 0.1,						-- 每个等级提升 10% 成长率
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -249,6 +258,7 @@ local SKILL_DESC_LANG = {
 		sponge = "Convert PNT points moisture to hunger every ITV seconds",
 		d4c = "When health < PTG%, jump into wormhole will recover full health. One times per day",
 		dig = "Dig a hole to the place you last use cookpot when dusk. Exist for DUR seconds",
+		ge = "Increase plant PTG% growth rate when talk with it",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -271,6 +281,7 @@ local SKILL_DESC_LANG = {
 		dancer = "有PTG%概率免疫受到的伤害",
 		d4c = "当生命值小于PTG%时跳入虫洞会恢复至满血，每天限1次",
 		dig = "黄昏时会在玩家身边挖掘一个持续DUR秒的洞穴通向最后一次做饭的地方",
+		ge = "与植物对话时，加速其成长速度PTG%",
 	},
 }
 
@@ -359,6 +370,11 @@ local SKILL_DESC_VARS = {
 	dig = function(info, lv)
 		return {
 			DUR = info.duration + info.durationUnit * lv,
+		}
+	end,
+	ge = function(info, lv)
+		return {
+			PTG = info.rate * 100,
 		}
 	end,
 }

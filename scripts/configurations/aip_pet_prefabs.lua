@@ -285,6 +285,22 @@ local PREFABS = {
         },
     },
 
+    -- 大黄蜂
+    beeguard = {
+        bank = "bee_guard",
+        build = "bee_guard_build",
+        anim = "idle",
+        sg = "SGbeeguard",
+        origin = "beeguard",
+        scale = 0.8,
+        sounds = {
+            attack = "dontstarve/bee/killerbee_attack",
+            buzz = "dontstarve/bee/bee_fly_LP",
+            hit = "dontstarve/creatures/together/bee_queen/beeguard/hurt",
+            death = "dontstarve/creatures/together/bee_queen/beeguard/death",
+        },
+    },
+
     --------------------------- 曼德拉草 ---------------------------
 	mandrake_active = {
         bank = "mandrake",
@@ -437,6 +453,8 @@ SHEDDING_LOOT.spider_spitter = SHEDDING_LOOT.spider_warrior     -- 喷射蜘蛛
 SHEDDING_LOOT.spider_dropper = SHEDDING_LOOT.spider             -- 垂线蜘蛛
 SHEDDING_LOOT.spider_water = SHEDDING_LOOT.spider_warrior       -- 海生蜘蛛
 
+SHEDDING_LOOT.beeguard = SHEDDING_LOOT.bee                      -- 蜜蜂守卫
+
 SHEDDING_LOOT.stalker_minion2 = SHEDDING_LOOT.stalker_minion1   -- 编织暗影
 
 local function getPrefab(inst, seer)
@@ -518,10 +536,16 @@ local function getSkills(prefab, subPrefab)
     end
 
     ------------------------- 蜜蜂 -------------------------
-    if prefab == "bee" or prefab == "killerbee" then
-        return {
+    if prefab == "bee" or prefab == "killerbee" or prefab == "beeguard" then
+        local list = {
             "acupuncture",
         }
+
+        if prefab == "beeguard" then
+            table.insert(list, "ge")
+        end
+
+        return list
     end
 
     ------------------------- 曼德拉 -------------------------

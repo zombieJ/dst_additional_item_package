@@ -778,3 +778,20 @@ AipPostComp("stewer", function(self)
 		return ret
 	end
 end)
+
+-- 植物
+AipPostComp("farmplantstress", function(self)
+	local originSetStressed = self.SetStressed
+
+	-- 植物压力
+	function self:SetStressed(name, stressed, doer, ...)
+		-- 额外触发一个事件
+		if doer ~= nil then
+			doer:PushEvent("aipStressPlant",
+				{plant = self.inst}
+			)
+		end
+
+		return originSetStressed(self, name, stressed, doer, ...)
+	end
+end)
