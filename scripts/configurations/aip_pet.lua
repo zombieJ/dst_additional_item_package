@@ -233,7 +233,7 @@ local SKILL_CONSTANT = {
 	ge = {
 		special = true,
 		goldern = true,
-		rate = dev_mode 1 or 0.1,						-- 每个等级提升 10% 成长率
+		rate = dev_mode and 1 or 0.1,					-- 每个等级提升 10% 成长率
 	},
 }
 

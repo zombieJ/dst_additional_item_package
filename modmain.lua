@@ -334,6 +334,41 @@ end
 
 AddPlayerPostInit(PlayerPrefabPostInit)
 
+------------------------------------- 魔法钩子 -------------------------------------
+-- 有玩家反馈鼠标移动到小动物身上崩溃的情况，加个劫持防止报错
+if _G.EntityScript then
+	local function GetLocalFn(fn, fn_name)
+		local level = 1;
+		local MAX_LEVEL = 20;
+		for i = 1, math.huge do
+			local name, value = _G.debug.getupvalue(fn, level);
+			if name and name == fn_name then
+				if value and type(value) == "function" then
+					return value, level
+				end
+				break
+			end
+			level = level + 1
+			if level > MAX_LEVEL then
+				break
+			end
+		end
+	end
+		
+	local function SetLocalFn(fn, up, value)
+		_G.debug.setupvalue(fn, up, value);
+	end
+
+	local old_HasActionComponent = _G.EntityScript.HasActionComponent
+	local CheckModComponentIds, up = GetLocalFn(old_HasActionComponent, "CheckModComponentIds")
+
+	if CheckModComponentIds and up then
+		SetLocalFn(old_HasActionComponent, up, function(self, modname)
+			local result = CheckModComponentIds(self, modname);
+			return result or {};
+		end)
+	end
+end
 
 -- AddPlayerSgPostInit(function(self)
 -- 	-- local run_start = self.states.run_start
