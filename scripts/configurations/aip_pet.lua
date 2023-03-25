@@ -62,7 +62,8 @@ local QUALITY_LANG = {
 -- 蝶舞：受到攻击有概率免疫这次伤害
 -- D4C：将死时，你的身边会出现一个短暂的虫洞，跳入后会从另一个虫洞跳出并且恢复全部生命值
 -- 掘地：黄昏时会在玩家身边挖掘一个临时的洞穴通向最后一次做饭的地方
--- 茸茸：与植物对话时会使其生长的更快、更好
+-- 茸茸：采摘植物时，有概率原地生长出一株新的植株
+-- 嬉闹：攻击目标时，会使目标攻击伤害减少
 
 -- 恐惧：当你处于疯狂状态时，攻击有概率时目标恐惧
 -- 引雷：像避雷针一样吸引闪电
@@ -233,7 +234,7 @@ local SKILL_CONSTANT = {
 	ge = {
 		special = true,
 		goldern = true,
-		rate = dev_mode and 1 or 0.1,					-- 每个等级提升 10% 成长率
+		ptg = dev_mode and 1 or 0.33,					-- 33% 概率重新种植
 	},
 }
 
@@ -258,7 +259,7 @@ local SKILL_DESC_LANG = {
 		sponge = "Convert PNT points moisture to hunger every ITV seconds",
 		d4c = "When health < PTG%, jump into wormhole will recover full health. One times per day",
 		dig = "Dig a hole to the place you last use cookpot when dusk. Exist for DUR seconds",
-		ge = "Increase plant PTG% growth rate when talk with it",
+		ge = "Have PTG% change to replant the seed when harvest",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -281,7 +282,7 @@ local SKILL_DESC_LANG = {
 		dancer = "有PTG%概率免疫受到的伤害",
 		d4c = "当生命值小于PTG%时跳入虫洞会恢复至满血，每天限1次",
 		dig = "黄昏时会在玩家身边挖掘一个持续DUR秒的洞穴通向最后一次做饭的地方",
-		ge = "与植物对话时，加速其成长速度PTG%",
+		ge = "收成植物时有PTG%概率重新种植",
 	},
 }
 
@@ -374,7 +375,7 @@ local SKILL_DESC_VARS = {
 	end,
 	ge = function(info, lv)
 		return {
-			PTG = info.rate * 100,
+			PTG = info.ptg * 100,
 		}
 	end,
 }

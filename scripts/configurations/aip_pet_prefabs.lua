@@ -299,6 +299,7 @@ local PREFABS = {
             hit = "dontstarve/creatures/together/bee_queen/beeguard/hurt",
             death = "dontstarve/creatures/together/bee_queen/beeguard/death",
         },
+        face = 6,
     },
 
     --------------------------- 曼德拉草 ---------------------------
@@ -364,6 +365,16 @@ local PREFABS = {
                 inst.isunder = false
             end
         end,
+    },
+
+    ----------------------------- 浣猫 -----------------------------
+    -- 浣猫
+	catcoon = {
+        bank = "catcoon",
+        build = "catcoon_build",
+        anim = "idle_loop",
+        sg = "SGcatcoon",
+        origin = "catcoon",
     },
 }
 

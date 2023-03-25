@@ -199,6 +199,7 @@ local animalList = {
 	-- 蜜蜂
 	"bee",
 	"killerbee",
+	"beeguard",
 
 	-- 曼德拉草
 	"mandrake_active",

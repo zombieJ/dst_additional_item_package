@@ -141,6 +141,51 @@ local function OnWormholeTravel(inst)
 	end
 end
 
+-- 捡起东西
+local function OnPick(inst, data)
+	data = data or {}
+
+	if not inst.components.aipc_pet_owner then
+		return
+	end
+
+	-- 如果存在 ge 技能，则重新生成植物
+	local skillInfo, skillLv = inst.components.aipc_pet_owner:GetSkillInfo("ge")
+
+	-- 总是拿出第一个
+	local loot = data.loot or {}
+	loot = loot[1] or loot
+	loot = loot[1] or loot
+
+	if skillInfo ~= nil and data.object ~= nil and loot ~= nil then
+		-- 检查是否存在对应种子
+		local seedName = loot.prefab.."_seeds"
+		aipPrint("Seed Name:", seedName)
+		if not PrefabExists(seedName) then
+			return
+		end
+
+		local chance = skillInfo.ptg * skillLv
+		local pt = data.object:GetPosition()
+		aipPrint("Seed Exist! Chance", chance)
+
+		if math.random() < chance then
+			inst:DoTaskInTime(0.1, function()
+				local ents = TheSim:FindEntities(pt.x, 0, pt.z, 0.1)
+				local farm_soil = aipFilterTable(ents, function(ent)
+					return ent.prefab == "farm_soil"
+				end)[1]
+
+				if farm_soil ~= nil then
+					local soil = aipReplacePrefab(farm_soil, "farm_soil")
+					local seed = SpawnPrefab(seedName)
+					seed.components.farmplantable:Plant(soil, inst)
+				end
+			end)
+		end
+	end
+end
+
 ---------------------------------------------------------------------
 -- 双端通用，抓捕宠物组件
 local PetOwner = Class(function(self, inst)
@@ -154,6 +199,7 @@ local PetOwner = Class(function(self, inst)
 	self.inst:ListenForEvent("timerdone", OnTimerDone)
 	self.inst:ListenForEvent("wormholespit", OnWormholeTravel)
 	self.inst:ListenForEvent("aipStartCooking", OnStartCooking)
+	self.inst:ListenForEvent("picksomething", OnPick)
 
 	self.inst:WatchWorldState("phase", OnPhase)
 end)
