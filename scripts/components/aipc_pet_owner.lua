@@ -17,6 +17,8 @@ aipBufferRegister("aip_pet_play", {
 			end
 		end
 	end,
+
+	showFX = true,
 })
 
 ---------------------------------------------------------------------
@@ -642,20 +644,35 @@ end
 function PetOwner:OnSave()
     local data = {
         pets = self.pets,
+		id = self.showPet ~= nil and self.showPet.components.aipc_petable:GetInfo().id or false,
     }
 
 	return data
 end
 
 function PetOwner:OnLoad(data)
+	local id = false
 	if data ~= nil then
 		self.pets = data.pets or {}
 	end
 
 	self:FillInfo()
-	self.inst:DoTaskInTime(1, function()
-		self:ShowPet()
-	end)
+
+	-- 如果不是 false 就填充一个宠物出来
+	if data ~= nil then
+		id = data.id
+		if data.id == nil then
+			id = self.pets[1] ~= nil and self.pets[1].id or false
+		end
+	end
+
+	aipTypePrint("Load:", data, id)
+
+	if id ~= false then
+		self.inst:DoTaskInTime(1, function()
+			self:TogglePet(id, true)
+		end)
+	end
 end
 
 function PetOwner:OnRemoveEntity()
