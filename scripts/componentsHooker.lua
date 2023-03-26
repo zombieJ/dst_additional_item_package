@@ -533,6 +533,16 @@ AipPostComp("combat", function(self)
 			dmg = dmg * 2
 		end
 
+		-- 攻击者有 嬉闹 BUFF，将会减少伤害
+		local playBuffInfo = _G.aipBufferInfo(
+			self.inst,
+			"aip_pet_play"
+		)
+		if playBuffInfo ~= nil and playBuffInfo.data ~= nil then
+			local desc = playBuffInfo.data.desc or 0
+			dmg = dmg * (1 - desc)
+		end
+
 		-- 宠物主人攻击 buff
 		if self.inst.components.aipc_pet_owner ~= nil then
 			local petDmgMulti = 0

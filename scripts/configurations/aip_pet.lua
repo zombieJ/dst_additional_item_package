@@ -97,6 +97,7 @@ local SKILL_LANG = {
 		d4c = "D4C",
 		dig = "Digger",
 		ge = "Gold Experience",
+		play = "Play Rough",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -120,6 +121,7 @@ local SKILL_LANG = {
 		d4c = "恶行易施",
 		dig = "掘地",
 		ge = "茸茸",
+		play = "嬉闹",
 	},
 }
 
@@ -145,7 +147,8 @@ local SKILL_MAX_LEVEL = {
 	dancer = { 5, 6, 7, 8, 10 },
 	d4c = { 1, 1, 1, 1, 1 },
 	dig = { 1, 2, 3, 4, 5 },
-	ge = { 1, 2, 3, 4, 5 },
+	ge = { 6, 7, 8, 9, 10 },
+	play = { 1, 2, 3, 4, 5 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -234,7 +237,12 @@ local SKILL_CONSTANT = {
 	ge = {
 		special = true,
 		goldern = true,
-		ptg = dev_mode and 1 or 0.33,					-- 33% 概率重新种植
+		ptg = dev_mode and 1 or 0.05,					-- 概率重新种植
+	},
+	play = {
+		special = true,
+		weak = dev_mode and 1 or 0.05,					-- 减攻概率
+		duration = 10,									-- 持续时间
 	},
 }
 
@@ -260,6 +268,7 @@ local SKILL_DESC_LANG = {
 		d4c = "When health < PTG%, jump into wormhole will recover full health. One times per day",
 		dig = "Dig a hole to the place you last use cookpot when dusk. Exist for DUR seconds",
 		ge = "Have PTG% change to replant the seed when harvest",
+		play = "Your attack will make target reduce PTG% damage for DUR seconds",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -283,6 +292,7 @@ local SKILL_DESC_LANG = {
 		d4c = "当生命值小于PTG%时跳入虫洞会恢复至满血，每天限1次",
 		dig = "黄昏时会在玩家身边挖掘一个持续DUR秒的洞穴通向最后一次做饭的地方",
 		ge = "收成植物时有PTG%概率重新种植",
+		play = "被你攻击的目标会降低PTG%伤害，持续DUR秒",
 	},
 }
 
@@ -376,6 +386,12 @@ local SKILL_DESC_VARS = {
 	ge = function(info, lv)
 		return {
 			PTG = info.ptg * 100,
+		}
+	end,
+	play = function(info, lv)
+		return {
+			PTG = info.weak * 100,
+			DUR = info.duration,
 		}
 	end,
 }

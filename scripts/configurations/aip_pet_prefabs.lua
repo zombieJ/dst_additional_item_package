@@ -457,6 +457,16 @@ local SHEDDING_LOOT = {
         nitre = 0.2,
         goldnugget = 0.05,
     },
+
+    ------------------------- 浣猫 -------------------------
+    catcoon = {
+        spoiled_food = 0.5,
+        cutgrass = 0.5,
+        feather_crow = 0.1,
+        feather_robin = 0.1,
+        feather_robin_winter = 0.1,
+        feather_canary = 0.05,
+    },
 }
 
 SHEDDING_LOOT.spider_hider = SHEDDING_LOOT.spider_warrior       -- 洞穴蜘蛛
@@ -584,6 +594,13 @@ local function getSkills(prefab, subPrefab)
     if prefab == "mole" then
         return {
             "dig",
+        }
+    end
+
+    ------------------------- 浣猫 -------------------------
+    if prefab == "catcoon" then
+        return {
+            "play",
         }
     end
 end

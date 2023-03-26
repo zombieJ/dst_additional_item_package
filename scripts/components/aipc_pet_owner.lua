@@ -5,7 +5,27 @@ local petPrefabs = require("configurations/aip_pet_prefabs")
 
 local MAX_PET_COUNT = 5
 
+-------------------------------- Buff --------------------------------
+-- 嬉闹 BUFF
+aipBufferRegister("aip_pet_play", {
+	startFn = function(source, inst, info)
+		if source ~= nil and source.components.aipc_pet_owner ~= nil then
+			local skillInfo, skillLv = source.components.aipc_pet_owner:GetSkillInfo("play")
+			if skillInfo ~= nil then
+				local desc = skillInfo.weak * skillLv
+				info.data.desc = math.min(1, math.max(info.data.desc or 0, desc))
+			end
+		end
+	end,
+})
+
 ---------------------------------------------------------------------
+local function OnAttack(inst, data)
+	if inst ~= nil and inst.components.aipc_pet_owner ~= nil and data ~= nil and data.target ~= nil then
+		inst.components.aipc_pet_owner:Attack(data.target)
+	end
+end
+
 local function OnAttacked(inst, data)
 	if inst ~= nil and inst.components.aipc_pet_owner ~= nil then
 		inst.components.aipc_pet_owner:Attacked(data)
@@ -160,14 +180,12 @@ local function OnPick(inst, data)
 	if skillInfo ~= nil and data.object ~= nil and loot ~= nil then
 		-- 检查是否存在对应种子
 		local seedName = loot.prefab.."_seeds"
-		aipPrint("Seed Name:", seedName)
 		if not PrefabExists(seedName) then
 			return
 		end
 
 		local chance = skillInfo.ptg * skillLv
 		local pt = data.object:GetPosition()
-		aipPrint("Seed Exist! Chance", chance)
 
 		if math.random() < chance then
 			inst:DoTaskInTime(0.1, function()
@@ -195,6 +213,7 @@ local PetOwner = Class(function(self, inst)
 	self.showPet = nil
 	self.petData = nil		-- 临时存储展示的宠物信息用于快速查询
 
+	self.inst:ListenForEvent("onhitother", OnAttack)
 	self.inst:ListenForEvent("attacked", OnAttacked)
 	self.inst:ListenForEvent("timerdone", OnTimerDone)
 	self.inst:ListenForEvent("wormholespit", OnWormholeTravel)
@@ -425,6 +444,15 @@ function PetOwner:EnsureTimer()
 	end
 end
 
+-- 攻击
+function PetOwner:Attack(target)
+	local skillInfo, skillLv = self:GetSkillInfo("play")
+
+	if skillInfo ~= nil then
+		aipBufferPatch(self.inst, target, "aip_pet_play", skillInfo.duration * skillLv)
+	end
+end
+
 -- 被攻击
 function PetOwner:Attacked(data)
 	self:EnsureTimer()
@@ -632,8 +660,12 @@ end
 
 function PetOwner:OnRemoveEntity()
 	self:HidePet()
+	self.inst:RemoveEventCallback("onhitother", OnAttack)
 	self.inst:RemoveEventCallback("attacked", OnAttacked)
 	self.inst:RemoveEventCallback("timerdone", OnTimerDone)
+	self.inst:RemoveEventCallback("wormholespit", OnWormholeTravel)
+	self.inst:RemoveEventCallback("aipStartCooking", OnStartCooking)
+	self.inst:RemoveEventCallback("picksomething", OnPick)
 end
 
 PetOwner.OnRemoveFromEntity = PetOwner.OnRemoveEntity

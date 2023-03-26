@@ -212,6 +212,9 @@ local animalList = {
 
 	-- 鼹鼠
 	"mole",
+
+	-- 浣猫
+	"catcoon",
 }
 
 for i, prefab in ipairs(animalList) do
