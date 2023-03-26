@@ -85,10 +85,12 @@ end
 
 -- 找向日葵撞
 local function GoToTarget(inst, target)
-	local prefab = aipSpawnPrefab(target, "aip_shadow_wrapper")
-	prefab.DoShow()
+	if target:IsValid() then
+		local prefab = aipSpawnPrefab(target, "aip_shadow_wrapper")
+		prefab.DoShow()
 
-	aipReplacePrefab(target, "aip_sunflower_ghost")
+		aipReplacePrefab(target, "aip_sunflower_ghost")
+	end
 end
 
 local function FindSunflower(inst)

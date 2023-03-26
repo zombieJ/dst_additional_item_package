@@ -533,6 +533,16 @@ AipPostComp("combat", function(self)
 			dmg = dmg * 2
 		end
 
+		-- 攻击者有 嬉闹 BUFF，将会减少伤害
+		local playBuffInfo = _G.aipBufferInfo(
+			self.inst,
+			"aip_pet_play"
+		)
+		if playBuffInfo ~= nil and playBuffInfo.data ~= nil then
+			local desc = playBuffInfo.data.desc or 0
+			dmg = dmg * (1 - desc)
+		end
+
 		-- 宠物主人攻击 buff
 		if self.inst.components.aipc_pet_owner ~= nil then
 			local petDmgMulti = 0
@@ -776,5 +786,22 @@ AipPostComp("stewer", function(self)
 		end
 
 		return ret
+	end
+end)
+
+-- 植物
+AipPostComp("farmplantstress", function(self)
+	local originSetStressed = self.SetStressed
+
+	-- 植物压力
+	function self:SetStressed(name, stressed, doer, ...)
+		-- 额外触发一个事件
+		if doer ~= nil then
+			doer:PushEvent("aipStressPlant",
+				{plant = self.inst}
+			)
+		end
+
+		return originSetStressed(self, name, stressed, doer, ...)
 	end
 end)

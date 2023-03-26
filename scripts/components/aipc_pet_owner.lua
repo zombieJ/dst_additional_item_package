@@ -5,7 +5,29 @@ local petPrefabs = require("configurations/aip_pet_prefabs")
 
 local MAX_PET_COUNT = 5
 
+-------------------------------- Buff --------------------------------
+-- 嬉闹 BUFF
+aipBufferRegister("aip_pet_play", {
+	startFn = function(source, inst, info)
+		if source ~= nil and source.components.aipc_pet_owner ~= nil then
+			local skillInfo, skillLv = source.components.aipc_pet_owner:GetSkillInfo("play")
+			if skillInfo ~= nil then
+				local desc = skillInfo.weak * skillLv
+				info.data.desc = math.min(1, math.max(info.data.desc or 0, desc))
+			end
+		end
+	end,
+
+	showFX = true,
+})
+
 ---------------------------------------------------------------------
+local function OnAttack(inst, data)
+	if inst ~= nil and inst.components.aipc_pet_owner ~= nil and data ~= nil and data.target ~= nil then
+		inst.components.aipc_pet_owner:Attack(data.target)
+	end
+end
+
 local function OnAttacked(inst, data)
 	if inst ~= nil and inst.components.aipc_pet_owner ~= nil then
 		inst.components.aipc_pet_owner:Attacked(data)
@@ -141,6 +163,49 @@ local function OnWormholeTravel(inst)
 	end
 end
 
+-- 捡起东西
+local function OnPick(inst, data)
+	data = data or {}
+
+	if not inst.components.aipc_pet_owner then
+		return
+	end
+
+	-- 如果存在 ge 技能，则重新生成植物
+	local skillInfo, skillLv = inst.components.aipc_pet_owner:GetSkillInfo("ge")
+
+	-- 总是拿出第一个
+	local loot = data.loot or {}
+	loot = loot[1] or loot
+	loot = loot[1] or loot
+
+	if skillInfo ~= nil and data.object ~= nil and loot ~= nil then
+		-- 检查是否存在对应种子
+		local seedName = loot.prefab.."_seeds"
+		if not PrefabExists(seedName) then
+			return
+		end
+
+		local chance = skillInfo.ptg * skillLv
+		local pt = data.object:GetPosition()
+
+		if math.random() < chance then
+			inst:DoTaskInTime(0.1, function()
+				local ents = TheSim:FindEntities(pt.x, 0, pt.z, 0.1)
+				local farm_soil = aipFilterTable(ents, function(ent)
+					return ent.prefab == "farm_soil"
+				end)[1]
+
+				if farm_soil ~= nil then
+					local soil = aipReplacePrefab(farm_soil, "farm_soil")
+					local seed = SpawnPrefab(seedName)
+					seed.components.farmplantable:Plant(soil, inst)
+				end
+			end)
+		end
+	end
+end
+
 ---------------------------------------------------------------------
 -- 双端通用，抓捕宠物组件
 local PetOwner = Class(function(self, inst)
@@ -150,10 +215,12 @@ local PetOwner = Class(function(self, inst)
 	self.showPet = nil
 	self.petData = nil		-- 临时存储展示的宠物信息用于快速查询
 
+	self.inst:ListenForEvent("onhitother", OnAttack)
 	self.inst:ListenForEvent("attacked", OnAttacked)
 	self.inst:ListenForEvent("timerdone", OnTimerDone)
 	self.inst:ListenForEvent("wormholespit", OnWormholeTravel)
 	self.inst:ListenForEvent("aipStartCooking", OnStartCooking)
+	self.inst:ListenForEvent("picksomething", OnPick)
 
 	self.inst:WatchWorldState("phase", OnPhase)
 end)
@@ -379,6 +446,15 @@ function PetOwner:EnsureTimer()
 	end
 end
 
+-- 攻击
+function PetOwner:Attack(target)
+	local skillInfo, skillLv = self:GetSkillInfo("play")
+
+	if skillInfo ~= nil then
+		aipBufferPatch(self.inst, target, "aip_pet_play", skillInfo.duration * skillLv)
+	end
+end
+
 -- 被攻击
 function PetOwner:Attacked(data)
 	self:EnsureTimer()
@@ -568,26 +644,45 @@ end
 function PetOwner:OnSave()
     local data = {
         pets = self.pets,
+		id = self.showPet ~= nil and self.showPet.components.aipc_petable:GetInfo().id or false,
     }
 
 	return data
 end
 
 function PetOwner:OnLoad(data)
+	local id = false
 	if data ~= nil then
 		self.pets = data.pets or {}
 	end
 
 	self:FillInfo()
-	self.inst:DoTaskInTime(1, function()
-		self:ShowPet()
-	end)
+
+	-- 如果不是 false 就填充一个宠物出来
+	if data ~= nil then
+		id = data.id
+		if data.id == nil then
+			id = self.pets[1] ~= nil and self.pets[1].id or false
+		end
+	end
+
+	aipTypePrint("Load:", data, id)
+
+	if id ~= false then
+		self.inst:DoTaskInTime(1, function()
+			self:TogglePet(id, true)
+		end)
+	end
 end
 
 function PetOwner:OnRemoveEntity()
 	self:HidePet()
+	self.inst:RemoveEventCallback("onhitother", OnAttack)
 	self.inst:RemoveEventCallback("attacked", OnAttacked)
 	self.inst:RemoveEventCallback("timerdone", OnTimerDone)
+	self.inst:RemoveEventCallback("wormholespit", OnWormholeTravel)
+	self.inst:RemoveEventCallback("aipStartCooking", OnStartCooking)
+	self.inst:RemoveEventCallback("picksomething", OnPick)
 end
 
 PetOwner.OnRemoveFromEntity = PetOwner.OnRemoveEntity

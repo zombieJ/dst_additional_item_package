@@ -37,12 +37,10 @@ function _G.aipBufferRemove(inst, name)
 	end
 end
 
--- 【服务端】创建 Buffer
-function _G.aipBufferPatch(source, inst, name, duration, info)
+-- 获取 Buffer 实体
+local function getBuffInst(inst)
 	local buffer = nil
 
-	------------------------------- 准备阶段 -------------------------------
-	-- 复用 Buffer 对象
 	local children = inst.children or {}
 	for child, exist in pairs(children) do
 		if exist and child:IsValid() and child.prefab == "aip_0_buffer" then
@@ -50,6 +48,24 @@ function _G.aipBufferPatch(source, inst, name, duration, info)
 			break
 		end
 	end
+
+	return buffer
+end
+
+-- 获取 Buffer 数据
+function _G.aipBufferInfo(inst, name)
+	local buffer = getBuffInst(inst)
+
+	if buffer ~= nil and buffer._buffers[name] ~= nil then
+		return buffer._buffers[name]
+	end
+end
+
+-- 【服务端】创建 Buffer
+function _G.aipBufferPatch(source, inst, name, duration)
+	------------------------------- 准备阶段 -------------------------------
+	-- 复用 Buffer 对象
+	local buffer = getBuffInst(inst)
 
 	-- 没有就创建一个
 	if buffer == nil then
