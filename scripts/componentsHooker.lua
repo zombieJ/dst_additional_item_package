@@ -551,7 +551,7 @@ AipPostComp("combat", function(self)
 			local skillInfo, skillLv = self.inst.components.aipc_pet_owner:GetSkillInfo("aggressive")
 
 			if skillInfo ~= nil then
-				local multi = 1 + skillInfo.multi * skillLv
+				local multi = skillInfo.multi * skillLv
 				petDmgMulti = petDmgMulti + multi
 			end
 

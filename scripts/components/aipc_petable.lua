@@ -83,12 +83,18 @@ end
 function Petable:ShowAura()
 	if not TheNet:IsDedicated() then
 		if self.aura == nil then
-			-- 展示 Aura
-			self.aura = SpawnPrefab("aip_aura_buffer")
-			self.inst:AddChild(self.aura)
+			local quality = self:GetQuality()
+			local color = petConfig.QUALITY_COLORS[quality]
 
-			local color = petConfig.QUALITY_COLORS[self:GetQuality()]
-			self.aura.AnimState:OverrideMultColour(color[1] / 255, color[2] / 255, color[3] / 255, 1)
+			if color ~= nil then
+				-- 展示 Aura
+				self.aura = SpawnPrefab("aip_aura_buffer")
+				self.inst:AddChild(self.aura)
+
+				self.aura.AnimState:OverrideMultColour(color[1] / 255, color[2] / 255, color[3] / 255, 1)
+			else
+				aipPrint("MISS Color:", color, quality)
+			end
 		end
 
 		if self.auraTask ~= nil then
