@@ -375,12 +375,12 @@ function _G.aipFindCloseEnt(inst, targetList)
 	return closeTarget
 end
 
--- 降级值如果没有的话
+-- 降级值如果没有的话（总是兜底为 0）
 function fb(value, defaultValue)
 	if value ~= nil then
 		return value
 	end
-	return defaultValue
+	return defaultValue or 0
 end
 
 -- 在目标位置创建
