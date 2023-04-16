@@ -108,6 +108,13 @@ local function onHit(inst, attacker)
     end
 end
 
+-- 建筑
+local function onhammered(inst, worker)
+	inst.components.lootdropper:DropLoot()
+    local fx = aipReplacePrefab(inst, "collapse_small")
+	fx:SetMaterial("stone")
+end
+
 ------------------------------------ 实例 ------------------------------------
 local function fn()
     local inst = CreateEntity()
@@ -143,6 +150,15 @@ local function fn()
     inst.components.health:StartRegen(1, 10)
 
     inst:ListenForEvent("dropitem", markItem)
+
+    -- 掉东西
+	inst:AddComponent("lootdropper")
+
+    -- 被锤子
+	inst:AddComponent("workable")
+	inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
+	inst.components.workable:SetWorkLeft(4)
+	inst.components.workable:SetOnFinishCallback(onhammered)
 
     MakeHauntableLaunch(inst)
 

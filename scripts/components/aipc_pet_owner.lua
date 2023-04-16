@@ -579,7 +579,8 @@ function PetOwner:StartCure(doCure)
 		-- 如果生命值低于阈值，发射飞弹治疗目标
 		if
 			doCure and ptg < maxPtg and
-			self.showPet and not self.inst.components.health:IsDead()
+			self.showPet and self.showPet:IsValid() and
+			not self.inst.components.health:IsDead()
 		then
 			local delta = skillInfo.multi * skillLv
 			

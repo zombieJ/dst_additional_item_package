@@ -264,8 +264,8 @@ local function fn()
     inst.components.workable:SetOnFinishCallback(onFinish)
 
     inst:AddComponent("hauntable")
-    MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
-    MakeMediumPropagator(inst)
+    -- MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)
+    -- MakeMediumPropagator(inst)
 
     inst:WatchWorldState("isday", OnIsDay)
     inst:ListenForEvent("onremove", onRemove)

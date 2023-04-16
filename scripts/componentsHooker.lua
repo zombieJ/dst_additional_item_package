@@ -770,6 +770,20 @@ AipPostComp("edible", function(self)
 	end
 end)
 
+-- 食客
+AipPostComp("eater", function(self)
+	local originTestFood = self.TestFood
+
+	-- 玩家点不中的，其他生物也不能吃
+	function self:TestFood(food, testvalues, ...)
+		if food ~= nil and food:HasTag("NOCLICK") then
+			return false
+		end
+
+		return originTestFood(self, food, testvalues, ...)
+	end
+end)
+
 -- 烹饪
 AipPostComp("stewer", function(self)
 	local originStartCooking = self.StartCooking
