@@ -1,5 +1,7 @@
 local language = aipGetModConfig("language")
 
+local petConfig = require("configurations/aip_pet")
+
 -- 文字描述
 local LANG_MAP = {
 	english = {
@@ -46,6 +48,14 @@ local function refreshStatus(inst)
 		inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_pet_box_in.xml"
 		inst.components.inventoryitem:ChangeImageName("aip_pet_box_in")
         inst.AnimState:PlayAnimation("in", true)
+
+        -- 更新描述信息
+        local upperCase = string.upper(inst._aipPetData.prefab)
+        local name = (STRINGS.NAMES[upperCase] or "UNKNOWN")
+
+        local quality = inst._aipPetData.quality
+        inst.components.aipc_info_client:SetString("aip_info", aipStr(petConfig.QUALITY_LANG[quality])..name)
+        inst.components.aipc_info_client:SetByteArray("aip_info_color", petConfig.QUALITY_COLORS[quality])
 	end
 end
 
@@ -86,6 +96,18 @@ local function onDoAction(inst, doer)
     end
 end
 
+-------------------------------- 存取 --------------------------------
+local function onSave(inst, data)
+	data._aipPetData = inst._aipPetData
+end
+
+local function onLoad(inst, data)
+	if data ~= nil then
+		inst._aipPetData = data._aipPetData
+		refreshStatus(inst)
+	end
+end
+
 -------------------------------- 实例 --------------------------------
 local function fn()
     local inst = CreateEntity()
@@ -107,9 +129,14 @@ local function fn()
     inst:AddComponent("aipc_action_client")
 	inst.components.aipc_action_client.canBeActOn = canBeActOn
 
+    inst:AddComponent("aipc_info_client")
+    inst:AddTag("_named")
+
     if not TheWorld.ismastersim then
         return inst
     end
+
+    inst:RemoveTag("_named")
 
     inst:AddComponent("aipc_action")
 	inst.components.aipc_action.onDoAction = onDoAction
@@ -125,6 +152,9 @@ local function fn()
     inst._aipPetData = nil
 
     refreshStatus(inst)
+
+    inst.OnLoad = onLoad
+    inst.OnSave = onSave
 
     return inst
 end
