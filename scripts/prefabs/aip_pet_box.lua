@@ -96,6 +96,24 @@ local function onDoAction(inst, doer)
     end
 end
 
+local function onDesc(inst, viewer)
+    if
+        viewer ~= nil and inst ~= nil and
+        inst._aipPetData ~= nil and
+        viewer.components.aipc_pet_owner ~= nil
+    then
+        -- 获取宠物信息
+        local msgData = {
+            current = 1,
+            petInfos = { inst._aipPetData },
+        }
+
+        -- 加一个切割前缀强制服务器触发
+        local dataStr = json.encode(msgData)
+        viewer.player_classified.aip_pet_info:set(tostring(os.time()).."|"..dataStr)
+    end
+end
+
 -------------------------------- 存取 --------------------------------
 local function onSave(inst, data)
 	data._aipPetData = inst._aipPetData
@@ -142,6 +160,7 @@ local function fn()
 	inst.components.aipc_action.onDoAction = onDoAction
 
     inst:AddComponent("inspectable")
+    inst.components.inspectable.descriptionfn = onDesc
 
 	inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_pet_box.xml"
