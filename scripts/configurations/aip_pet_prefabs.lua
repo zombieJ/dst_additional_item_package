@@ -376,6 +376,21 @@ local PREFABS = {
         sg = "SGcatcoon",
         origin = "catcoon",
     },
+
+     ----------------------------- 戳食 -----------------------------
+    -- 戳食者
+    slurper = {
+        bank = "slurper",
+        build = "slurper_basic",
+        anim = "idle_loop",
+        sg = "SGslurper",
+        origin = "slurper",
+        scale = 0.6,
+        postInit = function(inst)
+            inst._light = SpawnPrefab("slurperlight")
+            inst._light.entity:SetParent(inst.entity)
+        end,
+    },
 }
 
 -- 掉毛概率
@@ -466,6 +481,11 @@ local SHEDDING_LOOT = {
         feather_robin = 0.1,
         feather_robin_winter = 0.1,
         feather_canary = 0.05,
+    },
+
+    ------------------------- 戳食 -------------------------
+    slurper = {
+        beardhair = 0.01,           -- 1% 概率掉胡子
     },
 }
 
@@ -601,6 +621,13 @@ local function getSkills(prefab, subPrefab)
     if prefab == "catcoon" then
         return {
             "play",
+        }
+    end
+
+    ------------------------ 戳食者 ------------------------
+    if prefab == "slurper" then
+        return {
+            "migao",
         }
     end
 end

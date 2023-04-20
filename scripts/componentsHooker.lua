@@ -603,6 +603,14 @@ AipPostComp("combat", function(self)
 					fx.entity:SetParent(target.entity)
 				end
 			end
+
+			-- 米糕 会增加伤害
+			local migaoInfo, migaoLv = target.components.aipc_pet_owner:GetSkillInfo("migao")
+
+			if migaoInfo ~= nil then
+				local multi = 1 + migaoInfo.pain
+				dmg = dmg * multi
+			end
 		end
 
 		return dmg
@@ -677,9 +685,6 @@ AipPostComp("drownable", function(self)
 				end
 			end
 		end
-		
-
-		
 
 		return originOnFallInOcean(self, ...)
 	end

@@ -46,6 +46,7 @@ local QUALITY_LANG = {
 -- 孤狼：待在身边时，玩家砍树会提升速度
 -- 伯乐：有一定概率提升你抓捕的宠物品质 1 级，如果只有一个宠物，则一定提升
 -- 铁胃：免疫食物带来的生命损失负面效果
+-- 米糕：你受到的伤害提升 55%。你每次闪避成功，下一次伤害提升 10%，最多提升 100%，受到伤害后重置
 
 -- 杂技：没有穿戴防具时，攻击和速度提升
 -- 呆呆：初次受到攻击时免疫伤害，再次受到攻击时会获得两倍伤害。之后（或者隔一段时间）重置计数器
@@ -110,6 +111,7 @@ local SKILL_LANG = {
 		dig = "Digger",
 		ge = "Gold Experience",
 		play = "Play Rough",
+		migao = "Migao",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -134,6 +136,7 @@ local SKILL_LANG = {
 		dig = "掘地",
 		ge = "茸茸",
 		play = "嬉闹",
+		migao = "米糕",
 	},
 }
 
@@ -161,6 +164,7 @@ local SKILL_MAX_LEVEL = {
 	dig = { 1, 2, 3, 4, 5 },
 	ge = { 6, 7, 8, 9, 10 },
 	play = { 1, 2, 3, 4, 5 },
+	migao = { 2, 4, 6, 8, 10 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -256,6 +260,12 @@ local SKILL_CONSTANT = {
 		weak = dev_mode and 1 or 0.05,					-- 减攻概率
 		duration = 10,									-- 持续时间
 	},
+	migao = {
+		special = true,
+		goldern = true,
+		pain = .55,										-- 受伤提升
+		percent = dev_mode and 0.5 or 0.1,				-- 伤害提升
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -281,6 +291,7 @@ local SKILL_DESC_LANG = {
 		dig = "Dig a hole to the place you last use cookpot when dusk. Exist for DUR seconds",
 		ge = "Have PTG% change to replant the seed when harvest",
 		play = "Your attack will make target reduce PTG% damage for DUR seconds",
+		migao = "Damage received increases PAN%. Every time you successfully dodge an attack, increase PTG% damage, up to TTL%. Reset when damaged",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -305,6 +316,7 @@ local SKILL_DESC_LANG = {
 		dig = "黄昏时会在玩家身边挖掘一个持续DUR秒的洞穴通向最后一次做饭的地方",
 		ge = "收成植物时有PTG%概率重新种植",
 		play = "被你攻击的目标会降低PTG%伤害，持续DUR秒",
+		migao = "受到的伤害提升PAN%。每次成功闪避攻击，提升PTG%伤害，最多TTL%。受到伤害则重置",
 	},
 }
 
@@ -404,6 +416,13 @@ local SKILL_DESC_VARS = {
 		return {
 			PTG = info.weak * 100,
 			DUR = info.duration,
+		}
+	end,
+	migao = function(info, lv)
+		return {
+			PAN = info.pain * 100,
+			PTG = info.percent * 100,
+			TTL = info.percent * lv * 100,
 		}
 	end,
 }

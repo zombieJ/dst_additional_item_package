@@ -247,6 +247,10 @@ function PetInfoWidget:RefreshStatus()
         local colorSkillText = self.infoPanel:AddChild(Text(UIFONT, 50, skill_name_str))
         colorSkillText:SetHAlign(ANCHOR_LEFT)
 
+        -- Print Text
+        -- aipPrint("Skill Color:", skill_name_str)
+        -- aipPrint("Skill Desc:", skill_str)
+
         local skillClr = QUALITY_COLORS[skillQuality]
         if skillConstant.goldern then
             colorSkillText:SetColour(1, 0.85, 0, 1)
