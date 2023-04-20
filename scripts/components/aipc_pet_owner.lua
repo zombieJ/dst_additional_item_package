@@ -206,6 +206,27 @@ local function OnPick(inst, data)
 	end
 end
 
+-- 躲避攻击
+local function OnMissAttack(inst)
+	if inst.components.aipc_pet_owner == nil then
+		return
+	end
+
+	-- 如果存在 米糕 技能，则叠加输出
+	local skillInfo, skillLv, skill = inst.components.aipc_pet_owner:GetSkillInfo("migao")
+
+	if skillInfo ~= nil then
+		-- 特效
+		aipSpawnPrefab(inst, "farm_plant_happy")
+
+		-- 叠加伤害
+		skill._multi = math.min(
+			(skill._multi or 0) + 1,
+			skillLv
+		)
+	end
+end
+
 ---------------------------------------------------------------------
 -- 双端通用，抓捕宠物组件
 local PetOwner = Class(function(self, inst)
@@ -221,6 +242,7 @@ local PetOwner = Class(function(self, inst)
 	self.inst:ListenForEvent("wormholespit", OnWormholeTravel)
 	self.inst:ListenForEvent("aipStartCooking", OnStartCooking)
 	self.inst:ListenForEvent("picksomething", OnPick)
+	self.inst:ListenForEvent("aipMissAttack", OnMissAttack)
 
 	self.inst:WatchWorldState("phase", OnPhase)
 end)
@@ -684,6 +706,7 @@ function PetOwner:OnRemoveEntity()
 	self.inst:RemoveEventCallback("wormholespit", OnWormholeTravel)
 	self.inst:RemoveEventCallback("aipStartCooking", OnStartCooking)
 	self.inst:RemoveEventCallback("picksomething", OnPick)
+	self.inst:RemoveEventCallback("aipMissAttack", OnMissAttack)
 end
 
 PetOwner.OnRemoveFromEntity = PetOwner.OnRemoveEntity

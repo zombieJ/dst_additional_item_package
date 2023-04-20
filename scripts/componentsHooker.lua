@@ -573,6 +573,14 @@ AipPostComp("combat", function(self)
 				end
 			end
 
+			-- 米糕 闪避增加伤害
+			local migaoInfo, migaoLv, migaoSkill = self.inst.components.aipc_pet_owner:GetSkillInfo("migao")
+
+			if migaoInfo ~= nil then
+			local multi = 1 + (migaoSkill._multi or 0) * migaoInfo.multi
+				dmg = dmg * multi
+			end
+
 			dmg = dmg * (1 + petDmgMulti)
 		end
 
@@ -605,15 +613,30 @@ AipPostComp("combat", function(self)
 			end
 
 			-- 米糕 会增加伤害
-			local migaoInfo, migaoLv = target.components.aipc_pet_owner:GetSkillInfo("migao")
+			local migaoInfo, migaoLv, migaoSkill = target.components.aipc_pet_owner:GetSkillInfo("migao")
 
 			if migaoInfo ~= nil then
 				local multi = 1 + migaoInfo.pain
 				dmg = dmg * multi
+
+				-- 重置伤害倍数计数
+				migaoSkill._multi = 0
 			end
 		end
 
 		return dmg
+	end
+
+	-- 为攻击额外添加事件
+	local originDoAttack = self.DoAttack
+
+	function self:DoAttack(targ, weapon, projectile, stimuli, instancemult, instrangeoverride, instpos, ...)
+		-- 给 miss 的目标也添加一个事件
+		if not self:CanHitTarget(targ, weapon) or self.AOEarc then
+			targ:PushEvent("aipMissAttack", { source = self.inst, weapon = weapon })
+		end
+
+		return originDoAttack(self, targ, weapon, projectile, stimuli, instancemult, instrangeoverride, instpos, ...)
 	end
 end)
 

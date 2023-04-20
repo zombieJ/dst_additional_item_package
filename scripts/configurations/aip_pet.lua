@@ -264,7 +264,7 @@ local SKILL_CONSTANT = {
 		special = true,
 		goldern = true,
 		pain = .55,										-- 受伤提升
-		percent = dev_mode and 0.5 or 0.1,				-- 伤害提升
+		multi = dev_mode and 0.5 or 0.1,				-- 伤害提升
 	},
 }
 
@@ -421,8 +421,8 @@ local SKILL_DESC_VARS = {
 	migao = function(info, lv)
 		return {
 			PAN = info.pain * 100,
-			PTG = info.percent * 100,
-			TTL = info.percent * lv * 100,
+			PTG = info.multi * 100,
+			TTL = info.multi * lv * 100,
 		}
 	end,
 }
