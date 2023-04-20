@@ -389,6 +389,8 @@ local PREFABS = {
         postInit = function(inst)
             inst._light = SpawnPrefab("slurperlight")
             inst._light.entity:SetParent(inst.entity)
+
+            inst._light.Light:SetRadius(0.5)
         end,
     },
 }

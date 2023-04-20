@@ -291,6 +291,12 @@ function PetOwner:Count()
 	return #self.pets
 end
 
+function PetOwner:AddPetByInfo(data)
+	table.insert(self.pets, data)
+
+	return self:ShowPet(#self.pets)
+end
+
 -- 添加宠物
 function PetOwner:AddPet(pet, qualityOffset)
 	if self:IsFull() then
@@ -304,10 +310,8 @@ function PetOwner:AddPet(pet, qualityOffset)
 
 		local data = pet.components.aipc_petable:GetInfo(self.inst)
 
-		table.insert(self.pets, data)
+		return self:AddPetByInfo(data)
 	end
-
-	return self:ShowPet(#self.pets)
 end
 
 -- 移除宠物
