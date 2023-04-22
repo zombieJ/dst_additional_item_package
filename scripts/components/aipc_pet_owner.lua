@@ -358,6 +358,9 @@ function PetOwner:HidePet(showEffect)
 
 	-- 停止海绵
 	self.inst.components.timer:StopTimer("aipc_pet_owner_drink")
+
+	-- 停止杀神
+	self:StopJohnWick()
 end
 
 -- 展示宠物
@@ -398,6 +401,9 @@ function PetOwner:ShowPet(index, showEffect)
 
 		-- 尝试海绵
 		self:StartDrink()
+
+		-- 尝试杀神
+		self:StartJohnWick()
 
 		return pet
 	end
@@ -650,6 +656,39 @@ function PetOwner:StartDrink(doCure)
 
 		self:EnsureTimer()
 		self.inst.components.timer:StartTimer("aipc_pet_owner_drink", skillInfo.interval)
+	end
+end
+
+-- 开始杀神
+function PetOwner:StartJohnWick()
+	self:StopJohnWick()
+
+	local skillInfo, skillLv = self:GetSkillInfo("johnWick")
+	if skillInfo ~= nil then
+		local pets = {}
+		if self.inst.components.petleash ~= nil then
+			pets = self.inst.components.petleash:GetPets() or {}
+		end
+
+		local existDog = false
+
+		for k, pet in pairs(pets) do
+			if pet.prefab == "critter_puppy" then
+				existDog = true
+			end
+		end
+
+		-- 根据宠物切换光环
+		self._johnWichAura = self.inst:SpawnChild(
+			existDog and "aip_aura_john_wick" or "aip_aura_john_wick_single"
+		)
+	end
+end
+
+function PetOwner:StopJohnWick()
+	if self._johnWichAura ~= nil then
+		self._johnWichAura:Remove()
+		self._johnWichAura = nil
 	end
 end
 

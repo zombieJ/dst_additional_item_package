@@ -287,6 +287,37 @@ local list = {
 	},
 }
 
+-- 杀神光环：造成伤害变多
+local function genJohnWickAura(name)
+	return {
+		name = name,
+		bufferName = "aip_pet_johnWick",
+		-- 杀神等级提供一下
+		bufferStartFn = function(source, inst, info)
+			if
+				source ~= nil and source.parent ~= nil and
+				source.parent.components.aipc_pet_owner ~= nil
+			then
+				local skillInfo, skillLv = source.parent.components.aipc_pet_owner:GetSkillInfo("johnWick")
+				if skillInfo ~= nil then
+					local dmg = skillInfo.multi * skillLv
+					info.data.dmg = math.max(info.data.dmg or 0, dmg)
+				end
+			end
+		end,
+		showFX = true,
+		mustTags = { "player" },
+		noTags = { "INLIMBO", "NOCLICK", "ghost" },
+	}
+end
+
+local wickAruaSingle = genJohnWickAura("aip_aura_john_wick_single")
+wickAruaSingle.range = 0.1
+table.insert(list, wickAruaSingle)
+
+local wickArua = genJohnWickAura("aip_aura_john_wick")
+wickArua.assets = { Asset("ANIM", "anim/aip_aura_john_wick.zip") }
+table.insert(list, wickArua)
 
 ------------------------------------ 生成 ------------------------------------
 local prefabs = {}

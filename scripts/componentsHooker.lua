@@ -543,6 +543,16 @@ AipPostComp("combat", function(self)
 			dmg = dmg * (1 - desc)
 		end
 
+		-- 杀神 增加伤害
+		local johnWickInfo = _G.aipBufferInfo(
+			self.inst,
+			"aip_pet_johnWick"
+		)
+		if dmg ~= 0 and johnWickInfo ~= nil and johnWickInfo.data ~= nil then
+			local atk = johnWickInfo.data.dmg or 0
+			dmg = dmg + atk
+		end
+
 		-- 宠物主人攻击 buff
 		if self.inst.components.aipc_pet_owner ~= nil then
 			local petDmgMulti = 0
