@@ -113,6 +113,7 @@ local SKILL_LANG = {
 		play = "Play Rough",
 		migao = "Migao",
 		johnWick = "John Wick",
+		graveCloak = "Gravekeeper's Cloak",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -139,6 +140,7 @@ local SKILL_LANG = {
 		play = "嬉闹",
 		migao = "米糕",
 		johnWick = "杀神",
+		graveCloak = "陵卫斗篷",
 	},
 }
 
@@ -168,6 +170,7 @@ local SKILL_MAX_LEVEL = {
 	play = { 1, 2, 3, 4, 5 },
 	migao = { 2, 4, 6, 8, 10 },
 	johnWick = { 5, 6, 7, 8, 10 },
+	graveCloak = { 1, 2, 3, 4, 5 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -273,6 +276,11 @@ local SKILL_CONSTANT = {
 		goldern = true,
 		multi = 1,										-- 每个等级增伤 1 点
 	},
+	graveCloak = {
+		goldern = true,
+		interval = 3,									-- 每隔 3 秒
+		def = 0.2,										-- 每个斗篷减伤 20%
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -300,6 +308,7 @@ local SKILL_DESC_LANG = {
 		play = "Your attack will make target reduce PTG% damage for DUR seconds",
 		migao = "Damage received increases PAN%. Every time you successfully dodge an attack, increase PTG% damage, up to TTL%. Reset when damaged",
 		johnWick = "Raise ATK damage. If your pet is hound, player near you will also get this buff",
+		graveCloak = "Get barrier per ITV sec. Each barrier can reduce PTG% damage but will break one by one when get hurt",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -326,6 +335,7 @@ local SKILL_DESC_LANG = {
 		play = "被你攻击的目标会降低PTG%伤害，持续DUR秒",
 		migao = "受到的伤害提升PAN%。每次成功闪避攻击，提升PTG%伤害，最多TTL%。受到伤害则重置",
 		johnWick = "提升ATK点伤害，如果你的宠物是小猎犬，则身边伙伴也获得增伤效果",
+		graveCloak = "每隔ITV秒获得一个屏障，最多LV个。每个屏障减免PTG%伤害，受到伤害时会消耗一层屏障",
 	},
 }
 
@@ -461,7 +471,8 @@ if dev_mode then
 		-- "insight",
 		-- "taster",
 		-- "sponge",
-		"johnWick",
+		-- "johnWick",
+		"graveCloak",
 	}
 end
 
