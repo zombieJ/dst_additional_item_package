@@ -632,6 +632,17 @@ AipPostComp("combat", function(self)
 				-- 重置伤害倍数计数
 				migaoSkill._multi = 0
 			end
+
+			-- 陵卫斗篷
+			local graveInfo, graveLv = target.components.aipc_pet_owner:GetSkillInfo("graveCloak")
+			if graveInfo ~= nil and target.components.aipc_grave_cloak ~= nil and dmg > 0 then
+				local cnt = target.components.aipc_grave_cloak:GetCurrent()
+				local multi = 1 - cnt * (graveInfo.def + graveInfo.defMulti * graveLv)
+				dmg = dmg * math.max(0, multi)
+
+				-- 破坏一层
+				target.components.aipc_grave_cloak:Break()
+			end
 		end
 
 		return dmg

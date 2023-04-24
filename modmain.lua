@@ -178,6 +178,7 @@ PrefabFiles = {
 	"aip_pet",
 	"aip_pet_trigger",
 	"aip_pet_box",
+	"aip_grave_cloak",
 
 	-- Orbit
 	"aip_orbit",

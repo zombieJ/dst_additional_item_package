@@ -361,6 +361,11 @@ function PetOwner:HidePet(showEffect)
 
 	-- 停止杀神
 	self:StopJohnWick()
+
+	-- 停止 陵卫斗篷
+	if self.inst.components.aipc_grave_cloak ~= nil then
+		self.inst.components.aipc_grave_cloak:Stop()
+	end
 end
 
 -- 展示宠物
@@ -404,6 +409,9 @@ function PetOwner:ShowPet(index, showEffect)
 
 		-- 尝试杀神
 		self:StartJohnWick()
+
+		-- 尝试陵卫斗篷
+		self:StartGraveCloak()
 
 		return pet
 	end
@@ -689,6 +697,22 @@ function PetOwner:StopJohnWick()
 	if self._johnWichAura ~= nil then
 		self._johnWichAura:Remove()
 		self._johnWichAura = nil
+	end
+end
+
+-- 开始 陵卫斗篷
+function PetOwner:StartGraveCloak()
+	local skillInfo, skillLv, skill = self:GetSkillInfo("graveCloak")
+
+	if skillInfo ~= nil then
+		if self.inst.components.aipc_grave_cloak == nil then
+			self.inst:AddComponent("aipc_grave_cloak")
+		end
+
+		self.inst.components.aipc_grave_cloak.interval = skillInfo.interval
+		self.inst.components.aipc_grave_cloak.count = skillInfo.count
+
+		self.inst.components.aipc_grave_cloak:Start()
 	end
 end
 

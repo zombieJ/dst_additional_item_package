@@ -278,8 +278,10 @@ local SKILL_CONSTANT = {
 	},
 	graveCloak = {
 		goldern = true,
-		interval = 3,									-- 每隔 3 秒
-		def = 0.2,										-- 每个斗篷减伤 20%
+		interval = dev_mode and 3 or 6,					-- 每隔 N 秒
+		count = dev_mode and 2 or 5,					-- 几个防御
+		def = 0.1,										-- 每个斗篷减伤 10%
+		defMulti = 0.03,								-- 每个等级增加 3%
 	},
 }
 
@@ -308,7 +310,7 @@ local SKILL_DESC_LANG = {
 		play = "Your attack will make target reduce PTG% damage for DUR seconds",
 		migao = "Damage received increases PAN%. Every time you successfully dodge an attack, increase PTG% damage, up to TTL%. Reset when damaged",
 		johnWick = "Raise ATK damage. If your pet is hound, player near you will also get this buff",
-		graveCloak = "Get barrier per ITV sec. Each barrier can reduce PTG% damage but will break one by one when get hurt",
+		graveCloak = "Get barrier per ITV sec (max CNT). Each barrier can reduce PTG% damage but will break one by one when get hurt",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -335,7 +337,7 @@ local SKILL_DESC_LANG = {
 		play = "被你攻击的目标会降低PTG%伤害，持续DUR秒",
 		migao = "受到的伤害提升PAN%。每次成功闪避攻击，提升PTG%伤害，最多TTL%。受到伤害则重置",
 		johnWick = "提升ATK点伤害，如果你的宠物是小猎犬，则身边伙伴也获得增伤效果",
-		graveCloak = "每隔ITV秒获得一个屏障，最多LV个。每个屏障减免PTG%伤害，受到伤害时会消耗一层屏障",
+		graveCloak = "每隔ITV秒获得一个屏障，最多CNT个。每个屏障减免PTG%伤害，受到伤害时会消耗一层屏障",
 	},
 }
 
@@ -447,6 +449,13 @@ local SKILL_DESC_VARS = {
 	johnWick = function(info, lv)
 		return {
 			ATK = info.multi * lv,
+		}
+	end,
+	graveCloak = function(info, lv)
+		return {
+			ITV = info.interval,
+			CNT = info.count,
+			PTG = (info.def + info.defMulti * lv) * 100,
 		}
 	end,
 }
