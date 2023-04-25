@@ -275,7 +275,7 @@ end)
 AddPrefabPostInit("merm", function(inst)
 	-- 鱼人会极低概率掉 22 磅重的鲶鱼
 	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
-		inst.components.lootdropper:AddChanceLoot("aip_22_fish", dev_mode and 1 or 0.001)
+		inst.components.lootdropper:AddChanceLoot("aip_22_fish", dev_mode and 1 or 0.01)
 	end
 end)
 
