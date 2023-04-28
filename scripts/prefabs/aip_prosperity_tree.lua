@@ -88,7 +88,7 @@ local function syncFoods(inst)
         end
 
         -- 创建挂载食物
-        if data.prefab == nil then
+        if data.prefab == nil or not data.prefab:IsValid() then
             local clone = aipSpawnPrefab(inst, data.name)
 
             if clone.Follower == nil then

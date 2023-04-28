@@ -84,6 +84,13 @@ function GraveCloak:Stop()
 		self.flyTask:Cancel()
 		self.flyTask = nil
 	end
+
+	-- 清空火球
+	while #self.fires > 0 do
+		self:Break()
+	end
+
+	self.fires = {}
 end
 
 function GraveCloak:OnRemoveFromEntity()

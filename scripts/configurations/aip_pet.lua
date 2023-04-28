@@ -279,7 +279,7 @@ local SKILL_CONSTANT = {
 	graveCloak = {
 		goldern = true,
 		interval = dev_mode and 3 or 6,					-- 每隔 N 秒
-		count = dev_mode and 2 or 5,					-- 几个防御
+		count = dev_mode and 3 or 5,					-- 几个防御
 		def = 0.1,										-- 每个斗篷减伤 10%
 		defMulti = 0.03,								-- 每个等级增加 3%
 	},

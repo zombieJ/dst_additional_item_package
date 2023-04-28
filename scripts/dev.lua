@@ -11,7 +11,7 @@ if dev_mode then
 end
 
 ----------------- 锁定玩家 3 值 -----------------
-function PlayerPrefabPostInit(inst)
+local function PlayerPrefabPostInit(inst)
     if not _G.TheWorld.ismastersim then
         return
     end
