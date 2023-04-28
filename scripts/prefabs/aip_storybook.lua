@@ -68,6 +68,8 @@ local function fn()
 	inst:AddComponent("simplebook")
 	inst.components.simplebook.onreadfn = OnReadBook
 
+    inst:AddComponent("erasablepaper")
+
     MakeSmallBurnable(inst, TUNING.MED_BURNTIME)
     MakeSmallPropagator(inst)
 

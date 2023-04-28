@@ -340,12 +340,19 @@ rec("aip_pet_catcher", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.TOOLS },
 		Ingredient("lightbulb", 1),
 	})
 
--- 宠物盒子
+-- 宠物埙
 rec("aip_pet_trigger", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.TOOLS },
 	{
-		Ingredient("papyrus", 2),
-		Ingredient("silk", 1),
+		Ingredient("moonrocknugget", 1),
+		Ingredient("flint", 1),
 	})
+
+-- 宠物盒子
+rec("aip_pet_box", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.TOOLS },
+{
+	Ingredient("papyrus", 2),
+	Ingredient("silk", 1),
+})
 
 -------------------------------------- 联动 --------------------------------------
 local modNames = _G.ModManager:GetEnabledServerModNames()

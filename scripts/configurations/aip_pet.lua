@@ -46,6 +46,7 @@ local QUALITY_LANG = {
 -- 孤狼：待在身边时，玩家砍树会提升速度
 -- 伯乐：有一定概率提升你抓捕的宠物品质 1 级，如果只有一个宠物，则一定提升
 -- 铁胃：免疫食物带来的生命损失负面效果
+-- 米糕：你受到的伤害提升 55%。你每次闪避成功，下一次伤害提升 10%，最多提升 100%，受到伤害后重置
 
 -- 杂技：没有穿戴防具时，攻击和速度提升
 -- 呆呆：初次受到攻击时免疫伤害，再次受到攻击时会获得两倍伤害。之后（或者隔一段时间）重置计数器
@@ -71,8 +72,8 @@ local QUALITY_LANG = {
 -- 掘地：黄昏时会在玩家身边挖掘一个临时的洞穴通向最后一次做饭的地方
 -- 茸茸：采摘植物时，有概率原地生长出一株新的植株
 -- 嬉闹：攻击目标时，会使目标攻击伤害减少
-
 -- 杀神：附近有猎犬死亡时，你的伤害提升 100%，该效果持续到杀死一个单位为止
+
 -- 岩烧：你可以点燃岩石，经过一段时间后岩石碎裂并掉落一个熔岩结晶
 		-- 炸药可以炸毁岩石，会掉落一个熔岩结晶
 
@@ -110,6 +111,9 @@ local SKILL_LANG = {
 		dig = "Digger",
 		ge = "Gold Experience",
 		play = "Play Rough",
+		migao = "Migao",
+		johnWick = "John Wick",
+		graveCloak = "Gravekeeper's Cloak",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -134,6 +138,9 @@ local SKILL_LANG = {
 		dig = "掘地",
 		ge = "茸茸",
 		play = "嬉闹",
+		migao = "米糕",
+		johnWick = "杀神",
+		graveCloak = "陵卫斗篷",
 	},
 }
 
@@ -161,6 +168,9 @@ local SKILL_MAX_LEVEL = {
 	dig = { 1, 2, 3, 4, 5 },
 	ge = { 6, 7, 8, 9, 10 },
 	play = { 1, 2, 3, 4, 5 },
+	migao = { 2, 4, 6, 8, 10 },
+	johnWick = { 5, 6, 7, 8, 10 },
+	graveCloak = { 1, 2, 3, 4, 5 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -256,6 +266,23 @@ local SKILL_CONSTANT = {
 		weak = dev_mode and 1 or 0.05,					-- 减攻概率
 		duration = 10,									-- 持续时间
 	},
+	migao = {
+		special = true,
+		goldern = true,
+		pain = .55,										-- 受伤提升
+		multi = dev_mode and 0.5 or 0.1,				-- 伤害提升
+	},
+	johnWick = {
+		goldern = true,
+		multi = 1,										-- 每个等级增伤 1 点
+	},
+	graveCloak = {
+		goldern = true,
+		interval = dev_mode and 3 or 6,					-- 每隔 N 秒
+		count = dev_mode and 3 or 5,					-- 几个防御
+		def = 0.1,										-- 每个斗篷减伤 10%
+		defMulti = 0.03,								-- 每个等级增加 3%
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -281,6 +308,9 @@ local SKILL_DESC_LANG = {
 		dig = "Dig a hole to the place you last use cookpot when dusk. Exist for DUR seconds",
 		ge = "Have PTG% change to replant the seed when harvest",
 		play = "Your attack will make target reduce PTG% damage for DUR seconds",
+		migao = "Damage received increases PAN%. Every time you successfully dodge an attack, increase PTG% damage, up to TTL%. Reset when damaged",
+		johnWick = "Raise ATK damage. If your pet is hound, player near you will also get this buff",
+		graveCloak = "Get barrier per ITV sec (max CNT). Each barrier can reduce PTG% damage but will break one by one when get hurt",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -305,6 +335,9 @@ local SKILL_DESC_LANG = {
 		dig = "黄昏时会在玩家身边挖掘一个持续DUR秒的洞穴通向最后一次做饭的地方",
 		ge = "收成植物时有PTG%概率重新种植",
 		play = "被你攻击的目标会降低PTG%伤害，持续DUR秒",
+		migao = "受到的伤害提升PAN%。每次成功闪避攻击，提升PTG%伤害，最多TTL%。受到伤害则重置",
+		johnWick = "提升ATK点伤害，如果你的宠物是小猎犬，则身边伙伴也获得增伤效果",
+		graveCloak = "每隔ITV秒获得一个屏障，最多CNT个。每个屏障减免PTG%伤害，受到伤害时会消耗一层屏障",
 	},
 }
 
@@ -406,6 +439,25 @@ local SKILL_DESC_VARS = {
 			DUR = info.duration,
 		}
 	end,
+	migao = function(info, lv)
+		return {
+			PAN = info.pain * 100,
+			PTG = info.multi * 100,
+			TTL = info.multi * lv * 100,
+		}
+	end,
+	johnWick = function(info, lv)
+		return {
+			ATK = info.multi * lv,
+		}
+	end,
+	graveCloak = function(info, lv)
+		return {
+			ITV = info.interval,
+			CNT = info.count,
+			PTG = (info.def + info.defMulti * lv) * 100,
+		}
+	end,
 }
 
 local SKILL_LIST = {}
@@ -428,6 +480,8 @@ if dev_mode then
 		-- "insight",
 		-- "taster",
 		-- "sponge",
+		-- "johnWick",
+		"graveCloak",
 	}
 end
 

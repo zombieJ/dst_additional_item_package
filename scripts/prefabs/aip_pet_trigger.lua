@@ -3,15 +3,15 @@ local language = aipGetModConfig("language")
 -- 文字描述
 local LANG_MAP = {
 	english = {
-		NAME = "Animal Box",
+		NAME = "Animal Post",
         REC_DESC = "Toggle show or hide small animals, if no small animals then not effective",
-		DESC = "Who likes to hide in the box?",
+		DESC = "Let's call it!",
         EMPTY = "I don't have any small animals yet!",
 	},
 	chinese = {
-		NAME = "小动物纸箱",
+		NAME = "动物埙",
         REC_DESC = "切换展示小动物，如果没有小动物则不生效",
-		DESC = "谁最喜欢躲在盒子里？",
+		DESC = "呼唤小动物吧",
         EMPTY = "我还没有小动物呢！",
 	},
 }

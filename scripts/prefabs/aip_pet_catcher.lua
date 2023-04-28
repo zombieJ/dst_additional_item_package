@@ -52,6 +52,10 @@ local function onDoTargetAction(inst, doer, target)
     end
 end
 
+local function onLaunch(inst)
+    inst.AnimState:PlayAnimation("loop", true)
+end
+
 -- 捕捉
 local function onHit(inst, attacker, target)
     local aura = aipReplacePrefab(inst, "aip_fx_splode").DoShow(nil, 0.5)
@@ -167,6 +171,7 @@ local function fn()
     inst.components.complexprojectile:SetHorizontalSpeed(15)
     inst.components.complexprojectile:SetGravity(-25)
     inst.components.complexprojectile:SetLaunchOffset(Vector3(0, 2.5, 0))
+    inst.components.complexprojectile:SetOnLaunch(onLaunch)
     inst.components.complexprojectile:SetOnHit(onHit)
 
     inst:AddComponent("inspectable")

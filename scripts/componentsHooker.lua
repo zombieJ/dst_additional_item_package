@@ -521,7 +521,9 @@ AipPostComp("combat", function(self)
 	local originCalcDamage = self.CalcDamage
 
 	function self:CalcDamage(target, weapon, multiplier, ...)
-		local dmg = originCalcDamage(self, target, weapon, multiplier, ...)
+		local oriDmg, oriSpDmg = originCalcDamage(self, target, weapon, multiplier, ...)
+		local dmg = oriDmg
+		local spDmg = oriSpDmg
 
 		-- 古神 攻击 buff
 		if
@@ -541,6 +543,16 @@ AipPostComp("combat", function(self)
 		if playBuffInfo ~= nil and playBuffInfo.data ~= nil then
 			local desc = playBuffInfo.data.desc or 0
 			dmg = dmg * (1 - desc)
+		end
+
+		-- 杀神 增加伤害
+		local johnWickInfo = _G.aipBufferInfo(
+			self.inst,
+			"aip_pet_johnWick"
+		)
+		if dmg ~= 0 and johnWickInfo ~= nil and johnWickInfo.data ~= nil then
+			local atk = johnWickInfo.data.dmg or 0
+			dmg = dmg + atk
 		end
 
 		-- 宠物主人攻击 buff
@@ -573,6 +585,14 @@ AipPostComp("combat", function(self)
 				end
 			end
 
+			-- 米糕 闪避增加伤害
+			local migaoInfo, migaoLv, migaoSkill = self.inst.components.aipc_pet_owner:GetSkillInfo("migao")
+
+			if migaoInfo ~= nil then
+			local multi = 1 + (migaoSkill._multi or 0) * migaoInfo.multi
+				dmg = dmg * multi
+			end
+
 			dmg = dmg * (1 + petDmgMulti)
 		end
 
@@ -603,9 +623,48 @@ AipPostComp("combat", function(self)
 					fx.entity:SetParent(target.entity)
 				end
 			end
+
+			-- 米糕 会增加伤害
+			local migaoInfo, migaoLv, migaoSkill = target.components.aipc_pet_owner:GetSkillInfo("migao")
+
+			if migaoInfo ~= nil then
+				local multi = 1 + migaoInfo.pain
+				dmg = dmg * multi
+
+				-- 重置伤害倍数计数
+				migaoSkill._multi = 0
+			end
+
+			-- 陵卫斗篷
+			local graveInfo, graveLv = target.components.aipc_pet_owner:GetSkillInfo("graveCloak")
+			if graveInfo ~= nil and target.components.aipc_grave_cloak ~= nil and dmg > 0 then
+				local cnt = target.components.aipc_grave_cloak:GetCurrent()
+				local multi = 1 - cnt * (graveInfo.def + graveInfo.defMulti * graveLv)
+				dmg = dmg * math.max(0, multi)
+
+				-- 破坏一层
+				target.components.aipc_grave_cloak:Break()
+			end
 		end
 
-		return dmg
+		-- 如果 dmg 被变为 0，则也避免特殊伤害。如果没有变化则保留
+		if dmg == 0 and dmg ~= oriDmg then
+			spDmg = nil
+		end
+
+		return dmg, spDmg
+	end
+
+	-- 为攻击额外添加事件
+	local originDoAttack = self.DoAttack
+
+	function self:DoAttack(targ, weapon, projectile, stimuli, instancemult, instrangeoverride, instpos, ...)
+		-- 给 miss 的目标也添加一个事件
+		if targ ~= nil and not self:CanHitTarget(targ, weapon) or self.AOEarc then
+			targ:PushEvent("aipMissAttack", { source = self.inst, weapon = weapon })
+		end
+
+		return originDoAttack(self, targ, weapon, projectile, stimuli, instancemult, instrangeoverride, instpos, ...)
 	end
 end)
 
@@ -677,9 +736,6 @@ AipPostComp("drownable", function(self)
 				end
 			end
 		end
-		
-
-		
 
 		return originOnFallInOcean(self, ...)
 	end

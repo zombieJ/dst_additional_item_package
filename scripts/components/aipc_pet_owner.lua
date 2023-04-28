@@ -206,6 +206,27 @@ local function OnPick(inst, data)
 	end
 end
 
+-- 躲避攻击
+local function OnMissAttack(inst)
+	if inst.components.aipc_pet_owner == nil then
+		return
+	end
+
+	-- 如果存在 米糕 技能，则叠加输出
+	local skillInfo, skillLv, skill = inst.components.aipc_pet_owner:GetSkillInfo("migao")
+
+	if skillInfo ~= nil then
+		-- 特效
+		aipSpawnPrefab(inst, "farm_plant_happy")
+
+		-- 叠加伤害
+		skill._multi = math.min(
+			(skill._multi or 0) + 1,
+			skillLv
+		)
+	end
+end
+
 ---------------------------------------------------------------------
 -- 双端通用，抓捕宠物组件
 local PetOwner = Class(function(self, inst)
@@ -221,6 +242,7 @@ local PetOwner = Class(function(self, inst)
 	self.inst:ListenForEvent("wormholespit", OnWormholeTravel)
 	self.inst:ListenForEvent("aipStartCooking", OnStartCooking)
 	self.inst:ListenForEvent("picksomething", OnPick)
+	self.inst:ListenForEvent("aipMissAttack", OnMissAttack)
 
 	self.inst:WatchWorldState("phase", OnPhase)
 end)
@@ -269,6 +291,12 @@ function PetOwner:Count()
 	return #self.pets
 end
 
+function PetOwner:AddPetByInfo(data)
+	table.insert(self.pets, data)
+
+	return self:ShowPet(#self.pets)
+end
+
 -- 添加宠物
 function PetOwner:AddPet(pet, qualityOffset)
 	if self:IsFull() then
@@ -282,10 +310,8 @@ function PetOwner:AddPet(pet, qualityOffset)
 
 		local data = pet.components.aipc_petable:GetInfo(self.inst)
 
-		table.insert(self.pets, data)
+		return self:AddPetByInfo(data)
 	end
-
-	return self:ShowPet(#self.pets)
 end
 
 -- 移除宠物
@@ -332,6 +358,14 @@ function PetOwner:HidePet(showEffect)
 
 	-- 停止海绵
 	self.inst.components.timer:StopTimer("aipc_pet_owner_drink")
+
+	-- 停止杀神
+	self:StopJohnWick()
+
+	-- 停止 陵卫斗篷
+	if self.inst.components.aipc_grave_cloak ~= nil then
+		self.inst.components.aipc_grave_cloak:Stop()
+	end
 end
 
 -- 展示宠物
@@ -372,6 +406,12 @@ function PetOwner:ShowPet(index, showEffect)
 
 		-- 尝试海绵
 		self:StartDrink()
+
+		-- 尝试杀神
+		self:StartJohnWick()
+
+		-- 尝试陵卫斗篷
+		self:StartGraveCloak()
 
 		return pet
 	end
@@ -627,6 +667,55 @@ function PetOwner:StartDrink(doCure)
 	end
 end
 
+-- 开始杀神
+function PetOwner:StartJohnWick()
+	self:StopJohnWick()
+
+	local skillInfo, skillLv = self:GetSkillInfo("johnWick")
+	if skillInfo ~= nil then
+		local pets = {}
+		if self.inst.components.petleash ~= nil then
+			pets = self.inst.components.petleash:GetPets() or {}
+		end
+
+		local existDog = false
+
+		for k, pet in pairs(pets) do
+			if pet.prefab == "critter_puppy" then
+				existDog = true
+			end
+		end
+
+		-- 根据宠物切换光环
+		self._johnWichAura = self.inst:SpawnChild(
+			existDog and "aip_aura_john_wick" or "aip_aura_john_wick_single"
+		)
+	end
+end
+
+function PetOwner:StopJohnWick()
+	if self._johnWichAura ~= nil then
+		self._johnWichAura:Remove()
+		self._johnWichAura = nil
+	end
+end
+
+-- 开始 陵卫斗篷
+function PetOwner:StartGraveCloak()
+	local skillInfo, skillLv, skill = self:GetSkillInfo("graveCloak")
+
+	if skillInfo ~= nil then
+		if self.inst.components.aipc_grave_cloak == nil then
+			self.inst:AddComponent("aipc_grave_cloak")
+		end
+
+		self.inst.components.aipc_grave_cloak.interval = skillInfo.interval
+		self.inst.components.aipc_grave_cloak.count = skillInfo.count
+
+		self.inst.components.aipc_grave_cloak:Start()
+	end
+end
+
 function PetOwner:IsFull()
 	return #self.pets >= MAX_PET_COUNT
 end
@@ -684,6 +773,7 @@ function PetOwner:OnRemoveEntity()
 	self.inst:RemoveEventCallback("wormholespit", OnWormholeTravel)
 	self.inst:RemoveEventCallback("aipStartCooking", OnStartCooking)
 	self.inst:RemoveEventCallback("picksomething", OnPick)
+	self.inst:RemoveEventCallback("aipMissAttack", OnMissAttack)
 end
 
 PetOwner.OnRemoveFromEntity = PetOwner.OnRemoveEntity

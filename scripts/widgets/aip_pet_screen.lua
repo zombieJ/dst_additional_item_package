@@ -196,7 +196,10 @@ function PetInfoWidget:RefreshStatus()
     text:SetPosition(nameW / 2 - DESC_CONTENT_WIDTH / 2, 0)
 
     -- ID
-    local id_str = "ID:"..petInfo.id.."("..tostring(self.current).."/"..tostring(#self.petInfos)..")"
+    local id_str = "ID:"..petInfo.id
+    if #self.petInfos > 1 then
+        id_str = id_str.."("..tostring(self.current).."/"..tostring(#self.petInfos)..")"
+    end
     local idText = self.infoPanel:AddChild(Text(UIFONT, 40, id_str))
     idText:SetHAlign(ANCHOR_LEFT)
     local idW, idH = idText:GetRegionSize()
@@ -246,6 +249,10 @@ function PetInfoWidget:RefreshStatus()
         -- 技能名字用颜色覆盖
         local colorSkillText = self.infoPanel:AddChild(Text(UIFONT, 50, skill_name_str))
         colorSkillText:SetHAlign(ANCHOR_LEFT)
+
+        -- Print Text
+        -- aipPrint("Skill Color:", skill_name_str)
+        -- aipPrint("Skill Desc:", skill_str)
 
         local skillClr = QUALITY_COLORS[skillQuality]
         if skillConstant.goldern then
@@ -364,7 +371,7 @@ end
 function PetInfoWidget:OnControl(control, down)
     if PetInfoWidget._base.OnControl(self,control, down) then return true end
 
-    if not down then
+    if not down and self.buttons ~= nil then
         for i, v in ipairs(self.buttons) do
             if control == v.control and v.cb ~= nil then
                 v.cb()

@@ -67,7 +67,7 @@ function Float:OnUpdate(dt)
 
 	-- 水平方向的距离
 	local dist = aipDist(pos, targetPos)
-	local speed = self.speed
+	local speed = type(self.speed) == "function" and self.speed(self.inst, dist) or self.speed
 	if dist < 0.3 then
 		speed = 0.5
 
