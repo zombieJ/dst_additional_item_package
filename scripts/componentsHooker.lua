@@ -660,7 +660,7 @@ AipPostComp("combat", function(self)
 
 	function self:DoAttack(targ, weapon, projectile, stimuli, instancemult, instrangeoverride, instpos, ...)
 		-- 给 miss 的目标也添加一个事件
-		if targ ~= nil and not self:CanHitTarget(targ, weapon) or self.AOEarc then
+		if targ ~= nil and (not self:CanHitTarget(targ, weapon) or self.AOEarc) then
 			targ:PushEvent("aipMissAttack", { source = self.inst, weapon = weapon })
 		end
 
