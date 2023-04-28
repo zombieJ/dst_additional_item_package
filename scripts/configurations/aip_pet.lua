@@ -304,6 +304,7 @@ local SKILL_DESC_LANG = {
 		luna = "Increase your damage by LND% on the moon land and FUL% on full moon",
 		hypnosis = "Has PTG% chance to hypnotize who attack you",
 		sponge = "Convert PNT points moisture to hunger every ITV seconds",
+		dancer = "Has PTG% chance to be immune to damage taken",
 		d4c = "When health < PTG%, jump into wormhole will recover full health. One times per day",
 		dig = "Dig a hole to the place you last use cookpot when dusk. Exist for DUR seconds",
 		ge = "Have PTG% change to replant the seed when harvest",
