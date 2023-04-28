@@ -6,9 +6,7 @@ if not dev_mode then
 end
 
 -------------------- 警告信息 --------------------
-if dev_mode then
-	_G.aipPrint("!!! 你正在使用《额外物品包》开发模式，如果是正式游玩请在设置中关闭该设置 !!!")
-end
+_G.aipPrint("!!! 你正在使用《额外物品包》开发模式，如果是正式游玩请在设置中关闭该设置 !!!")
 
 ----------------- 锁定玩家 3 值 -----------------
 local function PlayerPrefabPostInit(inst)
@@ -82,7 +80,7 @@ AddGlobalClassPostConstruct("entityscript", "EntityScript", function(self)
     end
 
     function self:AddComponent(name, ...)
-        old_add(self, name, ...)
+        local ret = old_add(self, name, ...)
 
         -- 注入 Component 的 OnUpdate 函数
         local cmp = self.components[name]
@@ -97,6 +95,8 @@ AddGlobalClassPostConstruct("entityscript", "EntityScript", function(self)
                 _G.TheWorld._aipDevUpdateTimesList[name] = (_G.TheWorld._aipDevUpdateTimesList[name] or 0) + cost
             end
         end
+
+        return ret
     end
 
     function self:StartUpdatingComponent(cmp, ...)

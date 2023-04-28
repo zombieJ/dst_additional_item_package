@@ -521,7 +521,9 @@ AipPostComp("combat", function(self)
 	local originCalcDamage = self.CalcDamage
 
 	function self:CalcDamage(target, weapon, multiplier, ...)
-		local dmg = originCalcDamage(self, target, weapon, multiplier, ...)
+		local oriDmg, oriSpDmg = originCalcDamage(self, target, weapon, multiplier, ...)
+		local dmg = oriDmg
+		local spDmg = oriSpDmg
 
 		-- 古神 攻击 buff
 		if
@@ -645,7 +647,12 @@ AipPostComp("combat", function(self)
 			end
 		end
 
-		return dmg
+		-- 如果 dmg 被变为 0，则也避免特殊伤害。如果没有变化则保留
+		if dmg == 0 and dmg ~= oriDmg then
+			spDmg = nil
+		end
+
+		return dmg, spDmg
 	end
 
 	-- 为攻击额外添加事件
@@ -653,7 +660,7 @@ AipPostComp("combat", function(self)
 
 	function self:DoAttack(targ, weapon, projectile, stimuli, instancemult, instrangeoverride, instpos, ...)
 		-- 给 miss 的目标也添加一个事件
-		if not self:CanHitTarget(targ, weapon) or self.AOEarc then
+		if targ ~= nil and not self:CanHitTarget(targ, weapon) or self.AOEarc then
 			targ:PushEvent("aipMissAttack", { source = self.inst, weapon = weapon })
 		end
 
