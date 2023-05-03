@@ -89,7 +89,23 @@ end
 
 -- 开始烹饪
 local function OnStartCooking(inst, data)
-	inst._aipLastCookpot = aipGet(data, "cookpot")
+	local cookpot = aipGet(data, "cookpot")
+	inst._aipLastCookpot = cookpot
+
+	-- 如果是厨神则会加快烹饪速度
+	local skillInfo, skillLv = inst.components.aipc_pet_owner:GetSkillInfo("cooker")
+	if skillInfo ~= nil and cookpot ~= nil and cookpot.components.stewer ~= nil then
+		local multi = math.max(0, 1 - skillInfo.multi * skillLv)
+
+		-- 临时修改烹饪时间
+		local oriCooktimemult = cookpot.components.stewer.cooktimemult
+		cookpot.components.stewer.cooktimemult = multi
+
+		-- 重置回去
+		cookpot:DoTaskInTime(0, function()
+			cookpot.components.stewer.cooktimemult = oriCooktimemult
+		end)
+	end
 end
 
 -- 时间阶段变化

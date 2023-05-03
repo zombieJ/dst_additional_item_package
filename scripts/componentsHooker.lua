@@ -846,8 +846,6 @@ AipPostComp("stewer", function(self)
 
 	-- 食物健康影响
 	function self:StartCooking(doer, ...)
-		local ret = originStartCooking(self, doer, ...)
-
 		-- 额外触发一个事件
 		if doer ~= nil then
 			doer:PushEvent("aipStartCooking",
@@ -855,7 +853,7 @@ AipPostComp("stewer", function(self)
 			)
 		end
 
-		return ret
+		return originStartCooking(self, doer, ...)
 	end
 end)
 
