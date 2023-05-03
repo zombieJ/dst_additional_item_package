@@ -589,8 +589,20 @@ AipPostComp("combat", function(self)
 			local migaoInfo, migaoLv, migaoSkill = self.inst.components.aipc_pet_owner:GetSkillInfo("migao")
 
 			if migaoInfo ~= nil then
-			local multi = 1 + (migaoSkill._multi or 0) * migaoInfo.multi
+				local multi = 1 + (migaoSkill._multi or 0) * migaoInfo.multi
 				dmg = dmg * multi
+			end
+
+			-- 巨兽 对生命值进行判定
+			local giantsInfo, giantsLv = self.inst.components.aipc_pet_owner:GetSkillInfo("giants")
+			if giantsInfo ~= nil then
+				if
+					target.components.health ~= nil and
+					target.components.health.currenthealth >= giantsInfo.hp
+				then
+					local multi = 1 + giantsInfo.multi * giantsLv
+					dmg = dmg * multi
+				end
 			end
 
 			dmg = dmg * (1 + petDmgMulti)

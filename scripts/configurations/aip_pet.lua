@@ -117,6 +117,7 @@ local SKILL_LANG = {
 		johnWick = "John Wick",
 		graveCloak = "Gravekeeper's Cloak",
 		cooker = "Cooker",
+		giants = "Giants",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -145,6 +146,7 @@ local SKILL_LANG = {
 		johnWick = "杀神",
 		graveCloak = "陵卫斗篷",
 		cooker = "厨神",
+		giants = "巨兽",
 	},
 }
 
@@ -176,6 +178,7 @@ local SKILL_MAX_LEVEL = {
 	johnWick = { 5, 6, 7, 8, 10 },
 	graveCloak = { 1, 2, 3, 4, 5 },
 	cooker = { 5, 6, 7, 8, 9 },
+	giants = { 1, 2, 3, 4, 5 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -291,6 +294,10 @@ local SKILL_CONSTANT = {
 	cooker = {
 		multi = dev_mode and 0.99 or 0.1,				-- 每个等级增加 10% 烹饪速度
 	},
+	giants = {
+		hp = dev_mode and 50 or 2000,					-- 基础判定血量
+		multi = 0.2,									-- 每个等级增伤 20%
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -321,6 +328,7 @@ local SKILL_DESC_LANG = {
 		johnWick = "Raise ATK damage. If your pet is hound, player near you will also get this buff",
 		graveCloak = "Get barrier per ITV sec (max CNT). Each barrier can reduce PTG% damage but will break one by one when get hurt",
 		cooker = "Increase cooking speed by PTG%",
+		giants = "Increase PTG% damage for the target whose current health > HP",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -349,6 +357,7 @@ local SKILL_DESC_LANG = {
 		johnWick = "提升ATK点伤害，如果你的宠物是小猎犬，则身边伙伴也获得增伤效果",
 		graveCloak = "每隔ITV秒获得一个屏障，最多CNT个。每个屏障减免PTG%伤害，受到伤害时会消耗一层屏障",
 		cooker = "烹饪速度提升PTG%",
+		giants = "攻击当前生命值大于HP的生物伤害提升PTG%",
 	},
 }
 
@@ -474,6 +483,12 @@ local SKILL_DESC_VARS = {
 			PTG = info.multi * lv * 100,
 		}
 	end,
+	giants = function(info, lv)
+		return {
+			PTG = info.multi * lv * 100,
+			HP = info.hp,
+		}
+	end,
 }
 
 local SKILL_LIST = {}
@@ -498,7 +513,8 @@ if dev_mode then
 		-- "sponge",
 		-- "johnWick",
 		-- "graveCloak",
-		"cooker",
+		-- "cooker",
+		"giants",
 	}
 end
 
