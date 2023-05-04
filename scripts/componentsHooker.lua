@@ -518,6 +518,24 @@ end)
 
 -- 伤害允许翻倍
 AipPostComp("combat", function(self)
+	-- 受到攻击
+	local originGetAttacked = self.GetAttacked
+
+	function self:GetAttacked(attacker, damage, weapon, stimuli, spdamage, ...)
+		local dmg = damage
+
+		if self.inst ~= nil and self.inst.components.aipc_pet_owner ~= nil then
+			-- 幸运则免疫 查理 攻击
+			local luckyInfo, luckyLv = self.inst.components.aipc_pet_owner:GetSkillInfo("lucky")
+			if luckyInfo ~= nil and stimuli == "darkness" then
+				dmg = 0
+			end
+		end
+
+		return originGetAttacked(self, attacker, dmg, weapon, stimuli, spdamage, ...)
+	end
+
+	-- 计算伤害
 	local originCalcDamage = self.CalcDamage
 
 	function self:CalcDamage(target, weapon, multiplier, ...)
@@ -622,7 +640,7 @@ AipPostComp("combat", function(self)
 			local dancerInfo, dancerLv = target.components.aipc_pet_owner:GetSkillInfo("dancer")
 
 			if dancerInfo ~= nil then
-				if math.random() < dancerInfo.multi * dancerLv then
+				if _G.aipChance(dancerInfo.multi * dancerLv, target) then
 					dmg = 0
 
 					-- 播放音效

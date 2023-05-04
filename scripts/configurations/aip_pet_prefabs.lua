@@ -546,10 +546,16 @@ end
 -- 获取宠物专属技能
 local function getSkills(prefab, subPrefab)
     ------------------------- 兔子 -------------------------
-    if prefab == "rabbit" and subPrefab == "_winter" then
-        return {
-            "cool",
+    if prefab == "rabbit" then
+        local skills = {
+            "lucky",
         }
+
+        if subPrefab == "_winter" then
+            table.insert(skills, "cool")
+        end
+
+        return skills
     end
 
     ------------------------- 蜘蛛 -------------------------

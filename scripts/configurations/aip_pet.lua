@@ -118,6 +118,7 @@ local SKILL_LANG = {
 		graveCloak = "Gravekeeper's Cloak",
 		cooker = "Cooker",
 		giants = "Giants",
+		lucky = "Rabbit Foot",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -147,6 +148,7 @@ local SKILL_LANG = {
 		graveCloak = "陵卫斗篷",
 		cooker = "厨神",
 		giants = "巨兽",
+		lucky = "兔脚",
 	},
 }
 
@@ -179,6 +181,7 @@ local SKILL_MAX_LEVEL = {
 	graveCloak = { 1, 2, 3, 4, 5 },
 	cooker = { 5, 6, 7, 8, 9 },
 	giants = { 1, 2, 3, 4, 5 },
+	lucky = { 1, 1, 2, 2, 3 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -298,6 +301,10 @@ local SKILL_CONSTANT = {
 		hp = dev_mode and 50 or 2000,					-- 基础判定血量
 		multi = 0.2,									-- 每个等级增伤 20%
 	},
+	lucky = {
+		special = true,
+		multi = dev_mode and 100 or 1					-- 每个等级提升幸运倍数
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -329,6 +336,7 @@ local SKILL_DESC_LANG = {
 		graveCloak = "Get barrier per ITV sec (max CNT). Each barrier can reduce PTG% damage but will break one by one when get hurt",
 		cooker = "Increase cooking speed by PTG%",
 		giants = "Increase PTG% damage for the target whose current health > HP",
+		lucky = "Lucky. Charlie can not harm you(just damage)",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -358,6 +366,7 @@ local SKILL_DESC_LANG = {
 		graveCloak = "每隔ITV秒获得一个屏障，最多CNT个。每个屏障减免PTG%伤害，受到伤害时会消耗一层屏障",
 		cooker = "烹饪速度提升PTG%",
 		giants = "攻击当前生命值大于HP的生物伤害提升PTG%",
+		lucky = "运气不错，免疫查理造成的伤害(也仅仅是免疫而已)",
 	},
 }
 

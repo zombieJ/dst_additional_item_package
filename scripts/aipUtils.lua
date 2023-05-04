@@ -911,6 +911,20 @@ function _G.aipRandomLoot(lootTbl)
 	return nil
 end
 
+-- 概率生成，如果单位有宠物技能幸运，则会发生偏移
+function _G.aipChance(chance, inst, bonus)
+	local tgtChance = chance
+	if inst ~= nil and inst:IsValid() and inst.components.aipc_pet_owner ~= nil then
+		local skillInfo, skillLv = inst.components.aipc_pet_owner:GetSkillInfo("lucky")
+		if skillInfo ~= nil then
+			tgtChance = tgtChance * skillInfo.multi * skillLv
+			tgtChance = tgtChance + (bonus or 0)
+			_G.aipPrint("Lucky Chance:", chance, tgtChance)
+		end
+	end
+	return math.random() <= tgtChance
+end
+
 --------------------------------------- RPC ---------------------------------------
 -- RPC 发送时自动会带上 player 作为第一个参数
 function _G.aipRPC(funcName, ...)
