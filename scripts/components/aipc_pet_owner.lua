@@ -12,14 +12,17 @@ local MAX_UP_QUALITY_VALUE = dev_mode and 5 or 3
 local LANG_MAP = {
 	english = {
 		FULL_FUDGE = "It ate too much fudge",
+		NO_FUDGE = "No skill need raise quality",
 	},
 	chinese = {
 		FULL_FUDGE = "它吃了太多软糖",
+		NO_FUDGE = "它没有要提升品质的技能",
 	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_FULL_FUDGE = LANG.FULL_FUDGE
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_NO_FUDGE = LANG.NO_FUDGE
 
 -------------------------------- Buff --------------------------------
 -- 嬉闹 BUFF
@@ -513,9 +516,10 @@ function PetOwner:UpgradePet(id, inst)
 					end
 				end
 
+				local upgradeSkillName = aipRandomEnt(canUpgradeSkillNames)
+
 				if not isFish then
 					-- 随机升级一个技能 1 级
-					local upgradeSkillName = aipRandomEnt(canUpgradeSkillNames)
 					for skillName, skillData in pairs(petData.skills) do
 						if skillName == upgradeSkillName then
 							skillData.quality = skillData.quality + 1
@@ -532,6 +536,19 @@ function PetOwner:UpgradePet(id, inst)
 					)
 
 					aipPrint("Upgrade 2:", lowestSkillName)
+				end
+
+				-- 告知不需要提升品质了
+				if not upgradeSkillName and not lowestSkillName then
+					aipFlingItem(aipSpawnPrefab(self.showPet, inst.prefab))
+
+					if self.inst.components.talker ~= nil then
+						self.inst.components.talker:Say(
+							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_NO_FUDGE
+						)
+					end
+
+					return
 				end
 
 				-- 如果是当前宠物，则重新渲染
