@@ -521,9 +521,9 @@ if dev_mode then
 		-- "taster",
 		-- "sponge",
 		-- "johnWick",
-		"graveCloak",
+		-- "graveCloak",
 		-- "cooker",
-		-- "giants",
+		"giants",
 	}
 end
 

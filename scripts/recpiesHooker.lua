@@ -7,6 +7,8 @@ function GLOBAL.AddModPrefabCookerRecipe(cooker, recipe)
 	env.AddCookerRecipe(cooker, recipe)
 end
 
+local dev_mode = _G.aipGetModConfig("dev_mode") == "enabled"
+
 -- 新版 mod 物品配方
 local function rec(name, tech, filters, ingredients, placerOrConfig)
 	local filterNames = {}
@@ -354,13 +356,49 @@ rec("aip_pet_box", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.TOOLS },
 	Ingredient("silk", 1),
 })
 
+-- 宠物软糖
+rec("aip_pet_fudge", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.TOOLS },
+{
+	Ingredient("aip_veggie_wheat", 1, "images/inventoryimages/aip_veggie_wheat.xml"),
+	Ingredient("monstermeat_dried", 1),
+})
+
 -------------------------------------- 联动 --------------------------------------
 local modNames = _G.ModManager:GetEnabledServerModNames()
 
 -- 海洋传说
-if _G.aipInTable(modNames, "workshop-2827757831") then
+if
+	_G.TUNING.LG_FANGLINGCHE_SANITY or
+	_G.aipInTable(modNames, "workshop-2827757831")
+then
+	_G.aipPrint("联动海洋传说")
+
 	-- 恒温水母
 	rec("aip_oldone_jellyfish", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.WINTER, CRAFTING_FILTERS.SUMMER },
 	{ Ingredient("saltrock", 5), Ingredient("rain_flower_stone", 1, "images/inventoryimages/rain_flower_stone.xml"), },
 	{ atlas = "images/inventoryimages/aip_oldone_jellyfish_cold.xml", image = "aip_oldone_jellyfish_cold.tex" })
+
+	-- 宠物软糖
+	rec("aip_pet_fudge_fish", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.TOOLS },
+	{
+		Ingredient("aip_fishman_mucus", 1, "images/inventoryimages/aip_fishman_mucus.xml"),
+		Ingredient("monstermeat_dried", 1),
+	})
+
+	local function onFishmanDead(inst)
+		local chance = dev_mode and 1 or 0.1
+		local afflicter = _G.aipGet(data, "afflicter")
+
+		if _G.aipChance(chance, afflicter) then
+			_G.aipFlingItem(
+				_G.aipSpawnPrefab(inst, "aip_fishman_mucus")
+			)
+		end
+	end
+
+	AddPrefabPostInit("lg_fishman", function(inst)
+		if _G.TheWorld.ismastersim then
+			inst:ListenForEvent("death", onFishmanDead)
+		end
+	end)
 end

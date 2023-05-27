@@ -238,7 +238,7 @@ function PetInfoWidget:RefreshStatus()
             end
         end
 
-        local skillText = self.infoPanel:AddChild(Text(UIFONT, 50))
+        local skillText = self.infoPanel:AddChild(Text(UIFONT, 40))
 
         skillText:SetMultilineTruncatedString(skill_str, 14, SKILL_DESC_WIDTH, 200) -- 163
         skillText:SetHAlign(ANCHOR_LEFT)
@@ -247,7 +247,7 @@ function PetInfoWidget:RefreshStatus()
         skillText:SetPosition(TW / 2 - SKILL_DESC_WIDTH / 2, offsetTop - TH / 2)
 
         -- 技能名字用颜色覆盖
-        local colorSkillText = self.infoPanel:AddChild(Text(UIFONT, 50, skill_name_str))
+        local colorSkillText = self.infoPanel:AddChild(Text(UIFONT, 40, skill_name_str))
         colorSkillText:SetHAlign(ANCHOR_LEFT)
 
         -- Print Text

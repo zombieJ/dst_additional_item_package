@@ -1,3 +1,5 @@
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
+
 -- 武器关闭
 local additional_weapon = aipGetModConfig("additional_weapon")
 if additional_weapon ~= "open" then
@@ -57,7 +59,7 @@ local function calcDamage(inst, attacker, target)
 
 	-- 游戏里没有其他玩家
 	if #AllPlayers == 1 then
-		return dmg * 3
+		return dmg * 3 * (dev_mode and 10 or 1)
 	end
 
 	-- 附近没有其他玩家

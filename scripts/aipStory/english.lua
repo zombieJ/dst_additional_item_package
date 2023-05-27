@@ -1270,12 +1270,19 @@ return {
 
             "Small animals have their own skills. As the quality increases, the number of skills and the maximum level will increase. But correspondingly, high-quality small animals are hard to come by.",
 
-            -- 小动物纸盒
+            -- 小动物埙
             {
                 type="img",
                 name="aip_pet_trigger",
             },
-            "Small animals love this paper box, which can be used to release or put away small animals.",
+            "Small animals can here the post, which can be used to release or put away small animals.",
+
+            -- 小动物纸盒
+            {
+                type="img",
+                name="aip_pet_box",
+            },
+            "Small animal like this box. You can put it in.",
 
             -- 榴莲糖
             {
@@ -1284,6 +1291,13 @@ return {
             },
             "Although I can feed small animals to increase ability, but do not feed 'durian sugar'. They will leave you because they are very resistant to this food!",
             "Note that one food a day is enough. Too many foods will get less benefits.",
+
+            -- 小动物软糖
+            {
+                type="img",
+                name="aip_pet_fudge",
+            },
+            "Small animal like eat this fudge which helps updgrade skill quality. But can not eat too much.",
         },
     },
 }

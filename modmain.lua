@@ -179,6 +179,8 @@ PrefabFiles = {
 	"aip_pet_trigger",
 	"aip_pet_box",
 	"aip_grave_cloak",
+	"aip_fishman_mucus",
+	"aip_pet_fudge",
 
 	-- Orbit
 	"aip_orbit",

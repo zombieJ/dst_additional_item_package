@@ -67,12 +67,12 @@ end
 
 -- 可接受食物
 local function ShouldAcceptItem(inst, item)
-    return item and item.components.edible ~= nil
+    return item and (item.components.edible ~= nil or item:HasTag("aip_pet_fudge"))
 end
 
 -- 从玩家获取物品
 local function OnGetItemFromPlayer(inst, giver, item)
-    if item and item.components.edible ~= nil then
+    if ShouldAcceptItem(inst, item) then
         -- 吃掉物品
         aipRemove(item)
 
@@ -92,8 +92,7 @@ local function OnGetItemFromPlayer(inst, giver, item)
             -- 提升小动物技能等级
             else
                 local aipc_pet_owner = aipGet(inst, "components|aipc_petable|owner|components|aipc_pet_owner")
-                aipPrint("aipc_pet_owner:", aipc_pet_owner)
-                aipc_pet_owner:UpgradePet(petId)
+                aipc_pet_owner:UpgradePet(petId, item)
             end
         end
     end
