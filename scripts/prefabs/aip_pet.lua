@@ -170,6 +170,11 @@ local function createPet(name, info)
 
         inst.sounds = info.sounds
 
+        -- 加一个生命值，最大生命值 1 以防止一些 SG 相关的问题
+        inst:AddComponent("health")
+        inst.components.health:SetMaxHealth(1)
+        inst.components.health:SetInvincible(true)
+
         inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
         inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED
         inst.components.locomotor.walkspeed = TUNING.WILSON_WALK_SPEED
