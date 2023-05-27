@@ -67,12 +67,12 @@ end
 
 -- 可接受食物
 local function ShouldAcceptItem(inst, item)
-    return item and item.components.edible ~= nil
+    return item and (item.components.edible ~= nil or item:HasTag("aip_pet_fudge"))
 end
 
 -- 从玩家获取物品
 local function OnGetItemFromPlayer(inst, giver, item)
-    if item and item.components.edible ~= nil then
+    if ShouldAcceptItem(inst, item) then
         -- 吃掉物品
         aipRemove(item)
 
@@ -92,8 +92,7 @@ local function OnGetItemFromPlayer(inst, giver, item)
             -- 提升小动物技能等级
             else
                 local aipc_pet_owner = aipGet(inst, "components|aipc_petable|owner|components|aipc_pet_owner")
-                aipPrint("aipc_pet_owner:", aipc_pet_owner)
-                aipc_pet_owner:UpgradePet(petId)
+                aipc_pet_owner:UpgradePet(petId, item)
             end
         end
     end
@@ -169,6 +168,11 @@ local function createPet(name, info)
         -- inst.components.writeable:SetOnWrittenFn(OnNamedByWriteable)
 
         inst.sounds = info.sounds
+
+        -- 加一个生命值，最大生命值 1 以防止一些 SG 相关的问题
+        inst:AddComponent("health")
+        inst.components.health:SetMaxHealth(1)
+        inst.components.health:SetInvincible(true)
 
         inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
         inst.components.locomotor.runspeed = TUNING.WILSON_RUN_SPEED

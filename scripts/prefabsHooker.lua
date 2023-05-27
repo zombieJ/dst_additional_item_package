@@ -272,10 +272,20 @@ AddPrefabPostInit("ghost", function(inst)
 end)
 
 ------------------------------------------ 鱼人 ------------------------------------------
+local function onMermDead(inst, data)
+	local chance = dev_mode and 1 or 0.01
+	local afflicter = _G.aipGet(data, "afflicter")
+
+	if _G.aipChance(chance, afflicter) then
+		_G.aipFlingItem(
+			_G.aipSpawnPrefab(inst, "aip_22_fish")
+		)
+	end
+end
+
 AddPrefabPostInit("merm", function(inst)
-	-- 鱼人会极低概率掉 22 磅重的鲶鱼
-	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
-		inst.components.lootdropper:AddChanceLoot("aip_22_fish", dev_mode and 1 or 0.01)
+	if _G.TheWorld.ismastersim then
+		inst:ListenForEvent("death", onMermDead)
 	end
 end)
 
@@ -325,14 +335,14 @@ AddPrefabPostInit("messagebottle", function(inst)
 		local originPrereveal = inst.components.mapspotrevealer.prerevealfn
 
 		inst.components.mapspotrevealer.prerevealfn = function(inst, doer, ...)
-			local chance = dev_mode and 1 or 0.05
+			local chance = dev_mode and 0.5 or 0.05
 
 			-- 如果玩家不会，我们就概率送蓝图
 			if
 				doer ~= nil and
 				doer.components.builder ~= nil and
 				not doer.components.builder:KnowsRecipe("aip_olden_tea") and
-				math.random() <= chance
+				_G.aipChance(chance, doer)
 			then
 				local blueprint = _G.aipSpawnPrefab(inst, "aip_olden_tea_blueprint")
 				local bottle = _G.aipSpawnPrefab(inst, "messagebottleempty")
@@ -580,6 +590,78 @@ local function spawnNearPlayer(prefabName, dist, maxCount)
 	end
 end
 
+local function randomFlower(pt)
+	if pt == nil then
+		return
+	end
+
+	local flowers = {
+		"aip_four_flower",			-- 鲜花迷宫
+		"aip_watering_flower",		-- 枯萎鲜花
+		"aip_oldone_rock",			-- 石头谜团
+		"aip_oldone_salt_hole",		-- 小型盐洞
+		"aip_oldone_lotus",			-- 荷花水漂
+		"aip_oldone_pot",			-- 闹鬼陶罐
+		"aip_oldone_tree",			-- 旺盛之树
+		"aip_oldone_once",			-- 瞬息宇宙
+		"aip_oldone_black",			-- 幕后黑手
+		"aip_oldone_jellyfish",		-- 搁浅水母
+		"aip_oldone_rice", 			-- 饭团食盒
+	}
+
+	-- 春天还有额外的几率出现春日谜团
+	if _G.TheWorld.state.isspring then
+		if dev_mode then -- 测试环境一定是特定谜团
+			flowers = {}
+		end
+
+		table.insert(flowers, "aip_oldone_plant_flower")
+	end
+
+	-- 夏天还有额外的几率出现化缘谜团
+	if _G.TheWorld.state.issummer then
+		if dev_mode then -- 测试环境一定是特定谜团
+			flowers = {}
+		end
+
+		table.insert(flowers, "aip_oldone_hot")
+	end
+
+	-- 秋天还有额外的几率出现枯叶谜团
+	if _G.TheWorld.state.isautumn then
+		if dev_mode then -- 测试环境一定是特定谜团
+			flowers = {}
+		end
+
+		table.insert(flowers, "aip_oldone_leaves")
+	end
+
+	-- 冬天还有额外的几率出现雪人谜团
+	if _G.TheWorld.state.iswinter then
+		if dev_mode then -- 测试环境一定是特定谜团
+			flowers = {}
+		end
+
+		table.insert(flowers, "aip_oldone_snowman")
+	end
+
+	-- 测试专用
+	if dev_mode then -- aip_oldone_tree
+		flowers = { "aip_oldone_rice" }
+	end
+
+	local flowerName = _G.aipRandomEnt(flowers)
+	local flower = _G.aipSpawnPrefab(nil, flowerName, pt.x, pt.y, pt.z)
+	
+	if dev_mode then
+		_G.aipPrint("Create Puzzle:", flowerName)
+	end
+
+	flower:AddComponent("perishable")
+	flower.components.perishable:StartPerishing()
+	flower.components.perishable:SetPerishTime(TUNING.PERISH_MED)
+	flower.components.perishable.onperishreplacement = "seeds"
+end
 
 if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 	AddPrefabPostInit("world", function (inst)
@@ -614,76 +696,18 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 							local pt = _G.aipFindRandomPointInLand(5)
 
 							-- 如果可以创造鲜花，则创建
-							if pt ~= nil then
-								local rnd = math.random()
+							randomFlower(pt)
+						end
+					end
 
-								local flowers = {
-									"aip_four_flower",			-- 鲜花迷宫
-									"aip_watering_flower",		-- 枯萎鲜花
-									"aip_oldone_rock",			-- 石头谜团
-									"aip_oldone_salt_hole",		-- 小型盐洞
-									"aip_oldone_lotus",			-- 荷花水漂
-									"aip_oldone_pot",			-- 闹鬼陶罐
-									"aip_oldone_tree",			-- 旺盛之树
-									"aip_oldone_once",			-- 瞬息宇宙
-									"aip_oldone_black",			-- 幕后黑手
-									"aip_oldone_jellyfish",		-- 搁浅水母
-									"aip_oldone_rice", 			-- 饭团食盒
-								}
-
-								-- 春天还有额外的几率出现春日谜团
-								if _G.TheWorld.state.isspring then
-									if dev_mode then -- 测试环境一定是特定谜团
-										flowers = {}
-									end
-
-									table.insert(flowers, "aip_oldone_plant_flower")
-								end
-
-								-- 夏天还有额外的几率出现化缘谜团
-								if _G.TheWorld.state.issummer then
-									if dev_mode then -- 测试环境一定是特定谜团
-										flowers = {}
-									end
-
-									table.insert(flowers, "aip_oldone_hot")
-								end
-
-								-- 秋天还有额外的几率出现枯叶谜团
-								if _G.TheWorld.state.isautumn then
-									if dev_mode then -- 测试环境一定是特定谜团
-										flowers = {}
-									end
-
-									table.insert(flowers, "aip_oldone_leaves")
-								end
-
-								-- 冬天还有额外的几率出现雪人谜团
-								if _G.TheWorld.state.iswinter then
-									if dev_mode then -- 测试环境一定是特定谜团
-										flowers = {}
-									end
-
-									table.insert(flowers, "aip_oldone_snowman")
-								end
-
-								-- 测试专用
-								if dev_mode then -- aip_oldone_tree
-									flowers = { "aip_oldone_rice" }
-								end
-
-								local flowerName = _G.aipRandomEnt(flowers)
-								local flower = _G.aipSpawnPrefab(nil, flowerName, pt.x, pt.y, pt.z)
-								
-								if dev_mode then
-									_G.aipPrint("Create Puzzle:", flowerName)
-								end
-
-								flower:AddComponent("perishable")
-								flower.components.perishable:StartPerishing()
-								flower.components.perishable:SetPerishTime(TUNING.PERISH_MED)
-								flower.components.perishable.onperishreplacement = "seeds"
-							end
+					-- 为宠物技能 幸运 的玩家额外一次机会随机在身边生成一个鲜花迷宫
+					for _, player in pairs(_G.AllPlayers) do
+						if _G.aipChance(0, player, dev_mode and 1 or 0.05) then
+							local tgt = _G.aipGetSpawnPoint(
+								player:GetPosition(),
+								dev_mode and 5 or nil
+							)
+							randomFlower(tgt)
 						end
 					end
 				end)

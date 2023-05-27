@@ -93,7 +93,7 @@ local function onHit(inst, attacker, target)
             chance = chance + skillInfo.multi * skillLv
         end
 
-        if math.random() <= chance then
+        if aipChance(chance, attacker) then
             aipRemove(ent)
 
             -- 伯乐 宠物有概率提升品质

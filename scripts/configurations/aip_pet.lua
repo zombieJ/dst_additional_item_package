@@ -48,6 +48,8 @@ local QUALITY_LANG = {
 -- 铁胃：免疫食物带来的生命损失负面效果
 -- 米糕：你受到的伤害提升 55%。你每次闪避成功，下一次伤害提升 10%，最多提升 100%，受到伤害后重置
 
+-- 厨神：烹饪速度加快
+
 -- 杂技：没有穿戴防具时，攻击和速度提升
 -- 呆呆：初次受到攻击时免疫伤害，再次受到攻击时会获得两倍伤害。之后（或者隔一段时间）重置计数器
 -- 诅咒：降低速度，提升攻击和伤害减免。当你为幽灵形态时，则会不断减少附近生物生命值，该效果最低降低至 10% 生命值。
@@ -114,6 +116,9 @@ local SKILL_LANG = {
 		migao = "Migao",
 		johnWick = "John Wick",
 		graveCloak = "Gravekeeper's Cloak",
+		cooker = "Cooker",
+		giants = "Giants",
+		lucky = "Rabbit Foot",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -141,6 +146,9 @@ local SKILL_LANG = {
 		migao = "米糕",
 		johnWick = "杀神",
 		graveCloak = "陵卫斗篷",
+		cooker = "厨神",
+		giants = "巨兽",
+		lucky = "兔脚",
 	},
 }
 
@@ -171,6 +179,9 @@ local SKILL_MAX_LEVEL = {
 	migao = { 2, 4, 6, 8, 10 },
 	johnWick = { 5, 6, 7, 8, 10 },
 	graveCloak = { 1, 2, 3, 4, 5 },
+	cooker = { 5, 6, 7, 8, 9 },
+	giants = { 1, 2, 3, 4, 5 },
+	lucky = { 1, 1, 2, 2, 3 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -283,6 +294,17 @@ local SKILL_CONSTANT = {
 		def = 0.1,										-- 每个斗篷减伤 10%
 		defMulti = 0.03,								-- 每个等级增加 3%
 	},
+	cooker = {
+		multi = dev_mode and 0.99 or 0.1,				-- 每个等级增加 10% 烹饪速度
+	},
+	giants = {
+		hp = dev_mode and 50 or 2000,					-- 基础判定血量
+		multi = 0.2,									-- 每个等级增伤 20%
+	},
+	lucky = {
+		special = true,
+		multi = dev_mode and 100 or 1					-- 每个等级提升幸运倍数
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -312,6 +334,9 @@ local SKILL_DESC_LANG = {
 		migao = "Damage received increases PAN%. Every time you successfully dodge an attack, increase PTG% damage, up to TTL%. Reset when damaged",
 		johnWick = "Raise ATK damage. If your pet is hound, player near you will also get this buff",
 		graveCloak = "Get barrier per ITV sec (max CNT). Each barrier can reduce PTG% damage but will break one by one when get hurt",
+		cooker = "Increase cooking speed by PTG%",
+		giants = "Increase PTG% damage for the target whose current health > HP",
+		lucky = "Lucky. Charlie can not harm you(just damage)",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -339,6 +364,9 @@ local SKILL_DESC_LANG = {
 		migao = "受到的伤害提升PAN%。每次成功闪避攻击，提升PTG%伤害，最多TTL%。受到伤害则重置",
 		johnWick = "提升ATK点伤害，如果你的宠物是小猎犬，则身边伙伴也获得增伤效果",
 		graveCloak = "每隔ITV秒获得一个屏障，最多CNT个。每个屏障减免PTG%伤害，受到伤害时会消耗一层屏障",
+		cooker = "烹饪速度提升PTG%",
+		giants = "攻击当前生命值大于HP的生物伤害提升PTG%",
+		lucky = "运气不错，免疫查理造成的伤害(也仅仅是免疫而已)",
 	},
 }
 
@@ -459,6 +487,17 @@ local SKILL_DESC_VARS = {
 			PTG = (info.def + info.defMulti * lv) * 100,
 		}
 	end,
+	cooker = function(info, lv)
+		return {
+			PTG = info.multi * lv * 100,
+		}
+	end,
+	giants = function(info, lv)
+		return {
+			PTG = info.multi * lv * 100,
+			HP = info.hp,
+		}
+	end,
 }
 
 local SKILL_LIST = {}
@@ -482,7 +521,9 @@ if dev_mode then
 		-- "taster",
 		-- "sponge",
 		-- "johnWick",
-		"graveCloak",
+		-- "graveCloak",
+		-- "cooker",
+		"giants",
 	}
 end
 

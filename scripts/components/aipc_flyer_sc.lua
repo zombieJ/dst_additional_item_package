@@ -226,6 +226,9 @@ function Flyer:OnServerUpdate(dt)
 		-- 目标没了 or 玩家死了，结束飞行
 		self:End()
 	else
+		-- 不断移除碰撞
+		RemovePhysicsColliders(self.inst)
+
 		-- 飞过去
 		local instPos = self.inst:GetPosition()
 		local pos = self.targetPos

@@ -3,7 +3,26 @@ local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 local petConfig = require("configurations/aip_pet")
 local petPrefabs = require("configurations/aip_pet_prefabs")
 
+local language = aipGetModConfig("language")
+
 local MAX_PET_COUNT = 5
+local MAX_UP_QUALITY_VALUE = dev_mode and 5 or 3
+
+-- 文字描述
+local LANG_MAP = {
+	english = {
+		FULL_FUDGE = "It ate too much fudge",
+		NO_FUDGE = "No skill need raise quality",
+	},
+	chinese = {
+		FULL_FUDGE = "它吃了太多软糖",
+		NO_FUDGE = "它没有要提升品质的技能",
+	},
+}
+
+local LANG = LANG_MAP[language] or LANG_MAP.english
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_FULL_FUDGE = LANG.FULL_FUDGE
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_NO_FUDGE = LANG.NO_FUDGE
 
 -------------------------------- Buff --------------------------------
 -- 嬉闹 BUFF
@@ -89,7 +108,23 @@ end
 
 -- 开始烹饪
 local function OnStartCooking(inst, data)
-	inst._aipLastCookpot = aipGet(data, "cookpot")
+	local cookpot = aipGet(data, "cookpot")
+	inst._aipLastCookpot = cookpot
+
+	-- 如果是厨神则会加快烹饪速度
+	local skillInfo, skillLv = inst.components.aipc_pet_owner:GetSkillInfo("cooker")
+	if skillInfo ~= nil and cookpot ~= nil and cookpot.components.stewer ~= nil then
+		local multi = math.max(0, 1 - skillInfo.multi * skillLv)
+
+		-- 临时修改烹饪时间
+		local oriCooktimemult = cookpot.components.stewer.cooktimemult
+		cookpot.components.stewer.cooktimemult = multi
+
+		-- 重置回去
+		cookpot:DoTaskInTime(0, function()
+			cookpot.components.stewer.cooktimemult = oriCooktimemult
+		end)
+	end
 end
 
 -- 时间阶段变化
@@ -429,53 +464,140 @@ function PetOwner:GetSkillInfo(skillName)
 	return nil
 end
 
+-- 刷新宠物，重新渲染出来
+function PetOwner:RefreshPet(id)
+	if self.showPet and self.showPet.components.aipc_petable:GetInfo().id == id then
+		local pt = self.showPet:GetPosition()
+		self:HidePet(false)
+		local nextPet = self:TogglePet(id, false)
+
+		if nextPet then
+			nextPet.Transform:SetPosition(pt:Get())
+			aipSpawnPrefab(nextPet, "farm_plant_happy")
+		end
+	end
+end
+
 -- 升级宠物
-function PetOwner:UpgradePet(id)
+function PetOwner:UpgradePet(id, inst)
 	local petData = aipFilterTable(self.pets, function(v)
 		return v.id == id
 	end)[1]
 
 	if petData ~= nil then
-		local upgradeEffect = petData.upgradeEffect or 1
+		aipPrint("UpgradePet:", inst.prefab)
 
-		-- 收集一下可以升级的技能列表
-		local canUpgradeSkillNames = {}
-		for skillName, skillData in pairs(petData.skills) do
-			local maxLevel = petConfig.SKILL_MAX_LEVEL[skillName] or {}
-			local maxLv = maxLevel[skillData.quality] or 1
+		if inst:HasTag("aip_pet_fudge") then
+			-- 升级技能品质
+			local quality = petData.quality
+			petData.upgradeQuality = petData.upgradeQuality or 0
 
-			if skillData.lv < maxLv then
-				table.insert(canUpgradeSkillNames, skillName)
+			local isFish = inst.prefab == "aip_pet_fudge_fish"
+			local qualityValue = isFish and 3 or 1
+
+			if petData.upgradeQuality + qualityValue <= MAX_UP_QUALITY_VALUE then
+				petData.upgradeQuality = petData.upgradeQuality + qualityValue
+
+				-- 收集一下可以升级品质的技能列表
+				local canUpgradeSkillNames = {}
+				local lowestSkillQuality = 999
+				local lowestSkillName = nil
+
+				for skillName, skillData in pairs(petData.skills) do
+					local skillQuality = skillData.quality
+
+					if skillQuality < quality then
+						table.insert(canUpgradeSkillNames, skillName)
+
+						if skillQuality < lowestSkillQuality then
+							lowestSkillQuality = skillQuality
+							lowestSkillName = skillName
+						end
+					end
+				end
+
+				local upgradeSkillName = aipRandomEnt(canUpgradeSkillNames)
+
+				if not isFish then
+					-- 随机升级一个技能 1 级
+					for skillName, skillData in pairs(petData.skills) do
+						if skillName == upgradeSkillName then
+							skillData.quality = skillData.quality + 1
+							break
+						end
+					end
+
+					aipPrint("Upgrade 1:", upgradeSkillName)
+				elseif lowestSkillName ~= nil then
+					-- 升级最低品质的技能 2 级
+					petData.skills[lowestSkillName].quality = math.min(
+						petData.skills[lowestSkillName].quality + 2,
+						quality
+					)
+
+					aipPrint("Upgrade 2:", lowestSkillName)
+				end
+
+				-- 告知不需要提升品质了
+				if not upgradeSkillName and not lowestSkillName then
+					aipFlingItem(aipSpawnPrefab(self.showPet, inst.prefab))
+
+					if self.inst.components.talker ~= nil then
+						self.inst.components.talker:Say(
+							STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_NO_FUDGE
+						)
+					end
+
+					return
+				end
+
+				-- 如果是当前宠物，则重新渲染
+				self:RefreshPet(id)
+
+
+			else -- 不能吃更多软糖了，吐出来
+				aipFlingItem(aipSpawnPrefab(self.showPet, inst.prefab))
+
+				if self.inst.components.talker ~= nil then
+					self.inst.components.talker:Say(
+						STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_FULL_FUDGE
+					)
+				end
 			end
-		end
+		else
+			-- 升级技能等级
+			local upgradeEffect = petData.upgradeEffect or 1
 
-		-- 随机升级一个技能
-		local upgradeSkillName = aipRandomEnt(canUpgradeSkillNames)
-		for skillName, skillData in pairs(petData.skills) do
-			if skillName == upgradeSkillName then
+			-- 收集一下可以升级的技能列表
+			local canUpgradeSkillNames = {}
+			for skillName, skillData in pairs(petData.skills) do
 				local maxLevel = petConfig.SKILL_MAX_LEVEL[skillName] or {}
+				local maxLv = maxLevel[skillData.quality] or 1
 
-				-- 有最高等级限制
-				skillData.lv = skillData.lv + upgradeEffect
-				skillData.lv = math.min(skillData.lv, maxLevel[skillData.quality] or 1)
-				break
+				if skillData.lv < maxLv then
+					table.insert(canUpgradeSkillNames, skillName)
+				end
 			end
-		end
 
-		-- 如果是当前宠物，则重新渲染
-		if self.showPet and self.showPet.components.aipc_petable:GetInfo().id == id then
-			local pt = self.showPet:GetPosition()
-			self:HidePet(false)
-			local nextPet = self:TogglePet(id, false)
+			-- 随机升级一个技能
+			local upgradeSkillName = aipRandomEnt(canUpgradeSkillNames)
+			for skillName, skillData in pairs(petData.skills) do
+				if skillName == upgradeSkillName then
+					local maxLevel = petConfig.SKILL_MAX_LEVEL[skillName] or {}
 
-			if nextPet then
-				nextPet.Transform:SetPosition(pt:Get())
-				aipSpawnPrefab(nextPet, "farm_plant_happy")
+					-- 有最高等级限制
+					skillData.lv = skillData.lv + upgradeEffect
+					skillData.lv = math.min(skillData.lv, maxLevel[skillData.quality] or 1)
+					break
+				end
 			end
-		end
 
-		-- 一天内的喂食效果后续会减少
-		petData.upgradeEffect = dev_mode and 0.9 or 0.1
+			-- 如果是当前宠物，则重新渲染
+			self:RefreshPet(id)
+
+			-- 一天内的喂食效果后续会减少
+			petData.upgradeEffect = dev_mode and 0.9 or 0.1
+		end
 	end
 end
 

@@ -9,12 +9,14 @@ local LANG_MAP = {
         REC_DESC = "Put animal into box, can be given to others",
 		DESC = "Who doesn't like a box?",
         EMPTY = "There is no animal around me!",
+        FULL = "I have too many pets",
 	},
 	chinese = {
 		NAME = "动物纸箱",
         REC_DESC = "将你的宠物收容到纸箱中，可用于赠与他人",
 		DESC = "谁不喜欢纸箱子呢？",
         EMPTY = "还没有小动物在身边呢！",
+        FULL = "我已经有太多宠物了",
 	},
 }
 
@@ -24,6 +26,7 @@ STRINGS.NAMES.AIP_PET_BOX = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_PET_BOX = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_BOX = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_BOX_EMPTY = LANG.EMPTY
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_BOX_FULL = LANG.FULL
 
 -- 资源
 local assets = {
@@ -88,6 +91,10 @@ local function onDoAction(inst, doer)
             )
         end
 
+    elseif doer.components.aipc_pet_owner:IsFull() then
+        doer.components.talker:Say(
+                STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_BOX_FULL
+            )
     else -- >>>>>>> 取出宠物
         local pet = doer.components.aipc_pet_owner:AddPetByInfo(inst._aipPetData)
         if pet ~= nil then

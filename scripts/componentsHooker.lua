@@ -518,6 +518,24 @@ end)
 
 -- 伤害允许翻倍
 AipPostComp("combat", function(self)
+	-- 受到攻击
+	local originGetAttacked = self.GetAttacked
+
+	function self:GetAttacked(attacker, damage, weapon, stimuli, spdamage, ...)
+		local dmg = damage
+
+		if self.inst ~= nil and self.inst.components.aipc_pet_owner ~= nil then
+			-- 幸运则免疫 查理 攻击
+			local luckyInfo, luckyLv = self.inst.components.aipc_pet_owner:GetSkillInfo("lucky")
+			if luckyInfo ~= nil and stimuli == "darkness" then
+				dmg = 0
+			end
+		end
+
+		return originGetAttacked(self, attacker, dmg, weapon, stimuli, spdamage, ...)
+	end
+
+	-- 计算伤害
 	local originCalcDamage = self.CalcDamage
 
 	function self:CalcDamage(target, weapon, multiplier, ...)
@@ -589,8 +607,20 @@ AipPostComp("combat", function(self)
 			local migaoInfo, migaoLv, migaoSkill = self.inst.components.aipc_pet_owner:GetSkillInfo("migao")
 
 			if migaoInfo ~= nil then
-			local multi = 1 + (migaoSkill._multi or 0) * migaoInfo.multi
+				local multi = 1 + (migaoSkill._multi or 0) * migaoInfo.multi
 				dmg = dmg * multi
+			end
+
+			-- 巨兽 对生命值进行判定
+			local giantsInfo, giantsLv = self.inst.components.aipc_pet_owner:GetSkillInfo("giants")
+			if giantsInfo ~= nil then
+				if
+					target.components.health ~= nil and
+					target.components.health.currenthealth >= giantsInfo.hp
+				then
+					local multi = 1 + giantsInfo.multi * giantsLv
+					dmg = dmg * multi
+				end
 			end
 
 			dmg = dmg * (1 + petDmgMulti)
@@ -610,7 +640,7 @@ AipPostComp("combat", function(self)
 			local dancerInfo, dancerLv = target.components.aipc_pet_owner:GetSkillInfo("dancer")
 
 			if dancerInfo ~= nil then
-				if math.random() < dancerInfo.multi * dancerLv then
+				if _G.aipChance(dancerInfo.multi * dancerLv, target) then
 					dmg = 0
 
 					-- 播放音效
@@ -846,8 +876,6 @@ AipPostComp("stewer", function(self)
 
 	-- 食物健康影响
 	function self:StartCooking(doer, ...)
-		local ret = originStartCooking(self, doer, ...)
-
 		-- 额外触发一个事件
 		if doer ~= nil then
 			doer:PushEvent("aipStartCooking",
@@ -855,7 +883,7 @@ AipPostComp("stewer", function(self)
 			)
 		end
 
-		return ret
+		return originStartCooking(self, doer, ...)
 	end
 end)
 
