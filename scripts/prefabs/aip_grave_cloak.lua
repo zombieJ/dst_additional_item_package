@@ -30,6 +30,9 @@ local function fn()
 
 	inst.entity:SetPristine()
 
+	-- 不阻碍建筑阻塞
+	inst:AddComponent("placer")
+
 	if not TheWorld.ismastersim then
 		return inst
 	end
