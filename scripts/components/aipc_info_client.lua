@@ -46,6 +46,11 @@ function InfoClient:InitNetKey(netFunc, key)
 				self.events[key](inst, self.values[key])
 			end
 		end)
+
+		-- 警告没有在初始化的时候初始化字段的情况
+		if self.inst.prefab ~= nil then
+			aipPrint("Warning: InfoClient not init key:", self.inst.prefab, key)
+		end
 	end
 
 	return net

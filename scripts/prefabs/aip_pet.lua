@@ -140,7 +140,10 @@ local function createPet(name, info)
         inst.AnimState:PlayAnimation(info.anim)
 
         inst:AddComponent("aipc_petable")
+
         inst:AddComponent("aipc_info_client")
+        inst.components.aipc_info_client:SetString("aip_info", "")
+		inst.components.aipc_info_client:SetByteArray("aip_info_color", {})
 
         inst:AddTag("_named")
         -- inst:AddTag("_writeable")

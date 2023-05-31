@@ -155,6 +155,9 @@ local function fn()
 	inst.components.aipc_action_client.canBeActOn = canBeActOn
 
     inst:AddComponent("aipc_info_client")
+    inst.components.aipc_info_client:SetString("aip_info", "")
+    inst.components.aipc_info_client:SetByteArray("aip_info_color", {})
+
     inst:AddTag("_named")
 
     if not TheWorld.ismastersim then
