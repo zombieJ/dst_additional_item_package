@@ -1223,6 +1223,13 @@ return {
                 name="aip_stone_mask",
             },
             "This broken mask still has some magical powers, and when used it fears nearby creatures if possible.",
+
+            -- 缘梦
+            {
+                type="img",
+                name="aip_dream_stone",
+            },
+            "The stone is full of magic which makes every nearby fall asleep.",
         },
     },
 
