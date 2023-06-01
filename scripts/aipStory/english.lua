@@ -1235,7 +1235,7 @@ return {
 
     -- 动物之友
     {
-        name = "动物之友",
+        name = "Cute Animals",
         desc = {
             "I found that in addition to the special pets that can be found in the rock lair, some small animals in the wild can also be tamed. All it takes is some special food.",
 
