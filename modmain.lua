@@ -156,6 +156,7 @@ PrefabFiles = {
 	"aip_oldone_sad",
 
 	-- 量子
+	"aip_weapon_box",
 	"aip_particles",
 	"aip_particles_bottle",
 	"aip_particles_runing",
