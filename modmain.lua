@@ -172,6 +172,7 @@ PrefabFiles = {
 	"aip_forever",
 	"aip_glory_hand",
 	"aip_stone_mask",
+	"aip_dream_stone",
 
 	-- 懵懵宠宠
 	"aip_pet_catcher",
