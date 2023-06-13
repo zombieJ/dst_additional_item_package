@@ -329,6 +329,13 @@ rec("aip_showcase_ice", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.RESTORATION, CRAFTI
 {Ingredient("ice", 8), Ingredient("saltrock", 1)},
 "aip_showcase_ice_placer")
 
+-- 虹彩宝箱
+rec("aip_weapon_box", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.CONTAINERS, CRAFTING_FILTERS.STRUCTURES },
+{
+	Ingredient("aip_particles_bottle_charged", 1, "images/inventoryimages/aip_particles_bottle_charged.xml"),
+	Ingredient("moonglass", 1), Ingredient("purebrilliance", 1)
+}, "aip_weapon_box_placer")
+
 ------------------------------------ 萌萌宠宠 ------------------------------------
 -- 明目药膏
 rec("aip_fig_salve", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.RESTORATION },

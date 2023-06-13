@@ -903,3 +903,33 @@ AipPostComp("farmplantstress", function(self)
 		return originSetStressed(self, name, stressed, doer, ...)
 	end
 end)
+
+-- 装备
+AipPostComp("equippable", function(self)
+	-- 暂时不需要
+	-- -- 装备
+	-- local originEquip = self.Equip
+	-- function self:Equip(owner, from_ground, ...)
+	-- 	-- 额外触发一个事件
+	-- 	if owner ~= nil then
+	-- 		owner:PushEvent("aipEquipItem",
+	-- 			{item = self.inst}
+	-- 		)
+	-- 	end
+
+	-- 	return originEquip(self, owner, from_ground, ...)
+	-- end
+
+	-- 卸下
+	local originUnequip = self.Unequip
+	function self:Unequip(owner, ...)
+		-- 额外触发一个事件
+		if owner ~= nil then
+			owner:PushEvent("aipUnequipItem",
+				{item = self.inst}
+			)
+		end
+
+		return originUnequip(self, owner, ...)
+	end
+end)

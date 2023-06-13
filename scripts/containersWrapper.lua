@@ -568,21 +568,34 @@ function params.aip_blowdart.itemtestfn(container, item, slot)
 end
 
 ------------------ 虹光宝库 ------------------
-params.aip_weapon_box = {
-    widget = {
-        slotpos = {},
-        animbank = "ui_chest_3x3",
-        animbuild = "ui_chest_3x3",
-        pos = Vector3(0, 200, 0),
-        side_align_tip = 160,
-    },
-    type = "chest",
+-- params.aip_weapon_box = {
+--     widget = {
+--         slotpos = {},
+--         animbank = "ui_chest_3x3",
+--         animbuild = "ui_chest_3x3",
+--         pos = Vector3(0, 200, 0),
+--         side_align_tip = 160,
+--     },
+--     type = "chest",
+-- }
+
+params.aip_weapon_box = _G.aipCloneTable(params.aip_woodener)
+params.aip_weapon_box.widget = _G.aipCloneTable(params.aip_woodener.widget)
+
+params.aip_weapon_box.widget.buttoninfo = {
+	text = STRINGS.ACTIONS.ACTIVATE.GENERIC,
+	position = Vector3(0, -140, 0),
 }
 
-for y = 2, 0, -1 do
-    for x = 0, 2 do
-        table.insert(params.aip_weapon_box.widget.slotpos, Vector3(80 * x - 80 * 2 + 80, 80 * y - 80 * 2 + 80, 0))
-    end
+params.aip_weapon_box.itemtestfn = nil
+
+-- 操作按钮
+function params.aip_weapon_box.widget.buttoninfo.fn(inst, doer)
+	if inst.components.container ~= nil then
+		_G.BufferedAction(doer, inst, AIP_ACTION):Do()
+	elseif inst.replica.container ~= nil and not inst.replica.container:IsBusy() then
+		_G.SendRPCToServer(_G.RPC.DoWidgetButtonAction, AIP_ACTION.code, inst, AIP_ACTION.mod_name)
+	end
 end
 
 ----------------------------------------------------------------------------------------------

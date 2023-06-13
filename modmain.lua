@@ -336,6 +336,11 @@ function PlayerPrefabPostInit(inst)
 	if not inst.components.aipc_oldone then
 		inst:AddComponent("aipc_oldone")
 	end
+
+	-- 虹光宝库
+	if not inst.components.aipc_weapon_caller then
+		inst:AddComponent("aipc_weapon_caller")
+	end
 end
 
 AddPlayerPostInit(PlayerPrefabPostInit)
