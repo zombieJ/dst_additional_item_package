@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="full">
+        <file id="0" name="full/shadow.png" width="487" height="142" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="full/bird.png" width="377" height="430" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <folder id="1" name="stone">
+        <file id="0" name="stone/red.png" width="295" height="263" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="stone/blue.png" width="295" height="263" pivot_x="0" pivot_y="1"/>
+        <file id="2" name="stone/green.png" width="295" height="263" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_oldone_thrower">
+        <animation id="0" name="idle" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="shadow" folder="0" file="0" abs_x="-2.296985" abs_y="-30.693307" abs_pivot_x="0.51127" abs_pivot_y="0.479021" abs_angle="0" abs_scale_x="0.65" abs_scale_y="0.65" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="bird" folder="0" file="1" abs_x="-9.981293" abs_y="18.881339" abs_pivot_x="0.481293" abs_pivot_y="0.190089" abs_angle="0" abs_scale_x="0.65" abs_scale_y="0.65" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="shadow">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-2.296985" y="-30.693307" pivot_x="0.51127" pivot_y="0.479021" angle="0" scale_x="0.65" scale_y="0.65"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="bird">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="-9.981293" y="18.881339" pivot_x="0.481293" pivot_y="0.190089" angle="0" scale_x="0.65" scale_y="0.65"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="1" name="red" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="red" folder="1" file="0" abs_x="-1.972826" abs_y="-0.778926" abs_pivot_x="0.472826" abs_pivot_y="0.278926" abs_angle="0" abs_scale_x="0.2" abs_scale_y="0.2" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="red">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="-1.972826" y="-0.778926" pivot_x="0.472826" pivot_y="0.278926" angle="0" scale_x="0.2" scale_y="0.2"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="green" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="red" folder="1" file="2" abs_x="-1.972826" abs_y="-0.778926" abs_pivot_x="0.472826" abs_pivot_y="0.278926" abs_angle="0" abs_scale_x="0.2" abs_scale_y="0.2" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="red">
+                <key id="0" spin="0">
+                    <object folder="1" file="2" x="-1.972826" y="-0.778926" pivot_x="0.472826" pivot_y="0.278926" angle="0" scale_x="0.2" scale_y="0.2"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="3" name="blue" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="red" folder="1" file="1" abs_x="-1.972826" abs_y="-0.778926" abs_pivot_x="0.472826" abs_pivot_y="0.278926" abs_angle="0" abs_scale_x="0.2" abs_scale_y="0.2" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="red">
+                <key id="0" spin="0">
+                    <object folder="1" file="1" x="-1.972826" y="-0.778926" pivot_x="0.472826" pivot_y="0.278926" angle="0" scale_x="0.2" scale_y="0.2"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

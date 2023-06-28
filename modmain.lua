@@ -154,6 +154,7 @@ PrefabFiles = {
 	"aip_oldone_thestral_watcher",
 	"aip_oldone_smile",
 	"aip_oldone_sad",
+	"aip_oldone_thrower",
 
 	-- 量子
 	"aip_weapon_box",

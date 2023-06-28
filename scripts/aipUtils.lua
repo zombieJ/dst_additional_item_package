@@ -842,7 +842,7 @@ function _G.aipCopy(item)
 end
 
 -- 丢弃物品，产生一个物理抛下的效果
-function _G.aipFlingItem(loot, pt)
+function _G.aipFlingItem(loot, pt, config)
 	if loot ~= nil and loot:IsValid() then
         if pt ~= nil then
             loot.Transform:SetPosition(pt:Get())
@@ -850,13 +850,18 @@ function _G.aipFlingItem(loot, pt)
 			pt = loot:GetPosition()
         end
 
-		local min_speed =  0
-		local max_speed = 2
+		config = config or {}
+
+		local min_speed = config.minSpeed or 0
+		local max_speed = config.maxSpeed or 2
 		local y_speed = 8
 		local y_speed_variance = 4
 
+		local mergedYSpeed = config.ySpeed or _G.GetRandomWithVariance(y_speed, y_speed_variance)
+
+		local angle = config.angle ~= nil and config.angle or math.random() * 2 * _G.PI
+
 		if loot.Physics ~= nil then
-			local angle = math.random() * 2 * _G.PI
 			local speed = min_speed + math.random() * (max_speed - min_speed)
 			if loot:IsAsleep() then
 				local radius = .5 * speed
@@ -868,7 +873,7 @@ function _G.aipFlingItem(loot, pt)
 			else
 				local sinangle = math.sin(angle)
 				local cosangle = math.cos(angle)
-				loot.Physics:SetVel(speed * cosangle, _G.GetRandomWithVariance(y_speed, y_speed_variance), speed * -sinangle)
+				loot.Physics:SetVel(speed * cosangle, mergedYSpeed, speed * -sinangle)
 			end
 		end
     end
