@@ -1230,6 +1230,16 @@ return {
                 name="aip_dream_stone",
             },
             "The stone is full of magic which makes every nearby fall asleep.",
+
+            -- 傅达
+            {
+                type="anim",
+                build="aip_oldone_thrower",
+                scale=.35,
+                height=140,
+                top=20,
+            },
+            "A knowledgeable owl statue, playing games with it can get some rewards.",
         },
     },
 

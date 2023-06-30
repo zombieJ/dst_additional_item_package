@@ -1229,6 +1229,17 @@ return {
                 name="aip_dream_stone",
             },
             "充满魔力的石头，使用后会让附近所有的生物都陷入睡眠。",
+
+            -- 傅达
+            {
+                type="anim",
+                build="aip_oldone_thrower",
+                scale=.35,
+                height=140,
+                top=20,
+            },
+            "一个博学的猫头鹰石雕，和它玩游戏可以获得一些奖励。",
+        
         }
     },
 

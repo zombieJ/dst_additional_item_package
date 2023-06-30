@@ -524,11 +524,22 @@ AipPostComp("combat", function(self)
 	function self:GetAttacked(attacker, damage, weapon, stimuli, spdamage, ...)
 		local dmg = damage
 
+		-- Owner 被攻击
 		if self.inst ~= nil and self.inst.components.aipc_pet_owner ~= nil then
 			-- 幸运则免疫 查理 攻击
 			local luckyInfo, luckyLv = self.inst.components.aipc_pet_owner:GetSkillInfo("lucky")
 			if luckyInfo ~= nil and stimuli == "darkness" then
 				dmg = 0
+			end
+		end
+
+		-- 被 Owner 攻击
+		if attacker ~= nil and attacker.components.aipc_pet_owner ~= nil then
+			-- 亵渎 伤害加倍
+			local blasphemyInfo = attacker.components.aipc_pet_owner:GetSkillInfo("blasphemy")
+
+			if blasphemyInfo ~= nil then
+				dmg = dmg * (dev_mode and 999 or 2)
 			end
 		end
 

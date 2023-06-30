@@ -100,6 +100,11 @@ local function OnTimerDone(inst, data)
 		inst.components.aipc_pet_owner:StartCure(true)
 	end
 
+	-- 治疗
+	if data.name == "aipc_pet_owner_blasphemy" and pet then
+		inst.components.aipc_pet_owner:StartBlasphemy(true)
+	end
+
 	-- 海绵
 	if data.name == "aipc_pet_owner_drink" and pet then
 		inst.components.aipc_pet_owner:StartDrink(true)
@@ -447,6 +452,9 @@ function PetOwner:ShowPet(index, showEffect)
 
 		-- 尝试陵卫斗篷
 		self:StartGraveCloak()
+
+		-- 尝试亵渎
+		self:StartBlasphemy()
 
 		return pet
 	end
@@ -812,6 +820,29 @@ function PetOwner:StartJohnWick()
 		self._johnWichAura = self.inst:SpawnChild(
 			existDog and "aip_aura_john_wick" or "aip_aura_john_wick_single"
 		)
+	end
+end
+
+
+-- 开始亵渎：持续丢失生命值
+function PetOwner:StartBlasphemy(doDelta)
+	local skillInfo, skillLv = self:GetSkillInfo("blasphemy")
+
+	if
+		skillInfo ~= nil and
+		self.showPet and
+		self.showPet:IsValid() and
+		self.inst.components.health ~= nil
+	then
+		if
+			self.inst.components.health.currenthealth > 1 and
+			doDelta
+		then
+			self.inst.components.health:DoDelta(-1, true)
+		end
+
+		self:EnsureTimer()
+		self.inst.components.timer:StartTimer("aipc_pet_owner_blasphemy", 1)
 	end
 end
 
