@@ -495,6 +495,26 @@ function PetOwner:UpgradePet(id, inst)
 	if petData ~= nil then
 		aipPrint("UpgradePet:", inst.prefab)
 
+		-- 如果是 BUG 软糖，直接满级
+		if inst.prefab == "aip_pet_fudge_bug" then
+			local MAX_QUALITY = 5
+
+			petData.quality = MAX_QUALITY
+
+			for skillName, skillData in pairs(petData.skills) do
+				skillData.quality = MAX_QUALITY
+			end
+
+			-- 添加一个亵渎技能
+			petData.skills.blasphemy = {
+				lv = 1,
+				quality = MAX_QUALITY,
+			}
+
+			self:RefreshPet(id)
+			return
+		end
+
 		if inst:HasTag("aip_pet_fudge") then
 			-- 升级技能品质
 			local quality = petData.quality
