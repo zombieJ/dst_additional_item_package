@@ -154,8 +154,10 @@ PrefabFiles = {
 	"aip_oldone_thestral_watcher",
 	"aip_oldone_smile",
 	"aip_oldone_sad",
+	"aip_oldone_thrower",
 
 	-- 量子
+	"aip_weapon_box",
 	"aip_particles",
 	"aip_particles_bottle",
 	"aip_particles_runing",
@@ -334,6 +336,11 @@ function PlayerPrefabPostInit(inst)
 	-- 古神低语
 	if not inst.components.aipc_oldone then
 		inst:AddComponent("aipc_oldone")
+	end
+
+	-- 虹光宝库
+	if not inst.components.aipc_weapon_caller then
+		inst:AddComponent("aipc_weapon_caller")
 	end
 end
 

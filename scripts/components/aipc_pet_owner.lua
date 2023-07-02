@@ -100,6 +100,11 @@ local function OnTimerDone(inst, data)
 		inst.components.aipc_pet_owner:StartCure(true)
 	end
 
+	-- 治疗
+	if data.name == "aipc_pet_owner_blasphemy" and pet then
+		inst.components.aipc_pet_owner:StartBlasphemy(true)
+	end
+
 	-- 海绵
 	if data.name == "aipc_pet_owner_drink" and pet then
 		inst.components.aipc_pet_owner:StartDrink(true)
@@ -448,6 +453,9 @@ function PetOwner:ShowPet(index, showEffect)
 		-- 尝试陵卫斗篷
 		self:StartGraveCloak()
 
+		-- 尝试亵渎
+		self:StartBlasphemy()
+
 		return pet
 	end
 end
@@ -486,6 +494,26 @@ function PetOwner:UpgradePet(id, inst)
 
 	if petData ~= nil then
 		aipPrint("UpgradePet:", inst.prefab)
+
+		-- 如果是 BUG 软糖，直接满级
+		if inst.prefab == "aip_pet_fudge_bug" then
+			local MAX_QUALITY = 5
+
+			petData.quality = MAX_QUALITY
+
+			for skillName, skillData in pairs(petData.skills) do
+				skillData.quality = MAX_QUALITY
+			end
+
+			-- 添加一个亵渎技能
+			petData.skills.blasphemy = {
+				lv = 1,
+				quality = MAX_QUALITY,
+			}
+
+			self:RefreshPet(id)
+			return
+		end
 
 		if inst:HasTag("aip_pet_fudge") then
 			-- 升级技能品质
@@ -812,6 +840,29 @@ function PetOwner:StartJohnWick()
 		self._johnWichAura = self.inst:SpawnChild(
 			existDog and "aip_aura_john_wick" or "aip_aura_john_wick_single"
 		)
+	end
+end
+
+
+-- 开始亵渎：持续丢失生命值
+function PetOwner:StartBlasphemy(doDelta)
+	local skillInfo, skillLv = self:GetSkillInfo("blasphemy")
+
+	if
+		skillInfo ~= nil and
+		self.showPet and
+		self.showPet:IsValid() and
+		self.inst.components.health ~= nil
+	then
+		if
+			self.inst.components.health.currenthealth > 1 and
+			doDelta
+		then
+			self.inst.components.health:DoDelta(-1, true)
+		end
+
+		self:EnsureTimer()
+		self.inst.components.timer:StartTimer("aipc_pet_owner_blasphemy", 1)
 	end
 end
 

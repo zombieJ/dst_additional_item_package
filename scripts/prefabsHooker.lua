@@ -761,6 +761,7 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 
 					local structureList = {
 						"aip_forever",
+						"aip_oldone_thrower",
 					}
 
 					-- 测试专用，只会掉落最后一个物品

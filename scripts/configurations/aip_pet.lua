@@ -49,7 +49,7 @@ local QUALITY_LANG = {
 -- 米糕：你受到的伤害提升 55%。你每次闪避成功，下一次伤害提升 10%，最多提升 100%，受到伤害后重置
 -- 厨神：烹饪速度加快
 
--- 缘梦: 
+-- 亵渎：你违背了它本该有的命运，但是谁在乎呢？你的伤害提升 100%，但是你的生命值会不断减少到 1 为止。
 
 -- 杂技：没有穿戴防具时，攻击和速度提升
 -- 呆呆：初次受到攻击时免疫伤害，再次受到攻击时会获得两倍伤害。之后（或者隔一段时间）重置计数器
@@ -120,6 +120,7 @@ local SKILL_LANG = {
 		cooker = "Cooker",
 		giants = "Giants",
 		lucky = "Rabbit Foot",
+		blasphemy = "Blasphemy",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -150,6 +151,7 @@ local SKILL_LANG = {
 		cooker = "厨神",
 		giants = "巨兽",
 		lucky = "兔脚",
+		blasphemy = "亵渎",
 	},
 }
 
@@ -183,6 +185,7 @@ local SKILL_MAX_LEVEL = {
 	cooker = { 5, 6, 7, 8, 9 },
 	giants = { 1, 2, 3, 4, 5 },
 	lucky = { 1, 1, 2, 2, 3 },
+	blasphemy = { 1, 1, 1, 1, 1 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -306,6 +309,10 @@ local SKILL_CONSTANT = {
 		special = true,
 		multi = dev_mode and 100 or 1					-- 每个等级提升幸运倍数
 	},
+	blasphemy = {
+		special = true,
+		goldern = true,
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -338,6 +345,7 @@ local SKILL_DESC_LANG = {
 		cooker = "Increase cooking speed by PTG%",
 		giants = "Increase PTG% damage for the target whose current health > HP",
 		lucky = "Lucky. Charlie can not harm you(just damage)",
+		blasphemy = "Abandon fate! Your damage get double, but your health will continue hurted",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -368,6 +376,7 @@ local SKILL_DESC_LANG = {
 		cooker = "烹饪速度提升PTG%",
 		giants = "攻击当前生命值大于HP的生物伤害提升PTG%",
 		lucky = "运气不错，免疫查理造成的伤害(也仅仅是免疫而已)",
+		blasphemy = "背弃命运！你的伤害翻倍，但是你的生命值会不断减少",
 	},
 }
 
@@ -525,6 +534,7 @@ if dev_mode then
 		-- "graveCloak",
 		-- "cooker",
 		-- "giants",
+		"blasphemy",
 	}
 end
 

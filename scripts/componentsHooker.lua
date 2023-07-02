@@ -524,11 +524,22 @@ AipPostComp("combat", function(self)
 	function self:GetAttacked(attacker, damage, weapon, stimuli, spdamage, ...)
 		local dmg = damage
 
+		-- Owner 被攻击
 		if self.inst ~= nil and self.inst.components.aipc_pet_owner ~= nil then
 			-- 幸运则免疫 查理 攻击
 			local luckyInfo, luckyLv = self.inst.components.aipc_pet_owner:GetSkillInfo("lucky")
 			if luckyInfo ~= nil and stimuli == "darkness" then
 				dmg = 0
+			end
+		end
+
+		-- 被 Owner 攻击
+		if attacker ~= nil and attacker.components.aipc_pet_owner ~= nil then
+			-- 亵渎 伤害加倍
+			local blasphemyInfo = attacker.components.aipc_pet_owner:GetSkillInfo("blasphemy")
+
+			if blasphemyInfo ~= nil then
+				dmg = dmg * (dev_mode and 999 or 2)
 			end
 		end
 
@@ -901,5 +912,35 @@ AipPostComp("farmplantstress", function(self)
 		end
 
 		return originSetStressed(self, name, stressed, doer, ...)
+	end
+end)
+
+-- 装备
+AipPostComp("equippable", function(self)
+	-- 暂时不需要
+	-- -- 装备
+	-- local originEquip = self.Equip
+	-- function self:Equip(owner, from_ground, ...)
+	-- 	-- 额外触发一个事件
+	-- 	if owner ~= nil then
+	-- 		owner:PushEvent("aipEquipItem",
+	-- 			{item = self.inst}
+	-- 		)
+	-- 	end
+
+	-- 	return originEquip(self, owner, from_ground, ...)
+	-- end
+
+	-- 卸下
+	local originUnequip = self.Unequip
+	function self:Unequip(owner, ...)
+		-- 额外触发一个事件
+		if owner ~= nil then
+			owner:PushEvent("aipUnequipItem",
+				{item = self.inst}
+			)
+		end
+
+		return originUnequip(self, owner, ...)
 	end
 end)

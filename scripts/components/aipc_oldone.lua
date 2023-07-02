@@ -11,10 +11,13 @@ local function OnIsDay(inst, isday)
     if inst.components.health ~= nil then
 		local restHealth = inst.components.health:GetMaxWithPenalty() - inst.components.health.currenthealth
 
+		-- 有谜团因子才会出现特效
+		if factor > 0 then
+			aipSpawnPrefab(inst, "farm_plant_happy")
+		end
+
 		inst.components.health:DoDelta(factor)
 		factor = factor - restHealth
-
-		aipSpawnPrefab(inst, "farm_plant_happy")
     end
 
 	-- 如果有剩余，则给 血精石 充能

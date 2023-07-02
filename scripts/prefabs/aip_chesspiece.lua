@@ -302,9 +302,12 @@ end
 
 local function SetMaterial(inst, materialid)
 	inst.materialid = materialid
-	inst.AnimState:SetBuild(GetBuildName(inst.pieceid, materialid))
+	local build = GetBuildName(inst.pieceid, materialid)
+	inst.AnimState:SetBuild(build)
 
 	inst.components.lootdropper:SetLoot({MATERIALS[materialid].prefab})
+
+	inst.components.symbolswapdata:SetData(build, "swap_body")
 
 	local inv_image_suffix = (materialid ~= nil and MATERIALS[materialid].inv_suffix) or ""
 	inst.components.inventoryitem:ChangeImageName("chesspiece_"..PIECES[inst.pieceid].name..inv_image_suffix)
@@ -504,6 +507,10 @@ local function makepiece(pieceid, materialid)
 		inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
 		inst.components.workable:SetWorkLeft(1)
 		inst.components.workable:SetOnFinishCallback(onworkfinished)
+
+		inst:AddComponent("submersible")
+		inst:AddComponent("symbolswapdata")
+		inst.components.symbolswapdata:SetData(build, "swap_body")
 
 		inst:AddComponent("hauntable")
 		inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
