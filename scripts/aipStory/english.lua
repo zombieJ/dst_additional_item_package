@@ -385,6 +385,16 @@ return {
             height=90,
             },
             "Of course. Ice one can keep fresh. Also workable with pickaxe.",
+
+            -- 武器库
+            {
+                type="anim",
+                build="aip_weapon_box",
+                anim="idle",
+                scale=.3,
+                height=90,
+            },
+            "I can perceive the life of this box. After establishing a connection with it, the box will send me the same kind of tools that I just used up.",
         },
     },
 

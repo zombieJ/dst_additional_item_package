@@ -333,7 +333,8 @@ rec("aip_showcase_ice", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.RESTORATION, CRAFTI
 rec("aip_weapon_box", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.CONTAINERS, CRAFTING_FILTERS.STRUCTURES },
 {
 	Ingredient("aip_particles_bottle_charged", 1, "images/inventoryimages/aip_particles_bottle_charged.xml"),
-	Ingredient("moonglass", 1), Ingredient("purebrilliance", 1)
+	Ingredient("aip_oldone_plant_full", 6, "images/inventoryimages/aip_oldone_plant_full.xml"),
+	Ingredient("purebrilliance", 1)
 }, "aip_weapon_box_placer")
 
 ------------------------------------ 萌萌宠宠 ------------------------------------
