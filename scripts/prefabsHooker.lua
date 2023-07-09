@@ -218,6 +218,9 @@ local animalList = {
 
 	-- 戳食者
 	"slurper",
+
+	-- 球状光虫
+	"lightflier",
 }
 
 for i, prefab in ipairs(animalList) do

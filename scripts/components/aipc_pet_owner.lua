@@ -40,6 +40,37 @@ aipBufferRegister("aip_pet_play", {
 	showFX = true,
 })
 
+-- 泥泞 BUFF
+aipBufferRegister("aip_pet_muddy", {
+	startFn = function(source, inst, info)
+		if
+			source ~= nil and source.components.aipc_pet_owner ~= nil and
+			inst ~= nil and inst.components.locomotor ~= nil
+		then
+			local skillInfo, skillLv = source.components.aipc_pet_owner:GetSkillInfo("muddy")
+			if skillInfo ~= nil then
+				local slowPTG = math.max(0.1, 1 - skillInfo.multi * skillLv)
+
+				inst.components.locomotor:SetExternalSpeedMultiplier(
+					inst, "aipc_pet_muddy_speed", slowPTG
+				)
+			end
+		end
+	end,
+
+	endFn = function(source, inst)
+		if
+			inst ~= nil and inst.components.locomotor ~= nil
+		then
+			inst.components.locomotor:RemoveExternalSpeedMultiplier(
+				inst, "aipc_pet_muddy_speed"
+			)
+		end
+	end,
+
+	showFX = true,
+})
+
 ---------------------------------------------------------------------
 local function OnAttack(inst, data)
 	if inst ~= nil and inst.components.aipc_pet_owner ~= nil and data ~= nil and data.target ~= nil then
@@ -638,10 +669,18 @@ end
 
 -- 攻击
 function PetOwner:Attack(target)
+	-- 嬉闹
 	local skillInfo, skillLv = self:GetSkillInfo("play")
 
 	if skillInfo ~= nil then
 		aipBufferPatch(self.inst, target, "aip_pet_play", skillInfo.duration * skillLv)
+	end
+
+	-- 泥泞
+	local muddyInfo, muddyLv = self:GetSkillInfo("muddy")
+
+	if muddyInfo ~= nil then
+		aipBufferPatch(self.inst, target, "aip_pet_muddy", muddyInfo.duration)
 	end
 end
 

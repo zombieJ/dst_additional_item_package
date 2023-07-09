@@ -69,6 +69,8 @@ local function fn()
 	inst.AnimState:SetBuild("aip_mud_crab")
 	inst.AnimState:PlayAnimation("poop")
 
+	inst:AddComponent("aipc_petable")
+
 	inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then

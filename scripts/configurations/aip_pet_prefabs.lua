@@ -377,7 +377,7 @@ local PREFABS = {
         origin = "catcoon",
     },
 
-     ----------------------------- 戳食 -----------------------------
+    ----------------------------- 戳食 -----------------------------
     -- 戳食者
     slurper = {
         bank = "slurper",
@@ -391,6 +391,37 @@ local PREFABS = {
             inst._light.entity:SetParent(inst.entity)
 
             inst._light.Light:SetRadius(0.5)
+        end,
+    },
+
+    ----------------------------- 泥蟹 -----------------------------
+    -- 泥蟹
+    aip_mud_crab = {
+        bank = "aip_mud_crab",
+        build = "aip_mud_crab",
+        anim = "idle_loop",
+        sg = "SGaip_mud_crab",
+        origin = "aip_mud_crab",
+        scale = 1,
+        face = 2,
+        bb = true,
+        postInit = function(inst) -- 强制切换一下 SG
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    --------------------------- 球状光虫 ---------------------------
+    -- 球状光虫
+    lightflier = {
+        bank = "lightflier",
+        build = "lightflier",
+        anim = "idle_loop",
+        sg = "SGlightflier",
+        origin = "lightflier",
+        scale = 1,
+        bb = true,
+        postInit = function(inst) -- 关灯
+            inst.Light:Enable(false)
         end,
     },
 }
@@ -636,6 +667,20 @@ local function getSkills(prefab, subPrefab)
     if prefab == "slurper" then
         return {
             "migao",
+        }
+    end
+
+    ------------------------- 泥蟹 -------------------------
+    if prefab == "aip_mud_crab" then
+        return {
+            "muddy",
+        }
+    end
+
+    ----------------------- 球状光虫 -----------------------
+    if prefab == "lightflier" then
+        return {
+            "muddy",
         }
     end
 end
