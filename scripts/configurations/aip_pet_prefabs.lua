@@ -420,9 +420,6 @@ local PREFABS = {
         origin = "lightflier",
         scale = 1,
         bb = true,
-        postInit = function(inst) -- 关灯
-            inst.Light:Enable(false)
-        end,
     },
 }
 
@@ -680,7 +677,7 @@ local function getSkills(prefab, subPrefab)
     ----------------------- 球状光虫 -----------------------
     if prefab == "lightflier" then
         return {
-            "muddy",
+            "bubble",
         }
     end
 end

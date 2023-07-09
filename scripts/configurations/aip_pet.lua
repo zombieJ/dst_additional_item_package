@@ -122,6 +122,7 @@ local SKILL_LANG = {
 		lucky = "Rabbit Foot",
 		blasphemy = "Blasphemy",
 		muddy = "Muddy",
+		bubble = "Lighten Bubble",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -154,6 +155,7 @@ local SKILL_LANG = {
 		lucky = "兔脚",
 		blasphemy = "亵渎",
 		muddy = "泥泞",
+		bubble = "光媒",
 	},
 }
 
@@ -189,6 +191,7 @@ local SKILL_MAX_LEVEL = {
 	lucky = { 1, 1, 2, 2, 3 },
 	blasphemy = { 1, 1, 1, 1, 1 },
 	muddy = { 5, 6, 7, 8, 10 },
+	bubble = { 1, 2, 3, 4, 5 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -321,6 +324,11 @@ local SKILL_CONSTANT = {
 		multi = dev_mode and 0.9 or 0.01,				-- 每个等级降低敌人 1% 速度
 		duration = 3,									-- 持续时间
 	},
+	bubble = {
+		special = true,
+		base = 2,										-- 基础半径
+		multi = 0.2,									-- 每个等级增加半径
+	},
 
 }
 
@@ -356,6 +364,7 @@ local SKILL_DESC_LANG = {
 		lucky = "Lucky. Charlie can not harm you(just damage)",
 		blasphemy = "Abandon fate! Your damage get double, but your health will continue hurted",
 		muddy = "Reduce PTG% speed who you damage. Last DUR seconds",
+		bubble = "Lighten up the night. Has DIST radius",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -388,6 +397,7 @@ local SKILL_DESC_LANG = {
 		lucky = "运气不错，免疫查理造成的伤害(也仅仅是免疫而已)",
 		blasphemy = "背弃命运！你的伤害翻倍，但是你的生命值会不断减少",
 		muddy = "当你造成伤害时，会降低目标PTG%移动速度，持续DUR秒",
+		bubble = "发出半径为DIST的光芒",
 	},
 }
 
@@ -523,6 +533,11 @@ local SKILL_DESC_VARS = {
 		return {
 			PTG = info.multi * lv * 100,
 			DUR = info.duration,
+		}
+	end,
+	bubble = function(info, lv)
+		return {
+			DIST = info.base + info.multi * lv,
 		}
 	end,
 }

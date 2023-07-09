@@ -487,6 +487,9 @@ function PetOwner:ShowPet(index, showEffect)
 		-- 尝试亵渎
 		self:StartBlasphemy()
 
+		-- 尝试光媒
+		self:StartBubble()
+
 		return pet
 	end
 end
@@ -902,6 +905,25 @@ function PetOwner:StartBlasphemy(doDelta)
 
 		self:EnsureTimer()
 		self.inst.components.timer:StartTimer("aipc_pet_owner_blasphemy", 1)
+	end
+end
+
+-- 开始光媒：发出光芒
+function PetOwner:StartBubble()
+	local skillInfo, skillLv = self:GetSkillInfo("bubble")
+
+	if skillInfo ~= nil and self.showPet ~= nil then
+		local radius = skillInfo.base + skillInfo.multi * skillLv
+
+		if not self.showPet.Light then
+			self.showPet.entity:AddLight()
+			self.showPet.Light:SetFalloff(0.5)
+			self.showPet.Light:SetIntensity(.9)
+			self.showPet.Light:SetColour(237/255, 237/255, 209/255)
+		end
+
+		self.showPet.Light:SetRadius(radius)
+		self.showPet.Light:Enable(true)
 	end
 end
 
