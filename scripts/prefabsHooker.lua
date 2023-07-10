@@ -221,6 +221,9 @@ local animalList = {
 
 	-- 球状光虫
 	"lightflier",
+
+	-- 龙虾
+	"wobster_sheller_land", "wobster_moonglass_land",
 }
 
 for i, prefab in ipairs(animalList) do
