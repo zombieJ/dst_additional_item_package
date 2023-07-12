@@ -16,6 +16,11 @@ local LANG_MAP = {
 		NAME = "Sock Snake",
 		DESC = "Hmmm, strange...",
 		SNAKE = "Si si si...",
+		BEZOAR = {
+			"'Trash is also treasure'",
+			"'After firing and cooling'",
+			"'There exists some special stones'",
+		},
 		ROCK_HEAD = {
 			"'Bring the marble head to me'",
 			"'It in the marsh'",
@@ -31,6 +36,11 @@ local LANG_MAP = {
 		NAME = "袜子蛇",
 		DESC = "千人千面！",
 		SNAKE = "嘶嘶嘶...",
+		BEZOAR = {
+			"“垃圾也是宝贝”",
+			"“煅烧后冷却”",
+			"“有种特殊的石头”",
+		},
 		ROCK_HEAD = {
 			"“把那个大理石带给我”",
 			"“沼泽有个聒噪的家伙”",
@@ -50,6 +60,7 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 STRINGS.NAMES.AIP_OLDONE_THESTRAL = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_SNAKE = LANG.SNAKE
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_BEZOAR = LANG.BEZOAR
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_ROCK_HEAD = LANG.ROCK_HEAD
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_ROCK_HEAD_LOCK = LANG.ROCK_HEAD_LOCK
 
@@ -112,6 +123,11 @@ local function onNear(inst, player)
 						and STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_ROCK_HEAD_LOCK
 						or STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_ROCK_HEAD
 
+					-- 也随机出现粪石对话
+					if math.random() < 0.4 then
+						talks = STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_THESTRAL_BEZOAR
+					end
+
 					player.components.talker:Say(
 						talks[math.random(#talks)]
 					)
@@ -154,6 +170,17 @@ local function onDeath(inst, data)
 	else
 		inst.components.lootdropper:SpawnLootPrefab("trinket_9")
 	end
+end
+
+-- 交易物品
+local function ShouldAcceptItem(inst, item)
+    return item and item.prefab == "aip_bezoar"
+end
+
+local function OnGetItemFromPlayer(inst, giver, item)
+    if ShouldAcceptItem(inst, item) then
+        
+    end
 end
 
 -------------------------------- 实例 --------------------------------
@@ -226,8 +253,16 @@ local function fn()
     inst.components.combat.hiteffectsymbol = "body"
 	inst:ListenForEvent("aip_healthdelta", onHealthDelta)
 
+	inst:AddComponent("trader")
+    inst.components.trader:SetAcceptTest(ShouldAcceptItem)
+    inst.components.trader.onaccept = OnGetItemFromPlayer
+    inst.components.trader.deleteitemonaccept = false
+
 	inst:AddComponent("lootdropper")
 	inst:ListenForEvent("death", onDeath)
+
+	-- 进度管理
+	inst.aipSteps = 0
 
 	return inst
 end
