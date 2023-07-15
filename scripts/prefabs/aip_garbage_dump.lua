@@ -5,6 +5,7 @@ local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 local LANG_MAP = {
 	english = {
 		NAME = "Garbage Dump",
+        REC_DESC = "A garbage dump for garbage",
 		DESC = "Stinky!",
         DESC_FULL = "It's full of garbage!",
         BEZOAR = "Bezoar",
@@ -12,6 +13,7 @@ local LANG_MAP = {
 	},
 	chinese = {
 		NAME = "垃圾堆",
+        REC_DESC = "一个可以放置垃圾的垃圾堆",
 		DESC = "臭气熏天！",
         DESC_FULL = "已经被塞得满满当当了！",
         BEZOAR = "粪石",
@@ -22,6 +24,7 @@ local LANG_MAP = {
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
 STRINGS.NAMES.AIP_GARBAGE_DUMP = LANG.NAME
+STRINGS.RECIPE_DESC.AIP_GARBAGE_DUMP = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_GARBAGE_DUMP = LANG.DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_GARBAGE_DUMP_FULL = LANG.DESC_FULL
 
@@ -225,4 +228,5 @@ local function bezoarFn()
 end
 
 return Prefab("aip_garbage_dump", fn, assets),
+        MakePlacer("aip_garbage_dump_placer", "aip_garbage_dump", "aip_garbage_dump", "g1"),
         Prefab("aip_bezoar", bezoarFn, assets)
