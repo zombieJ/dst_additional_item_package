@@ -153,7 +153,7 @@ local function fn()
     inst.entity:AddNetwork()
 
     -- 碰撞体积
-	MakeObstaclePhysics(inst, .2)
+	MakeObstaclePhysics(inst, .1)
 
     inst.AnimState:SetBank("aip_garbage_dump")
     inst.AnimState:SetBuild("aip_garbage_dump")

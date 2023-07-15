@@ -350,7 +350,7 @@ return {
             {
                 type="anim",
                 build="aip_garbage_dump",
-                anim="g1",
+                anim="place",
                 scale=.6,
                 height=90,
             },
