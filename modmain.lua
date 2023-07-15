@@ -155,6 +155,7 @@ PrefabFiles = {
 	"aip_oldone_smile",
 	"aip_oldone_sad",
 	"aip_oldone_thrower",
+	"aip_garbage_dump",
 
 	-- 量子
 	"aip_weapon_box",

@@ -190,12 +190,12 @@ local function createPet(name, info)
         inst.components.trader.onaccept = OnGetItemFromPlayer
         inst.components.trader.deleteitemonaccept = false
 
+        inst:SetStateGraph(info.sg)
+        inst:SetBrain(brain)
+
         if info.postInit ~= nil then
             info.postInit(inst)
         end
-
-        inst:SetStateGraph(info.sg)
-        inst:SetBrain(brain)
 
         inst.persists = false
 

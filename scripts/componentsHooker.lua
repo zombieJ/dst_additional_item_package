@@ -535,12 +535,26 @@ AipPostComp("combat", function(self)
 
 		-- 被 Owner 攻击
 		if attacker ~= nil and attacker.components.aipc_pet_owner ~= nil then
+			local petDmgMulti = 0
+
 			-- 亵渎 伤害加倍
 			local blasphemyInfo = attacker.components.aipc_pet_owner:GetSkillInfo("blasphemy")
 
 			if blasphemyInfo ~= nil then
-				dmg = dmg * (dev_mode and 999 or 2)
+				petDmgMulti = petDmgMulti + (dev_mode and 999 or 1)
 			end
+
+			-- 虾拳
+			local shrimpInfo, shrimpLv = attacker.components.aipc_pet_owner:GetSkillInfo("shrimp")
+
+			if shrimpInfo ~= nil then
+				local inv = attacker.components.inventory
+				if inv == nil or inv:GetEquippedItem(_G.EQUIPSLOTS.HANDS) == nil then
+					petDmgMulti = petDmgMulti + shrimpInfo.multi * shrimpLv
+				end
+			end
+
+			dmg = dmg * (1 + petDmgMulti)
 		end
 
 		return originGetAttacked(self, attacker, dmg, weapon, stimuli, spdamage, ...)

@@ -346,6 +346,16 @@ return {
             },
             "Toss the excess in the 'burner' and burn it down, and the dust can be used to make other things. It's a good deal.",
 
+            -- 垃圾堆
+            {
+                type="anim",
+                build="aip_garbage_dump",
+                anim="g1",
+                scale=.6,
+                height=90,
+            },
+            "'garbage dump' will return nothing. But when full, will get 'bezoar' after burning for a while and then extinguishing.",
+
             -- 贪婪观察者
             {
                 type="anim",

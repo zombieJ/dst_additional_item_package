@@ -48,6 +48,7 @@ local QUALITY_LANG = {
 -- 铁胃：免疫食物带来的生命损失负面效果
 -- 米糕：你受到的伤害提升 55%。你每次闪避成功，下一次伤害提升 10%，最多提升 100%，受到伤害后重置
 -- 厨神：烹饪速度加快
+-- 虾拳：没有携带武器时，攻击造成双倍伤害
 
 -- 亵渎：你违背了它本该有的命运，但是谁在乎呢？你的伤害提升 100%，但是你的生命值会不断减少到 1 为止。
 
@@ -121,6 +122,9 @@ local SKILL_LANG = {
 		giants = "Giants",
 		lucky = "Rabbit Foot",
 		blasphemy = "Blasphemy",
+		muddy = "Muddy",
+		bubble = "Lighten Bubble",
+		shrimp = "Shrimp Punch",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -152,6 +156,9 @@ local SKILL_LANG = {
 		giants = "巨兽",
 		lucky = "兔脚",
 		blasphemy = "亵渎",
+		muddy = "泥泞",
+		bubble = "光媒",
+		shrimp = "虾拳",
 	},
 }
 
@@ -186,6 +193,9 @@ local SKILL_MAX_LEVEL = {
 	giants = { 1, 2, 3, 4, 5 },
 	lucky = { 1, 1, 2, 2, 3 },
 	blasphemy = { 1, 1, 1, 1, 1 },
+	muddy = { 5, 6, 7, 8, 10 },
+	bubble = { 1, 2, 3, 4, 5 },
+	shrimp = { 10, 12, 14, 16, 20 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -313,6 +323,20 @@ local SKILL_CONSTANT = {
 		special = true,
 		goldern = true,
 	},
+	muddy = {
+		special = true,
+		multi = dev_mode and 0.9 or 0.01,				-- 每个等级降低敌人 1% 速度
+		duration = 3,									-- 持续时间
+	},
+	bubble = {
+		special = true,
+		base = 2,										-- 基础半径
+		multi = 0.2,									-- 每个等级增加半径
+	},
+	shrimp = {
+		special = true,
+		multi = dev_mode and 0.5 or 0.1,				-- 每个等级增加 10% 效果
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -346,6 +370,9 @@ local SKILL_DESC_LANG = {
 		giants = "Increase PTG% damage for the target whose current health > HP",
 		lucky = "Lucky. Charlie can not harm you(just damage)",
 		blasphemy = "Abandon fate! Your damage get double, but your health will continue hurted",
+		muddy = "Reduce PTG% speed who you damage. Last DUR seconds",
+		bubble = "Lighten up the night. Has DIST radius",
+		shrimp = "Increase PTG% damage when no weapon equipped",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -377,6 +404,9 @@ local SKILL_DESC_LANG = {
 		giants = "攻击当前生命值大于HP的生物伤害提升PTG%",
 		lucky = "运气不错，免疫查理造成的伤害(也仅仅是免疫而已)",
 		blasphemy = "背弃命运！你的伤害翻倍，但是你的生命值会不断减少",
+		muddy = "当你造成伤害时，会降低目标PTG%移动速度，持续DUR秒",
+		bubble = "发出半径为DIST的光芒",
+		shrimp = "徒手攻击时伤害提升PTG%",
 	},
 }
 
@@ -508,6 +538,22 @@ local SKILL_DESC_VARS = {
 			HP = info.hp,
 		}
 	end,
+	muddy = function(info, lv)
+		return {
+			PTG = info.multi * lv * 100,
+			DUR = info.duration,
+		}
+	end,
+	bubble = function(info, lv)
+		return {
+			DIST = info.base + info.multi * lv,
+		}
+	end,
+	shrimp = function(info, lv)
+		return {
+			PTG = info.multi * lv * 100,
+		}
+	end,
 }
 
 local SKILL_LIST = {}
@@ -534,7 +580,7 @@ if dev_mode then
 		-- "graveCloak",
 		-- "cooker",
 		-- "giants",
-		"blasphemy",
+		-- "blasphemy",
 	}
 end
 

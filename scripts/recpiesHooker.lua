@@ -262,6 +262,15 @@ rec("aip_oldone_thestral_watcher_item", TECH.MAGIC_TWO, { CRAFTING_FILTERS.MAGIC
 		image = "aip_oldone_thestral_watcher.tex",
 	})
 
+-- 垃圾堆
+rec("aip_garbage_dump", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.STRUCTURES },
+	{
+		Ingredient("aip_oldone_plant_broken", 2, "images/inventoryimages/aip_oldone_plant_broken.xml"),
+		Ingredient("spoiled_food", 1),
+		Ingredient("powcake", 1)
+	},
+	"aip_garbage_dump_placer")
+
 ------------------------------------ 量子扰动 ------------------------------------
 -- 粒子限制器
 rec("aip_particles_bottle", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.TOOLS },

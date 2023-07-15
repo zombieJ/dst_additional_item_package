@@ -39,7 +39,6 @@ local PREFABS = {
             scream = "dontstarve/rabbit/scream",
             hurt = "dontstarve/rabbit/scream_short",
         },
-        origin = "rabbit",
     },
     rabbit_winter = {
         bank = "rabbit",
@@ -71,7 +70,6 @@ local PREFABS = {
         build = "spider_build",
         anim = "idle",
         sg = "SGspider",
-        origin = "spider",
     },
 
     -- 蜘蛛战士
@@ -80,7 +78,6 @@ local PREFABS = {
         build = "spider_warrior_build",
         anim = "idle",
         sg = "SGspider",
-        origin = "spider_warrior",
         tags = { "spider_warrior" }
     },
 
@@ -90,7 +87,6 @@ local PREFABS = {
         build = "DS_spider_caves",
         anim = "idle",
         sg = "SGspider",
-        origin = "spider_hider",
         tags = { "spider_hider" }
     },
 
@@ -100,7 +96,6 @@ local PREFABS = {
         build = "spider_wolf_build",
         anim = "idle",
         sg = "SGspider",
-        origin = "spider_healer",
         tags = { "spider_healer" }
     },
 
@@ -110,7 +105,6 @@ local PREFABS = {
         build = "DS_spider2_caves",
         anim = "idle",
         sg = "SGspider",
-        origin = "spider_spitter",
         tags = { "spider_spitter" }
     },
     
@@ -120,7 +114,6 @@ local PREFABS = {
         build = "spider_white",
         anim = "idle",
         sg = "SGspider",
-        origin = "spider_dropper",
         tags = { "spider_warrior" }
     },
     
@@ -130,7 +123,6 @@ local PREFABS = {
         build = "ds_spider_moon",
         anim = "idle",
         sg = "SGspider",
-        origin = "spider_moon",
         tags = { "spider_moon" }
     },
     
@@ -140,7 +132,6 @@ local PREFABS = {
         build = "spider_water",
         anim = "idle",
         sg = "SGspider_water",
-        origin = "spider_water",
         tags = { "spider_water" },
         postInit = function(inst)
             inst.components.locomotor.hop_distance = 4
@@ -163,7 +154,6 @@ local PREFABS = {
         build = "hound_ocean",
         anim = "idle",
         sg = "SGhound",
-        origin = "hound",
         scale = 0.6,
         sounds = houndSounds,
         postInit = houndPostInit("hound"),
@@ -175,7 +165,6 @@ local PREFABS = {
         build = "hound_red_ocean",
         anim = "idle",
         sg = "SGhound",
-        origin = "firehound",
         scale = 0.6,
         sounds = houndSounds,
         postInit = houndPostInit("hound"),
@@ -187,7 +176,6 @@ local PREFABS = {
         build = "hound_ice_ocean",
         anim = "idle",
         sg = "SGhound",
-        origin = "icehound",
         scale = 0.6,
         sounds = houndSounds,
         postInit = houndPostInit("hound"),
@@ -199,7 +187,6 @@ local PREFABS = {
         build = "clayhound",
         anim = "idle",
         sg = "SGhound",
-        origin = "clayhound",
         scale = 0.6,
         sounds = {
             pant = "dontstarve/creatures/together/clayhound/pant",
@@ -222,7 +209,6 @@ local PREFABS = {
         build = "hound_mutated",
         anim = "idle",
         sg = "SGhound",
-        origin = "mutatedhound",
         scale = 0.6,
         sounds = houndSounds,
         postInit = houndPostInit("hound"),
@@ -234,7 +220,6 @@ local PREFABS = {
         build = "hound_hedge_ocean",
         anim = "idle",
         sg = "SGhound",
-        origin = "hedgehound",
         scale = 0.6,
         sounds = {
             pant = "dontstarve/creatures/hound/pant",
@@ -257,7 +242,6 @@ local PREFABS = {
         build = "bee_build",
         anim = "idle",
         sg = "SGbee",
-        origin = "bee",
         scale = 0.8,
         sounds = {
             takeoff = "dontstarve/bee/bee_takeoff",
@@ -274,7 +258,6 @@ local PREFABS = {
         build = "bee_angry_build",
         anim = "idle",
         sg = "SGbee",
-        origin = "killerbee",
         scale = 0.8,
         sounds = {
             takeoff = "dontstarve/bee/killerbee_takeoff",
@@ -291,7 +274,6 @@ local PREFABS = {
         build = "bee_guard_build",
         anim = "idle",
         sg = "SGbeeguard",
-        origin = "beeguard",
         scale = 0.8,
         sounds = {
             attack = "dontstarve/bee/killerbee_attack",
@@ -308,7 +290,6 @@ local PREFABS = {
         build = "mandrake",
         anim = "idle_loop",
         sg = "SGMandrake",
-        origin = "mandrake_active",
         scale = 0.9,
     },
 
@@ -318,7 +299,6 @@ local PREFABS = {
         build = "butterfly_basic",
         anim = "idle",
         sg = "SGbutterfly",
-        origin = "butterfly",
         scale = 1,
         face = 2,
         bb = true,
@@ -354,7 +334,6 @@ local PREFABS = {
         build = "mole_build",
         anim = "idle_under",
         sg = "SGmole",
-        origin = "mole",
         postInit = function(inst)
             inst._aipCanRun = false
 
@@ -374,17 +353,15 @@ local PREFABS = {
         build = "catcoon_build",
         anim = "idle_loop",
         sg = "SGcatcoon",
-        origin = "catcoon",
     },
 
-     ----------------------------- 戳食 -----------------------------
+    ----------------------------- 戳食 -----------------------------
     -- 戳食者
     slurper = {
         bank = "slurper",
         build = "slurper_basic",
         anim = "idle_loop",
         sg = "SGslurper",
-        origin = "slurper",
         scale = 0.6,
         postInit = function(inst)
             inst._light = SpawnPrefab("slurperlight")
@@ -393,7 +370,59 @@ local PREFABS = {
             inst._light.Light:SetRadius(0.5)
         end,
     },
+
+    ----------------------------- 泥蟹 -----------------------------
+    -- 泥蟹
+    aip_mud_crab = {
+        bank = "aip_mud_crab",
+        build = "aip_mud_crab",
+        anim = "idle_loop",
+        sg = "SGaip_mud_crab",
+        scale = 1,
+        face = 2,
+        bb = true,
+        postInit = function(inst) -- 强制切换一下 SG
+            inst.sg:GoToState("idle")
+        end,
+    },
+
+    --------------------------- 球状光虫 ---------------------------
+    -- 球状光虫
+    lightflier = {
+        bank = "lightflier",
+        build = "lightflier",
+        anim = "idle_loop",
+        sg = "SGlightflier",
+        scale = 1,
+        bb = true,
+    },
+
+    ----------------------------- 龙虾 -----------------------------
+    -- 龙虾
+    wobster_sheller_land = {
+        bank = "lobster",
+        build = "lobster_sheller",
+        anim = "idle",
+        sg = "SGwobsterland",
+        origin = "wobster_sheller",
+    },
+
+    -- 月光龙虾
+    wobster_moonglass_land = {
+        bank = "lobster",
+        build = "lobster_moonglass",
+        anim = "idle",
+        sg = "SGwobsterland",
+        origin = "wobster_moonglass",
+    },
 }
+
+-- 填充一下 origin
+for name, info in pairs(PREFABS) do
+    if not info.origin then
+        info.origin = name
+    end
+end
 
 -- 掉毛概率
 local SHEDDING_LOOT = {
@@ -638,6 +667,29 @@ local function getSkills(prefab, subPrefab)
             "migao",
         }
     end
+
+    ------------------------- 泥蟹 -------------------------
+    if prefab == "aip_mud_crab" then
+        return {
+            "muddy",
+        }
+    end
+
+    ----------------------- 球状光虫 -----------------------
+    if prefab == "lightflier" then
+        return {
+            "bubble",
+        }
+    end
+
+    ------------------------- 龙虾 -------------------------
+    if prefab == "wobster_sheller_land" or prefab == "wobster_moonglass_land" then
+        return {
+            "shrimp",
+        }
+    end
+
+    
 end
 
 return {
