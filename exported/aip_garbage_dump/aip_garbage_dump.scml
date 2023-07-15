@@ -5,10 +5,40 @@
         <file id="1" name="body/g2.png" width="258" height="128" pivot_x="0" pivot_y="1"/>
         <file id="2" name="body/g3.png" width="277" height="179" pivot_x="0" pivot_y="1"/>
         <file id="3" name="body/g4.png" width="345" height="259" pivot_x="0" pivot_y="1"/>
-        <file id="4" name="body/stone.png" width="316" height="227" pivot_x="0" pivot_y="1"/>
+        <file id="4" name="body/stone.png" width="328" height="233" pivot_x="0" pivot_y="1"/>
     </folder>
     <entity id="0" name="aip_garbage_dump">
-        <animation id="0" name="g1" length="100">
+        <animation id="0" name="place" length="600">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="g1" folder="0" file="0" abs_x="-1.017456" abs_y="-3.76808" abs_pivot_x="0.517456" abs_pivot_y="0.26808" abs_angle="0" abs_scale_x="1" abs_scale_y="0.69427" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="206">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+                <key id="2" time="399">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                </key>
+                <key id="3" time="600">
+                    <object_ref id="0" timeline="0" key="3" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="g1">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-1.017456" y="-3.76808" pivot_x="0.517456" pivot_y="0.26808" angle="0" scale_y="0.69427"/>
+                </key>
+                <key id="1" time="206" spin="0">
+                    <object folder="0" file="0" x="-1.017456" y="-3.76808" pivot_x="0.517456" pivot_y="0.26808" angle="0" scale_x="0.911848" scale_y="1.247108"/>
+                </key>
+                <key id="2" time="399" spin="0">
+                    <object folder="0" file="0" x="-1.017456" y="-3.76808" pivot_x="0.517456" pivot_y="0.26808" angle="0" scale_x="1.123654" scale_y="0.89858"/>
+                </key>
+                <key id="3" time="600" spin="0">
+                    <object folder="0" file="0" x="-1.017456" y="-3.76808" pivot_x="0.517456" pivot_y="0.26808" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="1" name="g1" length="100">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="g1" folder="0" file="0" abs_x="-1.017456" abs_y="-3.76808" abs_pivot_x="0.517456" abs_pivot_y="0.26808" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
@@ -20,7 +50,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="1" name="g2" length="100">
+        <animation id="2" name="g2" length="100">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="g1" folder="0" file="1" abs_x="-1.017456" abs_y="-3.76808" abs_pivot_x="0.517456" abs_pivot_y="0.26808" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
@@ -32,7 +62,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="2" name="g3" length="100">
+        <animation id="3" name="g3" length="100">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="g1" folder="0" file="2" abs_x="8.982544" abs_y="1.23192" abs_pivot_x="0.517456" abs_pivot_y="0.26808" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
@@ -44,7 +74,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="3" name="g4" length="100">
+        <animation id="4" name="g4" length="100">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="g1" folder="0" file="3" abs_x="8.982544" abs_y="19.23192" abs_pivot_x="0.517456" abs_pivot_y="0.26808" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
@@ -56,7 +86,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="4" name="bezoar" length="100">
+        <animation id="5" name="bezoar" length="100">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="g1" folder="0" file="4" abs_x="-3.991197" abs_y="-3.763508" abs_pivot_x="0.491197" abs_pivot_y="0.263508" abs_angle="0" abs_scale_x="0.4" abs_scale_y="0.4" abs_a="1" timeline="0" key="0" z_index="0"/>

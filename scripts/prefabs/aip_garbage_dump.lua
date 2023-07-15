@@ -126,6 +126,11 @@ local function onExtinguish(inst)
     aipReplacePrefab(inst, "ash")
 end
 
+local function onBuilt(inst)
+	inst.AnimState:PlayAnimation("place")
+	inst.AnimState:PushAnimation("g1", false)
+end
+
 -- 存取
 local function onSave(inst, data)
 	data.aipCount = inst.aipCount
@@ -180,6 +185,8 @@ local function fn()
     MakeMediumBurnable(inst, burnTime)
     inst.components.burnable:SetOnIgniteFn(onIgnite)
     inst.components.burnable:SetOnExtinguishFn(onExtinguish)
+
+    inst:ListenForEvent("onbuilt", onBuilt)
 
     MakeHauntableLaunch(inst)
 
