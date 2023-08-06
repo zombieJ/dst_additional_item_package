@@ -395,6 +395,11 @@ local PREFABS = {
         sg = "SGlightflier",
         scale = 1,
         bb = true,
+
+        preInit = function(inst)
+            inst.entity:AddLight()
+            inst.Light:SetColour(1, 0, 0)
+        end,
     },
 
     ----------------------------- 龙虾 -----------------------------

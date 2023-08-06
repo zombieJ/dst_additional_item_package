@@ -917,11 +917,11 @@ function PetOwner:StartBubble()
 
 		if not self.showPet.Light then
 			self.showPet.entity:AddLight()
-			self.showPet.Light:SetFalloff(0.5)
-			self.showPet.Light:SetIntensity(.9)
-			self.showPet.Light:SetColour(237/255, 237/255, 209/255)
 		end
 
+		self.showPet.Light:SetFalloff(0.5)
+		self.showPet.Light:SetIntensity(.9)
+		self.showPet.Light:SetColour(237/255, 237/255, 209/255)
 		self.showPet.Light:SetRadius(radius)
 		self.showPet.Light:Enable(true)
 	end

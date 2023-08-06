@@ -887,7 +887,7 @@ function _G.aipGet(inst, paths)
 	end
 
 	for i, path in ipairs(paths) do
-		if current ~= nil then
+		if current ~= nil and type(current) == "table" then
 			current = current[path]
 		end
 	end

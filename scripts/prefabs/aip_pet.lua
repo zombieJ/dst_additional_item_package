@@ -154,6 +154,10 @@ local function createPet(name, info)
             end
         end
 
+        if info.preInit ~= nil then
+            info.preInit(inst)
+        end
+
         inst.entity:SetPristine()
 
         if not TheWorld.ismastersim then
