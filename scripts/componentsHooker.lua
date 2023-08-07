@@ -524,12 +524,19 @@ AipPostComp("combat", function(self)
 	function self:GetAttacked(attacker, damage, weapon, stimuli, spdamage, ...)
 		local dmg = damage
 
-		-- Owner 被攻击
+		-- Owner 被攻击（被攻击时，是乘法叠加伤害减免）
 		if self.inst ~= nil and self.inst.components.aipc_pet_owner ~= nil then
 			-- 幸运则免疫 查理 攻击
 			local luckyInfo, luckyLv = self.inst.components.aipc_pet_owner:GetSkillInfo("lucky")
 			if luckyInfo ~= nil and stimuli == "darkness" then
 				dmg = 0
+			end
+
+			-- 执念W
+			local resonanceInfo, resonanceLv = self.inst.components.aipc_pet_owner:GetSkillInfo("resonance")
+			if resonanceInfo ~= nil and self.inst.components.sanity ~= nil and self.inst.components.sanity:IsCrazy() then
+				dmg = dmg * (1 - resonanceInfo.def * resonanceLv)
+				_G.aipPrint("AAA", dmg)
 			end
 		end
 
@@ -551,7 +558,14 @@ AipPostComp("combat", function(self)
 				local inv = attacker.components.inventory
 				if inv == nil or inv:GetEquippedItem(_G.EQUIPSLOTS.HANDS) == nil then
 					petDmgMulti = petDmgMulti + shrimpInfo.multi * shrimpLv
+					_G.aipPrint("BBB", petDmgMulti)
 				end
+			end
+
+			-- 执念W
+			local resonanceInfo, resonanceLv = attacker.components.aipc_pet_owner:GetSkillInfo("resonance")
+			if resonanceInfo ~= nil and attacker.components.sanity ~= nil and attacker.components.sanity:IsCrazy() then
+				petDmgMulti = petDmgMulti + resonanceInfo.atk * resonanceLv
 			end
 
 			dmg = dmg * (1 + petDmgMulti)

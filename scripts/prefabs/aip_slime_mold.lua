@@ -60,8 +60,9 @@ local function fn()
 	inst:AddComponent("inspectable")
 
 	inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
-	inst.components.locomotor.walkspeed = TUNING.SPIDER_RUN_SPEED
-	inst.components.locomotor:SetTriggersCreep(false)
+	inst.components.locomotor.walkspeed = TUNING.SPIDER_WALK_SPEED
+	inst.components.locomotor:EnableGroundSpeedMultiplier(false)
+    inst.components.locomotor:SetTriggersCreep(false)
 
 	inst:AddComponent("lootdropper")
 

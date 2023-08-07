@@ -125,6 +125,7 @@ local SKILL_LANG = {
 		muddy = "Muddy",
 		bubble = "Lighten Bubble",
 		shrimp = "Shrimp Punch",
+		resonance = "Resonance",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -159,6 +160,7 @@ local SKILL_LANG = {
 		muddy = "泥泞",
 		bubble = "光媒",
 		shrimp = "虾拳",
+		resonance = "执念W"
 	},
 }
 
@@ -196,6 +198,7 @@ local SKILL_MAX_LEVEL = {
 	muddy = { 5, 6, 7, 8, 10 },
 	bubble = { 1, 2, 3, 4, 5 },
 	shrimp = { 10, 12, 14, 16, 20 },
+	resonance = { 1, 2, 3, 4, 5 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -337,6 +340,11 @@ local SKILL_CONSTANT = {
 		special = true,
 		multi = dev_mode and 0.5 or 0.1,				-- 每个等级增加 10% 效果
 	},
+	resonance = {
+		special = true,
+		atk = dev_mode and 10 or 0.05,					-- 每个等级增加 5% 攻击
+		def = dev_mode and 0.99 or 0.05,				-- 每个等级免疫 5% 伤害
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -373,6 +381,7 @@ local SKILL_DESC_LANG = {
 		muddy = "Reduce PTG% speed who you damage. Last DUR seconds",
 		bubble = "Lighten up the night. Has DIST radius",
 		shrimp = "Increase PTG% damage when no weapon equipped",
+		resonance = "Increase PTG% damage and reduce PTG% damage taken when crazy",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -407,6 +416,7 @@ local SKILL_DESC_LANG = {
 		muddy = "当你造成伤害时，会降低目标PTG%移动速度，持续DUR秒",
 		bubble = "发出半径为DIST的光芒",
 		shrimp = "徒手攻击时伤害提升PTG%",
+		resonance = "在疯狂状态下伤害提升ATK%，受到伤害减免DEF%",
 	},
 }
 
@@ -552,6 +562,12 @@ local SKILL_DESC_VARS = {
 	shrimp = function(info, lv)
 		return {
 			PTG = info.multi * lv * 100,
+		}
+	end,
+	resonance = function(info, lv)
+		return {
+			ATK = info.atk * lv * 100,
+			DEF = info.def * lv * 100,
 		}
 	end,
 }

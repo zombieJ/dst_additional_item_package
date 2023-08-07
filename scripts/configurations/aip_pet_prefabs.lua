@@ -420,6 +420,18 @@ local PREFABS = {
         sg = "SGwobsterland",
         origin = "wobster_moonglass",
     },
+
+    ------------------------- 欧米伽黏菌团 -------------------------
+    -- 欧米伽黏菌团
+    aip_slime_mold = {
+        bank = "aip_slime_mold",
+        build = "aip_slime_mold",
+        anim = "idle_loop",
+        sg = "SGaip_slime_mold",
+        scale = 0.8,
+        face = 2,
+        bb = true,
+    },
 }
 
 -- 填充一下 origin
@@ -691,6 +703,13 @@ local function getSkills(prefab, subPrefab)
     if prefab == "wobster_sheller_land" or prefab == "wobster_moonglass_land" then
         return {
             "shrimp",
+        }
+    end
+
+    --------------------- 欧米伽黏菌团 ---------------------
+    if prefab == "aip_slime_mold" then
+        return {
+            "resonance",
         }
     end
 

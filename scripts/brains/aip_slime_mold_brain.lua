@@ -1,6 +1,7 @@
+require "behaviours/follow"
 require "behaviours/wander"
 
-local MIN_FOLLOW_DIST = 0.1
+local MIN_FOLLOW_DIST = 1
 local TARGET_FOLLOW_DIST = 3
 local MAX_FOLLOW_DIST = 8
 
@@ -17,13 +18,17 @@ function MoldBrain:OnStart()
 		-- 如果附近有模因状态的人就跟随
 		Follow(self.inst,
 			function()
-				local players = aipFindNearPlayers(self.inst, 10)
+				local players = aipFindNearPlayers(self.inst, 20)
 
 				players = aipFilterTable(players, function(player)
 					return aipBufferExist(player, "aip_see_eyes")
 				end)
 
-				return aipFindCloseEnt(self.inst, players)
+				local target = aipFindCloseEnt(self.inst, players)
+
+				self.inst._aipTarget = target
+
+				return target
 			end, MIN_FOLLOW_DIST, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST
 		),
 
