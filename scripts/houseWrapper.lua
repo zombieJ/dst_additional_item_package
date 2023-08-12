@@ -28,9 +28,9 @@ end
 AddPrefabPostInit("world", function(inst)
     local map = _G.getmetatable(inst.Map).__index
     if map then
-
         local old_IsAboveGroundAtPoint = map.IsAboveGroundAtPoint
         map.IsAboveGroundAtPoint = function(self, x, y, z, ...)
+            -- _G.aipPrint("IsAboveGroundAtPoint", x, y, z, inPlace(x, z))
             if inPlace(x, z) then
                 -- for k, v in pairs(aipHouses) do
                 --     if v[3] ~= nil then

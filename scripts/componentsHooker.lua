@@ -536,7 +536,6 @@ AipPostComp("combat", function(self)
 			local resonanceInfo, resonanceLv = self.inst.components.aipc_pet_owner:GetSkillInfo("resonance")
 			if resonanceInfo ~= nil and self.inst.components.sanity ~= nil and self.inst.components.sanity:IsCrazy() then
 				dmg = dmg * (1 - resonanceInfo.def * resonanceLv)
-				_G.aipPrint("AAA", dmg)
 			end
 		end
 
@@ -558,7 +557,6 @@ AipPostComp("combat", function(self)
 				local inv = attacker.components.inventory
 				if inv == nil or inv:GetEquippedItem(_G.EQUIPSLOTS.HANDS) == nil then
 					petDmgMulti = petDmgMulti + shrimpInfo.multi * shrimpLv
-					_G.aipPrint("BBB", petDmgMulti)
 				end
 			end
 

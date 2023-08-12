@@ -31,6 +31,7 @@ Assets = {
 PrefabFiles = {
 	-- debug
 	"aip_copier",
+	"aip_0_debug",
 
 	-- Meta
 	"aip_0_buffer",
@@ -157,6 +158,7 @@ PrefabFiles = {
 	"aip_oldone_thrower",
 	"aip_garbage_dump",
 	"aip_slime_mold",
+	"aip_cold_skin",
 
 	-- 量子
 	"aip_weapon_box",

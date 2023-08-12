@@ -374,6 +374,34 @@ local food_recipes = {
 		tags = {"honeyed", "aip_nectar_material", "aip_exquisite"},
 	},
 
+	aip_food_nest_sausage = {	-- 大肠包小肠
+		test = function(cooker, names, tags)
+			return names.aip_cold_skin and tags.meat and tags.starch and tags.starch > 1 and not tags.inedible
+		end,
+		priority = 20,
+		weight = 1,
+		foodtype = FOODTYPE.MEAT,
+		health = HP * 5,
+		hunger = HU * 65,
+		sanity = SAN * 5,
+		perishtime = PER * 15,
+		cooktime = CO * 15,
+	},
+
+	aip_food_vermicelli_roll = {	-- 肠粉
+		test = function(cooker, names, tags)
+			return names.aip_cold_skin and names.aip_cold_skin >= 2 and tags.egg and not tags.inedible
+		end,
+		priority = 20,
+		weight = 1,
+		foodtype = FOODTYPE.MEAT,
+		health = HP * 5,
+		hunger = HU * 25,
+		sanity = SAN * 25,
+		perishtime = PER * 10,
+		cooktime = CO * 15,
+	},
+
 	-- 古神低语
 	aip_food_leather_jelly = { -- 皮质果冻，叶肉 + 粘衣
 		test = function(cooker, names, tags)

@@ -289,11 +289,17 @@ local function onMermDead(inst, data)
 	end
 end
 
-AddPrefabPostInit("merm", function(inst)
+local function onMermPost(inst)
 	if _G.TheWorld.ismastersim then
 		inst:ListenForEvent("death", onMermDead)
 	end
-end)
+end
+
+-- 鱼人
+AddPrefabPostInit("merm", onMermPost)
+
+-- 鱼人守卫
+AddPrefabPostInit("mermguard", onMermPost)
 
 ------------------------------------------ 鲨鱼 ------------------------------------------
 AddPrefabPostInit("shark", function(inst)
@@ -463,6 +469,18 @@ end)
 -- AddPrefabPostInit("green_mushroom", postMushroom)
 -- AddPrefabPostInit("blue_mushroom", postMushroom)
 
+------------------------------------------ 浮木 ------------------------------------------
+AddPrefabPostInit("driftwood_log", function(inst)
+	if not _G.TheWorld.ismastersim then
+		return inst
+	end
+
+	-- 可以用剃刀
+	inst:AddComponent("beard")
+	inst.components.beard.bits = 3
+	inst.components.beard.prize = "aip_cold_skin"
+	inst:ListenForEvent("shaved", inst.Remove)
+end)
 
 ------------------------------------------ 海带 ------------------------------------------
 local function bullkelpCanBeActOn(inst, doer)
@@ -832,6 +850,12 @@ env.RegisterInventoryItemAtlas("images/inventoryimages/aip_oldone_plant_broken.x
 env.AddIngredientValues(
 	{"aip_oldone_deer_eye_fruit"},
 	{ indescribable = 1, fruit = .5 } -- 是 迷因 也是 水果
+)
+
+-- 凉皮赋值
+env.AddIngredientValues(
+	{"aip_cold_skin"},
+	{ starch = 0.1 }
 )
 
 -- 遍历添加食谱图标
