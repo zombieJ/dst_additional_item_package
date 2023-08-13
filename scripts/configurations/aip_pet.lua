@@ -160,7 +160,7 @@ local SKILL_LANG = {
 		muddy = "泥泞",
 		bubble = "光媒",
 		shrimp = "虾拳",
-		resonance = "执念W"
+		resonance = "执念"
 	},
 }
 
