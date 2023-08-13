@@ -376,7 +376,7 @@ local food_recipes = {
 
 	aip_food_nest_sausage = {	-- 大肠包小肠
 		test = function(cooker, names, tags)
-			return names.aip_cold_skin and tags.meat and tags.starch and tags.starch > 1 and not tags.inedible
+			return names.aip_cold_skin and tags.meat and tags.meat >= 1 and tags.starch and tags.starch > 1 and not tags.inedible
 		end,
 		priority = 20,
 		weight = 1,
@@ -399,6 +399,20 @@ local food_recipes = {
 		hunger = HU * 25,
 		sanity = SAN * 25,
 		perishtime = PER * 10,
+		cooktime = CO * 15,
+	},
+
+	aip_food_braised_intestine = {	-- 九转大肠
+		test = function(cooker, names, tags)
+			return names.aip_cold_skin and tags.meat and tags.monster and not tags.inedible
+		end,
+		priority = 15,
+		weight = 1,
+		foodtype = FOODTYPE.MEAT,
+		health = HP * -10,
+		hunger = HU * 75,
+		sanity = SAN * -10,
+		perishtime = PER * 15,
 		cooktime = CO * 15,
 	},
 

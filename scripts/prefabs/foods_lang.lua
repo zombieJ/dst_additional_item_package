@@ -104,6 +104,10 @@ local LANG_MAP = {
 			NAME = "Vermicelli Roll",
 			DESC = "So delicioussss!!!",
 		},
+		AIP_FOOD_BRAISED_INTESTINE = {
+			NAME = "Braised Intestine",
+			DESC = "You did it on purpose or by accident?",
+		},
 	},
 	spanish = {
 		EGG_PANCAKE = {
@@ -489,6 +493,10 @@ local LANG_MAP = {
 		AIP_FOOD_VERMICELLI_ROLL = {
 			NAME = "肠粉",
 			DESC = "这也太鲜美了吧！",
+		},
+		AIP_FOOD_BRAISED_INTESTINE = {
+			NAME = "九转大肠",
+			DESC = "你是故意的还是不小心的？",
 		},
 	},
 }

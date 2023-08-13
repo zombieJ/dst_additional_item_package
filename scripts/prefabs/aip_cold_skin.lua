@@ -23,6 +23,10 @@ local assets = {
 	Asset("ATLAS", "images/inventoryimages/aip_cold_skin.xml"),
 }
 
+local function perishfn(inst)
+	inst:Remove()
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -61,6 +65,7 @@ local function fn()
     inst:AddComponent("perishable")
     inst.components.perishable:SetPerishTime(TUNING.PERISH_SLOW)
     inst.components.perishable:StartPerishing()
+    inst.components.perishable.perishfn = perishfn
 
     MakeHauntableLaunch(inst)
 
