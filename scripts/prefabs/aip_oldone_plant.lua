@@ -32,6 +32,19 @@ local function CanShaveTest(inst, shaver)
     return true
 end
 
+-- 给予物品
+local function AcceptTest(inst, item)
+    return item.prefab == "aip_bezoar"
+end
+
+local function OnGivenItem(inst, giver, item)
+    if AcceptTest(inst, item) then
+        aipReplacePrefab(inst, "aip_slime_mold")
+        aipSpawnPrefab(inst, "aip_shadow_wrapper").DoShow()
+        aipRemove(item)
+    end
+end
+
 ------------------------------------ 实例 ------------------------------------
 local function fn()
     local inst = CreateEntity()
@@ -68,6 +81,11 @@ local function fn()
     inst.components.beard.canshavetest = CanShaveTest
     inst.components.beard.prize = "aip_oldone_plant_full"
     inst:ListenForEvent("shaved", inst.Remove)
+
+    -- 可以获得粪石
+    inst:AddComponent("trader")
+    inst.components.trader:SetAcceptTest(AcceptTest)
+    inst.components.trader.onaccept = OnGivenItem
 
     MakeHauntableLaunch(inst)
 

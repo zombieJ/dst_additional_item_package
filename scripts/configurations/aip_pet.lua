@@ -381,7 +381,7 @@ local SKILL_DESC_LANG = {
 		muddy = "Reduce PTG% speed who you damage. Last DUR seconds",
 		bubble = "Lighten up the night. Has DIST radius",
 		shrimp = "Increase PTG% damage when no weapon equipped",
-		resonance = "Increase PTG% damage and reduce PTG% damage taken when crazy",
+		resonance = "Increase ATK% damage and reduce DEF% damage taken when crazy",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
