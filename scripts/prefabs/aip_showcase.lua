@@ -261,6 +261,10 @@ end
 --------------------------------- 拿取 ---------------------------------
 -- 给予
 local function canBeGiveOn(inst, doer, item)
+    if item.prefab == "beef_bell" then
+        return false
+    end
+
     return true
 end
 
