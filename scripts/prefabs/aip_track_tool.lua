@@ -222,7 +222,7 @@ local function commonFn(postFn)
 
 	inst:AddComponent("finiteuses")
 	inst.components.finiteuses:SetMaxUses(USE_TIMES)
-    inst.components.finiteuses:SetUses(0)
+    inst.components.finiteuses:SetUses(1)
 
 	inst:AddComponent("inspectable")
 

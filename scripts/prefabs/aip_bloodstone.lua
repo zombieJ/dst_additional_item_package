@@ -80,7 +80,7 @@ local function fn()
 
     inst:AddComponent("finiteuses")
     inst.components.finiteuses:SetMaxUses(TUNING.AIP_BLOODSTONE_USES)
-    inst.components.finiteuses:SetUses(0)
+    inst.components.finiteuses:SetUses(0.00001)
 
     MakeHauntableLaunch(inst)
 

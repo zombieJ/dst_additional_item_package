@@ -173,7 +173,7 @@ local function fn()
 
 	inst:AddComponent("finiteuses")
 	inst.components.finiteuses:SetMaxUses(3)
-	inst.components.finiteuses:SetUses(0)
+	inst.components.finiteuses:SetUses(3)
 
 	inst:AddComponent("aipc_action")
 	inst.components.aipc_action.onDoAction = onDoEat
