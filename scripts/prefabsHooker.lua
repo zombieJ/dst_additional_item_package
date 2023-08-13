@@ -470,6 +470,12 @@ end)
 -- AddPrefabPostInit("blue_mushroom", postMushroom)
 
 ------------------------------------------ 浮木 ------------------------------------------
+local function useDriftwood(inst)
+	inst.components.beard:Reset()
+	inst.components.beard.bits = 3
+	_G.aipRemove(inst)
+end
+
 AddPrefabPostInit("driftwood_log", function(inst)
 	if not _G.TheWorld.ismastersim then
 		return inst
@@ -479,7 +485,7 @@ AddPrefabPostInit("driftwood_log", function(inst)
 	inst:AddComponent("beard")
 	inst.components.beard.bits = 3
 	inst.components.beard.prize = "aip_cold_skin"
-	inst:ListenForEvent("shaved", inst.Remove)
+	inst:ListenForEvent("shaved", useDriftwood)
 end)
 
 ------------------------------------------ 海带 ------------------------------------------
