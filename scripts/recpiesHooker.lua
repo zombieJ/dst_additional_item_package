@@ -9,6 +9,13 @@ end
 
 local dev_mode = _G.aipGetModConfig("dev_mode") == "enabled"
 
+-- 开启武器
+local additional_weapon = _G.aipGetModConfig("additional_weapon") == "open"
+
+-- 开启生存
+local additional_survival = _G.aipGetModConfig("additional_survival") == "open"
+
+
 -- 新版 mod 物品配方
 local function rec(name, tech, filters, ingredients, placerOrConfig)
 	local filterNames = {}
@@ -37,6 +44,22 @@ local function rec(name, tech, filters, ingredients, placerOrConfig)
 	)
 end
 
+local function recWeapon(...)
+	if not additional_weapon then
+		return
+	end
+
+	return rec(...)
+end
+
+local function recSurvival(...)
+	if not additional_survival then
+		return
+	end
+
+	return rec(...)
+end
+
 --[[
 	1 名称, 2 配方, 3 等级,
 	4 配置, 5 过滤
@@ -57,7 +80,7 @@ rec("aip_shadow_package", TECH.LOST, { CRAFTING_FILTERS.MAGIC },
 
 -------------------------------------- 原版 --------------------------------------
 -- 鱼刀
-rec("aip_fish_sword", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.WEAPONS },
+recWeapon("aip_fish_sword", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.WEAPONS },
 	{Ingredient("pondfish", 1),Ingredient("nightmarefuel", 2),Ingredient("rope", 1)})
 
 -- 马头
@@ -69,11 +92,11 @@ rec("aip_armor_gambler", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.WEAPONS, CRAFTING_
 	{Ingredient("papyrus", 6),Ingredient("nightmarefuel", 1),Ingredient("rope", 1)})
 
 -- 蜂语
-rec("aip_beehave", TECH.MAGIC_TWO, { CRAFTING_FILTERS.MAGIC, CRAFTING_FILTERS.WEAPONS },
+recWeapon("aip_beehave", TECH.MAGIC_TWO, { CRAFTING_FILTERS.MAGIC, CRAFTING_FILTERS.WEAPONS },
 	{Ingredient("tentaclespike", 1),Ingredient("stinger", 10),Ingredient("nightmarefuel", 2)})
 
 -- 血袋
-rec("aip_blood_package", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.RESTORATION },
+recSurvival("aip_blood_package", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.RESTORATION },
 	{Ingredient("mosquitosack", 1), Ingredient("spidergland", 3), Ingredient("ash", 2)})
 
 -- 岚色眼镜
@@ -112,7 +135,7 @@ rec("aip_nectar_maker", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.RESTORATION, CRAFTI
 	"aip_nectar_maker_placer")
 
 -- 草木灰
-rec("aip_plaster", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.RESTORATION },
+recSurvival("aip_plaster", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.RESTORATION },
 	{Ingredient("ash", 1), Ingredient("poop", 1), Ingredient("cutgrass", 1)})
 
 -- 木图腾
@@ -121,7 +144,7 @@ rec("aip_woodener", TECH.MAGIC_TWO, { CRAFTING_FILTERS.MAGIC, CRAFTING_FILTERS.C
 	"aip_woodener_placer")
 
 -- 心悦锄
-rec("aip_xinyue_hoe", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.TOOLS },
+recWeapon("aip_xinyue_hoe", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.TOOLS },
 	{Ingredient("golden_farm_hoe", 1), Ingredient("frozen_heart", 1, "images/inventoryimages/frozen_heart.xml"), Ingredient("boneshard", 5)})
 
 -- 暗影观察者
@@ -135,15 +158,15 @@ rec("incinerator", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.LIGHT },
 	"incinerator_placer")
 
 -- 玉米枪
-rec("popcorngun", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.WEAPONS },
+recWeapon("popcorngun", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.WEAPONS },
 	{Ingredient("corn", 2),Ingredient("houndstooth", 4),Ingredient("silk", 3)})
 
 -- 弹跳符
-rec("aip_jump_paper", TECH.MAGIC_TWO, { CRAFTING_FILTERS.WEAPONS },
+recWeapon("aip_jump_paper", TECH.MAGIC_TWO, { CRAFTING_FILTERS.WEAPONS },
 	{Ingredient("aip_veggie_wheat", 1, "images/inventoryimages/aip_veggie_wheat.xml"),Ingredient("boomerang", 1),Ingredient("papyrus", 1)})
 
 -- 蜂刺吹箭
-rec("aip_blowdart", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.WEAPONS },
+recWeapon("aip_blowdart", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.WEAPONS },
 	{Ingredient("aip_veggie_wheat", 1, "images/inventoryimages/aip_veggie_wheat.xml"),Ingredient("goldnugget", 2),Ingredient("rope", 1)})
 
 -------------------------------------- 雕塑 --------------------------------------
@@ -221,7 +244,7 @@ rec(
 	{ nounlock=true })
 
 -- 月轨测量仪
-rec(
+recWeapon(
 	"aip_track_tool", TECH.AIP_DOU_TOTEM, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.TOOLS, CRAFTING_FILTERS.MAGIC },
 	{ Ingredient("moonglass", 6), Ingredient("moonrocknugget", 3), Ingredient("transistor", 1) },
 	{ nounlock=true })
@@ -249,7 +272,7 @@ rec("chesspiece_aip_fish_builder", TECH.LOST, { CRAFTING_FILTERS.CRAFTING_STATIO
 	{ nounlock=true, atlas = "images/inventoryimages/chesspiece_aip_fish.xml", image = "chesspiece_aip_fish.tex" })
 
 -- 榴星
-rec("aip_oldone_durian", TECH.MAGIC_TWO, { CRAFTING_FILTERS.WEAPONS },
+recWeapon("aip_oldone_durian", TECH.MAGIC_TWO, { CRAFTING_FILTERS.WEAPONS },
 	{ Ingredient("durian", 1), Ingredient("aip_oldone_plant_full", 1, "images/inventoryimages/aip_oldone_plant_full.xml"), })
 
 -- 绒线地垫

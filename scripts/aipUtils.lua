@@ -828,6 +828,7 @@ function _G.aipGetOne(inst)
 	return inst
 end
 
+-- 每次只删除一个
 function _G.aipRemove(inst)
 	if inst ~= nil and inst:IsValid() then
 		_G.aipGetOne(inst):Remove()
