@@ -382,7 +382,9 @@ local PREFABS = {
         face = 2,
         bb = true,
         postInit = function(inst) -- 强制切换一下 SG
-            inst.sg:GoToState("idle")
+            inst:DoTaskInTime(0, function()
+                inst.sg:GoToState("idle")
+            end)
         end,
     },
 
