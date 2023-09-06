@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="body">
+        <file id="0" name="body/aip_aura_blackhole.png" width="600" height="600" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_aura_blackhole">
+        <animation id="0" name="idle" length="3000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="aip_aura_blackhole" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.5" abs_scale_y="0.5" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="1001">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+                <key id="2" time="2002">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="aip_aura_blackhole">
+                <key id="0" spin="-1">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.5" scale_y="0.5"/>
+                </key>
+                <key id="1" time="1001" spin="-1">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="240" scale_x="0.5" scale_y="0.5"/>
+                </key>
+                <key id="2" time="2002" spin="-1">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="120" scale_x="0.5" scale_y="0.5"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="1" name="enter" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="aip_aura_blackhole" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="120" abs_scale_x="0.1" abs_scale_y="0.1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="1000">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="aip_aura_blackhole">
+                <key id="0" spin="-1">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="120" scale_x="0.1" scale_y="0.1"/>
+                </key>
+                <key id="1" time="1000">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.5" scale_y="0.5"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

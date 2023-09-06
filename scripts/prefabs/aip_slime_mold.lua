@@ -27,6 +27,15 @@ STRINGS.NAMES.AIP_SLIME_MOLD = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SLIME_MOLD = LANG.DESC
 
 ------------------------------- 方法 -------------------------------
+local function onDeath(inst, data)
+	local killer = data ~= nil and data.afflicter or nil
+
+    if killer ~= nil and aipBufferExist(killer, "aip_see_eyes") then
+		aipSpawnPrefab(killer, "aip_aura_blackhole")
+
+		killer.sg:GoToState("aip_sink_space")
+	end
+end
 
 ------------------------------- 实体 -------------------------------
 local function fn()
@@ -74,6 +83,8 @@ local function fn()
 
 	inst:AddComponent("combat")
 	inst.components.combat.hiteffectsymbol = "chest"
+
+	inst:ListenForEvent("death", onDeath)
 
 	return inst
 end

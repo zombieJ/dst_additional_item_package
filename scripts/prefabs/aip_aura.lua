@@ -285,6 +285,18 @@ local list = {
 		scale = 1,
 		pristine = false, -- 客户端 Only
 	},
+
+	{	-- 黑洞光环：并非真实的光环，播放一个循环的动画
+		name = "aip_aura_blackhole",
+		assets = { Asset("ANIM", "anim/aip_aura_blackhole.zip") },
+		range = false, -- 不安装光环组件
+		fade = false,
+		scale = 2,
+		postFn = function(inst)
+			inst.AnimState:PlayAnimation("enter")
+			inst.AnimState:PushAnimation("idle", true)
+		end,
+	},
 }
 
 -- 杀神光环：造成伤害变多

@@ -307,6 +307,7 @@ modimport("scripts/hooks/aip_drift_hook") -- 打水漂
 modimport("scripts/hooks/aip_transfer_hook")
 modimport("scripts/hooks/aip_oldone_hook")
 modimport("scripts/hooks/aip_story_hook")
+modimport("scripts/hooks/aip_space_hook") -- 迷雾空间
 
 function PlayerPrefabPostInit(inst)
 	if not inst.components.aipc_player_client then
