@@ -295,6 +295,12 @@ local list = {
 		postFn = function(inst)
 			inst.AnimState:PlayAnimation("enter")
 			inst.AnimState:PushAnimation("idle", true)
+
+			-- 过一会儿自己离开
+			inst:DoTaskInTime(6, function()
+				inst.AnimState:PlayAnimation("end")
+				inst:ListenForEvent("animover", inst.Remove)
+			end)
 		end,
 	},
 }
