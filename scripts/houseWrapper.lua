@@ -1,3 +1,5 @@
+-- 废弃了，用 aip_space_hook
+
 local _G = GLOBAL
 
 local dev_mode = _G.aipGetModConfig("dev_mode") == "enabled"

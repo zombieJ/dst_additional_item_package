@@ -159,6 +159,7 @@ PrefabFiles = {
 	"aip_garbage_dump",
 	"aip_slime_mold",
 	"aip_cold_skin",
+	"aip_sessho_seki",
 
 	-- 量子
 	"aip_weapon_box",
@@ -275,7 +276,7 @@ modimport("scripts/shadowPackageAction.lua")
 modimport("scripts/widgetHooker.lua")
 modimport("scripts/recpiesHooker.lua")
 modimport("scripts/flyWrapper.lua")
-modimport("scripts/houseWrapper.lua")
+-- modimport("scripts/houseWrapper.lua")
 modimport("scripts/sgHooker.lua")
 modimport("scripts/hooks/aip_hover_hook.lua")
 modimport("scripts/hooks/aip_buffer_hook.lua")
