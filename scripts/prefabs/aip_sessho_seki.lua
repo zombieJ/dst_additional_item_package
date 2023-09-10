@@ -22,6 +22,13 @@ local assets = {
     Asset("ANIM", "anim/aip_sessho_seki.zip"),
 }
 
+------------------------------------ 配置 ------------------------------------
+local MAX_HEALTH = 10
+
+------------------------------------ 方法 ------------------------------------
+
+
+------------------------------------ 实例 ------------------------------------
 local function fn()
     local inst = CreateEntity()
 
@@ -29,7 +36,7 @@ local function fn()
     inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
-    MakeObstaclePhysics(inst, 0.3)
+    MakeObstaclePhysics(inst, 0.1)
 
     inst.AnimState:SetBank("aip_sessho_seki")
     inst.AnimState:SetBuild("aip_sessho_seki")
@@ -44,7 +51,7 @@ local function fn()
     inst:AddComponent("inspectable")
 
     inst:AddComponent("health")
-    inst.components.health:SetMaxHealth(10)
+    inst.components.health:SetMaxHealth(MAX_HEALTH)
 
     inst:AddComponent("aipc_blackhole_gamer")
 

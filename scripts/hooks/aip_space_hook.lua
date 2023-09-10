@@ -75,15 +75,36 @@ end)
 ---------------------------------------------------------------------------------
 -- 鸟不允许随机离开，只能往目标点跳过去
 AddStategraphPostInit("bird", function(sg)
-    local originIdleTimeout = sg.states.idle.ontimeout
+	-- 覆盖默认行为
+	local originIdleTimeout = sg.states.idle.ontimeout
 
 	sg.states.idle.ontimeout = function(inst, ...)
 		if inst._aipHome then
-			inst.sg:GoToState("hop")
+			local r = math.random()
+
+			inst.sg:GoToState(
+				(r < .7 and "hop") or
+				(r < .8 and "peck") or
+				(r < .9 and "idle") or
+				"caw"
+			)
 			return
 		end
 
 		return originIdleTimeout(inst, ...)
+	end
+
+	
+	-- 不能飞走
+	local originFlyaway = sg.states.flyaway.onenter
+	
+	sg.states.flyaway.onenter = function(inst, ...)
+		if inst._aipHome then
+			inst.sg:GoToState("idle")
+			return
+		end
+
+		return originFlyaway(inst, ...)
 	end
 end)
 

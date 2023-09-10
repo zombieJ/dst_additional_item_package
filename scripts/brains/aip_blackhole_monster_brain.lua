@@ -21,7 +21,7 @@ function Brain:OnStart()
 
 					-- 到家检测
 					local dist = aipDist(self.inst:GetPosition(), homePos)
-					if dist <= 0.5 and self.inst._aipHome.components.aipc_blackhole_gamer then
+					if dist <= 1 and self.inst._aipHome.components.aipc_blackhole_gamer then
 						self.inst._aipHome.components.aipc_blackhole_gamer:Reach(self.inst)
 					end
 
