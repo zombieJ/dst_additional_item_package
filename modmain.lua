@@ -160,6 +160,7 @@ PrefabFiles = {
 	"aip_slime_mold",
 	"aip_cold_skin",
 	"aip_sessho_seki",
+	"aip_oldone_hand",
 
 	-- 量子
 	"aip_weapon_box",

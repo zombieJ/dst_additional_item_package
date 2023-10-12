@@ -24,9 +24,15 @@ local assets = {
 
 ------------------------------------ 配置 ------------------------------------
 local MAX_HEALTH = 10
+local STATE_COUNT = 6
 
 ------------------------------------ 方法 ------------------------------------
+local function refreshState(inst)
+    local health = 1 - inst.components.health:GetPercent()
+    local stateIdx = math.floor(health * STATE_COUNT) + 1
 
+    inst.AnimState:PlayAnimation("idle"..stateIdx)
+end
 
 ------------------------------------ 实例 ------------------------------------
 local function fn()
@@ -40,7 +46,7 @@ local function fn()
 
     inst.AnimState:SetBank("aip_sessho_seki")
     inst.AnimState:SetBuild("aip_sessho_seki")
-    inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:PlayAnimation("idle1")
 
     inst.entity:SetPristine()
 
@@ -52,10 +58,15 @@ local function fn()
 
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(MAX_HEALTH)
+    inst.components.health:SetInvincible(true)
 
     inst:AddComponent("aipc_blackhole_gamer")
 
     MakeHauntableLaunch(inst)
+
+    refreshState(inst)
+
+    inst:ListenForEvent("healthdelta", refreshState)
 
     inst.persists = false
 

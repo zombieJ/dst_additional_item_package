@@ -73,6 +73,7 @@ end)
 ---------------------------------------------------------------------------------
 --                                   鸟类劫持                                   --
 ---------------------------------------------------------------------------------
+--[[
 -- 鸟不允许随机离开，只能往目标点跳过去
 AddStategraphPostInit("bird", function(sg)
 	-- 覆盖默认行为
@@ -83,9 +84,9 @@ AddStategraphPostInit("bird", function(sg)
 			local r = math.random()
 
 			inst.sg:GoToState(
-				(r < .7 and "hop") or
-				(r < .8 and "peck") or
-				(r < .9 and "idle") or
+				(r < .85 and "hop") or
+				(r < .9 and "peck") or
+				(r < .95 and "idle") or
 				"caw"
 			)
 			return
@@ -107,6 +108,7 @@ AddStategraphPostInit("bird", function(sg)
 		return originFlyaway(inst, ...)
 	end
 end)
+]]
 
 ---------------------------------------------------------------------------------
 --                                   落水状态                                   --
