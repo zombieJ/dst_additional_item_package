@@ -303,6 +303,15 @@ local list = {
 			end)
 		end,
 	},
+
+	{	-- 指示器光环：并非真实的光环，展示一个指示器
+		name = "aip_aura_indicator",
+		build = "firefighter_placement",
+		assets = { Asset("ANIM", "anim/firefighter_placement.zip") },
+		range = false, -- 不安装光环组件
+		fade = false,
+		scale = 1,
+	},
 }
 
 -- 杀神光环：造成伤害变多

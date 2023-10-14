@@ -161,6 +161,8 @@ PrefabFiles = {
 	"aip_cold_skin",
 	"aip_sessho_seki",
 	"aip_oldone_hand",
+	"aip_oldone_black_head",
+	"aip_oldone_apple",
 
 	-- 量子
 	"aip_weapon_box",
