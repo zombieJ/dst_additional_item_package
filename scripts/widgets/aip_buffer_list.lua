@@ -10,10 +10,10 @@ local BufferList = Class(Widget, function(self, owner)
 
     self.root = self:AddChild(Widget("root"))
 
-    self:Refresh()
+    self:StartUpdating()
 end)
 
-function BufferList:Refresh()
+function BufferList:Refresh(bufferInfos)
     -- 重置 Buffer UI
 	if self._aipBufferList ~= nil then
         self._aipBufferList:Kill()
@@ -24,12 +24,26 @@ function BufferList:Refresh()
 	self._aipBufferList = self.root:AddChild(Widget("root"))
 
     -- 遍历生成 Buffer
-    local totalCount = 5
-    for i = 1, totalCount do
-        local buffer = self:AddChild(BufferBadge(self.owner))
-        buffer:SetPosition(- OFFSET * totalCount / 2 + OFFSET * i, 0)
-        buffer:SetName("生命恢复")
+    local totalCount = #aipTableKeys(bufferInfos)
+    local i = 0
+
+    for bufferName, info in pairs(bufferInfos) do
+        local buffer = self._aipBufferList:AddChild(
+            BufferBadge(self.owner, bufferName, info.endTime)
+        )
+        buffer:SetPosition(- OFFSET * (totalCount - 1) / 2 + OFFSET * i, 0)
+
+        i = i + 1
     end
+end
+
+function BufferList:OnUpdate(dt)
+    if TheNet:IsServerPaused() then
+        return
+    end
+
+    local bufferInfos = aipBufferInfos(self.owner)
+    self:Refresh(bufferInfos)
 end
 
 return BufferList

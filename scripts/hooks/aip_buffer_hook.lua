@@ -14,10 +14,10 @@ function _G.aipBufferFn(name, fnName)
 	return (globalBuffers[name] or {})[fnName]
 end
 
--- 【双端】获取 Buffer 是否存在
-function _G.aipBufferExist(inst, name)
+-- 【双端】获取 Buffer 数据，目前只能获得 endTime
+function _G.aipBufferInfos(inst)
 	if inst == nil or inst._aipBufferGUID == nil then
-		return false
+		return {}
 	end
 
 	-- 找到 Buffer 对象
@@ -26,9 +26,30 @@ function _G.aipBufferExist(inst, name)
 	return (
 		buffer ~= nil and
 		buffer:IsValid() and
-		buffer._aipBufferExist ~= nil and
-		buffer._aipBufferExist(buffer, name)
+		buffer._aipBufferInfos ~= nil and
+		buffer._aipBufferInfos(buffer)
 	)
+end
+
+-- 【双端】获取 Buffer 是否存在
+function _G.aipBufferExist(inst, name)
+	local bufferInfos = _G.aipBufferInfos(inst)
+
+	return bufferInfos[name] ~= nil
+
+	-- if inst == nil or inst._aipBufferGUID == nil then
+	-- 	return false
+	-- end
+
+	-- -- 找到 Buffer 对象
+	-- local buffer = _G.Ents[inst._aipBufferGUID]
+
+	-- return (
+	-- 	buffer ~= nil and
+	-- 	buffer:IsValid() and
+	-- 	buffer._aipBufferExist ~= nil and
+	-- 	buffer._aipBufferExist(buffer, name)
+	-- )
 end
 
 -- 【服务端】删除 Buffer，实际上是剩余时间改为 0

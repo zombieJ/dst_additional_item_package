@@ -36,37 +36,77 @@ end
 
 -- 【服务端】同步名称
 local function syncNames(inst)
+    local nameEndTimes = {}
+
+    for key, info in pairs(inst._buffers) do
+		table.insert(nameEndTimes, key..":"..info.endTime)
+	end
+
     inst._aipBufferNames:set(
-        aipJoin(aipTableKeys(inst._buffers), ",")
+        -- aipJoin(aipTableKeys(inst._buffers), ",")
+        aipJoin(nameEndTimes, ",")
     )
-    
+end
+
+-- 【客户端】同步服务端 Buffer 信息
+local function getBufferInfos(inst)
+    local bufferKeys = aipSplit(inst._aipBufferNames:value(), ",")
+
+    local bufferInfos = {}
+
+    -- 遍历创建客户端特效
+    for i, bufferNameEndTime in ipairs(bufferKeys) do
+        local nameEndTime = aipSplit(bufferNameEndTime, ":")
+        local bufferName = nameEndTime[1]
+        local endTime = tonumber(nameEndTime[2])
+
+        bufferInfos[bufferName] = {
+            endTime = endTime,
+        }
+    end
+
+    return bufferInfos
 end
 
 -- 【客户端】函数
 local function clientRefresh(inst)
-    local bufferKeys = aipSplit(inst._aipBufferNames:value(), ",")
+    local bufferInfos = getBufferInfos(inst)
 
-    -- 遍历创建客户端特效
-    for i, bufferName in ipairs(bufferKeys) do
+    for bufferName, info in pairs(bufferInfos) do
         local clientFn = aipBufferFn(bufferName, "clientFn")
         if clientFn ~= nil then
             clientFn(getParent(inst))
         end
     end
+
+    -- local bufferKeys = aipSplit(inst._aipBufferNames:value(), ",")
+
+    -- -- 遍历创建客户端特效
+    -- for i, bufferNameEndTime in ipairs(bufferKeys) do
+    --     local nameEndTime = aipSplit(bufferNameEndTime, ":")
+    --     local bufferName = nameEndTime[1]
+    --     local endTime = tonumber(nameEndTime[2])
+
+    --     local clientFn = aipBufferFn(bufferName, "clientFn")
+    --     if clientFn ~= nil then
+    --         clientFn(getParent(inst))
+    --     end
+    -- end
 end
 
--- 【客户端】存在 Buffer
-local function bufferExist(inst, name)
-    local bufferKeys = aipSplit(inst._aipBufferNames:value(), ",")
+-- -- 【客户端】存在 Buffer
+-- local function bufferExist(inst, name)
+--     -- local bufferKeys = aipSplit(inst._aipBufferNames:value(), ",")
+--     local bufferKeys = aipTableKeys(getBufferInfos(inst))
 
-    for i, bufferName in ipairs(bufferKeys) do
-        if bufferName == name then
-            return true
-        end
-    end
+--     for i, bufferName in ipairs(bufferKeys) do
+--         if bufferName == name then
+--             return true
+--         end
+--     end
 
-    return false
-end
+--     return false
+-- end
 
 local function getSource(GUID)
 	return Ents[GUID]
@@ -186,7 +226,8 @@ local function fn(data)
     end
 
     inst._aipBufferNames = net_string(inst.GUID, "aipc_buffer", "aipc_buffer_dirty")
-    inst._aipBufferExist = bufferExist
+    -- inst._aipBufferExist = bufferExist
+    inst._aipBufferInfos = getBufferInfos
 
     if not TheWorld.ismastersim then
         return inst
