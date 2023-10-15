@@ -49,9 +49,9 @@ function BlackholeGamer:Start()
 			-- 看一下是否要生成触手
 			local handCount = CHAPTER_COUNT[chapters] or 1
 
-			aipPrint(">>>", times, chapters, passTimes, handCount, math.mod(times, handCount))
+			-- aipPrint(">>>", times, chapters, passTimes, handCount, math.mod(times, handCount))
 			if math.mod(times, handCount) == 0 then
-				aipPrint("Hit!!!")
+				-- aipPrint("Hit!!!")
 				local pos = player:GetPosition()
 				aipSpawnPrefab(
 					player, "aip_oldone_black_hand",

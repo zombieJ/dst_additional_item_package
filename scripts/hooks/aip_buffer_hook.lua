@@ -1,17 +1,20 @@
--- Buffer 管理方法
+----------------------------- Buffer 管理方法 -----------------------------
 
 local _G = GLOBAL
 
 local globalBuffers = {}
 
+-- 【双端】注册 Buffer
 function _G.aipBufferRegister(name, info)
 	globalBuffers[name] = info
 end
 
+-- 【双端】获取 Buffer 函数
 function _G.aipBufferFn(name, fnName)
 	return (globalBuffers[name] or {})[fnName]
 end
 
+-- 【双端】获取 Buffer 是否存在
 function _G.aipBufferExist(inst, name)
 	if inst == nil or inst._aipBufferGUID == nil then
 		return false
@@ -103,11 +106,22 @@ function _G.aipBufferPatch(source, inst, name, duration)
 
 	buffer._buffers[name].srcGUID = source ~= nil and source.GUID
 
-	local mergedDuration = duration or 2
-	if buffer._buffers[name].duration ~= nil then -- 如果现有的更长就不替换
-		mergedDuration = math.max(mergedDuration, buffer._buffers[name].duration)
+	-- local mergedDuration = duration or 2
+	-- if buffer._buffers[name].duration ~= nil then -- 如果现有的更长就不替换
+	-- 	mergedDuration = math.max(mergedDuration, buffer._buffers[name].duration)
+	-- end
+	-- buffer._buffers[name].duration = mergedDuration
+
+	-- 设置结束时间
+	local now = _G.GetTime()
+	local endTime = now + (duration or 2)
+
+	if buffer._buffers[name].endTime ~= nil then -- 如果现有的更长就不替换
+		endTime = math.max(endTime, buffer._buffers[name].endTime)
 	end
-	buffer._buffers[name].duration = mergedDuration
+
+	buffer._buffers[name].endTime = endTime
+
 	-- inst._buffers[name].fn = info.fn
 	-- inst._buffers[name].startFn = info.startFn
 	-- inst._buffers[name].endFn = info.endFn
@@ -118,4 +132,32 @@ function _G.aipBufferPatch(source, inst, name, duration)
 	------------------------------- 更新状态 -------------------------------
 	-- 更新交给 aip_0_buffer 自己来做，我们只同步 names
 	buffer._aipSyncNames(buffer)
+end
+
+----------------------------------------------------------------
+--                             UI                             --
+----------------------------------------------------------------
+local InventoryBar = require("widgets/inventorybar")
+local BufferList = require("widgets/aip_buffer_list")
+local UIFONT = _G.UIFONT
+
+local originRebuild = InventoryBar.Rebuild
+
+function InventoryBar:Rebuild()
+	-- 调用原始的重置 UI
+	local ret = originRebuild(self)
+
+	-- 重置 Buffer UI
+	if self._aipBufferList ~= nil then
+        self._aipBufferList:Kill()
+        self._aipBufferList = nil
+    end
+
+	-- 添加额外的 Buffer
+	local bufferList = self.toprow:AddChild(BufferList(self.owner))
+	bufferList:SetPosition(0, 90)
+
+	self._aipBufferList = bufferList
+
+	return ret
 end

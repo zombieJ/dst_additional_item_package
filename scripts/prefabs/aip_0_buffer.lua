@@ -78,13 +78,15 @@ local function serverRefresh(inst)
 	local rmNames = {}
     local nextShowFX = false
 
+    local now = GetTime()
+
 	for name, info in pairs(inst._buffers) do
-		info.duration = info.duration - interval
+		-- info.duration = info.duration - interval
 
 		-- 参数：源头，目标，间隔，时间差
 		local fnData = {
 			interval = interval,
-			passTime = GetTime() - info.startTime,
+			passTime = now - info.startTime,
 			data = info.data,
 		}
 
@@ -97,7 +99,8 @@ local function serverRefresh(inst)
         nextShowFX = aipBufferFn(name, "showFX") or nextShowFX
 
 		-- 清理过期的 buffer
-		if info.duration <= 0 then
+		-- if info.duration <= 0 then
+        if info.endTime <= now then
 			table.insert(rmNames, name)
 		else
 			allRemove = false
