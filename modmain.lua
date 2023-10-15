@@ -162,6 +162,7 @@ PrefabFiles = {
 	"aip_sessho_seki",
 	"aip_oldone_hand",
 	"aip_oldone_black_head",
+	"aip_oldone_black_hand",
 	"aip_oldone_apple",
 
 	-- 量子

@@ -13,7 +13,7 @@ function Blackhole:StartGame()
 
 	-- 地址为硬编码
 	self.stone = aipSwapPrefab(
-		self.inst, "aip_sessho_seki",
+		self.inst, "aip_oldone_black_head",
 		self.gamePos.x, self.gamePos.y, self.gamePos.z
 	)
 end
