@@ -18,11 +18,13 @@ local HEAL_MAP = {
 -- 语言
 local LANG_MAP = {
 	english = {
+		BUFF_NAME = "Insights",
 		NAME = "Fig Salve",
 		DESC = "Good stuff that can't be used continuously",
 		DESCRIBE = "Absorbed through the face to create a therapeutic effect, the light can be seen on the body of the living being. However, the effect will be greatly reduced if it is used continuously before it fails.",
 	},
 	chinese = {
+		BUFF_NAME = "明目",
 		NAME = "明目药膏",
 		DESC = "不能连续使用的好东西",
 		DESCRIBE = "通过面部吸收产生治疗效果，可以看到生物身上的光芒。但是在失效之前连续使用效果就会大打折扣。",
@@ -45,6 +47,8 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FIG_SALVE = LANG.DESCRIBE
 
 -------------------------------------- 方法 --------------------------------------
 aipBufferRegister("aip_see_petable", {
+	name = LANG.BUFF_NAME,
+
     clientFn = function(inst)
         if inst ~= nil and inst == ThePlayer then
             local pt = inst:GetPosition()

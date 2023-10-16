@@ -1,3 +1,23 @@
+local language = aipGetModConfig("language")
+
+-- 文字描述
+local LANG_MAP = {
+	english = {
+        healthCost = "Pain",
+		seeFootPrint = "Premonition",
+		oldonePoison = "Oldone Poison",
+		aip_pet_johnWick = "Killer",
+	},
+	chinese = {
+        healthCost = "痛苦",
+		seeFootPrint = "预感",
+		oldonePoison = "黏菌毒",
+		aip_pet_johnWick = "杀神",
+	},
+}
+
+local LANG = LANG_MAP[language] or LANG_MAP.english
+
 local FADE_DES = 0.04
 
 local function onFade(inst)
@@ -15,6 +35,7 @@ local function getFn(data)
 	-- 全局注册一下 Buffer
 	if data.bufferName ~= nil then
 		aipBufferRegister(data.bufferName, {
+			name = LANG[data.bufferName],
 			fn = data.bufferFn,
 			-- 中毒减速
 			startFn = data.bufferStartFn,

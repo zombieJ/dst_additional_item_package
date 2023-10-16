@@ -4,11 +4,13 @@ local language = aipGetModConfig("language")
 -- 文字描述
 local LANG_MAP = {
 	english = {
+        BUFF_NAME = "Meme Contamination",
 		NAME = "Parasitic Spider Den",
 		DESC = "Seems a big difference inside",
         SEE = "Who is watching?",
 	},
 	chinese = {
+        BUFF_NAME = "模因污染",
 		NAME = "寄生蜘蛛巢",
 		DESC = "内部结果似乎已经大不一样了",
         SEE = "谁在注视我？",
@@ -64,6 +66,8 @@ end
 
 -- 不断在玩家附近创建眼睛
 aipBufferRegister("aip_see_eyes", {
+    name = LANG.BUFF_NAME,
+
     clientFn = function(inst)
         if inst ~= nil and inst == ThePlayer then
             local pt = inst:GetPosition()

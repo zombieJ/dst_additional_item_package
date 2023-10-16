@@ -10,28 +10,41 @@ local BufferList = Class(Widget, function(self, owner)
 
     self.root = self:AddChild(Widget("root"))
 
+    self.buffers = {}
+    self.keyStr = nil
+
     self:StartUpdating()
 end)
 
+-- 重新生成 Buffer 列表
 function BufferList:Refresh(bufferInfos)
-    -- 重置 Buffer UI
-	if self._aipBufferList ~= nil then
-        self._aipBufferList:Kill()
-        self._aipBufferList = nil
+    local keys = aipTableKeys(bufferInfos)
+    local keyStr = aipJoin(keys, ",")
+
+    -- 如果没有变化，不刷新
+    if self.keyStr == keyStr then
+        return
     end
 
-	-- 添加额外的 Buffer
-	self._aipBufferList = self.root:AddChild(Widget("root"))
+    self.keyStr = keyStr
+
+    -- 移除旧的 Buffer
+    for _, buffer in ipairs(self.buffers) do
+        buffer:Kill()
+    end
+    self.buffers = {}
 
     -- 遍历生成 Buffer
-    local totalCount = #aipTableKeys(bufferInfos)
+    local totalCount = #keys
     local i = 0
 
     for bufferName, info in pairs(bufferInfos) do
-        local buffer = self._aipBufferList:AddChild(
+        local buffer = self.root:AddChild(
             BufferBadge(self.owner, bufferName, info.endTime)
         )
         buffer:SetPosition(- OFFSET * (totalCount - 1) / 2 + OFFSET * i, 0)
+
+        table.insert(self.buffers, buffer)
 
         i = i + 1
     end
