@@ -1,6 +1,7 @@
 local Badge = require "widgets/badge"
 local UIAnim = require "widgets/uianim"
 local Text = require "widgets/text"
+local Image = require "widgets/image"
 
 local MAX_TIME = 99
 
@@ -14,9 +15,19 @@ local BufferBadge = Class(Badge, function(self, owner, bufferName, endTime)
     self.endTime = endTime
 
     self:SetPercent(1, 1)
+    self.num:SetPosition(3, 60, 0)
     self.num:SetString(
         aipBufferFn(bufferName, "name") or bufferName
     )
+
+    -- 图标
+    if softresolvefilepath("images/aipBuffer/"..bufferName..".xml") ~= nil then
+        self.icon = self:AddChild(Image(
+            "images/aipBuffer/"..bufferName..".xml", bufferName..".tex"
+        ))
+        self.icon:SetScale(0.65, 0.65)
+        self.icon:SetPosition(0, 1, 0)
+    end
 
     -- 倒计时
     self.countdown = self:AddChild(Text(BODYTEXTFONT, 33, "30s"))

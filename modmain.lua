@@ -20,6 +20,21 @@ Assets = {
 	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_water_bg.xml"),
 	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_wind_bg.xml"),
 
+	-- BUFFER
+	Asset("ATLAS", "images/aipBuffer/aip_see_eyes.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_pet_play.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_pet_muddy.xml"),
+	Asset("ATLAS", "images/aipBuffer/healthCost.xml"),
+	Asset("ATLAS", "images/aipBuffer/seeFootPrint.xml"),
+	Asset("ATLAS", "images/aipBuffer/oldonePoison.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_pet_johnWick.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_see_petable.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_nectar_drunk.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_oldone_smiling.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_oldone_smiling_axe.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_oldone_smiling_attack.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_oldone_smiling_mine.xml"),
+
 	-- 诡影迷踪需要提前加载
 	Asset("ATLAS", "images/inventoryimages/aip_totem_tech.xml"),
 

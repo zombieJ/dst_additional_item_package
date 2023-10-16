@@ -40,6 +40,7 @@ local assets = {
 ---------------------------------- BUFF ----------------------------------
 -- 不断随机让玩家身体部件消失
 aipBufferRegister("aip_oldone_smiling", {
+    name = LANG.GAZE_BUFF_NAME,
     -- startFn = function(source, inst, info)
     --     -- inst.AnimState:Hide("HEAD")
     --     -- if inst.components.talker ~= nil then

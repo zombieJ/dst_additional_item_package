@@ -56,7 +56,24 @@ function BufferList:OnUpdate(dt)
     end
 
     local bufferInfos = aipBufferInfos(self.owner)
-    self:Refresh(bufferInfos)
+    -- self:Refresh(bufferInfos)
+
+    local now = GetTime() + 10
+    self:Refresh({
+        aip_see_eyes = { endTime = now },
+        aip_pet_play = { endTime = now },
+        aip_pet_muddy = { endTime = now },
+        healthCost = { endTime = now },
+        seeFootPrint = { endTime = now },
+        oldonePoison = { endTime = now },
+        aip_pet_johnWick = { endTime = now },
+        aip_see_petable = { endTime = now },
+        aip_nectar_drunk = { endTime = now },
+        aip_oldone_smiling = { endTime = now },
+        aip_oldone_smiling_axe = { endTime = now },
+        aip_oldone_smiling_attack = { endTime = now },
+        aip_oldone_smiling_mine = { endTime = now },
+    })
 end
 
 return BufferList
