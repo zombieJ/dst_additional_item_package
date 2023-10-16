@@ -45,7 +45,13 @@ function BufferBadge:OnUpdate(dt)
     local now = GetTime()
     local diffSeconds = math.max(math.floor(self.endTime - now), 0)
 
-    self.countdown:SetString(diffSeconds > MAX_TIME and ">"..MAX_TIME.."s" or diffSeconds.."s")
+    if diffSeconds == 0 then
+        self.countdown:SetString("")
+    elseif diffSeconds > MAX_TIME then
+        self.countdown:SetString(">"..MAX_TIME.."s")
+    else
+        self.countdown:SetString(diffSeconds.."s")
+    end
 end
 
 return BufferBadge
