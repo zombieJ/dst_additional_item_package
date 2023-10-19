@@ -5,10 +5,16 @@ local LANG_MAP = {
 	english = {
 		NAME = "Unknow",
 		DESC = "Whattttt is this?!",
+        BUFF_NAME = "Sync Value",
+        IM_BUFF_NAME = "Insanity",
+        TALK_EXILED = "Where am I?",
 	},
 	chinese = {
 		NAME = "不可知",
 		DESC = "这这这这是什么？！",
+        BUFF_NAME = "神形同步",
+        IM_BUFF_NAME = "神志不清",
+        TALK_EXILED = "我回到哪儿了？",
 	},
 }
 
@@ -16,6 +22,7 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 STRINGS.NAMES.AIP_OLDONE_BLACK_HEAD = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_BLACK_HEAD = LANG.DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_BLACK_HEAD_TALK_EXILED = LANG.TALK_EXILED
 
 -- 资源
 local assets = {
@@ -27,6 +34,42 @@ local assets = {
 local STATE_COUNT = 5
 local DIST_MIN = 6
 local DIST_MAX = 7
+
+-- 添加计数器 Buffer
+aipBufferRegister("aip_black_count", {
+    name = LANG.BUFF_NAME,
+    showFX = false,
+})
+
+-- 添加免疫 Buffer，有这个 buffer 就不能进入游戏
+aipBufferRegister("aip_black_immunity", {
+    name = LANG.IM_BUFF_NAME,
+    showFX = false,
+})
+
+-- 添加传送 Buffer，会被立刻传送回去
+aipBufferRegister("aip_black_portal", {
+    showFX = false,
+    startFn = function(source, inst, info)
+		-- 优先传送去 绚烂之门
+        local pt = nil
+        local portal = TheSim:FindFirstEntityWithTag("multiplayer_portal")
+
+        if portal ~= nil then
+            pt = portal:GetPosition()
+        else
+            pt = aipFindRandomPointInLand()
+        end
+
+        if inst.components.talker ~= nil then
+            inst.components.talker:Say(
+                STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_BLACK_HEAD_TALK_EXILED
+            )
+        end
+
+        inst.Physics:Teleport(pt.x, 0, pt.z)
+	end,
+})
 
 ------------------------------------ 方法 ------------------------------------
 local function onNear(inst, player)

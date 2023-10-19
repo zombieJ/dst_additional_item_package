@@ -18,9 +18,19 @@ local BlackholeGamer = Class(function(self, inst)
 end)
 
 function BlackholeGamer:NearPlayer(player)
+	if aipBufferExist(player, "aip_black_immunity") then
+		aipBufferPatch(self.inst, player, "aip_black_portal", 0.001)
+		return
+	end
+
 	-- Add player
 	self.players[player] = 0
 	self:Start()
+
+	-- Patch Buffer
+	aipBufferPatch(self.inst, player, "aip_black_count", 9999999, function(info)
+		return info.stack ~= nil and info.stack or 10
+	end)
 end
 
 function BlackholeGamer:FarPlayer(player)

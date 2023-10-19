@@ -39,7 +39,7 @@ local function syncNames(inst)
     local nameEndTimes = {}
 
     for key, info in pairs(inst._buffers) do
-		table.insert(nameEndTimes, key..":"..info.endTime)
+		table.insert(nameEndTimes, key..":"..info.endTime..":"..info.stack)
 	end
 
     inst._aipBufferNames:set(
@@ -55,13 +55,15 @@ local function getBufferInfos(inst)
     local bufferInfos = {}
 
     -- 遍历创建客户端特效
-    for i, bufferNameEndTime in ipairs(bufferKeys) do
-        local nameEndTime = aipSplit(bufferNameEndTime, ":")
-        local bufferName = nameEndTime[1]
-        local endTime = tonumber(nameEndTime[2])
+    for i, bufferNameEndTimeStack in ipairs(bufferKeys) do
+        local nameEndTimeStack = aipSplit(bufferNameEndTimeStack, ":")
+        local bufferName = nameEndTimeStack[1]
+        local endTime = tonumber(nameEndTimeStack[2])
+        local stack = tonumber(nameEndTimeStack[3])
 
         bufferInfos[bufferName] = {
             endTime = endTime,
+            stack = stack,
         }
     end
 

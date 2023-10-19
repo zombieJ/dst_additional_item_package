@@ -20,7 +20,13 @@ end)
 function BufferList:Refresh(bufferInfos)
     local keys = aipTableKeys(bufferInfos)
     table.sort(keys)
-    local keyStr = aipJoin(keys, ",")
+
+    local keyStr = aipJoin(
+        aipTableMap(keys, function(key)
+            return key .. ":" .. bufferInfos[key].endTime
+        end),
+        ","
+    )
 
     -- 如果没有变化，不刷新
     if self.keyStr == keyStr then
@@ -43,7 +49,7 @@ function BufferList:Refresh(bufferInfos)
         local info = bufferInfos[bufferName]
 
         local buffer = self.root:AddChild(
-            BufferBadge(self.owner, bufferName, info.endTime)
+            BufferBadge(self.owner, bufferName, info.endTime, info.stack)
         )
         buffer:SetPosition(- OFFSET * (totalCount - 1) / 2 + OFFSET * i, 0)
 
@@ -59,6 +65,7 @@ function BufferList:OnUpdate(dt)
     end
 
     local bufferInfos = aipBufferInfos(self.owner)
+
     self:Refresh(bufferInfos)
 
     -- local now = GetTime() + 10

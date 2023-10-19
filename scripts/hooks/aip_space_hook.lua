@@ -205,7 +205,7 @@ AddStategraphState("wilson", State {
 				if _G.TheWorld.components.aipc_blackhole then
 					_G.TheWorld.components.aipc_blackhole:StartGame()
 
-					pos = _G.TheWorld.components.aipc_blackhole.gamePos
+					pos = _G.TheWorld.components.aipc_blackhole:GetPos()
 				end
 
 				-- 设置坐标

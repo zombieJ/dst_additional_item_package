@@ -3,9 +3,10 @@ local UIAnim = require "widgets/uianim"
 local Text = require "widgets/text"
 local Image = require "widgets/image"
 
-local MAX_TIME = 99
+-- 超出 1 小时则不显示
+local MAX_TIME = 60 * 60
 
-local BufferBadge = Class(Badge, function(self, owner, bufferName, endTime)
+local BufferBadge = Class(Badge, function(self, owner, bufferName, endTime, stack)
     Badge._ctor(
         self, nil, owner, { 232 / 255, 123 / 255, 15 / 255, 1 },
         nil, nil, nil, true
@@ -30,11 +31,20 @@ local BufferBadge = Class(Badge, function(self, owner, bufferName, endTime)
     end
 
     -- 倒计时
-    self.countdown = self:AddChild(Text(BODYTEXTFONT, 33, "30s"))
+    self.countdown = self:AddChild(Text(BODYTEXTFONT, 33, ""))
     self.countdown:SetHAlign(ANCHOR_MIDDLE)
     self.countdown:SetPosition(3, 30, 0)
 
+    -- Stack
+    self.stack = tonumber(stack or 0)
+    if self.stack >= 1 then
+        self.stack = self:AddChild(Text(BODYTEXTFONT, 33, tostring(self.stack)))
+        self.stack:SetHAlign(ANCHOR_MIDDLE)
+        self.stack:SetPosition(3, -25, 0)
+    end
+
     self:StartUpdating()
+    self:OnUpdate(0)
 end)
 
 function BufferBadge:OnUpdate(dt)
@@ -45,10 +55,12 @@ function BufferBadge:OnUpdate(dt)
     local now = GetTime()
     local diffSeconds = math.max(math.floor(self.endTime - now), 0)
 
-    if diffSeconds == 0 then
+    if diffSeconds == 0 or diffSeconds > MAX_TIME then
         self.countdown:SetString("")
-    elseif diffSeconds > MAX_TIME then
-        self.countdown:SetString(">"..MAX_TIME.."s")
+    elseif diffSeconds > 60 then
+        local min = math.floor(diffSeconds / 60)
+        local sec = diffSeconds % 60
+        self.countdown:SetString(min.."m"..sec.."s")
     else
         self.countdown:SetString(diffSeconds.."s")
     end

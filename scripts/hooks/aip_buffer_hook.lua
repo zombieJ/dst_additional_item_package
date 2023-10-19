@@ -57,7 +57,7 @@ function _G.aipBufferRemove(inst, name)
 	if _G.aipBufferExist(inst, name) then
 		-- 找到 Buffer 对象
 		local buffer = _G.Ents[inst._aipBufferGUID]
-		buffer._buffers[name].duration = 0
+		buffer._buffers[name].endTime = _G.GetTime() - 1
 	end
 end
 
@@ -86,7 +86,7 @@ function _G.aipBufferInfo(inst, name)
 end
 
 -- 【服务端】创建 Buffer
-function _G.aipBufferPatch(source, inst, name, duration)
+function _G.aipBufferPatch(source, inst, name, duration, stack)
 	------------------------------- 准备阶段 -------------------------------
 	-- 复用 Buffer 对象
 	local buffer = getBuffInst(inst)
@@ -149,6 +149,15 @@ function _G.aipBufferPatch(source, inst, name, duration)
 	-- inst._buffers[name].clientFn = info.clientFn
 
 	-- inst._buffers[name].showFX = info.showFX
+
+	-- 支持堆叠
+	if type(stack) == "function" then
+		local stackCount = stack(buffer._buffers[name])
+		buffer._buffers[name].stack = stackCount
+	end
+
+	-- 至少为 0
+	buffer._buffers[name].stack = buffer._buffers[name].stack or 0
 
 	------------------------------- 更新状态 -------------------------------
 	-- 更新交给 aip_0_buffer 自己来做，我们只同步 names

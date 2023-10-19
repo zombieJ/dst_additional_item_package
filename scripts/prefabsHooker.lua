@@ -787,6 +787,7 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 						"aip_glory_hand",
 						"aip_dream_stone",
 						"aip_stone_mask",
+						"aip_hearthstone",
 					}
 
 					local structureList = {

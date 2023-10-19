@@ -1,4 +1,4 @@
--- 黑洞游戏管理器
+-- world 专用组件。黑洞游戏管理器
 local Blackhole = Class(function(self, inst)
 	self.inst = inst
 
@@ -12,10 +12,14 @@ function Blackhole:StartGame()
 	end
 
 	-- 地址为硬编码
-	self.stone = aipSwapPrefab(
+	self.stone = aipSpawnPrefab(
 		self.inst, "aip_oldone_black_head",
 		self.gamePos.x, self.gamePos.y, self.gamePos.z
 	)
+end
+
+function Blackhole:GetPos()
+	return aipAngleDist(self.gamePos, math.random(360), 5)
 end
 
 return Blackhole

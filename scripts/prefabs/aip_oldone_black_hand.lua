@@ -22,33 +22,72 @@ local assets = {
     Asset("ANIM", "anim/aip_oldone_black_hand.zip"),
 }
 
------------------------------------- 方法 ------------------------------------
-local function randomAnim(inst)
+------------------------------------ 洞洞实例 ------------------------------------
+local function replaceWithHand(inst)
+    aipReplacePrefab(inst, "aip_oldone_black_hand_stick")
+end
+
+local function holeFn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddNetwork()
+
+    inst.AnimState:SetBank("aip_oldone_black_hand")
+    inst.AnimState:SetBuild("aip_oldone_black_hand")
+    inst.AnimState:PlayAnimation("idle")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst:ListenForEvent("animover", replaceWithHand)
+
+    inst.persists = false
+
+    return inst
+end
+
+------------------------------------ 手手实例 ------------------------------------
+local function birthAttack(inst)
     inst.SoundEmitter:PlaySound("dontstarve/creatures/deerclops/attack")
 
     local idx = math.random(1, 5)
     inst.AnimState:PlayAnimation("atk"..idx)
     inst.AnimState:PushAnimation("stb"..idx, true)
 
-    inst.Physics:SetActive(true)
-    inst.components.health:SetInvincible(false)
-
     -- 攻击玩家
-    local players = aipFindNearPlayers(inst, 0.1)
+    local players = aipFindNearPlayers(inst, 1)
     for _, player in ipairs(players) do
         -- 玩家疼痛跳一下
         if player.components.combat ~= nil then
-            player.components.combat:GetAttacked(inst, 1)
+            player.components.combat:GetAttacked(inst, 0.00001)
         end
 
         -- 伤害理智值
         if player.components.sanity ~= nil then
             player.components.sanity:DoDelta(-TUNING.SANITY_MEDLARGE)
         end
-    end
 
-    -- remove Event
-    inst:RemoveEventCallback("animover", randomAnim)
+        -- 伤害同步率
+        if aipBufferExist(player, "aip_black_count") then
+            aipBufferPatch(inst, player, "aip_black_count", 9999999, function(info)
+                local nextStack = (info.stack or 1) - 1
+
+                if nextStack <= 0 then
+                    aipBufferRemove(player, "aip_black_count")
+                    aipBufferPatch(inst, player, "aip_black_immunity", 60 * 10)
+
+                    aipBufferPatch(inst, player, "aip_black_portal", 0.001)
+                end
+
+                return nextStack
+            end)
+        end
+    end
 end
 
 local function onKilled(inst)
@@ -56,8 +95,7 @@ local function onKilled(inst)
     inst.AnimState:PlayAnimation("dead")
 end
 
------------------------------------- 实例 ------------------------------------
-local function fn()
+local function handFn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -66,7 +104,6 @@ local function fn()
     inst.entity:AddNetwork()
 
     MakeObstaclePhysics(inst, .05)
-    inst.Physics:SetActive(false)
 
     inst.AnimState:SetBank("aip_oldone_black_hand")
     inst.AnimState:SetBuild("aip_oldone_black_hand")
@@ -82,21 +119,20 @@ local function fn()
 
     inst:AddComponent("inspectable")
 
-    MakeHauntableLaunch(inst)
-
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(1)
-    inst.components.health:SetInvincible(true)
 
     inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "body"
 
     inst:ListenForEvent("death", onKilled)
-    inst:ListenForEvent("animover", randomAnim)
+
+    inst:DoTaskInTime(0.1, birthAttack)
 
     inst.persists = false
 
     return inst
 end
 
-return Prefab("aip_oldone_black_hand", fn, assets)
+return  Prefab("aip_oldone_black_hand", holeFn, assets),
+        Prefab("aip_oldone_black_hand_stick", handFn, assets)

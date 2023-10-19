@@ -34,6 +34,8 @@ Assets = {
 	Asset("ATLAS", "images/aipBuffer/aip_oldone_smiling_axe.xml"),
 	Asset("ATLAS", "images/aipBuffer/aip_oldone_smiling_attack.xml"),
 	Asset("ATLAS", "images/aipBuffer/aip_oldone_smiling_mine.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_black_count.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_black_immunity.xml"),
 
 	-- 诡影迷踪需要提前加载
 	Asset("ATLAS", "images/inventoryimages/aip_totem_tech.xml"),
@@ -199,6 +201,7 @@ PrefabFiles = {
 	"aip_glory_hand",
 	"aip_stone_mask",
 	"aip_dream_stone",
+	"aip_hearthstone",
 
 	-- 懵懵宠宠
 	"aip_pet_catcher",

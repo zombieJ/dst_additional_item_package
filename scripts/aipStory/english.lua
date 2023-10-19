@@ -1260,6 +1260,13 @@ return {
                 top=20,
             },
             "A knowledgeable owl statue, playing games with it can get some rewards.",
+
+            -- 炉石
+            {
+                type="img",
+                name="aip_hearthstone",
+            },
+            "This stone can take you to the Florid Postern, but it's not stable.",
         },
     },
 
