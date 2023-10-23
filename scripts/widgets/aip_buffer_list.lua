@@ -19,6 +19,9 @@ end)
 -- 重新生成 Buffer 列表
 function BufferList:Refresh(bufferInfos)
     local keys = aipTableKeys(bufferInfos)
+    keys = aipFilterTable(keys, function(key)
+        return not aipBufferFn(key, "hideBuffer")
+    end)
     table.sort(keys)
 
     local keyStr = aipJoin(

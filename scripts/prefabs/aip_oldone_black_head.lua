@@ -49,11 +49,13 @@ aipBufferRegister("aip_black_immunity", {
 
 -- 添加传送 Buffer，会被立刻传送回去
 aipBufferRegister("aip_black_portal", {
+    hideBuffer = true,
     showFX = false,
     startFn = function(source, inst, info)
 		-- 优先传送去 绚烂之门
         local pt = nil
         local portal = TheSim:FindFirstEntityWithTag("multiplayer_portal")
+        aipSpawnPrefab(inst, "aip_shadow_wrapper").DoShow()
 
         if portal ~= nil then
             pt = portal:GetPosition()
@@ -68,6 +70,7 @@ aipBufferRegister("aip_black_portal", {
         end
 
         inst.Physics:Teleport(pt.x, 0, pt.z)
+        aipSpawnPrefab(inst, "aip_shadow_wrapper").DoShow()
 	end,
 })
 
