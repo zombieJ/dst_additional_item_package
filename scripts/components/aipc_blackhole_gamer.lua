@@ -34,11 +34,45 @@ function BlackholeGamer:NearPlayer(player)
 end
 
 function BlackholeGamer:FarPlayer(player)
-	-- Revome player
+	-- 离开就传送走
+	self:SendAway(player)
+end
+
+-- 伤害玩家
+function BlackholeGamer:HurtPlayer(player)
+	if aipBufferExist(player, "aip_black_count") then
+		aipBufferPatch(self.inst, player, "aip_black_count", 9999999, function(info)
+			local nextStack = (info.stack or 1) - 1
+
+			if nextStack <= 0 then
+				aipBufferRemove(player, "aip_black_count")
+				aipBufferPatch(self.inst, player, "aip_black_immunity", 60 * 10)
+
+				self:SendAway(player)
+			end
+
+			return nextStack
+		end)
+	end
+end
+
+local function getChapter(times)
+	local passTimes = times * INTERVAL
+	return math.ceil(passTimes / CHAPTER_TIME)
+end
+
+-- 送走玩家
+function BlackholeGamer:SendAway(player)
+	aipBufferPatch(self.inst, player, "aip_black_portal", 0.001)
+
+	-- 根据玩家留存时间给予奖励
+	local chapters = getChapter(self.players[player] or 0)
+
+	-- 重置并决定是否要结束游戏
 	self.players[player] = nil
 
 	if aipCountTable(self.players) == 0 then
-		self:Stop()
+		self:End()
 	end
 end
 
@@ -53,46 +87,42 @@ function BlackholeGamer:Start()
 			self.players[player] = times
 
 			-- 计算度过的时间
-			local passTimes = times * INTERVAL
-			local chapters = math.ceil(passTimes / CHAPTER_TIME)
+			local chapters = getChapter(times)
 
 			-- 看一下是否要生成触手
 			local handCount = CHAPTER_COUNT[chapters] or 1
 
-			-- aipPrint(">>>", times, chapters, passTimes, handCount, math.mod(times, handCount))
 			if math.mod(times, handCount) == 0 then
 				-- aipPrint("Hit!!!")
 				local pos = player:GetPosition()
-				aipSpawnPrefab(
+				local hand = aipSpawnPrefab(
 					player, "aip_oldone_black_hand",
 					randomPosUnit(pos.x), pos.y, randomPosUnit(pos.z)
 				)
+				hand._aipHead = self.inst
 			end
-
-
-			-- local totalTime = time + INTERVAL
-			-- self.players[player] = totalTime
-
-			-- -- 看一下是否要生成触手
-			-- local chapters = math.ceil(totalTime / CHAPTER_TIME)
-			-- local handCount = CHAPTER_COUNT[chapters] or 1
-
-			-- -- aipPrint(">>>", chapters, totalTime, handCount, handCount * INTERVAL, math.mod(totalTime, handCount * INTERVAL))
-			-- -- local intervalTotalTime = totalTime * INTERVAL
-
-			-- if math.mod(totalTime, handCount * INTERVAL) < INTERVAL then
-			-- 	aipPrint("Hit!!!")
-			-- 	local pos = player:GetPosition()
-			-- 	aipSpawnPrefab(
-			-- 		player, "aip_oldone_black_hand",
-			-- 		randomPosUnit(pos.x), pos.y, randomPosUnit(pos.z)
-			-- 	)
-			-- end
 		end
 	end, 0)
 end
 
 -- 结束游戏
+function BlackholeGamer:End()
+	self:Stop()
+
+	local pos = self.inst:GetPosition()
+
+	local ents = TheSim:FindEntities(
+		pos.x, pos.y, pos.z, 10,
+		nil, nil, { "aip_aura_indicator", "aip_oldone_black_group" })
+
+	aipReplacePrefab(self.inst, "aip_shadow_wrapper").DoShow()
+
+	for _, ent in ipairs(ents) do
+		ent:Remove()
+	end
+end
+
+-- 结束任务
 function BlackholeGamer:Stop()
 	if self.intervalTask ~= nil then
 		self.intervalTask:Cancel()

@@ -150,6 +150,8 @@ local function eye_fn(name)
     inst:AddTag("NOCLICK")
     inst:AddTag("FX")
 
+    inst:AddTag("aip_oldone_black_group")
+
     inst.entity:SetPristine()
 
     inst._aipAnimName = name

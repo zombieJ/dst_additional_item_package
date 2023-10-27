@@ -14,8 +14,8 @@ local LANG_MAP = {
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
-STRINGS.NAMES.AIP_OLDONE_BLACK_HAND = LANG.NAME
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_BLACK_HAND = LANG.DESC
+STRINGS.NAMES.AIP_OLDONE_BLACK_HAND_STICK = LANG.NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OLDONE_BLACK_HAND_STICK = LANG.DESC
 
 -- 资源
 local assets = {
@@ -24,7 +24,7 @@ local assets = {
 
 ------------------------------------ 洞洞实例 ------------------------------------
 local function replaceWithHand(inst)
-    aipReplacePrefab(inst, "aip_oldone_black_hand_stick")
+    aipReplacePrefab(inst, "aip_oldone_black_hand_stick")._aipHead = inst._aipHead
 end
 
 local function holeFn()
@@ -73,19 +73,8 @@ local function birthAttack(inst)
         end
 
         -- 伤害同步率
-        if aipBufferExist(player, "aip_black_count") then
-            aipBufferPatch(inst, player, "aip_black_count", 9999999, function(info)
-                local nextStack = (info.stack or 1) - 1
-
-                if nextStack <= 0 then
-                    aipBufferRemove(player, "aip_black_count")
-                    aipBufferPatch(inst, player, "aip_black_immunity", 60 * 10)
-
-                    aipBufferPatch(inst, player, "aip_black_portal", 0.001)
-                end
-
-                return nextStack
-            end)
+        if inst._aipHead ~= nil and inst._aipHead.components.aipc_blackhole_gamer then
+            inst._aipHead.components.aipc_blackhole_gamer:HurtPlayer(player)
         end
     end
 end
@@ -110,6 +99,7 @@ local function handFn()
     inst.AnimState:PlayAnimation("idle")
 
     inst:AddTag("hostile")
+    inst:AddTag("aip_oldone_black_group")
 
     inst.entity:SetPristine()
 

@@ -78,6 +78,12 @@ local function getFn(data)
 		inst:AddTag("NOCLICK")
 		inst:AddTag("FX")
 
+		if data.tags ~= nil then
+			for i, tag in ipairs(data.tags) do
+				inst:AddTag(tag)
+			end
+		end
+
 		-- 服务端同步
 		if data.pristine ~= false then
 			inst.entity:SetPristine()
@@ -332,6 +338,7 @@ local list = {
 		range = false, -- 不安装光环组件
 		fade = false,
 		scale = 1,
+		tags = { "aip_aura_indicator" },
 	},
 }
 

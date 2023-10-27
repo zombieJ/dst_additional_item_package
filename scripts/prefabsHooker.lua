@@ -767,7 +767,8 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 
 			if
 				data ~= nil and data.inst ~= nil and
-				aipc_oldone ~= nil and data.afflicter:HasTag("player")
+				aipc_oldone ~= nil and
+				data.afflicter ~= nil and data.afflicter:HasTag("player")
 			then
 				-- 玩家如果没有遇到过世界掉落，第一次概率会变得更高一些
 				local chance = aipc_oldone:GetWorldDropTimes() == 0 and .01 or .001

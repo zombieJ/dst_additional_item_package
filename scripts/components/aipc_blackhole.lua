@@ -7,7 +7,7 @@ local Blackhole = Class(function(self, inst)
 end)
 
 function Blackhole:StartGame()
-	if self.stone ~= nil then
+	if self.stone ~= nil and self.stone:IsValid() then
 		return
 	end
 

@@ -434,6 +434,20 @@ local PREFABS = {
         face = 2,
         bb = true,
     },
+
+    --------------------------- 恐怖之眼 ---------------------------
+    eyeofterror = {
+        bank = "eyeofterror",
+        build = "eyeofterror_basic",
+        anim = "eye_idle",
+        sg = "SGeyeofterror",
+        origin = "eyeofterror",
+        scale = 0.3,
+        face = 6,
+        postInit = function(inst) -- 添加一下声音
+            inst._soundpath = "terraria1/eyeofterror/"
+        end,
+    },
 }
 
 -- 填充一下 origin
@@ -588,6 +602,11 @@ local function getPrefab(inst, seer)
 		end
 	end
 
+    ----------------------- 恐怖之眼 -----------------------
+    if prefab == "aip_pet_eyeofterror" then
+        prefab = "eyeofterror"
+    end
+
 	return prefab, subPrefab
 end
 
@@ -714,8 +733,6 @@ local function getSkills(prefab, subPrefab)
             "resonance",
         }
     end
-
-    
 end
 
 return {
