@@ -38,6 +38,8 @@ local function holeFn()
     inst.AnimState:SetBuild("aip_oldone_black_hand")
     inst.AnimState:PlayAnimation("idle")
 
+    inst:AddTag("aip_oldone_black_group")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

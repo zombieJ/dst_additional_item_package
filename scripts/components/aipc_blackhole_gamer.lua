@@ -117,7 +117,7 @@ function BlackholeGamer:SendAway(player)
 	local chapters = getChapter(self.players[player] or 0)
 	local gifts = GIFTS[math.min(chapters, #GIFTS)] or {}
 
-	player:DoTaskInTime(1, function()
+	player:DoTaskInTime(2, function()
 		for _, gift in ipairs(gifts) do
 			aipFlingItem(
 				aipSpawnPrefab(player, gift)

@@ -70,7 +70,12 @@ aipBufferRegister("aip_black_portal", {
         end
 
         inst.Physics:Teleport(pt.x, 0, pt.z)
-        aipSpawnPrefab(inst, "aip_shadow_wrapper").DoShow()
+
+        -- 兜底再传送一次
+        inst:DoTaskInTime(0.1, function()
+            inst.Physics:Teleport(pt.x, 0, pt.z)
+            aipSpawnPrefab(inst, "aip_shadow_wrapper").DoShow()
+        end)
 	end,
 })
 
