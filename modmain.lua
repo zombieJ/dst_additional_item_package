@@ -181,6 +181,8 @@ PrefabFiles = {
 	"aip_oldone_black_head",
 	"aip_oldone_black_hand",
 	"aip_oldone_apple",
+	"aip_oldone_meat",
+	"aip_black_xuelong",
 
 	-- 量子
 	"aip_weapon_box",

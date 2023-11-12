@@ -253,6 +253,8 @@ local function OnKilled(inst, data)
             aipBufferPatch(inst, player, buff, OLDONE_AURA_EXIST_TIME)
         end
     end
+
+    -- TODO: 掉落一个叠加背包配方
 end
 
 ---------------------------------- 实例 ----------------------------------

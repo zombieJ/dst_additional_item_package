@@ -31,7 +31,7 @@ local function onDeath(inst, data)
 	local killer = data ~= nil and data.afflicter or nil
 
     -- if killer ~= nil and aipBufferExist(killer, "aip_see_eyes") then
-	-- 	aipSpawnPrefab(killer, "aip_aura_blackhole")
+	aipSpawnPrefab(killer, "aip_aura_blackhole")
 
 	if killer ~= nil and killer:HasTag("player") and not aipBufferExist(killer, "aip_black_immunity") then
 		killer.sg:GoToState("aip_sink_space")
