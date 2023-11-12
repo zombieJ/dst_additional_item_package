@@ -1,3 +1,23 @@
+local language = aipGetModConfig("language")
+
+-- 文字描述
+local LANG_MAP = {
+	english = {
+        healthCost = "Pain",
+		seeFootPrint = "Premonition",
+		oldonePoison = "Oldone Poison",
+		aip_pet_johnWick = "Killer",
+	},
+	chinese = {
+        healthCost = "痛苦",
+		seeFootPrint = "预感",
+		oldonePoison = "黏菌毒",
+		aip_pet_johnWick = "杀神",
+	},
+}
+
+local LANG = LANG_MAP[language] or LANG_MAP.english
+
 local FADE_DES = 0.04
 
 local function onFade(inst)
@@ -15,6 +35,7 @@ local function getFn(data)
 	-- 全局注册一下 Buffer
 	if data.bufferName ~= nil then
 		aipBufferRegister(data.bufferName, {
+			name = LANG[data.bufferName],
 			fn = data.bufferFn,
 			-- 中毒减速
 			startFn = data.bufferStartFn,
@@ -56,6 +77,12 @@ local function getFn(data)
 
 		inst:AddTag("NOCLICK")
 		inst:AddTag("FX")
+
+		if data.tags ~= nil then
+			for i, tag in ipairs(data.tags) do
+				inst:AddTag(tag)
+			end
+		end
 
 		-- 服务端同步
 		if data.pristine ~= false then
@@ -284,6 +311,34 @@ local list = {
 		range = false, -- 不安装光环组件
 		scale = 1,
 		pristine = false, -- 客户端 Only
+	},
+
+	{	-- 黑洞光环：并非真实的光环，播放一个循环的动画
+		name = "aip_aura_blackhole",
+		assets = { Asset("ANIM", "anim/aip_aura_blackhole.zip") },
+		range = false, -- 不安装光环组件
+		fade = false,
+		scale = 2,
+		postFn = function(inst)
+			inst.AnimState:PlayAnimation("enter")
+			inst.AnimState:PushAnimation("idle", true)
+
+			-- 过一会儿自己离开
+			inst:DoTaskInTime(6, function()
+				inst.AnimState:PlayAnimation("end")
+				inst:ListenForEvent("animover", inst.Remove)
+			end)
+		end,
+	},
+
+	{	-- 指示器光环：并非真实的光环，展示一个指示器
+		name = "aip_aura_indicator",
+		build = "firefighter_placement",
+		assets = { Asset("ANIM", "anim/firefighter_placement.zip") },
+		range = false, -- 不安装光环组件
+		fade = false,
+		scale = 1,
+		tags = { "aip_aura_indicator" },
 	},
 }
 

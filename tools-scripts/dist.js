@@ -66,6 +66,7 @@ async function doJob() {
 	console.log(chalk.cyan("Create related folder..."));
 	fs.ensureDirSync('package/images/inventoryimages');
 	fs.ensureDirSync('package/images/aipWidgets');
+	fs.ensureDirSync('package/images/aipBuffer');
 	fs.ensureDirSync('package/minimap');
 
 	console.log(chalk.cyan("Copy resourse..."));
@@ -83,6 +84,7 @@ async function doJob() {
 
 	copyImgs('inventoryimages');
 	copyImgs('aipStory');
+	copyImgs('aipBuffer');
 
 
 	console.log(chalk.green("Copy resourse...inventoryimages done"));

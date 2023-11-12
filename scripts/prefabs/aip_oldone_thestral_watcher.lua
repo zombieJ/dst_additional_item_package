@@ -63,6 +63,11 @@ local function toggleActive(inst, doer)
     end
 end
 
+local function onhammered(inst, worker)
+    aipSpawnPrefab(inst, "aip_slime_mold")
+    aipReplacePrefab(inst, "collapse_small"):SetMaterial("wood")
+end
+
 ---------------------------------- 实例 ----------------------------------
 local function fn()
     local inst = CreateEntity()
@@ -93,6 +98,11 @@ local function fn()
 
     inst:AddComponent("activatable")
 	inst.components.activatable.OnActivate = toggleActive
+
+    inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
+    inst.components.workable:SetWorkLeft(3)
+    inst.components.workable:SetOnFinishCallback(onhammered)
 
     return inst
 end

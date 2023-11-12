@@ -112,6 +112,9 @@ local function onHit(inst, attacker, target)
 
             local quality = ent.components.aipc_petable:GetQuality()
 
+            -- 重置小动物数据
+            ent.components.aipc_petable:ResetInfo()
+
             -- 记录宠物
             local pet = attacker.components.aipc_pet_owner:AddPet(ent, enhanceQuality)
             quality = pet.components.aipc_petable:GetQuality()

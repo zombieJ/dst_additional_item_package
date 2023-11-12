@@ -33,6 +33,7 @@ local function onSelect(inst, viewer)
     if
         viewer ~= nil and inst ~= nil and
         inst.components.aipc_petable ~= nil and
+        inst.components.aipc_petable.owner ~= nil and
         viewer.components.aipc_pet_owner ~= nil
     then
         -- 获取宠物信息

@@ -107,6 +107,10 @@ function Petable:ShowAura()
 	end
 end
 
+function Petable:ResetInfo()
+	self.data = nil
+end
+
 -- 获取宠物信息，没有就随机（宠物信息是抓到时才会生成的）
 function Petable:GetInfo(seer)
 	if self.data ~= nil then

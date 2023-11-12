@@ -160,6 +160,8 @@ local function fn()
 	inst.components.workable:SetWorkLeft(4)
 	inst.components.workable:SetOnFinishCallback(onhammered)
 
+    inst:ListenForEvent("death", onhammered)
+
     MakeHauntableLaunch(inst)
 
     return inst

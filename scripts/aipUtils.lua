@@ -134,6 +134,20 @@ function _G.aipTableKeys(tbl)
 	return keys
 end
 
+-- Map 遍历表格
+function _G.aipTableMap(tbl, fn)
+	local list = {}
+
+	for k, v in pairs(tbl) do
+		local result = fn(v, k)
+		if result ~= nil then
+			table.insert(list, result)
+		end
+	end
+
+	return list
+end
+
 --------------------------------------- 调试 ---------------------------------------
 function _G.aipCommonStr(showType, split, ...)
 	local count = _G.aipCountTable(arg)
@@ -275,7 +289,7 @@ function _G.aipGetAngle(src, tgt)
 	return angle
 end
 
--- 从点起按照设定角度前进一段距离
+-- 从点起按照设定角度前进一段距离, 360 度
 function _G.aipAngleDist(sourcePos, angle, distance)
 	local radius = angle / 180 * _G.PI
 	return _G.Vector3(sourcePos.x + math.cos(radius) * distance, sourcePos.y, sourcePos.z + math.sin(radius) * distance)
@@ -664,7 +678,7 @@ function _G.aipFindRandomPointInLand(emptyDistance)
 		local rndPos = _G.Vector3(x, 0, z)
 
 		if _G.TheWorld.Map:IsAboveGroundAtPoint(x, 0, z, false) then
-			pos = _G.aipGetSecretSpawnPoint(rndPos, 0, 100, emptyDistance)
+			pos = _G.aipGetSecretSpawnPoint(rndPos, 0, 100, emptyDistance or 5)
 			if pos ~= nil then
 				break
 			end

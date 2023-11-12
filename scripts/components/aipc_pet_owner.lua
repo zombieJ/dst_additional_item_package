@@ -11,10 +11,14 @@ local MAX_UP_QUALITY_VALUE = dev_mode and 5 or 3
 -- 文字描述
 local LANG_MAP = {
 	english = {
+		PLAY_BUFF_NAME = "play",
+		MUDDY_BUFF_NAME = "muddy",
 		FULL_FUDGE = "It ate too much fudge",
 		NO_FUDGE = "No skill need raise quality",
 	},
 	chinese = {
+		PLAY_BUFF_NAME = "嬉闹",
+		MUDDY_BUFF_NAME = "泥泞",
 		FULL_FUDGE = "它吃了太多软糖",
 		NO_FUDGE = "它没有要提升品质的技能",
 	},
@@ -27,6 +31,8 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_NO_FUDGE = LANG.NO_FUDGE
 -------------------------------- Buff --------------------------------
 -- 嬉闹 BUFF
 aipBufferRegister("aip_pet_play", {
+	name = LANG.PLAY_BUFF_NAME,
+
 	startFn = function(source, inst, info)
 		if source ~= nil and source.components.aipc_pet_owner ~= nil then
 			local skillInfo, skillLv = source.components.aipc_pet_owner:GetSkillInfo("play")
@@ -42,6 +48,8 @@ aipBufferRegister("aip_pet_play", {
 
 -- 泥泞 BUFF
 aipBufferRegister("aip_pet_muddy", {
+	name = LANG.MUDDY_BUFF_NAME,
+
 	startFn = function(source, inst, info)
 		if
 			source ~= nil and source.components.aipc_pet_owner ~= nil and

@@ -8,11 +8,21 @@ local LANG_MAP = {
 		NAME = "Rift Smiler",
 		DESC = "Indescribable!",
         THINK = "Something is leaving me!",
+
+        GAZE_BUFF_NAME = "Oldone Gaze",
+        AXE_BUFF_NAME = "Axe Bonus",
+        ATTACK_BUFF_NAME = "Attack Bonus",
+        MINE_BUFF_NAME = "Mine Bonus",
 	},
 	chinese = {
 		NAME = "裂隙笑颜",
 		DESC = "不可名状！",
         THINK = "我似乎有了一些变化",
+
+        GAZE_BUFF_NAME = "古神凝视",
+        AXE_BUFF_NAME = "砍伐加成",
+        ATTACK_BUFF_NAME = "攻击加成",
+        MINE_BUFF_NAME = "挖掘加成",
 	},
 }
 
@@ -30,6 +40,7 @@ local assets = {
 ---------------------------------- BUFF ----------------------------------
 -- 不断随机让玩家身体部件消失
 aipBufferRegister("aip_oldone_smiling", {
+    name = LANG.GAZE_BUFF_NAME,
     -- startFn = function(source, inst, info)
     --     -- inst.AnimState:Hide("HEAD")
     --     -- if inst.components.talker ~= nil then
@@ -50,18 +61,21 @@ aipBufferRegister("aip_oldone_smiling", {
 
 -- 添加砍伐 Buffer
 aipBufferRegister("aip_oldone_smiling_axe", {
+    name = LANG.AXE_BUFF_NAME,
     showFX = false,
     fx = "aip_aura_smiling_axe",
 })
 
 -- 添加攻击 Buffer
 aipBufferRegister("aip_oldone_smiling_attack", {
+    name = LANG.ATTACK_BUFF_NAME,
     showFX = false,
     fx = "aip_aura_smiling_attack",
 })
 
 -- 添加镐子 Buffer
 aipBufferRegister("aip_oldone_smiling_mine", {
+    name = LANG.MINE_BUFF_NAME,
     showFX = false,
     fx = "aip_aura_smiling_mine",
 })
@@ -239,6 +253,8 @@ local function OnKilled(inst, data)
             aipBufferPatch(inst, player, buff, OLDONE_AURA_EXIST_TIME)
         end
     end
+
+    -- TODO: 掉落一个叠加背包配方
 end
 
 ---------------------------------- 实例 ----------------------------------

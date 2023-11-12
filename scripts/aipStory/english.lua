@@ -786,7 +786,7 @@ return {
                 height=30,
                 top=10,
             },
-            "I don't know if it has something to do with the 'Enlightenment Sculpture', there are some strange mutations in this world. I saw some 'weird bulbs' on the ground, and if you want to pick them completely, you need to use a 'razor'. Otherwise it Broken pus is very painful to splash on.",
+            "I don't know if it has something to do with the 'Enlightenment Sculpture', there are some strange mutations in this world. I saw some 'weird bulbs' on the ground, and if you want to pick them completely, you need to use a 'razor'. Otherwise it Broken pus is very painful to splash on. The sock snake told me that the bulb reacts to bezoars.",
 
             -- 拟态蜘蛛
             {
@@ -907,6 +907,29 @@ return {
                 height=100,
             },
             "After using lantern berry to feed 'Jack Lantern', it mutates into a container. Interestingly, even the slightest blow can irritate it. So throw the things in your stomach to the place that is suitable for it, such as firepit~",
+
+            -- 欧米伽黏菌团
+            {
+                type="anim",
+                build="aip_slime_mold",
+                anim="idle_loop",
+                scale=.4,
+                height= 70,
+                top = -20,
+            },
+            "The weird creature whose bulb was catalyzed by bezoar. Do not attack it when in meme.",
+
+            
+            -- 不可知
+            {
+                type="anim",
+                build="aip_oldone_black_head",
+                anim="faced",
+                scale=.4,
+                height= 230,
+                top = 0,
+            },
+            "What did I see?! This is where?! It seems I have to hide for a while!!",
         },
     },
 
@@ -1260,6 +1283,13 @@ return {
                 top=20,
             },
             "A knowledgeable owl statue, playing games with it can get some rewards.",
+
+            -- 炉石
+            {
+                type="img",
+                name="aip_hearthstone",
+            },
+            "This stone can take you to the Florid Postern, but it's not stable.",
         },
     },
 

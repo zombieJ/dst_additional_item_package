@@ -12,11 +12,11 @@ local language = aipGetModConfig("language")
 local LANG_MAP = {
 	english = {
 		NAME = "Omega Slime Mold",
-		DESC = "A miracle of life",
+		DESC = "Don't touch it when in memed",
 	},
 	chinese = {
 		NAME = "欧米伽黏菌团",
-		DESC = "奇迹般获得生命的神物菌团",
+		DESC = "不要在模因时接触它",
 	},
 }
 
@@ -27,6 +27,17 @@ STRINGS.NAMES.AIP_SLIME_MOLD = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_SLIME_MOLD = LANG.DESC
 
 ------------------------------- 方法 -------------------------------
+local function onDeath(inst, data)
+	local killer = data ~= nil and data.afflicter or nil
+
+    if killer ~= nil and aipBufferExist(killer, "aip_see_eyes") then
+		aipSpawnPrefab(killer, "aip_aura_blackhole")
+
+		if killer:HasTag("player") and not aipBufferExist(killer, "aip_black_immunity") then
+			killer.sg:GoToState("aip_sink_space")
+		end
+	end
+end
 
 ------------------------------- 实体 -------------------------------
 local function fn()
@@ -74,6 +85,8 @@ local function fn()
 
 	inst:AddComponent("combat")
 	inst.components.combat.hiteffectsymbol = "chest"
+
+	inst:ListenForEvent("death", onDeath)
 
 	return inst
 end

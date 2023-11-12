@@ -20,6 +20,17 @@ local VALUE_EAT_BONUS = aip_nectar_config.VALUE_EAT_BONUS
 local LANG = LANG_MAP[language] or LANG_MAP.english
 local LANG_VALUE = LANG_VALUE_MAP[language] or LANG_VALUE_MAP.english
 
+-- 语言
+local LANG_BUFFER_MAP = {
+	english = {
+		DRUNK_BUFF_NAME = "Drunk",
+	},
+	chinese = {
+		DRUNK_BUFF_NAME = "醉酒",
+	},
+}
+local LANG_BUFFER = LANG_BUFFER_MAP[language] or LANG_BUFFER_MAP.english
+
 -- 文字描述
 STRINGS.NAMES.AIP_NECTAR = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_NECTAR = LANG.DESC
@@ -83,6 +94,7 @@ local function bufferDrunkEndFn(source, eater, info)
 end
 
 aipBufferRegister("aip_nectar_drunk", {
+	name = LANG_BUFFER.DRUNK_BUFF_NAME,
 	fn = bufferDrunkFn,
 	endFn = bufferDrunkEndFn,
 	showFX = true,

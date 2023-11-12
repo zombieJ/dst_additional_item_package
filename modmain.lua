@@ -20,6 +20,23 @@ Assets = {
 	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_water_bg.xml"),
 	Asset("ATLAS", "images/inventoryimages/aip_doujiang_slot_wind_bg.xml"),
 
+	-- BUFFER
+	Asset("ATLAS", "images/aipBuffer/aip_see_eyes.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_pet_play.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_pet_muddy.xml"),
+	Asset("ATLAS", "images/aipBuffer/healthCost.xml"),
+	Asset("ATLAS", "images/aipBuffer/seeFootPrint.xml"),
+	Asset("ATLAS", "images/aipBuffer/oldonePoison.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_pet_johnWick.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_see_petable.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_nectar_drunk.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_oldone_smiling.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_oldone_smiling_axe.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_oldone_smiling_attack.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_oldone_smiling_mine.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_black_count.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_black_immunity.xml"),
+
 	-- 诡影迷踪需要提前加载
 	Asset("ATLAS", "images/inventoryimages/aip_totem_tech.xml"),
 
@@ -159,6 +176,13 @@ PrefabFiles = {
 	"aip_garbage_dump",
 	"aip_slime_mold",
 	"aip_cold_skin",
+	"aip_sessho_seki",
+	"aip_oldone_hand",
+	"aip_oldone_black_head",
+	"aip_oldone_black_hand",
+	"aip_oldone_apple",
+	"aip_oldone_meat",
+	"aip_black_xuelong",
 
 	-- 量子
 	"aip_weapon_box",
@@ -179,6 +203,7 @@ PrefabFiles = {
 	"aip_glory_hand",
 	"aip_stone_mask",
 	"aip_dream_stone",
+	"aip_hearthstone",
 
 	-- 懵懵宠宠
 	"aip_pet_catcher",
@@ -275,7 +300,7 @@ modimport("scripts/shadowPackageAction.lua")
 modimport("scripts/widgetHooker.lua")
 modimport("scripts/recpiesHooker.lua")
 modimport("scripts/flyWrapper.lua")
-modimport("scripts/houseWrapper.lua")
+-- modimport("scripts/houseWrapper.lua")
 modimport("scripts/sgHooker.lua")
 modimport("scripts/hooks/aip_hover_hook.lua")
 modimport("scripts/hooks/aip_buffer_hook.lua")
@@ -307,6 +332,7 @@ modimport("scripts/hooks/aip_drift_hook") -- 打水漂
 modimport("scripts/hooks/aip_transfer_hook")
 modimport("scripts/hooks/aip_oldone_hook")
 modimport("scripts/hooks/aip_story_hook")
+modimport("scripts/hooks/aip_space_hook") -- 迷雾空间
 
 function PlayerPrefabPostInit(inst)
 	if not inst.components.aipc_player_client then

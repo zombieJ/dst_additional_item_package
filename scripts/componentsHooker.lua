@@ -522,7 +522,12 @@ AipPostComp("combat", function(self)
 	local originGetAttacked = self.GetAttacked
 
 	function self:GetAttacked(attacker, damage, weapon, stimuli, spdamage, ...)
-		local dmg = damage
+		-- 额外添加一个代理事件
+		local data = { damage = damage, spdamage = spdamage or {} }
+		self.inst:PushEvent("aipAttacked", data)
+
+		spdamage = data.spdamage
+		local dmg = data.damage
 
 		-- Owner 被攻击（被攻击时，是乘法叠加伤害减免）
 		if self.inst ~= nil and self.inst.components.aipc_pet_owner ~= nil then
