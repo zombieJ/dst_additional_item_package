@@ -917,7 +917,7 @@ return {
                 height= 70,
                 top = -20,
             },
-            "The weird creature whose bulb was catalyzed by bezoar, I feel it is best not to attack it.",
+            "The weird creature whose bulb was catalyzed by bezoar. Do not attack it when in meme.",
 
             
             -- 不可知
