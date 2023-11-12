@@ -16,7 +16,7 @@ local LANG_MAP = {
 	},
 	chinese = {
 		NAME = "欧米伽黏菌团",
-		DESC = "不要在迷因时接触它",
+		DESC = "不要在模因时接触它",
 	},
 }
 
