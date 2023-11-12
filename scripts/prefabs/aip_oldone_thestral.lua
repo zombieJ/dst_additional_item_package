@@ -20,6 +20,7 @@ local LANG_MAP = {
 			"'Trash is also treasure'",
 			"'After firing and cooling'",
 			"'There exists some special stones'",
+			"'The stone can activate the bulb'",
 		},
 		ROCK_HEAD = {
 			"'Bring the marble head to me'",
@@ -40,6 +41,7 @@ local LANG_MAP = {
 			"“垃圾堆也是宝贝”",
 			"“煅烧后冷却”",
 			"“有种特殊的石头”",
+			"“石头可以激活球茎”",
 		},
 		ROCK_HEAD = {
 			"“把那个大理石带给我”",
