@@ -111,6 +111,13 @@ return {
                 name="aip_blowdart",
             },
             "Blow darts with Stinger as ammunition, can be used multiple times, but the damage is not high.",
+
+            -- 一节鳃骨
+            {
+                type="img",
+                name="aip_black_xuelong",
+            },
+            "The unknown legacy can cause high damage in the meme state.",
         },
     },
 
