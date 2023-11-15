@@ -123,12 +123,14 @@ local function serverRefresh(inst)
     local now = GetTime()
 
 	for name, info in pairs(inst._buffers) do
-		-- info.duration = info.duration - interval
+		info.tick = info.tick + 1
 
 		-- 参数：源头，目标，间隔，时间差
 		local fnData = {
 			interval = interval,
 			passTime = now - info.startTime,
+			tick = info.tick,
+            tickTime = info.tick * interval,
 			data = info.data,
 		}
 

@@ -537,6 +537,20 @@ AipPostComp("combat", function(self)
 				dmg = 0
 			end
 
+			-- 淋雨声 用潮湿度减少伤害
+			if dmg > 0 and self.inst.components.moisture ~= nil then
+				local skillInfo, skillLv = self.inst.components.aipc_pet_owner:GetSkillInfo("rainbow")
+				local moisture = self.inst.components.moisture:GetMoisture()
+
+				if skillInfo ~= nil and moisture > 0 then
+					local minVal = math.min(dmg, moisture)
+					dmg = dmg - minVal
+					self.inst.components.moisture:DoDelta(-minVal)
+
+					_G.aipSpawnPrefab(self.inst, "waterstreak_burst")
+				end
+			end
+
 			-- 执念W
 			local resonanceInfo, resonanceLv = self.inst.components.aipc_pet_owner:GetSkillInfo("resonance")
 			if resonanceInfo ~= nil and self.inst.components.sanity ~= nil and self.inst.components.sanity:IsCrazy() then
@@ -973,5 +987,24 @@ AipPostComp("equippable", function(self)
 		end
 
 		return originUnequip(self, owner, ...)
+	end
+end)
+
+-- 潮湿
+AipPostComp("moisture", function(self)
+	local oriDoDelta = self.DoDelta
+
+	-- 潮湿变化
+	function self:DoDelta(num, no_announce, ...)
+		-- 如果有宠物技能，则增加效果
+		if num > 0 and self.inst.components.aipc_pet_owner ~= nil then
+			local skillInfo, skillLv = self.inst.components.aipc_pet_owner:GetSkillInfo("rainbow")
+
+			if skillInfo ~= nil then
+				num = num * (1 + skillInfo.wet * skillLv)
+			end
+		end
+	
+		return oriDoDelta(self, num, no_announce, ...)
 	end
 end)

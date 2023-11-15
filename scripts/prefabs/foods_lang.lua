@@ -108,6 +108,10 @@ local LANG_MAP = {
 			NAME = "Braised Intestine",
 			DESC = "You did it on purpose or by accident?",
 		},
+		AIP_FOOD_MALTOSE = {
+			NAME = "Maltose",
+			DESC = "Sweet memories",
+		},
 	},
 	spanish = {
 		EGG_PANCAKE = {
@@ -497,6 +501,10 @@ local LANG_MAP = {
 		AIP_FOOD_BRAISED_INTESTINE = {
 			NAME = "九转大肠",
 			DESC = "你是故意的还是不小心的？",
+		},
+		AIP_FOOD_MALTOSE = {
+			NAME = "麦芽糖",
+			DESC = "承载着甜蜜的回忆",
 		},
 	},
 }

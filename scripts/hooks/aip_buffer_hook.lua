@@ -107,6 +107,7 @@ function _G.aipBufferPatch(source, inst, name, duration, stack)
 		local info = {
 			startTime = _G.GetTime(), -- 记录启动时间
 			data = {}, -- 一些额外的信息记录
+			tick = 0, -- 记录触发次数
 		}
 		buffer._buffers[name] = info
 
@@ -127,12 +128,6 @@ function _G.aipBufferPatch(source, inst, name, duration, stack)
 
 	buffer._buffers[name].srcGUID = source ~= nil and source.GUID
 
-	-- local mergedDuration = duration or 2
-	-- if buffer._buffers[name].duration ~= nil then -- 如果现有的更长就不替换
-	-- 	mergedDuration = math.max(mergedDuration, buffer._buffers[name].duration)
-	-- end
-	-- buffer._buffers[name].duration = mergedDuration
-
 	-- 设置结束时间
 	local now = _G.GetTime()
 	local endTime = now + (duration or 2)
@@ -142,13 +137,6 @@ function _G.aipBufferPatch(source, inst, name, duration, stack)
 	end
 
 	buffer._buffers[name].endTime = endTime
-
-	-- inst._buffers[name].fn = info.fn
-	-- inst._buffers[name].startFn = info.startFn
-	-- inst._buffers[name].endFn = info.endFn
-	-- inst._buffers[name].clientFn = info.clientFn
-
-	-- inst._buffers[name].showFX = info.showFX
 
 	-- 支持堆叠
 	if type(stack) == "function" then

@@ -36,6 +36,7 @@ Assets = {
 	Asset("ATLAS", "images/aipBuffer/aip_oldone_smiling_mine.xml"),
 	Asset("ATLAS", "images/aipBuffer/aip_black_count.xml"),
 	Asset("ATLAS", "images/aipBuffer/aip_black_immunity.xml"),
+	Asset("ATLAS", "images/aipBuffer/foodMaltose.xml"),
 
 	-- 诡影迷踪需要提前加载
 	Asset("ATLAS", "images/inventoryimages/aip_totem_tech.xml"),

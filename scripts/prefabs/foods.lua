@@ -22,6 +22,18 @@ local LANG_MAP = require("prefabs/foods_lang")
 local LANG = LANG_MAP[language] or LANG_MAP.english
 local LANG_ENG = LANG_MAP.english
 
+-- 文字描述
+local BUFF_LANG_MAP = {
+	english = {
+		foodMaltose = "Sweetness",
+	},
+	chinese = {
+		foodMaltose = "甜蜜蜜",
+	},
+}
+
+local BUFF_LANG = BUFF_LANG_MAP[language] or BUFF_LANG_MAP.english
+
 -- 资源
 local prefabList = {}
 local prefabs =
@@ -416,6 +428,33 @@ local food_recipes = {
 		cooktime = CO * 15,
 	},
 
+	aip_food_maltose = {	-- 麦芽糖
+		test = function(cooker, names, tags)
+			return tags.starch and tags.starch == 2 and names.twigs and names.twigs == 2
+		end,
+		priority = 20,
+		weight = 1,
+		foodtype = FOODTYPE.GOODIES,
+		health = - HP * 5,
+		hunger = HU * 25,
+		sanity = SAN * 55,
+		perishtime = PER * 15,
+		cooktime = CO * 40,
+		oneatenfn = function(inst, eater)
+			aipBufferPatch(inst, eater, "foodMaltose", dev_mode and 20 or 120)
+		end,
+		buff = {
+			buffName = "foodMaltose",
+			name = BUFF_LANG_MAP.foodMaltose,
+			fn = function(source, eater, info)
+				-- 恢复理智
+				if eater.components.sanity ~= nil and info.tickTime % 2 == 0 then
+					eater.components.sanity:DoDelta(1)
+				end
+			end,
+		},
+	},
+
 	-- 古神低语
 	aip_food_leather_jelly = { -- 皮质果冻，叶肉 + 粘衣
 		test = function(cooker, names, tags)
@@ -432,7 +471,7 @@ local food_recipes = {
 		hunger = HU * 25,
 		sanity = SAN * -10,
 		perishtime = PER * 5,
-		cooktime = dev_mode and CO or CO * 20,
+		cooktime = CO * 20,
 		tags = {"honeyed"},
 		oneatenfn = function(inst, eater)
 			aipBufferPatch(inst, eater, "aip_see_eyes", dev_mode and 20 or 120)
@@ -455,7 +494,7 @@ local food_recipes = {
 		hunger = HU * 50,
 		sanity = 0,
 		perishtime = PER * 30,
-		cooktime = dev_mode and CO or CO * 20,
+		cooktime = CO * 20,
 		postFn = function(inst)
 			inst:AddComponent("boatpatch")
 			inst.components.boatpatch.patch_type = "treegrowth"
@@ -483,6 +522,9 @@ for name,data in pairs(food_recipes) do
 	data.hunger = data.hunger * effectPTG
 	data.sanity = data.sanity * effectPTG
 
+	-- 烹饪时间
+	data.cooktime = data.cooktime * (dev_mode and 0.1 or 1)
+
 	-- 食物贴图
 	data.cookbook_atlas = atlas
 	data.cookbook_tex = tex
@@ -498,6 +540,21 @@ for name,data in pairs(food_recipes) do
 	AddModPrefabCookerRecipe("cookpot", data)
 	AddModPrefabCookerRecipe("portablecookpot", data)
 	AddModPrefabCookerRecipe("archive_cookpot", data)
+
+	-------------------- 添加 Buffer --------------------
+	local buffInfo = data.buff
+
+	if buffInfo then
+		aipBufferRegister(buffInfo.buffName, {
+			name = buffInfo.name,
+			fn = buffInfo.fn,
+			startFn = buffInfo.startFn,
+			endFn = buffInfo.endFn,
+			showFX = buffInfo.showFX,
+		})
+	end
+
+	data.buff = nil
 
 	-------------------- 创建食物实体 --------------------
 	local assets = {

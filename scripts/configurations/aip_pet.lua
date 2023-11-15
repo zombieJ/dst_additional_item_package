@@ -126,6 +126,7 @@ local SKILL_LANG = {
 		bubble = "Lighten Bubble",
 		shrimp = "Shrimp Punch",
 		resonance = "Resonance",
+		rainbow = "Rainbow",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -160,7 +161,8 @@ local SKILL_LANG = {
 		muddy = "泥泞",
 		bubble = "光媒",
 		shrimp = "虾拳",
-		resonance = "执念"
+		resonance = "执念",
+		rainbow = "淋雨声",
 	},
 }
 
@@ -199,6 +201,7 @@ local SKILL_MAX_LEVEL = {
 	bubble = { 1, 2, 3, 4, 5 },
 	shrimp = { 10, 12, 14, 16, 20 },
 	resonance = { 1, 2, 3, 4, 5 },
+	rainbow = { 1, 1, 1, 1, 1 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -345,6 +348,10 @@ local SKILL_CONSTANT = {
 		atk = dev_mode and 10 or 0.05,					-- 每个等级增加 5% 攻击
 		def = dev_mode and 0.99 or 0.05,				-- 每个等级免疫 5% 伤害
 	},
+	rainbow = {
+		goldern = true,
+		wet = dev_mode and 10 or 2,						-- 每个等级潮湿度倍数
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -382,6 +389,7 @@ local SKILL_DESC_LANG = {
 		bubble = "Lighten up the night. Has DIST radius",
 		shrimp = "Increase PTG% damage when no weapon equipped",
 		resonance = "Increase ATK% damage and reduce DEF% damage taken when crazy",
+		rainbow = "Increase WET% moisture speed and reduce damage taken by moisture",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -417,6 +425,7 @@ local SKILL_DESC_LANG = {
 		bubble = "发出半径为DIST的光芒",
 		shrimp = "徒手攻击时伤害提升PTG%",
 		resonance = "在疯狂状态下伤害提升ATK%，受到伤害减免DEF%",
+		rainbow = "潮湿速度提升WET%，受到的伤害会优先被雨露值抵消。",
 	},
 }
 
@@ -570,6 +579,11 @@ local SKILL_DESC_VARS = {
 			DEF = info.def * lv * 100,
 		}
 	end,
+	rainbow = function(info, lv)
+		return {
+			WET = info.wet * lv * 100,
+		}
+	end,
 }
 
 local SKILL_LIST = {}
@@ -597,6 +611,7 @@ if dev_mode then
 		-- "cooker",
 		-- "giants",
 		-- "blasphemy",
+		"rainbow",
 	}
 end
 
