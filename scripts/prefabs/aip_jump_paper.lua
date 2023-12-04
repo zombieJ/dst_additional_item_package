@@ -1,4 +1,6 @@
 -- 配置
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
+
 local additional_weapon = aipGetModConfig("additional_weapon")
 if additional_weapon ~= "open" then
 	return nil
@@ -30,6 +32,10 @@ local LANG_MAP = {
 		NAME = "弹跳符",
 		REC_DESC = "像回旋镖一样，但是会弹跳",
 		DESC = "糯米回旋镖？",
+
+        S_NAME = "光之弹跳符",
+		S_REC_DESC = "会无限弹跳并且恢复耐久的神奇卡牌",
+		S_DESC = "来自光的力量",
 	},
 }
 
@@ -45,6 +51,12 @@ local assets = {
 	Asset("ANIM", "anim/aip_jump_paper_swap.zip"),
 }
 
+local superAssets = {
+    Asset("ATLAS", "images/inventoryimages/aip_jump_paper_s.xml"),
+	Asset("ANIM", "anim/aip_jump_paper_s.zip"),
+	Asset("ANIM", "anim/aip_jump_paper_s_swap.zip"),
+}
+
 local prefabs = {}
 
 -- 文字描述
@@ -52,14 +64,30 @@ STRINGS.NAMES.AIP_JUMP_PAPER = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_JUMP_PAPER = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_JUMP_PAPER = LANG.DESC
 
+STRINGS.NAMES.AIP_JUMP_PAPER_S = LANG.S_NAME
+STRINGS.RECIPE_DESC.AIP_JUMP_PAPER_S = LANG.S_REC_DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_JUMP_PAPER_S = LANG.S_DESC
+
+STRINGS.NAMES.AIP_JUMP_PAPER_S_CD = LANG.S_NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_JUMP_PAPER_S_CD = LANG.S_DESC
+
 -----------------------------------------------------------
 
+local CD = dev_mode and 30 or (TUNING.TOTAL_DAY_TIME * 2)
+
 local function OnFinished(inst)
-	aipReplacePrefab(inst, "aip_shadow_wrapper").DoShow()
+    -- 无限的话就直接掉地上
+    if inst._aipInfinit == true then
+        aipReplacePrefab(inst, "aip_jump_paper_s_cd")
+    else
+	    aipReplacePrefab(inst, "aip_shadow_wrapper").DoShow()
+    end
 end
 
 local function OnEquip(inst, owner)
-    owner.AnimState:OverrideSymbol("swap_object", "aip_jump_paper_swap", "aip_jump_paper_swap")
+    owner.AnimState:OverrideSymbol(
+        "swap_object", inst._aipName.."_swap", inst._aipName.."_swap"
+    )
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
 
@@ -99,7 +127,7 @@ local function OnCaught(inst, catcher)
 end
 
 local function ReturnToOwner(inst, owner)
-    if owner ~= nil and not (inst.components.finiteuses ~= nil and inst.components.finiteuses:GetUses() < 1) then
+    if owner ~= nil then
         owner.SoundEmitter:PlaySound("dontstarve/wilson/boomerang_return")
         inst.components.projectile:Throw(owner, owner)
     end
@@ -109,7 +137,14 @@ local function OnHit(inst, owner, target)
 	inst._aipEnemies = inst._aipEnemies or {}
 	table.insert(inst._aipEnemies, target)
 
-    if owner == target or owner:HasTag("playerghost") then
+    if
+        inst.components.finiteuses ~= nil and inst.components.finiteuses:GetUses() <= 0
+    then
+        ReturnToOwner(inst, owner)
+    elseif
+        owner == target or
+        owner:HasTag("playerghost")
+    then
         OnDropped(inst)
     else
 		------------------- 找敌人 开始 -------------------
@@ -124,16 +159,33 @@ local function OnHit(inst, owner, target)
 
 		-- 过滤 敌对 和 想攻击你 的
 		ents = aipFilterTable(ents, function(ent)
-			return ent:HasTag("hostile") or (
-				ent.components.combat ~= nil and
-				ent.components.combat.target == owner
+			return (
+                ent:IsValid() and
+                ent.components.health ~= nil and
+                not ent.components.health:IsDead() and
+                (
+                    ent:HasTag("hostile") or (
+                        ent.components.combat ~= nil and
+                        ent.components.combat.target == owner
+                    )
+                )
 			)
 		end)
 
 		-- 过滤已经在列表里的单位
-		ents = aipFilterTable(ents, function(ent)
+		local restEnts = aipFilterTable(ents, function(ent)
 			return not aipInTable(inst._aipEnemies, ent)
 		end)
+
+        -- 是否无限弹跳
+        if inst._aipInfinit == true and #restEnts == 0 then
+            inst._aipEnemies = { target }
+            restEnts = aipFilterTable(ents, function(ent)
+                return ent ~= target
+            end)
+        end
+
+        ents = restEnts
 
 		------------------- 找敌人 结束 -------------------
 
@@ -164,7 +216,9 @@ local function OnMiss(inst, owner, target)
     end
 end
 
-local function fn()
+------------------------------ 实例 ------------------------------
+-- 通用实体
+local function common_fn_base(name)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -174,10 +228,31 @@ local function fn()
     MakeInventoryPhysics(inst)
     RemovePhysicsColliders(inst)
 
-    inst.AnimState:SetBank("aip_jump_paper")
-    inst.AnimState:SetBuild("aip_jump_paper")
+    inst.AnimState:SetBank(name)
+    inst.AnimState:SetBuild(name)
     inst.AnimState:PlayAnimation("idle")
     inst.AnimState:SetRayTestOnBB(true)
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst:AddComponent("inspectable")
+
+    inst:AddComponent("inventoryitem")
+	inst.components.inventoryitem.atlasname = "images/inventoryimages/"..name..".xml"
+    inst.components.inventoryitem.imagename = name
+    inst.components.inventoryitem:SetOnDroppedFn(OnDropped)
+
+    MakeHauntableLaunch(inst)
+
+    return inst
+end
+
+local function common_fn(name)
+    local inst = common_fn_base(name)
 
     inst:AddTag("thrown")
 
@@ -186,8 +261,6 @@ local function fn()
 
     --projectile (from projectile component) added to pristine state for optimization
     inst:AddTag("projectile")
-
-    inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
@@ -204,8 +277,6 @@ local function fn()
 
     inst.components.finiteuses:SetOnFinished(OnFinished)
 
-    inst:AddComponent("inspectable")
-
     inst:AddComponent("projectile")
     inst.components.projectile:SetSpeed(10)
     inst.components.projectile:SetCanCatch(true)
@@ -214,17 +285,51 @@ local function fn()
     inst.components.projectile:SetOnMissFn(OnMiss)
     inst.components.projectile:SetOnCaughtFn(OnCaught)
 
-    inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_jump_paper.xml"
-    inst.components.inventoryitem:SetOnDroppedFn(OnDropped)
-
     inst:AddComponent("equippable")
     inst.components.equippable:SetOnEquip(OnEquip)
     inst.components.equippable:SetOnUnequip(OnUnequip)
 
-    MakeHauntableLaunch(inst)
+    inst._aipName = name
 
     return inst
 end
 
-return Prefab("aip_jump_paper", fn, assets)
+------------------------------ 创建 ------------------------------
+local function fn()
+    local inst = common_fn("aip_jump_paper")
+
+    return inst
+end
+
+local function superFn()
+    local inst = common_fn("aip_jump_paper_s")
+
+    inst._aipInfinit = true
+
+    return inst
+end
+
+local function onCharged(inst)
+	aipReplacePrefab(inst, "aip_jump_paper_s")
+end
+
+local function superCDFn()
+    local inst = common_fn_base("aip_jump_paper_s")
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst:AddComponent("rechargeable")
+	inst.components.rechargeable:SetOnChargedFn(onCharged)
+
+    inst:DoTaskInTime(0.1, function()
+        inst.components.rechargeable:Discharge(CD)
+    end)
+
+    return inst
+end
+
+return  Prefab("aip_jump_paper", fn, assets),
+        Prefab("aip_jump_paper_s", superFn, superAssets),
+        Prefab("aip_jump_paper_s_cd", superCDFn, superAssets)

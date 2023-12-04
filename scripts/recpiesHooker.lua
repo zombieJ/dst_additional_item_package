@@ -411,7 +411,7 @@ if
 	_G.TUNING.LG_FANGLINGCHE_SANITY or
 	_G.aipInTable(modNames, "workshop-2827757831")
 then
-	_G.aipPrint("联动海洋传说")
+	_G.aipPrint("联动 海洋传说")
 
 	-- 恒温水母
 	rec("aip_oldone_jellyfish", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.WINTER, CRAFTING_FILTERS.SUMMER },
@@ -441,4 +441,13 @@ then
 			inst:ListenForEvent("death", onFishmanDead)
 		end
 	end)
+end
+
+
+-- 魔卡少女小樱
+if
+	_G.TUNING.LG_FANGLINGCHE_SANITY or
+	_G.aipInTable(modNames, "workshop-3043439883")
+then
+	_G.aipPrint("联动 魔卡少女小樱（百变小樱）")
 end
