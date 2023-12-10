@@ -453,5 +453,9 @@ then
 
 	-- 弹跳符
 	recWeapon("aip_jump_paper_s", TECH.MAGIC_TWO, { CRAFTING_FILTERS.WEAPONS },
-	{Ingredient("aip_veggie_wheat", 1, "images/inventoryimages/aip_veggie_wheat.xml"),Ingredient("boomerang", 1),Ingredient("papyrus", 1)})
+	{
+		Ingredient("aip_jump_paper", 1, "images/inventoryimages/aip_jump_paper.xml"),
+		Ingredient("ccs_cards_8", 1, "images/inventoryimages/ccs_cards/ccs_cards_8.xml"),
+		Ingredient("purebrilliance", 1),
+	})
 end
