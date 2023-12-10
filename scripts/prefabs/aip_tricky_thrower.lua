@@ -51,6 +51,10 @@ local function onHit(inst, attacker)
              -- 需要充能
              local allItems = inst.components.container:GetAllItems()
 
+             allItems = aipFilterTable(allItems, function(item)
+                return item.components.fuel or item.components.fueler
+            end)
+
              for _, item in ipairs(allItems) do -- 找可以充能的物品
                 if ent.components.fueled:CanAcceptFuelItem(item) then
                     local targetDist = inst:GetDistanceSqToInst(ent)

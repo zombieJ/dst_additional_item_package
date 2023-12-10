@@ -27,6 +27,10 @@ local LANG_MAP = {
 		NAME = "Rice Amulet",
 		REC_DESC = "Like boomerang but will jump between enemies",
 		DESC = "Sticky rice boomerang?",
+
+        S_NAME = "Light Rice Amulet",
+		S_REC_DESC = "Will jump between enemies and restore durability",
+		S_DESC = "Power of light",
 	},
 	chinese = {
 		NAME = "弹跳符",
