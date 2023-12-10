@@ -450,4 +450,8 @@ if
 	_G.aipInTable(modNames, "workshop-3043439883")
 then
 	_G.aipPrint("联动 魔卡少女小樱（百变小樱）")
+
+	-- 弹跳符
+	recWeapon("aip_jump_paper_s", TECH.MAGIC_TWO, { CRAFTING_FILTERS.WEAPONS },
+	{Ingredient("aip_veggie_wheat", 1, "images/inventoryimages/aip_veggie_wheat.xml"),Ingredient("boomerang", 1),Ingredient("papyrus", 1)})
 end

@@ -708,7 +708,7 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 			if isnight then
 				-- 每天都有一定概率给玩家附近生成一个 怪异的球茎（最多 3 个）
 				inst:DoTaskInTime(1, function() -- 延迟生效以防卡顿
-					local chance = dev_mode and 1 or 0.2
+					local chance = dev_mode and 1 or 0.05
 
 					if math.random() < chance then
 						local spawnPoint = _G.aipFindRandomEnt("spawnpoint_multiplayer", "spawnpoint_master")
