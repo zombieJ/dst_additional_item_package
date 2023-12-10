@@ -446,7 +446,6 @@ end
 
 -- 魔卡少女小樱
 if
-	_G.TUNING.LG_FANGLINGCHE_SANITY or
 	_G.aipInTable(modNames, "workshop-3043439883")
 then
 	_G.aipPrint("联动 魔卡少女小樱（百变小樱）")
