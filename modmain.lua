@@ -95,6 +95,10 @@ PrefabFiles = {
 	"aip_aura",
 	"aip_ockham_razor",
 
+	"aip_oldone_hand",
+	"aip_living_friendship",
+	"aip_divine_rapier",
+
 	-- Scepter
 	"aip_dou_opal",
 	"aip_dou_tooth",
@@ -178,7 +182,6 @@ PrefabFiles = {
 	"aip_slime_mold",
 	"aip_cold_skin",
 	"aip_sessho_seki",
-	"aip_oldone_hand",
 	"aip_oldone_black_head",
 	"aip_oldone_black_hand",
 	"aip_oldone_apple",
@@ -324,6 +327,7 @@ modimport("scripts/prefabsHooker.lua")
 AddPrefabPostInit("world", function(inst)
 	if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 		inst:AddComponent("world_common_store")
+		inst:AddComponent("aipc_world_unique")
 	end
 end)
 
@@ -372,6 +376,11 @@ function PlayerPrefabPostInit(inst)
 	-- 虹光宝库
 	if not inst.components.aipc_weapon_caller then
 		inst:AddComponent("aipc_weapon_caller")
+	end
+
+	-- 玩家演出
+	if not inst.components.aipc_player_show then
+		inst:AddComponent("aipc_player_show")
 	end
 end
 

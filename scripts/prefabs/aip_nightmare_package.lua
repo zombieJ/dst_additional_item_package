@@ -26,17 +26,28 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_NIGHTMARE_PACKAGE = LANG.DESC
 
 --------------------------------------- 事件 ---------------------------------------
 local function onEaten(inst, eater)
-	-- 吃下后会丢失全部理智，并变成噩梦燃料掉落
-	if eater ~= nil and eater.components.sanity ~= nil then
-		local sanity = eater.components.sanity.current
-		local cnt = math.ceil(sanity / 15)
+    if eater ~= nil then
+        -- 吃下后会丢失全部理智，并变成噩梦燃料掉落
+        if eater.components.sanity ~= nil then
+            local sanity = eater.components.sanity.current
+            local cnt = math.ceil(sanity / 15)
 
-		for i = 1, cnt do
-			inst.components.lootdropper:SpawnLootPrefab("nightmarefuel")
-		end
+            for i = 1, cnt do
+                inst.components.lootdropper:SpawnLootPrefab("nightmarefuel")
+            end
 
-		eater.components.sanity:DoDelta(-sanity)
-	end
+            eater.components.sanity:DoDelta(-sanity)
+        end
+        
+        -- 检测玩家是不是在查理的关注下吃下，是的话召唤 憎恨之刃
+        if
+            eater.components.aipc_player_show ~= nil and
+            eater.components.grue ~= nil and
+            eater.components.grue:CheckForStart()
+        then
+            eater.components.aipc_player_show:CreateOldoneHand()
+        end
+    end
 end
 
 local function recharge(inst)

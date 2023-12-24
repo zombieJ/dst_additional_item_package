@@ -255,6 +255,15 @@ rec(
 	{ Ingredient("moonglass", 5), Ingredient("goldnugget", 4) },
 	{ nounlock=true })
 
+-- 圣剑
+rec(
+	"aip_divine_rapier", TECH.AIP_DOU_TOTEM, { CRAFTING_FILTERS.WEAPONS, CRAFTING_FILTERS.MAGIC, },
+	{
+		Ingredient("aip_oldone_hand", 1, "images/inventoryimages/aip_oldone_hand.xml"),
+		Ingredient("aip_living_friendship", 1, "images/inventoryimages/aip_living_friendship.xml"),
+	},
+	{ nounlock=true })
+
 ------------------------------------ 古神低语 ------------------------------------
 -- 微笑雕像
 rec("chesspiece_aip_mouth_builder", TECH.LOST, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.DECOR },

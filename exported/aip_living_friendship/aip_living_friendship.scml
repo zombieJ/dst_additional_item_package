@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="aip_living_friendship">
+        <file id="0" name="aip_living_friendship/aip_living_friendship.png" width="200" height="350" pivot_x="0.386525" pivot_y="0.111296"/>
+    </folder>
+    <entity id="0" name="aip_living_friendship">
+        <animation id="0" name="idle" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="aip_fish_sword" folder="0" file="0" abs_x="18.52316" abs_y="-22.407604" abs_pivot_x="0.59753" abs_pivot_y="0.080018" abs_angle="0" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="aip_fish_sword">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="18.52316" y="-22.407604" pivot_x="0.59753" pivot_y="0.080018" angle="0" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>
