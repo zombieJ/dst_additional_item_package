@@ -106,16 +106,24 @@ local function OnPreBuilt(inst, builder, materials, recipe)
 				count = count + 1
 				totalPtg = totalPtg + badUses:GetPercent()
 			end
+
+			-- 继承 杀生数
+			if prefab._aipKillerCount ~= nil then
+				inst._aipKillerCount = prefab._aipKillerCount
+			end
 		end
 	end
-
-	aipTypePrint(">>>", totalPtg, count)
 
 	if inst.components.finiteuses ~= nil and count > 0 then
 		inst.components.finiteuses:SetPercent((totalPtg) / count)
 	end
 end
 
+local function OnFinished(inst)
+	
+end
+
+-------------------------- 装备 --------------------------
 local function onequip(inst, owner)
 	owner.AnimState:OverrideSymbol("swap_object", "aip_divine_rapier_swap", "aip_divine_rapier_swap")
 	owner.SoundEmitter:PlaySound("dontstarve/wilson/equip_item_gold")
@@ -174,6 +182,7 @@ local function fn()
 	inst:AddComponent("finiteuses")
 	inst.components.finiteuses:SetMaxUses(TUNING.AIP_DIVINE_RAPIER_USES)
 	inst.components.finiteuses:SetUses(TUNING.AIP_DIVINE_RAPIER_USES)
+	inst.components.finiteuses:SetOnFinished(OnFinished)
 
 	inst:AddComponent("inspectable")
 
@@ -196,4 +205,53 @@ local function fn()
 	return inst
 end
 
-return Prefab("aip_divine_rapier", fn, assets)
+--------------------------------------------------------------
+--                           剑痕                           --
+--------------------------------------------------------------
+local function afterimageFn()
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddNetwork()
+
+	MakeInventoryPhysics(inst)
+
+	inst:AddTag("NOCLICK")
+	inst:AddTag("FX")
+	
+	inst.AnimState:SetBank("aip_divine_rapier")
+	inst.AnimState:SetBuild("aip_divine_rapier")
+	inst.AnimState:PlayAnimation("dark")
+
+	inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+	inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
+	-- inst.AnimState:SetSortOrder(3)
+	inst.AnimState:SetSortOrder(1)
+    inst.AnimState:SetFinalOffset(2)
+
+	inst.entity:SetPristine()
+
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
+	inst:AddComponent("aipc_divine_rapier")
+
+	inst.persists = false
+
+	-- 测试用：如果没有守护目标，选第一个玩家
+	inst:DoTaskInTime(0.5, function()
+		if inst.components.aipc_divine_rapier.guardTarget == nil then
+			local player = aipFindNearPlayers(inst, 20)[1]
+			if player ~= nil then
+				inst.components.aipc_divine_rapier:Setup(player, 0, 2)
+			end
+		end
+	end)
+
+	return inst
+end
+
+return	Prefab("aip_divine_rapier", fn, assets),
+		Prefab("aip_divine_rapier_fx", afterimageFn, assets)
