@@ -14,12 +14,9 @@ local DivineRapier = Class(function(self, inst)
 	-- 设置旋转距离
 	self.roundDist = 2
 
-	-- 最大移动速度
-	self.maxSpeed = 10
-	self.maxSpeedDist = 1
-
-	-- 最大转角速度
-	self.maxRotateSpeed = 360
+	-- -- 最大移动速度
+	-- self.maxSpeed = 10
+	-- self.maxSpeedDist = 1
 
 	-- 根据游戏进行时间设定围绕坐标，用于计算目标点
 	self.index = 0
@@ -53,32 +50,48 @@ function DivineRapier:Setup(guardTarget, index, total)
 
 	local tgtPt = self:GetRoundPt()
 	self.inst:ForceFacePoint(tgtPt.x, tgtPt.y, tgtPt.z)
-	self.inst.Physics:SetMotorVel(self.maxSpeed, 0, 0)
+	-- self.inst.Physics:SetMotorVel(self.maxSpeed, 0, 0)
 
 	self.inst:StartUpdatingComponent(self)
 end
 
 
 function DivineRapier:OnUpdate(dt)
-	local tgtPt = self:GetRoundPt()
+	local currentPos = self.inst:GetPosition()
+	local guardPos = self.guardTarget:GetPosition()
+	local rawDist = aipDist(currentPos, guardPos)
+
+	-- 是否在环绕范围内
+	local roundRange = self.roundDist * 1.25
+	local isInRound = rawDist < roundRange
+
+	-- 当远离环绕距离的时候，先尝试追上目标，反之则去环绕点
+	local roundPt = self:GetRoundPt()
+	local tgtPt = isInRound and roundPt or guardPos
 
 	local oriAngle = self.inst:GetRotation()
 	local tgtAngle = self.inst:GetAngleToPoint(tgtPt.x, tgtPt.y, tgtPt.z)
 
-	local angle = aipToAngle(oriAngle, tgtAngle, dt * self.maxRotateSpeed)
-	self.inst.Transform:SetRotation(angle)
+	-- 旋转角度速度
+	local angleSpeedPerSec = 360 / self.roundTime
+	angleSpeedPerSec = angleSpeedPerSec * 2 -- 追速补偿
 
-	-- 与目标点距离
-	local dist = aipDist(self.inst:GetPosition(), tgtPt)
-	local clapDist = Clamp(dist, 0, self.maxSpeedDist)
+	local angle = aipToAngle(oriAngle, tgtAngle, dt * angleSpeedPerSec)
+	self.inst.Transform:SetRotation(
+		isInRound and tgtAngle or angle -- 在范围内，就直接进入环绕状态
+	)
 
-	-- 动态速度
-	local speed = Remap(clapDist, 0, self.maxSpeedDist, 0, self.maxSpeed)-- 对齐到距离速度上
+	-- 周长计算 & 旋转速度
+	local dist = aipDist(currentPos, roundPt)
+
+	local perimeter = 2 * PI * self.roundDist
+	local baseSpeed = perimeter / self.roundTime
+	local minSpeed = baseSpeed * 0.5
+	local maxSpeed = baseSpeed + TUNING.WILSON_RUN_SPEED * 5 -- 追速补偿
+
+	local catchDist = roundRange -- perimeter * 0.8
+	local speed = dist > catchDist and maxSpeed or Remap(dist, 0, catchDist, minSpeed, maxSpeed)
 	self.inst.Physics:SetMotorVel(speed, 0, 0)
-
-	-- -- 移动到目标点
-	-- self.inst.Physics:Teleport(tgtPt.x, tgtPt.y, tgtPt.z)
-	-- self.inst:ForceFacePoint(pos.x, pos.y, pos.z)
 end
 
 return DivineRapier
