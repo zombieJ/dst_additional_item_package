@@ -215,7 +215,7 @@ local function afterimageFn()
 	inst.entity:AddAnimState()
 	inst.entity:AddNetwork()
 
-	MakeInventoryPhysics(inst)
+	MakeProjectilePhysics(inst)
 
 	inst:AddTag("NOCLICK")
 	inst:AddTag("FX")

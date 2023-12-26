@@ -308,6 +308,9 @@ end
 
 -- 从角度到另一个角度过渡, 360 度
 function _G.aipToAngle(srcAngle, tgtAngle, step)
+	srcAngle = (srcAngle + 720) % 360
+	tgtAngle = (tgtAngle + 720) % 360
+
 	local tgtAngleList = { tgtAngle - 360, tgtAngle, tgtAngle + 360 }
 
 	local closestTgtAngle = nil
