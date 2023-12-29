@@ -116,6 +116,25 @@ return {
                 name="aip_black_xuelong",
             },
             "不可知的遗留之物，在模因状态下能够造成高额伤害",
+
+            -- 憎恨之刃
+            {
+                type="img",
+                name="aip_oldone_hand",
+            },
+            "诞生于黑暗的剑刃会随着杀戮而变得强大，由查理看心情赠与",
+            -- 羁绊之刃
+            {
+                type="img",
+                name="aip_living_friendship",
+            },
+            "被埋入月光玻璃岩石中，身边的伙伴越多伤害越大（小动物伙伴也算哦）",
+            -- 圣剑
+            {
+                type="img",
+                name="aipc_divine_rapier",
+            },
+            "被联结图腾强行融合武器，可以召唤两把剑的剑痕进行攻击。继承两者全部能力。",
         },
     },
 

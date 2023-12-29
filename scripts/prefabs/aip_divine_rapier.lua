@@ -1,3 +1,5 @@
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
+
 -- 配置
 local additional_weapon = aipGetModConfig("additional_weapon")
 if additional_weapon ~= "open" then
@@ -11,7 +13,7 @@ local language = aipGetModConfig("language")
 -- 默认参数
 local USES_MAP = {
 	less = 200,
-	normal = 400,
+	normal = dev_mode and 10 or 400,
 	much = 1000,
 }
 
@@ -36,7 +38,7 @@ local LANG_MAP = {
 	chinese = {
 		NAME = "圣剑",
 		DESC = "光与暗的结合",
-		REC_DESC = "融合两者的力量，即随着杀戮而强大，又因为同伴而充满力量",
+		REC_DESC = "融合两者的力量，即随着杀戮而强大，又因为同伴而充满力量。圣剑会继承杀生数和耐久度。",
 	},
 }
 
@@ -119,8 +121,54 @@ local function OnPreBuilt(inst, builder, materials, recipe)
 	end
 end
 
+-- 耐久度用完后，删除圣剑。创建一个
 local function OnFinished(inst)
-	
+	local dark = aipSpawnPrefab(inst, "aip_oldone_hand")
+	dark._aipKillerCount = inst._aipKillerCount
+	dark.components.finiteuses:SetUses(1)
+
+	dark:RemoveFromScene() -- 留存记录数，从地图上移除
+
+	aipReplacePrefab(inst, "aip_shadow_wrapper").DoShow()
+end
+
+local function onRemoveAfterimage(inst)
+	if inst._aipRapiers ~= nil then -- 遍历所有的剑并删除
+		for i, v in ipairs(inst._aipRapiers) do
+			aipReplacePrefab(v, "aip_shadow_wrapper").DoShow()
+		end
+		inst._aipRapiers = nil
+	end
+end
+
+local function onCreateAfterimage(inst, doer)
+	if inst._aipRapiers == nil then
+		local light = aipSpawnPrefab(inst, "aip_divine_rapier_fx")
+		light.setupFX(doer, "light", 0, 2, inst)
+
+		local dark = aipSpawnPrefab(inst, "aip_divine_rapier_fx")
+		dark.setupFX(doer, "dark", 1, 2, inst)
+
+		inst._aipRapiers = { light, dark }
+	end
+end
+
+-- 释放圣剑
+local function onSpell(inst, target, pos, doer)
+	-- 如果有目标 或者 没有 剑痕 则召唤出来
+	if target ~= nil or inst._aipRapiers == nil then
+		onCreateAfterimage(inst, doer)
+	else -- 遍历所有的剑并删除
+		onRemoveAfterimage(inst)
+	end
+
+	if target ~= nil then
+		for i, afterimage in ipairs(inst._aipRapiers) do
+			if afterimage.components.aipc_divine_rapier ~= nil then
+				afterimage.components.aipc_divine_rapier:Attack(target)
+			end
+		end
+	end
 end
 
 -------------------------- 装备 --------------------------
@@ -139,6 +187,8 @@ local function onunequip(inst, owner)
 	owner.AnimState:Show("ARM_normal")
 
 	owner:RemoveEventCallback("killed", OnKilledOther)
+
+	onRemoveAfterimage(inst)
 end
 
 -------------------------- 存取 --------------------------
@@ -195,6 +245,14 @@ local function fn()
 	inst.components.equippable:SetOnEquip(onequip)
 	inst.components.equippable:SetOnUnequip(onunequip)
 
+	-- 可以对目标释放技能
+    inst:AddComponent("spellcaster")
+    inst.components.spellcaster.canuseontargets = true
+	inst.components.spellcaster.canuseonpoint = true
+    inst.components.spellcaster.canonlyuseoncombat = true
+    inst.components.spellcaster.quickcast = true
+    inst.components.spellcaster:SetSpellFn(onSpell)
+
 	inst._aipKillerCount = 0
 
 	inst.onPreBuilt = OnPreBuilt
@@ -226,7 +284,6 @@ local function afterimageFn()
 
 	inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
 	inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
-	-- inst.AnimState:SetSortOrder(3)
 	inst.AnimState:SetSortOrder(1)
     inst.AnimState:SetFinalOffset(2)
 
@@ -238,17 +295,30 @@ local function afterimageFn()
 
 	inst:AddComponent("aipc_divine_rapier")
 
+	-- 启动剑痕
+	inst.setupFX = function(player, anim, index, total, weapon)
+		inst.AnimState:PlayAnimation(anim)
+		inst.components.aipc_divine_rapier:Setup(player, index, total, weapon)
+		inst.components.aipc_divine_rapier.onUse = function()
+			if weapon ~= nil and weapon.components.finiteuses ~= nil then
+				weapon.components.finiteuses:Use()
+			end
+		end
+	end
+
 	inst.persists = false
 
 	-- 测试用：如果没有守护目标，选第一个玩家
-	inst:DoTaskInTime(0.5, function()
-		if inst.components.aipc_divine_rapier.guardTarget == nil then
-			local player = aipFindNearPlayers(inst, 20)[1]
-			if player ~= nil then
-				inst.components.aipc_divine_rapier:Setup(player, 0, 2)
+	if dev_mode then
+		inst:DoTaskInTime(0.5, function()
+			if inst.components.aipc_divine_rapier.guardTarget == nil then
+				local player = aipFindNearPlayers(inst, 20)[1]
+				if player ~= nil then
+					inst.components.aipc_divine_rapier:Setup(player, 0, 2)
+				end
 			end
-		end
-	end)
+		end)
+	end
 
 	return inst
 end

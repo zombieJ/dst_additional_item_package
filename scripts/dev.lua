@@ -35,6 +35,7 @@ end
 AddPlayerPostInit(PlayerPrefabPostInit)
 
 -------------------- 警告信息 --------------------
+--[[
 AddPrefabPostInit("world", function (inst)
     -- 更新次数统计
     inst._aipDevUpdateList = {}
@@ -123,3 +124,4 @@ AddGlobalClassPostConstruct("entityscript", "EntityScript", function(self)
         end
     end
 end)
+]]

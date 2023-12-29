@@ -118,6 +118,25 @@ return {
                 name="aip_black_xuelong",
             },
             "The unknown legacy can cause high damage in the meme state.",
+
+             -- 憎恨之刃
+             {
+                type="img",
+                name="aip_oldone_hand",
+            },
+            "Born in the dark, the blade will become stronger with the killing, given by Charlie according to mood.",
+            -- 羁绊之刃
+            {
+                type="img",
+                name="aip_living_friendship",
+            },
+            "Buried in the moonlight glass rock, the more partners around, the greater the damage (small animal partners also count)",
+            -- 圣剑
+            {
+                type="img",
+                name="aipc_divine_rapier",
+            },
+            "Force combined by the totem, can summon two sword marks to attack. Inherit all abilities of both.",
         },
     },
 

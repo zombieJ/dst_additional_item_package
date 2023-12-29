@@ -400,6 +400,20 @@ function _G.aipFindNearPlayers(inst, dist)
 	return _G.FindPlayersInRange(x, y, z, dist, true)
 end
 
+function _G.aipCanAttack(target, attacker, keepTarget)
+	return target ~= nil and target:IsValid() and
+		target.components.health ~= nil and
+		not target.components.health:IsDead() and
+		(
+			target:HasTag("hostile") or
+			keepTarget or
+			(
+				target.components.combat ~= nil and
+				target.components.combat.target == attacker
+			)
+		)
+end
+
 function _G.aipFindCloseEnt(inst, targetList)
 	local closeDist = nil
 	local closeTarget = nil

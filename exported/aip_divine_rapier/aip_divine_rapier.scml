@@ -5,6 +5,7 @@
     </folder>
     <folder id="1" name="afterimage">
         <file id="0" name="afterimage/dark.png" width="60" height="200" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="afterimage/light.png" width="60" height="200" pivot_x="0" pivot_y="1"/>
     </folder>
     <entity id="0" name="aip_divine_rapier">
         <animation id="0" name="idle" length="100">
@@ -22,12 +23,24 @@
         <animation id="1" name="dark" length="100">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="dark" folder="1" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.3" abs_angle="270" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="0" name="dark" folder="1" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.3" abs_angle="270" abs_scale_x="1.5" abs_scale_y="1.5" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
             </mainline>
             <timeline id="0" name="dark">
                 <key id="0" spin="0">
-                    <object folder="1" file="0" pivot_x="0.5" pivot_y="0.3" angle="270" scale_x="1"/>
+                    <object folder="1" file="0" pivot_x="0.5" pivot_y="0.3" angle="270" scale_x="1.5" scale_y="1.5"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="light" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="dark" folder="1" file="1" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.3" abs_angle="270" abs_scale_x="1.3" abs_scale_y="1.3" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="dark">
+                <key id="0" spin="0">
+                    <object folder="1" file="1" pivot_x="0.5" pivot_y="0.3" angle="270" scale_x="1.3" scale_y="1.3"/>
                 </key>
             </timeline>
         </animation>
