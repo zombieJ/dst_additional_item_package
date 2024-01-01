@@ -113,6 +113,7 @@ local function fn()
 	inst:AddComponent("finiteuses")
 	inst.components.finiteuses:SetMaxUses(TUNING.AIP_LIVING_FRIENDSHIP_USES)
 	inst.components.finiteuses:SetUses(TUNING.AIP_LIVING_FRIENDSHIP_USES)
+	inst.components.finiteuses:SetOnFinished(inst.Remove)
 
 	inst:AddComponent("inspectable")
 

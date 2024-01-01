@@ -123,11 +123,9 @@ end
 
 -- 耐久度用完后，删除圣剑。创建一个
 local function OnFinished(inst)
-	local dark = aipSpawnPrefab(inst, "aip_oldone_hand")
-	dark._aipKillerCount = inst._aipKillerCount
-	dark.components.finiteuses:SetUses(1)
-
-	dark:RemoveFromScene() -- 留存记录数，从地图上移除
+	if aipUnique() ~= nil then
+		aipUnique():OldoneKillCount(inst._aipKillerCount)
+	end
 
 	aipReplacePrefab(inst, "aip_shadow_wrapper").DoShow()
 end

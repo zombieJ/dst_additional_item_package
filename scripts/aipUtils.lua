@@ -874,6 +874,10 @@ function _G.aipCommonStore()
 	return _G.TheWorld.components ~= nil and _G.TheWorld.components.world_common_store
 end
 
+function _G.aipUnique()
+	return _G.TheWorld.components ~= nil and _G.TheWorld.components.aipc_world_unique
+end
+
 function _G.aipGetOne(inst)
 	if inst.components.stackable ~= nil then
 		return inst.components.stackable:Get()

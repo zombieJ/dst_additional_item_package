@@ -12,9 +12,11 @@ local function createIfPossible(inst, prefab, tag)
 	end
 
 	local target = nil
+	local newItem = false
 
 	if oldoneHand == nil then
 		target = aipSpawnPrefab(inst, prefab)
+		newItem = true
 	elseif oldoneHand.components.inventoryitem:GetGrandOwner() == nil then
 		target = oldoneHand
 
@@ -28,9 +30,10 @@ local function createIfPossible(inst, prefab, tag)
 	end
 
 	if target ~= nil then
-		target:ReturnToScene()
 		aipFlingItem(target, inst:GetPosition())
 	end
+
+	return target, newItem
 end
 
 ------------------------------ 事件 ------------------------------
@@ -108,7 +111,11 @@ end
 -- 创建 憎恨之刃
 function PlayerShow:CreateOldoneHand()
 	self:StopShow()
-	createIfPossible(self.inst, "aip_oldone_hand", "aip_DivineRapier_bad")
+	local item, newItem = createIfPossible(self.inst, "aip_oldone_hand", "aip_DivineRapier_bad")
+
+	if item and newItem and aipUnique() then
+		item._aipKillerCount = aipUnique():OldoneKillCount()
+	end
 end
 
 -- 创建 羁绊之刃

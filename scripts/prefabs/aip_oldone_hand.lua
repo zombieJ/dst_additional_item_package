@@ -126,6 +126,13 @@ local function fn()
 	inst:AddComponent("finiteuses")
 	inst.components.finiteuses:SetMaxUses(TUNING.AIP_OLDONE_HAND_USES)
 	inst.components.finiteuses:SetUses(TUNING.AIP_OLDONE_HAND_USES)
+	inst.components.finiteuses:SetOnFinished(function()
+		if aipUnique() ~= nil then
+			aipUnique():OldoneKillCount(inst._aipKillerCount)
+		end
+
+		inst:Remove()
+	end)
 
 	inst:AddComponent("inspectable")
 
