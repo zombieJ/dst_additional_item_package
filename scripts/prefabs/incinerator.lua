@@ -168,6 +168,8 @@ local function onBurnItems(inst)
 				if ptg >= math.random() then
 					lootItem = "aip_som"
 				end
+			elseif item.prefab == "log" then
+				lootItem = "charcoal"
 			end
 
 			returnItems[lootItem] = (returnItems[lootItem] or 0) + stackSize

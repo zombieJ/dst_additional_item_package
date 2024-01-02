@@ -75,6 +75,12 @@ local PlayerShow = Class(function(self, inst)
 			self:StartShow()
 		end
 	end)
+
+	if dev_mode then
+		self.inst:DoTaskInTime(5, function()
+			self:StartShow()
+		end)
+	end
 end)
 
 ------------------------------ 表演 ------------------------------
@@ -91,16 +97,28 @@ function PlayerShow:StartShow()
 
 	self.showTask = self.inst:DoPeriodicTask(1, function()
 		local pos = self.inst:GetPosition()
+		local range = 20
 
 		local butterfly =  TheSim:FindEntities(
-			pos.x, pos.y, pos.z, 20, { "butterfly" }
-		)[0]
+			pos.x, pos.y, pos.z, range, { "butterfly" }
+		)[1]
 
 		-- 创造一个鸟，吃掉它
-		if butterfly ~= nil then
-			aipPrint("Good!!!")
-			local bird = aipSpawnPrefab(self.inst, "robin")
-			bird.Physics:Teleport(pos.x, 15, pos.z)
+		if butterfly ~= nil and butterfly.components.locomotor ~= nil then
+			local butterflyPt = butterfly:GetPosition()
+			local bird = aipSpawnPrefab(butterfly, "robin")
+			bird.Physics:Teleport(butterflyPt.x, 6, butterflyPt.z)
+			bird.bufferedaction = BufferedAction(bird, butterfly, ACTIONS.EAT)
+			
+			-- 停下来准备被吃掉
+			butterfly.components.locomotor:Stop()
+			butterfly.components.locomotor:SetExternalSpeedMultiplier(
+				butterfly, "aip_lock_move", 0
+			)
+
+			butterfly:DoTaskInTime(0.5, function()
+				butterfly:Remove()
+			end)
 
 			self:StopShow()
 		end
