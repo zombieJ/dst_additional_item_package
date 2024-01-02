@@ -2,6 +2,84 @@ local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 -- 服务端：围绕玩家开始的演出
 
+local SHOW_RANGE = 20
+
+-- 蝴蝶：被鸟吃
+local function butterflyShow(pos)
+	local butterfly =  TheSim:FindEntities(
+		pos.x, pos.y, pos.z, SHOW_RANGE, { "butterfly" }
+	)[1]
+
+	-- 创造一个鸟，吃掉它
+	if butterfly ~= nil and butterfly.components.locomotor ~= nil then
+		local wings = aipSpawnPrefab(butterfly, "butterflywings")
+		wings.AnimState:OverrideMultColour(0,0,0,0)
+
+		local butterflyPt = butterfly:GetPosition()
+		local bird = aipSpawnPrefab(butterfly, "robin")
+		bird.Physics:Teleport(butterflyPt.x, 6, butterflyPt.z)
+
+		if bird.components.eater ~= nil then
+			bird.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
+		end
+		bird.bufferedaction = BufferedAction(bird, wings, ACTIONS.EAT)
+
+		-- 停下来准备被吃掉
+		butterfly.components.locomotor:Stop()
+		butterfly.components.locomotor:SetExternalSpeedMultiplier(
+			butterfly, "aip_lock_move", 0
+		)
+
+		butterfly:DoTaskInTime(0.5, function()
+			wings.AnimState:OverrideMultColour(1,1,1,1)
+			aipFlingItem(wings)
+			butterfly:Remove()
+		end)
+
+		return true
+	end
+end
+
+-- 草丛：草里窜走的兔子
+local function grassShow(pos)
+	local grasses = TheSim:FindEntities(
+		pos.x, pos.y, pos.z, SHOW_RANGE, { "plant", "renewable" }
+	)
+
+	grasses = aipFilterTable(grasses, function(item)
+		return (
+			item.prefab == "grass" and
+			item.components.pickable ~= nil and
+			item.components.pickable:CanBePicked()
+		)
+	end)
+
+	if #grasses >= 2 then
+		local grass1 = grasses[1]
+		local grass2 = grasses[2]
+
+		local rabbit = aipSpawnPrefab(grass1, "rabbit")
+
+		if rabbit.components.homeseeker == nil then
+			rabbit:AddComponent("homeseeker")
+		end
+		rabbit.components.homeseeker.home = grass2
+
+		if rabbit.components.locomotor ~= nil then
+			rabbit.components.locomotor:SetExternalSpeedMultiplier(
+				rabbit, "aip_lock_move", 1.5
+			)
+		end
+
+		rabbit:DoTaskInTime(0.1, function()
+			rabbit:PushEvent("gohome")
+			rabbit.components.homeseeker:GoHome(true)
+		end)
+
+		return true
+	end
+end
+
 ------------------------------ 方法 ------------------------------
 local function createIfPossible(inst, prefab, tag)
 	local oldoneHand = TheSim:FindFirstEntityWithTag(tag)
@@ -97,29 +175,10 @@ function PlayerShow:StartShow()
 
 	self.showTask = self.inst:DoPeriodicTask(1, function()
 		local pos = self.inst:GetPosition()
-		local range = 20
 
-		local butterfly =  TheSim:FindEntities(
-			pos.x, pos.y, pos.z, range, { "butterfly" }
-		)[1]
-
-		-- 创造一个鸟，吃掉它
-		if butterfly ~= nil and butterfly.components.locomotor ~= nil then
-			local butterflyPt = butterfly:GetPosition()
-			local bird = aipSpawnPrefab(butterfly, "robin")
-			bird.Physics:Teleport(butterflyPt.x, 6, butterflyPt.z)
-			bird.bufferedaction = BufferedAction(bird, butterfly, ACTIONS.EAT)
-			
-			-- 停下来准备被吃掉
-			butterfly.components.locomotor:Stop()
-			butterfly.components.locomotor:SetExternalSpeedMultiplier(
-				butterfly, "aip_lock_move", 0
-			)
-
-			butterfly:DoTaskInTime(0.5, function()
-				butterfly:Remove()
-			end)
-
+		local funcList = { grassShow, butterflyShow }
+		
+		if dev_mode and grassShow(pos) then
 			self:StopShow()
 		end
 	end)
