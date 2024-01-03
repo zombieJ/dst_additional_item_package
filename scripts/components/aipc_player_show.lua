@@ -80,6 +80,31 @@ local function grassShow(pos)
 	end
 end
 
+-- 兔子：躲秃鹫
+local function rabbitShow(pos)
+	local rabbit = TheSim:FindEntities(
+		pos.x, pos.y, pos.z, SHOW_RANGE, { "rabbit" }
+	)[1]
+
+	aipPrint("Check!")
+	if rabbit ~= nil and rabbit.prefab == "rabbit" then
+		aipPrint("Get!")
+
+		aipSpawnPrefab(rabbit, "aip_shadow_wrapper").DoShow()
+
+		local buzzard = aipSpawnPrefab(rabbit, "buzzard", nil, 30)
+		buzzard.sg:GoToState("glide")
+
+		buzzard:DoTaskInTime(3, function()
+			buzzard.components.locomotor:Stop()
+			aipSpawnPrefab(rabbit, "aip_shadow_wrapper").DoShow()
+			buzzard.sg:GoToState("flyaway")
+		end)
+
+		return true
+	end
+end
+
 ------------------------------ 方法 ------------------------------
 local function createIfPossible(inst, prefab, tag)
 	local oldoneHand = TheSim:FindFirstEntityWithTag(tag)
@@ -176,9 +201,9 @@ function PlayerShow:StartShow()
 	self.showTask = self.inst:DoPeriodicTask(1, function()
 		local pos = self.inst:GetPosition()
 
-		local funcList = { grassShow, butterflyShow }
+		local funcList = { grassShow, butterflyShow, rabbitShow }
 		
-		if dev_mode and grassShow(pos) then
+		if dev_mode and rabbitShow(pos) then
 			self:StopShow()
 		end
 	end)
