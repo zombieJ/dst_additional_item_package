@@ -122,6 +122,13 @@ local food_recipes = {
 		sanity = SAN * 10,
 		perishtime = PER * 6,
 		cooktime = CO * 20,
+		oneatenfn = function(inst, eater)
+			aipBufferPatch(inst, eater, "foodMonster", dev_mode and 20 or 120)
+		end,
+		buff = {
+			buffName = "foodMonster",
+			name = BUFF_LANG_MAP.foodMonster,
+		},
 	},
 	
 	skunk_smoothies = {
