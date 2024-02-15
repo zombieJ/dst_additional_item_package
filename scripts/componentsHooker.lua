@@ -629,6 +629,16 @@ AipPostComp("combat", function(self)
 			dmg = dmg + atk
 		end
 
+		-- 怪物精华 buff
+		if
+			_G.aipBufferExist(
+				self.inst,
+				"foodMonster"
+			)
+		then
+			dmg = dmg * (dev_mode and 999 or 1.05)
+		end
+
 		-- 宠物主人攻击 buff
 		if self.inst.components.aipc_pet_owner ~= nil then
 			local petDmgMulti = 0

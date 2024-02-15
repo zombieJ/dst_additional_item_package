@@ -26,9 +26,11 @@ local LANG_ENG = LANG_MAP.english
 local BUFF_LANG_MAP = {
 	english = {
 		foodMaltose = "Sweetness",
+		foodMonster = "Monster Essence",
 	},
 	chinese = {
 		foodMaltose = "甜蜜蜜",
+		foodMonster = "怪物精华",
 	},
 }
 
@@ -113,7 +115,7 @@ local food_recipes = {
 		end,
 		buff = {
 			buffName = "foodMonster",
-			name = BUFF_LANG_MAP.foodMonster,
+			name = BUFF_LANG.foodMonster,
 		},
 	},
 	
@@ -452,7 +454,7 @@ local food_recipes = {
 		end,
 		buff = {
 			buffName = "foodMaltose",
-			name = BUFF_LANG_MAP.foodMaltose,
+			name = BUFF_LANG.foodMaltose,
 			fn = function(source, eater, info)
 				-- 恢复理智
 				if eater.components.sanity ~= nil and info.tickTime % 2 == 0 then
