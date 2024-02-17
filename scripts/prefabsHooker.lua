@@ -548,6 +548,15 @@ AddPrefabPostInit("homesign", function(inst)
 	inst._aip_particles_trigger = onSignTrigger
 end)
 
+------------------------------------------ 猪王 ------------------------------------------
+AddPrefabPostInit("pigking", function(inst)
+	if not _G.TheWorld.ismastersim then
+		return inst
+	end
+
+	inst:AddComponent("aipc_pig_king_train")
+end)
+
 ------------------------------------------ 食物 ------------------------------------------
 AddPrefabPostInit("grass", function(inst)
 	if not _G.TheWorld.ismastersim then
