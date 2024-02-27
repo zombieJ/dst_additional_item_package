@@ -4,6 +4,12 @@ local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 local SHOW_RANGE = 20
 
+local function debugEffect(inst)
+	if dev_mode then
+		aipSpawnPrefab(inst, "aip_shadow_wrapper").DoShow()
+	end
+end
+
 -- 蝴蝶：被鸟吃
 local function butterflyShow(pos)
 	local butterfly =  TheSim:FindEntities(
@@ -86,21 +92,87 @@ local function rabbitShow(pos)
 		pos.x, pos.y, pos.z, SHOW_RANGE, { "rabbit" }
 	)[1]
 
-	aipPrint("Check!")
 	if rabbit ~= nil and rabbit.prefab == "rabbit" then
-		aipPrint("Get!")
-
-		aipSpawnPrefab(rabbit, "aip_shadow_wrapper").DoShow()
+		debugEffect(rabbit)
 
 		local buzzard = aipSpawnPrefab(rabbit, "buzzard", nil, 30)
 		buzzard.sg:GoToState("glide")
 
 		buzzard:DoTaskInTime(3, function()
 			buzzard.components.locomotor:Stop()
-			aipSpawnPrefab(rabbit, "aip_shadow_wrapper").DoShow()
+			debugEffect(rabbit)
 			buzzard.sg:GoToState("flyaway")
 		end)
 
+		return true
+	end
+end
+
+-- 海洋：荧光水母
+local function jellyfishShow(pos)
+	local chance = dev_mode and 1 or 0.05
+
+	if
+		-- 不是晚上就算了
+		not TheWorld.state.isnight or
+		-- 当前位置是否在海里
+		not TheWorld.Map:IsOceanAtPoint(pos.x, pos.y, pos.z, true) or
+		-- 几率不对
+		math.random() > chance
+	then
+		return
+	end
+
+	-- 在附近找另一个海点
+	local randomAngle = math.random() * 2 * PI
+	local dist = 15
+
+	local tgtPT = pos + Vector3(math.cos(randomAngle) * dist, 0, math.sin(randomAngle) * dist)
+	local tgtPT_LT = Vector3(tgtPT.x - 3, 0, tgtPT.z - 3)
+	local tgtPT_LB = Vector3(tgtPT.x - 3, 0, tgtPT.z + 3)
+	local tgtPT_RT = Vector3(tgtPT.x + 3, 0, tgtPT.z - 3)
+	local tgtPT_RB = Vector3(tgtPT.x + 3, 0, tgtPT.z + 3)
+
+	if
+		TheWorld.Map:IsOceanAtPoint(tgtPT.x, tgtPT.y, tgtPT.z) and
+		TheWorld.Map:IsOceanAtPoint(tgtPT_LT.x, tgtPT_LT.y, tgtPT_LT.z) and
+		TheWorld.Map:IsOceanAtPoint(tgtPT_LB.x, tgtPT_LB.y, tgtPT_LB.z) and
+		TheWorld.Map:IsOceanAtPoint(tgtPT_RT.x, tgtPT_RT.y, tgtPT_RT.z) and
+		TheWorld.Map:IsOceanAtPoint(tgtPT_RB.x, tgtPT_RB.y, tgtPT_RB.z)
+	then
+		local jellyfishGrp = aipSpawnPrefab(nil, "aip_ocean_jellyfish_group", tgtPT.x, 0, tgtPT.z)
+
+		debugEffect(jellyfishGrp)
+		return true
+	end
+end
+
+-- 夜晚的靡靡之花
+local function blinkFlowerShow(pos)
+	local chance = dev_mode and 1 or 0.05
+
+	if
+		-- 不是晚上就算了
+		not TheWorld.state.isnight or
+		-- 当前位置是否在海里
+		not TheWorld.Map:IsLandTileAtPoint(pos.x, pos.y, pos.z) or
+		-- 几率不对
+		math.random() > chance
+	then
+		return
+	end
+
+	-- 随机位置
+	local randomAngle = math.random() * 2 * PI
+	local dist = 15
+
+	local tgtPT = pos + Vector3(math.cos(randomAngle) * dist, 0, math.sin(randomAngle) * dist)
+
+	-- 创建靡靡之花
+	if TheWorld.Map:IsLandTileAtPoint(tgtPT.x, tgtPT.y, tgtPT.z) then
+		local flowerGrp = aipSpawnPrefab(nil, "aip_blink_flower_group", tgtPT.x, 0, tgtPT.z)
+
+		debugEffect(flowerGrp)
 		return true
 	end
 end
@@ -201,9 +273,16 @@ function PlayerShow:StartShow()
 	self.showTask = self.inst:DoPeriodicTask(1, function()
 		local pos = self.inst:GetPosition()
 
-		local funcList = { grassShow, butterflyShow, rabbitShow }
+		local funcList = {
+			grassShow,
+			butterflyShow,
+			rabbitShow,
+			jellyfishShow,
+			blinkFlowerShow,
+		}
 		
-		if dev_mode and rabbitShow(pos) then
+		-- 开发模式下，指定项目
+		if dev_mode and blinkFlowerShow(pos) then
 			self:StopShow()
 		end
 	end)

@@ -913,10 +913,17 @@ function _G.aipFlingItem(loot, pt, config)
 
 		local min_speed = config.minSpeed or 0
 		local max_speed = config.maxSpeed or 2
-		local y_speed = 8
-		local y_speed_variance = 4
 
-		local mergedYSpeed = config.ySpeed or _G.GetRandomWithVariance(y_speed, y_speed_variance)
+		local mergedYSpeed = nil
+
+		if config.ySpeed ~= nil and config.ySpeedVariance ~= nil then
+			mergedYSpeed = _G.GetRandomWithVariance(config.ySpeed, config.ySpeedVariance)
+		else
+			local y_speed = 8
+			local y_speed_variance = 4
+
+			mergedYSpeed = config.ySpeed or _G.GetRandomWithVariance(y_speed, y_speed_variance)
+		end
 
 		local angle = config.angle ~= nil and config.angle or math.random() * 2 * _G.PI
 

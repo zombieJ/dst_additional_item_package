@@ -240,6 +240,11 @@ PrefabFiles = {
 	"aip_xiyou_card",
 	"aip_xiyou_cards",
 	"aip_xiyou_card_package",
+
+	-- 生态
+	"aip_ocean_jellyfish",
+	"aip_blink_flower",
+	"aip_ocean_vortex",
 }
 
 local language = GetModConfigData("language")
