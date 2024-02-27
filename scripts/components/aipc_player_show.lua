@@ -10,6 +10,26 @@ local function debugEffect(inst)
 	end
 end
 
+local function isInOcean(tgtPT, range)
+	range = range or 3
+	local tgtPT_LT = Vector3(tgtPT.x - range, 0, tgtPT.z - range)
+	local tgtPT_LB = Vector3(tgtPT.x - range, 0, tgtPT.z + range)
+	local tgtPT_RT = Vector3(tgtPT.x + range, 0, tgtPT.z - range)
+	local tgtPT_RB = Vector3(tgtPT.x + range, 0, tgtPT.z + range)
+
+	if
+		TheWorld.Map:IsOceanAtPoint(tgtPT.x, tgtPT.y, tgtPT.z) and
+		TheWorld.Map:IsOceanAtPoint(tgtPT_LT.x, tgtPT_LT.y, tgtPT_LT.z) and
+		TheWorld.Map:IsOceanAtPoint(tgtPT_LB.x, tgtPT_LB.y, tgtPT_LB.z) and
+		TheWorld.Map:IsOceanAtPoint(tgtPT_RT.x, tgtPT_RT.y, tgtPT_RT.z) and
+		TheWorld.Map:IsOceanAtPoint(tgtPT_RB.x, tgtPT_RB.y, tgtPT_RB.z)
+	then
+		return true
+	end
+
+	return false
+end
+
 -- 蝴蝶：被鸟吃
 local function butterflyShow(pos)
 	local butterfly =  TheSim:FindEntities(
@@ -133,13 +153,7 @@ local function jellyfishShow(pos)
 	local tgtPT_RT = Vector3(tgtPT.x + 3, 0, tgtPT.z - 3)
 	local tgtPT_RB = Vector3(tgtPT.x + 3, 0, tgtPT.z + 3)
 
-	if
-		TheWorld.Map:IsOceanAtPoint(tgtPT.x, tgtPT.y, tgtPT.z) and
-		TheWorld.Map:IsOceanAtPoint(tgtPT_LT.x, tgtPT_LT.y, tgtPT_LT.z) and
-		TheWorld.Map:IsOceanAtPoint(tgtPT_LB.x, tgtPT_LB.y, tgtPT_LB.z) and
-		TheWorld.Map:IsOceanAtPoint(tgtPT_RT.x, tgtPT_RT.y, tgtPT_RT.z) and
-		TheWorld.Map:IsOceanAtPoint(tgtPT_RB.x, tgtPT_RB.y, tgtPT_RB.z)
-	then
+	if isInOcean(tgtPT, 5) then
 		local jellyfishGrp = aipSpawnPrefab(nil, "aip_ocean_jellyfish_group", tgtPT.x, 0, tgtPT.z)
 
 		debugEffect(jellyfishGrp)
@@ -173,6 +187,35 @@ local function blinkFlowerShow(pos)
 		local flowerGrp = aipSpawnPrefab(nil, "aip_blink_flower_group", tgtPT.x, 0, tgtPT.z)
 
 		debugEffect(flowerGrp)
+		return true
+	end
+end
+
+-- 海中旋涡
+local function vortexShow(pos)
+	local chance = dev_mode and 1 or 0.05
+
+	if
+		-- 晚上就算了
+		TheWorld.state.isnight or
+		-- 当前位置是否在海里
+		not TheWorld.Map:IsOceanAtPoint(pos.x, pos.y, pos.z, true) or
+		-- 几率不对
+		math.random() > chance
+	then
+		return
+	end
+
+	-- 在附近找另一个海点
+	local randomAngle = math.random() * 2 * PI
+	local dist = 15
+
+	local tgtPT = pos + Vector3(math.cos(randomAngle) * dist, 0, math.sin(randomAngle) * dist)
+	
+	if isInOcean(tgtPT, 10) then
+		local vortex = aipSpawnPrefab(nil, "aip_ocean_vortex", tgtPT.x, 0, tgtPT.z)
+
+		debugEffect(vortex)
 		return true
 	end
 end
@@ -279,10 +322,11 @@ function PlayerShow:StartShow()
 			rabbitShow,
 			jellyfishShow,
 			blinkFlowerShow,
+			vortexShow,
 		}
 		
 		-- 开发模式下，指定项目
-		if dev_mode and blinkFlowerShow(pos) then
+		if dev_mode and vortexShow(pos) then
 			self:StopShow()
 		end
 	end)

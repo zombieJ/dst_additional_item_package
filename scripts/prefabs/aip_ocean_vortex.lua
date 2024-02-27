@@ -83,7 +83,7 @@ local function attrackFn(inst)
     -- 获取附近的船
     local minForce = 0.7
     local maxForce = 2
-    local attackDist = 15
+    local attackDist = 13
 
     local instPos = inst:GetPosition()
     local boats = TheSim:FindEntities(
