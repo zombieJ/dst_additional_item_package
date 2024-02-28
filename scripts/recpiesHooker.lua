@@ -303,6 +303,14 @@ rec("aip_garbage_dump", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.STRUCTURES },
 	},
 	"aip_garbage_dump_placer")
 
+-- 治愈球茎
+recWeapon("aip_oldone_heal", TECH.MAGIC_TWO, { CRAFTING_FILTERS.RESTORATION },
+{
+	Ingredient("aip_oldone_plant_full", 1, "images/inventoryimages/aip_oldone_plant_full.xml"),
+	Ingredient("cutreeds", 2),
+	Ingredient("seeds", 1),
+})
+
 ------------------------------------ 量子扰动 ------------------------------------
 -- 粒子限制器
 rec("aip_particles_bottle", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.TOOLS },
