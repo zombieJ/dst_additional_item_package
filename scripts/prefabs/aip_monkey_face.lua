@@ -32,6 +32,18 @@ STRINGS.NAMES.AIP_MONKEY_FACE = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_MONKEY_FACE = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_MONKEY_FACE = LANG.DESC
 
+------------------------------------------- BUFF -------------------------------------------
+-- aipBufferRegister("aip_monkey_panic", {
+-- 	fn = function(source, target, data)
+-- 		if inst.components.hauntable ~= nil then
+-- 			inst.components.hauntable:Panic(1)
+-- 		end
+-- 	end,
+-- 	-- startFn = data.bufferStartFn,
+-- 	-- endFn = data.bufferEndFn,
+-- 	showFX = true,
+-- })
+
 ------------------------------------------- 方法 -------------------------------------------
 local function onFueled(inst, item, doer)
 	if inst.components.fueled ~= nil then
@@ -48,7 +60,15 @@ local function loopCheck(inst)
 		{ "INLIMBO", "player", "engineering" }
 	)
 
-	-- TODO: 让猴子逃跑
+	-- 让猴子痛苦而逃跑
+	for i, monkey in ipairs(monkeys) do
+		if monkey.components.hauntable ~= nil then
+			monkey.components.hauntable:Panic(3)
+
+			aipSpawnPrefab(monkey, "sand_puff")
+		end
+		-- aipBufferPatch(inst, monkey, "aip_monkey_panic", 1)
+	end
 end
 
 ------------------------------------------- 实体 -------------------------------------------
@@ -59,7 +79,7 @@ return tempalte("aip_monkey_face", {
 		level = TUNING.AIP_MONKEY_FACE_FUEL,
 	},
 	onEquip = function(inst, owner)
-		inst.components.aipc_timer:NamedInterval("loopCheck", 1, loopCheck, inst)
+		inst.components.aipc_timer:NamedInterval("loopCheck", 0.3, loopCheck, 0, inst)
 	end,
 	onUnequip = function(inst, owner)
 		inst.components.aipc_timer:KillName("loopCheck")
