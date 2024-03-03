@@ -33,16 +33,26 @@ STRINGS.RECIPE_DESC.AIP_MONKEY_FACE = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_MONKEY_FACE = LANG.DESC
 
 ------------------------------------------- BUFF -------------------------------------------
--- aipBufferRegister("aip_monkey_panic", {
--- 	fn = function(source, target, data)
--- 		if inst.components.hauntable ~= nil then
--- 			inst.components.hauntable:Panic(1)
--- 		end
--- 	end,
--- 	-- startFn = data.bufferStartFn,
--- 	-- endFn = data.bufferEndFn,
--- 	showFX = true,
--- })
+aipBufferRegister("aip_hauntable_panic", {
+	startFn = function(source, inst)
+		if not inst._aipBufferPanic then
+			local buff = aipSpawnPrefab(inst, "aip_buffer_panic")
+			inst:AddChild(buff)
+			buff.Transform:SetPosition(0, 0, 0)
+			inst._aipBufferPanic = buff
+		end
+	end,
+
+	endFn = function(source, inst)
+		if inst._aipBufferPanic then
+			inst:RemoveChild(inst._aipBufferPanic)
+			aipRemove(inst._aipBufferPanic)
+			inst._aipBufferPanic = nil
+		end
+	end,
+
+	showFX = false,
+})
 
 ------------------------------------------- 方法 -------------------------------------------
 local function onFueled(inst, item, doer)
@@ -50,6 +60,7 @@ local function onFueled(inst, item, doer)
 		inst.components.fueled:SetPercent(1)
 	end
 end
+
 
 local function loopCheck(inst)
 	local dist = 5
@@ -60,14 +71,15 @@ local function loopCheck(inst)
 		{ "INLIMBO", "player", "engineering" }
 	)
 
+	local lastTime = 3 -- 3秒
+
 	-- 让猴子痛苦而逃跑
 	for i, monkey in ipairs(monkeys) do
 		if monkey.components.hauntable ~= nil then
-			monkey.components.hauntable:Panic(3)
+			monkey.components.hauntable:Panic(lastTime)
 
-			aipSpawnPrefab(monkey, "sand_puff")
+			aipBufferPatch(inst, monkey, "aip_hauntable_panic", lastTime)
 		end
-		-- aipBufferPatch(inst, monkey, "aip_monkey_panic", 1)
 	end
 end
 
