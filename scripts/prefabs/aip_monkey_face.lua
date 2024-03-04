@@ -62,8 +62,10 @@ local function onFueled(inst, item, doer)
 end
 
 
-local function loopCheck(inst)
-	local dist = 5
+local function loopCheck(inst, owner)
+	local isMonkey = owner:HasTag("monkey")
+
+	local dist = isMonkey and 20 or 5
 	local x, y, z = inst.Transform:GetWorldPosition()
 	local monkeys = TheSim:FindEntities(
 		x, y, z, dist,
@@ -81,6 +83,11 @@ local function loopCheck(inst)
 			aipBufferPatch(inst, monkey, "aip_hauntable_panic", lastTime)
 		end
 	end
+
+	-- TODO:如果是猴子，造成伤害
+	if isMonkey and owner.components.health ~= nil then
+		owner.components.health:DoDelta(-1)
+	end
 end
 
 ------------------------------------------- 实体 -------------------------------------------
@@ -91,7 +98,7 @@ return tempalte("aip_monkey_face", {
 		level = TUNING.AIP_MONKEY_FACE_FUEL,
 	},
 	onEquip = function(inst, owner)
-		inst.components.aipc_timer:NamedInterval("loopCheck", 0.3, loopCheck, 0, inst)
+		inst.components.aipc_timer:NamedInterval("loopCheck", 0.5, loopCheck, 0, owner)
 	end,
 	onUnequip = function(inst, owner)
 		inst.components.aipc_timer:KillName("loopCheck")
