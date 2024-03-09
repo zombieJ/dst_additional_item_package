@@ -40,6 +40,9 @@ local function fn()
 
     MakeInventoryFloatable(inst, "med", 0.3, 1)
 
+    -- 燃料注入
+	inst:AddComponent("aipc_fuel")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

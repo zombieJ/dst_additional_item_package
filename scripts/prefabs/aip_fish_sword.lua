@@ -1,3 +1,4 @@
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 local foldername = KnownModIndex:GetModActualName(TUNING.ZOMBIEJ_ADDTIONAL_PACKAGE)
 
 -- 配置
@@ -56,16 +57,13 @@ TUNING.AIP_FISH_SWORD_PERISH = PERISH_MAP[weapon_uses]
 TUNING.AIP_FISH_SWORD_DAMAGE = DAMAGE_MAP[weapon_damage]
 
 -- 资源
-local assets =
-{
+local assets = {
 	Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
 	Asset("ANIM", "anim/aip_fish_sword.zip"),
 	Asset("ANIM", "anim/aip_fish_sword_swap.zip"),
 }
 
-local prefabs =
-{
-}
+local prefabs = {}
 
 -- 文字描述
 STRINGS.NAMES.AIP_FISH_SWORD = LANG.NAME
@@ -73,6 +71,11 @@ STRINGS.RECIPE_DESC.AIP_FISH_SWORD = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_FISH_SWORD = LANG.DESC
 
 -----------------------------------------------------------
+local function onFueled(inst, item, doer)
+	if inst.components.perishable ~= nil then
+		inst.components.perishable:ReducePercent(-0.5)
+	end
+end
 
 local function calcDamage(inst, attacker, target)
 	local MAX_DAMAGE = TUNING.AIP_FISH_SWORD_DAMAGE
@@ -89,6 +92,7 @@ local function calcDamage(inst, attacker, target)
 	return MIN_DAMAGE
 end
 
+-----------------------------------------------------------
 local function onequip(inst, owner)
 	owner.AnimState:OverrideSymbol("swap_object", "aip_fish_sword_swap", "aip_fish_sword_swap")
 	owner.SoundEmitter:PlaySound("dontstarve/wilson/equip_item_gold")
@@ -102,6 +106,7 @@ local function onunequip(inst, owner)
 	owner.AnimState:Show("ARM_normal")
 end
 
+-----------------------------------------------------------
 local function fn()
 	local inst = CreateEntity()
 
@@ -120,12 +125,19 @@ local function fn()
 
 	inst.entity:SetPristine()
 
+	-- 双端通用的匹配
+	inst:AddComponent("aipc_fueled")
+	inst.components.aipc_fueled.prefab = "saltrock"
+	inst.components.aipc_fueled.onFueled = onFueled
+
 	if not TheWorld.ismastersim then
 		return inst
 	end
 
 	inst:AddComponent("perishable")
-	inst.components.perishable:SetPerishTime(TUNING.AIP_FISH_SWORD_PERISH)
+	inst.components.perishable:SetPerishTime(
+		dev_mode and TUNING.DRY_SUPERFAST or TUNING.AIP_FISH_SWORD_PERISH
+	)
 	inst.components.perishable:StartPerishing()
 	inst.components.perishable.onperishreplacement = "spoiled_food"
 

@@ -155,6 +155,12 @@ AddPrefabPostInit("moonglass", function(inst)
 	inst:AddComponent("aipc_fuel")
 end)
 
+------------------------------------------ 盐晶 ------------------------------------------
+AddPrefabPostInit("saltrock", function(inst)
+	-- 燃料注入
+	inst:AddComponent("aipc_fuel")
+end)
+
 ------------------------------------------ 猪人 ------------------------------------------
 AddPrefabPostInit("pigman", function(inst)
 	-- 猪人会概率掉落西游人物卡

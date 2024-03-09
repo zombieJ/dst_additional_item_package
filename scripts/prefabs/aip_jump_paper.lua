@@ -163,17 +163,7 @@ local function OnHit(inst, owner, target)
 
 		-- 过滤 敌对 和 想攻击你 的
 		ents = aipFilterTable(ents, function(ent)
-			return (
-                ent:IsValid() and
-                ent.components.health ~= nil and
-                not ent.components.health:IsDead() and
-                (
-                    ent:HasTag("hostile") or (
-                        ent.components.combat ~= nil and
-                        ent.components.combat.target == owner
-                    )
-                )
-			)
+			return aipCanAttack(ent, owner)
 		end)
 
 		-- 过滤已经在列表里的单位

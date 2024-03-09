@@ -32,7 +32,6 @@ local function onUpdateState(inst)
     inst._aipDuration = math.max(0, inst._aipDuration - INTERVAL)
     local redPTG = inst._aipDuration / MAX_DURATION
     local bluePTG = 1 - redPTG
-    aipPrint(redPTG, bluePTG)
 
     -- inst.AnimState:OverrideMultColour(redPTG, 0, bluePTG, 0.5 + redPTG / 2)
     inst.AnimState:SetMultColour(1, 1, 1, redPTG)
