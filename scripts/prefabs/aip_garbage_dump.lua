@@ -10,6 +10,10 @@ local LANG_MAP = {
         DESC_FULL = "It's full of garbage!",
         BEZOAR = "Bezoar",
         BEZOAR_DESC = "Just right after the fire treatment",
+
+        BEZOAR_CURSED = "Cursed Bezoar",
+        BEZOAR_CURSED_DESC = "It's digesting the curse",
+        BEZOAR_CURSED_REC_DESC = "Absorb the curse, it will recover over time",
 	},
 	chinese = {
 		NAME = "垃圾堆",
@@ -18,6 +22,10 @@ local LANG_MAP = {
         DESC_FULL = "已经被塞得满满当当了！",
         BEZOAR = "粪石",
         BEZOAR_DESC = "火候处理的刚刚好",
+
+        BEZOAR_CURSED = "诅咒的粪石",
+        BEZOAR_CURSED_DESC = "它正在消化诅咒",
+        BEZOAR_CURSED_REC_DESC = "使用粪石吸收诅咒，随着时间推移粪石会逐渐复原",
 	},
 }
 
@@ -31,11 +39,16 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_GARBAGE_DUMP_FULL = LANG.DESC_FULL
 STRINGS.NAMES.AIP_BEZOAR = LANG.BEZOAR
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_BEZOAR = LANG.BEZOAR_DESC
 
+STRINGS.NAMES.AIP_BEZOAR_CURSED = LANG.BEZOAR_CURSED
+STRINGS.RECIPE_DESC.AIP_BEZOAR_CURSED = LANG.BEZOAR_CURSED_REC_DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_BEZOAR_CURSED = LANG.BEZOAR_CURSED_DESC
+
 -- 资源
 local assets = {
     Asset("ANIM", "anim/aip_garbage_dump.zip"),
 	Asset("ATLAS", "images/inventoryimages/aip_garbage_dump.xml"),
     Asset("ATLAS", "images/inventoryimages/aip_bezoar.xml"),
+    Asset("ATLAS", "images/inventoryimages/aip_bezoar_cursed.xml"),
 }
 
 --------------------------------- 方法 -----------------------------------
@@ -234,6 +247,49 @@ local function bezoarFn()
     return inst
 end
 
+------------------------------ 诅咒的粪石 --------------------------------
+local function bezoarCursedFn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddNetwork()
+
+    MakeInventoryPhysics(inst)
+
+    inst.AnimState:SetBank("aip_garbage_dump")
+    inst.AnimState:SetBuild("aip_garbage_dump")
+    inst.AnimState:PlayAnimation("bezoar_cursed")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst:AddComponent("inventoryitem")
+	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_bezoar_cursed.xml"
+
+    inst:AddComponent("stackable")
+	inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM
+
+    inst:AddComponent("inspectable")
+
+    inst:AddComponent("tradable")
+	inst.components.tradable.goldvalue = 1
+
+	-- 腐烂
+	inst:AddComponent("perishable")
+	inst.components.perishable:SetPerishTime(dev_mode and 15 or TUNING.JELLYBEAN_DURATION)
+	inst.components.perishable:StartPerishing()
+	inst.components.perishable.onperishreplacement = "aip_bezoar"
+
+    MakeHauntableLaunch(inst)
+
+    return inst
+end
+
 return Prefab("aip_garbage_dump", fn, assets),
         MakePlacer("aip_garbage_dump_placer", "aip_garbage_dump", "aip_garbage_dump", "g1"),
-        Prefab("aip_bezoar", bezoarFn, assets)
+        Prefab("aip_bezoar", bezoarFn, assets),
+        Prefab("aip_bezoar_cursed", bezoarCursedFn, assets)
