@@ -14,6 +14,7 @@ local dresses = {
 	aip_som = {},
 	aip_blue_glasses = {},
 	aip_joker_face = {},
+	aip_monkey_face = {},
 }
 
 for name,data in pairs(dresses) do

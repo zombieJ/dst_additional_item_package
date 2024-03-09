@@ -118,6 +118,25 @@ return {
                 name="aip_black_xuelong",
             },
             "The unknown legacy can cause high damage in the meme state.",
+
+             -- 憎恨之刃
+             {
+                type="img",
+                name="aip_oldone_hand",
+            },
+            "Born in the dark, the blade will become stronger with the killing, given by Charlie according to mood.",
+            -- 羁绊之刃
+            {
+                type="img",
+                name="aip_living_friendship",
+            },
+            "Buried in the moonlight glass rock, the more partners around, the greater the damage (small animal partners also count)",
+            -- 圣剑
+            {
+                type="img",
+                name="aipc_divine_rapier",
+            },
+            "Force combined by the totem, can summon two sword marks to attack. Inherit all abilities of both.",
         },
     },
 
@@ -1091,6 +1110,19 @@ return {
                 height=80,
             },
             "I leave a rick box, can you fill it? Of course, rice ball is very viscous and can be used to repair ships. I guess you must be reluctant to let it go.",
+        },
+    },
+
+    -- 鲜活世界
+    {
+        name = "Fresh World",
+        desc = {
+            "This world is full of vitality, and I want to record some interesting things I found.",
+            "Night Flower: the fragile glowing flowers generated at night, when I tried to get close, it drifted away with the wind.",
+            "Ligten Jellyfish: Sometimes you will see fluorescent jellyfish over the ocean at night, but it will disperse when I get close.",
+            "Ocean Vortex: There exists vortex in the ocean, but it's safe to observe from a distance (Yes, be sure not to get close to it!).",
+            "Animal World: I occasionally see the scene of birds and vultures hunting.",
+            "Rabbit's Wisdom: Rabbits sometimes run around in the grass.",
         },
     },
 

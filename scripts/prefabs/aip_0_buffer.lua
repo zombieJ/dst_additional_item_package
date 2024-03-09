@@ -248,4 +248,36 @@ local function fn(data)
     return inst
 end
 
-return Prefab("aip_0_buffer", fn, assets)
+----------------------------------- BUFF -----------------------------------
+local function commonFn(anim)
+	local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddNetwork()
+
+    inst.AnimState:SetBank("aip_buffer")
+    inst.AnimState:SetBuild("aip_buffer")
+
+    inst.AnimState:PlayAnimation(anim, true)
+
+    inst:AddTag("NOCLICK")
+    inst:AddTag("fx")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.persists = false
+
+    return inst
+end
+
+local function paincFn()
+    return commonFn("panic")
+end
+
+return  Prefab("aip_0_buffer", fn, assets),
+        Prefab("aip_buffer_panic", paincFn, assets)

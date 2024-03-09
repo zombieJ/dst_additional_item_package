@@ -475,6 +475,11 @@ local food_recipes = {
 		tags = {"honeyed"},
 		oneatenfn = function(inst, eater)
 			aipBufferPatch(inst, eater, "aip_see_eyes", dev_mode and 20 or 120)
+
+			-- 如果是满月吃，一定能得到 羁绊之刃
+			if TheWorld.state.isfullmoon and eater.components.aipc_player_show ~= nil then
+				eater.components.aipc_player_show:CreateLivingFriendship()
+			end
 		end,
 	},
 

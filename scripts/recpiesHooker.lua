@@ -15,6 +15,9 @@ local additional_weapon = _G.aipGetModConfig("additional_weapon") == "open"
 -- 开启生存
 local additional_survival = _G.aipGetModConfig("additional_survival") == "open"
 
+-- 开启服装
+local additional_dress = _G.aipGetModConfig("additional_dress") == "open"
+
 
 -- 新版 mod 物品配方
 local function rec(name, tech, filters, ingredients, placerOrConfig)
@@ -60,6 +63,14 @@ local function recSurvival(...)
 	return rec(...)
 end
 
+local function recDress(...)
+	if not additional_dress then
+		return
+	end
+
+	return rec(...)
+end
+
 --[[
 	1 名称, 2 配方, 3 等级,
 	4 配置, 5 过滤
@@ -84,11 +95,11 @@ recWeapon("aip_fish_sword", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.WEAPONS },
 	{Ingredient("pondfish", 1),Ingredient("nightmarefuel", 2),Ingredient("rope", 1)})
 
 -- 马头
-rec("aip_horse_head", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.CLOTHING },
+recDress("aip_horse_head", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.CLOTHING },
 	{Ingredient("beefalowool", 5),Ingredient("boneshard", 3),Ingredient("beardhair", 3)})
 
 -- 赌徒铠甲
-rec("aip_armor_gambler", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.WEAPONS, CRAFTING_FILTERS.ARMOUR },
+recDress("aip_armor_gambler", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.WEAPONS, CRAFTING_FILTERS.ARMOUR },
 	{Ingredient("papyrus", 6),Ingredient("nightmarefuel", 1),Ingredient("rope", 1)})
 
 -- 蜂语
@@ -100,7 +111,7 @@ recSurvival("aip_blood_package", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.RESTORATIO
 	{Ingredient("mosquitosack", 1), Ingredient("spidergland", 3), Ingredient("ash", 2)})
 
 -- 岚色眼镜
-rec("aip_blue_glasses", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.CLOTHING },
+recDress("aip_blue_glasses", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.CLOTHING },
 	{Ingredient("steelwool", 1), Ingredient("ice", 2)})
 
 -- 符文袋
@@ -118,7 +129,7 @@ rec("aip_igloo", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.STRUCTURES },
 	"aip_igloo_placer")
 
 -- 诙谐面具
-rec("aip_joker_face", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.CLOTHING },
+recDress("aip_joker_face", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.CLOTHING },
 	{Ingredient("livinglog", 3), Ingredient("spidereggsack", 1), Ingredient("razor", 1)})
 
 -- 守财奴的背包
@@ -255,6 +266,15 @@ rec(
 	{ Ingredient("moonglass", 5), Ingredient("goldnugget", 4) },
 	{ nounlock=true })
 
+-- 圣剑
+recWeapon(
+	"aip_divine_rapier", TECH.AIP_DOU_TOTEM, { CRAFTING_FILTERS.WEAPONS, CRAFTING_FILTERS.MAGIC, },
+	{
+		Ingredient("aip_oldone_hand", 1, "images/inventoryimages/aip_oldone_hand.xml"),
+		Ingredient("aip_living_friendship", 1, "images/inventoryimages/aip_living_friendship.xml"),
+	},
+	{ nounlock=true })
+
 ------------------------------------ 古神低语 ------------------------------------
 -- 微笑雕像
 rec("chesspiece_aip_mouth_builder", TECH.LOST, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.DECOR },
@@ -293,6 +313,30 @@ rec("aip_garbage_dump", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.STRUCTURES },
 		Ingredient("powcake", 1)
 	},
 	"aip_garbage_dump_placer")
+
+-- 治愈球茎
+rec("aip_oldone_heal", TECH.MAGIC_TWO, { CRAFTING_FILTERS.RESTORATION },
+{
+	Ingredient("aip_oldone_plant_full", 1, "images/inventoryimages/aip_oldone_plant_full.xml"),
+	Ingredient("cutreeds", 2),
+	Ingredient("seeds", 1),
+})
+
+-- 驱猴面具
+recDress("aip_monkey_face", TECH.MAGIC_TWO, { CRAFTING_FILTERS.CLOTHING },
+{
+	Ingredient("aip_oldone_plant_broken", 2, "images/inventoryimages/aip_oldone_plant_broken.xml"),
+	Ingredient("aip_bezoar", 1, "images/inventoryimages/aip_bezoar.xml"),
+	Ingredient("nightmarefuel", 1),
+})
+
+-- 粪石
+rec("aip_bezoar_cursed", TECH.MAGIC_TWO, { CRAFTING_FILTERS.MAGIC },
+{
+	Ingredient("aip_bezoar", 1, "images/inventoryimages/aip_bezoar.xml"),
+	Ingredient("cursed_monkey_token", 1, nil, nil, "cursed_beads1.tex"),
+}, { nounlock=true })
+
 
 ------------------------------------ 量子扰动 ------------------------------------
 -- 粒子限制器
@@ -446,7 +490,6 @@ end
 
 -- 魔卡少女小樱
 if
-	_G.TUNING.LG_FANGLINGCHE_SANITY or
 	_G.aipInTable(modNames, "workshop-3043439883")
 then
 	_G.aipPrint("联动 魔卡少女小樱（百变小樱）")

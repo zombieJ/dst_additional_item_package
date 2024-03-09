@@ -306,6 +306,32 @@ function _G.aipDiffAngle(a1, a2)
 	return math.min(diff1, diff2)
 end
 
+-- 从角度到另一个角度过渡, 360 度
+function _G.aipToAngle(srcAngle, tgtAngle, step)
+	srcAngle = (srcAngle + 720) % 360
+	tgtAngle = (tgtAngle + 720) % 360
+
+	local tgtAngleList = { tgtAngle - 360, tgtAngle, tgtAngle + 360 }
+
+	local closestTgtAngle = nil
+
+	for i, angle in pairs(tgtAngleList) do
+		local diffAngle = angle - srcAngle
+		if closestTgtAngle == nil or math.abs(diffAngle) < math.abs(closestTgtAngle - srcAngle) then
+			closestTgtAngle = angle
+		end
+	end
+
+	local diffAngle = closestTgtAngle - srcAngle
+	if math.abs(diffAngle) <= step then
+		return tgtAngle
+	end
+
+	local nextAngle = diffAngle > 0 and srcAngle + step or srcAngle - step
+
+	return (nextAngle + 360) % 360
+end
+
 -- 返回两点之间的距离（默认无视 Y 坐标）
 function _G.aipDist(p1, p2, includeY)
 	-- 无效坐标，则返回超级远
@@ -372,6 +398,20 @@ function _G.aipFindNearPlayers(inst, dist)
 	-- local ents = _G.TheSim:FindEntities(x, 0, z, dist, { "player", "_health" }, NOTAGS)
 	-- return ents
 	return _G.FindPlayersInRange(x, y, z, dist, true)
+end
+
+function _G.aipCanAttack(target, attacker, keepTarget)
+	return target ~= nil and target:IsValid() and
+		target.components.health ~= nil and
+		not target.components.health:IsDead() and
+		(
+			target:HasTag("hostile") or
+			keepTarget or
+			(
+				target.components.combat ~= nil and
+				target.components.combat.target == attacker
+			)
+		)
 end
 
 function _G.aipFindCloseEnt(inst, targetList)
@@ -834,6 +874,10 @@ function _G.aipCommonStore()
 	return _G.TheWorld.components ~= nil and _G.TheWorld.components.world_common_store
 end
 
+function _G.aipUnique()
+	return _G.TheWorld.components ~= nil and _G.TheWorld.components.aipc_world_unique
+end
+
 function _G.aipGetOne(inst)
 	if inst.components.stackable ~= nil then
 		return inst.components.stackable:Get()
@@ -869,10 +913,17 @@ function _G.aipFlingItem(loot, pt, config)
 
 		local min_speed = config.minSpeed or 0
 		local max_speed = config.maxSpeed or 2
-		local y_speed = 8
-		local y_speed_variance = 4
 
-		local mergedYSpeed = config.ySpeed or _G.GetRandomWithVariance(y_speed, y_speed_variance)
+		local mergedYSpeed = nil
+
+		if config.ySpeed ~= nil and config.ySpeedVariance ~= nil then
+			mergedYSpeed = _G.GetRandomWithVariance(config.ySpeed, config.ySpeedVariance)
+		else
+			local y_speed = 8
+			local y_speed_variance = 4
+
+			mergedYSpeed = config.ySpeed or _G.GetRandomWithVariance(y_speed, y_speed_variance)
+		end
 
 		local angle = config.angle ~= nil and config.angle or math.random() * 2 * _G.PI
 
