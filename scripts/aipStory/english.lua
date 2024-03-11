@@ -134,7 +134,7 @@ return {
             -- 圣剑
             {
                 type="img",
-                name="aipc_divine_rapier",
+                name="aip_divine_rapier",
             },
             "Force combined by the totem, can summon two sword marks to attack. Inherit all abilities of both.",
         },

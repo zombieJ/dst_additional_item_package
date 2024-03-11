@@ -132,7 +132,7 @@ return {
             -- 圣剑
             {
                 type="img",
-                name="aipc_divine_rapier",
+                name="aip_divine_rapier",
             },
             "被联结图腾强行融合武器，可以召唤两把剑的剑痕进行攻击。继承两者全部能力。",
         },

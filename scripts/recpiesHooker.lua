@@ -453,13 +453,13 @@ local modNames = _G.ModManager:GetEnabledServerModNames()
 -- 海洋传说
 if
 	_G.TUNING.LG_FANGLINGCHE_SANITY or
-	_G.aipInTable(modNames, "workshop-2827757831")
+	_G.aipInTable(modNames, "workshop-2979177306")
 then
 	_G.aipPrint("联动 海洋传说")
 
 	-- 恒温水母
 	rec("aip_oldone_jellyfish", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.WINTER, CRAFTING_FILTERS.SUMMER },
-	{ Ingredient("saltrock", 5), Ingredient("rain_flower_stone", 1, "images/inventoryimages/rain_flower_stone.xml"), },
+	{ Ingredient("saltrock", 5), Ingredient("rain_flower_stone", 1), },
 	{ atlas = "images/inventoryimages/aip_oldone_jellyfish_cold.xml", image = "aip_oldone_jellyfish_cold.tex" })
 
 	-- 宠物软糖
