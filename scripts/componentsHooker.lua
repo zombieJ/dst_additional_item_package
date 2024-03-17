@@ -667,16 +667,22 @@ AipPostComp("combat", function(self)
 				dmg = dmg * multi
 			end
 
-			-- 巨兽 对生命值进行判定
-			local giantsInfo, giantsLv = self.inst.components.aipc_pet_owner:GetSkillInfo("giants")
-			if giantsInfo ~= nil then
-				if
-					target.components.health ~= nil and
-					target.components.health.currenthealth >= giantsInfo.hp
-				then
-					local multi = 1 + giantsInfo.multi * giantsLv
-					dmg = dmg * multi
-				end
+			-- 好斗
+			local skillInfo, skillLv = self.inst.components.aipc_pet_owner:GetSkillInfo("aggressive")
+
+			if skillInfo ~= nil then
+				local multi = skillInfo.multi * skillLv
+				petDmgMulti = petDmgMulti + multi
+			end
+
+			-- 青尘 增加 100% 伤害
+			local balrogInfo, balrogLv = self.inst.components.aipc_pet_owner:GetSkillInfo("balrog")
+			if
+				balrogInfo ~= nil and
+				self.inst.components.health ~= nil and
+				self.inst.components.health.takingfiredamage == true
+			then
+				dmg = dmg + balrogInfo.atk * balrogLv
 			end
 
 			dmg = dmg * (1 + petDmgMulti)

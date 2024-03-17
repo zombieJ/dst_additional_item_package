@@ -13,12 +13,14 @@ local LANG_MAP = {
 	english = {
 		PLAY_BUFF_NAME = "play",
 		MUDDY_BUFF_NAME = "muddy",
+		BALROG_BUFF_NAME = "balrog",
 		FULL_FUDGE = "It ate too much fudge",
 		NO_FUDGE = "No skill need raise quality",
 	},
 	chinese = {
 		PLAY_BUFF_NAME = "嬉闹",
 		MUDDY_BUFF_NAME = "泥泞",
+		BALROG_BUFF_NAME = "青尘",
 		FULL_FUDGE = "它吃了太多软糖",
 		NO_FUDGE = "它没有要提升品质的技能",
 	},
@@ -76,6 +78,12 @@ aipBufferRegister("aip_pet_muddy", {
 		end
 	end,
 
+	showFX = true,
+})
+
+-- 青尘 BUFF
+aipBufferRegister("aip_balrog", {
+	name = LANG.BALROG_BUFF_NAME,
 	showFX = true,
 })
 
@@ -306,6 +314,13 @@ local function OnMissAttack(inst)
 	end
 end
 
+-- 烧伤
+local function OnBurnt(inst)
+	if inst.components.aipc_pet_owner == nil then
+		return
+	end
+end
+
 ---------------------------------------------------------------------
 -- 双端通用，抓捕宠物组件
 local PetOwner = Class(function(self, inst)
@@ -322,6 +337,7 @@ local PetOwner = Class(function(self, inst)
 	self.inst:ListenForEvent("aipStartCooking", OnStartCooking)
 	self.inst:ListenForEvent("picksomething", OnPick)
 	self.inst:ListenForEvent("aipMissAttack", OnMissAttack)
+	self.inst:ListenForEvent("burnt", OnBurnt)
 
 	self.inst:WatchWorldState("phase", OnPhase)
 end)
@@ -1016,6 +1032,7 @@ function PetOwner:OnRemoveEntity()
 	self.inst:RemoveEventCallback("aipStartCooking", OnStartCooking)
 	self.inst:RemoveEventCallback("picksomething", OnPick)
 	self.inst:RemoveEventCallback("aipMissAttack", OnMissAttack)
+	self.inst:RemoveEventCallback("burnt", OnBurnt)
 end
 
 PetOwner.OnRemoveFromEntity = PetOwner.OnRemoveEntity

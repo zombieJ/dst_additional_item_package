@@ -127,6 +127,7 @@ local SKILL_LANG = {
 		shrimp = "Shrimp Punch",
 		resonance = "Resonance",
 		rainbow = "Rainbow",
+		balrog = "Balrog",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -163,6 +164,7 @@ local SKILL_LANG = {
 		shrimp = "虾拳",
 		resonance = "执念",
 		rainbow = "淋雨声",
+		balrog = "青尘",
 	},
 }
 
@@ -202,6 +204,7 @@ local SKILL_MAX_LEVEL = {
 	shrimp = { 10, 12, 14, 16, 20 },
 	resonance = { 1, 2, 3, 4, 5 },
 	rainbow = { 1, 1, 1, 1, 1 },
+	balrog = { 1, 1, 1, 1, 1 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -352,6 +355,10 @@ local SKILL_CONSTANT = {
 		goldern = true,
 		wet = dev_mode and 10 or 2,						-- 每个等级潮湿度倍数
 	},
+	balrog = {
+		goldern = true,
+		atk = dev_mode and 100 or 1,					-- 每个等级增加 100% 攻击
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -390,6 +397,7 @@ local SKILL_DESC_LANG = {
 		shrimp = "Increase PTG% damage when no weapon equipped",
 		resonance = "Increase ATK% damage and reduce DEF% damage taken when crazy",
 		rainbow = "Increase WET% moisture speed and reduce damage taken by moisture",
+		balrog = "Increase ATK% damage when burning",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -425,7 +433,8 @@ local SKILL_DESC_LANG = {
 		bubble = "发出半径为DIST的光芒",
 		shrimp = "徒手攻击时伤害提升PTG%",
 		resonance = "在疯狂状态下伤害提升ATK%，受到伤害减免DEF%",
-		rainbow = "潮湿速度提升WET%，受到的伤害会优先被雨露值抵消。",
+		rainbow = "潮湿速度提升WET%，受到的伤害会优先被雨露值抵消",
+		balrog = "火焰即是力量。在被点燃时，攻击伤害提升ATK%",
 	},
 }
 
@@ -584,6 +593,11 @@ local SKILL_DESC_VARS = {
 			WET = info.wet * lv * 100,
 		}
 	end,
+	balrog = function(info, lv)
+		return {
+			ATK = info.atk * lv * 100,
+		}
+	end,
 }
 
 local SKILL_LIST = {}
@@ -611,7 +625,8 @@ if dev_mode then
 		-- "cooker",
 		-- "giants",
 		-- "blasphemy",
-		"rainbow",
+		-- "rainbow",
+		"balrog",
 	}
 end
 
