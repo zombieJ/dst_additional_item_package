@@ -489,6 +489,13 @@ return {
                 name="chesspiece_aip_fish",
             },
             "“启迪时克雕塑”的又一灵感，呵，其实一点都不像“美人鱼”。",
+
+            -- 娜娜
+            {
+                type="img",
+                name="chesspiece_aip_nana",
+            },
+            "“雕一只拿着酒瓶的兔子”，耳边响起了奇怪的耳语。",
         },
     },
 

@@ -73,20 +73,35 @@ end
 
 -- 丢起物品
 local function onLockDrop(inst, source)
-    local ptg = dev_mode and 0.5 or 0.01
+    local prefab = aipRandomLoot({
+        chesspiece_aip_mouth_sketch = 1,
+        chesspiece_aip_octupus_sketch = 1,
+        chesspiece_aip_fish_sketch = 1,
+        chesspiece_aip_nana_sketch = dev_mode and 999 or 1,
+        aip_oldone_wall_item = 8,
+    })
 
-    if Prefabs.chesspiece_aip_fish_sketch ~= nil and math.random() < ptg then
-        inst.components.lootdropper:SpawnLootPrefab("chesspiece_aip_fish_sketch")
-    elseif Prefabs.chesspiece_aip_octupus_sketch ~= nil and math.random() < ptg then
-        inst.components.lootdropper:SpawnLootPrefab("chesspiece_aip_octupus_sketch")
-    elseif Prefabs.chesspiece_aip_mouth_sketch ~= nil and math.random() < ptg then
-        inst.components.lootdropper:SpawnLootPrefab("chesspiece_aip_mouth_sketch")
-    else
-        local count = math.random(3, 5)
+    if Prefabs[prefab] ~= nil then
+        local count = prefab == "aip_oldone_wall_item" and math.random(3, 5) or 1
         for i = 1, count do
-            inst.components.lootdropper:SpawnLootPrefab("aip_oldone_wall_item")
+            inst.components.lootdropper:SpawnLootPrefab(prefab)
         end
     end
+
+    -- local ptg = dev_mode and 0.5 or 0.01
+
+    -- if Prefabs.chesspiece_aip_fish_sketch ~= nil and math.random() < ptg then
+    --     inst.components.lootdropper:SpawnLootPrefab("chesspiece_aip_fish_sketch")
+    -- elseif Prefabs.chesspiece_aip_octupus_sketch ~= nil and math.random() < ptg then
+    --     inst.components.lootdropper:SpawnLootPrefab("chesspiece_aip_octupus_sketch")
+    -- elseif Prefabs.chesspiece_aip_mouth_sketch ~= nil and math.random() < ptg then
+    --     inst.components.lootdropper:SpawnLootPrefab("chesspiece_aip_mouth_sketch")
+    -- else
+    --     local count = math.random(3, 5)
+    --     for i = 1, count do
+    --         inst.components.lootdropper:SpawnLootPrefab("aip_oldone_wall_item")
+    --     end
+    -- end
 end
 
 -------------------------------------- 实体 ---------------------------------------

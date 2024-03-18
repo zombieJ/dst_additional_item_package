@@ -291,6 +291,11 @@ rec("chesspiece_aip_fish_builder", TECH.LOST, { CRAFTING_FILTERS.CRAFTING_STATIO
 	{ Ingredient(_G.TECH_INGREDIENT.SCULPTING, 2), Ingredient("aip_oldone_plant_broken", 1, "images/inventoryimages/aip_oldone_plant_broken.xml") },
 	{ nounlock=true, atlas = "images/inventoryimages/chesspiece_aip_fish.xml", image = "chesspiece_aip_fish.tex" })
 
+-- 娜娜雕像
+rec("chesspiece_aip_nana_builder", TECH.LOST, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.DECOR },
+	{ Ingredient(_G.TECH_INGREDIENT.SCULPTING, 2), Ingredient("aip_oldone_plant_broken", 1, "images/inventoryimages/aip_oldone_plant_broken.xml") },
+	{ nounlock=true, atlas = "images/inventoryimages/chesspiece_aip_nana.xml", image = "chesspiece_aip_nana.tex" })
+
 -- 榴星
 recWeapon("aip_oldone_durian", TECH.MAGIC_TWO, { CRAFTING_FILTERS.WEAPONS },
 	{ Ingredient("durian", 1), Ingredient("aip_oldone_plant_full", 1, "images/inventoryimages/aip_oldone_plant_full.xml"), })

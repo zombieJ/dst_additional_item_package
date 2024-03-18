@@ -491,6 +491,13 @@ return {
                 name="chesspiece_aip_fish",
             },
             "Another inspiration for 'Enlightenment Sculpture', oh, it doesn't look like a 'mermaid' at all.",
+        
+            -- 娜娜
+            {
+                type="img",
+                name="chesspiece_aip_nana",
+            },
+            "'Sculpt a rabbit holding a wine bottle', strange whispers in my ears.",
         },
     },
 

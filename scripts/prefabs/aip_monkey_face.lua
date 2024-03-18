@@ -84,7 +84,7 @@ local function loopCheck(inst, owner)
 		end
 	end
 
-	-- TODO:如果是猴子，造成伤害
+	-- 如果是猴子，造成伤害
 	if isMonkey and owner.components.health ~= nil then
 		owner.components.health:DoDelta(-1)
 	end

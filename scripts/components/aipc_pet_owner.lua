@@ -81,7 +81,7 @@ aipBufferRegister("aip_pet_muddy", {
 	showFX = true,
 })
 
--- 青尘 BUFF
+-- 青尘 BUFF: 没用到
 aipBufferRegister("aip_balrog", {
 	name = LANG.BALROG_BUFF_NAME,
 	showFX = true,

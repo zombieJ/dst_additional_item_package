@@ -57,6 +57,11 @@ local LANG_MAP = {
 			REC_DESC = "No front & end",
 			DESC = "It's 'beautiful'",
 		},
+		aip_nana = {
+			NAME = "Nana",
+			REC_DESC = "A rabbit holding a bottle",
+			DESC = "Strange sculpture",
+		},
 	},
 	spanish = {
 		aip_moon = {
@@ -113,6 +118,11 @@ local LANG_MAP = {
 			NAME = "美人鱼",
 			REC_DESC = "没有正反面",
 			DESC = "它可真“美”",
+		},
+		aip_nana = {
+			NAME = "娜娜",
+			REC_DESC = "一直拿着酒瓶的兔子",
+			DESC = "奇怪的雕塑",
 		},
 	},
 	russian = {
@@ -251,6 +261,10 @@ local PIECES =
 	},
 	{
 		name = "aip_fish",
+		moonevent = false,
+	},
+	{
+		name = "aip_nana",
 		moonevent = false,
 	},
 }
