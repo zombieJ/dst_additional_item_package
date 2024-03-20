@@ -599,6 +599,10 @@ AipPostComp("combat", function(self)
 		local dmg = oriDmg
 		local spDmg = oriSpDmg
 
+		local petDmgMulti = 1	-- 伤害倍数
+		local petDmgPlus = 0	-- 伤害加成
+		local petDmgDiv = 1		-- 伤害除数（减免伤害都是乘法计算，防止变成负数）
+
 		-- 古神 攻击 buff
 		if
 			_G.aipBufferExist(
@@ -606,7 +610,7 @@ AipPostComp("combat", function(self)
 				"aip_oldone_smiling_attack"
 			)
 		then
-			dmg = dmg * 2
+			petDmgMulti = petDmgMulti + 1
 		end
 
 		-- 攻击者有 嬉闹 BUFF，将会减少伤害
@@ -616,7 +620,8 @@ AipPostComp("combat", function(self)
 		)
 		if playBuffInfo ~= nil and playBuffInfo.data ~= nil then
 			local desc = playBuffInfo.data.desc or 0
-			dmg = dmg * (1 - desc)
+			-- dmg = dmg * (1 - desc)
+			petDmgDiv = petDmgDiv * (1 - desc)
 		end
 
 		-- 杀神 增加伤害
@@ -626,13 +631,12 @@ AipPostComp("combat", function(self)
 		)
 		if dmg ~= 0 and johnWickInfo ~= nil and johnWickInfo.data ~= nil then
 			local atk = johnWickInfo.data.dmg or 0
-			dmg = dmg + atk
+			-- dmg = dmg + atk
+			petDmgPlus = petDmgPlus + atk
 		end
 
 		-- 宠物主人攻击 buff
 		if self.inst.components.aipc_pet_owner ~= nil then
-			local petDmgMulti = 0
-
 			-- 好斗
 			local skillInfo, skillLv = self.inst.components.aipc_pet_owner:GetSkillInfo("aggressive")
 
@@ -663,8 +667,7 @@ AipPostComp("combat", function(self)
 			local migaoInfo, migaoLv, migaoSkill = self.inst.components.aipc_pet_owner:GetSkillInfo("migao")
 
 			if migaoInfo ~= nil then
-				local multi = 1 + (migaoSkill._multi or 0) * migaoInfo.multi
-				dmg = dmg * multi
+				petDmgMulti = petDmgMulti + (migaoSkill._multi or 0) * migaoInfo.multi
 			end
 
 			-- 好斗
@@ -675,17 +678,22 @@ AipPostComp("combat", function(self)
 				petDmgMulti = petDmgMulti + multi
 			end
 
-			-- 青尘 增加 100% 伤害
+			-- 青尘 增加伤害
 			local balrogInfo, balrogLv = self.inst.components.aipc_pet_owner:GetSkillInfo("balrog")
 			if
-				balrogInfo ~= nil and
-				self.inst.components.health ~= nil and
-				self.inst.components.health.takingfiredamage == true
+				balrogInfo ~= nil and (
+					-- 如果是受到火焰伤害
+					(
+						self.inst.components.health ~= nil and
+						self.inst.components.health.takingfiredamage == true
+					) or
+					-- 如果有 火莲 的 BUFF
+					_G.aipBufferExist(self.inst, "aip_balrog")
+				)
+				
 			then
-				dmg = dmg + balrogInfo.atk * balrogLv
+				petDmgPlus = petDmgPlus + balrogInfo.atk * balrogLv
 			end
-
-			dmg = dmg * (1 + petDmgMulti)
 		end
 
 		-- 目标如果是宠物主人
@@ -694,8 +702,9 @@ AipPostComp("combat", function(self)
 			local skillInfo, skillLv = target.components.aipc_pet_owner:GetSkillInfo("conservative")
 
 			if skillInfo ~= nil then
-				local multi = 1 - skillInfo.multi * skillLv
-				dmg = dmg * multi
+				-- local multi = 1 - skillInfo.multi * skillLv
+				-- dmg = dmg * multi
+				petDmgDiv = petDmgDiv * (1 - skillInfo.multi * skillLv)
 			end
 
 			-- 蝶舞有概率免疫
@@ -720,8 +729,9 @@ AipPostComp("combat", function(self)
 			local migaoInfo, migaoLv, migaoSkill = target.components.aipc_pet_owner:GetSkillInfo("migao")
 
 			if migaoInfo ~= nil then
-				local multi = 1 + migaoInfo.pain
-				dmg = dmg * multi
+				-- local multi = 1 + migaoInfo.pain
+				-- dmg = dmg * multi
+				petDmgMulti = petDmgMulti + migaoInfo.pain
 
 				-- 重置伤害倍数计数
 				migaoSkill._multi = 0
@@ -731,13 +741,24 @@ AipPostComp("combat", function(self)
 			local graveInfo, graveLv = target.components.aipc_pet_owner:GetSkillInfo("graveCloak")
 			if graveInfo ~= nil and target.components.aipc_grave_cloak ~= nil and dmg > 0 then
 				local cnt = target.components.aipc_grave_cloak:GetCurrent()
-				local multi = 1 - cnt * (graveInfo.def + graveInfo.defMulti * graveLv)
-				dmg = dmg * math.max(0, multi)
+				local diffPTG = cnt * (graveInfo.def + graveInfo.defMulti * graveLv)
+				-- local multi = 1 - diffPTG
+				-- dmg = dmg * math.max(0, multi)
+				petDmgDiv = petDmgDiv * math.max(0, 1 - diffPTG)
 
 				-- 破坏一层
 				target.components.aipc_grave_cloak:Break()
 			end
 		end
+
+		-- 如果有 火莲 buff 就加伤害
+		if _G.aipBufferExist(self.inst, "aip_balrog") then
+			petDmgPlus = petDmgPlus + 10
+			_G.aipBufferRemove(self.inst, "aip_balrog")
+		end
+
+		-- 计算伤害
+		dmg = (dmg * petDmgMulti + petDmgPlus) * petDmgDiv
 
 		-- 如果 dmg 被变为 0，则也避免特殊伤害。如果没有变化则保留
 		if dmg == 0 and dmg ~= oriDmg then

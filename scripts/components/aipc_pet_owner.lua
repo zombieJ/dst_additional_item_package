@@ -13,14 +13,12 @@ local LANG_MAP = {
 	english = {
 		PLAY_BUFF_NAME = "play",
 		MUDDY_BUFF_NAME = "muddy",
-		BALROG_BUFF_NAME = "balrog",
 		FULL_FUDGE = "It ate too much fudge",
 		NO_FUDGE = "No skill need raise quality",
 	},
 	chinese = {
 		PLAY_BUFF_NAME = "嬉闹",
 		MUDDY_BUFF_NAME = "泥泞",
-		BALROG_BUFF_NAME = "青尘",
 		FULL_FUDGE = "它吃了太多软糖",
 		NO_FUDGE = "它没有要提升品质的技能",
 	},
@@ -78,12 +76,6 @@ aipBufferRegister("aip_pet_muddy", {
 		end
 	end,
 
-	showFX = true,
-})
-
--- 青尘 BUFF: 没用到
-aipBufferRegister("aip_balrog", {
-	name = LANG.BALROG_BUFF_NAME,
 	showFX = true,
 })
 
