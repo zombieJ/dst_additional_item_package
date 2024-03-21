@@ -112,6 +112,10 @@ local LANG_MAP = {
 			NAME = "Maltose",
 			DESC = "Sweet memories",
 		},
+		AIP_FOOD_SPRING_BALL = {
+			NAME = "Spring Lucky Bag",
+			DESC = "Hello, Spring!",
+		},
 	},
 	spanish = {
 		EGG_PANCAKE = {
@@ -505,6 +509,10 @@ local LANG_MAP = {
 		AIP_FOOD_MALTOSE = {
 			NAME = "麦芽糖",
 			DESC = "承载着甜蜜的回忆",
+		},
+		AIP_FOOD_SPRING_BALL = {
+			NAME = "咬春福袋",
+			DESC = "春天，你好！",
 		},
 	},
 }
