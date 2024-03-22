@@ -84,18 +84,18 @@ end
 -- 文字描述
 local LANG_MAP = {
 	english = {
-		AIP_FILTERS = "Additional Item Package's recipes",
+		AIP_FILTERS = "[MOD] AIP",
 	},
 	chinese = {
-		AIP_FILTERS = "来自 额外物品包 的配方",
+		AIP_FILTERS = "* 额外物品包",
 	},
 }
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
 AddRecipeFilter({
 	name = "AIP_FILTERS",
-	atlas = "images/inventoryimages/aip_nectar_drunk.xml",
-	image = "aip_nectar_drunk.tex"
+	atlas = "images/inventoryimages/aip_particles_bottle.xml",
+	image = "aip_particles_bottle.tex"
 })
 
 _G.STRINGS.UI.CRAFTING_FILTERS.AIP_FILTERS = LANG.AIP_FILTERS
@@ -319,6 +319,11 @@ rec("chesspiece_aip_fish_builder", TECH.LOST, { CRAFTING_FILTERS.CRAFTING_STATIO
 rec("chesspiece_aip_nana_builder", TECH.LOST, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.DECOR },
 	{ Ingredient(_G.TECH_INGREDIENT.SCULPTING, 2), Ingredient("aip_oldone_plant_broken", 1, "images/inventoryimages/aip_oldone_plant_broken.xml") },
 	{ nounlock=true, atlas = "images/inventoryimages/chesspiece_aip_nana.xml", image = "chesspiece_aip_nana.tex" })
+
+-- 空白雕像
+rec("chesspiece_aip_empty_builder", TECH.LOST, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.DECOR },
+{ Ingredient(_G.TECH_INGREDIENT.SCULPTING, 2), Ingredient("aip_oldone_plant_broken", 1, "images/inventoryimages/aip_oldone_plant_broken.xml") },
+{ nounlock=true, atlas = "images/inventoryimages/chesspiece_aip_empty.xml", image = "chesspiece_aip_empty.tex" })
 
 -- 榴星
 recWeapon("aip_oldone_durian", TECH.MAGIC_TWO, { CRAFTING_FILTERS.WEAPONS },

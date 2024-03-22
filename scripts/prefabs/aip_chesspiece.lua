@@ -62,6 +62,11 @@ local LANG_MAP = {
 			REC_DESC = "A rabbit holding a bottle",
 			DESC = "Strange sculpture",
 		},
+		aip_empty = {
+			NAME = "Empty",
+			REC_DESC = "I think no place can put it",
+			DESC = "What's it laughing?",
+		},
 	},
 	spanish = {
 		aip_moon = {
@@ -123,6 +128,11 @@ local LANG_MAP = {
 			NAME = "娜娜",
 			REC_DESC = "一直拿着酒瓶的兔子",
 			DESC = "奇怪的雕塑",
+		},
+		aip_empty = {
+			NAME = "空白",
+			REC_DESC = "我觉得没有什么地方适合放它",
+			DESC = "它在笑什么？",
 		},
 	},
 	russian = {
@@ -265,6 +275,10 @@ local PIECES =
 	},
 	{
 		name = "aip_nana",
+		moonevent = false,
+	},
+	{
+		name = "aip_empty",
 		moonevent = false,
 	},
 }

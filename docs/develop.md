@@ -96,6 +96,10 @@ MASS 质量
 
 inst.AnimState:SetRayTestOnBB(true) 小物体会直接用盒装模型碰撞检测
 
+### 配方原型配置
+
+https://forums.kleientertainment.com/forums/topic/147251-tutorialcomplete-tutorial-for-dsts-new-craft-menu/
+
 ### 配方特殊物品
 
 例如 Ingredient(CHARACTER_INGREDIENT.HEALTH, 40)

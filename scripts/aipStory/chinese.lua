@@ -496,6 +496,13 @@ return {
                 name="chesspiece_aip_nana",
             },
             "“雕一只拿着酒瓶的兔子”，耳边响起了奇怪的耳语。",
+
+            -- 空白
+            {
+                type="img",
+                name="chesspiece_aip_empty",
+            },
+            "除了微笑，其余部分都是多余的。",
         },
     },
 

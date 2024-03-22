@@ -498,6 +498,13 @@ return {
                 name="chesspiece_aip_nana",
             },
             "'Sculpt a rabbit holding a wine bottle', strange whispers in my ears.",
+
+             -- 空白
+             {
+                type="img",
+                name="chesspiece_aip_empty",
+            },
+            "Except for the smile, the rest is redundant.",
         },
     },
 

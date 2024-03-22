@@ -77,7 +77,8 @@ local function onLockDrop(inst, source)
         chesspiece_aip_mouth_sketch = 1,
         chesspiece_aip_octupus_sketch = 1,
         chesspiece_aip_fish_sketch = 1,
-        chesspiece_aip_nana_sketch = dev_mode and 999 or 1,
+        chesspiece_aip_nana_sketch = 1,
+        chesspiece_aip_empty_sketch = dev_mode and 999 or 1,
         aip_oldone_wall_item = 8,
     })
 
