@@ -9,6 +9,9 @@ end
 
 local dev_mode = _G.aipGetModConfig("dev_mode") == "enabled"
 
+-- 语言
+local language = _G.aipGetModConfig("language")
+
 -- 开启武器
 local additional_weapon = _G.aipGetModConfig("additional_weapon") == "open"
 
@@ -17,7 +20,6 @@ local additional_survival = _G.aipGetModConfig("additional_survival") == "open"
 
 -- 开启服装
 local additional_dress = _G.aipGetModConfig("additional_dress") == "open"
-
 
 -- 新版 mod 物品配方
 local function rec(name, tech, filters, ingredients, placerOrConfig)
@@ -45,6 +47,8 @@ local function rec(name, tech, filters, ingredients, placerOrConfig)
 		config,
 		filterNames
 	)
+
+	AddRecipeToFilter(name, "AIP_FILTERS")
 end
 
 local function recWeapon(...)
@@ -76,18 +80,38 @@ end
 	4 配置, 5 过滤
 ]]
 
+-------------------------------------- 聚合 --------------------------------------
+-- 文字描述
+local LANG_MAP = {
+	english = {
+		AIP_FILTERS = "Additional Item Package's recipes",
+	},
+	chinese = {
+		AIP_FILTERS = "来自 额外物品包 的配方",
+	},
+}
+local LANG = LANG_MAP[language] or LANG_MAP.english
+
+AddRecipeFilter({
+	name = "AIP_FILTERS",
+	atlas = "images/inventoryimages/aip_nectar_drunk.xml",
+	image = "aip_nectar_drunk.tex"
+})
+
+_G.STRINGS.UI.CRAFTING_FILTERS.AIP_FILTERS = LANG.AIP_FILTERS
+
 -------------------------------------- 废弃 --------------------------------------
--- 【废弃】矿车
-rec("aip_mine_car", TECH.LOST, { CRAFTING_FILTERS.TOOLS },
-	{ Ingredient("boards", 5) })
+-- -- 【废弃】矿车
+-- rec("aip_mine_car", TECH.LOST, { CRAFTING_FILTERS.TOOLS },
+-- 	{ Ingredient("boards", 5) })
 
--- 【废弃】轨道
-rec("aip_orbit_item", TECH.LOST, { CRAFTING_FILTERS.TOOLS },
-{ Ingredient("boards", 1) })
+-- -- 【废弃】轨道
+-- rec("aip_orbit_item", TECH.LOST, { CRAFTING_FILTERS.TOOLS },
+-- { Ingredient("boards", 1) })
 
--- 【废弃】暗影打包带
-rec("aip_shadow_package", TECH.LOST, { CRAFTING_FILTERS.MAGIC },
-{ Ingredient("waxpaper", 1), Ingredient("nightmarefuel", 5), Ingredient("featherpencil", 1) })
+-- -- 【废弃】暗影打包带
+-- rec("aip_shadow_package", TECH.LOST, { CRAFTING_FILTERS.MAGIC },
+-- { Ingredient("waxpaper", 1), Ingredient("nightmarefuel", 5), Ingredient("featherpencil", 1) })
 
 -------------------------------------- 原版 --------------------------------------
 -- 鱼刀
