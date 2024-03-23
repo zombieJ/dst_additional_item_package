@@ -78,11 +78,6 @@ local function fn()
     inst.AnimState:SetBuild("aip_armor_balrog")
     inst.AnimState:PlayAnimation("anim")
 
-    inst:AddTag("grass")
-
-    -- 福利声音，移动的时候会循环触发
-    inst.foleysound = "dontstarve/movement/foley/grassarmour"
-
     MakeInventoryFloatable(inst, "small", 0.2, 0.80)
 
     inst.entity:SetPristine()

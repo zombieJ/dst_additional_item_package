@@ -1343,6 +1343,13 @@ return {
                 name="aip_hearthstone",
             },
             "This stone can take you to the Florid Postern, but it's not stable.",
+        
+            -- 国王的新衣
+            {
+                type="img",
+                name="aip_armor_king",
+            },
+            "Only when there is no one else around will it become a powerful armor, otherwise it will be useless. It can also be repaired automatically after broken.",
         },
     },
 
