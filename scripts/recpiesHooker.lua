@@ -9,6 +9,9 @@ end
 
 local dev_mode = _G.aipGetModConfig("dev_mode") == "enabled"
 
+-- 语言
+local language = _G.aipGetModConfig("language")
+
 -- 开启武器
 local additional_weapon = _G.aipGetModConfig("additional_weapon") == "open"
 
@@ -17,7 +20,6 @@ local additional_survival = _G.aipGetModConfig("additional_survival") == "open"
 
 -- 开启服装
 local additional_dress = _G.aipGetModConfig("additional_dress") == "open"
-
 
 -- 新版 mod 物品配方
 local function rec(name, tech, filters, ingredients, placerOrConfig)
@@ -45,6 +47,8 @@ local function rec(name, tech, filters, ingredients, placerOrConfig)
 		config,
 		filterNames
 	)
+
+	AddRecipeToFilter(name, "AIP_FILTERS")
 end
 
 local function recWeapon(...)
@@ -76,18 +80,38 @@ end
 	4 配置, 5 过滤
 ]]
 
+-------------------------------------- 聚合 --------------------------------------
+-- 文字描述
+local LANG_MAP = {
+	english = {
+		AIP_FILTERS = "[MOD] AIP",
+	},
+	chinese = {
+		AIP_FILTERS = "* 额外物品包",
+	},
+}
+local LANG = LANG_MAP[language] or LANG_MAP.english
+
+AddRecipeFilter({
+	name = "AIP_FILTERS",
+	atlas = "images/inventoryimages/aip_particles_bottle.xml",
+	image = "aip_particles_bottle.tex"
+})
+
+_G.STRINGS.UI.CRAFTING_FILTERS.AIP_FILTERS = LANG.AIP_FILTERS
+
 -------------------------------------- 废弃 --------------------------------------
--- 【废弃】矿车
-rec("aip_mine_car", TECH.LOST, { CRAFTING_FILTERS.TOOLS },
-	{ Ingredient("boards", 5) })
+-- -- 【废弃】矿车
+-- rec("aip_mine_car", TECH.LOST, { CRAFTING_FILTERS.TOOLS },
+-- 	{ Ingredient("boards", 5) })
 
--- 【废弃】轨道
-rec("aip_orbit_item", TECH.LOST, { CRAFTING_FILTERS.TOOLS },
-{ Ingredient("boards", 1) })
+-- -- 【废弃】轨道
+-- rec("aip_orbit_item", TECH.LOST, { CRAFTING_FILTERS.TOOLS },
+-- { Ingredient("boards", 1) })
 
--- 【废弃】暗影打包带
-rec("aip_shadow_package", TECH.LOST, { CRAFTING_FILTERS.MAGIC },
-{ Ingredient("waxpaper", 1), Ingredient("nightmarefuel", 5), Ingredient("featherpencil", 1) })
+-- -- 【废弃】暗影打包带
+-- rec("aip_shadow_package", TECH.LOST, { CRAFTING_FILTERS.MAGIC },
+-- { Ingredient("waxpaper", 1), Ingredient("nightmarefuel", 5), Ingredient("featherpencil", 1) })
 
 -------------------------------------- 原版 --------------------------------------
 -- 鱼刀
@@ -291,6 +315,16 @@ rec("chesspiece_aip_fish_builder", TECH.LOST, { CRAFTING_FILTERS.CRAFTING_STATIO
 	{ Ingredient(_G.TECH_INGREDIENT.SCULPTING, 2), Ingredient("aip_oldone_plant_broken", 1, "images/inventoryimages/aip_oldone_plant_broken.xml") },
 	{ nounlock=true, atlas = "images/inventoryimages/chesspiece_aip_fish.xml", image = "chesspiece_aip_fish.tex" })
 
+-- 娜娜雕像
+rec("chesspiece_aip_nana_builder", TECH.LOST, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.DECOR },
+	{ Ingredient(_G.TECH_INGREDIENT.SCULPTING, 2), Ingredient("aip_oldone_plant_broken", 1, "images/inventoryimages/aip_oldone_plant_broken.xml") },
+	{ nounlock=true, atlas = "images/inventoryimages/chesspiece_aip_nana.xml", image = "chesspiece_aip_nana.tex" })
+
+-- 空白雕像
+rec("chesspiece_aip_empty_builder", TECH.LOST, { CRAFTING_FILTERS.CRAFTING_STATION, CRAFTING_FILTERS.DECOR },
+{ Ingredient(_G.TECH_INGREDIENT.SCULPTING, 2), Ingredient("aip_oldone_plant_broken", 1, "images/inventoryimages/aip_oldone_plant_broken.xml") },
+{ nounlock=true, atlas = "images/inventoryimages/chesspiece_aip_empty.xml", image = "chesspiece_aip_empty.tex" })
+
 -- 榴星
 recWeapon("aip_oldone_durian", TECH.MAGIC_TWO, { CRAFTING_FILTERS.WEAPONS },
 	{ Ingredient("durian", 1), Ingredient("aip_oldone_plant_full", 1, "images/inventoryimages/aip_oldone_plant_full.xml"), })
@@ -337,6 +371,12 @@ rec("aip_bezoar_cursed", TECH.MAGIC_TWO, { CRAFTING_FILTERS.MAGIC },
 	Ingredient("cursed_monkey_token", 1, nil, nil, "cursed_beads1.tex"),
 }, { nounlock=true })
 
+-- 赌徒铠甲
+recDress("aip_armor_balrog", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.ARMOUR },
+	{
+		Ingredient("armordragonfly", 1),
+		Ingredient("aip_jump_paper", 3, "images/inventoryimages/aip_jump_paper.xml"),
+	})
 
 ------------------------------------ 量子扰动 ------------------------------------
 -- 粒子限制器

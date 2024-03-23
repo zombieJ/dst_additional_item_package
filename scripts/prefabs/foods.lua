@@ -77,14 +77,28 @@ local function oneaten_chili(inst, eater)
     end
 end
 
-local SPICES =
-{
+local SPICES = {
     SPICE_GARLIC = { rgba = { 0.6, 0.6, 1.0, 0.9 }, oneatenfn = oneaten_garlic, prefabs = { "buff_playerabsorption" } },
     SPICE_SUGAR  = { rgba = { 1.0, 1.0, 0.3, 1.0 }, oneatenfn = oneaten_sugar, prefabs = { "buff_workeffectiveness" } },
     SPICE_CHILI  = { rgba = { 1.0, 0.5, 0.5, 1.0 }, oneatenfn = oneaten_chili, prefabs = { "buff_attack" } },
 }
 
--- 配方
+----------------------------------- 方法 -----------------------------------
+local function getSpringBallHealth(inst, eater)
+	if TheWorld.state.isspring then
+		return inst.components.edible.healthvalue * 2
+	end
+	return inst.components.edible.healthvalue
+end
+
+local function getSpringBallSanity(inst, eater)
+	if TheWorld.state.isspring then
+		return inst.components.edible.sanityvalue * 2
+	end
+	return inst.components.edible.sanityvalue
+end
+
+----------------------------------- 配方 -----------------------------------
 local food_recipes = {
 	egg_pancake = {
 		test = function(cooker, names, tags) return tags.egg and tags.egg >= 3 and not tags.inedible end,
@@ -426,6 +440,26 @@ local food_recipes = {
 		sanity = SAN * -10,
 		perishtime = PER * 15,
 		cooktime = CO * 15,
+	},
+
+	aip_food_spring_ball = {	-- 咬春福袋
+		test = function(cooker, names, tags)
+			return names.aip_cold_skin and tags.egg and
+				(names.carrot or names.carrot_cooked) and
+				(names.corn or names.corn_cooked)
+		end,
+		priority = 99,
+		weight = 1,
+		foodtype = FOODTYPE.VEGGIE,
+		health = dev_mode and 10 or HP * 35,
+		hunger = HU * 15,
+		sanity = dev_mode and 10 or SAN * 25,
+		perishtime = PER * 20,
+		cooktime = CO * 15,
+		postFn = function(inst)
+			inst.components.edible:SetGetHealthFn(getSpringBallHealth)
+			inst.components.edible:SetGetSanityFn(getSpringBallSanity)
+		end,
 	},
 
 	aip_food_maltose = {	-- 麦芽糖

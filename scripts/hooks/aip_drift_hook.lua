@@ -18,7 +18,7 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 ---------------------------------------------------------------------------------
 
 ------------------------------------- 打水漂 -------------------------------------
--- 注册动作: TODO: 打水漂
+-- 注册动作:
 local AIPC_DRIFT_ACTION = env.AddAction("AIPC_DRIFT_ACTION", LANG.DRIFT, function(act)
 	local doer = act.doer
 	local pos = act:GetActionPoint()

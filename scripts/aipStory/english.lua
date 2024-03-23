@@ -491,6 +491,20 @@ return {
                 name="chesspiece_aip_fish",
             },
             "Another inspiration for 'Enlightenment Sculpture', oh, it doesn't look like a 'mermaid' at all.",
+        
+            -- 娜娜
+            {
+                type="img",
+                name="chesspiece_aip_nana",
+            },
+            "'Sculpt a rabbit holding a wine bottle', strange whispers in my ears.",
+
+             -- 空白
+             {
+                type="img",
+                name="chesspiece_aip_empty",
+            },
+            "Except for the smile, the rest is redundant.",
         },
     },
 
@@ -1329,6 +1343,13 @@ return {
                 name="aip_hearthstone",
             },
             "This stone can take you to the Florid Postern, but it's not stable.",
+        
+            -- 国王的新衣
+            {
+                type="img",
+                name="aip_armor_king",
+            },
+            "Only when there is no one else around will it become a powerful armor, otherwise it will be useless. It can also be repaired automatically after broken.",
         },
     },
 

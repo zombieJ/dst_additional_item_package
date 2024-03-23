@@ -489,6 +489,20 @@ return {
                 name="chesspiece_aip_fish",
             },
             "“启迪时克雕塑”的又一灵感，呵，其实一点都不像“美人鱼”。",
+
+            -- 娜娜
+            {
+                type="img",
+                name="chesspiece_aip_nana",
+            },
+            "“雕一只拿着酒瓶的兔子”，耳边响起了奇怪的耳语。",
+
+            -- 空白
+            {
+                type="img",
+                name="chesspiece_aip_empty",
+            },
+            "除了微笑，其余部分都是多余的。",
         },
     },
 
@@ -1328,6 +1342,13 @@ return {
                 name="aip_hearthstone",
             },
             "这块石头可以带你去往绚烂之门，但是有时候也会不太稳定。",
+
+            -- 国王的新衣
+            {
+                type="img",
+                name="aip_armor_king",
+            },
+            "只有当身边没有其他人时会变成强力的护甲，反之则毫无作用。损坏后也能自动修复。",
         }
     },
 

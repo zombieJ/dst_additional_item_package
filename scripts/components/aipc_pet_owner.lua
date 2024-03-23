@@ -306,6 +306,13 @@ local function OnMissAttack(inst)
 	end
 end
 
+-- 烧伤
+local function OnBurnt(inst)
+	if inst.components.aipc_pet_owner == nil then
+		return
+	end
+end
+
 ---------------------------------------------------------------------
 -- 双端通用，抓捕宠物组件
 local PetOwner = Class(function(self, inst)
@@ -322,6 +329,7 @@ local PetOwner = Class(function(self, inst)
 	self.inst:ListenForEvent("aipStartCooking", OnStartCooking)
 	self.inst:ListenForEvent("picksomething", OnPick)
 	self.inst:ListenForEvent("aipMissAttack", OnMissAttack)
+	self.inst:ListenForEvent("burnt", OnBurnt)
 
 	self.inst:WatchWorldState("phase", OnPhase)
 end)
@@ -1016,6 +1024,7 @@ function PetOwner:OnRemoveEntity()
 	self.inst:RemoveEventCallback("aipStartCooking", OnStartCooking)
 	self.inst:RemoveEventCallback("picksomething", OnPick)
 	self.inst:RemoveEventCallback("aipMissAttack", OnMissAttack)
+	self.inst:RemoveEventCallback("burnt", OnBurnt)
 end
 
 PetOwner.OnRemoveFromEntity = PetOwner.OnRemoveEntity

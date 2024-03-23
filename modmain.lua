@@ -37,6 +37,7 @@ Assets = {
 	Asset("ATLAS", "images/aipBuffer/aip_black_count.xml"),
 	Asset("ATLAS", "images/aipBuffer/aip_black_immunity.xml"),
 	Asset("ATLAS", "images/aipBuffer/foodMaltose.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_balrog.xml"),
 
 	-- 诡影迷踪需要提前加载
 	Asset("ATLAS", "images/inventoryimages/aip_totem_tech.xml"),
@@ -209,6 +210,7 @@ PrefabFiles = {
 	"aip_stone_mask",
 	"aip_dream_stone",
 	"aip_hearthstone",
+	"aip_armor_king",
 
 	-- 懵懵宠宠
 	"aip_pet_catcher",
@@ -226,6 +228,7 @@ PrefabFiles = {
 	-- Dress
 	"aip_dress",
 	"aip_armor_gambler",
+	"aip_armor_balrog",
 	"aip_xiaoyu_hat",
 
 	-- Chesspiece
