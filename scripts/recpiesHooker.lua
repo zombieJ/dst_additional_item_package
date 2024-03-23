@@ -371,7 +371,7 @@ rec("aip_bezoar_cursed", TECH.MAGIC_TWO, { CRAFTING_FILTERS.MAGIC },
 	Ingredient("cursed_monkey_token", 1, nil, nil, "cursed_beads1.tex"),
 }, { nounlock=true })
 
--- 赌徒铠甲
+-- 佛怒莲甲
 recDress("aip_armor_balrog", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.ARMOUR },
 	{
 		Ingredient("armordragonfly", 1),
