@@ -31,7 +31,7 @@ local function PrintFootPrint(inst)
 
 	if needPrint then
 		-- 脚印左右走
-		inst._footStep = math.mod((inst._footStep or 0) + 1, 2)
+		inst._footStep = ((inst._footStep or 0) + 1) % 2
 
 		local rot = aipGetAngle(inst._pos, curPos)
 		local deg = inst._footStep == 1 and (rot - 90) or (rot + 90)

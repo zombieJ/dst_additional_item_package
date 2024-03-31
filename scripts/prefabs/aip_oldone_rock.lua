@@ -36,6 +36,11 @@ local function showPrefab(inst)
 end
 
 local function onNear(inst, player)
+    -- 触发后会移除 timer 组件，这里需要跳过
+    if inst.components.aipc_timer == nil then
+        return
+    end
+
     inst.components.aipc_timer:NamedInterval("PlayerNear", 0.4, function()
         local rocks = aipFindNearEnts(inst, { "rocks" }, 0.6)
 

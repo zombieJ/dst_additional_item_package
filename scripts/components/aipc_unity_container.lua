@@ -117,7 +117,7 @@ function UnityCotainer:CollectLureplant()
 		self.checkTimes = 0
 	end
 
-	self.checkTimes = math.mod(self.checkTimes + 1, 4)
+	self.checkTimes = (self.checkTimes + 1) % 4
 end
 
 function UnityCotainer:LockOthers()
