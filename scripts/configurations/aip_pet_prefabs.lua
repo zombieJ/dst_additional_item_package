@@ -28,6 +28,28 @@ local houndSounds = {
     hurt = "dontstarve/creatures/hound/hurt",
 }
 
+------------------------------- 蜘蛛 -------------------------------
+local function SpiderSoundPath(inst, event)
+    local creature = "spider"
+    if inst:HasTag("spider_healer") then
+        return "webber1/creatures/spider_cannonfodder/" .. event
+    elseif inst:HasTag("spider_moon") then
+        return "turnoftides/creatures/together/spider_moon/" .. event
+    elseif inst:HasTag("spider_warrior") then
+        creature = "spiderwarrior"
+    elseif inst:HasTag("spider_hider") or inst:HasTag("spider_spitter") then
+        creature = "cavespider"
+    else
+        creature = "spider"
+    end
+    return "dontstarve/creatures/" .. creature .. "/" .. event
+end
+
+local function spiderPostInit(inst)
+    inst.SoundPath = SpiderSoundPath
+    inst:SetIncineratedSound(SpiderSoundPath(inst, "die"))
+end
+
 local PREFABS = {
 	----------------------------- 兔子 -----------------------------
     rabbit = {
@@ -70,6 +92,7 @@ local PREFABS = {
         build = "spider_build",
         anim = "idle",
         sg = "SGspider",
+        postInit = spiderPostInit,
     },
 
     -- 蜘蛛战士
@@ -78,7 +101,8 @@ local PREFABS = {
         build = "spider_warrior_build",
         anim = "idle",
         sg = "SGspider",
-        tags = { "spider_warrior" }
+        tags = { "spider_warrior" },
+        postInit = spiderPostInit,
     },
 
     -- 洞穴蜘蛛
@@ -87,7 +111,8 @@ local PREFABS = {
         build = "DS_spider_caves",
         anim = "idle",
         sg = "SGspider",
-        tags = { "spider_hider" }
+        tags = { "spider_hider" },
+        postInit = spiderPostInit,
     },
 
     -- 治疗蜘蛛
@@ -96,7 +121,8 @@ local PREFABS = {
         build = "spider_wolf_build",
         anim = "idle",
         sg = "SGspider",
-        tags = { "spider_healer" }
+        tags = { "spider_healer" },
+        postInit = spiderPostInit,
     },
 
     -- 喷吐蜘蛛
@@ -105,7 +131,8 @@ local PREFABS = {
         build = "DS_spider2_caves",
         anim = "idle",
         sg = "SGspider",
-        tags = { "spider_spitter" }
+        tags = { "spider_spitter" },
+        postInit = spiderPostInit,
     },
     
     -- 悬丝蜘蛛
@@ -114,7 +141,8 @@ local PREFABS = {
         build = "spider_white",
         anim = "idle",
         sg = "SGspider",
-        tags = { "spider_warrior" }
+        tags = { "spider_warrior" },
+        postInit = spiderPostInit,
     },
     
     -- 月光蜘蛛
@@ -123,7 +151,8 @@ local PREFABS = {
         build = "ds_spider_moon",
         anim = "idle",
         sg = "SGspider",
-        tags = { "spider_moon" }
+        tags = { "spider_moon" },
+        postInit = spiderPostInit,
     },
     
     -- 水生蜘蛛
@@ -144,6 +173,8 @@ local PREFABS = {
             inst.components.amphibiouscreature:SetExitWaterFn(function(inst)
                 inst.AnimState:SetBuild("spider_water")
             end)
+
+            spiderPostInit(inst)
         end,
     },
 
