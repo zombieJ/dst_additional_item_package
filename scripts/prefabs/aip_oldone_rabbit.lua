@@ -57,6 +57,10 @@ end
 local function onWentHome(inst)
 end
 
+local function SoundPath(inst, event)
+    return "dontstarve/creatures/spider/" .. event
+end
+
 ----------------------------------- 实体 -----------------------------------
 local function fn()
 	local inst = CreateEntity()
@@ -132,6 +136,10 @@ local function fn()
 	MakeHauntablePanic(inst)
 
 	inst:SetBrain(brain)
+
+	inst.SoundPath = SoundPath
+
+	inst:SetIncineratedSound(SoundPath(inst, "die"))
 
 	return inst
 end
