@@ -13,8 +13,8 @@ end
 
 ------------------------------------------------------------------------------------------
 local function inRange(current, target, range)
-	local mCurrent = math.mod(current + 720, 360)
-	local mTarget = math.mod(target + 720, 360)
+	local mCurrent = (current + 720) % 360
+	local mTarget = (target + 720) % 360
 
 	local min = mTarget - range
 	local max = mTarget + range

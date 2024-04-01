@@ -9,8 +9,8 @@ local FX_HEIGHT = 7
 local function getPos(idx)
 	local mathIdx = idx - 1
 	local y = math.floor(mathIdx / 9)
-	local x = math.floor(math.mod(mathIdx, 9) / 3)
-	local z = math.mod(mathIdx, 3)
+	local x = math.floor((mathIdx % 9) / 3)
+	local z = mathIdx % 3
 
 	return x - 1, y - 1, z - 1
 end

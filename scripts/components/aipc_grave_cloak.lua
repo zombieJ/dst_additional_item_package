@@ -55,11 +55,11 @@ function GraveCloak:Start()
 	self.flyTask = self.inst:DoPeriodicTask(0.01, function()
 		local pos = self.inst:GetPosition()
 
-		self.rotate = math.mod(self.rotate + 360 - 2, 360)
+		self.rotate = (self.rotate + 360 - 2) % 360
 		local unit = 360 / self.count
 
 		for i, fire in ipairs(self.fires) do
-			local rotate = math.mod(self.rotate + unit * i + 360, 360)
+			local rotate = (self.rotate + unit * i + 360) % 360
 			local radius = rotate / 180 * PI
 
 			-- 目标位置

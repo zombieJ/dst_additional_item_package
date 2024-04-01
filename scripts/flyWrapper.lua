@@ -61,7 +61,7 @@ AddPrefabPostInit("player_classified", function(inst)
 
 			-- 填充数据
 			for i, str in ipairs(nameAndIds) do
-				if math.mod(i, 2) == 1 then
+				if i % 2 == 1 then
 					table.insert(names, str)
 				else
 					table.insert(ids, str)

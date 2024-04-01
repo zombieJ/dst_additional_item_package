@@ -107,7 +107,7 @@ function GuardianOrb:OnUpdate(dt)
 	-- 法球数量计算
 	self.timeout = self.timeout + dt
 	if self.timeout >= INCREASE_TIMEOUT then
-		self.timeout = math.mod(self.timeout, INCREASE_TIMEOUT)
+		self.timeout = self.timeout % INCREASE_TIMEOUT
 
 		-- 可以新增法球啦
 		if #self.orbs < MAX_COUNT then
@@ -128,7 +128,7 @@ function GuardianOrb:OnUpdate(dt)
 	self.projectileTimeout = self.projectileTimeout + dt
 
 	-- 计算角度
-	self.angle = math.mod((self.angle + dt * ANGLE_SPEED), 360)
+	self.angle = (self.angle + dt * ANGLE_SPEED) % 360
 	local dist = 999999
 
 	local target = nil

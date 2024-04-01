@@ -151,7 +151,7 @@ function BlackholeGamer:Start()
 				-- 看一下是否要生成触手
 				local handCount = CHAPTER_COUNT[math.min(chapters, #CHAPTER_COUNT)] or 1
 
-				if math.mod(times, handCount) == 0 then
+				if times % handCount == 0 then
 					-- aipPrint("Hit!!!")
 					local pos = player:GetPosition()
 					local hand = aipSpawnPrefab(
