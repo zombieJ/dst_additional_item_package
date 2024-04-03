@@ -138,8 +138,7 @@ local function fn()
 	inst:SetBrain(brain)
 
 	inst.SoundPath = SoundPath
-
-	inst:SetIncineratedSound(SoundPath(inst, "die"))
+	inst.incineratesound = SoundPath(inst, "die")
 
 	return inst
 end

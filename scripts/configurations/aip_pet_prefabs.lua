@@ -47,7 +47,7 @@ end
 
 local function spiderPostInit(inst)
     inst.SoundPath = SpiderSoundPath
-    inst:SetIncineratedSound(SpiderSoundPath(inst, "die"))
+    inst.incineratesound = SoundPath(inst, "die")
 end
 
 local PREFABS = {
