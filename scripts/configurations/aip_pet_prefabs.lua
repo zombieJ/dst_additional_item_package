@@ -47,7 +47,7 @@ end
 
 local function spiderPostInit(inst)
     inst.SoundPath = SpiderSoundPath
-    inst.incineratesound = SoundPath(inst, "die")
+    inst.incineratesound = SpiderSoundPath(inst, "die")
 end
 
 local PREFABS = {
