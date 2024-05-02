@@ -22,9 +22,19 @@ local BufferBadge = Class(Badge, function(self, owner, bufferName, endTime, stac
     )
 
     -- 图标
-    if softresolvefilepath("images/aipBuffer/"..bufferName..".xml") ~= nil then
+    local buffPath = "images/aipBuffer/"..bufferName..".xml"
+    local imgBuffPath = "images/inventoryimages/"..bufferName..".xml"
+    local existBuffPath = softresolvefilepath(buffPath) ~= nil
+    local existImgBuffPath = softresolvefilepath(imgBuffPath) ~= nil
+    -- aipTypePrint("BUFFER1:", buffPath)
+    -- aipTypePrint("BUFFER2:", imgBuffPath)
+    -- aipTypePrint("BUFFER3:", existBuffPath)
+    -- aipTypePrint("BUFFER4:", existImgBuffPath)
+    if existBuffPath or existImgBuffPath then
+        local finalBuffPath = existBuffPath and buffPath or imgBuffPath
+        -- aipTypePrint("BUFFER:", finalBuffPath, bufferName)
         self.icon = self:AddChild(Image(
-            "images/aipBuffer/"..bufferName..".xml", bufferName..".tex"
+            finalBuffPath, bufferName..".tex"
         ))
         self.icon:SetScale(0.65, 0.65)
         self.icon:SetPosition(0, 1, 0)

@@ -22,21 +22,23 @@ local LANG_MAP = require("prefabs/foods_lang")
 local LANG = LANG_MAP[language] or LANG_MAP.english
 local LANG_ENG = LANG_MAP.english
 
--- 文字描述
+------------------------------------ 文字描述 ------------------------------------
 local BUFF_LANG_MAP = {
 	english = {
 		foodMaltose = "Sweetness",
-		foodMonster = "Monster Essence",
+		monster_salad = "Monster Essence",
+		aip_food_plov = "Fullness",
 	},
 	chinese = {
 		foodMaltose = "甜蜜蜜",
-		foodMonster = "怪物精华",
+		monster_salad = "怪物精华",
+		aip_food_plov = "吃的饱饱",
 	},
 }
 
 local BUFF_LANG = BUFF_LANG_MAP[language] or BUFF_LANG_MAP.english
 
--- 资源
+-------------------------------------- 资源 --------------------------------------
 local prefabList = {}
 local prefabs =
 {
@@ -124,12 +126,10 @@ local food_recipes = {
 		sanity = SAN * 10,
 		perishtime = PER * 6,
 		cooktime = CO * 20,
-		oneatenfn = function(inst, eater)
-			aipBufferPatch(inst, eater, "foodMonster", dev_mode and 20 or 120)
-		end,
 		buff = {
-			buffName = "foodMonster",
-			name = BUFF_LANG.foodMonster,
+			buffName = "monster_salad",
+			name = BUFF_LANG.monster_salad,
+			duration = dev_mode and 20 or 120,
 		},
 	},
 	
@@ -336,6 +336,19 @@ local food_recipes = {
 		sanity = SAN * 5,
 		perishtime = PER * 20,
 		cooktime = CO * 40,
+		buff = {
+			duration = dev_mode and 30 or 60 * 3,
+			startFn = function(source, inst, info)
+				if inst.components.hunger ~= nil then
+					info.data.hunger = inst.components.hunger.current
+				end
+			end,
+			fn = function(source, inst, info)
+				if inst.components.hunger ~= nil and info.data.hunger ~= nil then
+					inst.components.hunger.current = info.data.hunger
+				end
+			end,
+		},
 	},
 	aip_food_kozinaki = {
 		test = function(cooker, names, tags)
@@ -593,13 +606,25 @@ for name,data in pairs(food_recipes) do
 	local buffInfo = data.buff
 
 	if buffInfo then
-		aipBufferRegister(buffInfo.buffName, {
-			name = buffInfo.name,
+		local buffName = buffInfo.buffName or name
+
+		aipBufferRegister(buffName, {
+			name = BUFF_LANG[buffName],
 			fn = buffInfo.fn,
 			startFn = buffInfo.startFn,
 			endFn = buffInfo.endFn,
 			showFX = buffInfo.showFX,
 		})
+
+		-- 代理一下 onEaten，添加 Buffer
+		local oriOnEaten = data.oneatenfn
+		data.oneatenfn = function(inst, eater)
+			if oriOnEaten then
+				oriOnEaten(inst, eater)
+			end
+
+			aipBufferPatch(inst, eater, buffName, buffInfo.duration)
+		end
 	end
 
 	data.buff = nil

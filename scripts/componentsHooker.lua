@@ -639,7 +639,7 @@ AipPostComp("combat", function(self)
 		if
 			_G.aipBufferExist(
 				self.inst,
-				"foodMonster"
+				"monster_salad"
 			)
 		then
 			dmg = dmg * (dev_mode and 999 or 1.05)
