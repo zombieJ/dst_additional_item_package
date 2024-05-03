@@ -28,11 +28,13 @@ local BUFF_LANG_MAP = {
 		foodMaltose = "Sweetness",
 		monster_salad = "Monster Essence",
 		aip_food_plov = "Fullness",
+		egg_pancake = "Egg Nanny",
 	},
 	chinese = {
 		foodMaltose = "甜蜜蜜",
 		monster_salad = "怪物精华",
 		aip_food_plov = "吃的饱饱",
+		egg_pancake = "鸟蛋保姆",
 	},
 }
 
@@ -114,6 +116,20 @@ local food_recipes = {
 		sanity = SAN * 10,
 		perishtime = PER * 5,
 		cooktime = CO * 20,
+		buff = {
+			duration = 120,
+			fn = function(source, eater, info)
+				-- 加速腐化高脚鸟蛋
+				local x, y, z = eater.Transform:GetWorldPosition()
+				local ents = TheSim:FindEntities(x, 0, z, 3, { "tallbirdegg" })
+				for i, egg in ipairs(ents) do
+					if egg.components.hatchable ~= nil then
+						local ptg = dev_mode and 99999 or info.interval
+						egg.components.hatchable.progress = egg.components.hatchable.progress + ptg
+					end
+				end
+			end,
+		},
 	},
 
 	monster_salad = {
@@ -127,8 +143,6 @@ local food_recipes = {
 		perishtime = PER * 6,
 		cooktime = CO * 20,
 		buff = {
-			buffName = "monster_salad",
-			name = BUFF_LANG.monster_salad,
 			duration = dev_mode and 20 or 120,
 		},
 	},
@@ -145,6 +159,14 @@ local food_recipes = {
 		sanity = SAN * 35,
 		perishtime = PER * 6,
 		cooktime = CO * 10,
+		oneatenfn = function(inst, eater)
+			if
+				eater.prefab == "pigman" and eater.components.werebeast ~= nil and
+				not eater.components.werebeast:IsInWereState()
+			then
+				eater.components.werebeast:SetWere()
+			end
+		end,
 	},
 	fish_froggle = {
 		test = function(cooker, names, tags)
@@ -338,16 +360,6 @@ local food_recipes = {
 		cooktime = CO * 40,
 		buff = {
 			duration = dev_mode and 30 or 60 * 3,
-			startFn = function(source, inst, info)
-				if inst.components.hunger ~= nil then
-					info.data.hunger = inst.components.hunger.current
-				end
-			end,
-			fn = function(source, inst, info)
-				if inst.components.hunger ~= nil and info.data.hunger ~= nil then
-					inst.components.hunger.current = info.data.hunger
-				end
-			end,
 		},
 	},
 	aip_food_kozinaki = {

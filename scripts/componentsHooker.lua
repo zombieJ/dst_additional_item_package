@@ -1045,3 +1045,18 @@ AipPostComp("moisture", function(self)
 		return oriDoDelta(self, num, no_announce, ...)
 	end
 end)
+
+-- 饥饿
+AipPostComp("hunger", function(self)
+	local oriDoDelta = self.DoDelta
+
+	-- 饥饿变化
+	function self:DoDelta(delta, overtime, ignore_invincible, ...)
+		-- 吃了 抓饭 时，饥饿降低的更慢
+		if _G.aipBufferExist(self.inst, "aip_food_plov") and delta < 0 then
+			delta = delta * (dev_mode and 0 or 0.5)
+		end
+
+		return oriDoDelta(self, delta, overtime, ignore_invincible, ...)
+	end
+end)
