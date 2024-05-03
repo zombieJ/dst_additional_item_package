@@ -29,12 +29,14 @@ local BUFF_LANG_MAP = {
 		monster_salad = "Monster Essence",
 		aip_food_plov = "Fullness",
 		egg_pancake = "Egg Nanny",
+		fish_froggle = "Anti-thief",
 	},
 	chinese = {
 		foodMaltose = "甜蜜蜜",
 		monster_salad = "怪物精华",
 		aip_food_plov = "吃的饱饱",
 		egg_pancake = "鸟蛋保姆",
+		fish_froggle = "防盗者",
 	},
 }
 
@@ -180,6 +182,9 @@ local food_recipes = {
 		sanity = SAN * 15,
 		perishtime = PER * 6,
 		cooktime = CO * 40,
+		buff = {
+			duration = 120,
+		},
 	},
 	bamboo_light = {
 		test = function(cooker, names, tags)
@@ -193,6 +198,18 @@ local food_recipes = {
 		sanity = SAN * 10,
 		perishtime = PER * 20,
 		cooktime = CO * 15,
+		oneatenfn = function(inst, eater)
+			-- 满血时治疗附近玩家
+			if eater.components.health ~= nil and eater.components.health:GetPercent() == 1 then
+				local players = aipFindNearPlayers(eater, 10)
+				for i, player in ipairs(players) do
+					aipSpawnPrefab(player, "farm_plant_happy")
+					if player.components.health ~= nil then
+						player.components.health:DoDelta(10)
+					end
+				end
+			end
+		end,
 	},
 	vegetaballs = {
 		test = function(cooker, names, tags)

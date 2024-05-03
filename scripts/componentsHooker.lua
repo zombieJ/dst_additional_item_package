@@ -1060,3 +1060,18 @@ AipPostComp("hunger", function(self)
 		return oriDoDelta(self, delta, overtime, ignore_invincible, ...)
 	end
 end)
+
+-- 小偷
+AipPostComp("thief", function(self)
+	local originStealItem = self.StealItem
+
+	-- 偷东西
+	function self:StealItem(victim, itemtosteal, attack, ...)
+		-- 如果吃了 美蛙鱼头，则不会被偷窃
+		if victim ~= nil and _G.aipBufferExist(victim, "fish_froggle") then
+			return
+		end
+
+		return originStealItem(self, victim, itemtosteal, attack, ...)
+	end
+end)
