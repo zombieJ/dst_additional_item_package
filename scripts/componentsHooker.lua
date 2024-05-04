@@ -529,6 +529,20 @@ AipPostComp("combat", function(self)
 		spdamage = data.spdamage
 		local dmg = data.damage
 
+		-- 素罗汉 免疫黑暗伤害
+		if stimuli == "darkness" and _G.aipBufferExist(self.inst, "veg_lohan") then
+			dmg = 0
+			_G.aipBufferRemove(self.inst, "veg_lohan")
+		end
+
+		-- 樱桃肉 概率免疫伤害
+		if _G.aipBufferExist(self.inst, "aip_food_cherry_meat") then
+			local ptg = dev_mode and 1 or 0.1
+			if _G.aipChance(ptg, self.inst) then
+				dmg = 0
+			end
+		end
+
 		-- Owner 被攻击（被攻击时，是乘法叠加伤害减免）
 		if self.inst ~= nil and self.inst.components.aipc_pet_owner ~= nil then
 			-- 幸运则免疫 查理 攻击
@@ -1073,5 +1087,19 @@ AipPostComp("thief", function(self)
 		end
 
 		return originStealItem(self, victim, itemtosteal, attack, ...)
+	end
+end)
+
+-- 理智
+AipPostComp("sanity", function(self)
+	local oriDoDelta = self.DoDelta
+
+	-- 理智变化
+	function self:DoDelta(delta, overtime, ...)
+		-- 如果吃了 素食串，理智减少变慢
+		if _G.aipBufferExist(self.inst, "veggie_skewers") then
+			delta = delta * (dev_mode and 0 or 0.5)
+		end
+		return oriDoDelta(self, delta, overtime, ...)
 	end
 end)
