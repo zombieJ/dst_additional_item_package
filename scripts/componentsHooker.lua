@@ -1097,9 +1097,15 @@ AipPostComp("sanity", function(self)
 	-- 理智变化
 	function self:DoDelta(delta, overtime, ...)
 		-- 如果吃了 素食串，理智减少变慢
-		if _G.aipBufferExist(self.inst, "veggie_skewers") then
+		if delta < 0 and _G.aipBufferExist(self.inst, "veggie_skewers") then
 			delta = delta * (dev_mode and 0 or 0.5)
 		end
+
+		-- 如果吃了 大肠包小肠，理智恢复加倍
+		if delta > 0 and _G.aipBufferExist(self.inst, "aip_food_nest_sausage") then
+			delta = delta * 2
+		end
+
 		return oriDoDelta(self, delta, overtime, ...)
 	end
 end)

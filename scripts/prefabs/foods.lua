@@ -38,6 +38,7 @@ local BUFF_LANG_MAP = {
 		aip_food_cherry_meat = "Greasy",
 		aip_food_egg_tart = "More Sugar!",
 		aip_food_braised_intestine = "Think back...",
+		aip_food_nest_sausage = "Soul Resonance",
 	},
 	chinese = {
 		foodMaltose = "甜蜜蜜",
@@ -53,6 +54,7 @@ local BUFF_LANG_MAP = {
 		aip_food_cherry_meat = "油腻腻",
 		aip_food_egg_tart = "更多糖分!",
 		aip_food_braised_intestine = "仔细一想...",
+		aip_food_nest_sausage = "灵魂共鸣",
 	},
 }
 
@@ -235,8 +237,8 @@ local food_recipes = {
 			if eater.components.health ~= nil and eater.components.health:GetPercent() == 1 then
 				local players = aipFindNearPlayers(eater, 10)
 				for i, player in ipairs(players) do
-					aipSpawnPrefab(player, "farm_plant_happy")
 					if player.components.health ~= nil then
+						aipSpawnPrefab(player, "farm_plant_happy")
 						player.components.health:DoDelta(10)
 					end
 				end
@@ -588,6 +590,9 @@ local food_recipes = {
 		sanity = SAN * 5,
 		perishtime = PER * 15,
 		cooktime = CO * 15,
+		buff = {
+			duration = 60 * 5,
+		},
 	},
 
 	aip_food_vermicelli_roll = {	-- 肠粉
@@ -602,6 +607,16 @@ local food_recipes = {
 		sanity = SAN * 25,
 		perishtime = PER * 10,
 		cooktime = CO * 15,
+		oneatenfn = function(inst, eater)
+			-- 喂饱周围的人
+			local players = aipFindNearPlayers(eater, 10)
+			for i, player in ipairs(players) do
+				if player.components.hunger ~= nil then
+					aipSpawnPrefab(player, "farm_plant_happy")
+					player.components.hunger:DoDelta(inst.components.edible.hungervalue)
+				end
+			end
+		end,
 	},
 
 	aip_food_braised_intestine = {	-- 九转大肠
