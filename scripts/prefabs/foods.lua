@@ -37,6 +37,7 @@ local BUFF_LANG_MAP = {
 		stinky_mandarin_fish = "Aftertaste",
 		aip_food_cherry_meat = "Greasy",
 		aip_food_egg_tart = "More Sugar!",
+		aip_food_braised_intestine = "Think back...",
 	},
 	chinese = {
 		foodMaltose = "甜蜜蜜",
@@ -51,6 +52,7 @@ local BUFF_LANG_MAP = {
 		stinky_mandarin_fish = "回味十足",
 		aip_food_cherry_meat = "油腻腻",
 		aip_food_egg_tart = "更多糖分!",
+		aip_food_braised_intestine = "仔细一想...",
 	},
 }
 
@@ -253,6 +255,16 @@ local food_recipes = {
 		sanity = SAN * 10,
 		perishtime = PER * 10,
 		cooktime = CO * 15,
+		oneatenfn = function(inst, eater)
+			-- 提升 女武神 激励值 40%
+			if eater.components.singinginspiration ~= nil then
+				local currentPTG = eater.components.singinginspiration:GetPercent()
+				local nextPTG = math.min(currentPTG + 0.4, 1)
+				if nextPTG > currentPTG then
+					eater.components.singinginspiration:SetPercent(nextPTG)
+				end
+			end
+		end,
 	},
 	veg_lohan = {
 		test = function(cooker, names, tags)
@@ -315,9 +327,13 @@ local food_recipes = {
 		perishtime = PER * 10,
 		cooktime = CO * 15,
 		oneatenfn = function(inst, eater)
-			-- 健身效果拉满
+			-- 健身效果 +40%
 			if eater.components.mightiness ~= nil then
-				eater.components.mightiness:SetPercent(1)
+				local currentPTG = eater.components.mightiness:GetPercent()
+				local nextPTG = math.min(currentPTG + 0.4, 1)
+				if nextPTG > currentPTG then
+					eater.components.mightiness:SetPercent(nextPTG)
+				end
 			end
 		end,
 	},
@@ -597,9 +613,18 @@ local food_recipes = {
 		foodtype = FOODTYPE.MEAT,
 		health = HP * -10,
 		hunger = HU * 75,
-		sanity = SAN * -10,
+		sanity = SAN * -55,
 		perishtime = PER * 15,
 		cooktime = CO * 15,
+		buff = {
+			duration = 10.9,
+			fn = function(source, eater, info)
+				-- 恢复 理智
+				if eater.components.sanity ~= nil and info.tickTime % 2 == 0 then
+					eater.components.sanity:DoDelta(4)
+				end
+			end,
+		},
 	},
 
 	aip_food_spring_ball = {	-- 咬春福袋
