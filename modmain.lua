@@ -39,6 +39,9 @@ Assets = {
 	Asset("ATLAS", "images/aipBuffer/foodMaltose.xml"),
 	Asset("ATLAS", "images/aipBuffer/aip_balrog.xml"),
 
+	-- BUFFER: Food
+	-- Asset("ATLAS", "images/inventoryimages/monster_salad.xml"),
+
 	-- 诡影迷踪需要提前加载
 	Asset("ATLAS", "images/inventoryimages/aip_totem_tech.xml"),
 

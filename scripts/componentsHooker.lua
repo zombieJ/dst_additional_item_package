@@ -529,6 +529,20 @@ AipPostComp("combat", function(self)
 		spdamage = data.spdamage
 		local dmg = data.damage
 
+		-- 素罗汉 免疫黑暗伤害
+		if stimuli == "darkness" and _G.aipBufferExist(self.inst, "veg_lohan") then
+			dmg = 0
+			_G.aipBufferRemove(self.inst, "veg_lohan")
+		end
+
+		-- 樱桃肉 概率免疫伤害
+		if _G.aipBufferExist(self.inst, "aip_food_cherry_meat") then
+			local ptg = dev_mode and 1 or 0.1
+			if _G.aipChance(ptg, self.inst) then
+				dmg = 0
+			end
+		end
+
 		-- Owner 被攻击（被攻击时，是乘法叠加伤害减免）
 		if self.inst ~= nil and self.inst.components.aipc_pet_owner ~= nil then
 			-- 幸运则免疫 查理 攻击
@@ -633,6 +647,16 @@ AipPostComp("combat", function(self)
 			local atk = johnWickInfo.data.dmg or 0
 			-- dmg = dmg + atk
 			petDmgPlus = petDmgPlus + atk
+		end
+
+		-- 怪物精华 buff
+		if
+			_G.aipBufferExist(
+				self.inst,
+				"monster_salad"
+			)
+		then
+			dmg = dmg * (dev_mode and 999 or 1.05)
 		end
 
 		-- 宠物主人攻击 buff
@@ -1033,5 +1057,55 @@ AipPostComp("moisture", function(self)
 		end
 	
 		return oriDoDelta(self, num, no_announce, ...)
+	end
+end)
+
+-- 饥饿
+AipPostComp("hunger", function(self)
+	local oriDoDelta = self.DoDelta
+
+	-- 饥饿变化
+	function self:DoDelta(delta, overtime, ignore_invincible, ...)
+		-- 吃了 抓饭 时，饥饿降低的更慢
+		if _G.aipBufferExist(self.inst, "aip_food_plov") and delta < 0 then
+			delta = delta * (dev_mode and 0 or 0.5)
+		end
+
+		return oriDoDelta(self, delta, overtime, ignore_invincible, ...)
+	end
+end)
+
+-- 小偷
+AipPostComp("thief", function(self)
+	local originStealItem = self.StealItem
+
+	-- 偷东西
+	function self:StealItem(victim, itemtosteal, attack, ...)
+		-- 如果吃了 美蛙鱼头，则不会被偷窃
+		if victim ~= nil and _G.aipBufferExist(victim, "fish_froggle") then
+			return
+		end
+
+		return originStealItem(self, victim, itemtosteal, attack, ...)
+	end
+end)
+
+-- 理智
+AipPostComp("sanity", function(self)
+	local oriDoDelta = self.DoDelta
+
+	-- 理智变化
+	function self:DoDelta(delta, overtime, ...)
+		-- 如果吃了 素食串，理智减少变慢
+		if delta < 0 and _G.aipBufferExist(self.inst, "veggie_skewers") then
+			delta = delta * (dev_mode and 0 or 0.5)
+		end
+
+		-- 如果吃了 大肠包小肠，理智恢复加倍
+		if delta > 0 and _G.aipBufferExist(self.inst, "aip_food_nest_sausage") then
+			delta = delta * 2
+		end
+
+		return oriDoDelta(self, delta, overtime, ...)
 	end
 end)
