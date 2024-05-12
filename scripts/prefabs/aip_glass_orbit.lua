@@ -55,8 +55,6 @@ local function pointFn()
     -- 如果在空中则不用担心遮挡玩家
     inst:DoTaskInTime(1, function()
         local pt = inst:GetPosition()
-        -- aipTypePrint("Y:", pt, TheNet:IsDedicated())
-
         if pt.y == 0 then
             inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
 	        inst.AnimState:SetSortOrder(3)

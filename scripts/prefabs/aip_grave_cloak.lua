@@ -1,12 +1,6 @@
 local function onRemove(inst)
-	-- local smoke = inst:SpawnChild("thurible_smoke")
-	-- inst:DoTaskInTime(0.5, inst.Remove)
-
 	local smoke = aipReplacePrefab(inst, "thurible_smoke", nil, 1)
 	smoke:DoTaskInTime(0.5, smoke.Remove)
-
-	-- aipTypePrint("POS:", inst:GetPosition())
-	-- aipTypePrint("SMOKE:", smoke:GetPosition())
 end
 
 ---------------------------- 环形球 ----------------------------

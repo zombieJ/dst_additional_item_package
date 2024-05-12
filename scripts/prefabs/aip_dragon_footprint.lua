@@ -50,7 +50,6 @@ local function PrintFootPrint(inst)
 		if player ~= nil and player.replica.sanity ~= nil then
 			local ptg = player.replica.sanity:GetPercent()
 
-			aipTypePrint("Exist:", aipBufferExist(player, "seeFootPrint"))
 			-- 如果有帽子光环就可以直接看到
 			if aipBufferExist(player, "seeFootPrint") then
 				ptg = 0

@@ -534,11 +534,6 @@ local function onBurnt(inst)
 	nectarValues.purity = restVal
 
 	local nextData = onRefreshName(inst)
-	aipPrint(
-		nextData.realQuality, nextData.currentQuality,
-		nextData.maxQuality, nextData.minQuality,
-		nextData.generation
-	)
 end
 
 --------------------------------- 存储 ---------------------------------

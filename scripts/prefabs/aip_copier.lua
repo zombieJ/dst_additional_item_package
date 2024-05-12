@@ -25,26 +25,6 @@ local assets = {
 }
 
 ------------------------------ 事件 ------------------------------
--- local function AbleToAcceptTest()
---     aipPrint("able...")
---     return true
--- end
-
--- local function ShouldAcceptItem(inst, item)
---     aipPrint("accept...")
---     return true
--- end
-
--- local function OnGetItemFromPlayer(inst, giver, item)
---     local record = item:GetSaveRecord()
-
---     for i = 1, 2 do
---         local newItem = SpawnSaveRecord(record)
---         aipFlingItem(newItem, inst:GetPosition())
---     end
--- end
-
-
 -- 复制物品
 local function onCopy(inst, doer)
     if not dev_mode then

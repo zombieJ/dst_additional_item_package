@@ -33,7 +33,6 @@ local function canActOnPoint(inst)
 end
 
 local function onHealthDelta(inst)
-    aipPrint("Hit!", inst)
 end
 
 -- 投掷出去

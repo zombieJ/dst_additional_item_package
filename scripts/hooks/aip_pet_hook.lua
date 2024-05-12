@@ -18,8 +18,6 @@ AddPrefabPostInit("player_classified", function(inst)
 
 		if _G.ThePlayer ~= nil and inst == _G.ThePlayer.player_classified and petSkillInfoStr ~= "" then
 			local data = _G.json.decode(petSkillInfoStr)
-			_G.aipTypePrint("petSkillInfo:", data)
-			-- _G.ThePlayer.HUD:OpenAIPDestination(inst, flyTotemId)
 			_G.ThePlayer.HUD:OpenAIPPetInfo(inst, data)
 		end
 	end)
@@ -45,8 +43,6 @@ end
 
 ---------------------------------- 切换宠物 ----------------------------------
 env.AddModRPCHandler(env.modname, "aipTogglePet", function(player, petId)
-	_G.aipTypePrint("TogglePet:", petId)
-
 	if player ~= nil and player.components.aipc_pet_owner ~= nil then
 		player.components.aipc_pet_owner:TogglePet(petId)
 	end

@@ -124,8 +124,6 @@ local function rotateFace(originFxs, originMatrix, fixedAxis, fixedAxisPos, reve
 			nextXYZ[restAxises[1]] = nextX
 			nextXYZ[restAxises[2]] = nextY
 
-			-- aipPrint("ROTATE:", xyz.x, xyz.y, xyz.z, ">", nextXYZ.x, nextXYZ.y, nextXYZ.z)
-
 			-- 交换 颜色 和 实体
 			local oriIdx = getIndex(xyz)
 			local tgtIdx = getIndex(nextXYZ)
@@ -507,12 +505,9 @@ function Rubik:Select(fire)
 		local pStart = getPosVec(prevIndex)
 		local pEnd = getPosVec(self.selectIndex)
 
-		-- aipTypePrint("旋转吧：", pStart, '>>>', pEnd)
-
 		-- 遍历每个轴，找到可以旋转的那个
 		local axises = getSameAxis(pStart, pEnd)
 		for i, axis in ipairs(axises) do
-			-- aipPrint("检测轴：", axis, not isOnAxis(axis, pStart), not isOnAxis(axis, pEnd))
 			if not isOnAxis(axis, pStart) and not isOnAxis(axis, pEnd) then
 				local fixedAxisPos = pEnd[axis] -- 固定轴上的固定点
 

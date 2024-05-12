@@ -81,7 +81,6 @@ end
 
 ------------------------------- 可以收获 -------------------------------
 local function refreshFruit(inst)
-	aipPrint("Refresh:", inst.components.pickable:CanBePicked())
 	if inst.components.pickable:CanBePicked() then
 		inst.AnimState:Show("bread")
 	else
@@ -90,29 +89,24 @@ local function refreshFruit(inst)
 end
 
 local function getRegenTime(inst)
-	aipPrint("Get Regren Time:", inst.components.pickable)
 	if inst.components.pickable == nil then
 		return TUNING.BERRY_REGROW_TIME
 	end
 
 	local time = dev_mode and 3 or TUNING.BERRY_REGROW_TIME + TUNING.BERRY_REGROW_VARIANCE * math.random()
-	aipPrint("Regren Time:", time)
 
 	return time
 end
 
 local function onpickedfn(inst, picker)
-	aipPrint("Pick")
 	refreshFruit(inst)
 end
 
 local function makeemptyfn(inst)
-	aipPrint("Empty")
 	refreshFruit(inst)
 end
 
 local function makefullfn(inst)
-	aipPrint("Full")
 	refreshFruit(inst)
 end
 

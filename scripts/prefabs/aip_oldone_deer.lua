@@ -95,10 +95,6 @@ local function onNear(inst, player)
         inst._aipLevel = math.max(0, inst._aipLevel + offset)
         inst._aipLevel = math.min(2, inst._aipLevel)
 
-        if dev_mode then
-            aipPrint("Deer:", inst._aipLevel, temperature)
-        end
-
         if temperature < 70 then -- 强制不会到最终阶段
             inst._aipLevel = math.min(1, inst._aipLevel)
         end

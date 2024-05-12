@@ -60,7 +60,6 @@ end
 local function getContainerItem(inst)
     if inst.components.container ~= nil then
         local all = inst.components.container:GetAllItems()
-        -- aipTypePrint("Get Item:", all)
 
         return all[1]
     end
