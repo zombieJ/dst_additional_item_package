@@ -248,21 +248,21 @@ local function onRefreshName(inst)
 	)
 
 	--------------- 花蜜名字 ---------------
-	name = aipStr(LANG_VALUE[topTag], name)
+	name = LANG_VALUE[topTag]..name
 
 	-- 精酿
 	if nectarValues.exquisite then
-		name = aipStr(LANG_VALUE.exquisite, name)
+		name = LANG_VALUE.exquisite..name
 	end
 
 	-- 平衡
 	if tagBalance then
-		name = aipStr(LANG_VALUE.balance, name)
+		name = LANG_VALUE.balance..name
 	end
 
 	-- 世代
 	if nectarValues.generation > 1 then
-		name = aipStr(name, tostring(nectarValues.generation), LANG_VALUE.generation)
+		name = name..tostring(nectarValues.generation)..LANG_VALUE.generation
 	end
 
 	if inst.components.aipc_info_client then
@@ -275,11 +275,11 @@ local function onRefreshName(inst)
 	local mergedTopTagVal = topTagVal + (nectarValues.purity or 0)
 	local purePTG = mergedTopTagVal / totalTagVal
 	if purePTG > 0.99 then
-		aipInfo = aipStr(aipInfo, LANG_VALUE.absolute)
+		aipInfo = aipInfo..LANG_VALUE.absolute
 	elseif purePTG < 0.5 then
-		aipInfo = aipStr(aipInfo, LANG_VALUE.impurity)
+		aipInfo = aipInfo..LANG_VALUE.impurity
 	else
-		aipInfo = aipStr(math.ceil(purePTG * 100), "%")
+		aipInfo = math.ceil(purePTG * 100).."%"
 	end
 
 	-- 品质范围
@@ -357,10 +357,10 @@ local function onRefreshName(inst)
 	currentQuality = math.min(maxQuality, currentQuality)
 	currentQuality = math.max(minQuality, currentQuality)
 	currentQuality = math.floor(currentQuality)
-	local qualityName = aipStr("quality_", currentQuality)
+	local qualityName = "quality_"..currentQuality
 
 	if inst.components.aipc_info_client then
-		inst.components.aipc_info_client:SetString("aip_info", aipStr(aipInfo, "-", LANG_VALUE[qualityName]))
+		inst.components.aipc_info_client:SetString("aip_info", aipInfo.."-"..LANG_VALUE[qualityName])
 		inst.components.aipc_info_client:SetByteArray("aip_info_color", QUALITY_COLORS[qualityName])
 	end
 
@@ -370,9 +370,9 @@ local function onRefreshName(inst)
 		inst.components.inventoryitem:ChangeImageName("aip_nectar_wine")
 		inst.AnimState:PlayAnimation("wine")
 	else
-		inst.components.inventoryitem.atlasname = aipStr("images/inventoryimages/aip_nectar_", currentQuality, ".xml")
-		inst.components.inventoryitem:ChangeImageName(aipStr("aip_nectar_", currentQuality))
-		inst.AnimState:PlayAnimation(aipStr("q", currentQuality))
+		inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_nectar_"..currentQuality..".xml"
+		inst.components.inventoryitem:ChangeImageName("aip_nectar_"..currentQuality)
+		inst.AnimState:PlayAnimation("q"..currentQuality)
 	end
 
 	--------------- 食用价值 ---------------
@@ -456,25 +456,25 @@ local function onRefreshName(inst)
 		checkStatus = LANG.fullOf
 	end
 
-	local statusStr = aipStr(checkStatus, " ", LANG[topEatName])
+	local statusStr = checkStatus.." "..LANG[topEatName]
 	if nectarValues.frozen then
-		statusStr = aipStr(statusStr, "\n", LANG.frozen)
+		statusStr = statusStr.."\n"..LANG.frozen
 	end
 
 	if continueRecover then
-		statusStr = aipStr(statusStr, "\n", LANG.continueRecover)
+		statusStr = statusStr.."\n"..LANG.continueRecover
 	end
 
 	if nectarValues.light then
-		statusStr = aipStr(statusStr, "\n", LANG.speedMulti)
+		statusStr = statusStr.."\n"..LANG.speedMulti
 	end
 
 	if nectarValues.vampire then
-		statusStr = aipStr(statusStr, "\n", LANG.suckBlook)
+		statusStr = statusStr.."\n"..LANG.suckBlook
 	end
 
 	if nectarValues.damage then
-		statusStr = aipStr(statusStr, "\n", LANG.damageMulti)
+		statusStr = statusStr.."\n"..LANG.damageMulti
 	end
 
 	inst.components.inspectable:SetDescription(statusStr)

@@ -20,6 +20,7 @@ local BufferBadge = Class(Badge, function(self, owner, bufferName, endTime, stac
     self.num:SetString(
         aipBufferFn(bufferName, "name") or bufferName
     )
+    self.num:SetSize(60)
 
     -- 图标
     local buffPath = "images/aipBuffer/"..bufferName..".xml"

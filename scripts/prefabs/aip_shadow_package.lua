@@ -99,7 +99,7 @@ local function fn_common(name, preFunc, postFunc)
 	inst:AddComponent("inspectable")
 
 	inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem.atlasname = aipStr("images/inventoryimages/", name, ".xml")
+	inst.components.inventoryitem.atlasname = "images/inventoryimages/"..name..".xml"
 
 	inst:AddComponent("aipc_action")
 
