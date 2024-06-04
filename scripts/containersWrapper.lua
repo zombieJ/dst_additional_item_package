@@ -417,6 +417,10 @@ params.aip_xinyue_hoe = {
         animbuild = "ui_chest_3x3",
 		-- pos = Vector3(0, 80, 0),
 		pos = Vector3(0, 130, 0),
+		buttoninfo = {
+			text = STRINGS.ACTIONS.FILL,
+			position = Vector3(0, -155, 0),
+		},
     },
     usespecificslotsforitems = true,
     type = "hand_inv",
@@ -430,6 +434,14 @@ end
 
 function params.aip_xinyue_hoe.itemtestfn(container, item, slot)
 	return item:HasTag("deployedfarmplant")
+end
+
+function params.aip_xinyue_hoe.widget.buttoninfo.fn(inst)
+	if inst.components.container ~= nil then
+		_G.BufferedAction(inst.components.container.opener, inst, AIP_ACTION):Do()
+	elseif inst.replica.container ~= nil and not inst.replica.container:IsBusy() then
+		_G.SendRPCToServer(_G.RPC.DoWidgetButtonAction, AIP_ACTION.code, inst, AIP_ACTION.mod_name)
+	end
 end
 
 ----------------- 守财奴 -----------------

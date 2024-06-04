@@ -240,11 +240,6 @@ local function common_fn(name, config)
 end
 
 --------------------------------------- 冰屋 ---------------------------------------
--- local function TemperatureChange(inst, data)
---     local curTemp = inst.components.temperature:GetCurrent()
---     aipTypePrint("temp:", curTemp)
--- end
-
 local function onUseIgloo(inst)
     local curTemp = inst.components.temperature:GetCurrent()
     if curTemp > 3 then -- 超过 3 度就开始消费使用次数
@@ -292,7 +287,6 @@ local function igloo()
     inst.components.temperature.current = -20 -- 初始低温
     inst.components.temperature.inherentinsulation = TUNING.INSULATION_MED
     inst.components.temperature.inherentsummerinsulation = TUNING.INSULATION_MED
-    -- inst:ListenForEvent("temperaturedelta", TemperatureChange)
 
     return inst
 end

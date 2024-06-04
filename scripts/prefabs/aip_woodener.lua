@@ -190,9 +190,7 @@ local function CreatTree(inst)
 
 							aipRemove(pinecone)
 						else
-							aipPrint("Deploy!", pinecone.prefab, pinecone._spawn_prefab)
 							local ret= pinecone.components.deployable:Deploy(pt, inst)
-							aipPrint("Result:", ret)
 						end
 
 						return

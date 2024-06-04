@@ -90,10 +90,6 @@ local function triggerCollect(inst, hasWatcher)
         end
 
         if targetPlant ~= nil then
-            if dev_mode then
-                aipPrint("Auto Pick:", targetPlant.prefab)
-            end
-
             if hasWatcher then
                 aipSpawnPrefab(targetPlant, "aip_shadow_wrapper").DoShow()
             end

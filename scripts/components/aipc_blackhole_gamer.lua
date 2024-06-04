@@ -152,7 +152,6 @@ function BlackholeGamer:Start()
 				local handCount = CHAPTER_COUNT[math.min(chapters, #CHAPTER_COUNT)] or 1
 
 				if times % handCount == 0 then
-					-- aipPrint("Hit!!!")
 					local pos = player:GetPosition()
 					local hand = aipSpawnPrefab(
 						player, "aip_oldone_black_hand",

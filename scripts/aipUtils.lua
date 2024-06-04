@@ -206,15 +206,15 @@ function _G.aipCommonPrint(showType, split, ...)
 end
 
 function _G.aipStr(...)
-	return _G.aipCommonStr(false, "", ...)
+	return _G.aipCommonStr(false, "", "[STR]", ...)
 end
 
 function _G.aipPrint(...)
-	return _G.aipCommonPrint(false, " ", ...)
+	return _G.aipCommonPrint(false, " ", "[BASE]", ...)
 end
 
 function _G.aipTypePrint(...)
-	return _G.aipCommonPrint(true, " ", ...)
+	return _G.aipCommonPrint(true, " ", "[TYPE]", ...)
 end
 
 _G.aipGetModConfig = GetModConfigData
@@ -990,7 +990,6 @@ function _G.aipChance(chance, inst, bonus)
 		if skillInfo ~= nil then
 			tgtChance = tgtChance * skillInfo.multi * skillLv
 			tgtChance = tgtChance + (bonus or 0)
-			_G.aipPrint("Lucky Chance:", chance, tgtChance)
 		end
 	end
 	return math.random() <= tgtChance

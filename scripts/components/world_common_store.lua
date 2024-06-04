@@ -289,7 +289,6 @@ function CommonStore:CreateMarble()
 
 	-- 计算时间差
 	local diff = GetTime() - now
-	aipPrint("Create Marble cost time: " .. diff)
 
 	return marble
 end
@@ -418,14 +417,12 @@ function CommonStore:PostWorld()
 		self.inst:DoTaskInTime(5, function()
 		-- 	TheWorld:PushEvent("phasechanged", "night")
 		-- 	TheWorld:PushEvent("ms_setmoonphase", {moonphase = "full"})
-		-- aipPrint("do state!!!")
 		-- ThePlayer.sg:GoToState("aip_drive")
 		end)
 
 		-- self.inst:DoPeriodicTask(2, function()
 		-- 	local x, y, z = ThePlayer.Transform:GetWorldPosition()
 		-- 	local tile = TheWorld.Map:GetTileAtPoint(x, y, z)
-		-- 	aipPrint("Tile:", isNaturalPoint(Vector3(x, y, z)), tile)
 		-- end)
 	end
 	-- if dev_mode then
@@ -441,7 +438,6 @@ function CommonStore:PostWorld()
 	-- 			ThePlayer.Physics:Teleport(px, py, pz)
 
 	-- 			-- local tile = TheWorld.Map:GetTileAtPoint(px, py, pz)
-	-- 			-- aipPrint("Tile Type:", tile)
 
 	-- 			-- if tile == GROUND.INVALID then
 	-- 			-- 	local tileX, tileY = TheWorld.Map:GetTileCoordsAtPoint(px, py, pz)
@@ -451,14 +447,10 @@ function CommonStore:PostWorld()
 	-- 			-- 	ThePlayer.Physics:Teleport(px, py, pz)
 	-- 			-- end
 
-
-	-- 			-- aipPrint("Next Tile Type:", TheWorld.Map:GetTileAtPoint(px, py, pz))
-
 	-- 			-- for px = 0, 1000 do
 	-- 			-- 	local py = 0
 	-- 			-- 	local pz = 0
 	-- 			-- 	local tile = TheWorld.Map:GetTileAtPoint(px, py, pz)
-	-- 			-- 	aipPrint("Tile Type:", px, tile)
 	-- 			-- end
 	-- 		end
 	-- 	end)
@@ -467,7 +459,6 @@ function CommonStore:PostWorld()
 	-- 	-- 	if ThePlayer then
 	-- 	-- 		local x, y, z = ThePlayer.Transform:GetWorldPosition()
 	-- 	-- 		local tile = TheWorld.Map:GetTileAtPoint(x,y,z)
-	-- 	-- 		aipPrint("Player Tile Type:", tile)
 	-- 	-- 	end
 	-- 	-- end)
 	-- end

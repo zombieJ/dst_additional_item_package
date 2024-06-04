@@ -57,7 +57,7 @@ local function refreshStatus(inst)
         local name = (STRINGS.NAMES[upperCase] or "UNKNOWN")
 
         local quality = inst._aipPetData.quality
-        inst.components.aipc_info_client:SetString("aip_info", aipStr(petConfig.QUALITY_LANG[quality])..name)
+        inst.components.aipc_info_client:SetString("aip_info", petConfig.QUALITY_LANG[quality]..name)
         inst.components.aipc_info_client:SetByteArray("aip_info_color", petConfig.QUALITY_COLORS[quality])
 	end
 end

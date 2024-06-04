@@ -51,7 +51,7 @@ function restoreFiles() {
 
 function run() {
   // ========================== Get Tool Path ==========================
-  console.log(chalk.cyan('Prepare project enviroment...'));
+  console.log(chalk.cyan('Prepare project environment...'));
 
   const toolPath = path.resolve(
     prjPath,

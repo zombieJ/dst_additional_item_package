@@ -12,20 +12,20 @@ local language = aipGetModConfig("language")
 
 -- 文字描述
 local LANG_MAP = {
-	["english"] = {
-        ["NAME"] = "XinYue Hoe",
-        ["REC_DESC"] = "Nothing faster than this",
-        ["DESC"] = "Time is money",
+	english = {
+        NAME = "XinYue Hoe",
+        REC_DESC = "Nothing faster than this",
+        DESC = "Time is money",
 	},
-	["chinese"] = {
-        ["NAME"] = "心悦锄",
-        ["REC_DESC"] = "快速打理你的花园",
-        ["DESC"] = "时间就是金钱",
+	chinese = {
+        NAME = "心悦锄",
+        REC_DESC = "快速打理你的花园",
+        DESC = "时间就是金钱",
 	},
-	["russian"] = {
-        ["NAME"] = "Мотыга СинЮэ",
-        ["REC_DESC"] = "Нет ничего быстрее, чем это",
-        ["DESC"] = "Время - деньги",
+	russian = {
+        NAME = "Мотыга СинЮэ",
+        REC_DESC = "Нет ничего быстрее, чем это",
+        DESC = "Время - деньги",
 	},
 }
 
@@ -120,6 +120,32 @@ local function onDoPointAction(inst, doer, point)
     inst.components.fueled:DoDelta(-BASIC_USE)
 end
 
+-- 平分种子
+local function onAvgItems(inst)
+    local numslots = inst.components.container:GetNumSlots()
+
+    -- 遍历 slot 看看哪个是空的
+    for slot = 1, numslots do
+        local item = inst.components.container:GetItemInSlot(slot)
+
+        -- 把有的填充到这里来
+        if item == nil then
+            for i = 1, numslots do
+                local other = inst.components.container:GetItemInSlot(i)
+                if
+                    other ~= nil and
+                    other.components.stackable ~= nil and
+                    other.components.stackable:IsStack()
+                then
+                    local left = other.components.stackable:Get(1)
+                    inst.components.container:GiveItem(left, slot)
+                    break
+                end
+            end
+        end
+    end
+end
+
 -- 启动
 local function fn()
     local inst = CreateEntity()
@@ -180,8 +206,8 @@ local function fn()
 
     -- 施法
     inst:AddComponent("aipc_action")
-
     inst.components.aipc_action.onDoPointAction = onDoPointAction
+    inst.components.aipc_action.onDoAction = onAvgItems
 
     MakeHauntableLaunch(inst)
 

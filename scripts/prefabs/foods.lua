@@ -22,19 +22,45 @@ local LANG_MAP = require("prefabs/foods_lang")
 local LANG = LANG_MAP[language] or LANG_MAP.english
 local LANG_ENG = LANG_MAP.english
 
--- 文字描述
+------------------------------------ 文字描述 ------------------------------------
 local BUFF_LANG_MAP = {
 	english = {
 		foodMaltose = "Sweetness",
+		monster_salad = "Monster Essence",
+		aip_food_plov = "Fullness",
+		egg_pancake = "Egg Nanny",
+		fish_froggle = "Anti-thief",
+		veg_lohan = "Charlie Go Away",
+		aip_food_kozinaki = "I'm Full",
+		honey_drumstick = "Speed Up",
+		veggie_skewers = "Spirit",
+		stinky_mandarin_fish = "Aftertaste",
+		aip_food_cherry_meat = "Greasy",
+		aip_food_egg_tart = "More Sugar!",
+		aip_food_braised_intestine = "Think back...",
+		aip_food_nest_sausage = "Soul Resonance",
 	},
 	chinese = {
 		foodMaltose = "甜蜜蜜",
+		monster_salad = "怪物精华",
+		aip_food_plov = "吃的饱饱",
+		egg_pancake = "鸟蛋保姆",
+		fish_froggle = "防盗者",
+		veg_lohan = "查理走开",
+		aip_food_kozinaki = "饱腹感",
+		honey_drumstick = "飞毛腿",
+		veggie_skewers = "精神饱满",
+		stinky_mandarin_fish = "回味十足",
+		aip_food_cherry_meat = "油腻腻",
+		aip_food_egg_tart = "更多糖分!",
+		aip_food_braised_intestine = "仔细一想...",
+		aip_food_nest_sausage = "灵魂共鸣",
 	},
 }
 
 local BUFF_LANG = BUFF_LANG_MAP[language] or BUFF_LANG_MAP.english
 
--- 资源
+-------------------------------------- 资源 --------------------------------------
 local prefabList = {}
 local prefabs =
 {
@@ -84,6 +110,7 @@ local SPICES = {
 }
 
 ----------------------------------- 方法 -----------------------------------
+-- 春天效果翻倍
 local function getSpringBallHealth(inst, eater)
 	if TheWorld.state.isspring then
 		return inst.components.edible.healthvalue * 2
@@ -93,6 +120,21 @@ end
 
 local function getSpringBallSanity(inst, eater)
 	if TheWorld.state.isspring then
+		return inst.components.edible.sanityvalue * 2
+	end
+	return inst.components.edible.sanityvalue
+end
+
+-- 夏天效果翻倍
+local function getSummerHealth(inst, eater)
+	if TheWorld.state.issummer then
+		return inst.components.edible.healthvalue * 2
+	end
+	return inst.components.edible.healthvalue
+end
+
+local function getSummerSanity(inst, eater)
+	if TheWorld.state.issummer then
 		return inst.components.edible.sanityvalue * 2
 	end
 	return inst.components.edible.sanityvalue
@@ -110,6 +152,20 @@ local food_recipes = {
 		sanity = SAN * 10,
 		perishtime = PER * 5,
 		cooktime = CO * 20,
+		buff = {
+			duration = 120,
+			fn = function(source, eater, info)
+				-- 加速腐化高脚鸟蛋
+				local x, y, z = eater.Transform:GetWorldPosition()
+				local ents = TheSim:FindEntities(x, 0, z, 3, { "tallbirdegg" })
+				for i, egg in ipairs(ents) do
+					if egg.components.hatchable ~= nil then
+						local ptg = dev_mode and 99999 or info.interval
+						egg.components.hatchable.progress = egg.components.hatchable.progress + ptg
+					end
+				end
+			end,
+		},
 	},
 
 	monster_salad = {
@@ -122,6 +178,9 @@ local food_recipes = {
 		sanity = SAN * 10,
 		perishtime = PER * 6,
 		cooktime = CO * 20,
+		buff = {
+			duration = dev_mode and 20 or 120,
+		},
 	},
 	
 	skunk_smoothies = {
@@ -136,6 +195,14 @@ local food_recipes = {
 		sanity = SAN * 35,
 		perishtime = PER * 6,
 		cooktime = CO * 10,
+		oneatenfn = function(inst, eater)
+			if
+				eater.prefab == "pigman" and eater.components.werebeast ~= nil and
+				not eater.components.werebeast:IsInWereState()
+			then
+				eater.components.werebeast:SetWere()
+			end
+		end,
 	},
 	fish_froggle = {
 		test = function(cooker, names, tags)
@@ -149,6 +216,9 @@ local food_recipes = {
 		sanity = SAN * 15,
 		perishtime = PER * 6,
 		cooktime = CO * 40,
+		buff = {
+			duration = 120,
+		},
 	},
 	bamboo_light = {
 		test = function(cooker, names, tags)
@@ -162,6 +232,18 @@ local food_recipes = {
 		sanity = SAN * 10,
 		perishtime = PER * 20,
 		cooktime = CO * 15,
+		oneatenfn = function(inst, eater)
+			-- 满血时治疗附近玩家
+			if eater.components.health ~= nil and eater.components.health:GetPercent() == 1 then
+				local players = aipFindNearPlayers(eater, 10)
+				for i, player in ipairs(players) do
+					if player.components.health ~= nil then
+						aipSpawnPrefab(player, "farm_plant_happy")
+						player.components.health:DoDelta(10)
+					end
+				end
+			end
+		end,
 	},
 	vegetaballs = {
 		test = function(cooker, names, tags)
@@ -175,6 +257,16 @@ local food_recipes = {
 		sanity = SAN * 10,
 		perishtime = PER * 10,
 		cooktime = CO * 15,
+		oneatenfn = function(inst, eater)
+			-- 提升 女武神 激励值 40%
+			if eater.components.singinginspiration ~= nil then
+				local currentPTG = eater.components.singinginspiration:GetPercent()
+				local nextPTG = math.min(currentPTG + 0.4, 1)
+				if nextPTG > currentPTG then
+					eater.components.singinginspiration:SetPercent(nextPTG)
+				end
+			end
+		end,
 	},
 	veg_lohan = {
 		test = function(cooker, names, tags)
@@ -191,6 +283,9 @@ local food_recipes = {
 		sanity = SAN * 15,
 		perishtime = PER * 20,
 		cooktime = CO * 30,
+		buff = {
+			duration = 60 * 10,
+		},
 	},
 	honey_drumstick = {
 		test = function(cooker, names, tags)
@@ -205,6 +300,21 @@ local food_recipes = {
 		perishtime = PER * 6,
 		cooktime = CO * 30,
 		tags = {"honeyed"},
+		buff = {
+			duration = 30,
+			startFn = function(source, inst, info)
+				if inst.components.locomotor ~= nil then
+					inst.components.locomotor:SetExternalSpeedMultiplier(
+						inst, "aip_honey_drumstick", dev_mode and 2 or 1.25
+					)
+				end
+			end,
+			endFn = function(source, inst, info)
+				if inst.components.locomotor ~= nil then
+					inst.components.locomotor:RemoveExternalSpeedMultiplier(inst, "aip_honey_drumstick")
+				end
+			end,
+		},
 	},
 	meat_burger = {
 		test = function(cooker, names, tags)
@@ -218,6 +328,16 @@ local food_recipes = {
 		sanity = SAN * 5,
 		perishtime = PER * 10,
 		cooktime = CO * 15,
+		oneatenfn = function(inst, eater)
+			-- 健身效果 +40%
+			if eater.components.mightiness ~= nil then
+				local currentPTG = eater.components.mightiness:GetPercent()
+				local nextPTG = math.min(currentPTG + 0.4, 1)
+				if nextPTG > currentPTG then
+					eater.components.mightiness:SetPercent(nextPTG)
+				end
+			end
+		end,
 	},
 	veggie_skewers = {
 		test = function(cooker, names, tags)
@@ -231,6 +351,9 @@ local food_recipes = {
 		sanity = SAN * 5,
 		perishtime = PER * 15,
 		cooktime = CO * 20,
+		buff = {
+			duration = 60 * 5,
+		},
 	},
 	stinky_mandarin_fish = {
 		test = function(cooker, names, tags)
@@ -239,11 +362,20 @@ local food_recipes = {
 		priority = 0,
 		weight = 1,
 		foodtype = FOODTYPE.MEAT,
-		health = HP * 10,
+		health = HP * -60,
 		hunger = HU * 65,
 		sanity = SAN * 5,
 		perishtime = PER * 10,
 		cooktime = CO * 30,
+		buff = {
+			duration = 20,
+			fn = function(source, eater, info)
+				-- 恢复生命
+				if eater.components.health ~= nil and info.tickTime % 2 == 0 then
+					eater.components.health:DoDelta(6)
+				end
+			end,
+		},
 	},
 	watermelon_juice = {
 		test = function(cooker, names, tags)
@@ -252,11 +384,15 @@ local food_recipes = {
 		priority = 1,
 		weight = 1,
 		foodtype = FOODTYPE.VEGGIE,
-		health = HP * 5,
-		hunger = HU * 40,
-		sanity = SAN * 5,
+		health = HP * 15,
+		hunger = HU * 20,
+		sanity = SAN * 10,
 		perishtime = PER * 6,
 		cooktime = CO * 20,
+		postFn = function(inst)
+			inst.components.edible:SetGetHealthFn(getSummerHealth)
+			inst.components.edible:SetGetSanityFn(getSummerSanity)
+		end,
 	},
 	caterpillar_bread = {
 		test = function(cooker, names, tags)
@@ -270,6 +406,10 @@ local food_recipes = {
 		sanity = SAN * 5,
 		perishtime = PER * 15,
 		cooktime = CO * 40,
+		oneatenfn = function(inst, eater)
+			-- 召唤 蝴蝶
+			aipSpawnPrefab(eater, "butterfly")
+		end,
 	},
 	durian_sugar = {
 		test = function(cooker, names, tags)
@@ -310,10 +450,19 @@ local food_recipes = {
 		weight = 1,
 		foodtype = FOODTYPE.VEGGIE,
 		health = HP * 0,
-		hunger = HU * 75,
+		hunger = HU * 35,
 		sanity = SAN * 0,
 		perishtime = PER * 15,
 		cooktime = CO * 10,
+		oneatenfn = function(inst, eater)
+			-- 如果 饥饿 小于等于 恢复值，直接加满饥饿度
+			if
+				eater.components.hunger ~= nil and
+				eater.components.hunger.current <= inst.components.edible.hungervalue
+			then
+				eater.components.hunger:SetPercent(1)
+			end
+		end,
 	},
 	aip_food_plov = {
 		test = function(cooker, names, tags)
@@ -323,10 +472,13 @@ local food_recipes = {
 		weight = 1,
 		foodtype = FOODTYPE.MEAT,
 		health = HP * 25,
-		hunger = HU * 75,
+		hunger = HU * (dev_mode and -9999 or 75),
 		sanity = SAN * 5,
 		perishtime = PER * 20,
 		cooktime = CO * 40,
+		buff = {
+			duration = dev_mode and 30 or 60 * 3,
+		},
 	},
 	aip_food_kozinaki = {
 		test = function(cooker, names, tags)
@@ -336,10 +488,19 @@ local food_recipes = {
 		weight = 1,
 		foodtype = FOODTYPE.VEGGIE,
 		health = HP * 10,
-		hunger = HU * 65,
+		hunger = HU * (dev_mode and -9999 or 20),
 		sanity = SAN * 7,
 		perishtime = PER * 30,
 		cooktime = CO * 20,
+		buff = {
+			duration = (2 * 3) * 30,
+			fn = function(source, eater, info)
+				-- 持续恢复饥饿度
+				if eater.components.hunger ~= nil and info.tickTime % (2 * 3) == 0 then
+					eater.components.hunger:DoDelta(1)
+				end
+			end,
+		},
 	},
 	aip_food_cherry_meat = {
 		test = function(cooker, names, tags)
@@ -356,6 +517,9 @@ local food_recipes = {
 		sanity = SAN * 15,
 		perishtime = PER * 10,
 		cooktime = CO * 15,
+		buff = {
+			duration = 60 * 2,
+		},
 	},
 	aip_food_egg_tart = {
 		test = function(cooker, names, tags)
@@ -369,6 +533,20 @@ local food_recipes = {
 		sanity = SAN * 15,
 		perishtime = PER * 10,
 		cooktime = CO * 15,
+		buff = {
+			duration = 60,
+		},
+		oneatenfn = function(inst, eater)
+			-- 如果吃第二个，效果变得更好了
+			if aipBufferExist(eater, "aip_food_egg_tart") then
+				if eater.components.health ~= nil then
+					eater.components.health:DoDelta(inst.components.edible.healthvalue)
+				end
+				if eater.components.sanity ~= nil then
+					eater.components.sanity:DoDelta(inst.components.edible.sanityvalue)
+				end
+			end
+		end,
 	},
 	aip_food_grape_suger = {
 		test = function(cooker, names, tags)
@@ -412,6 +590,9 @@ local food_recipes = {
 		sanity = SAN * 5,
 		perishtime = PER * 15,
 		cooktime = CO * 15,
+		buff = {
+			duration = 60 * 5,
+		},
 	},
 
 	aip_food_vermicelli_roll = {	-- 肠粉
@@ -426,6 +607,16 @@ local food_recipes = {
 		sanity = SAN * 25,
 		perishtime = PER * 10,
 		cooktime = CO * 15,
+		oneatenfn = function(inst, eater)
+			-- 喂饱周围的人
+			local players = aipFindNearPlayers(eater, 10)
+			for i, player in ipairs(players) do
+				if player.components.hunger ~= nil then
+					aipSpawnPrefab(player, "farm_plant_happy")
+					player.components.hunger:DoDelta(inst.components.edible.hungervalue)
+				end
+			end
+		end,
 	},
 
 	aip_food_braised_intestine = {	-- 九转大肠
@@ -437,9 +628,18 @@ local food_recipes = {
 		foodtype = FOODTYPE.MEAT,
 		health = HP * -10,
 		hunger = HU * 75,
-		sanity = SAN * -10,
+		sanity = SAN * -55,
 		perishtime = PER * 15,
 		cooktime = CO * 15,
+		buff = {
+			duration = 10.9,
+			fn = function(source, eater, info)
+				-- 恢复 理智
+				if eater.components.sanity ~= nil and info.tickTime % 2 == 0 then
+					eater.components.sanity:DoDelta(4)
+				end
+			end,
+		},
 	},
 
 	aip_food_spring_ball = {	-- 咬春福袋
@@ -479,7 +679,7 @@ local food_recipes = {
 		end,
 		buff = {
 			buffName = "foodMaltose",
-			name = BUFF_LANG_MAP.foodMaltose,
+			name = BUFF_LANG.foodMaltose,
 			fn = function(source, eater, info)
 				-- 恢复理智
 				if eater.components.sanity ~= nil and info.tickTime % 2 == 0 then
@@ -584,13 +784,25 @@ for name,data in pairs(food_recipes) do
 	local buffInfo = data.buff
 
 	if buffInfo then
-		aipBufferRegister(buffInfo.buffName, {
-			name = buffInfo.name,
+		local buffName = buffInfo.buffName or name
+
+		aipBufferRegister(buffName, {
+			name = BUFF_LANG[buffName],
 			fn = buffInfo.fn,
 			startFn = buffInfo.startFn,
 			endFn = buffInfo.endFn,
 			showFX = buffInfo.showFX,
 		})
+
+		-- 代理一下 onEaten，添加 Buffer
+		local oriOnEaten = data.oneatenfn
+		data.oneatenfn = function(inst, eater)
+			if oriOnEaten then
+				oriOnEaten(inst, eater)
+			end
+
+			aipBufferPatch(inst, eater, buffName, buffInfo.duration)
+		end
 	end
 
 	data.buff = nil

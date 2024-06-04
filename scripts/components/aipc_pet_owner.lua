@@ -543,8 +543,6 @@ function PetOwner:UpgradePet(id, inst)
 	end)[1]
 
 	if petData ~= nil then
-		aipPrint("UpgradePet:", inst.prefab)
-
 		-- 如果是 BUG 软糖，直接满级
 		if inst.prefab == "aip_pet_fudge_bug" then
 			local MAX_QUALITY = 5
@@ -604,16 +602,12 @@ function PetOwner:UpgradePet(id, inst)
 							break
 						end
 					end
-
-					aipPrint("Upgrade 1:", upgradeSkillName)
 				elseif lowestSkillName ~= nil then
 					-- 升级最低品质的技能 2 级
 					petData.skills[lowestSkillName].quality = math.min(
 						petData.skills[lowestSkillName].quality + 2,
 						quality
 					)
-
-					aipPrint("Upgrade 2:", lowestSkillName)
 				end
 
 				-- 告知不需要提升品质了
@@ -1005,8 +999,6 @@ function PetOwner:OnLoad(data)
 			id = self.pets[1] ~= nil and self.pets[1].id or false
 		end
 	end
-
-	aipTypePrint("Load:", data, id)
 
 	if id ~= false then
 		self.inst:DoTaskInTime(1, function()

@@ -225,6 +225,20 @@ function Projectile:FindEntities(element, pos, radius, excludePrefabs)
 		end
 	end
 
+	-- 额外找一下有没有红包需要开（且不在 filteredEnts 里）
+	ents = TheSim:FindEntities(pos.x, pos.y, pos.z, radius or AREA_DISTANCE, { "unwrappable" }, NO_TAGS)
+	for i, ent in ipairs(ents) do
+		if
+			not aipInTable(excludePrefabs, ent) and
+			ent:IsValid() and ent.entity:IsVisible() and
+			ent.components.unwrappable ~= nil and
+			not aipInTable(filteredEnts, ent)
+		then
+			table.insert(filteredEnts, ent)
+		end
+	end
+	aipPrint("Find:", #ents, #filteredEnts)
+
 	return filteredEnts
 end
 
@@ -446,7 +460,18 @@ function Projectile:EffectTaskOn(target)
 			finalDamage = finalDamage * math.pow(1.5, self.task.elementCount)
 		end
 
-		target.components.combat:GetAttacked(self.doer, finalDamage, nil, nil)
+		-- 造成伤害
+		if target.components.combat then
+			target.components.combat:GetAttacked(self.doer, finalDamage, nil, nil)
+		end
+
+		-- 打开红包
+		aipPrint("effect!!!!", target.components)
+		if target.components.unwrappable then
+			aipPrint("open!!!")
+			target.components.unwrappable:Unwrap(self.doer)
+		end
+
 		doEffect = true
 
 		-- 【赋能 - 吸血】每次伤害都恢复 10 点生命值
@@ -555,9 +580,7 @@ function Projectile:OnUpdate(dt)
 		for i, prefab in ipairs(ents) do
 			if
 				prefab:IsValid() and
-				prefab.entity:IsVisible() and
-				prefab.components.combat ~= nil and
-				prefab.components.health ~= nil
+				prefab.entity:IsVisible()
 			then
 				local effectWork = self:EffectTaskOn(prefab)
 

@@ -23,7 +23,7 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_PET_REMOVE = LANG.REMOVE
 local function syncPetInfo(inst)
     if inst.components.aipc_petable and inst.components.aipc_info_client then
         local quality = inst.components.aipc_petable:GetQuality()
-		inst.components.aipc_info_client:SetString("aip_info", aipStr(petConfig.QUALITY_LANG[quality]))
+		inst.components.aipc_info_client:SetString("aip_info", petConfig.QUALITY_LANG[quality])
 		inst.components.aipc_info_client:SetByteArray("aip_info_color", petConfig.QUALITY_COLORS[quality])
 	end
 end
