@@ -252,6 +252,9 @@ PrefabFiles = {
 	"aip_ocean_jellyfish",
 	"aip_blink_flower",
 	"aip_ocean_vortex",
+
+	-- 5 个挑战
+	"aip_nectar_bee",
 }
 
 local language = GetModConfigData("language")
