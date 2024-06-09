@@ -881,6 +881,8 @@ end
 function _G.aipGetOne(inst)
 	if inst.components.stackable ~= nil then
 		return inst.components.stackable:Get()
+	elseif inst.components.inventoryitem then
+		inst.components.inventoryitem:RemoveFromOwner(true)
 	end
 
 	return inst

@@ -1,7 +1,7 @@
 -- 开发模式
 local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
-local brain = require("brains/aip_slime_mold_brain")
+local brain = require("brains/aip_nectar_bee_brain")
 
 local assets = {
     Asset("ANIM", "anim/aip_nectar_bee.zip"),
@@ -22,6 +22,9 @@ local LANG_MAP = {
 			"Nectar can also make nectar",
 			"Can nectar burn?"
 		},
+		SAY_NECTAR_BAD = "Not good",
+		SAY_NECTAR_NORMAL = "Wow, not bad",
+		SAY_NECTAR_GOOD = "It's delicious!",
 	},
 	chinese = {
 		NAME = "贪吃熊蜂",
@@ -33,6 +36,9 @@ local LANG_MAP = {
 			"花蜜好像可以二次加工",
 			"花蜜能燃烧吗？"
 		},
+		SAY_NECTAR_BAD = "这花蜜不咋地",
+		SAY_NECTAR_NORMAL = "哇，做的不错",
+		SAY_NECTAR_GOOD = "这花蜜真好吃",
 	},
 }
 
@@ -73,6 +79,31 @@ end
 
 local function onFar(inst, player)
 	inst.components.aipc_timer:KillName("talkCheck")
+end
+
+-- 接受玩家给的花蜜，然后提供奖励
+local function validteFood(food)
+    return food ~= nil and food:HasTag("aip_nectar")
+end
+
+local function ShouldAcceptItem(inst, item)
+    return validteFood(item)
+end
+
+local function OnGetItemFromPlayer(inst, giver, item)
+    if validteFood(item) then
+		-- 说话啦
+		local currentQuality = item.currentQuality or 0
+		local text
+		if currentQuality <= 1 then
+			text = LANG.SAY_NECTAR_BAD
+		elseif currentQuality <= 3 then
+			text = LANG.SAY_NECTAR_NORMAL
+		else
+			text = LANG.SAY_NECTAR_GOOD
+		end
+		inst.components.talker:Say(text)
+    end
 end
 
 ---------------------------------- 实例 ----------------------------------
@@ -123,11 +154,18 @@ local function fn()
 	inst.components.playerprox:SetOnPlayerNear(onNear)
 	inst.components.playerprox:SetOnPlayerFar(onFar)
 
-	inst:SetStateGraph("SGaip_slime_mold")
+	inst:SetStateGraph("SGaip_nectar_bee")
 	inst:SetBrain(brain)
 
 	inst:AddComponent("aipc_timer")
 	inst:AddComponent("timer")
+
+	inst:AddComponent("inventory")
+
+	inst:AddComponent("trader")
+    inst.components.trader:SetAcceptTest(ShouldAcceptItem)
+    inst.components.trader.onaccept = OnGetItemFromPlayer
+    inst.components.trader.deleteitemonaccept = false
 
 	inst.persists = false
 

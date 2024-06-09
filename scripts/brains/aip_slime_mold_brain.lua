@@ -10,6 +10,7 @@ local MoldBrain = Class(Brain, function(self, inst)
     -- self.mytarget = nil
 end)
 
+
 function MoldBrain:OnStop()
 end
 
