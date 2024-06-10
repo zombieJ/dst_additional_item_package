@@ -255,6 +255,7 @@ PrefabFiles = {
 
 	-- 5 个挑战
 	"aip_nectar_bee",
+	"aip_torch",
 }
 
 local language = GetModConfigData("language")
