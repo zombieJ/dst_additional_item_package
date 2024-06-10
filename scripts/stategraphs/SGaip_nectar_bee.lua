@@ -33,13 +33,18 @@ local states = {
         tags = { "idle", "eating", "busy" },
 
         onenter = function(inst)
-            inst.components.locomotor:StopMoving()
-            inst.AnimState:PlayAnimation("eat")
+            inst.Physics:Stop()
+            inst.AnimState:PlayAnimation("eat", false)
         end,
+
+        timeline = {
+            TimeEvent(10 * FRAMES, function(inst)
+                inst:PerformBufferedAction()
+            end),
+        },
 
         events = {
             EventHandler("animover", function(inst)
-                aipPrint("end eating!")
                 inst.sg:GoToState("idle")
             end)
         },

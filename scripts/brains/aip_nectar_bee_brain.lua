@@ -16,7 +16,6 @@ local function FindFoodAction(inst)
         local target = inst.components.inventory:FindItem(function(item) return item:HasTag("aip_nectar") end)
 
         if target ~= nil then
-			aipPrint("eat!!!")
             return BufferedAction(inst, target, ACTIONS.EAT)
         end
     end

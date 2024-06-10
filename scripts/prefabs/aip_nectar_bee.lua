@@ -106,6 +106,11 @@ local function OnGetItemFromPlayer(inst, giver, item)
     end
 end
 
+-- 吃下东西后，给与奖励
+local function OnEat(inst, food)
+    
+end
+
 ---------------------------------- 实例 ----------------------------------
 local function fn()
 	local inst = CreateEntity()
@@ -166,6 +171,13 @@ local function fn()
     inst.components.trader:SetAcceptTest(ShouldAcceptItem)
     inst.components.trader.onaccept = OnGetItemFromPlayer
     inst.components.trader.deleteitemonaccept = false
+
+	inst:AddComponent("eater")
+    inst.components.eater:SetDiet({ FOODGROUP.OMNI }, { FOODGROUP.OMNI })
+    inst.components.eater:SetCanEatHorrible()
+    inst.components.eater:SetCanEatRaw()
+    inst.components.eater:SetStrongStomach(true)
+    inst.components.eater:SetOnEatFn(OnEat)
 
 	inst.persists = false
 
