@@ -2,7 +2,6 @@
 <spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
     <folder id="0" name="aip_torch_swap">
         <file id="0" name="aip_torch_swap/output.png" width="123" height="350" pivot_x="0.460935" pivot_y="0.223917"/>
-        <file id="1" name="aip_torch_swap/idle.png" width="256" height="256" pivot_x="0" pivot_y="1"/>
     </folder>
     <entity id="0" name="aip_torch_swap">
         <animation id="0" name="BUILD" length="1000">
@@ -14,18 +13,6 @@
             <timeline id="0" name="aip_torch_swap">
                 <key id="0" spin="0">
                     <object folder="0" file="0" x="2.039065" y="0.276083" angle="0"/>
-                </key>
-            </timeline>
-        </animation>
-        <animation id="1" name="idle" length="1000">
-            <mainline>
-                <key id="0">
-                    <object_ref id="0" name="idle" folder="0" file="1" abs_x="-68.688716" abs_y="-26.723735" abs_pivot_x="0.188716" abs_pivot_y="0.223735" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
-                </key>
-            </mainline>
-            <timeline id="0" name="idle">
-                <key id="0" spin="0">
-                    <object folder="0" file="1" x="-68.688716" y="-26.723735" pivot_x="0.188716" pivot_y="0.223735" angle="0"/>
                 </key>
             </timeline>
         </animation>
