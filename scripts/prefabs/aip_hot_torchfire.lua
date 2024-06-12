@@ -5,10 +5,10 @@ local TEXTURE = "fx/torchfire.tex"
 
 local SHADER = "shaders/vfx_particle.ksh"
 
-local COLOUR_ENVELOPE_NAME_SMOKE = "aip_cold_torch_firesmokecolourenvelope"
-local SCALE_ENVELOPE_NAME_SMOKE = "aip_cold_torch_firesmokescaleenvelope"
-local COLOUR_ENVELOPE_NAME = "aip_cold_torch_firecolourenvelope"
-local SCALE_ENVELOPE_NAME = "aip_cold_torch_firescaleenvelope"
+local COLOUR_ENVELOPE_NAME_SMOKE = "aip_hot_torch_firesmokecolourenvelope"
+local SCALE_ENVELOPE_NAME_SMOKE = "aip_hot_torch_firesmokescaleenvelope"
+local COLOUR_ENVELOPE_NAME = "aip_hot_torch_firecolourenvelope"
+local SCALE_ENVELOPE_NAME = "aip_hot_torch_firescaleenvelope"
 
 local assets =
 {
@@ -47,12 +47,12 @@ local function InitEnvelope()
     EnvelopeManager:AddColourEnvelope(
         COLOUR_ENVELOPE_NAME,
         {
-            { 0,    IntColour(255, 255, 255, 128) },
-            { .49,  IntColour(255, 255, 255, 128) },
-            { .5,   IntColour(0, 0, 255, 128) },
-            { .51,  IntColour(30, 30, 255, 128) },
-            { .75,  IntColour(30, 30, 255, 128) },
-            { 1,    IntColour(7, 7, 255, 0) },
+            { 0,    IntColour(187, 111, 60, 128) },
+            { .49,  IntColour(187, 111, 60, 128) },
+            { .5,   IntColour(255, 255, 0, 128) },
+            { .51,  IntColour(255, 30, 56, 128) },
+            { .75,  IntColour(255, 30, 56, 128) },
+            { 1,    IntColour(255, 7, 28, 0) },
         }
     )
 
@@ -181,8 +181,7 @@ local function master_postinit(inst)
     inst.fx_offset = -110
 
     -- inst:AddComponent("heater")
-    -- inst.components.heater.heat = -10
-    -- inst.components.heater:SetThermics(false, true)
+    -- inst.components.heater.heat = 20
 end
 
-return MakeTorchFire("aip_cold_torchfire", assets, nil, common_postinit, master_postinit)
+return MakeTorchFire("aip_hot_torchfire", assets, nil, common_postinit, master_postinit)

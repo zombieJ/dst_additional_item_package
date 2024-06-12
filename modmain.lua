@@ -257,6 +257,7 @@ PrefabFiles = {
 	"aip_nectar_bee",
 	"aip_torch",
 	"aip_cold_torchfire",
+	"aip_hot_torchfire",
 }
 
 local language = GetModConfigData("language")

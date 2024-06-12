@@ -89,12 +89,10 @@ local function flareFire(inst, owner, firePrefab)
 
 	stopFire(inst)
 
-	-- firePrefab = "torchfire" -- 强制使用火炬的火焰
-
 	local fx = SpawnPrefab(firePrefab)
 	fx.entity:SetParent(owner.entity)
 	fx.entity:AddFollower()
-	fx.Follower:FollowSymbol(owner.GUID, "swap_object", 0, -125, 0)
+	fx.Follower:FollowSymbol(owner.GUID, "swap_object", 0, -140, 0)
 
 	inst._aipFirePrefab = firePrefab
 	inst._aipFireFX = fx
@@ -108,7 +106,7 @@ local function syncFire(inst, owner)
 	if fireFX then
 		local heat = fireFX.components.heater:GetHeat(owner)
 
-		local firePrefab = heat > 0 and "torchfire" or "aip_cold_torchfire"
+		local firePrefab = heat > 0 and "aip_hot_torchfire" or "aip_cold_torchfire"
 		flareFire(inst, owner, firePrefab)
 	end
 end
@@ -120,7 +118,7 @@ local function onequip(inst, owner)
 	owner.AnimState:Show("ARM_carry")
 	owner.AnimState:Hide("ARM_normal")
 
-	owner.components.aipc_timer:NamedInterval("syncFire", 1, function()
+	owner.components.aipc_timer:NamedInterval("syncFire", 0.4, function()
 		syncFire(inst, owner)
 	end)
 
