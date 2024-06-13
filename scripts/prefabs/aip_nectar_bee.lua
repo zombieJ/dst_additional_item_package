@@ -91,28 +91,30 @@ local function ShouldAcceptItem(inst, item)
 end
 
 local function OnGetItemFromPlayer(inst, giver, item)
-    if validteFood(item) then
-		-- 说话啦
-		local currentQuality = item.currentQuality or 0
-		local text
-		if currentQuality <= 1 then
-			text = LANG.SAY_NECTAR_BAD
-		elseif currentQuality <= 3 then
-			text = LANG.SAY_NECTAR_NORMAL
-		else
-			text = LANG.SAY_NECTAR_GOOD
-		end
-		inst.components.talker:Say(text)
-    end
 end
 
 -- 吃下东西后，给与奖励
 local function OnEat(inst, food)
-    --[[
-		烂食物：没有奖励
-		普通食物：一根可以引燃的火炬
-		好食物：这个火炬的配方
-	]]
+	if validteFood(food) then
+		local currentQuality = food.currentQuality or 0
+		local text = nil
+		local gift = nil
+
+		if currentQuality <= 1 then
+			text = LANG.SAY_NECTAR_BAD
+		elseif currentQuality <= 3 then
+			text = LANG.SAY_NECTAR_NORMAL
+			gift = "aip_torch"
+		else
+			text = LANG.SAY_NECTAR_GOOD
+			gift = "aip_torch_blueprint"
+		end
+		inst.components.talker:Say(text)
+
+		if gift then
+			inst.components.lootdropper:SpawnLootPrefab(gift)
+		end
+    end
 end
 
 ---------------------------------- 实例 ----------------------------------
@@ -151,6 +153,9 @@ local function fn()
 	if not TheWorld.ismastersim then
 		return inst
 	end
+
+	inst:AddComponent("lootdropper")
+    inst.components.lootdropper:SetLoot({})
 
 	inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
 	inst.components.locomotor:EnableGroundSpeedMultiplier(false)
