@@ -33,7 +33,7 @@ end
 
 -- 【双端】获取 Buffer 是否存在
 function _G.aipBufferExist(inst, name)
-	local bufferInfos = _G.aipBufferInfos(inst)
+	local bufferInfos = _G.aipBufferInfos(inst) or {}
 
 	return bufferInfos[name] ~= nil
 
