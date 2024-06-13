@@ -111,9 +111,8 @@ local function OnEat(inst, food)
 		end
 		inst.components.talker:Say(text)
 
-		if gift then
-			inst.components.lootdropper:SpawnLootPrefab(gift)
-		end
+		-- 延迟一下送礼
+		inst._aipGift = gift
     end
 end
 
@@ -153,9 +152,6 @@ local function fn()
 	if not TheWorld.ismastersim then
 		return inst
 	end
-
-	inst:AddComponent("lootdropper")
-    inst.components.lootdropper:SetLoot({})
 
 	inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
 	inst.components.locomotor:EnableGroundSpeedMultiplier(false)
