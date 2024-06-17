@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="full">
+        <file id="0" name="full/aip_torch_stand.png" width="400" height="600" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <folder id="1" name="firefx">
+        <file id="0" name="firefx/firefx.png" width="10" height="10" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_torch_stand">
+        <animation id="0" name="idle" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="aip_torch_stand" folder="0" file="0" abs_x="1.930175" abs_y="3.369384" abs_pivot_x="0.569825" abs_pivot_y="0.130616" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="firefx" folder="1" file="0" abs_x="4.285714" abs_y="392.857143" abs_pivot_x="0" abs_pivot_y="1" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="aip_torch_stand">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="1.930175" y="3.369384" pivot_x="0.569825" pivot_y="0.130616" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="firefx">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="4.285714" y="392.857143"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="1" name="hit" length="1200">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="aip_torch_stand" folder="0" file="0" abs_x="1.930175" abs_y="3.369384" abs_pivot_x="0.569825" abs_pivot_y="0.130616" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="306">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+                <key id="2" time="606">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                </key>
+                <key id="3" time="904">
+                    <object_ref id="0" timeline="0" key="3" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="aip_torch_stand">
+                <key id="0">
+                    <object folder="0" file="0" x="1.930175" y="3.369384" pivot_x="0.569825" pivot_y="0.130616" angle="0"/>
+                </key>
+                <key id="1" time="306" spin="-1">
+                    <object folder="0" file="0" x="1.930175" y="3.369384" pivot_x="0.569825" pivot_y="0.130616" angle="4.794201"/>
+                </key>
+                <key id="2" time="606">
+                    <object folder="0" file="0" x="1.930175" y="3.369384" pivot_x="0.569825" pivot_y="0.130616" angle="357.128635"/>
+                </key>
+                <key id="3" time="904" spin="-1">
+                    <object folder="0" file="0" x="1.930175" y="3.369384" pivot_x="0.569825" pivot_y="0.130616" angle="1.753072"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

@@ -68,7 +68,11 @@ env.AddComponentAction("SCENE", "aipc_orbit_point", function(inst, doer, actions
 			table.insert(actions, _G.ACTIONS.AIPC_MINECAR_REMOVE_POINT_ACTION)
 		end
 	else -- 左键上车
-		if inst.components.aipc_orbit_point:CanDrive() then
+		if
+			inst.components and
+			inst.components.aipc_orbit_point and
+			inst.components.aipc_orbit_point:CanDrive()
+		then
 			table.insert(actions, GLOBAL.ACTIONS.AIPC_MINECAR_DRIVE_ACTION)
 		end
 	end
