@@ -252,6 +252,7 @@ PrefabFiles = {
 	"aip_ocean_jellyfish",
 	"aip_blink_flower",
 	"aip_ocean_vortex",
+	"aip_turn_mushroom",
 
 	-- 5 个挑战
 	"aip_nectar_bee",
