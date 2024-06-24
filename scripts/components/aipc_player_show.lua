@@ -228,7 +228,7 @@ local function turnMushroomShow(pos)
 		-- 晚上就算了
 		TheWorld.state.isnight or
 		-- 当前位置是否在海里
-		not TheWorld.Map:IsOceanAtPoint(pos.x, pos.y, pos.z, true) or
+		TheWorld.Map:IsOceanAtPoint(pos.x, pos.y, pos.z, false) or
 		-- 几率不对
 		math.random() > chance
 	then
@@ -236,7 +236,10 @@ local function turnMushroomShow(pos)
 	end
 
 	-- 在附近找一个地面添加花环
-	local newPT = aipGetSpawnPoint(pos, 20)
+	local newPT = aipGetSpawnPoint(pos, dev_mode and 5 or 20)
+	aipSpawnPrefab(nil, "aip_turn_mushroom", newPT.x, 0, newPT.z)
+
+	return true
 end
 
 ------------------------------ 方法 ------------------------------
