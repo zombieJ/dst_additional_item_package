@@ -1,5 +1,8 @@
 require "prefabs/veggies"
 
+local cooking = require("cooking")
+local ingredients = cooking.ingredients -- 获取食物的食物度
+
 local language = aipGetModConfig("language")
 
 -- 文字描述
@@ -16,8 +19,8 @@ local LANG_MAP = {
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
-STRINGS.NAMES.AIP_TURN_MUSHROON = LANG.NAME
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_TURN_MUSHROON = LANG.DESC
+STRINGS.NAMES.AIP_TURN_MUSHROOM = LANG.NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_TURN_MUSHROOM = LANG.DESC
 
 -- 资源
 local assets = {
@@ -178,17 +181,20 @@ local function onNear(inst, player)
         return
     end
 
-     -- 我们先把 randomPools 里的所有池子合并到一个表里
-     local allValidPrefabs = {}
-     for i, pool in ipairs(randomPools) do
-         for prefabName, weight in pairs(pool) do
-             table.insert(allValidPrefabs, prefabName)
-         end
-     end
+    -- 我们先把 randomPools 里的所有池子合并到一个表里
+    local allValidPrefabs = {}
+    for i, pool in ipairs(randomPools) do
+        for prefabName, weight in pairs(pool) do
+            table.insert(allValidPrefabs, prefabName)
+        end
+    end
 
-     aipPrint("allValidPrefabs", allValidPrefabs)
+    -- 把 ingredients 填入 allValidPrefabs
+    for prefabName, info in pairs(ingredients) do
+        table.insert(allValidPrefabs, prefabName)
+    end
 
-    inst.components.aipc_timer:NamedInterval("PlayerNear", 0.4, function()
+    inst.components.aipc_timer:NamedInterval("PlayerNear", 1, function()
         -- 把东西拿出来吧
         local prefabs = aipFindNearEnts(inst, allValidPrefabs, DIST - 0.2, false)
         if #prefabs <= 0 then
@@ -197,15 +203,38 @@ local function onNear(inst, player)
 
         -- 如果存在，我们则随机其中一个进行转化
         local targetPrefab = aipRandomEnt(prefabs)
+        local targetPrefabName = targetPrefab.prefab
 
         -- 遍历原始的 randomPools 表，找到对应的池子
         local targetPool = nil
         for i, pool in ipairs(randomPools) do
-            if pool[targetPrefab.prefab] ~= nil then
+            if pool[targetPrefabName] ~= nil then
                 targetPool = pool
                 break
             end
         end
+
+        -- 如果不在 randomPools 里，那就从 ingredients 里找
+        if targetPool == nil and ingredients[targetPrefabName] ~= nil then
+            local tags = ingredients[targetPrefabName].tags or {}
+            local filteredTags = aipFilterKeysTable(tags, { "precook", "dried" })
+
+            -- 我们来收集相同 tags 的食材
+            targetPool = {}
+            for name, info in pairs(ingredients) do
+                local tgtTags = info.tags or {}
+
+                -- 遍历 tag 来添加到 targetPool 里
+                for tag, _ in pairs(filteredTags) do
+                    if tgtTags[tag] ~= nil then
+                        targetPool[name] = math.max(targetPool[name] or 0, tgtTags[tag])
+                    end
+                end
+            end
+
+            aipTypePrint("变形列表:", targetPool)
+        end
+
         if targetPool == nil then
             return
         end
@@ -213,12 +242,14 @@ local function onNear(inst, player)
         -- 替换为新的物品，随机 20 次如果都不行就算了
         for i = 1, 20 do
             local nextPrefab = aipRandomLoot(targetPool)
-            if nextPrefab and nextPrefab ~= targetPrefab.prefab then
+            if nextPrefab and nextPrefab ~= targetPrefabName and PrefabExists(nextPrefab) then
                 aipSpawnPrefab(targetPrefab, "aip_fx_splode").DoShow()
                 local nextItem = aipSpawnPrefab(targetPrefab, nextPrefab)
 
                 aipFlingItem(nextItem)
                 aipRemove(targetPrefab)
+
+                aipTypePrint("动态变形:", nextPrefab)
 
                 -- 好了，拜拜
                 inst:Remove()
