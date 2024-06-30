@@ -260,6 +260,7 @@ PrefabFiles = {
 	"aip_cold_torchfire",
 	"aip_hot_torchfire",
 	"aip_torch_stand",
+	"aip_ice_houndfire",
 }
 
 local language = GetModConfigData("language")

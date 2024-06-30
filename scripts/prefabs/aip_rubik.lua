@@ -70,6 +70,15 @@ local function onfuelchange(newsection, oldsection, inst)
     end
 end
 
+------------------------------- 混合 -------------------------------
+local function OnFullMoon(inst, isfullmoon)
+    if not isfullmoon then
+        return
+    end
+
+    -- 满月时，创建一只 冰狗 TODO
+end
+
 ------------------------------- 实体 -------------------------------
 local function fn()
     local inst = CreateEntity()
@@ -121,6 +130,9 @@ local function fn()
     inst.components.fueled:SetUpdateFn(onupdatefueled)
     inst.components.fueled:SetSectionCallback(onfuelchange)
     inst.components.fueled:InitializeFuelLevel(dev_mode and TUNING.NIGHTLIGHT_FUEL_START or 0)
+
+    inst:WatchWorldState("isfullmoon", OnFullMoon)
+    OnFullMoon(inst, TheWorld.state.isfullmoon)
 
 	return inst
 end
