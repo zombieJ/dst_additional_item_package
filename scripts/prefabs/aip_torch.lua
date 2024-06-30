@@ -71,43 +71,13 @@ local function getFire(inst)
 	end
 end
 
--- 停火
-local function stopFire(inst)
-	if inst._aipFireFX then
-		inst._aipFireFX:Remove()
-	end
-
-	inst._aipFirePrefab = nil
-	inst._aipFireFX = nil
-end
-
--- 点火，根据火焰的热量选择对应的火焰
-local function flareFire(inst, owner, firePrefab)
-	if inst._aipFirePrefab == firePrefab then
-		return
-	end
-
-	stopFire(inst)
-
-	local fx = SpawnPrefab(firePrefab)
-	fx.entity:SetParent(owner.entity)
-	fx.entity:AddFollower()
-	fx.Follower:FollowSymbol(owner.GUID, "swap_object", 0, -140, 0)
-
-	inst._aipFirePrefab = firePrefab
-	inst._aipFireFX = fx
-end
-
-
-
 local function syncFire(inst, owner)
 	local fireFX = getFire(inst)
 
 	if fireFX then
 		local heat = fireFX.components.heater:GetHeat(owner)
 
-		local firePrefab = heat > 0 and "aip_hot_torchfire" or "aip_cold_torchfire"
-		flareFire(inst, owner, firePrefab)
+		inst.components.aipc_type_fire:StartFire(heat > 0 and "hot" or "cold", owner)
 	end
 end
 
@@ -122,7 +92,8 @@ local function onequip(inst, owner)
 		syncFire(inst, owner)
 	end)
 
-	stopFire(inst)
+	-- stopFire(inst)
+	inst.components.aipc_type_fire:StopFire()
 end
 
 local function onunequip(inst, owner)
@@ -132,7 +103,7 @@ local function onunequip(inst, owner)
 
 	owner.components.aipc_timer:KillName("syncFire")
 
-	stopFire(inst)
+	inst.components.aipc_type_fire:StopFire()
 end
 
 ---------------------------- 实例 ----------------------------
@@ -166,6 +137,13 @@ local function fn()
 	inst:AddComponent("inspectable")
 
 	inst:AddComponent("aipc_timer")
+
+	-- 火焰类型
+	inst:AddComponent("aipc_type_fire")
+	inst.components.aipc_type_fire.hotPrefab = "aip_hot_torchfire"
+	inst.components.aipc_type_fire.coldPrefab = "aip_cold_torchfire"
+	inst.components.aipc_type_fire.followSymbol = "swap_object"
+	inst.components.aipc_type_fire.followOffset = Vector3(0, -140, 0)
 
 	inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_torch.xml"

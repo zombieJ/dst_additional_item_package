@@ -30,6 +30,9 @@ local prefabs = {
 	"aip_rubik_fire_red",
 }
 
+------------------------------- 火焰 -------------------------------
+-- 不同的火焰来源可以产生不同的火焰特效
+
 ------------------------------- 燃烧 -------------------------------
 local function onextinguish(inst)
     if inst.components.fueled ~= nil then
@@ -100,6 +103,13 @@ local function fn()
     inst.components.burnable.canlight = false
     inst:ListenForEvent("onextinguish", onextinguish)
 	inst:ListenForEvent("onignite", onignite)
+
+    -- -- 添加类型火焰特效
+    -- inst:AddComponent("aipc_type_fire")
+    -- inst.components.aipc_type_fire.hotPrefab = "aip_hot_torchfire"
+	-- inst.components.aipc_type_fire.coldPrefab = "aip_cold_torchfire"
+	-- inst.components.aipc_type_fire.followSymbol = "swap_object"
+	-- inst.components.aipc_type_fire.followOffset = Vector3(0, -140, 0)
 
 	-- 使用燃料
 	inst:AddComponent("fueled")
