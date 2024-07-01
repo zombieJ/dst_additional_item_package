@@ -47,6 +47,73 @@ local function onignite(inst)
 	inst.components.aipc_rubik:Start()
 end
 
+------------------------------- 混合 -------------------------------
+local function OnFullMoon(inst, isfullmoon)
+    if not isfullmoon then
+        return
+    end
+
+    -- 生成冰猎犬
+    local hound = aipSpawnPrefab(inst, "icehound")
+    hound.persists = false
+    hound.components.follower:SetLeader(inst)
+end
+
+local function syncTypeFireFx(inst, instVar, instRef, prefabName, tag, centerFire)
+    -- 如果在燃烧，我们取消 冰火 特效
+    if inst.components.burnable:IsBurning() or not inst[instVar] then
+        if inst[instRef] ~= nil then
+            inst[instRef]:Remove()
+            inst[instRef] = nil
+            inst[instVar] = false
+        end
+
+        return
+    end
+
+    -- 如果没有燃烧，我们添加 冰火 特效
+    if inst[instVar] and not inst[instRef] then
+        local scale = centerFire and 0.65 or 1
+        local fx = inst:SpawnChild(prefabName)
+        fx.Transform:SetScale(scale, scale, scale)
+        fx.entity:AddFollower()
+        fx.Follower:FollowSymbol(
+            inst.GUID, "fire_marker", 0,
+            centerFire and -30 or 0, centerFire and 0.1 or 0
+        )
+
+        fx:AddTag("aip_torchfire")
+        fx:AddTag(tag)
+
+        if fx.components.firefx then
+            fx.components.firefx:SetLevel(4)
+        end
+
+        inst[instRef] = fx
+    end
+end
+
+local function syncFireFx(inst)
+    syncTypeFireFx(inst, "_aipIsHot", "_aipHotFire", "campfirefire", "aip_torchfire_hot", true)
+    syncTypeFireFx(inst, "_aipIsCold", "_aipColdFire", "coldfirefire", "aip_torchfire_cold")
+end
+
+-- 根据附近死亡的狗狗来决定要不要点火
+local function syncFire(inst, data)
+    if data.inst == nil or not inst:IsNear(data.inst, 10) then
+        return
+    end
+
+    -- 计量器
+    if data.inst.prefab == "firehound" then
+        inst._aipIsHot = true
+    elseif data.inst.prefab == "icehound" then
+        inst._aipIsCold = true
+    end
+
+    syncFireFx(inst)
+end
+
 ------------------------------- 燃料 -------------------------------
 local function ontakefuel(inst)
     inst.SoundEmitter:PlaySound("dontstarve/common/nightmareAddFuel")
@@ -68,15 +135,8 @@ local function onfuelchange(newsection, oldsection, inst)
 
         inst.components.burnable:SetFXLevel(newsection, inst.components.fueled:GetSectionPercent())
     end
-end
 
-------------------------------- 混合 -------------------------------
-local function OnFullMoon(inst, isfullmoon)
-    if not isfullmoon then
-        return
-    end
-
-    -- 满月时，创建一只 冰狗 TODO
+    syncFireFx(inst)
 end
 
 ------------------------------- 实体 -------------------------------
@@ -129,10 +189,19 @@ local function fn()
     inst.components.fueled:SetTakeFuelFn(ontakefuel)
     inst.components.fueled:SetUpdateFn(onupdatefueled)
     inst.components.fueled:SetSectionCallback(onfuelchange)
-    inst.components.fueled:InitializeFuelLevel(dev_mode and TUNING.NIGHTLIGHT_FUEL_START or 0)
+    inst.components.fueled:InitializeFuelLevel(0) -- dev_mode TUNING.NIGHTLIGHT_FUEL_START
 
     inst:WatchWorldState("isfullmoon", OnFullMoon)
     OnFullMoon(inst, TheWorld.state.isfullmoon)
+
+    -- 监听附近是否有冰火狗死了
+    inst._onEntityDeath = function(src, data)
+        syncFire(inst, data)
+    end
+    inst:ListenForEvent("entity_death", inst._onEntityDeath, TheWorld)
+
+    inst._aipIsHot = false
+    inst._aipIsCold = false
 
 	return inst
 end

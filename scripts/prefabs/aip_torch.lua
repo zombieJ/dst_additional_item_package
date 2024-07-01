@@ -69,6 +69,10 @@ local function getFire(inst)
 			end
 		end
 	end
+
+	-- 如果是设置了特殊 tag，我们认为这个火焰可以直接使用
+	ents = TheSim:FindEntities(x, y, z, 2, { "aip_torchfire" })
+	return ents[1]
 end
 
 local function syncFire(inst, owner)
