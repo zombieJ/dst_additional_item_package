@@ -4,6 +4,7 @@ local TypeFire = Class(function(self, inst)
 
 	self.hotPrefab = nil
 	self.coldPrefab = nil
+	self.mixPrefab = nil
 	self.followSymbol = nil
 	self.followOffset = Vector3(0, 0, 0)
 
@@ -19,7 +20,12 @@ function TypeFire:StartFire(type, target)
 
 	self:StopFire()
 
-	local firePrefab = type == "cold" and self.coldPrefab or self.hotPrefab
+	local firePrefab = self.hotPrefab
+	if type == "mix" then
+		firePrefab = self.mixPrefab
+	elseif type == "cold" then
+		firePrefab = self.coldPrefab
+	end
 
 	-- 创建火焰
 	local fx = SpawnPrefab(firePrefab)

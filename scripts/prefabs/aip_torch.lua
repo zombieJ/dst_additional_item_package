@@ -53,6 +53,20 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_TORCH = LANG.DESC
 -- 找到最近营火在燃烧的火焰
 local function getFire(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()
+
+	-- 如果是设置了特殊 tag，我们认为这个火焰可以直接使用
+	local hotEnts = TheSim:FindEntities(x, y, z, 2, { "aip_torchfire_hot" })
+	local coldEnts = TheSim:FindEntities(x, y, z, 2, { "aip_torchfire_cold" })
+
+	-- 如果有多个，我们看看是不是存在两种火焰。有的话则直接上混合火焰
+	if #hotEnts > 0 and #coldEnts > 0 then
+		return true
+	end
+
+	if #hotEnts > 0 or #coldEnts > 0 then
+		return hotEnts[1] or coldEnts[1]
+	end
+
 	local ents = TheSim:FindEntities(x, y, z, 2, { "fire" })
 
 	-- 找到火焰
@@ -69,16 +83,14 @@ local function getFire(inst)
 			end
 		end
 	end
-
-	-- 如果是设置了特殊 tag，我们认为这个火焰可以直接使用
-	ents = TheSim:FindEntities(x, y, z, 2, { "aip_torchfire" })
-	return ents[1]
 end
 
 local function syncFire(inst, owner)
 	local fireFX = getFire(inst)
 
-	if fireFX then
+	if fireFX == true then
+		inst.components.aipc_type_fire:StartFire("mix", owner)
+	elseif fireFX then
 		local heat = fireFX.components.heater:GetHeat(owner)
 
 		inst.components.aipc_type_fire:StartFire(heat > 0 and "hot" or "cold", owner)
@@ -92,7 +104,7 @@ local function onequip(inst, owner)
 	owner.AnimState:Show("ARM_carry")
 	owner.AnimState:Hide("ARM_normal")
 
-	owner.components.aipc_timer:NamedInterval("syncFire", 0.4, function()
+	owner.components.aipc_timer:NamedInterval("syncFire", 0.8, function()
 		syncFire(inst, owner)
 	end)
 
@@ -146,6 +158,7 @@ local function fn()
 	inst:AddComponent("aipc_type_fire")
 	inst.components.aipc_type_fire.hotPrefab = "aip_hot_torchfire"
 	inst.components.aipc_type_fire.coldPrefab = "aip_cold_torchfire"
+	inst.components.aipc_type_fire.mixPrefab = "aip_mix_torchfire"
 	inst.components.aipc_type_fire.followSymbol = "swap_object"
 	inst.components.aipc_type_fire.followOffset = Vector3(0, -140, 0)
 
