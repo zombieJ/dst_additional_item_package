@@ -7,6 +7,7 @@ local TypeFire = Class(function(self, inst)
 	self.mixPrefab = nil
 	self.followSymbol = nil
 	self.followOffset = Vector3(0, 0, 0)
+	self.postFireFn = nil
 
 	-- 火焰实体
 	self.fire = nil
@@ -20,6 +21,7 @@ function TypeFire:StartFire(type, target)
 
 	self:StopFire()
 
+	target = target or self.inst
 	local firePrefab = self.hotPrefab
 	if type == "mix" then
 		firePrefab = self.mixPrefab
@@ -35,6 +37,10 @@ function TypeFire:StartFire(type, target)
 		target.GUID, self.followSymbol,
 		self.followOffset.x, self.followOffset.y, self.followOffset.z
 	)
+
+	if self.postFireFn ~= nil then
+		self.postFireFn(self.inst, fx, type)
+	end
 
 	self.fire = fx
 	self.fireType = type

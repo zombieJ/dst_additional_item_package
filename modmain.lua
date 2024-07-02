@@ -259,6 +259,7 @@ PrefabFiles = {
 	"aip_torch",
 	"aip_cold_torchfire",
 	"aip_hot_torchfire",
+	"aip_mix_torchfire",
 	"aip_torch_stand",
 	"aip_ice_houndfire",
 }

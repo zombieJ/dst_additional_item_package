@@ -59,43 +59,67 @@ local function OnFullMoon(inst, isfullmoon)
     hound.components.follower:SetLeader(inst)
 end
 
-local function syncTypeFireFx(inst, instVar, instRef, prefabName, tag, centerFire)
-    -- 如果在燃烧，我们取消 冰火 特效
-    if inst.components.burnable:IsBurning() or not inst[instVar] then
-        if inst[instRef] ~= nil then
-            inst[instRef]:Remove()
-            inst[instRef] = nil
-            inst[instVar] = false
-        end
+-- local function syncTypeFireFx(inst, instVar, instRef, prefabName, tag, centerFire)
+--     -- 如果在燃烧，我们取消 冰火 特效
+--     if inst.components.burnable:IsBurning() or not inst[instVar] then
+--         if inst[instRef] ~= nil then
+--             inst[instRef]:Remove()
+--             inst[instRef] = nil
+--             inst[instVar] = false
+--         end
 
+--         return
+--     end
+
+--     -- 如果没有燃烧，我们添加 冰火 特效
+--     if inst[instVar] and not inst[instRef] then
+--         local scale = centerFire and 0.65 or 1
+--         local fx = inst:SpawnChild(prefabName)
+--         fx.Transform:SetScale(scale, scale, scale)
+--         fx.entity:AddFollower()
+--         fx.Follower:FollowSymbol(
+--             inst.GUID, "fire_marker", 0,
+--             centerFire and -30 or 0, centerFire and 0.1 or 0
+--         )
+
+--         fx:AddTag("aip_torchfire")
+--         fx:AddTag(tag)
+
+--         if fx.components.firefx then
+--             fx.components.firefx:SetLevel(4)
+--         end
+
+--         inst[instRef] = fx
+--     end
+-- end
+
+-- local function syncFireFxOld(inst)
+--     syncTypeFireFx(inst, "_aipIsHot", "_aipHotFire", "campfirefire", "aip_torchfire_hot", true)
+--     syncTypeFireFx(inst, "_aipIsCold", "_aipColdFire", "coldfirefire", "aip_torchfire_cold")
+-- end
+
+local function syncFireFx(inst)
+    -- 如果在燃烧，我们取消 冰火 特效
+    if inst.components.burnable:IsBurning() then
+        inst.components.aipc_type_fire:StopFire()
         return
     end
 
-    -- 如果没有燃烧，我们添加 冰火 特效
-    if inst[instVar] and not inst[instRef] then
-        local scale = centerFire and 0.65 or 1
-        local fx = inst:SpawnChild(prefabName)
-        fx.Transform:SetScale(scale, scale, scale)
-        fx.entity:AddFollower()
-        fx.Follower:FollowSymbol(
-            inst.GUID, "fire_marker", 0,
-            centerFire and -30 or 0, centerFire and 0.1 or 0
-        )
-
-        fx:AddTag("aip_torchfire")
-        fx:AddTag(tag)
-
-        if fx.components.firefx then
-            fx.components.firefx:SetLevel(4)
-        end
-
-        inst[instRef] = fx
+    -- 判断一下类型
+    local fireType = nil
+    if inst._aipIsHot and inst._aipIsCold then
+        fireType = "mix"
+    elseif inst._aipIsHot then
+        fireType = "hot"
+    elseif inst._aipIsCold then
+        fireType = "cold"
     end
-end
 
-local function syncFireFx(inst)
-    syncTypeFireFx(inst, "_aipIsHot", "_aipHotFire", "campfirefire", "aip_torchfire_hot", true)
-    syncTypeFireFx(inst, "_aipIsCold", "_aipColdFire", "coldfirefire", "aip_torchfire_cold")
+    if fireType then
+        inst.components.aipc_type_fire:StartFire(fireType)
+    else
+        inst.components.aipc_type_fire:StopFire()
+    end
 end
 
 -- 根据附近死亡的狗狗来决定要不要点火
@@ -112,6 +136,19 @@ local function syncFire(inst, data)
     end
 
     syncFireFx(inst)
+end
+
+local function postTypeFire(inst, fx, type)
+    if type == "mix" then
+        fx.AnimState:OverrideMultColour(1, 0, 1, 1)
+    end
+
+    if fx.components.firefx then
+        fx.components.firefx:SetLevel(4)
+    end
+
+    fx:AddTag("aip_rubik_fire")
+    fx:AddTag("aip_rubik_fire_"..type)
 end
 
 ------------------------------- 燃料 -------------------------------
@@ -173,12 +210,14 @@ local function fn()
     inst:ListenForEvent("onextinguish", onextinguish)
 	inst:ListenForEvent("onignite", onignite)
 
-    -- -- 添加类型火焰特效
-    -- inst:AddComponent("aipc_type_fire")
-    -- inst.components.aipc_type_fire.hotPrefab = "aip_hot_torchfire"
-	-- inst.components.aipc_type_fire.coldPrefab = "aip_cold_torchfire"
-	-- inst.components.aipc_type_fire.followSymbol = "swap_object"
-	-- inst.components.aipc_type_fire.followOffset = Vector3(0, -140, 0)
+    -- 添加类型火焰特效
+    inst:AddComponent("aipc_type_fire")
+    inst.components.aipc_type_fire.hotPrefab = "campfirefire"
+	inst.components.aipc_type_fire.coldPrefab = "coldfirefire"
+    inst.components.aipc_type_fire.mixPrefab = "coldfirefire"
+	inst.components.aipc_type_fire.followSymbol = "fire_marker"
+	inst.components.aipc_type_fire.followOffset = Vector3(0, 0, 0)
+    inst.components.aipc_type_fire.postFireFn = postTypeFire
 
 	-- 使用燃料
 	inst:AddComponent("fueled")

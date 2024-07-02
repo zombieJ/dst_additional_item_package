@@ -55,16 +55,29 @@ local function getFire(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()
 
 	-- 如果是设置了特殊 tag，我们认为这个火焰可以直接使用
-	local hotEnts = TheSim:FindEntities(x, y, z, 2, { "aip_torchfire_hot" })
-	local coldEnts = TheSim:FindEntities(x, y, z, 2, { "aip_torchfire_cold" })
+	local rubikFireEnts = TheSim:FindEntities(x, y, z, 2, { "aip_rubik_fire" })
 
 	-- 如果有多个，我们看看是不是存在两种火焰。有的话则直接上混合火焰
-	if #hotEnts > 0 and #coldEnts > 0 then
-		return true
-	end
+	if #rubikFireEnts > 0 then
+		local hotPrefab = nil
+		local coldPrefab = nil
+		local mixPrefab = nil
 
-	if #hotEnts > 0 or #coldEnts > 0 then
-		return hotEnts[1] or coldEnts[1]
+		for _, ent in pairs(rubikFireEnts) do
+			if ent:HasTag("aip_rubik_fire_hot") then
+				hotPrefab = ent
+			elseif ent:HasTag("aip_rubik_fire_cold") then
+				coldPrefab = ent
+			elseif ent:HasTag("aip_rubik_fire_mix") then
+				mixPrefab = ent
+			end
+		end
+
+		if mixPrefab then
+			return true
+		end
+
+		return hotPrefab or coldPrefab
 	end
 
 	local ents = TheSim:FindEntities(x, y, z, 2, { "fire" })
