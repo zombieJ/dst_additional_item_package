@@ -53,50 +53,18 @@ local function OnFullMoon(inst, isfullmoon)
         return
     end
 
+    -- 看看附近有没有 tag 为 hound 的实体
+    local x,y,z = inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, y, z, 10, {"hound"})
+    if #ents > 0 then
+        return
+    end
+
     -- 生成冰猎犬
     local hound = aipSpawnPrefab(inst, "icehound")
     hound.persists = false
     hound.components.follower:SetLeader(inst)
 end
-
--- local function syncTypeFireFx(inst, instVar, instRef, prefabName, tag, centerFire)
---     -- 如果在燃烧，我们取消 冰火 特效
---     if inst.components.burnable:IsBurning() or not inst[instVar] then
---         if inst[instRef] ~= nil then
---             inst[instRef]:Remove()
---             inst[instRef] = nil
---             inst[instVar] = false
---         end
-
---         return
---     end
-
---     -- 如果没有燃烧，我们添加 冰火 特效
---     if inst[instVar] and not inst[instRef] then
---         local scale = centerFire and 0.65 or 1
---         local fx = inst:SpawnChild(prefabName)
---         fx.Transform:SetScale(scale, scale, scale)
---         fx.entity:AddFollower()
---         fx.Follower:FollowSymbol(
---             inst.GUID, "fire_marker", 0,
---             centerFire and -30 or 0, centerFire and 0.1 or 0
---         )
-
---         fx:AddTag("aip_torchfire")
---         fx:AddTag(tag)
-
---         if fx.components.firefx then
---             fx.components.firefx:SetLevel(4)
---         end
-
---         inst[instRef] = fx
---     end
--- end
-
--- local function syncFireFxOld(inst)
---     syncTypeFireFx(inst, "_aipIsHot", "_aipHotFire", "campfirefire", "aip_torchfire_hot", true)
---     syncTypeFireFx(inst, "_aipIsCold", "_aipColdFire", "coldfirefire", "aip_torchfire_cold")
--- end
 
 local function syncFireFx(inst)
     -- 如果在燃烧，我们取消 冰火 特效
