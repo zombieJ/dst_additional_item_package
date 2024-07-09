@@ -46,6 +46,20 @@ local function onhit(inst, worker)
     inst.AnimState:PushAnimation("idle")
 end
 
+-- 让火可以点燃不同类型的火焰
+local function postTypeFire(inst, fx, type)
+    if type == "mix" then
+        fx.AnimState:OverrideMultColour(1, 0, 1, 1)
+    end
+
+    if fx.components.firefx then
+        fx.components.firefx:SetLevel(4)
+    end
+
+    fx:AddTag("aip_rubik_fire")
+    fx:AddTag("aip_rubik_fire_"..type)
+end
+
 ------------------------------------ 实例 ------------------------------------
 local function fn()
     local inst = CreateEntity()
@@ -65,6 +79,7 @@ local function fn()
 
     -- 标签
     inst:AddTag("structure")
+    inst:AddTag("aip_torch_stand")
 
     inst.entity:SetPristine()
 
@@ -80,10 +95,14 @@ local function fn()
     inst.components.workable:SetOnFinishCallback(onhammered)
     inst.components.workable:SetOnWorkCallback(onhit)
 
-	-- 燃烧
-	inst:AddComponent("burnable")
-    inst.components.burnable:AddBurnFX("campfirefire", Vector3(0, 0, 0), "firefx", true)
-    inst:ListenForEvent("onextinguish", onextinguish)
+	-- 添加类型火焰特效
+    inst:AddComponent("aipc_type_fire")
+    inst.components.aipc_type_fire.hotPrefab = "campfirefire"
+	inst.components.aipc_type_fire.coldPrefab = "coldfirefire"
+    inst.components.aipc_type_fire.mixPrefab = "coldfirefire"
+	inst.components.aipc_type_fire.followSymbol = "firefx"
+	inst.components.aipc_type_fire.followOffset = Vector3(0, 0, 0)
+    inst.components.aipc_type_fire.postFireFn = postTypeFire
 
     -- 可检查
     inst:AddComponent("inspectable")

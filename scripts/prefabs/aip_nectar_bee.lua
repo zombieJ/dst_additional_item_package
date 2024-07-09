@@ -23,7 +23,7 @@ local LANG_MAP = {
 			"Can nectar burn?"
 		},
 		SAY_NECTAR_BAD = "Not good",
-		SAY_NECTAR_NORMAL = "Wow, not bad",
+		SAY_NECTAR_NORMAL = "Good. Do you know Magic Rubik can be ignited by hound?",
 		SAY_NECTAR_GOOD = "It's delicious!",
 	},
 	chinese = {
@@ -37,7 +37,7 @@ local LANG_MAP = {
 			"花蜜能燃烧吗？"
 		},
 		SAY_NECTAR_BAD = "这花蜜不咋地",
-		SAY_NECTAR_NORMAL = "哇，做的不错",
+		SAY_NECTAR_NORMAL = "好吃。你知道 魔力方阵 可以被猎犬引火吗?",
 		SAY_NECTAR_GOOD = "这花蜜真好吃",
 	},
 }

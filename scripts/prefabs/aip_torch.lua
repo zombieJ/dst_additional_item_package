@@ -99,6 +99,7 @@ local function getFire(inst)
 end
 
 local function syncFire(inst, owner)
+	-- 查看附近有没有火焰
 	local fireFX = getFire(inst)
 
 	if fireFX == true then

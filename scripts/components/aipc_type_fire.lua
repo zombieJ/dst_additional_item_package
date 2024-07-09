@@ -55,6 +55,10 @@ function TypeFire:StopFire()
 	self.fireType = nil
 end
 
+function TypeFire:IsBurning()
+	return self.fire ~= nil
+end
+
 -- 卸载时，停止火焰
 function TypeFire:OnRemoveFromEntity()
 	self:StopFire()
