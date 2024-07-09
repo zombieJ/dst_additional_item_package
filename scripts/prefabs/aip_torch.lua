@@ -111,6 +111,13 @@ local function syncFire(inst, owner)
 	end
 end
 
+-- 
+local function onToggleFire(inst, fireType)
+	if inst.components.aipc_lighter then
+		inst.components.aipc_lighter:Enabled(fireType == "hot")
+	end
+end
+
 ---------------------------- 装备 ----------------------------
 local function onequip(inst, owner)
 	owner.AnimState:OverrideSymbol("swap_object", "aip_torch_swap", "aip_torch_swap")
@@ -156,6 +163,8 @@ local function fn()
 		return inst
 	end
 
+	inst:AddComponent("aipc_lighter")
+
 	inst:AddComponent("finiteuses")
 	inst.components.finiteuses:SetMaxUses(1)
 	inst.components.finiteuses:SetUses(1)
@@ -175,6 +184,7 @@ local function fn()
 	inst.components.aipc_type_fire.mixPrefab = "aip_mix_torchfire"
 	inst.components.aipc_type_fire.followSymbol = "swap_object"
 	inst.components.aipc_type_fire.followOffset = Vector3(0, -140, 0)
+	inst.components.aipc_type_fire.onToggle = onToggleFire
 
 	inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_torch.xml"

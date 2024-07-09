@@ -12,6 +12,8 @@ local TypeFire = Class(function(self, inst)
 	-- 火焰实体
 	self.fire = nil
 	self.fireType = nil
+
+	self.onToggle = nil
 end)
 
 function TypeFire:StartFire(type, target)
@@ -44,12 +46,20 @@ function TypeFire:StartFire(type, target)
 
 	self.fire = fx
 	self.fireType = type
+
+	if self.onToggle ~= nil then
+		self.onToggle(self.inst, type)
+	end
 end
 
 function TypeFire:StopFire()
 	if self.fire ~= nil then
 		self.fire:Remove()
 		self.fire = nil
+
+		if self.onToggle ~= nil then
+			self.onToggle(self.inst, nil)
+		end
 	end
 
 	self.fireType = nil

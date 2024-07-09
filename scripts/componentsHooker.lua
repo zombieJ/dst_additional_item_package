@@ -360,6 +360,35 @@ env.AddComponentAction("SCENE", "combat", function(inst, doer, actions, right)
 	end
 end)
 
+----------------------------- 给 火柴 添加点燃能力 -----------------------------
+local AIPC_LIGHT_ACTION = env.AddAction("AIPC_LIGHT_ACTION", _G.STRINGS.ACTIONS.LIGHT, function(act)
+    if act.invobject ~= nil and act.invobject.components.aipc_lighter ~= nil then
+        if act.doer ~= nil then
+            act.doer:PushEvent("onstartedfire", { target = act.target })
+        end
+        act.invobject.components.aipc_lighter:Light(act.target, act.doer)
+        return true
+    end
+end)
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_LIGHT_ACTION, "catchonfire"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_LIGHT_ACTION, "catchonfire"))
+local function canLighter(inst, target)
+	return (
+		inst:HasTag("aip_lighter") and
+		target:HasTag("canlight") and not ((target:HasTag("fueldepleted") and not target:HasTag("burnableignorefuel")) or target:HasTag("INLIMBO"))
+	)
+end
+env.AddComponentAction("USEITEM", "aipc_lighter", function(inst, doer, target, actions)
+	if canLighter(inst, target) then
+		table.insert(actions, _G.ACTIONS.AIPC_LIGHT_ACTION)
+	end
+end)
+env.AddComponentAction("EQUIPPED", "aipc_lighter", function(inst, doer, target, actions, right)
+	if right and canLighter(inst, target) then
+		table.insert(actions, _G.ACTIONS.AIPC_LIGHT_ACTION)
+	end
+end)
+
 ------------------------------------- 特殊处理 -------------------------------------
 local ORIGIN_MINE_FN = _G.ACTIONS.MINE.fn
 local ORIGIN_MINE_VALID_FN = _G.ACTIONS.MINE.validfn
