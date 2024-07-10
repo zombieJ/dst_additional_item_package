@@ -48,6 +48,8 @@ end
 
 -- 让火可以点燃不同类型的火焰
 local function postTypeFire(inst, fx, type)
+    fx:RemoveTag("aip_rubik_fire")
+
     if type == "mix" then
         fx.AnimState:OverrideMultColour(1, 0, 1, 1)
     end
@@ -77,7 +79,7 @@ local function fn()
     inst.entity:AddNetwork()
 
     -- 碰撞体积
-    MakeObstaclePhysics(inst, .3)
+    MakeObstaclePhysics(inst, .1)
 
     -- 动画
     inst.AnimState:SetBank("aip_torch_stand")

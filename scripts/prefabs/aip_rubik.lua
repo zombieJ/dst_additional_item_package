@@ -107,6 +107,8 @@ local function syncFire(inst, data)
 end
 
 local function postTypeFire(inst, fx, type)
+    fx:RemoveTag("aip_rubik_fire")
+
     if type == "mix" then
         fx.AnimState:OverrideMultColour(1, 0, 1, 1)
     end

@@ -55,7 +55,8 @@ local function getFire(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()
 
 	-- 如果是设置了特殊 tag，我们认为这个火焰可以直接使用
-	local rubikFireEnts = TheSim:FindEntities(x, y, z, 2, { "aip_rubik_fire" })
+	local rubikFireEnts = TheSim:FindEntities(x, y, z, 3, { "aip_rubik_fire" })
+	aipPrint("rubikFireEnts", #rubikFireEnts)
 
 	-- 如果有多个，我们看看是不是存在两种火焰。有的话则直接上混合火焰
 	if #rubikFireEnts > 0 then

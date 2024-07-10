@@ -15,7 +15,7 @@ function Lighter:Enabled(type)
         self.inst:RemoveTag("aip_lighter_"..self.enableType)
 
         if not type then
-            self.inst:RemoveTag("aipc_lighter")
+            self.inst:RemoveTag("aip_lighter")
         end
     end
 
