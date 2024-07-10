@@ -7,6 +7,7 @@ local TypeFire = Class(function(self, inst)
 	self.mixPrefab = nil
 	self.followSymbol = nil
 	self.followOffset = Vector3(0, 0, 0)
+	self.followOffsets = {}
 	self.postFireFn = nil
 
 	-- 火焰实体
@@ -32,12 +33,14 @@ function TypeFire:StartFire(type, target)
 	end
 
 	-- 创建火焰
+	local offset = self.followOffsets[type] or self.followOffset
+	
 	local fx = SpawnPrefab(firePrefab)
 	fx.entity:SetParent(target.entity)
 	fx.entity:AddFollower()
 	fx.Follower:FollowSymbol(
 		target.GUID, self.followSymbol,
-		self.followOffset.x, self.followOffset.y, self.followOffset.z
+		offset.x, offset.y, offset.z
 	)
 
 	if self.postFireFn ~= nil then

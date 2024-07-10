@@ -373,10 +373,18 @@ end)
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_LIGHT_ACTION, "catchonfire"))
 AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_LIGHT_ACTION, "catchonfire"))
 local function canLighter(inst, target)
-	return (
-		inst:HasTag("aip_lighter") and
+	-- 标准
+	if
+		inst:HasTag("aip_lighter_hot") and
 		target:HasTag("canlight") and not ((target:HasTag("fueldepleted") and not target:HasTag("burnableignorefuel")) or target:HasTag("INLIMBO"))
-	)
+	then
+		return true
+	end
+
+	-- 特色火焰
+	if inst:HasTag("aip_lighter") and target:HasTag("aip_can_lighten") then
+		return true
+	end
 end
 env.AddComponentAction("USEITEM", "aipc_lighter", function(inst, doer, target, actions)
 	if canLighter(inst, target) then

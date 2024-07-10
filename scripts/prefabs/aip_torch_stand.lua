@@ -53,11 +53,18 @@ local function postTypeFire(inst, fx, type)
     end
 
     if fx.components.firefx then
-        fx.components.firefx:SetLevel(4)
+        fx.components.firefx:SetLevel(2)
     end
 
     fx:AddTag("aip_rubik_fire")
     fx:AddTag("aip_rubik_fire_"..type)
+
+    -- 冰火 会比 火 高一点，我们特调一下
+    if type == "hot" then
+        inst.AnimState:PlayAnimation("idle_hot", false)
+    else
+        inst.AnimState:PlayAnimation("idle", false)
+    end
 end
 
 ------------------------------------ 实例 ------------------------------------
@@ -79,7 +86,7 @@ local function fn()
 
     -- 标签
     inst:AddTag("structure")
-    inst:AddTag("aip_torch_stand")
+    inst:AddTag("aip_can_lighten") -- 让 aipc_lighter 可以点燃它
 
     inst.entity:SetPristine()
 

@@ -114,7 +114,7 @@ end
 -- 
 local function onToggleFire(inst, fireType)
 	if inst.components.aipc_lighter then
-		inst.components.aipc_lighter:Enabled(fireType == "hot")
+		inst.components.aipc_lighter:Enabled(fireType)
 	end
 end
 
