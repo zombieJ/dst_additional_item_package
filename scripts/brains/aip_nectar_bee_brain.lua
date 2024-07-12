@@ -1,9 +1,7 @@
 require "behaviours/follow"
 require "behaviours/wander"
 
-local MIN_FOLLOW_DIST = 1
-local TARGET_FOLLOW_DIST = 3
-local MAX_FOLLOW_DIST = 8
+local MAX_WANDER_DIST = 100
 
 local MoldBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
@@ -31,7 +29,11 @@ function MoldBrain:OnStart()
 		DoAction(self.inst, FindFoodAction),
 
 		-- 漫步
-		Wander(self.inst),
+		Wander(
+            self.inst,
+            function() return self.inst.aipHome end,
+            MAX_WANDER_DIST
+        ),
 	}, .25)
 	
 	self.bt = BT(self.inst, root)

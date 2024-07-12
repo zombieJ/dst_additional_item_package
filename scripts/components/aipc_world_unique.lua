@@ -12,13 +12,16 @@ local WorldUnique = Class(function(self, inst)
 
 	-- 记录 憎恨之刃 击杀数
 	self.aip_oldone_hand_kill = 0
+
+	-- 初始化
+	self:SetupEnv()
 end)
 
+------------------------------ 唯一 ------------------------------
 function WorldUnique:RegisterPrefab(item)
 	self.prefabs[item.prefab] = item
 end
 
------------------------------- 唯一 ------------------------------
 -- 获取 prefab，如果不存在则返回 nil（并且清理数据）
 function WorldUnique:GetPrefab(prefabName)
 	local prefab = self.prefabs[prefabName]
@@ -30,6 +33,45 @@ function WorldUnique:GetPrefab(prefabName)
 	self.prefabs[prefabName] = nil
 
 	return nil
+end
+
+-- 确保 prefab 存在，如果不存在则创建。这个功能只有在游戏开始时才能调用。
+-- 否则性能消耗会比较大。
+function WorldUnique:EnsurePrefab(prefabName, findFn)
+	local tryFindPrefab = nil
+
+	findFn = findFn or prefabName
+	
+	if type(findFn) == "function" then
+		tryFindPrefab = findFn()
+	elseif type(findFn) == "string" then
+		tryFindPrefab = TheSim:FindFirstEntityWithTag(findFn)
+	end
+
+	if tryFindPrefab ~= nil then
+		self.prefabs[prefabName] = tryFindPrefab
+	else
+		self.prefabs[prefabName] = SpawnPrefab(prefabName)
+	end
+
+	return self.prefabs[prefabName]
+end
+
+------------------------------ 生态 ------------------------------
+function WorldUnique:SetupEnv()
+	-- 创造 贪吃熊峰
+	self.inst:DoTaskInTime(3, function()
+		local junk_pile_big = TheSim:FindFirstEntityWithTag("junk_pile_big")
+
+		if junk_pile_big then
+			local junkPt = junk_pile_big:GetPosition()
+			local bumblebee = self:EnsurePrefab("aip_nectar_bee")
+
+			-- 把 贪吃熊峰 挪到 垃圾堆 附近
+			bumblebee.Transform:SetPosition(junkPt.x, junkPt.y, junkPt.z)
+			bumblebee.aipHome = junkPt
+		end
+	end)
 end
 
 ------------------------------ 道具 ------------------------------

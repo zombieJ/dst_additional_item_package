@@ -23,11 +23,13 @@ local LANG_MAP = {
 		NAME = "Radish Match",
 		REC_DESC = "Take away the flame of the bonfire",
 		DESC = "Take away the flame of the bonfire",
+		SPEAK_BACK = "Back to Bumblebee if not sure what to do",
 	},
 	chinese = {
 		NAME = "大根火柴",
 		REC_DESC = "可以带走篝火的火焰",
 		DESC = "带走篝火的火焰",
+		SPEAK_BACK = "不知道干什么就回去找熊峰吧",
 	},
 }
 
@@ -56,7 +58,6 @@ local function getFire(inst)
 
 	-- 如果是设置了特殊 tag，我们认为这个火焰可以直接使用
 	local rubikFireEnts = TheSim:FindEntities(x, y, z, 3, { "aip_rubik_fire" })
-	aipPrint("rubikFireEnts", #rubikFireEnts)
 
 	-- 如果有多个，我们看看是不是存在两种火焰。有的话则直接上混合火焰
 	if #rubikFireEnts > 0 then
@@ -112,11 +113,25 @@ local function syncFire(inst, owner)
 	end
 end
 
--- 
 local function onToggleFire(inst, fireType)
 	if inst.components.aipc_lighter then
 		inst.components.aipc_lighter:Enabled(fireType)
 	end
+end
+
+---------------------------- 熄火 ----------------------------
+-- 如果玩家跑得太远了，我们就直接熄火掉
+local function checkFireExtinguish(inst, owner)
+	local post = owner:GetPosition()
+
+	if inst._aipLastPos then
+		local dist = inst._aipLastPos:Dist(post)
+		if dist > 8 then
+			inst.components.aipc_type_fire:StopFire()
+		end
+	end
+
+	inst._aipLastPos = post
 end
 
 ---------------------------- 装备 ----------------------------
@@ -128,6 +143,7 @@ local function onequip(inst, owner)
 
 	owner.components.aipc_timer:NamedInterval("syncFire", 0.8, function()
 		syncFire(inst, owner)
+		checkFireExtinguish(inst, owner)
 	end)
 
 	-- stopFire(inst)
@@ -198,6 +214,7 @@ local function fn()
 
 	inst._aipFirePrefab = nil
 	inst._aipFireFX = nil
+	inst._aipLastPos = nil
 
 	return inst
 end

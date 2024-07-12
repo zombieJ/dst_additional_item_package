@@ -45,7 +45,7 @@ local LANG_MAP = {
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
 -- 文字描述
-STRINGS.NAMES.AIP_DRAGON = LANG.NAME
+STRINGS.NAMES.AIP_NECTAR_BEE = LANG.NAME
 
 ---------------------------------- 方法 ----------------------------------
 local function say(inst, text)
@@ -136,6 +136,7 @@ local function fn()
 
     inst:AddTag("flying")
     inst:AddTag("ignorewalkableplatformdrowning")
+	inst:AddTag("aip_nectar_bee")
 
 	inst.AnimState:SetBank("aip_nectar_bee")
 	inst.AnimState:SetBuild("aip_nectar_bee")
@@ -156,7 +157,11 @@ local function fn()
 	inst:AddComponent("locomotor") -- locomotor must be constructed before the stategraph
 	inst.components.locomotor:EnableGroundSpeedMultiplier(false)
 	inst.components.locomotor:SetTriggersCreep(false)
-	inst.components.locomotor.pathcaps = { ignorewalls = true, ignorecreep = true, allowocean = true }
+	inst.components.locomotor.pathcaps = {
+		ignorewalls = true,
+		ignorecreep = true,
+		-- allowocean = true,
+	}
 	inst.components.locomotor.walkspeed = TUNING.CRAWLINGHORROR_SPEED
 
 	inst:AddComponent("playerprox")
@@ -171,6 +176,8 @@ local function fn()
 	inst:AddComponent("timer")
 
 	inst:AddComponent("inventory")
+
+	inst:AddComponent("inspectable")
 
 	inst:AddComponent("trader")
     inst.components.trader:SetAcceptTest(ShouldAcceptItem)

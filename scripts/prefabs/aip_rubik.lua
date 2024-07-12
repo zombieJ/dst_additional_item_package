@@ -7,10 +7,16 @@ local LANG_MAP = {
 	english = {
 		NAME = "Magic Rubik",
 		DESC = "We need reset it!",
+        DESC_HOT = "I need a fire hound",
+        DESC_COLD = "I need an ice hound",
+        DESC_MIX = "Ask a Bumblebee for a match",
 	},
 	chinese = {
 		NAME = "魔力方阵",
 		DESC = "我们需要重置它！",
+        DESC_HOT = "我需要一只冰猎犬",
+        DESC_COLD = "我需要一只火猎犬",
+        DESC_MIX = "找熊蜂要根火柴吧",
 	},
 }
 
@@ -146,6 +152,22 @@ local function onfuelchange(newsection, oldsection, inst)
     syncFireFx(inst)
 end
 
+------------------------------- 描述 -------------------------------
+-- 根据火焰类型来显示不同的描述
+local function getDesc(inst)
+    local fireType = inst.components.aipc_type_fire:GetType()
+
+    if fireType == "hot" then
+        return LANG.DESC_HOT
+    elseif fireType == "cold" then
+        return LANG.DESC_COLD
+    elseif fireType == "mix" then
+        return LANG.DESC_MIX
+    end
+
+    return LANG.DESC
+end
+
 ------------------------------- 实体 -------------------------------
 local function fn()
     local inst = CreateEntity()
@@ -171,6 +193,8 @@ local function fn()
     end
 
     inst:AddComponent("inspectable")
+    inst.components.inspectable.descriptionfn = getDesc
+
     inst:AddComponent("aipc_rubik")
 
 	-- 可以点燃
@@ -211,6 +235,12 @@ local function fn()
 
     inst._aipIsHot = false
     inst._aipIsCold = false
+
+    if dev_mode then
+        inst:DoTaskInTime(1, function()
+            inst.components.aipc_type_fire:StartFire("mix", nil, 5)
+        end)
+    end
 
 	return inst
 end
