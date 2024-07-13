@@ -23,13 +23,11 @@ local LANG_MAP = {
 		NAME = "Radish Match",
 		REC_DESC = "Take away the flame of the bonfire",
 		DESC = "Take away the flame of the bonfire",
-		SPEAK_BACK = "Back to Bumblebee if not sure what to do",
 	},
 	chinese = {
 		NAME = "大根火柴",
 		REC_DESC = "可以带走篝火的火焰",
 		DESC = "带走篝火的火焰",
-		SPEAK_BACK = "不知道干什么就回去找熊峰吧",
 	},
 }
 
