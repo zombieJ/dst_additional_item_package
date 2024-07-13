@@ -105,6 +105,13 @@ local function postTypeFire(inst, fx, type)
     end
 end
 
+-- 根据触发火焰来确定是否可以激活
+local function onToggleFire(inst, type)
+    if inst.components.activatable ~= nil then
+        inst.components.activatable.inactive = type == "mix"
+    end
+end
+
 ------------------------------------ 启迪 ------------------------------------
 -- 启迪一个下一个地点
 local function toggleActive(inst, doer)
@@ -182,6 +189,7 @@ local function commonFn(hasNext)
         inst:AddComponent("activatable")
         inst.components.activatable.OnActivate = toggleActive
         inst.components.activatable.quickaction = true
+        inst.components.activatable.inactive = false
     end
 
 	-- 添加类型火焰特效
@@ -192,6 +200,7 @@ local function commonFn(hasNext)
 	inst.components.aipc_type_fire.followSymbol = "firefx"
 	inst.components.aipc_type_fire.followOffset = Vector3(0, 0, 0)
     inst.components.aipc_type_fire.postFireFn = postTypeFire
+    inst.components.aipc_type_fire.onToggle = onToggleFire
 
     -- 可检查
     inst:AddComponent("inspectable")
