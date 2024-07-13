@@ -48,13 +48,15 @@ function WorldUnique:EnsurePrefab(prefabName, findFn)
 		tryFindPrefab = TheSim:FindFirstEntityWithTag(findFn)
 	end
 
-	if tryFindPrefab ~= nil then
-		self.prefabs[prefabName] = tryFindPrefab
-	else
+	local needCreate = tryFindPrefab == nil
+
+	if needCreate then
 		self.prefabs[prefabName] = SpawnPrefab(prefabName)
+	else
+		self.prefabs[prefabName] = tryFindPrefab
 	end
 
-	return self.prefabs[prefabName]
+	return self.prefabs[prefabName], needCreate
 end
 
 ------------------------------ 生态 ------------------------------
@@ -64,14 +66,14 @@ function WorldUnique:SetupEnv()
 		local junk_pile_big = TheSim:FindFirstEntityWithTag("junk_pile_big")
 
 		if junk_pile_big then
-			local junkPt = junk_pile_big:GetPosition()
-			junkPt = aipGetSecretSpawnPoint(junkPt, 60, 100)
-
-			local bumblebee = self:EnsurePrefab("aip_nectar_bee")
+			local torchStandMain, newCreate = self:EnsurePrefab("aip_torch_stand_main")
 
 			-- 把 贪吃熊峰 挪到 垃圾堆 附近
-			bumblebee.Transform:SetPosition(junkPt.x, junkPt.y, junkPt.z)
-			bumblebee.aipHome = junkPt
+			if newCreate then
+				local junkPt = junk_pile_big:GetPosition()
+				junkPt = aipGetSecretSpawnPoint(junkPt, 60, 100)
+				torchStandMain.Transform:SetPosition(junkPt.x, junkPt.y, junkPt.z)
+			end
 		end
 	end)
 end

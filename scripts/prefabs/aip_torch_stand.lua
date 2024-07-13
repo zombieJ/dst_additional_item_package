@@ -11,11 +11,13 @@ local language = aipGetModConfig("language")
 local LANG_MAP = {
     english = {
         NAME = "Moonlight Torch",
-        DESC = "It longs to be illuminated by the warm and cold firelight"
+        DESC = "It longs to be illuminated by the warm and cold firelight",
+        NAME_MAIN = "Guarded Moonlight Torch",
     },
     chinese = {
         NAME = "月光火柱",
-        DESC = "它渴望被即温暖又寒冷的火光照亮"
+        DESC = "它渴望被即温暖又寒冷的火光照亮",
+        NAME_MAIN = "受看管的月光火柱",
     }
 }
 
@@ -23,7 +25,9 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 -- 文字描述
 STRINGS.NAMES.AIP_TORCH_STAND = LANG.NAME
+STRINGS.NAMES.AIP_TORCH_STAND_MAIN = LANG.NAME_MAIN
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_TORCH_STAND = LANG.DESC
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_TORCH_STAND_MAIN = LANG.DESC
 
 local assets = {
     Asset("ANIM", "anim/aip_torch_stand.zip"),
@@ -119,4 +123,23 @@ local function fn()
     return inst
 end
 
-return Prefab("aip_torch_stand", fn, assets, prefabs)
+local function mainFn()
+    local inst = fn()
+    inst:AddTag("aip_torch_stand_main")
+
+    if not TheWorld.ismastersim then return inst end
+
+    -- 火焰永不熄灭
+    inst.components.aipc_type_fire.forever = true
+
+    -- 起始图腾可以召唤熊峰
+    inst:DoTaskInTime(1, function()
+        local bee = aipSpawnPrefab(inst, "aip_nectar_bee")
+        bee.aipHome = inst:GetPosition()
+    end)
+
+    return inst
+end
+
+return  Prefab("aip_torch_stand", fn, assets, prefabs),
+        Prefab("aip_torch_stand_main", mainFn, assets, prefabs)

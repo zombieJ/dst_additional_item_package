@@ -14,6 +14,7 @@ local language = aipGetModConfig("language")
 local LANG_MAP = {
 	english = {
 		NAME = "Greedy Bumblebee",
+		DESC = "Looks like it loves nectar",
 		SAY_NEED_NECTAR = {
 			"Where is nectar",
 			"Sad, I can't make nectar",
@@ -28,6 +29,7 @@ local LANG_MAP = {
 	},
 	chinese = {
 		NAME = "贪吃熊蜂",
+		DESC = "它看起来很喜欢吃花蜜",
 		SAY_NEED_NECTAR = {
 			"好想吃花蜜呐",
 			"可惜我不会做花蜜",
@@ -46,6 +48,7 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 
 -- 文字描述
 STRINGS.NAMES.AIP_NECTAR_BEE = LANG.NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_NECTAR_BEE = LANG.DESC
 
 ---------------------------------- 方法 ----------------------------------
 local function say(inst, text)

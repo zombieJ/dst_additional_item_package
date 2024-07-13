@@ -15,6 +15,13 @@ local TypeFire = Class(function(self, inst)
 	self.extinguishTime = TUNING.YELLOWSTAFF_STAR_DURATION
 	self.extinguishTimer = nil
 
+	-- 是否永久
+	self.forever = false
+
+	-- 火焰熄灭时间，用作加载时重新点燃
+	self.extinguishReachTime = nil
+	self.fireOnInst = false
+
 	-- 火焰实体
 	self.fire = nil
 	self.fireType = nil
@@ -25,22 +32,34 @@ end)
 function TypeFire:StartExtinguishTimer(extinguishTime)
 	self:KillExtinguishTimer()
 
+	-- 如果是永久的，不需要熄灭
+	if self.forever then
+		return
+	end
+
+	local mergedExtinguishTime = extinguishTime or self.extinguishTime
+
 	self.extinguishTimer = self.inst:DoTaskInTime(
-		extinguishTime or self.extinguishTime,
+		mergedExtinguishTime,
 		function()
 			self:StopFire()
 		end
 	)
+
+	self.extinguishReachTime = GetTime() + mergedExtinguishTime
 end
 
 function TypeFire:KillExtinguishTimer()
 	if self.extinguishTimer ~= nil then
 		self.extinguishTimer:Cancel()
 		self.extinguishTimer = nil
+		self.extinguishReachTime = nil
 	end
 end
 
 function TypeFire:StartFire(type, target, extinguishTime)
+	self.fireOnInst = target == nil or target == self.inst
+
 	if type == self.fireType then
 		-- 如果已经是这种火焰，延长时间
 		self:StartExtinguishTimer(extinguishTime)
@@ -109,5 +128,24 @@ function TypeFire:OnRemoveFromEntity()
 	self:StopFire()
 end
 TypeFire.OnRemoveEntity = TypeFire.OnRemoveFromEntity
+
+----------------------------- 存取 -----------------------------
+-- 保存
+function TypeFire:OnSave()
+	if self.fireType and self.fireOnInst and self.extinguishReachTime then
+		local leftTime = self.extinguishReachTime - GetTime()
+		return {
+			fireType = self.fireType,
+			leftTime = math.max(23, leftTime)
+		}
+	end
+end
+
+-- 加载
+function TypeFire:OnLoad(data)
+	if data ~= nil and data.fireType ~= nil and data.leftTime ~= nil then
+		self:StartFire(data.fireType, nil, data.leftTime)
+	end
+end
 
 return TypeFire

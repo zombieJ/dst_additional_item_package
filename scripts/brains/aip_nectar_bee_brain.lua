@@ -1,7 +1,7 @@
 require "behaviours/follow"
 require "behaviours/wander"
 
-local MAX_WANDER_DIST = 10
+local MAX_WANDER_DIST = 6
 
 local MoldBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
