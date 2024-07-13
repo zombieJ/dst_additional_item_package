@@ -445,6 +445,14 @@ function _G.aipSpawnPrefab(inst, prefab, tx, ty, tz)
 		return nil
 	end
 
+	-- tx 如果是一个坐标，我们直接打平
+	if type(tx) == "table" then
+		local tmpPT = tx
+		tx = tmpPT.x
+		ty = tmpPT.y
+		tz = tmpPT.z
+	end
+
 	if inst ~= nil then
 		local x, y, z = inst.Transform:GetWorldPosition()
 		tgt.Transform:SetPosition(fb(tx, x), fb(ty, y), fb(tz, z))

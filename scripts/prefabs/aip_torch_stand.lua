@@ -110,30 +110,40 @@ end
 local function toggleActive(inst, doer)
     inst.components.activatable.inactive = true
 
-    if doer.player_classified ~= nil then
-        doer.player_classified.revealmapspot_worldx:set(x)
-        doer.player_classified.revealmapspot_worldz:set(z)
-        doer.player_classified.revealmapspotevent:push()
+    if doer.player_classified == nil then
+        return
+    end
 
-		doer:DoStaticTaskInTime(4*FRAMES, function()
-			doer.player_classified.MapExplorer:RevealArea(x, y, z, true, true)
-		end)
-	end
-end
+    -- 获取下一个目标
+    local nextInfo = list[inst.aipIndex + 1]
+    if nextInfo == nil then
+        return
+    end
 
------------------------------------- 存取 ------------------------------------
-local function onSave(inst, data)
-	
-end
+    -- 看看目标在不在
+    local nextName = "aip_torch_stand_"..nextInfo.name
+    local nextPrefab = TheSim:FindFirstEntityWithTag(nextName)
 
-local function onLoad(inst, data)
-	if data ~= nil then
-		
-	end
+    -- 生成一个吧
+    if nextPrefab == nil then
+        local nextTarget = aipFindEnt(nextInfo.target)
+        local rndPt = aipGetSecretSpawnPoint(nextTarget:GetPosition(), 10, 50)
+        nextPrefab = aipSpawnPrefab(nil, nextName, rndPt)
+    end
+
+    -- 真实视野
+    local x, y, z = nextPrefab.Transform:GetWorldPosition()
+    doer.player_classified.revealmapspot_worldx:set(x)
+    doer.player_classified.revealmapspot_worldz:set(z)
+    doer.player_classified.revealmapspotevent:push()
+
+    doer:DoStaticTaskInTime(4*FRAMES, function()
+        doer.player_classified.MapExplorer:RevealArea(x, y, z, true, true)
+    end)
 end
 
 ------------------------------------ 实例 ------------------------------------
-local function commonFn()
+local function commonFn(hasNext)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -168,9 +178,11 @@ local function commonFn()
     inst.components.workable:SetOnWorkCallback(onhit)
 
     -- 可以激活
-    inst:AddComponent("activatable")
-	inst.components.activatable.OnActivate = toggleActive
-    inst.components.activatable.quickaction = true
+    if hasNext then
+        inst:AddComponent("activatable")
+        inst.components.activatable.OnActivate = toggleActive
+        inst.components.activatable.quickaction = true
+    end
 
 	-- 添加类型火焰特效
     inst:AddComponent("aipc_type_fire")
@@ -183,9 +195,6 @@ local function commonFn()
 
     -- 可检查
     inst:AddComponent("inspectable")
-
-    inst.OnSave = onSave
-    inst.OnLoad = onLoad
 
     return inst
 end
@@ -201,7 +210,7 @@ for i, info in ipairs(list) do
     STRINGS.CHARACTERS.GENERIC.DESCRIBE[upName] = LANG.DESC
 
     local fn = function()
-        local inst = commonFn()
+        local inst = commonFn(i < #list)
         inst:AddTag(name)
 
         if not TheWorld.ismastersim then return inst end
@@ -209,6 +218,8 @@ for i, info in ipairs(list) do
         if info.postFn then
             info.postFn(inst)
         end
+
+        inst.aipIndex = i
 
         return inst
     end
