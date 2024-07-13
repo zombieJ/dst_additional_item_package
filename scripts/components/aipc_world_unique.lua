@@ -65,6 +65,8 @@ function WorldUnique:SetupEnv()
 
 		if junk_pile_big then
 			local junkPt = junk_pile_big:GetPosition()
+			junkPt = aipGetSecretSpawnPoint(junkPt, 60, 100)
+
 			local bumblebee = self:EnsurePrefab("aip_nectar_bee")
 
 			-- 把 贪吃熊峰 挪到 垃圾堆 附近
