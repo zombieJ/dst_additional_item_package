@@ -50,20 +50,22 @@ local list = {
         end,
     },
     {
+        name = "critter",
+        target = "critterlab",
+    },
+    {
         name = "pillar",
         target = "watertree_pillar",
+        ocean = true,
     },
     {
         name = "crab",
         target = "crabking",
+        ocean = true,
     },
     {
         name = "portal",
         target = "monkeyisland_portal",
-    },
-    {
-        name = "critter",
-        target = "critterlab",
     },
 }
 
@@ -134,7 +136,9 @@ local function toggleActive(inst, doer)
     -- 生成一个吧
     if nextPrefab == nil then
         local nextTarget = aipFindEnt(nextInfo.target)
-        local rndPt = aipGetSecretSpawnPoint(nextTarget:GetPosition(), 10, 50)
+        local rndPt = aipGetSecretSpawnPoint(
+            nextTarget:GetPosition(), 30, 80, nil, nextInfo.ocean ~= true
+        )
         nextPrefab = aipSpawnPrefab(nil, nextName, rndPt)
     end
 
@@ -150,7 +154,7 @@ local function toggleActive(inst, doer)
 end
 
 ------------------------------------ 实例 ------------------------------------
-local function commonFn(hasNext)
+local function commonFn(hasNext, ocean)
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -159,7 +163,13 @@ local function commonFn(hasNext)
     inst.entity:AddNetwork()
 
     -- 碰撞体积
-    MakeObstaclePhysics(inst, .1)
+    if ocean then
+        MakeWaterObstaclePhysics(inst, 0.05, 2, 0.75)
+        MakeInventoryFloatable(inst, "med", nil, 0.85)
+        inst.components.floater.bob_percent = 0
+    else
+        MakeObstaclePhysics(inst, .05)
+    end
 
     -- 动画
     inst.AnimState:SetBank("aip_torch_stand")
@@ -173,6 +183,13 @@ local function commonFn(hasNext)
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then return inst end
+
+    if ocean then
+        local land_time = (POPULATING and math.random()*5*FRAMES) or 0
+        inst:DoTaskInTime(land_time, function(inst)
+            inst.components.floater:OnLandedServer()
+        end)
+    end
 
     -- 掉东西
     inst:AddComponent("lootdropper")
@@ -219,7 +236,7 @@ for i, info in ipairs(list) do
     STRINGS.CHARACTERS.GENERIC.DESCRIBE[upName] = LANG.DESC
 
     local fn = function()
-        local inst = commonFn(i < #list)
+        local inst = commonFn(i < #list, info.ocean)
         inst:AddTag(name)
 
         if not TheWorld.ismastersim then return inst end

@@ -102,9 +102,12 @@ local function syncFire(inst, owner)
 	-- 查看附近有没有火焰
 	local fireFX = getFire(inst)
 
+	-- 神圣之火
 	if fireFX == true then
 		inst.components.aipc_type_fire:StartFire("mix", owner)
-	elseif fireFX then
+
+	-- 普通火焰，如果已经是 神圣之火 了，就不能覆盖它
+	elseif fireFX and inst.components.aipc_type_fire:GetType() ~= "mix" then
 		local heat = fireFX.components.heater:GetHeat(owner)
 
 		inst.components.aipc_type_fire:StartFire(heat > 0 and "hot" or "cold", owner)
@@ -171,6 +174,8 @@ local function fn()
 	inst.AnimState:SetBank("aip_torch")
 	inst.AnimState:SetBuild("aip_torch")
 	inst.AnimState:PlayAnimation("idle")
+
+	MakeInventoryFloatable(inst, "small", 0.15, 0.9)
 
 	inst.entity:SetPristine()
 

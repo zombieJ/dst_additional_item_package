@@ -370,6 +370,8 @@ local AIPC_LIGHT_ACTION = env.AddAction("AIPC_LIGHT_ACTION", _G.STRINGS.ACTIONS.
         return true
     end
 end)
+AIPC_LIGHT_ACTION.distance = 3
+
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_LIGHT_ACTION, "catchonfire"))
 AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_LIGHT_ACTION, "catchonfire"))
 local function canLighter(inst, target)

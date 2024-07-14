@@ -563,6 +563,8 @@ local function fn()
 
 	MakeInventoryPhysics(inst)
 
+	MakeInventoryFloatable(inst, "small", 0.15, 0.9)
+
 	inst.AnimState:SetBank("aip_nectar")
 	inst.AnimState:SetBuild("aip_nectar")
 	inst.AnimState:PlayAnimation("q0")
