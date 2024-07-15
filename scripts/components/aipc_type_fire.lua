@@ -58,6 +58,11 @@ function TypeFire:KillExtinguishTimer()
 end
 
 function TypeFire:StartFire(type, target, extinguishTime)
+	-- 不存在类型的时候跳过，防呆
+	if not type then
+		return
+	end
+
 	self.fireOnInst = target == nil or target == self.inst
 
 	if type == self.fireType then
@@ -132,8 +137,8 @@ TypeFire.OnRemoveEntity = TypeFire.OnRemoveFromEntity
 ----------------------------- 存取 -----------------------------
 -- 保存
 function TypeFire:OnSave()
-	if self.fireType and self.fireOnInst and self.extinguishReachTime then
-		local leftTime = self.extinguishReachTime - GetTime()
+	if self.fireType and self.fireOnInst and (self.extinguishReachTime or self.forever) then
+		local leftTime = (self.extinguishReachTime or 1) - GetTime()
 		return {
 			fireType = self.fireType,
 			leftTime = math.max(23, leftTime)
@@ -143,8 +148,8 @@ end
 
 -- 加载
 function TypeFire:OnLoad(data)
-	if data ~= nil and data.fireType ~= nil and data.leftTime ~= nil then
-		self:StartFire(data.fireType, nil, data.leftTime)
+	if data ~= nil and data.fireType ~= nil then
+		self:StartFire(data.fireType, nil, data.leftTime or 1)
 	end
 end
 
