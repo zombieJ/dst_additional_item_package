@@ -128,6 +128,8 @@ local SKILL_LANG = {
 		resonance = "Resonance",
 		rainbow = "Rainbow",
 		balrog = "Balrog",
+		hotDog = "Hot Dog",
+		coldDog = "Cold Dog",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -165,6 +167,8 @@ local SKILL_LANG = {
 		resonance = "执念",
 		rainbow = "淋雨声",
 		balrog = "青尘",
+		hotDog = "炎之雀跃",
+		coldDog = "霜之哀伤",
 	},
 }
 
@@ -205,6 +209,8 @@ local SKILL_MAX_LEVEL = {
 	resonance = { 1, 2, 3, 4, 5 },
 	rainbow = { 1, 1, 1, 1, 1 },
 	balrog = { 4, 5, 6, 7, 8 },
+	hotDog = { 1, 2, 3, 4, 5 },
+	coldDog = { 1, 2, 3, 4, 5 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -359,6 +365,14 @@ local SKILL_CONSTANT = {
 		goldern = true,
 		atk = dev_mode and 100 or 5,					-- 每个等级增加 5 点攻击
 	},
+	hotDog = {
+		special = true,
+		atk = dev_mode and 0.8 or 0.2,					-- 每个等级对火狗造成额外 20% 伤害
+	},
+	coldDog = {
+		special = true,
+		atk = dev_mode and 0.8 or 0.2,					-- 每个等级对冰狗造成额外 20% 伤害
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -398,6 +412,8 @@ local SKILL_DESC_LANG = {
 		resonance = "Increase ATK% damage and reduce DEF% damage taken when crazy",
 		rainbow = "Increase WET% moisture speed and reduce damage taken by moisture",
 		balrog = "Increase ATK point damage when burning",
+		hotDog = "Increase ATK% max health damage to fire hound and turn hound to fire hound",
+		coldDog = "Increase ATK% max health damage to ice hound and turn hound to ice hound",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -435,6 +451,8 @@ local SKILL_DESC_LANG = {
 		resonance = "在疯狂状态下伤害提升ATK%，受到伤害减免DEF%",
 		rainbow = "潮湿速度提升WET%，受到的伤害会优先被雨露值抵消",
 		balrog = "火焰即是力量。在被点燃时，攻击伤害提升ATK点",
+		hotDog = "攻击会将猎犬转化为火猎犬，对火猎犬造成额外ATK%最大生命值的伤害",
+		coldDog = "攻击会将猎犬转化为冰猎犬，对冰猎犬造成额外ATK%最大生命值的伤害",
 	},
 }
 
@@ -598,6 +616,16 @@ local SKILL_DESC_VARS = {
 			ATK = info.atk * lv,
 		}
 	end,
+	hotDog = function(info, lv)
+		return {
+			ATK = info.atk * lv * 100,
+		}
+	end,
+	coldDog = function(info, lv)
+		return {
+			ATK = info.atk * lv * 100,
+		}
+	end,
 }
 
 local SKILL_LIST = {}
@@ -626,7 +654,7 @@ if dev_mode then
 		-- "giants",
 		-- "blasphemy",
 		-- "rainbow",
-		"balrog",
+		-- "balrog",
 	}
 end
 
