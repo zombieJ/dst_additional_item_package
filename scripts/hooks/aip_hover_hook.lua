@@ -42,6 +42,24 @@ end
     self.secondarytext      X: 释放             y:-30
 ]]
 
+-- 获取要展示的信息
+local function getInfo(item)
+	-- GLOBAL.aipPrint("->", item.replica and item.replica.aipc_snakeoil)
+	-- 是否有 SnakeOilReplica 组件
+	if item.replica and item.replica.aipc_snakeoil then
+		local aip_info, aip_info_color = item.replica.aipc_snakeoil:GetInfo()
+		-- GLOBAL.aipPrint("has it?", aip_info, aip_info_color)
+		return aip_info, aip_info_color
+	end
+
+	-- 是否有消息组件
+	if item.components.aipc_info_client ~= nil then
+		local aip_info = item.components.aipc_info_client:Get("aip_info") or ""
+        local aip_info_color = item.components.aipc_info_client:Get("aip_info_color")
+		return aip_info, aip_info_color
+	end
+end
+
 -- Hover 展示信息
 AddClassPostConstruct("widgets/hoverer", function(self)
     self.aipText = self:AddChild(Text(_G.UIFONT, 24))
@@ -75,17 +93,19 @@ AddClassPostConstruct("widgets/hoverer", function(self)
 
         -- 如果没有提示内容，就略过
         if
-            item == nil or item.components.aipc_info_client == nil or
+            item == nil or
             self.str == nil or self.str == ""
         then
             self.aipText:Hide()
             return ret
         end
 
-        local aip_info = item.components.aipc_info_client:Get("aip_info") or ""
-        local aip_info_color = item.components.aipc_info_client:Get("aip_info_color")
+        -- local aip_info = item.components.aipc_info_client:Get("aip_info") or ""
+        -- local aip_info_color = item.components.aipc_info_client:Get("aip_info_color")
 
-        if aip_info == "" then
+        local aip_info, aip_info_color = getInfo(item)
+
+        if aip_info == "" or not aip_info then
             self.aipText:Hide()
             return ret
         end

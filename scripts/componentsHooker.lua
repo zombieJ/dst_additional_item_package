@@ -1148,3 +1148,11 @@ AipPostComp("sanity", function(self)
 		return oriDoDelta(self, delta, overtime, ...)
 	end
 end)
+
+-- 武器
+AipPostComp("weapon", function(self)
+	-- 额外在加一个 aipc_snakeoil component
+	if self.inst and not self.inst.components.aipc_snakeoil then
+		self.inst:AddComponent("aipc_snakeoil")
+	end
+end)

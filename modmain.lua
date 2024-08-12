@@ -262,6 +262,8 @@ PrefabFiles = {
 	"aip_mix_torchfire",
 	"aip_torch_stand",
 	"aip_ice_houndfire",
+	"aip_torch_stand_final",
+	"aip_snakeoil",
 }
 
 local language = GetModConfigData("language")
@@ -310,6 +312,8 @@ modimport("scripts/techHooker.lua")
 
 ------------------------------------- 组件钩子 -------------------------------------
 modimport("scripts/componentsHooker.lua")
+
+AddReplicableComponent("aipc_snakeoil")
 
 --------------------------------------- 图标 ---------------------------------------
 AddMinimapAtlas("minimap/dark_observer_vest.xml")
