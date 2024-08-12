@@ -1155,4 +1155,16 @@ AipPostComp("weapon", function(self)
 	if self.inst and not self.inst.components.aipc_snakeoil then
 		self.inst:AddComponent("aipc_snakeoil")
 	end
+
+	-- 额外添加一个事件
+	local originOnAttack = self.OnAttack
+
+	function self:OnAttack(attacker, target, projectile, ...)
+		-- 额外触发一个事件
+		if self.inst.components.aipc_snakeoil ~= nil then
+			self.inst.components.aipc_snakeoil:OnWeaponAttack(attacker, target, projectile)
+		end
+
+		return originOnAttack(self, attacker, target, projectile, ...)
+	end
 end)

@@ -1,3 +1,5 @@
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
+
 -- 服务端
 --[[
 吸血：攻击每次都恢复生命值 vampire
@@ -22,20 +24,21 @@ local abilities = { -- 概率
 }
 
 ----------------------------------------------------------------
-local function onHitOther(inst, data)
-end
-
-----------------------------------------------------------------
 local SnakeOil = Class(function(self, inst)
 	self.inst = inst
+	self.owner = nil
+
 	self.ability = "pain"
 
-	self.inst:ListenForEvent("onhitother", onHitOther)
 end)
 
 -- 随机能力
 function SnakeOil:RandomAbility()
 	self.ability = aipRandomLoot(abilities)
+
+	if dev_mode then
+		self.ability = "pain"
+	end
 
 	-- 告知 Replica
 	if self.inst.replica.aipc_snakeoil then
@@ -43,6 +46,11 @@ function SnakeOil:RandomAbility()
 	end
 
 	return self.ability
+end
+
+------------------------------- 激活 -------------------------------
+function SnakeOil:OnWeaponAttack(attacker, target, projectile)
+	aipPrint("Attack >>>", self.ability)
 end
 
 ------------------------------- 存取 -------------------------------
