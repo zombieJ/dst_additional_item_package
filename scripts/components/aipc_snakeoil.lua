@@ -27,6 +27,7 @@ local abilities = { -- 概率
 local SnakeOil = Class(function(self, inst)
 	self.inst = inst
 	self.owner = nil
+	self.lock = false
 
 	self.ability = "pain"
 
@@ -50,7 +51,21 @@ end
 
 ------------------------------- 激活 -------------------------------
 function SnakeOil:OnWeaponAttack(attacker, target, projectile)
+	if self.lock then
+		return
+	end
+
+	-- 暂时锁定，防止死循环
+	self.lock = true
+
 	aipPrint("Attack >>>", self.ability)
+
+	
+	if self.ability == "pain" then -- 痛击
+		target.components.combat:GetAttacked(attacker, 10)
+	end
+
+	self.lock = false
 end
 
 ------------------------------- 存取 -------------------------------
