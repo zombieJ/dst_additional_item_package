@@ -39,7 +39,7 @@ function SnakeOil:RandomAbility()
 	self.ability = aipRandomLoot(abilities)
 
 	if dev_mode then
-		self.ability = "week"
+		self.ability = "blood"
 	end
 
 	-- 告知 Replica
@@ -51,7 +51,7 @@ function SnakeOil:RandomAbility()
 end
 
 ------------------------------- BUFF -------------------------------
--- TODO: 实现这个
+-- 虚弱
 aipBufferRegister("aip_snakeoil_week", {
 	name = "week", -- 不用写 locale，因为玩家看不到
 	showFX = true,
@@ -67,6 +67,18 @@ aipBufferRegister("aip_snakeoil_week", {
 			inst.components.combat:aipMultiDamages("aip_snakeoil_week", nil)
 		end
 	end
+})
+
+-- 流血
+aipBufferRegister("aip_snakeoil_blood", {
+	name = "blood", -- 不用写 locale，因为玩家看不到
+	showFX = false,
+
+	fn = function(source, inst, info) -- 每隔 2 秒造成 5 点伤害
+		if inst.components.health ~= nil and info.tickTime % 2 == 0 then
+			inst.components.health:DoDelta(-5)
+		end
+	end,
 })
 
 ------------------------------- 激活 -------------------------------
@@ -94,6 +106,9 @@ function SnakeOil:OnWeaponAttack(attacker, target, projectile)
 
 	elseif self.ability == "week" then -- 虚弱
 		aipBufferPatch(attacker, target, "aip_snakeoil_week", 10)
+
+	elseif self.ability == "blood" then -- 流血
+		aipBufferPatch(attacker, target, "aip_snakeoil_blood", 10)
 	end
 end
 

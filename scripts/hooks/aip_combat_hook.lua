@@ -4,9 +4,6 @@ local dev_mode = _G.aipGetModConfig("dev_mode") == "enabled"
 
 -- 伤害允许翻倍
 AddComponentPostInit("combat", function(self)
-	-- 受到攻击
-	local originGetAttacked = self.GetAttacked
-
 	-- 各种 buff 会通过注册添加伤害倍数
 	-- 当值为正：每个 BUFF 提供百分比 相加，最终算出一个 总和伤害
 	-- 当值为负：基于 总和伤害，不断乘以 (100% - BUFF 百分比) 获得最终伤害
@@ -33,6 +30,11 @@ AddComponentPostInit("combat", function(self)
     function self:aipMultiDefenses(name, ptg)
         self._aipMultiDefenses[name] = ptg
     end
+
+    --[[ ===================================================================
+         ==                           受到伤害                             ==
+         ===================================================================]]
+    local originGetAttacked = self.GetAttacked
 
 	function self:GetAttacked(attacker, damage, weapon, stimuli, spdamage, ...)
 		-- 额外添加一个代理事件
@@ -150,7 +152,9 @@ AddComponentPostInit("combat", function(self)
 		return originGetAttacked(self, attacker, dmg, weapon, stimuli, spdamage, ...)
 	end
 
-	-- 计算伤害
+	--[[ ===================================================================
+         ==                           计算伤害                             ==
+         ===================================================================]]
 	local originCalcDamage = self.CalcDamage
 
 	function self:CalcDamage(target, weapon, multiplier, ...)
