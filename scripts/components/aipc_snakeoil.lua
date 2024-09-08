@@ -7,8 +7,8 @@ local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 虚弱：打湿对方 week
 
 流血：攻击造成伤害后，每秒持续造成伤害 blood
-复苏：每天恢复 5% 耐久度 repair
-游侠：每次攻击都会短暂提升移动速度 free
+复苏：每天恢复 10% 耐久度 repair
+游侠：携带时会提升移动速度
 击退：将敌人打飞 back
 压制：每次攻击都会降低对方的速度 slow
 ]]
@@ -25,6 +25,50 @@ local abilities = { -- 概率
 }
 
 ----------------------------------------------------------------
+-- 复苏：每天恢复一次
+local function OnIsDay(inst, isday)
+	if
+		isday and
+		inst.components.aipc_snakeoil ~= nil and
+		inst.components.aipc_snakeoil.ability == "repair"
+	then
+		if inst.components.finiteuses ~= nil then
+			-- 修复 finituses
+			local ptg = inst.components.finiteuses:GetPercent()
+			inst.components.finiteuses:SetPercent(
+				math.min(1, ptg + 0.05)
+			)
+		elseif inst.components.perishable ~= nil then
+			-- 修复 perishable
+			local ptg = inst.components.perishable:GetPercent()
+			inst.components.perishable:SetPercent(
+				math.min(1, ptg + 0.05)
+			)
+		end
+	end
+end
+
+local function OnEquipped(inst, data)
+	-- 游侠：携带时会提升移动速度
+	if
+		data and data.owner and
+		data.owner.components.locomotor and
+		inst.components.aipc_snakeoil ~= nil and
+		inst.components.aipc_snakeoil.ability == "free"
+	then
+		local multi = dev_mode and 3 or 1.25
+		data.owner.components.locomotor:SetExternalSpeedMultiplier(inst, "aipc_snakeoil_free", multi)
+	end
+end
+
+local function OnUnequipped(inst, data)
+	-- 清除 游侠，无所谓原本有没有加上
+	if data and data.owner and data.owner.components.locomotor then
+		data.owner.components.locomotor:RemoveExternalSpeedMultiplier(inst, "aipc_snakeoil_free")
+	end
+end
+
+----------------------------------------------------------------
 local SnakeOil = Class(function(self, inst)
 	self.inst = inst
 	self.owner = nil
@@ -32,6 +76,9 @@ local SnakeOil = Class(function(self, inst)
 
 	self.ability = "pain"
 
+	self.inst:WatchWorldState("isday", OnIsDay)
+	self.inst:ListenForEvent("equipped", OnEquipped)
+	self.inst:ListenForEvent("unequipped", OnUnequipped)
 end)
 
 -- 随机能力
@@ -39,7 +86,7 @@ function SnakeOil:RandomAbility()
 	self.ability = aipRandomLoot(abilities)
 
 	if dev_mode then
-		self.ability = "blood"
+		self.ability = "free"
 	end
 
 	-- 告知 Replica
@@ -108,7 +155,7 @@ function SnakeOil:OnWeaponAttack(attacker, target, projectile)
 		aipBufferPatch(attacker, target, "aip_snakeoil_week", 10)
 
 	elseif self.ability == "blood" then -- 流血
-		aipBufferPatch(attacker, target, "aip_snakeoil_blood", 10)
+		aipBufferPatch(attacker, target, "aip_snakeoil_blood", 11)
 	end
 end
 
