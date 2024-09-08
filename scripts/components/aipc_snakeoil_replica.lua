@@ -22,7 +22,7 @@ local LANG_MAP = {
 		repair = "复苏",
 		free = "游侠",
 		back = "击退",
-		slow = "压制",
+		slow = "断筋",
 		pain = "痛击",
 	},
 }

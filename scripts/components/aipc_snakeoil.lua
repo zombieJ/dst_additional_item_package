@@ -10,7 +10,7 @@ local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 复苏：每天恢复 10% 耐久度 repair
 游侠：携带时会提升移动速度
 击退：将敌人打飞 back
-压制：每次攻击都会降低对方的速度 slow
+断筋：每次攻击都会降低对方的速度 slow
 ]]
 
 local abilities = { -- 概率
@@ -86,7 +86,7 @@ function SnakeOil:RandomAbility()
 	self.ability = aipRandomLoot(abilities)
 
 	if dev_mode then
-		self.ability = "back"
+		self.ability = "slow"
 	end
 
 	-- 告知 Replica
@@ -128,6 +128,24 @@ aipBufferRegister("aip_snakeoil_blood", {
 	end,
 })
 
+-- 断筋
+aipBufferRegister("aip_snakeoil_slow", {
+	name = "slow", -- 不用写 locale，因为玩家看不到
+	showFX = true,
+
+	startFn = function(source, inst, info)
+		if inst.components.locomotor ~= nil then -- 速度降低 50%
+			inst.components.locomotor:SetExternalSpeedMultiplier(inst, "aip_snakeoil_slow", 0.5)
+		end
+	end,
+
+	endFn = function(source, inst)
+		if inst.components.locomotor ~= nil then
+			inst.components.locomotor:RemoveExternalSpeedMultiplier(inst, "aip_snakeoil_slow")
+		end
+	end
+})
+
 ------------------------------- 激活 -------------------------------
 function SnakeOil:OnWeaponAttack(attacker, target, projectile)
 	local now = GetTime()
@@ -139,10 +157,6 @@ function SnakeOil:OnWeaponAttack(attacker, target, projectile)
 	-- 记录时间，每隔 0.1 秒最多触发一次
 	self.lock = now
 
-
-	aipPrint("Attack >>>", self.ability)
-
-	
 	if self.ability == "pain" then -- 痛击
 		target.components.combat:GetAttacked(attacker, 10)
 
@@ -162,11 +176,12 @@ function SnakeOil:OnWeaponAttack(attacker, target, projectile)
 		local angle = aipGetAngle(attackerPT, target:GetPosition())
 		local tgtPT = aipAngleDist(attackerPT, angle, 3)
 
-		aipTypePrint("back >>>", attackerPT, tgtPT)
-
 		-- 移动到 tgtPT
 		target.Physics:Stop()
 		target.Physics:Teleport(tgtPT:Get())
+
+	elseif self.ability == "slow" then -- 断筋
+		aipBufferPatch(attacker, target, "aip_snakeoil_slow", 5)
 	end
 end
 
