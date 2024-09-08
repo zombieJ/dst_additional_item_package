@@ -86,7 +86,7 @@ function SnakeOil:RandomAbility()
 	self.ability = aipRandomLoot(abilities)
 
 	if dev_mode then
-		self.ability = "free"
+		self.ability = "back"
 	end
 
 	-- 告知 Replica
@@ -156,6 +156,17 @@ function SnakeOil:OnWeaponAttack(attacker, target, projectile)
 
 	elseif self.ability == "blood" then -- 流血
 		aipBufferPatch(attacker, target, "aip_snakeoil_blood", 11)
+
+	elseif self.ability == "back" and target.Physics then -- 击退
+		local attackerPT = attacker:GetPosition()
+		local angle = aipGetAngle(attackerPT, target:GetPosition())
+		local tgtPT = aipAngleDist(attackerPT, angle, 3)
+
+		aipTypePrint("back >>>", attackerPT, tgtPT)
+
+		-- 移动到 tgtPT
+		target.Physics:Stop()
+		target.Physics:Teleport(tgtPT:Get())
 	end
 end
 
