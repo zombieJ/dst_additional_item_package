@@ -8,7 +8,7 @@ local LANG_MAP = {
 	english = {
 		vampire = "Vampire",
 		blood = "Blood",
-		wet = "Wet",
+		week = "Week",
 		repair = "Repair",
 		free = "Flash",
 		back = "Back",
@@ -18,7 +18,7 @@ local LANG_MAP = {
 	chinese = {
 		vampire = "吸血",
 		blood = "流血",
-		wet = "潮湿",
+		week = "虚弱",
 		repair = "复苏",
 		free = "游侠",
 		back = "击退",
@@ -36,7 +36,7 @@ local abilities = {
 	blood ={
 		color = NEC_COLORS.quality_2,
 	},
-	wet = {
+	week = {
 		color = NEC_COLORS.quality_3,
 	},
 	repair = {

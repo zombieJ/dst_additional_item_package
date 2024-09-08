@@ -336,6 +336,8 @@ modimport("scripts/hooks/aip_hover_hook.lua")
 modimport("scripts/hooks/aip_buffer_hook.lua")
 modimport("scripts/hooks/aip_pet_hook.lua")
 
+modimport("scripts/hooks/aip_combat_hook.lua")
+
 ------------------------------------- 测试专用 -------------------------------------
 if dev_mode then
 	modimport("scripts/dev.lua")

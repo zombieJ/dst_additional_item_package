@@ -4,9 +4,9 @@ local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 --[[
 痛击：额外的 10 点伤害 pain
 吸血：攻击每次都恢复生命值 vampire
+虚弱：打湿对方 week
 
 流血：攻击造成伤害后，每秒持续造成伤害 blood
-潮湿：打湿对方 wet
 复苏：每天恢复 5% 耐久度 repair
 游侠：每次攻击都会短暂提升移动速度 free
 击退：将敌人打飞 back
@@ -16,8 +16,8 @@ local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 local abilities = { -- 概率
 	pain = 20,
 	vampire = 10,
+	week = 10,
 	blood = 10,
-	wet = 10,
 	repair = 10,
 	free = 10,
 	back = 10,
@@ -39,7 +39,7 @@ function SnakeOil:RandomAbility()
 	self.ability = aipRandomLoot(abilities)
 
 	if dev_mode then
-		self.ability = "vampire"
+		self.ability = "week"
 	end
 
 	-- 告知 Replica
@@ -49,6 +49,25 @@ function SnakeOil:RandomAbility()
 
 	return self.ability
 end
+
+------------------------------- BUFF -------------------------------
+-- TODO: 实现这个
+aipBufferRegister("aip_snakeoil_week", {
+	name = "week", -- 不用写 locale，因为玩家看不到
+	showFX = true,
+
+	startFn = function(source, inst, info)
+		if inst.components.combat ~= nil then -- 伤害降低 50%
+			inst.components.combat:aipMultiDamages("aip_snakeoil_week", -0.5)
+		end
+	end,
+
+	endFn = function(source, inst)
+		if inst.components.combat ~= nil then
+			inst.components.combat:aipMultiDamages("aip_snakeoil_week", nil)
+		end
+	end
+})
 
 ------------------------------- 激活 -------------------------------
 function SnakeOil:OnWeaponAttack(attacker, target, projectile)
@@ -67,10 +86,14 @@ function SnakeOil:OnWeaponAttack(attacker, target, projectile)
 	
 	if self.ability == "pain" then -- 痛击
 		target.components.combat:GetAttacked(attacker, 10)
+
 	elseif self.ability == "vampire" then -- 吸血
 		if attacker.components.health then
 			attacker.components.health:DoDelta(5)
 		end
+
+	elseif self.ability == "week" then -- 虚弱
+		aipBufferPatch(attacker, target, "aip_snakeoil_week", 10)
 	end
 end
 
