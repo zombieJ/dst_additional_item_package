@@ -2,17 +2,19 @@ local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 -- 服务端
 --[[
+痛击：额外的 10 点伤害 pain
 吸血：攻击每次都恢复生命值 vampire
+
 流血：攻击造成伤害后，每秒持续造成伤害 blood
 潮湿：打湿对方 wet
 复苏：每天恢复 5% 耐久度 repair
 游侠：每次攻击都会短暂提升移动速度 free
 击退：将敌人打飞 back
 压制：每次攻击都会降低对方的速度 slow
-痛击：额外的 10 点伤害 pain
 ]]
 
 local abilities = { -- 概率
+	pain = 20,
 	vampire = 10,
 	blood = 10,
 	wet = 10,
@@ -20,14 +22,13 @@ local abilities = { -- 概率
 	free = 10,
 	back = 10,
 	slow = 10,
-	pain = 20,
 }
 
 ----------------------------------------------------------------
 local SnakeOil = Class(function(self, inst)
 	self.inst = inst
 	self.owner = nil
-	self.lock = false
+	self.lock = 0
 
 	self.ability = "pain"
 
@@ -38,7 +39,7 @@ function SnakeOil:RandomAbility()
 	self.ability = aipRandomLoot(abilities)
 
 	if dev_mode then
-		self.ability = "pain"
+		self.ability = "vampire"
 	end
 
 	-- 告知 Replica
@@ -51,21 +52,26 @@ end
 
 ------------------------------- 激活 -------------------------------
 function SnakeOil:OnWeaponAttack(attacker, target, projectile)
-	if self.lock then
+	local now = GetTime()
+
+	if now - self.lock < 0.1 then
 		return
 	end
 
-	-- 暂时锁定，防止死循环
-	self.lock = true
+	-- 记录时间，每隔 0.1 秒最多触发一次
+	self.lock = now
+
 
 	aipPrint("Attack >>>", self.ability)
 
 	
 	if self.ability == "pain" then -- 痛击
 		target.components.combat:GetAttacked(attacker, 10)
+	elseif self.ability == "vampire" then -- 吸血
+		if attacker.components.health then
+			attacker.components.health:DoDelta(5)
+		end
 	end
-
-	self.lock = false
 end
 
 ------------------------------- 存取 -------------------------------
