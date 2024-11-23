@@ -110,7 +110,7 @@ local function fn()
 	-- 添加类型火焰特效
     inst:AddComponent("aipc_type_fire")
     -- inst.components.aipc_type_fire.forever = true
-    inst.components.aipc_type_fire.hotPrefab = "campfirefire"
+    inst.components.aipc_type_fire.hotPrefab = "aip_hot_fire"
 	inst.components.aipc_type_fire.coldPrefab = "coldfirefire"
     inst.components.aipc_type_fire.mixPrefab = "aip_mix_fire"
 	inst.components.aipc_type_fire.followSymbol = "firefx"

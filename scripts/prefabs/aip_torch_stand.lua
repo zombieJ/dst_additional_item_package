@@ -94,11 +94,11 @@ local function postTypeFire(inst, fx, type)
     fx:AddTag("aip_rubik_fire_"..type)
 
     -- 冰火 会比 火 高一点，我们特调一下
-    if type == "hot" then
-        inst.AnimState:PlayAnimation("idle_hot", false)
-    else
+    -- if type == "hot" then
+    --     inst.AnimState:PlayAnimation("idle_hot", false)
+    -- else
         inst.AnimState:PlayAnimation("idle", false)
-    end
+    -- end
 end
 
 -- 根据触发火焰来确定是否可以激活
@@ -205,7 +205,7 @@ local function commonFn(hasNext, ocean)
 
 	-- 添加类型火焰特效
     inst:AddComponent("aipc_type_fire")
-    inst.components.aipc_type_fire.hotPrefab = "campfirefire"
+    inst.components.aipc_type_fire.hotPrefab = "aip_hot_fire"
 	inst.components.aipc_type_fire.coldPrefab = "coldfirefire"
     inst.components.aipc_type_fire.mixPrefab = "aip_mix_fire"
 	inst.components.aipc_type_fire.followSymbol = "firefx"
