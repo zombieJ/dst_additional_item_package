@@ -112,7 +112,8 @@ local function OnEat(inst, food)
 			text = LANG.SAY_NECTAR_GOOD
 			gift = "aip_torch_blueprint"
 		end
-		inst.components.talker:Say(text)
+
+		say(inst, text)
 
 		-- 延迟一下送礼
 		inst._aipGift = gift

@@ -97,7 +97,7 @@ local function syncFireFx(inst)
 end
 
 -- 根据附近死亡的狗狗来决定要不要点火
-local function syncFire(inst, data)
+local function syncFireByHound(inst, data)
     if data.inst == nil or not inst:IsNear(data.inst, 10) then
         return
     end
@@ -185,6 +185,7 @@ local function fn()
 
 	inst:AddTag("wildfireprotected")
     inst:AddTag("aip_rubik")
+    inst:AddTag("aip_can_lighten") -- 让 aipc_lighter 可以点燃它
 
     inst.entity:SetPristine()
 
@@ -229,7 +230,7 @@ local function fn()
 
     -- 监听附近是否有冰火狗死了
     inst._onEntityDeath = function(src, data)
-        syncFire(inst, data)
+        syncFireByHound(inst, data)
     end
     inst:ListenForEvent("entity_death", inst._onEntityDeath, TheWorld)
 
