@@ -123,8 +123,12 @@ local function syncFire(inst, owner)
 	-- 查看附近有没有火焰
 	local fireFX = getFire(owner)
 
+	-- 没点火的时候才能点燃
+	if inst.components.aipc_type_fire:IsBurning() then
+		return
+
 	-- 神圣之火
-	if fireFX == "mix" or fireFX == "hot" or fireFX == "cold" then
+	elseif fireFX == "mix" or fireFX == "hot" or fireFX == "cold" then
 		inst.components.aipc_type_fire:StartFire(fireFX, owner)
 
 	-- 普通火焰，如果已经是 神圣之火 了，就不能覆盖它

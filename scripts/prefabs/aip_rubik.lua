@@ -79,20 +79,10 @@ local function syncFireFx(inst)
         return
     end
 
-    -- 判断一下类型
-    local fireType = nil
-    if inst._aipIsHot and inst._aipIsCold then
-        fireType = "mix"
-    elseif inst._aipIsHot then
-        fireType = "hot"
-    elseif inst._aipIsCold then
-        fireType = "cold"
-    end
-
-    if fireType then
-        inst.components.aipc_type_fire:StartFire(fireType)
-    else
-        inst.components.aipc_type_fire:StopFire()
+    -- 如果有颜色的火焰，则停掉传统的火焰
+    if inst.components.aipc_type_fire:IsBurning() then
+        inst.components.burnable:Extinguish()
+        return
     end
 end
 
@@ -104,9 +94,9 @@ local function syncFireByHound(inst, data)
 
     -- 计量器
     if data.inst.prefab == "firehound" then
-        inst._aipIsHot = true
+       inst.components.aipc_type_fire:StartFire("hot")
     elseif data.inst.prefab == "icehound" then
-        inst._aipIsCold = true
+        inst.components.aipc_type_fire:StartFire("cold")
     end
 
     syncFireFx(inst)
@@ -207,6 +197,7 @@ local function fn()
 
     -- 添加类型火焰特效
     inst:AddComponent("aipc_type_fire")
+    inst.components.aipc_type_fire.canMix = true
     inst.components.aipc_type_fire.hotPrefab = "campfirefire"
 	inst.components.aipc_type_fire.coldPrefab = "coldfirefire"
     inst.components.aipc_type_fire.mixPrefab = "coldfirefire"
@@ -233,9 +224,6 @@ local function fn()
         syncFireByHound(inst, data)
     end
     inst:ListenForEvent("entity_death", inst._onEntityDeath, TheWorld)
-
-    inst._aipIsHot = false
-    inst._aipIsCold = false
 
     if dev_mode then
         inst:DoTaskInTime(1, function()

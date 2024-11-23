@@ -18,6 +18,9 @@ local TypeFire = Class(function(self, inst)
 	-- 是否永久
 	self.forever = false
 
+	-- 是否允许融合火焰
+	self.canMix = false
+
 	-- 火焰熄灭时间，用作加载时重新点燃
 	self.extinguishReachTime = nil
 	self.fireOnInst = false
@@ -71,8 +74,16 @@ function TypeFire:StartFire(type, target, extinguishTime)
 		return
 	end
 
+	-- 重置一下火焰，如果同时有两种火焰，则会融合
+	local hasHot = type == "hot" or self.fireType == "hot"
+	local hasCold = type == "cold" or self.fireType == "cold"
+
 	self:StopFire()
 	self:StartExtinguishTimer(extinguishTime)
+
+	if hasHot and hasCold and self.canMix then
+		type = "mix"
+	end
 
 	target = target or self.inst
 	local firePrefab = self.hotPrefab
