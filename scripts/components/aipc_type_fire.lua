@@ -74,9 +74,12 @@ function TypeFire:StartFire(type, target, extinguishTime)
 		return
 	end
 
+	local originType = self:IsBurning() and self.fireType or nil
+
 	-- 重置一下火焰，如果同时有两种火焰，则会融合
-	local hasHot = type == "hot" or self.fireType == "hot"
-	local hasCold = type == "cold" or self.fireType == "cold"
+	local hasHot = type == "hot" or originType == "hot"
+	local hasCold = type == "cold" or originType == "cold"
+	aipPrint("Go:", type, originType, hasHot, hasCold)
 
 	self:StopFire()
 	self:StartExtinguishTimer(extinguishTime)
@@ -84,6 +87,8 @@ function TypeFire:StartFire(type, target, extinguishTime)
 	if hasHot and hasCold and self.canMix then
 		type = "mix"
 	end
+
+	aipPrint("Go Final:", type, hasHot, hasCold, self.canMix)
 
 	target = target or self.inst
 	local firePrefab = self.hotPrefab

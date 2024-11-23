@@ -44,10 +44,6 @@ end
 
 -- 让火可以点燃不同类型的火焰
 local function postTypeFire(inst, fx, type)
-    if type == "mix" then
-        fx.AnimState:OverrideMultColour(1, 0, 1, 1)
-    end
-
     if fx.components.firefx then
         fx.components.firefx:SetLevel(2)
     end
@@ -116,7 +112,7 @@ local function fn()
     -- inst.components.aipc_type_fire.forever = true
     inst.components.aipc_type_fire.hotPrefab = "campfirefire"
 	inst.components.aipc_type_fire.coldPrefab = "coldfirefire"
-    inst.components.aipc_type_fire.mixPrefab = "coldfirefire"
+    inst.components.aipc_type_fire.mixPrefab = "aip_mix_fire"
 	inst.components.aipc_type_fire.followSymbol = "firefx"
 	inst.components.aipc_type_fire.followOffset = Vector3(0, 0, 0)
     inst.components.aipc_type_fire.postFireFn = postTypeFire
