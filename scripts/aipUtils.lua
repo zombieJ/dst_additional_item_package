@@ -625,7 +625,7 @@ function _G.aipFindNearbyOcean(pt, dist)
 	return oceanPT
 end
 
--- 是自然地皮
+-- 检查自然地皮，如果不是的话就会返回 null
 function _G.aipIsNaturalPoint(pt)
 	-- 没有给与有效点
 	if pt == nil then
@@ -633,27 +633,30 @@ function _G.aipIsNaturalPoint(pt)
 	end
 
 	local tile = _G.TheWorld.Map:GetTileAtPoint(pt.x, pt.y, pt.z)
+	_G.aipTypePrint("TILE:", tile)
 
+	-- tiledefs.lua 里存着地皮的定义，以前的版本是直接用数字，现在是用字符串
 	local DEFAULT_VALID_TILE_TYPES = {
-		[GROUND.DIRT] = true,
-		[GROUND.SAVANNA] = true,
-		[GROUND.GRASS] = true,
-		[GROUND.FOREST] = true,
-		[GROUND.MARSH] = true,
+		[WORLD_TILES.DIRT] = true,
+		[WORLD_TILES.SAVANNA] = true,
+		[WORLD_TILES.GRASS] = true,
+		[WORLD_TILES.FOREST] = true,
+		[WORLD_TILES.MARSH] = true,
 
 		-- 月岛
-		[GROUND.METEOR] = true,
+		[WORLD_TILES.METEOR] = true,
+		[WORLD_TILES.MONKEY_GROUND] = true, -- 猴岛地皮
 	
 		-- CAVES
-		[GROUND.CAVE] = true,
-		[GROUND.FUNGUS] = true,
-		[GROUND.SINKHOLE] = true,
-		[GROUND.MUD] = true,
-		[GROUND.FUNGUSRED] = true,
-		[GROUND.FUNGUSGREEN] = true,
+		[WORLD_TILES.CAVE] = true,
+		[WORLD_TILES.FUNGUS] = true,
+		[WORLD_TILES.SINKHOLE] = true,
+		[WORLD_TILES.MUD] = true,
+		[WORLD_TILES.FUNGUSRED] = true,
+		[WORLD_TILES.FUNGUSGREEN] = true,
 	
 		--EXPANDED FLOOR TILES
-		[GROUND.DECIDUOUS] = true,
+		[WORLD_TILES.DECIDUOUS] = true,
 	}
 
 	return DEFAULT_VALID_TILE_TYPES[tile] and pt or nil
@@ -676,6 +679,8 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance, 
 	local step = (mergedMaxDistance - minDistance) / 20
 	step = math.max(1, step)
 
+	_G.aipTypePrint("STEP:", step, minDistance, mergedMaxDistance)
+
 	for distance = minDistance, maxDistance, step do
 		local pos = _G.aipGetSpawnPoint(pt, distance, onGround)
 
@@ -693,12 +698,16 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance, 
 		end
 	end
 
+	_G.aipTypePrint("Final:", tgtPT)
+
 	if tgtPT == nil then
 		tgtPT = _G.aipGetSpawnPoint(pt, minDistance, onGround)
+		_G.aipTypePrint("FALLBACK:", tgtPT)
 
 		-- 如果不是自然地皮就跳过
 		if onGround ~= false then
 			tgtPT = _G.aipIsNaturalPoint(tgtPT)
+			_G.aipTypePrint("FALLBACK 2:", tgtPT)
 		end
 	end
 

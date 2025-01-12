@@ -7,8 +7,8 @@ local LANG_MAP = {
 	english = {
 		NAME = "Magic Rubik",
 		DESC = "We need reset it!",
-        DESC_HOT = "I need a fire hound",
-        DESC_COLD = "I need an ice hound",
+        DESC_HOT = "I need a ice hound",
+        DESC_COLD = "I need an fire hound",
         DESC_MIX = "Ask a Bumblebee for a match",
 	},
 	chinese = {
@@ -94,9 +94,9 @@ local function syncFireByHound(inst, data)
 
     -- 计量器
     if data.inst.prefab == "firehound" then
-       inst.components.aipc_type_fire:StartFire("hot")
+       inst.components.aipc_type_fire:StartFire("hot", nil, nil, true)
     elseif data.inst.prefab == "icehound" then
-        inst.components.aipc_type_fire:StartFire("cold")
+        inst.components.aipc_type_fire:StartFire("cold", nil, nil, true)
     end
 
     syncFireFx(inst)

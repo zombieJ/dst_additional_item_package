@@ -23,6 +23,7 @@ local FIRE_TIME = dev_mode and 60 or TUNING.CAMPFIRE_FUEL_MAX
 local LANG_MAP = {
 	english = {
 		NAME = "Radish Match",
+		NAME_MIX = "Radish Match (DEBUG)",
 		REC_DESC = "Take away the flame of the bonfire",
 		DESC = "Take away the flame of the bonfire",
 
@@ -31,6 +32,7 @@ local LANG_MAP = {
 	},
 	chinese = {
 		NAME = "大根火柴",
+		NAME_MIX = "大根火柴(调试)",
 		REC_DESC = "可以带走篝火的火焰",
 		DESC = "带走篝火的火焰",
 
@@ -52,6 +54,7 @@ local assets = {
 
 -- 文字描述
 STRINGS.NAMES.AIP_TORCH = LANG.NAME
+STRINGS.NAMES.AIP_TORCH_MIXED = LANG.NAME_MIX
 STRINGS.RECIPE_DESC.AIP_TORCH = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_TORCH = LANG.DESC
 
@@ -266,6 +269,28 @@ local function fn()
 	return inst
 end
 
+-- 同样是火柴，但是手持时会默认点紫色火焰
+local function mixFn()
+	local inst = fn()
+
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
+	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_torch.xml"
+	inst.components.inventoryitem.imagename = "aip_torch"
+
+	inst.components.equippable:SetOnEquip(function(inst, owner)
+		onequip(inst, owner)
+
+		inst:DoTaskInTime(0.5, function()
+			inst.components.aipc_type_fire:StartFire("mix", owner)
+		end)
+	end)
+
+	return inst
+end
+
 ----------------------------------------------------------------------------------------
 local function onToggleFire(inst, fireType)
 	if fireType then
@@ -334,5 +359,6 @@ local function buildFn()
 end
 
 return Prefab("aip_torch", fn, assets),
+	Prefab("aip_torch_mixed", mixFn, assets),
 	Prefab("aip_torch_building", buildFn, assets),
 	MakePlacer("aip_torch_placer", "aip_torch", "aip_torch", "stand4")

@@ -49,23 +49,26 @@ local list = {
             end)
         end,
     },
-    {
-        name = "critter",
-        target = "critterlab",
-    },
-    {
-        name = "pillar",
-        target = "watertree_pillar",
-        ocean = true,
-    },
-    {
-        name = "crab",
-        target = "crabking",
-        ocean = true,
-    },
+    -- {
+    --     name = "critter",
+    --     target = "critterlab",
+    -- },
+    -- {
+    --     name = "pillar",
+    --     target = "watertree_pillar",
+    --     ocean = true,
+    -- },
+    -- {
+    --     name = "crab",
+    --     target = "crabking",
+    --     ocean = true,
+    -- },
     {
         name = "portal",
-        target = "monkeyisland_portal",
+        -- target = "monkeyisland_portal",
+        target = "monkeyqueen",
+        min = 2,
+        max = 5,
     },
 }
 
@@ -130,8 +133,14 @@ local function toggleActive(inst, doer)
     -- 生成一个吧
     if nextPrefab == nil then
         local nextTarget = aipFindEnt(nextInfo.target)
+        local tgtPos = nextTarget:GetPosition()
+
         local rndPt = aipGetSecretSpawnPoint(
-            nextTarget:GetPosition(), 30, 80, nil, nextInfo.ocean ~= true
+            tgtPos,
+            nextInfo.min or 30,
+            nextInfo.max or 80,
+            nil,
+            nextInfo.ocean ~= true
         )
         nextPrefab = aipSpawnPrefab(nil, nextName, rndPt)
     end

@@ -60,7 +60,7 @@ function TypeFire:KillExtinguishTimer()
 	end
 end
 
-function TypeFire:StartFire(type, target, extinguishTime)
+function TypeFire:StartFire(type, target, extinguishTime, supportMix)
 	-- 不存在类型的时候跳过，防呆
 	if not type then
 		return
@@ -79,16 +79,16 @@ function TypeFire:StartFire(type, target, extinguishTime)
 	-- 重置一下火焰，如果同时有两种火焰，则会融合
 	local hasHot = type == "hot" or originType == "hot"
 	local hasCold = type == "cold" or originType == "cold"
-	aipPrint("Go:", type, originType, hasHot, hasCold)
+	-- aipPrint("Go:", type, originType, hasHot, hasCold)
 
 	self:StopFire()
 	self:StartExtinguishTimer(extinguishTime)
 
-	if hasHot and hasCold and self.canMix then
+	if hasHot and hasCold and self.canMix and supportMix then
 		type = "mix"
 	end
 
-	aipPrint("Go Final:", type, hasHot, hasCold, self.canMix)
+	-- aipPrint("Go Final:", type, hasHot, hasCold, self.canMix)
 
 	target = target or self.inst
 	local firePrefab = self.hotPrefab
