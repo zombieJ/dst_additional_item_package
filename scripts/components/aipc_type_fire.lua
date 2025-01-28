@@ -141,7 +141,7 @@ function TypeFire:IsBurning()
 end
 
 function TypeFire:GetType()
-	return self.fireType
+	return self:IsBurning() and self.fireType or nil
 end
 
 -- 卸载时，停止火焰

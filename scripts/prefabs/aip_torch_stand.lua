@@ -17,6 +17,8 @@ local LANG_MAP = {
         NAME_CRAB = "Clawed Moonlight Torch",
         NAME_PORTAL = "Jungle Moonlight Torch",
         NAME_CRITTER = "Hidden Moonlight Torch",
+        WIN_TALK = "Go back to the Bumblebee",
+        TORCH_BUFF_NAME = "Igniter",
     },
     chinese = {
         NAME = "月光火柱",
@@ -26,6 +28,8 @@ local LANG_MAP = {
         NAME_CRAB = "巨钳的月光柱",                 -- 帝王蟹 crabking
         NAME_PORTAL = "丛林的月光柱",               -- 猴岛传送门 monkeyisland_portal
         NAME_CRITTER = "躲藏的月光柱",              -- 小动物巢穴 critterlab
+        WIN_TALK = "赶紧去找熊蜂吧",
+        TORCH_BUFF_NAME = "点火者",
     }
 }
 
@@ -48,29 +52,46 @@ local list = {
                 bee.aipHome = inst:GetPosition()
             end)
         end,
+        devKeep = true,
     },
-    -- {
-    --     name = "critter",
-    --     target = "critterlab",
-    -- },
-    -- {
-    --     name = "pillar",
-    --     target = "watertree_pillar",
-    --     ocean = true,
-    -- },
-    -- {
-    --     name = "crab",
-    --     target = "crabking",
-    --     ocean = true,
-    -- },
+    {
+        name = "critter",
+        target = "critterlab",
+        devKeep = true,
+    },
+    {
+        name = "pillar",
+        target = "watertree_pillar",
+        ocean = true,
+    },
+    {
+        name = "crab",
+        target = "crabking",
+        ocean = true,
+    },
     {
         name = "portal",
-        -- target = "monkeyisland_portal",
-        target = "monkeyqueen",
-        min = 2,
-        max = 5,
+        target = "monkeyisland_portal",
+        -- target = "monkeyqueen",
+        min = 5,
+        max = 25,
+        -- devKeep = true,
     },
 }
+
+if dev_mode then
+    list = aipFilterTable(list, function(data)
+        return data.devKeep
+    end)
+end
+
+
+------------------------------------ BUFF ------------------------------------
+-- 点火者
+aipBufferRegister("aip_torch_warm", {
+	name = LANG.TORCH_BUFF_NAME,
+	showFX = false,
+})
 
 ------------------------------------ 方法 ------------------------------------
 local function onhammered(inst, worker)
@@ -108,6 +129,16 @@ end
 local function onToggleFire(inst, type)
     if inst.components.activatable ~= nil then
         inst.components.activatable.inactive = type == "mix"
+    end
+
+    -- 如果可以说话，说明是最后一个。让它告诉玩家，可以回去了
+    if type == "mix" and inst.components.talker ~= nil then
+        inst.components.talker:Say(LANG.WIN_TALK)
+
+        local nearPlayers = aipFindNearPlayers(inst, 3)
+        for _, player in ipairs(nearPlayers) do
+            aipBufferPatch(inst, player, "aip_torch_warm", 60 * 5)
+        end
     end
 end
 
@@ -183,6 +214,10 @@ local function commonFn(hasNext, ocean)
     inst:AddTag("structure")
     inst:AddTag("aip_can_lighten") -- 让 aipc_lighter 可以点燃它
 
+    if not hasNext then
+        inst:AddTag("aip_torch_stand_final_test")
+    end
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then return inst end
@@ -210,6 +245,12 @@ local function commonFn(hasNext, ocean)
         inst.components.activatable.OnActivate = toggleActive
         inst.components.activatable.quickaction = true
         inst.components.activatable.inactive = false
+    else
+        inst:AddComponent("talker")
+        inst.components.talker.fontsize = 30
+        inst.components.talker.font = TALKINGFONT
+        inst.components.talker.colour = Vector3(.9, 1, .9)
+        inst.components.talker.offset = Vector3(0, -500, 0)
     end
 
 	-- 添加类型火焰特效

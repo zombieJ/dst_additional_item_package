@@ -59,6 +59,25 @@ end
 -- 简易版 brain，不需要 Stage 配合
 local function doBrain(inst)
 	aipQueue({
+		-------------------------- 奖励 --------------------------
+        function()
+            -- if not inst._aipFinalStand or not inst._aipFinalStand:IsValid() then
+			-- 	inst._aipFinalStand = TheSim:FindFirstEntityWithTag("aip_torch_stand_final_test")
+			-- end
+
+			-- if inst._aipFinalStand and inst._aipFinalStand.components.aipc_type_fire then
+			-- 	if
+			-- 		inst._aipFinalStand.components.aipc_type_fire:IsBurning() and
+			-- 		inst._aipFinalStand.components.aipc_type_fire:GetType() == "mix"
+			-- 	then
+			-- 		-- 我们看一下附近的玩家是否有这个 buff
+			-- 		return true
+			-- 	end
+			-- end
+
+			-- TODO: 检查 buff，然后添加一下 buff 对应的图标
+        end,
+
         -------------------------- 说话 --------------------------
         function()
             if inst.components.timer:TimerExists("talked") then

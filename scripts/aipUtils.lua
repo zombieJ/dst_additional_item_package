@@ -632,8 +632,9 @@ function _G.aipIsNaturalPoint(pt)
 		return nil
 	end
 
-	local tile = _G.TheWorld.Map:GetTileAtPoint(pt.x, pt.y, pt.z)
-	_G.aipTypePrint("TILE:", tile)
+	local WORLD_TILES = _G.WORLD_TILES
+
+	local tileId = _G.TheWorld.Map:GetTileAtPoint(pt.x, pt.y, pt.z)
 
 	-- tiledefs.lua 里存着地皮的定义，以前的版本是直接用数字，现在是用字符串
 	local DEFAULT_VALID_TILE_TYPES = {
@@ -659,7 +660,7 @@ function _G.aipIsNaturalPoint(pt)
 		[WORLD_TILES.DECIDUOUS] = true,
 	}
 
-	return DEFAULT_VALID_TILE_TYPES[tile] and pt or nil
+	return DEFAULT_VALID_TILE_TYPES[tileId] and pt or nil
 end
 
 -- 获取一个隐秘地点，如果是人工地皮就无效返回 nil
@@ -679,8 +680,6 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance, 
 	local step = (mergedMaxDistance - minDistance) / 20
 	step = math.max(1, step)
 
-	_G.aipTypePrint("STEP:", step, minDistance, mergedMaxDistance)
-
 	for distance = minDistance, maxDistance, step do
 		local pos = _G.aipGetSpawnPoint(pt, distance, onGround)
 
@@ -698,16 +697,13 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance, 
 		end
 	end
 
-	_G.aipTypePrint("Final:", tgtPT)
 
 	if tgtPT == nil then
 		tgtPT = _G.aipGetSpawnPoint(pt, minDistance, onGround)
-		_G.aipTypePrint("FALLBACK:", tgtPT)
 
 		-- 如果不是自然地皮就跳过
 		if onGround ~= false then
 			tgtPT = _G.aipIsNaturalPoint(tgtPT)
-			_G.aipTypePrint("FALLBACK 2:", tgtPT)
 		end
 	end
 

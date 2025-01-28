@@ -53,26 +53,26 @@ local function postTypeFire(inst, fx, type)
 end
 
 ------------------------------------ 升级 ------------------------------------
-CONSTRUCTION_PLANS["aip_torch_stand_final"] = {
-    Ingredient("milkywhites", 1),
-    Ingredient("glommerfuel", 1),
-}
+-- CONSTRUCTION_PLANS["aip_torch_stand_final"] = {
+--     Ingredient("milkywhites", 1),
+--     Ingredient("glommerfuel", 1),
+-- }
 
-local function OnConstructed(inst, doer)
-    local concluded = true
-    for i, v in ipairs(CONSTRUCTION_PLANS[inst.prefab] or {}) do
-        if inst.components.constructionsite:GetMaterialCount(v.type) < v.amount then
-            concluded = false
-            break
-        end
-    end
+-- local function OnConstructed(inst, doer)
+--     local concluded = true
+--     for i, v in ipairs(CONSTRUCTION_PLANS[inst.prefab] or {}) do
+--         if inst.components.constructionsite:GetMaterialCount(v.type) < v.amount then
+--             concluded = false
+--             break
+--         end
+--     end
 
-    if concluded then -- 满足建造条件
-        aipFlingItem(
-            aipSpawnPrefab(inst, "aip_snakeoil")
-        )
-    end
-end
+--     if concluded then -- 满足建造条件
+--         aipFlingItem(
+--             aipSpawnPrefab(inst, "aip_snakeoil")
+--         )
+--     end
+-- end
 
 ------------------------------------ 实例 ------------------------------------
 local function fn()
@@ -109,7 +109,7 @@ local function fn()
 
 	-- 添加类型火焰特效
     inst:AddComponent("aipc_type_fire")
-    -- inst.components.aipc_type_fire.forever = true
+    inst.components.aipc_type_fire.forever = true
     inst.components.aipc_type_fire.hotPrefab = "aip_hot_fire"
 	inst.components.aipc_type_fire.coldPrefab = "coldfirefire"
     inst.components.aipc_type_fire.mixPrefab = "aip_mix_fire"
@@ -117,9 +117,9 @@ local function fn()
 	inst.components.aipc_type_fire.followOffset = Vector3(0, 0, 0)
     inst.components.aipc_type_fire.postFireFn = postTypeFire
 
-    inst:AddComponent("constructionsite")
-    inst.components.constructionsite:SetConstructionPrefab("construction_container")
-    inst.components.constructionsite:SetOnConstructedFn(OnConstructed)
+    -- inst:AddComponent("constructionsite")
+    -- inst.components.constructionsite:SetConstructionPrefab("construction_container")
+    -- inst.components.constructionsite:SetOnConstructedFn(OnConstructed)
 
     -- 可检查
     inst:AddComponent("inspectable")
