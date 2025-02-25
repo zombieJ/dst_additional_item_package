@@ -26,6 +26,7 @@ local LANG_MAP = {
 		SAY_NECTAR_BAD = "Not good",
 		SAY_NECTAR_NORMAL = "Good. Do you know Magic Rubik can be ignited by hound?",
 		SAY_NECTAR_GOOD = "It's delicious!",
+		SAY_WELL_DONE = "You have completed the trial, this is the reward",
 	},
 	chinese = {
 		NAME = "贪吃熊蜂",
@@ -41,6 +42,7 @@ local LANG_MAP = {
 		SAY_NECTAR_BAD = "这花蜜不咋地",
 		SAY_NECTAR_NORMAL = "好吃。你知道 魔力方阵 可以被猎犬引火吗?",
 		SAY_NECTAR_GOOD = "这花蜜真好吃",
+		SAY_WELL_DONE = "你完成了试炼，这是奖励",
 	},
 }
 
@@ -52,6 +54,7 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_NECTAR_BEE = LANG.DESC
 
 ---------------------------------- 方法 ----------------------------------
 local function say(inst, text)
+	inst.components.timer:StopTimer("talked")
 	inst.components.talker:Say(text)
 	inst.components.timer:StartTimer("talked", 8)
 end
@@ -61,21 +64,24 @@ local function doBrain(inst)
 	aipQueue({
 		-------------------------- 奖励 --------------------------
         function()
-            -- if not inst._aipFinalStand or not inst._aipFinalStand:IsValid() then
-			-- 	inst._aipFinalStand = TheSim:FindFirstEntityWithTag("aip_torch_stand_final_test")
-			-- end
-
-			-- if inst._aipFinalStand and inst._aipFinalStand.components.aipc_type_fire then
-			-- 	if
-			-- 		inst._aipFinalStand.components.aipc_type_fire:IsBurning() and
-			-- 		inst._aipFinalStand.components.aipc_type_fire:GetType() == "mix"
-			-- 	then
-			-- 		-- 我们看一下附近的玩家是否有这个 buff
-			-- 		return true
-			-- 	end
-			-- end
-
 			-- TODO: 检查 buff，然后添加一下 buff 对应的图标
+			local players = aipFindNearPlayers(inst, 5)
+
+			for _, player in ipairs(players) do
+				if aipBufferExist(target, "aip_torch_warm") then
+					-- 如果没有学过就掉落一下配方，一分钟一次
+					if
+						not inst.components.timer:TimerExists("giveFinalGift") and
+						not player.components.builder:KnowsRecipe("aip_torch_stand_final")
+					then
+						inst._aipGift = "aip_torch_stand_final_blueprint"
+						inst.components.timer:StartTimer("giveFinalGift", 60)
+					end
+
+					say(inst, LANG.SAY_WELL_DONE)
+					return true
+				end
+			end
         end,
 
         -------------------------- 说话 --------------------------

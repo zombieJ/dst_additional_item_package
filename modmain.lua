@@ -38,6 +38,7 @@ Assets = {
 	Asset("ATLAS", "images/aipBuffer/aip_black_immunity.xml"),
 	Asset("ATLAS", "images/aipBuffer/foodMaltose.xml"),
 	Asset("ATLAS", "images/aipBuffer/aip_balrog.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_torch_warm.xml"),
 
 	-- BUFFER: Food
 	-- Asset("ATLAS", "images/inventoryimages/monster_salad.xml"),

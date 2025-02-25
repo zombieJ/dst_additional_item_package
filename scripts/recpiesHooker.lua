@@ -492,6 +492,14 @@ rec("aip_pet_fudge", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.TOOLS },
 rec("aip_torch", TECH.LOST, { CRAFTING_FILTERS.LIGHT },
 	{ Ingredient("driftwood_log", 1), Ingredient("gunpowder", 1), Ingredient("ash", 1) })
 
+-- 永恒纪念碑
+rec("aip_torch_stand_final", TECH.LOST, { CRAFTING_FILTERS.LIGHT, CRAFTING_FILTERS.CONTAINERS, CRAFTING_FILTERS.STRUCTURES },
+{
+	Ingredient("canary", 1),
+	Ingredient("feather_robin", 1),
+	Ingredient("purebrilliance", 1)
+}, "aip_torch_stand_final_placer")
+
 -------------------------------------- 联动 --------------------------------------
 -- local modNames = _G.ModManager:GetEnabledServerModNames()
 

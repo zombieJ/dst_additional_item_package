@@ -63,11 +63,13 @@ local list = {
         name = "pillar",
         target = "watertree_pillar",
         ocean = true,
+        devKeep = true,
     },
     {
         name = "crab",
         target = "crabking",
         ocean = true,
+        devKeep = true,
     },
     {
         name = "portal",
@@ -75,7 +77,7 @@ local list = {
         -- target = "monkeyqueen",
         min = 5,
         max = 25,
-        -- devKeep = true,
+        devKeep = true,
     },
 }
 
@@ -133,11 +135,13 @@ local function onToggleFire(inst, type)
 
     -- 如果可以说话，说明是最后一个。让它告诉玩家，可以回去了
     if type == "mix" and inst.components.talker ~= nil then
-        inst.components.talker:Say(LANG.WIN_TALK)
+        inst:DoTaskInTime(1, function()
+            inst.components.talker:Say(LANG.WIN_TALK)
+        end)
 
         local nearPlayers = aipFindNearPlayers(inst, 3)
         for _, player in ipairs(nearPlayers) do
-            aipBufferPatch(inst, player, "aip_torch_warm", 60 * 5)
+            aipBufferPatch(inst, player, "aip_torch_warm", 60 * 15)
         end
     end
 end
