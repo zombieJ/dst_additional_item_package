@@ -68,7 +68,7 @@ local function doBrain(inst)
 			local players = aipFindNearPlayers(inst, 5)
 
 			for _, player in ipairs(players) do
-				if aipBufferExist(target, "aip_torch_warm") then
+				if aipBufferExist(player, "aip_torch_warm") then
 					-- 如果没有学过就掉落一下配方，一分钟一次
 					if
 						not inst.components.timer:TimerExists("giveFinalGift") and

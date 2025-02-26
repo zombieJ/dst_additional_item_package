@@ -53,12 +53,13 @@ local function postTypeFire(inst, fx, type)
 end
 
 ------------------------------------ 升级 ------------------------------------
--- CONSTRUCTION_PLANS["aip_torch_stand_final"] = {
---     Ingredient("milkywhites", 1),
---     Ingredient("glommerfuel", 1),
--- }
+CONSTRUCTION_PLANS["aip_torch_stand_final"] = {
+    Ingredient("furtuft", 3),
+    Ingredient("beefalowool", 1),
+    Ingredient("feather_canary", 1),
+}
 
--- local function OnConstructed(inst, doer)
+local function OnConstructed(inst, doer)
 --     local concluded = true
 --     for i, v in ipairs(CONSTRUCTION_PLANS[inst.prefab] or {}) do
 --         if inst.components.constructionsite:GetMaterialCount(v.type) < v.amount then
@@ -72,7 +73,18 @@ end
 --             aipSpawnPrefab(inst, "aip_snakeoil")
 --         )
 --     end
--- end
+
+    -- 如果已经放好了，我们就把东西直接扔地上
+    if inst.components.constructionsite:IsComplete() then
+        for k, v in pairs(inst.components.constructionsite.materials) do
+            local num = inst.components.constructionsite:RemoveMaterial(k, v.amount)
+        end
+
+        aipFlingItem(
+            aipSpawnPrefab(inst, "aip_snakeoil")
+        )
+    end
+end
 
 ------------------------------------ 实例 ------------------------------------
 local function fn()
@@ -117,9 +129,9 @@ local function fn()
 	inst.components.aipc_type_fire.followOffset = Vector3(0, 0, 0)
     inst.components.aipc_type_fire.postFireFn = postTypeFire
 
-    -- inst:AddComponent("constructionsite")
-    -- inst.components.constructionsite:SetConstructionPrefab("construction_container")
-    -- inst.components.constructionsite:SetOnConstructedFn(OnConstructed)
+    inst:AddComponent("constructionsite")
+    inst.components.constructionsite:SetConstructionPrefab("construction_container")
+    inst.components.constructionsite:SetOnConstructedFn(OnConstructed)
 
     -- 可检查
     inst:AddComponent("inspectable")
