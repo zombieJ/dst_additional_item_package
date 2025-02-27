@@ -1206,7 +1206,7 @@ return {
     
             "It gave me blueprints for an 'Eternal Monument' that can craft 'Rubber Ducky' toys. These toys can enchant weapons with special effects!",
     
-            -- 大根火柴
+            -- 小黄鸭
             {
                 type="img",
                 name="aip_snakeoil",
