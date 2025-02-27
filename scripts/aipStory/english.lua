@@ -1142,10 +1142,10 @@ return {
 
     -- 火之试炼
     {
-        name = "火之试炼",
+        name = "Trial of Flame",
         desc = {
-            "在垃圾堆附近我发现一个“月光火柱”。",
-            
+            "Near the garbage pile, I found a 'Moonlight Pillar'.",
+    
             -- 永恒纪念碑
             {
                 type="anim",
@@ -1155,9 +1155,9 @@ return {
                 height=200,
                 top=0,
             },
-
-            "远处有一只小熊峰，它似乎很喜欢吃花蜜呢。我最好给它好点的花蜜吃。",
-
+    
+            "In the distance, there's a little Bearbee that seems to love nectar. I'd better give it premium-grade nectar.",
+    
             -- 贪吃熊蜂
             {
                 type="anim",
@@ -1167,21 +1167,21 @@ return {
                 height=120,
                 top=-50,
             },
-
-            "在吃饱喝足后，它给了我一根特殊的火柴。这根火柴在靠近篝火时会被点燃，只要我不收起来就可以无限使用它。",
-
-            "如果跑得太快，火焰也会熄灭。火柴也能插在地上，只不过这样很快就会烧完了。",
-
+    
+            "After being well-fed, it gave me a special matchstick. This match will ignite when near campfires and can be used indefinitely as long as I don't put it away.",
+    
+            "The flame will extinguish if I run too fast. The matchstick can also be planted in the ground, but it'll burn out quickly this way.",
+    
             -- 大根火柴
             {
                 type="img",
                 name="aip_torch",
             },
-
-            "此外，它告诉我在“魔力方阵”有着神奇的力量。火柴的火可以点燃它。在它附近杀死冰与火猎狗也会有同样的效果。",
-
-            "当“魔力方阵”有一种火时，杀死另一种类的猎犬就会引发特殊的火焰：紫火！",
-
+    
+            "Additionally, it told me the 'Magic Square' holds mystical power. The match's flame can ignite it. Killing ice/fire hounds near it has the same effect.",
+    
+            "When the 'Magic Square' contains one type of flame, killing hounds of the opposite element will trigger a special purple flame!",
+    
             {
                 type="anim",
                 build="coldfire_fire",
@@ -1191,9 +1191,9 @@ return {
                 top=0,
                 colors={1,0,1,1},
             },
-
-            "将紫色的火焰带回去点燃“月光火柱”，再激活就可以找到下一个月光柱。当点完 5 根月光柱后，回去找小熊峰。它给了我一张建筑图纸。",
-
+    
+            "Bring the purple flame back to ignite the Moonlight Pillar. Activating it will reveal the next pillar. After lighting all 5 pillars, return to the Bearbee.",
+    
             -- 永恒纪念碑
             {
                 type="anim",
@@ -1203,9 +1203,9 @@ return {
                 height=280,
                 top=0,
             },
-
-            "这个“永恒纪念碑”可以制造“小黄鸭”玩具，这个玩具可以为武器附魔产生特别的效果呢！~",
-
+    
+            "It gave me blueprints for an 'Eternal Monument' that can craft 'Rubber Ducky' toys. These toys can enchant weapons with special effects!",
+    
             -- 大根火柴
             {
                 type="img",
