@@ -64,17 +64,24 @@ local function doBrain(inst)
 	aipQueue({
 		-------------------------- 奖励 --------------------------
         function()
+			if inst.components.timer:TimerExists("giveFinalGift") then
+				return true
+			end
+
 			-- TODO: 检查 buff，然后添加一下 buff 对应的图标
-			local players = aipFindNearPlayers(inst, 5)
+			local players = aipFindNearPlayers(inst, 3)
 
 			for _, player in ipairs(players) do
 				if aipBufferExist(player, "aip_torch_warm") then
 					-- 如果没有学过就掉落一下配方，一分钟一次
+					aipTypePrint("giveFinalGift", inst.components.timer:TimerExists("giveFinalGift"))
+					aipTypePrint("player", player.components.builder:KnowsRecipe("aip_torch_stand_final"))
 					if
 						not inst.components.timer:TimerExists("giveFinalGift") and
 						not player.components.builder:KnowsRecipe("aip_torch_stand_final")
 					then
 						inst._aipGift = "aip_torch_stand_final_blueprint"
+						inst.sg:GoToState("gift")
 						inst.components.timer:StartTimer("giveFinalGift", 60)
 					end
 
@@ -87,7 +94,7 @@ local function doBrain(inst)
         -------------------------- 说话 --------------------------
         function()
             if inst.components.timer:TimerExists("talked") then
-				return
+				return true
 			end
 	
 			-- 随机花蜜

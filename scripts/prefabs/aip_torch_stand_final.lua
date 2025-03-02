@@ -29,6 +29,7 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_TORCH_STAND_FINAL = LANG.DESC
 
 local assets = {
     Asset("ANIM", "anim/aip_torch_stand.zip"),
+    Asset("ATLAS", "images/inventoryimages/aip_torch_stand_final.xml"),
 }
 
 
