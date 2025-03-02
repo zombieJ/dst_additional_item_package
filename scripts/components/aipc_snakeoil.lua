@@ -79,6 +79,8 @@ local SnakeOil = Class(function(self, inst)
 	self.inst:WatchWorldState("isday", OnIsDay)
 	self.inst:ListenForEvent("equipped", OnEquipped)
 	self.inst:ListenForEvent("unequipped", OnUnequipped)
+
+	self.inst:AddTag("aip_snakeoil_target")
 end)
 
 -- 随机能力

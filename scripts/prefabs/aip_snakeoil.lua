@@ -25,7 +25,8 @@ local assets = {
 
 -----------------------------------------------------------
 local function canActOn(inst, doer, target)
-	return target and target.components.weapon ~= nil and target.components.aipc_snakeoil ~= nil
+	-- return target and target.components.weapon ~= nil and target.components.aipc_snakeoil ~= nil
+    return target and target:HasTag("aip_snakeoil_target")
 end
 
 local function onDoTargetAction(inst, doer, target)
@@ -67,6 +68,9 @@ local function fn()
     
 	inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_snakeoil.xml"
+
+    inst:AddComponent("stackable")
+    inst.components.stackable.maxsize = TUNING.STACK_SIZE_MEDITEM
 
     MakeHauntableLaunch(inst)
 
