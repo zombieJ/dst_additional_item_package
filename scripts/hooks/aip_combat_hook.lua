@@ -38,7 +38,7 @@ AddComponentPostInit("combat", function(self)
 
 	function self:GetAttacked(attacker, damage, weapon, stimuli, spdamage, ...)
 		-- 额外添加一个代理事件
-		local data = { damage = damage, spdamage = spdamage or {} }
+		local data = { damage = damage, spdamage = spdamage }
 		self.inst:PushEvent("aipAttacked", data)
 
 		spdamage = data.spdamage
