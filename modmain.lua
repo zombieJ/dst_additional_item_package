@@ -38,6 +38,7 @@ Assets = {
 	Asset("ATLAS", "images/aipBuffer/aip_black_immunity.xml"),
 	Asset("ATLAS", "images/aipBuffer/foodMaltose.xml"),
 	Asset("ATLAS", "images/aipBuffer/aip_balrog.xml"),
+	Asset("ATLAS", "images/aipBuffer/aip_torch_warm.xml"),
 
 	-- BUFFER: Food
 	-- Asset("ATLAS", "images/inventoryimages/monster_salad.xml"),
@@ -252,6 +253,20 @@ PrefabFiles = {
 	"aip_ocean_jellyfish",
 	"aip_blink_flower",
 	"aip_ocean_vortex",
+	"aip_turn_mushroom",
+
+	-- 5 个挑战
+	"aip_nectar_bee",
+	"aip_torch",
+	"aip_cold_torchfire",
+	"aip_hot_torchfire",
+	"aip_mix_torchfire",
+	"aip_torch_stand",
+	"aip_ice_houndfire",
+	"aip_torch_stand_final",
+	"aip_snakeoil",
+	"aip_mix_fire",
+	"aip_hot_fire",
 }
 
 local language = GetModConfigData("language")
@@ -301,6 +316,8 @@ modimport("scripts/techHooker.lua")
 ------------------------------------- 组件钩子 -------------------------------------
 modimport("scripts/componentsHooker.lua")
 
+AddReplicableComponent("aipc_snakeoil")
+
 --------------------------------------- 图标 ---------------------------------------
 AddMinimapAtlas("minimap/dark_observer_vest.xml")
 AddMinimapAtlas("minimap/aip_dou_totem.xml")
@@ -321,6 +338,8 @@ modimport("scripts/sgHooker.lua")
 modimport("scripts/hooks/aip_hover_hook.lua")
 modimport("scripts/hooks/aip_buffer_hook.lua")
 modimport("scripts/hooks/aip_pet_hook.lua")
+
+modimport("scripts/hooks/aip_combat_hook.lua")
 
 ------------------------------------- 测试专用 -------------------------------------
 if dev_mode then

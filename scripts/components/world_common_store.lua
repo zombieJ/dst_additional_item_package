@@ -241,7 +241,9 @@ function CommonStore:CreateSpiderden()
 		pos = aipGetSecretSpawnPoint(Vector3(0, 0, 0), 0, 1000)
 	end
 
-	pos = aipGetSecretSpawnPoint(pos, 0, 50, 5)
+	if pos then
+		pos = aipGetSecretSpawnPoint(pos, 0, 50, 5)
+	end
 
 	if pos == nil then
 		return nil

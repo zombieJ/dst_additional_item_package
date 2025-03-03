@@ -181,6 +181,13 @@ function CookbookPageCrockPot:CreateDesc(index)
 			)
 			if descInfo.opacity ~= nil then
 				anim:GetAnimState():SetMultColour(1,1,1,descInfo.opacity)
+			elseif descInfo.colors ~= nil then
+				anim:GetAnimState():SetMultColour(
+					descInfo.colors[1],
+					descInfo.colors[2],
+					descInfo.colors[3],
+					descInfo.colors[4]
+				)
 			end
 
 			anim:SetScale(descInfo.scale or 1)

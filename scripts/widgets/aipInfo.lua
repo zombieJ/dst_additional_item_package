@@ -1,3 +1,5 @@
+-- 已经废弃了，换成 aip_hover_hook.lua 了
+
 local Text = require "widgets/text"
 local Widget = require "widgets/widget"
 
@@ -36,6 +38,24 @@ function AIP_UniqueSlotInfo:EmptyAndHide()
 	self:Hide()
 end
 
+-- 检查是否有需要展示的消息
+local function getInfo(inst)
+	GOLBAL.aipPrint("->", inst.replica and inst.replica.aipSnakeOil)
+	-- 是否有 SnakeOilReplica 组件
+	if inst.replica and inst.replica.aipSnakeOil then
+		local aip_info, aip_info_color = inst.replica.aipSnakeOil:GetInfo()
+		GOLBAL.aipPrint("has it?", aip_info, aip_info_color)
+		return aip_info, aip_info_color
+	end
+
+	-- 是否有消息组件
+	if inst.components.aipc_info_client ~= nil then
+		local aip_info = inst.components.aipc_info_client:Get("aip_info") or ""
+		local aip_info_color = inst.components.aipc_info_client:Get("aip_info_color")
+		return aip_info, aip_info_color
+	end
+end
+
 function AIP_UniqueSlotInfo:ShowTip(slot)
 	self.currentSlot = slot
 
@@ -46,15 +66,17 @@ function AIP_UniqueSlotInfo:ShowTip(slot)
 
 	local inst = slot.tile.item
 
-	-- 检查是否有消息组件
-	if not inst.components or not inst.components.aipc_info_client then
-		return self:EmptyAndHide()
-	end
+	-- -- 检查是否有消息组件
+	-- if not inst.components or not inst.components.aipc_info_client then
+	-- 	return self:EmptyAndHide()
+	-- end
 
-	local aip_info = inst.components.aipc_info_client:Get("aip_info") or ""
-	local aip_info_color = inst.components.aipc_info_client:Get("aip_info_color")
+	-- local aip_info = inst.components.aipc_info_client:Get("aip_info") or ""
+	-- local aip_info_color = inst.components.aipc_info_client:Get("aip_info_color")
 
-	if aip_info == "" then
+	local aip_info, aip_info_color = getInfo(inst)
+
+	if aip_info == "" or not aip_info then
 		return self:EmptyAndHide()
 	end
 

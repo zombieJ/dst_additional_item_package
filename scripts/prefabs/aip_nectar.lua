@@ -359,6 +359,9 @@ local function onRefreshName(inst)
 	currentQuality = math.floor(currentQuality)
 	local qualityName = "quality_"..currentQuality
 
+	-- 记录一下，给其他地方用（比如 雄蜂）
+	inst.currentQuality = currentQuality
+
 	if inst.components.aipc_info_client then
 		inst.components.aipc_info_client:SetString("aip_info", aipInfo.."-"..LANG_VALUE[qualityName])
 		inst.components.aipc_info_client:SetByteArray("aip_info_color", QUALITY_COLORS[qualityName])
@@ -560,6 +563,8 @@ local function fn()
 
 	MakeInventoryPhysics(inst)
 
+	MakeInventoryFloatable(inst, "small", 0.15, 0.9)
+
 	inst.AnimState:SetBank("aip_nectar")
 	inst.AnimState:SetBuild("aip_nectar")
 	inst.AnimState:PlayAnimation("q0")
@@ -591,6 +596,8 @@ local function fn()
 
 	-----------------------------------------------------
 	inst:AddComponent("inspectable")
+
+	inst:AddComponent("tradable")
 
 	inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_nectar_0.xml"

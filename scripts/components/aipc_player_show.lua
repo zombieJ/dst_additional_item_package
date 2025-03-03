@@ -220,6 +220,28 @@ local function vortexShow(pos)
 	end
 end
 
+-- 变形蘑菇
+local function turnMushroomShow(pos)
+	local chance = dev_mode and 1 or 0.05
+
+	if
+		-- 晚上就算了
+		TheWorld.state.isnight or
+		-- 当前位置是否在海里
+		TheWorld.Map:IsOceanAtPoint(pos.x, pos.y, pos.z, false) or
+		-- 几率不对
+		math.random() > chance
+	then
+		return
+	end
+
+	-- 在附近找一个地面添加花环
+	local newPT = aipGetSpawnPoint(pos, dev_mode and 5 or 20)
+	aipSpawnPrefab(nil, "aip_turn_mushroom", newPT.x, 0, newPT.z)
+
+	return true
+end
+
 ------------------------------ 方法 ------------------------------
 local function createIfPossible(inst, prefab, tag)
 	local oldoneHand = TheSim:FindFirstEntityWithTag(tag)
@@ -323,10 +345,13 @@ function PlayerShow:StartShow()
 			jellyfishShow,
 			blinkFlowerShow,
 			vortexShow,
+			turnMushroomShow,
 		}
+
+		local randomFunc = dev_mode and turnMushroomShow or aipRandomEnt(funcList)
 		
 		-- 开发模式下，指定项目
-		if dev_mode and vortexShow(pos) then
+		if randomFunc(pos) then
 			self:StopShow()
 		end
 	end)

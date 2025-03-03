@@ -1140,6 +1140,80 @@ return {
         },
     },
 
+    -- 火之试炼
+    {
+        name = "Trial of Flame",
+        desc = {
+            "Near the garbage pile, I found a 'Moonlight Pillar'.",
+    
+            -- 永恒纪念碑
+            {
+                type="anim",
+                build="aip_torch_stand",
+                anim="idle",
+                scale=.4,
+                height=200,
+                top=0,
+            },
+    
+            "In the distance, there's a little Bearbee that seems to love nectar. I'd better give it premium-grade nectar.",
+    
+            -- 贪吃熊蜂
+            {
+                type="anim",
+                build="aip_nectar_bee",
+                anim="idle_loop",
+                scale=.4,
+                height=120,
+                top=-50,
+            },
+    
+            "After being well-fed, it gave me a special matchstick. This match will ignite when near campfires and can be used indefinitely as long as I don't put it away.",
+    
+            "The flame will extinguish if I run too fast. The matchstick can also be planted in the ground, but it'll burn out quickly this way.",
+    
+            -- 大根火柴
+            {
+                type="img",
+                name="aip_torch",
+            },
+    
+            "Additionally, it told me the 'Magic Square' holds mystical power. The match's flame can ignite it. Killing ice/fire hounds near it has the same effect.",
+    
+            "When the 'Magic Square' contains one type of flame, killing hounds of the opposite element will trigger a special purple flame!",
+    
+            {
+                type="anim",
+                build="coldfire_fire",
+                anim="level3",
+                scale=.3,
+                height=120,
+                top=0,
+                colors={1,0,1,1},
+            },
+    
+            "Bring the purple flame back to ignite the Moonlight Pillar. Activating it will reveal the next pillar. After lighting all 5 pillars, return to the Bearbee.",
+    
+            -- 永恒纪念碑
+            {
+                type="anim",
+                build="aip_torch_stand",
+                anim="final",
+                scale=.4,
+                height=280,
+                top=0,
+            },
+    
+            "It gave me blueprints for an 'Eternal Monument' that can craft 'Rubber Ducky' toys. These toys can enchant weapons with special effects!",
+    
+            -- 小黄鸭
+            {
+                type="img",
+                name="aip_snakeoil",
+            },
+        },
+    },
+
     -- 量力而行
     {
         name = "Quantum Mechanics",

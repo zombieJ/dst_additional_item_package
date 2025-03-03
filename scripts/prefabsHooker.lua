@@ -241,6 +241,16 @@ for i, prefab in ipairs(animalList) do
 	end)
 end
 
+------------------------------------------ 冰狗 ------------------------------------------
+AddPrefabPostInit("icehound", function(inst)
+	-- 死亡掉落蓝色火焰
+	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
+		inst.components.lootdropper:AddChanceLoot("aip_ice_houndfire", 1)
+		inst.components.lootdropper:AddChanceLoot("aip_ice_houndfire", dev_mode and 1 or 0.8)
+		inst.components.lootdropper:AddChanceLoot("aip_ice_houndfire", dev_mode and 1 or 0.6)
+	end
+end)
+
 ------------------------------------------ 猴子 ------------------------------------------
 AddPrefabPostInit("monkey", function(inst)
 	-- 猴子会概率掉落西游人物卡

@@ -445,6 +445,14 @@ function _G.aipSpawnPrefab(inst, prefab, tx, ty, tz)
 		return nil
 	end
 
+	-- tx 如果是一个坐标，我们直接打平
+	if type(tx) == "table" then
+		local tmpPT = tx
+		tx = tmpPT.x
+		ty = tmpPT.y
+		tz = tmpPT.z
+	end
+
 	if inst ~= nil then
 		local x, y, z = inst.Transform:GetWorldPosition()
 		tgt.Transform:SetPosition(fb(tx, x), fb(ty, y), fb(tz, z))
@@ -488,14 +496,22 @@ function _G.aipReplacePrefab(inst, prefab, tx, ty, tz, count)
 	return #items <= 1 and items[1] or items
 end
 
+local function isValidGround(x, y, z, isGround)
+	if isGround == false then
+		return _G.TheWorld.Map:IsOceanAtPoint(x, y, z, false)
+	end
+
+	return _G.TheWorld.Map:IsAboveGroundAtPoint(x, y, z, false)
+end
+
 -- 获取一个可访达的路径，默认 40。TODO：优化一下避免在建筑附近生成
-function _G.aipGetSpawnPoint(startPT, distance)
+function _G.aipGetSpawnPoint(startPT, distance, onGround)
 	local dist = distance or 40
 	local pt = nil
 
 	-- 不在陆地就随便找一个陆地作为起始点
 	local px, py, pz = startPT:Get()
-    if not _G.TheWorld.Map:IsAboveGroundAtPoint(px, py, pz, false) then
+    if not isValidGround(px, py, pz, onGround) then
         startPT = _G.FindNearbyLand(startPT) or startPT
     end
 
@@ -515,7 +531,7 @@ function _G.aipGetSpawnPoint(startPT, distance)
 				local x = startPT.x + offset.x
 				local y = startPT.y + offset.y
 				local z = startPT.z + offset.z
-				return _G.TheWorld.Map:IsAboveGroundAtPoint(x, y, z, false)
+				return isValidGround(x, y, z, onGround)
 			end
 		)
 
@@ -609,42 +625,46 @@ function _G.aipFindNearbyOcean(pt, dist)
 	return oceanPT
 end
 
--- 是自然地皮
+-- 检查自然地皮，如果不是的话就会返回 null
 function _G.aipIsNaturalPoint(pt)
 	-- 没有给与有效点
 	if pt == nil then
 		return nil
 	end
 
-	local tile = _G.TheWorld.Map:GetTileAtPoint(pt.x, pt.y, pt.z)
+	local WORLD_TILES = _G.WORLD_TILES
 
+	local tileId = _G.TheWorld.Map:GetTileAtPoint(pt.x, pt.y, pt.z)
+
+	-- tiledefs.lua 里存着地皮的定义，以前的版本是直接用数字，现在是用字符串
 	local DEFAULT_VALID_TILE_TYPES = {
-		[GROUND.DIRT] = true,
-		[GROUND.SAVANNA] = true,
-		[GROUND.GRASS] = true,
-		[GROUND.FOREST] = true,
-		[GROUND.MARSH] = true,
+		[WORLD_TILES.DIRT] = true,
+		[WORLD_TILES.SAVANNA] = true,
+		[WORLD_TILES.GRASS] = true,
+		[WORLD_TILES.FOREST] = true,
+		[WORLD_TILES.MARSH] = true,
 
 		-- 月岛
-		[GROUND.METEOR] = true,
+		[WORLD_TILES.METEOR] = true,
+		[WORLD_TILES.MONKEY_GROUND] = true, -- 猴岛地皮
 	
 		-- CAVES
-		[GROUND.CAVE] = true,
-		[GROUND.FUNGUS] = true,
-		[GROUND.SINKHOLE] = true,
-		[GROUND.MUD] = true,
-		[GROUND.FUNGUSRED] = true,
-		[GROUND.FUNGUSGREEN] = true,
+		[WORLD_TILES.CAVE] = true,
+		[WORLD_TILES.FUNGUS] = true,
+		[WORLD_TILES.SINKHOLE] = true,
+		[WORLD_TILES.MUD] = true,
+		[WORLD_TILES.FUNGUSRED] = true,
+		[WORLD_TILES.FUNGUSGREEN] = true,
 	
 		--EXPANDED FLOOR TILES
-		[GROUND.DECIDUOUS] = true,
+		[WORLD_TILES.DECIDUOUS] = true,
 	}
 
-	return DEFAULT_VALID_TILE_TYPES[tile] and pt or nil
+	return DEFAULT_VALID_TILE_TYPES[tileId] and pt or nil
 end
 
 -- 获取一个隐秘地点，如果是人工地皮就无效返回 nil
-function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
+function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance, onGround)
 	local tgtPT = nil
 	emptyDistance = emptyDistance or 0
 
@@ -661,10 +681,12 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
 	step = math.max(1, step)
 
 	for distance = minDistance, maxDistance, step do
-		local pos = _G.aipGetSpawnPoint(pt, distance)
+		local pos = _G.aipGetSpawnPoint(pt, distance, onGround)
 
 		-- 如果不是自然地皮就跳过
-		pos = _G.aipIsNaturalPoint(pos)
+		if onGround ~= false then
+			pos = _G.aipIsNaturalPoint(pos)
+		end
 
 		if pos ~= nil then
 			local ents = _G.TheSim:FindEntities(pos.x, 0, pos.z, emptyDistance)
@@ -675,11 +697,14 @@ function _G.aipGetSecretSpawnPoint(pt, minDistance, maxDistance, emptyDistance)
 		end
 	end
 
+
 	if tgtPT == nil then
-		tgtPT = _G.aipGetSpawnPoint(pt, minDistance)
+		tgtPT = _G.aipGetSpawnPoint(pt, minDistance, onGround)
 
 		-- 如果不是自然地皮就跳过
-		tgtPT = _G.aipIsNaturalPoint(tgtPT)
+		if onGround ~= false then
+			tgtPT = _G.aipIsNaturalPoint(tgtPT)
+		end
 	end
 
 	return tgtPT
@@ -728,6 +753,7 @@ function _G.aipFindRandomPointInLand(emptyDistance)
 	return pos
 end
 
+-- 确定海的范围内没有无关的东西遮挡，并且是在海里
 function _G.aipValidateOceanPoint(pt, radius, prefabRadius)
 	radius = radius or 0
 	prefabRadius = prefabRadius or radius or 0
@@ -881,6 +907,8 @@ end
 function _G.aipGetOne(inst)
 	if inst.components.stackable ~= nil then
 		return inst.components.stackable:Get()
+	elseif inst.components.inventoryitem then
+		inst.components.inventoryitem:RemoveFromOwner(true)
 	end
 
 	return inst

@@ -164,6 +164,9 @@ local function onupdatefueled(inst)
     if inst.components.burnable ~= nil then
         inst.components.burnable:SetFXLevel(inst.components.fueled:GetCurrentSection(), inst.components.fueled:GetSectionPercent())
     end
+
+    -- 不阻碍科技制作
+    inst:RemoveTag("fire")
 end
 
 local function onfuelchange(newsection, oldsection, inst)
@@ -176,6 +179,9 @@ local function onfuelchange(newsection, oldsection, inst)
 
         inst.components.burnable:SetFXLevel(newsection, inst.components.fueled:GetSectionPercent())
     end
+
+    -- 不阻碍科技制作
+    inst:RemoveTag("fire")
 end
 
 ---------------------------------- 满月 ----------------------------------

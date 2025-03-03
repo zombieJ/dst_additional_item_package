@@ -695,6 +695,38 @@ function PetOwner:Attack(target)
 	if muddyInfo ~= nil then
 		aipBufferPatch(self.inst, target, "aip_pet_muddy", muddyInfo.duration)
 	end
+
+	-- 炎之雀跃
+	local hotSkillInfo, hotSkillLv = self:GetSkillInfo("hotDog")
+	if hotSkillInfo ~= nil then
+		-- 替换猎犬为火猎犬
+		if target.prefab == "hound" or target.prefab == "moonhound" then
+			local hpPtg = target.components.health:GetPercent()
+			aipReplacePrefab(target, "firehound").components.health:SetPercent(hpPtg)
+
+		-- 对火猎犬额外造成伤害
+		elseif target.prefab == "firehound" then
+			local delta = hotSkillInfo.atk * hotSkillLv
+			local hp = target.components.health.maxhealth
+			target.components.health:DoDelta(-delta * hp, nil, self.inst.prefab, nil, self.inst)
+		end
+	end
+
+	-- 霜之哀伤
+	local coldSkillInfo, coldSkillLv = self:GetSkillInfo("coldDog")
+	if coldSkillInfo ~= nil then
+		-- 替换猎犬为冰猎犬
+		if target.prefab == "hound" or target.prefab == "moonhound" then
+			local hpPtg = target.components.health:GetPercent()
+			aipReplacePrefab(target, "icehound").components.health:SetPercent(hpPtg)
+
+		-- 对冰猎犬额外造成伤害
+		elseif target.prefab == "icehound" then
+			local delta = coldSkillInfo.atk * coldSkillLv
+			local hp = target.components.health.maxhealth
+			target.components.health:DoDelta(-delta * hp, nil, self.inst.prefab, nil, self.inst)
+		end
+	end
 end
 
 -- 被攻击

@@ -675,10 +675,12 @@ local function getSkills(prefab, subPrefab)
     if prefab == "icehound" then
         return {
             "cool",
+            "coldDog",
         }
     elseif prefab == "firehound" then
         return {
             "hot",
+            "hotDog",
         }
     end
 

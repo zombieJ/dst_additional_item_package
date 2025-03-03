@@ -30,6 +30,13 @@ local function PlayerPrefabPostInit(inst)
             inst.components.sanity:DoDelta(0)
         end
     end)
+
+    -- 不要淹死
+    inst:DoTaskInTime(1, function()
+        if inst.components.drownable then
+            inst.components.drownable.enabled = false
+        end
+    end)
 end
 
 AddPlayerPostInit(PlayerPrefabPostInit)
