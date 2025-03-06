@@ -237,9 +237,11 @@ local function turnMushroomShow(pos)
 
 	-- 在附近找一个地面添加花环
 	local newPT = aipGetSpawnPoint(pos, dev_mode and 5 or 20)
-	aipSpawnPrefab(nil, "aip_turn_mushroom", newPT.x, 0, newPT.z)
+	if newPT ~= nil then
+		aipSpawnPrefab(nil, "aip_turn_mushroom", newPT.x, 0, newPT.z)
 
-	return true
+		return true
+	end
 end
 
 ------------------------------ 方法 ------------------------------
