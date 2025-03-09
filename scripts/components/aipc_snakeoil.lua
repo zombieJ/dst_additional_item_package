@@ -2,7 +2,7 @@ local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 -- 服务端
 --[[
-痛击：额外的 10 点伤害 pain
+痛击：额外的 10 点伤害 painful
 吸血：攻击每次都恢复生命值 vampire
 虚弱：打湿对方 week
 
@@ -14,7 +14,7 @@ local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 ]]
 
 local abilities = { -- 概率
-	pain = 20,
+	painful = 20,
 	vampire = 10,
 	week = 10,
 	blood = 10,
@@ -74,7 +74,7 @@ local SnakeOil = Class(function(self, inst)
 	self.owner = nil
 	self.lock = 0
 
-	self.ability = "pain"
+	self.ability = ""
 
 	self.inst:WatchWorldState("isday", OnIsDay)
 	self.inst:ListenForEvent("equipped", OnEquipped)
@@ -83,18 +83,23 @@ local SnakeOil = Class(function(self, inst)
 	self.inst:AddTag("aip_snakeoil_target")
 end)
 
+-- 同步能力信息
+function SnakeOil:SyncAbility()
+	if self.inst.replica.aipc_snakeoil then
+		self.inst.replica.aipc_snakeoil:Sync(self.ability)
+	end
+end
+
 -- 随机能力
 function SnakeOil:RandomAbility()
 	self.ability = aipRandomLoot(abilities)
 
 	if dev_mode then
-		self.ability = "slow"
+		self.ability = "painful"
 	end
 
 	-- 告知 Replica
-	if self.inst.replica.aipc_snakeoil then
-		self.inst.replica.aipc_snakeoil:Sync(self.ability)
-	end
+	self:SyncAbility()
 
 	return self.ability
 end
@@ -152,15 +157,17 @@ aipBufferRegister("aip_snakeoil_slow", {
 function SnakeOil:OnWeaponAttack(attacker, target, projectile)
 	local now = GetTime()
 
-	if now - self.lock < 0.1 then
+	if not target or now - self.lock < 0.1 then
 		return
 	end
 
 	-- 记录时间，每隔 0.1 秒最多触发一次
 	self.lock = now
 
-	if self.ability == "pain" then -- 痛击
-		target.components.combat:GetAttacked(attacker, 10)
+	if self.ability == "painful" then -- 痛击
+		if target.components.combat then
+			target.components.combat:GetAttacked(attacker, 10)
+		end
 
 	elseif self.ability == "vampire" then -- 吸血
 		if attacker.components.health then
@@ -197,6 +204,7 @@ end
 function SnakeOil:OnLoad(data)
 	if data.ability then
 		self.ability = data.ability
+		self:SyncAbility()
 	end
 end
 

@@ -13,7 +13,7 @@ local LANG_MAP = {
 		free = "Flash",
 		back = "Back",
 		slow = "Obtuse",
-		pain = "Pain",
+		painful = "Pain",
 	},
 	chinese = {
 		vampire = "吸血",
@@ -23,7 +23,7 @@ local LANG_MAP = {
 		free = "游侠",
 		back = "击退",
 		slow = "断筋",
-		pain = "痛击",
+		painful = "痛击",
 	},
 }
 local LANG = LANG_MAP[language] or LANG_MAP.english
@@ -51,7 +51,7 @@ local abilities = {
 	slow = {
 		color = NEC_COLORS.quality_2,
 	},
-	pain = {
+	painful = {
 		color = NEC_COLORS.quality_2,
 	},
 }
