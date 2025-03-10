@@ -254,6 +254,7 @@ PrefabFiles = {
 	"aip_blink_flower",
 	"aip_ocean_vortex",
 	"aip_turn_mushroom",
+	"aip_graveyard_wisp",
 
 	-- 5 个挑战
 	"aip_nectar_bee",

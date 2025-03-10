@@ -244,6 +244,30 @@ local function turnMushroomShow(pos)
 	end
 end
 
+-- 鬼火
+local function graveyardWispShow(pos)
+	local chance = dev_mode and 1 or 0.05
+
+	if
+		-- 一定要是晚上
+		not TheWorld.state.isnight or
+		-- 几率不对
+		math.random() > chance
+	then
+		return
+	end
+
+	-- 找一个墓碑
+	local gravestone = aipFindNearEnts(pos, { "gravestone", "mound" }, 20)[1]
+
+	if gravestone ~= nil then
+		local wisp = aipSpawnPrefab(gravestone, "aip_graveyard_wisp")
+		wisp.components.knownlocations:RememberLocation("home", gravestone:GetPosition())
+
+		return true
+	end
+end
+
 ------------------------------ 方法 ------------------------------
 local function createIfPossible(inst, prefab, tag)
 	local oldoneHand = TheSim:FindFirstEntityWithTag(tag)
@@ -348,9 +372,10 @@ function PlayerShow:StartShow()
 			blinkFlowerShow,
 			vortexShow,
 			turnMushroomShow,
+			graveyardWispShow,
 		}
 
-		local randomFunc = dev_mode and turnMushroomShow or aipRandomEnt(funcList)
+		local randomFunc = dev_mode and graveyardWispShow or aipRandomEnt(funcList)
 		
 		-- 开发模式下，指定项目
 		if randomFunc(pos) then
