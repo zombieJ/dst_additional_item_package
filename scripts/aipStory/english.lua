@@ -1137,6 +1137,7 @@ return {
             "Ocean Vortex: There exists vortex in the ocean, but it's safe to observe from a distance (Yes, be sure not to get close to it!).",
             "Animal World: I occasionally see the scene of birds and vultures hunting.",
             "Rabbit's Wisdom: Rabbits sometimes run around in the grass.",
+            "Graveyard Wisp: At night in the graveyard, you might see a will-o'-the-wisp that can be captured."
         },
     },
 

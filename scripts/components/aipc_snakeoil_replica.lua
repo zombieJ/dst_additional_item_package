@@ -61,7 +61,12 @@ local SnakeOilReplica = Class(function(self, inst)
 	self.inst = inst
 
 	-- 存一下颜色
-	self._ability = net_string(inst.GUID, "aipSnakeOil._ability", "aipSnakeOil._abilityDirty")
+	if inst.replica.aipc_snakeoil ~= nil then
+		-- 有的 mod 把 weapon 写成了客户端组件，需要绕过去
+		self._ability = inst.replica.aipc_snakeoil._ability
+	else
+		self._ability = net_string(inst.GUID, "aipSnakeOil._ability", "aipSnakeOil._abilityDirty")
+	end
 end)
 
 function SnakeOilReplica:Sync(ability)

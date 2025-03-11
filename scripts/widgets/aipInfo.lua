@@ -40,11 +40,11 @@ end
 
 -- 检查是否有需要展示的消息
 local function getInfo(inst)
-	GOLBAL.aipPrint("->", inst.replica and inst.replica.aipSnakeOil)
+	-- GOLBAL.aipPrint("->", inst.replica and inst.replica.aipSnakeOil)
 	-- 是否有 SnakeOilReplica 组件
 	if inst.replica and inst.replica.aipSnakeOil then
 		local aip_info, aip_info_color = inst.replica.aipSnakeOil:GetInfo()
-		GOLBAL.aipPrint("has it?", aip_info, aip_info_color)
+		-- GOLBAL.aipPrint("has it?", aip_info, aip_info_color)
 		return aip_info, aip_info_color
 	end
 
