@@ -6,11 +6,11 @@ local language = aipGetModConfig("language")
 local LANG_MAP = {
 	english = {
 		NAME = "Wispy",
-		DESC = "Can I catch you?",
+		DESC = "Where is my bug net?",
 	},
 	chinese = {
 		NAME = "鬼火",
-		DESC = "我能抓到你吗？",
+		DESC = "我的捕虫网呢？",
 	},
 }
 
@@ -91,9 +91,6 @@ local function fn()
 
     inst:AddComponent("aipc_float")
     inst.components.aipc_float.speed = 0.5
-
-    -- inst:AddComponent("inventoryitem")
-    -- inst.components.inventoryitem.canbepickedup = false
 
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.NET)

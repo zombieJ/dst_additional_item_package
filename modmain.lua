@@ -193,6 +193,7 @@ PrefabFiles = {
 	"aip_oldone_meat",
 	"aip_black_xuelong",
 	"aip_oldone_heal",
+	"aip_ghost_fire",
 
 	-- 量子
 	"aip_weapon_box",

@@ -401,17 +401,27 @@ AddPrefabPostInit("reskin_tool", function(inst)
 		-- 注入对小麦的改造
 		if originCanCast and originSpell then
 			inst.components.spellcaster:SetCanCastFn(function(doer, target, pos, ...)
-				if target.prefab == "aip_wheat" then
+				if
+					table.contains({ "aip_wheat", "aip_ghost_fire" }, target.prefab)
+				then
 					return true
 				end
 				return originCanCast(doer, target, pos, ...)
 			end)
 
 			inst.components.spellcaster:SetSpellFn(function(tool, target, pos, ...)
-				if target and target.prefab == "aip_wheat" then
-					_G.aipSpawnPrefab(target, "explode_reskin")
-					_G.aipReplacePrefab(target, "grass")
-					return
+				if target then
+					-- 小麦变回草
+					if target.prefab == "aip_wheat" then
+						_G.aipSpawnPrefab(target, "explode_reskin")
+						_G.aipReplacePrefab(target, "grass")
+						return
+
+					-- 鬼火换颜色
+					elseif target.prefab == "aip_ghost_fire" and target.RandomColor then
+						target.RandomColor(target)
+						return
+					end
 				end
 				return originSpell(tool, target, pos, ...)
 			end)
