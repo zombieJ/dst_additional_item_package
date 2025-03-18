@@ -216,6 +216,7 @@ PrefabFiles = {
 	"aip_dream_stone",
 	"aip_hearthstone",
 	"aip_armor_king",
+	"aip_travel_boots",
 
 	-- 懵懵宠宠
 	"aip_pet_catcher",
