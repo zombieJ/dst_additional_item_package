@@ -7,9 +7,9 @@ local Action = Class(function(self, inst)
 	self.onDoPointAction = nil
 end)
 
-function Action:DoAction(doer)
+function Action:DoAction(doer, data)
 	if self.onDoAction then
-		self.onDoAction(self.inst, doer)
+		self.onDoAction(self.inst, doer, data or {})
 	end
 end
 

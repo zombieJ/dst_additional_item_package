@@ -155,7 +155,16 @@ end)
 ---------------------- 在地图的技能 ----------------------
 local function mapAction(act)
 	-- action, doer, maptarget:使用的物品, rotation:0, target:使用的物品,pos:-163.21, 28.36 on nil
-	_G.aipTypePrint("map actiopn:", act)
+	local doer = act.doer
+	local target = act.target
+	local act_pos = act:GetActionPoint()
+
+	-- 位移 doer 到目标位置
+	if doer and act_pos and target and target.components.aipc_action then
+		target.components.aipc_action:DoAction(doer, {
+			pos = act_pos,
+		})
+	end
 end
 
 -- 地图动作
@@ -165,13 +174,15 @@ AIPC_MAP_USE.rmb=true
 AIPC_MAP_USE.instant=true
 AIPC_MAP_USE.map_action=true
 AIPC_MAP_USE.map_only=true
-AIPC_MAP_USE.map_works_on_unexplored=true
+-- AIPC_MAP_USE.map_works_on_unexplored=true -- 支持未探索地区
 AIPC_MAP_USE.closes_map=true
 AIPC_MAP_USE.customarrivecheck = function()
     return true
 end
 AIPC_MAP_USE.maponly_checkvalidpos_fn = function(act)
-	return true
+	local act_pos = act:GetActionPoint()
+
+	return _G.TheWorld.Map:IsAboveGroundAtPoint(act_pos.x, act_pos.y, act_pos.z)
 end
 
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_MAP_USE, "doshortaction"))

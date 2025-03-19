@@ -34,20 +34,27 @@ local function canBeActOn(inst, doer)
 	return inst ~= nil and inst:HasTag("aip_charged")
 end
 
-local function onDoAction(inst, doer)
+local function onDoAction(inst, doer, data)
     if not inst.components.rechargeable:IsCharged() then
 		return
 	end
 
-    aipPrint("Do Server Action")
-    -- aipFlingItem(aipSpawnPrefab(doer, "goldnugget"))
-    -- inst.components.rechargeable:Discharge(CD)
+    -- aipPrint("Do Server Action")
+    
+    if data and data.pos then
+        aipSpawnPrefab(doer, "aip_shadow_wrapper").DoShow()
 
-    -- -- 损失生命上限就是代价
-    -- if doer.components.health ~= nil then
-    --     doer.components.health:DoDelta(-HEALTH_DELTA)
-    --     doer.components.health:DeltaPenalty(HEALTH_DMG)
-    -- end
+        local x, y, z = data.pos:Get()
+        doer.Physics:Teleport(x, 0, z)
+        doer:Hide()
+
+        inst.components.rechargeable:Discharge(CD)
+
+        doer:DoTaskInTime(1, function()
+            doer:Show()
+            aipSpawnPrefab(doer, "aip_shadow_wrapper").DoShow()
+        end)
+    end
 end
 
 -------------------------------- 充能 --------------------------------
@@ -102,9 +109,6 @@ local function fn()
     
 	inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_travel_boots.xml"
-
-	inst:AddComponent("tradable")
-	inst.components.tradable.goldvalue = 1
 
     MakeHauntableLaunch(inst)
 
