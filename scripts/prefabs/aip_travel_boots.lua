@@ -26,9 +26,8 @@ local assets = {
 }
 
 -------------------------------- 使用 --------------------------------
-local CD = dev_mode and 2 or (TUNING.TOTAL_DAY_TIME * 3)
-local HEALTH_DMG = dev_mode and 0.3 or 0.01
-local HEALTH_DELTA = 5
+local CD = dev_mode and 2 or (TUNING.TOTAL_DAY_TIME * 1)
+local HEALTH_TARGET = 1
 
 local function canBeActOn(inst, doer)
 	return inst ~= nil and inst:HasTag("aip_charged")
@@ -39,8 +38,7 @@ local function onDoAction(inst, doer, data)
 		return
 	end
 
-    -- aipPrint("Do Server Action")
-    
+    -- 有坐标就传送，并且设置当前生命值
     if data and data.pos then
         aipSpawnPrefab(doer, "aip_shadow_wrapper").DoShow()
 
@@ -50,7 +48,12 @@ local function onDoAction(inst, doer, data)
 
         inst.components.rechargeable:Discharge(CD)
 
-        doer:DoTaskInTime(1, function()
+        if doer.components.health then
+            doer.components.health:SetVal(HEALTH_TARGET)
+            doer.components.health:DoDelta(0)
+        end
+
+        doer:DoTaskInTime(0.6, function()
             doer:Show()
             aipSpawnPrefab(doer, "aip_shadow_wrapper").DoShow()
         end)
