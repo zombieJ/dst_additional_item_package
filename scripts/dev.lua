@@ -39,26 +39,26 @@ local function PlayerPrefabPostInit(inst)
     end)
 
     -- 创建迷雾
-    inst:DoTaskInTime(1, function()
-        local function DummyAreaEmitter()
-            -- 返回一个在半径5内随机生成的平面坐标（相对于原点）
-            local angle = math.random() * 2 * _G.PI
-            local radius = math.random() * 5
-            return radius * math.cos(angle), radius * math.sin(angle)
-        end
+    -- inst:DoTaskInTime(1, function()
+    --     local function DummyAreaEmitter()
+    --         -- 返回一个在半径5内随机生成的平面坐标（相对于原点）
+    --         local angle = math.random() * 2 * _G.PI
+    --         local radius = math.random() * 5
+    --         return radius * math.cos(angle), radius * math.sin(angle)
+    --     end
         
-        local function SpawnMistExample(x, z)
-            local mist = _G.SpawnPrefab("mist")
-            mist.Transform:SetPosition(x, 0, z)
-            mist.components.emitter.area_emitter = DummyAreaEmitter  -- 填充位置生成函数
-            mist.components.emitter.density_factor = 1  -- 根据需要调整密度参数
-            mist.components.emitter:Emit()  -- 启动发射
-        end
+    --     local function SpawnMistExample(x, z)
+    --         local mist = _G.SpawnPrefab("mist")
+    --         mist.Transform:SetPosition(x, 0, z)
+    --         mist.components.emitter.area_emitter = DummyAreaEmitter  -- 填充位置生成函数
+    --         mist.components.emitter.density_factor = 1  -- 根据需要调整密度参数
+    --         mist.components.emitter:Emit()  -- 启动发射
+    --     end
 
-        -- 选取当前玩家
-        local x, y, z = inst.Transform:GetWorldPosition()
-        SpawnMistExample(x, z)
-    end)
+    --     -- 选取当前玩家
+    --     local x, y, z = inst.Transform:GetWorldPosition()
+    --     SpawnMistExample(x, z)
+    -- end)
 end
 
 AddPlayerPostInit(PlayerPrefabPostInit)

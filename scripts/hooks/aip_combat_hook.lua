@@ -243,12 +243,16 @@ AddComponentPostInit("combat", function(self)
 				petDmgMulti = petDmgMulti + (migaoSkill._multi or 0) * migaoInfo.multi
 			end
 
-			-- 好斗
-			local skillInfo, skillLv = self.inst.components.aipc_pet_owner:GetSkillInfo("aggressive")
-
-			if skillInfo ~= nil then
-				local multi = skillInfo.multi * skillLv
-				petDmgMulti = petDmgMulti + multi
+			-- 巨兽 对生命值进行判定
+			local giantsInfo, giantsLv = self.inst.components.aipc_pet_owner:GetSkillInfo("giants")
+			if giantsInfo ~= nil then
+				if
+					target.components.health ~= nil and
+					target.components.health.currenthealth >= giantsInfo.hp
+				then
+					local multi = giantsInfo.multi * giantsLv
+					petDmgMulti = petDmgMulti + multi
+				end
 			end
 
 			-- 青尘 增加伤害
