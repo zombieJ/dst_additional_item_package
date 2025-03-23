@@ -153,7 +153,7 @@ end
 
 -------------------------------- 传送 --------------------------------
 local function teleport_scroll_fn()
-    local inst commonFn("aip_teleport_scroll", onDoTeleportAction)
+    local inst = commonFn("aip_teleport_scroll", onDoTeleportAction)
 
     if not TheWorld.ismastersim then
         return inst
