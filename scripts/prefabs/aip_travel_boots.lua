@@ -33,8 +33,8 @@ STRINGS.RECIPE_DESC.AIP_TELEPORT_SCROLL = LANG.TELEPORT_REC_DESC
 local assets = {
     Asset("ANIM", "anim/aip_travel_boots.zip"),
 	Asset("ATLAS", "images/inventoryimages/aip_travel_boots.xml"),
-    Asset("ANIM", "anim/aip_​teleport_scroll​.zip"),
-	Asset("ATLAS", "images/inventoryimages/aip_​teleport_scroll​.xml"),
+    Asset("ANIM", "anim/aip_teleport_scroll.zip"),
+	Asset("ATLAS", "images/inventoryimages/aip_teleport_scroll.xml"),
 }
 
 -------------------------------- 使用 --------------------------------
@@ -152,8 +152,8 @@ local function travel_boots_fn()
 end
 
 -------------------------------- 传送 --------------------------------
-local function teleport_scroll​_fn()
-    local inst commonFn("aip_​teleport_scroll​", onDoTeleportAction)
+local function teleport_scroll_fn()
+    local inst commonFn("aip_teleport_scroll", onDoTeleportAction)
 
     if not TheWorld.ismastersim then
         return inst
@@ -166,4 +166,4 @@ local function teleport_scroll​_fn()
 end
 
 return Prefab("aip_travel_boots", travel_boots_fn, assets),
-    Prefab("aip_​teleport_scroll​", teleport_scroll​_fn, assets)
+    Prefab("aip_teleport_scroll", teleport_scroll_fn, assets)

@@ -386,11 +386,11 @@ rec("aip_ghost_fire", TECH.LOST, { CRAFTING_FILTERS.LIGHT },
 	})
 
 -- 传送卷轴
-rec("aip_​teleport_scroll​", TECH.MAGIC_TWO, { CRAFTING_FILTERS.MAGIC },
+rec("aip_teleport_scroll", TECH.MAGIC_TWO, { CRAFTING_FILTERS.MAGIC },
 {
 	Ingredient("aip_oldone_plant_broken", 1, "images/inventoryimages/aip_oldone_plant_broken.xml"),
 	Ingredient("nightmarefuel", 1),
-	Ingredient("seeds", 1),
+	Ingredient("papyrus", 1),
 })
 
 ------------------------------------ 量子扰动 ------------------------------------
