@@ -170,10 +170,12 @@ local function onequip(inst, owner)
 	owner.AnimState:Show("ARM_carry")
 	owner.AnimState:Hide("ARM_normal")
 
-	owner.components.aipc_timer:NamedInterval("syncFire", 0.8, function()
-		syncFire(inst, owner)
-		checkFireExtinguish(inst, owner)
-	end)
+	if owner.components.aipc_timer then
+		owner.components.aipc_timer:NamedInterval("syncFire", 0.8, function()
+			syncFire(inst, owner)
+			checkFireExtinguish(inst, owner)
+		end)
+	end
 
 	-- stopFire(inst)
 	inst.components.aipc_type_fire:StopFire()
@@ -185,7 +187,9 @@ local function onunequip(inst, owner)
 	owner.AnimState:Hide("ARM_carry")
 	owner.AnimState:Show("ARM_normal")
 
-	owner.components.aipc_timer:KillName("syncFire")
+	if owner.components.aipc_timer then
+		owner.components.aipc_timer:KillName("syncFire")
+	end
 
 	inst.aipLastFireType = inst.components.aipc_type_fire:GetType()
 	inst.components.aipc_type_fire:StopFire()

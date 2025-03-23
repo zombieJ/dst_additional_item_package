@@ -119,10 +119,6 @@ local function commonFn(anim, onDoAction)
     inst:AddTag("aip_charged")
     inst:AddTag("aip_map_action") -- Make the non-map action pull up the map instead.
 
-    -- inst.valid_map_actions = {
-    --     [ACTIONS.AIPC_BE_ACTION] = true,
-    -- }
-
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then

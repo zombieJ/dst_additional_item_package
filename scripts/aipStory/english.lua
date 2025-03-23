@@ -1425,6 +1425,13 @@ return {
                 name="aip_armor_king",
             },
             "Only when there is no one else around will it become a powerful armor, otherwise it will be useless. It can also be repaired automatically after broken.",
+        
+            -- 远行鞋
+            {
+                type="img",
+                name="aip_travel_boots",
+            },
+            "A magical shoe that can fly anywhere, but maybe sick.",
         },
     },
 
