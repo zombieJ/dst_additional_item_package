@@ -176,6 +176,16 @@ AddComponentPostInit("combat", function(self)
 			petDmgMulti = petDmgMulti + 1
 		end
 
+		-- 五鬼葫芦 buff
+		if
+			_G.aipBufferExist(
+				self.inst,
+				"aip_gourd_wugui"
+			)
+		then
+			petDmgPlus = petDmgPlus + 10
+		end
+
 		-- 攻击者有 嬉闹 BUFF，将会减少伤害
 		local playBuffInfo = _G.aipBufferInfo(
 			self.inst,

@@ -68,7 +68,6 @@ local function doBrain(inst)
 				return true
 			end
 
-			-- TODO: 检查 buff，然后添加一下 buff 对应的图标
 			local players = aipFindNearPlayers(inst, 3)
 
 			for _, player in ipairs(players) do

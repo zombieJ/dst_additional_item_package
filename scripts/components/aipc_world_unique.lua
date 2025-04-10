@@ -3,8 +3,6 @@ local open_beta = aipGetModConfig("open_beta") == "open"
 local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 -- 服务端：全局唯一 Prefab 控制器
--- TODO: 暂时还没用
-
 local WorldUnique = Class(function(self, inst)
 	self.inst = inst
 

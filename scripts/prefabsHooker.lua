@@ -190,6 +190,28 @@ AddPrefabPostInit("rabbit", function(inst)
 	end
 end)
 
+
+------------------------------------------ 金石 ------------------------------------------
+local function onRock2Worked(inst, data)
+	if
+		inst and data and
+		data.worker and data.worker:HasTag("player") and data.workleft == 0 and
+		_G.aipChance(dev_mode and 1 or 0.01, data.worker, 0.01)
+	then
+		_G.aipFlingItem(
+			_G.aipSpawnPrefab(inst, "aip_stone_gourd")
+		)
+	end
+end
+
+AddPrefabPostInit("rock2", function(inst)
+	if not _G.TheWorld.ismastersim then
+		return inst
+	end
+
+	inst:ListenForEvent("worked", onRock2Worked)
+end)
+
 ----------------------------------------- 小动物 -----------------------------------------
 local animalList = {
 	-- 蜘蛛
