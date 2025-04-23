@@ -32,7 +32,16 @@ end
 
 local function onDoTargetAction(inst, doer, target)
 	if target and target:HasTag("lava") then
-		-- TODO: 替换为葫芦
+		local loot = {
+			aip_gourd_lao = 10,
+			aip_gourd_zhengxianhong = 1,
+			aip_gourd_wugui = 1,
+			aip_gourd_baolianyu = 1,
+			aip_gourd_qingtian = 1,
+		}
+
+		local targetPrefab = aipRandomLoot(loot)
+		aipReplacePrefab(inst, targetPrefab)
     end
 end
 
