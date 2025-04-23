@@ -296,10 +296,16 @@ local function mixFn()
 end
 
 ----------------------------------------------------------------------------------------
-local function onToggleFire(inst, fireType)
+local function syncPickable(inst)
+	inst.components.pickable.canbepicked = not inst.components.aipc_type_fire:IsBurning()
+end
+
+local function onToggleBuildFire(inst, fireType)
 	if fireType then
 		inst.components.fueled:StartConsuming()
 	end
+
+	syncPickable(inst)
 end
 
 local function onfuelchange(newsection, oldsection, inst)
@@ -349,7 +355,7 @@ local function buildFn()
 	inst.components.aipc_type_fire.followOffset = Vector3(0, 0, 0)
 	inst.components.aipc_type_fire.forever = true -- 燃烧不用它管
 	inst.components.aipc_type_fire.postFireFn = postTypeFire
-	inst.components.aipc_type_fire.onToggle = onToggleFire
+	inst.components.aipc_type_fire.onToggle = onToggleBuildFire
 
 	-- 可以燃烧时长
 	inst:AddComponent("fueled")
@@ -358,6 +364,17 @@ local function buildFn()
     inst.components.fueled:SetSections(4)
 	inst.components.fueled:InitializeFuelLevel(FIRE_TIME)
 	inst.components.fueled:SetSectionCallback(onfuelchange)
+
+	-- 可以捡起来
+	inst:AddComponent("pickable")
+	inst.components.pickable:SetUp("aip_torch", 10)
+	inst.components.pickable.remove_when_picked = true
+	inst.components.pickable.quickpick = true
+	inst.components.pickable.canbepicked = false
+
+	inst:DoTaskInTime(0.1, function()
+		syncPickable(inst)
+	end)
 
 	return inst
 end
