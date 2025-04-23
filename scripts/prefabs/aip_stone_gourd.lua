@@ -45,6 +45,12 @@ local function onDoTargetAction(inst, doer, target)
     end
 end
 
+local function replaceRocks(inst)
+	aipFlingItem(
+		aipReplacePrefab(inst, "rocks")
+	)
+end
+
 ------------------------------- 实体 -------------------------------
 local function fn()
 	local inst = CreateEntity()
@@ -74,6 +80,11 @@ local function fn()
 	inst.components.aipc_action.onDoTargetAction = onDoTargetAction
 
 	inst:AddComponent("inspectable")
+
+	inst:AddComponent("workable")
+    inst.components.workable:SetWorkAction(ACTIONS.MINE)
+	inst.components.workable:SetWorkLeft(1)
+	inst.components.workable:SetOnFinishCallback(replaceRocks)
 
 	inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_stone_gourd.xml"

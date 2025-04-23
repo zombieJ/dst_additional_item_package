@@ -38,6 +38,7 @@ local LANG_MAP = {
 		ZHENGXIANHONG_DESC = "First drink first get",
 		WUGUI_NAME = "Plaguebane Gourd",
 		WUGUI_DESC = "Garner rich boon with slight bane",
+		WUGUI_BUFF = "Painful",
 		BAOLIANUI_NAME = "Jade Lotus Gourd",
 		BAOLIANUI_DESC = "Not suitable for alone",
 		QINGTIAN_NAME = "Qing-Tian Gourd",
@@ -50,6 +51,7 @@ local LANG_MAP = {
 		ZHENGXIANHONG_DESC = "强者为尊该让我，英雄只此敢争先",
 		WUGUI_NAME = "五鬼葫芦",
 		WUGUI_DESC = "杀人一万，自损三千",
+		WUGUI_BUFF = "打得生疼",
 		BAOLIANUI_NAME = "宝莲玉葫芦",
 		BAOLIANUI_DESC = "完名美节，不宜独任",
 		QINGTIAN_NAME = "青田葫芦",
@@ -75,7 +77,7 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_GOURD_QINGTIAN = LANG.QINGTIAN_DESC
 ------------------------------- 数据 -------------------------------
 -- 添加攻击 Buffer
 aipBufferRegister("aip_gourd_wugui", {
-    name = LANG.WUGUI_NAME,
+    name = LANG.WUGUI_BUFF,
     showFX = true,
 })
 
