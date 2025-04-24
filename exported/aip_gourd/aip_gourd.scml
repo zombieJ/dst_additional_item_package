@@ -6,6 +6,7 @@
         <file id="2" name="body/wugui.png" width="256" height="256" pivot_x="0" pivot_y="1"/>
         <file id="3" name="body/baolianyu.png" width="256" height="256" pivot_x="0" pivot_y="1"/>
         <file id="4" name="body/qingtian.png" width="256" height="256" pivot_x="0" pivot_y="1"/>
+        <file id="5" name="body/bisque.png" width="256" height="256" pivot_x="0" pivot_y="1"/>
     </folder>
     <entity id="0" name="aip_gourd">
         <animation id="0" name="lao" length="100">
@@ -65,6 +66,18 @@
             <timeline id="0" name="lao">
                 <key id="0" spin="0">
                     <object folder="0" file="4" x="-1.015182" y="-0.800341" pivot_x="0.521689" pivot_y="0.214774" angle="0" scale_x="0.7" scale_y="0.7"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="5" name="bisque" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="lao" folder="0" file="5" abs_x="-1.015182" abs_y="-0.800341" abs_pivot_x="0.521689" abs_pivot_y="0.214774" abs_angle="0" abs_scale_x="0.7" abs_scale_y="0.7" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="lao">
+                <key id="0" spin="0">
+                    <object folder="0" file="5" x="-1.015182" y="-0.800341" pivot_x="0.521689" pivot_y="0.214774" angle="0" scale_x="0.7" scale_y="0.7"/>
                 </key>
             </timeline>
         </animation>

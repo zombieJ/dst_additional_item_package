@@ -258,6 +258,7 @@ PrefabFiles = {
 	"aip_turn_mushroom",
 	"aip_graveyard_wisp",
 	"aip_stone_gourd",
+	"aip_gourd_bisque",
 	"aip_gourd",
 
 	-- 5 个挑战

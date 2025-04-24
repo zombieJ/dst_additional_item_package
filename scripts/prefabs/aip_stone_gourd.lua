@@ -32,16 +32,7 @@ end
 
 local function onDoTargetAction(inst, doer, target)
 	if target and target:HasTag("lava") then
-		local loot = {
-			aip_gourd_lao = 10,
-			aip_gourd_zhengxianhong = 1,
-			aip_gourd_wugui = 1,
-			aip_gourd_baolianyu = 1,
-			aip_gourd_qingtian = 1,
-		}
-
-		local targetPrefab = aipRandomLoot(loot)
-		aipReplacePrefab(inst, targetPrefab)
+		aipReplacePrefab(inst, "aip_gourd_bisque")
     end
 end
 
@@ -61,7 +52,6 @@ local function fn()
 	inst.entity:AddNetwork()
 
 	MakeInventoryPhysics(inst)
-	MakeInventoryFloatable(inst, "small", 0.1, 1)
 
 	inst.AnimState:SetBank("aip_stone_gourd")
 	inst.AnimState:SetBuild("aip_stone_gourd")
