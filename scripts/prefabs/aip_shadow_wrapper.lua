@@ -56,11 +56,14 @@ local function fn()
 	end
 
 	-- Play show
-	inst.DoShow = function(scale)
+	inst.DoShow = function(scale, data)
 		scale = scale or 1
 		inst.Transform:SetScale(scale, scale, scale)
 
-		inst.SoundEmitter:PlaySound("dontstarve/maxwell/shadowmax_despawn")
+		local mergedData = data or {}
+		if mergedData.sound ~= false then
+			inst.SoundEmitter:PlaySound("dontstarve/maxwell/shadowmax_despawn")
+		end
 		inst.AnimState:PlayAnimation("end")
 
 		inst:DoTaskInTime(10 * FRAMES, function()

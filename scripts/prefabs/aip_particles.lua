@@ -61,6 +61,8 @@ local function fn()
     inst.AnimState:PlayAnimation("idle", true)
     inst.AnimState:SetRayTestOnBB(true)
 
+    inst:AddTag("aip_particles")
+
     -- MakeInventoryFloatable(inst, "med", 0.3, 1)
 
     inst.entity:SetPristine()

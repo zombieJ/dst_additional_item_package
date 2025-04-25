@@ -378,6 +378,21 @@ recDress("aip_armor_balrog", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.ARMOUR },
 		Ingredient("aip_jump_paper", 3, "images/inventoryimages/aip_jump_paper.xml"),
 	})
 
+-- 装饰鬼火
+rec("aip_ghost_fire", TECH.LOST, { CRAFTING_FILTERS.LIGHT },
+	{
+		Ingredient("aip_oldone_meat", 1, "images/inventoryimages/aip_oldone_meat.xml"),
+		Ingredient("nightmarefuel", 1),
+	})
+
+-- 传送卷轴
+rec("aip_teleport_scroll", TECH.MAGIC_TWO, { CRAFTING_FILTERS.MAGIC },
+{
+	Ingredient("aip_oldone_plant_broken", 1, "images/inventoryimages/aip_oldone_plant_broken.xml"),
+	Ingredient("nightmarefuel", 1),
+	Ingredient("papyrus", 1),
+})
+
 ------------------------------------ 量子扰动 ------------------------------------
 -- 粒子限制器
 rec("aip_particles_bottle", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.TOOLS },

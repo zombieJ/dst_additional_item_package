@@ -52,7 +52,15 @@ end
 local function OnSendLightningStrike(inst, pos)
 	local pt = aipGetSpawnPoint(pos, 10)
 	if pt ~= nil then
-		aipSpawnPrefab(inst, "aip_particles", pt.x, pt.y, pt.z)
+		-- 附近如果有超过 3 个粒子，就不生成了
+		local exists = TheSim:FindEntities(
+			pt.x, pt.y, pt.z,
+			TUNING.MUSHSPORE_MAX_DENSITY_RAD, {"aip_particles"}
+		)
+
+		if #exists < 9 then
+			aipSpawnPrefab(inst, "aip_particles", pt.x, pt.y, pt.z)
+		end
 	end
 end
 

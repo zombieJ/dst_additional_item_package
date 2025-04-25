@@ -6,11 +6,13 @@ local language = aipGetModConfig("language")
 local LANG_MAP = {
 	english = {
 		NAME = "Wispy",
-		DESC = "Can I catch you?",
+		DESC = "Where is my bug net?",
+        KNOW_RECIPE = "I learned it!",
 	},
 	chinese = {
 		NAME = "鬼火",
-		DESC = "我能抓到你吗？",
+		DESC = "我的捕虫网呢？",
+        KNOW_RECIPE = "我学会了！",
 	},
 }
 
@@ -27,6 +29,15 @@ local function onworked(inst, worker)
     if worker.components.inventory ~= nil then
         worker.components.inventory:GiveItem(aipReplacePrefab(inst, "nightmarefuel"))
         worker.SoundEmitter:PlaySound("dontstarve/common/butterfly_trap")
+    end
+
+    -- 解锁配方
+    if worker.components.builder and not worker.components.builder:KnowsRecipe("aip_ghost_fire") then
+        worker.components.builder:UnlockRecipe("aip_ghost_fire")
+
+        if worker.components.talker then
+            worker.components.talker:Say(LANG.KNOW_RECIPE)
+        end
     end
 end
 
@@ -91,9 +102,6 @@ local function fn()
 
     inst:AddComponent("aipc_float")
     inst.components.aipc_float.speed = 0.5
-
-    -- inst:AddComponent("inventoryitem")
-    -- inst.components.inventoryitem.canbepickedup = false
 
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.NET)

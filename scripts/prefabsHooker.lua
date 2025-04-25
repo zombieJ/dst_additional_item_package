@@ -190,6 +190,28 @@ AddPrefabPostInit("rabbit", function(inst)
 	end
 end)
 
+
+------------------------------------------ 金石 ------------------------------------------
+local function onRock2Worked(inst, data)
+	if
+		inst and data and
+		data.worker and data.worker:HasTag("player") and data.workleft == 0 and
+		_G.aipChance(dev_mode and 1 or 0.01, data.worker, 0.01)
+	then
+		_G.aipFlingItem(
+			_G.aipSpawnPrefab(inst, "aip_stone_gourd")
+		)
+	end
+end
+
+AddPrefabPostInit("rock2", function(inst)
+	if not _G.TheWorld.ismastersim then
+		return inst
+	end
+
+	inst:ListenForEvent("worked", onRock2Worked)
+end)
+
 ----------------------------------------- 小动物 -----------------------------------------
 local animalList = {
 	-- 蜘蛛
@@ -401,17 +423,27 @@ AddPrefabPostInit("reskin_tool", function(inst)
 		-- 注入对小麦的改造
 		if originCanCast and originSpell then
 			inst.components.spellcaster:SetCanCastFn(function(doer, target, pos, ...)
-				if target.prefab == "aip_wheat" then
+				if
+					table.contains({ "aip_wheat", "aip_ghost_fire" }, target.prefab)
+				then
 					return true
 				end
 				return originCanCast(doer, target, pos, ...)
 			end)
 
 			inst.components.spellcaster:SetSpellFn(function(tool, target, pos, ...)
-				if target and target.prefab == "aip_wheat" then
-					_G.aipSpawnPrefab(target, "explode_reskin")
-					_G.aipReplacePrefab(target, "grass")
-					return
+				if target then
+					-- 小麦变回草
+					if target.prefab == "aip_wheat" then
+						_G.aipSpawnPrefab(target, "explode_reskin")
+						_G.aipReplacePrefab(target, "grass")
+						return
+
+					-- 鬼火换颜色
+					elseif target.prefab == "aip_ghost_fire" and target.RandomColor then
+						target.RandomColor(target)
+						return
+					end
 				end
 				return originSpell(tool, target, pos, ...)
 			end)
@@ -815,6 +847,7 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 						"aip_stone_mask",
 						"aip_hearthstone",
 						"aip_armor_king",
+						"aip_travel_boots",
 					}
 
 					local structureList = {

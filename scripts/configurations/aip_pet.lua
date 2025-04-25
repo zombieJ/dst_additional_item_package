@@ -655,6 +655,7 @@ if dev_mode then
 		-- "blasphemy",
 		-- "rainbow",
 		-- "balrog",
+		"giants",
 	}
 end
 

@@ -26,7 +26,7 @@ local assets = {
 }
 
 -------------------------------- 使用 --------------------------------
-local CD = dev_mode and 2 or (TUNING.TOTAL_DAY_TIME * 3)
+local CD = dev_mode and 2 or (TUNING.TOTAL_DAY_TIME * 1)
 local HEALTH_DMG = dev_mode and 0.3 or 0.01
 local HEALTH_DELTA = 5
 

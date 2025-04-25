@@ -38,6 +38,7 @@ local LANG_MAP = {
 		READ = "Read",
 		EAT = "Eat",
 		TAKE = "Take",
+		MAP_USE = "Use",
 	},
 	chinese = {
 		GIVE = "给予",
@@ -47,6 +48,7 @@ local LANG_MAP = {
 		READ = "阅读",
 		EAT = "吃",
 		TAKE = "拿取",
+		MAP_USE = "使用",
 	},
 }
 local LANG = LANG_MAP[language] or LANG_MAP.english
@@ -91,7 +93,6 @@ AIPC_GIVE_ACTION.priority = 1
 
 AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_GIVE_ACTION, "doshortaction"))
 AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_GIVE_ACTION, "doshortaction"))
-
 
 -- 角色使用 aipc_action_client 对某物使用
 env.AddComponentAction("USEITEM", "aipc_action_client", function(inst, doer, target, actions, right)
@@ -151,6 +152,42 @@ env.AddComponentAction("USEITEM", "aipc_fuel", function(inst, doer, target, acti
 	end
 end)
 
+---------------------- 在地图的技能 ----------------------
+local function mapAction(act)
+	-- action, doer, maptarget:使用的物品, rotation:0, target:使用的物品,pos:-163.21, 28.36 on nil
+	local doer = act.doer
+	local target = act.target
+	local act_pos = act:GetActionPoint()
+
+	-- 位移 doer 到目标位置
+	if doer and act_pos and target and target.components.aipc_action then
+		target.components.aipc_action:DoAction(doer, {
+			pos = act_pos,
+		})
+	end
+end
+
+-- 地图动作
+local AIPC_MAP_USE = env.AddAction("AIPC_MAP_USE", LANG.MAP_USE, mapAction)
+AIPC_MAP_USE.priority=10
+AIPC_MAP_USE.rmb=true
+AIPC_MAP_USE.instant=true
+AIPC_MAP_USE.map_action=true
+AIPC_MAP_USE.map_only=true
+-- AIPC_MAP_USE.map_works_on_unexplored=true -- 支持未探索地区
+AIPC_MAP_USE.closes_map=true
+AIPC_MAP_USE.customarrivecheck = function()
+    return true
+end
+AIPC_MAP_USE.maponly_checkvalidpos_fn = function(act)
+	local act_pos = act:GetActionPoint()
+
+	return _G.TheWorld.Map:IsAboveGroundAtPoint(act_pos.x, act_pos.y, act_pos.z)
+end
+
+AddStategraphActionHandler("wilson", _G.ActionHandler(AIPC_MAP_USE, "doshortaction"))
+AddStategraphActionHandler("wilson_client", _G.ActionHandler(AIPC_MAP_USE, "doshortaction"))
+
 ---------------------- 被使用的技能 ----------------------
 local function beAction(act)
 	local doer = act.doer
@@ -158,6 +195,11 @@ local function beAction(act)
 	local target = act.target	-- SCENE
 
 	local mergedTarget = target or item
+
+	-- 打开地图
+	if mergedTarget and mergedTarget:HasTag("aip_map_action") then
+		_G.ThePlayer.components.playercontroller:PullUpMap(mergedTarget, _G.ACTIONS.AIPC_MAP_USE)
+	end
 
 	if _G.TheNet:GetIsServer() then
 		-- server
@@ -187,6 +229,8 @@ end
 local AIPC_BE_ACTION = env.AddAction("AIPC_BE_ACTION", LANG.USE, beAction)
 local AIPC_BE_TAKE_ACTION = env.AddAction("AIPC_BE_TAKE_ACTION", LANG.TAKE, beAction)
 local AIPC_BE_CAST_ACTION = env.AddAction("AIPC_BE_CAST_ACTION", LANG.CAST, beAction)
+
+AIPC_BE_ACTION.map_action = true
 
 AIPC_BE_TAKE_ACTION.extra_arrive_dist = ExtraPickupRange
 

@@ -176,6 +176,16 @@ AddComponentPostInit("combat", function(self)
 			petDmgMulti = petDmgMulti + 1
 		end
 
+		-- 五鬼葫芦 buff
+		if
+			_G.aipBufferExist(
+				self.inst,
+				"aip_gourd_wugui"
+			)
+		then
+			petDmgPlus = petDmgPlus + 10
+		end
+
 		-- 攻击者有 嬉闹 BUFF，将会减少伤害
 		local playBuffInfo = _G.aipBufferInfo(
 			self.inst,
@@ -243,12 +253,16 @@ AddComponentPostInit("combat", function(self)
 				petDmgMulti = petDmgMulti + (migaoSkill._multi or 0) * migaoInfo.multi
 			end
 
-			-- 好斗
-			local skillInfo, skillLv = self.inst.components.aipc_pet_owner:GetSkillInfo("aggressive")
-
-			if skillInfo ~= nil then
-				local multi = skillInfo.multi * skillLv
-				petDmgMulti = petDmgMulti + multi
+			-- 巨兽 对生命值进行判定
+			local giantsInfo, giantsLv = self.inst.components.aipc_pet_owner:GetSkillInfo("giants")
+			if giantsInfo ~= nil then
+				if
+					target.components.health ~= nil and
+					target.components.health.currenthealth >= giantsInfo.hp
+				then
+					local multi = giantsInfo.multi * giantsLv
+					petDmgMulti = petDmgMulti + multi
+				end
 			end
 
 			-- 青尘 增加伤害

@@ -214,7 +214,8 @@ local function onRefreshName(inst)
 			-- 选取最高位
 			if topTagVal == tagVal then
 				tagBalance = true
-			elseif topTagVal < tagVal then
+			-- 最高位存在，并且是有真的名字的（防止被其他 tags 污染）
+			elseif topTagVal < tagVal and LANG_VALUE[topTag] ~= nil then
 				topTag = tag
 				topTagVal = tagVal
 				tagBalance = false
@@ -582,6 +583,9 @@ local function fn()
 	inst.components.aipc_info_client:SetString("aip_info", nil, true)
 	inst.components.aipc_info_client:SetByteArray("aip_info_color", nil, true)
 
+	-- 燃料注入
+	inst:AddComponent("aipc_fuel")
+
 	-- 更新名字（named component not work, use customize update）
 	inst.components.aipc_info_client:ListenForEvent("named", function(inst, newName)
 		inst.name = newName
@@ -632,4 +636,21 @@ local function fn()
 	return inst
 end
 
-return Prefab("aip_nectar", fn, assets)
+-- DEBUG 用的酒
+local function winFn()
+	local inst = fn()
+
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
+	inst:DoTaskInTime(0.01, function()
+		local next = aipReplacePrefab(inst, "aip_nectar")
+		next.nectarValues.wine = 1
+		next.nectarValues.generation = 1
+	end)
+
+	return inst
+end
+
+return Prefab("aip_nectar", fn, assets), Prefab("aip_nectar_debug_wine", winFn, assets)

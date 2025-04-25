@@ -193,6 +193,7 @@ PrefabFiles = {
 	"aip_oldone_meat",
 	"aip_black_xuelong",
 	"aip_oldone_heal",
+	"aip_ghost_fire",
 
 	-- 量子
 	"aip_weapon_box",
@@ -215,6 +216,7 @@ PrefabFiles = {
 	"aip_dream_stone",
 	"aip_hearthstone",
 	"aip_armor_king",
+	"aip_travel_boots",
 
 	-- 懵懵宠宠
 	"aip_pet_catcher",
@@ -255,6 +257,9 @@ PrefabFiles = {
 	"aip_ocean_vortex",
 	"aip_turn_mushroom",
 	"aip_graveyard_wisp",
+	"aip_stone_gourd",
+	"aip_gourd_bisque",
+	"aip_gourd",
 
 	-- 5 个挑战
 	"aip_nectar_bee",
