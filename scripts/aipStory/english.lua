@@ -210,6 +210,53 @@ return {
                 name="aip_nectar_wine",
             },
             "After the nectar with some grains has deteriorated, not only did it not spoil, but it became a 'nectar alcohol drink'. It's just that walking is a little unstable after drinking it.",
+
+            -- 葫芦
+            {
+                type="img",
+                name="aip_stone_gourd",
+            },
+            "When I mine rocks, sometimes I find gourd-shaped stones. After I throw them into a magma pool, I can obtain a raw gourd.",
+
+            {
+                type="img",
+                name="aip_gourd_bisque",
+            },
+            "Based on my understanding of ancient Eastern empires, the raw gourd still needs to be fired. I tried placing it in a magma pool and in a dragon fly furnace respectively; the latter produced a better finished product.",
+
+            "The finished gourd can hold nectar and transform it into a gourd of corresponding quality, allowing repeated drinking. Strangely, its drinking effects seem to have nothing to do with the original effects of the nectar. Moreover, if nectar alcohol is used, the quality will be even higher!",
+
+            "Adding nectar again will fill the gourd, and even low-quality nectar will not reduce its quality. Additionally, placing the gourd into a lotus-shaped display case will automatically replenish its liquid.",
+
+            {
+                type="img",
+                name="aip_gourd_lao",
+            },
+            "Most gourds made from magma are Old Gourds, which can only be drunk a few times, but fortunately have no side effects. Other gourds will cause some sanity loss.",
+
+            {
+                type="img",
+                name="aip_gourd_zhengxianhong",
+            },
+            "The magic of the 'Trailblazer's Scarlet Gourd' lies in the fact that its first sip always fully restores health.",
+
+            {
+                type="img",
+                name="aip_gourd_wugui",
+            },
+            "Drinking the 'Plaguebane Gourd' makes the blows it deals more painful.",
+
+            {
+                type="img",
+                name="aip_gourd_baolianyu",
+            },
+            "When drinking the 'Jade Lotus Gourd', it restores health to all creatures nearby, including enemies, so be careful.",
+
+            {
+                type="img",
+                name="aip_gourd_qingtian",
+            },
+            "Although the 'Qing-Tian Gourd' can only be drunk from a few times, it always mysteriously refills itself automatically.",
         },
     },
 

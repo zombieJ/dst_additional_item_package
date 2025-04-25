@@ -260,6 +260,14 @@ local function onDoEat(inst, doer)
 end
 
 -------------------------------- 充能 --------------------------------
+local function OnEntitySleep(inst)
+    inst._aipSleeping = true
+end
+
+local function OnEntityWake(inst)
+	inst._aipSleeping = false
+end
+
 local function onCharged(inst)
 	aipPrint("charged", inst._aipInfo.onCharged~=nil)
 	if inst._aipInfo.onCharged then
@@ -269,11 +277,37 @@ local function onCharged(inst)
 	syncEatable(inst)
 end
 
+local REFRESH_TIMES = dev_mode and 5 or 30
+
 -- 添加到展台就自动恢复，我们不用清理，因为老的会删除并重新创建一个复制品
 local function onShowCase(inst, data)
 	local animName = aipGet(data, "showcase|_aipAnim")
 	if animName == "stone_lotus" or animName == "ice_lotus" then
-		aipSpawnPrefab(inst, "farm_plant_happy")
+		local times = 0
+
+		inst._aipCancelTask = inst:DoPeriodicTask(1, function()
+			local blinkFlower = aipSpawnPrefab(inst, "aip_blink_flower")
+			aipFlingItem(blinkFlower, nil, {
+				ySpeed = 10,
+				ySpeedVariance = 5,
+				minSpeed = 3,
+				maxSpeed = 4,
+			})
+
+			times = times + 1
+			if times >= REFRESH_TIMES then
+				times = 0
+				if inst._aipSleeping ~= true then
+					aipSpawnPrefab(inst, "farm_plant_happy")
+					inst.components.finiteuses:Repair(1)
+				end
+
+				if inst.components.finiteuses:GetPercent() >= 1 then
+					inst._aipCancelTask:Cancel()
+					inst._aipCancelTask = nil
+				end
+			end
+		end)
 	end
 end
 
@@ -335,6 +369,9 @@ local function commonFn(name, info)
 
 	inst.OnSave = onSave
 	inst.OnLoad = onLoad
+
+	inst.OnEntitySleep = OnEntitySleep
+    inst.OnEntityWake = OnEntityWake
 
 	inst:DoTaskInTime(0.1, onRefreshName)
 
