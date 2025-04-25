@@ -1,3 +1,5 @@
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
+
 local language = aipGetModConfig("language")
 
 -- 文字描述
@@ -45,7 +47,7 @@ local assets = {
 }
 
 --------------------------------- 皮肤类型 ---------------------------------
-local skinList = {"circle","broken","button","mix"}
+local skinList = {"circle","broken","button","mix","lotus"}
 
 --------------------------------- 方法 ---------------------------------
 local function onBuilt(inst)
@@ -161,6 +163,10 @@ local function showItemNext(inst, item)
         inst._aipTakeItemFn(inst, item)
     end
 
+    -- 触发一下事件，告知物品要被展示了
+    item:PushEvent("aipInShowcase", { showcase = inst })
+
+
     inst._aipShowcaseItem = item
     inst:AddTag("aip_showcase_active")
 end
@@ -249,6 +255,9 @@ local function mineFn(inst)
     -- 挖变啦
     if inst._aipMineLeft == MINE_CHANGE then
         local animName = aipRandomEnt(skinList)
+        if dev_mode then
+            animName = "lotus"
+        end
         inst._aipAnim = inst._aipMaterial.."_"..animName
     end
 

@@ -30,10 +30,21 @@ end
 
 local function onDoTargetAction(inst, doer, target)
 	if target and target:HasTag("lava") then
-		aipReplacePrefab(inst, "aip_gourd_lao")
-    elseif target and target.prefab == "dragonflyfurnace" then
+        -- 岩浆会有极低概率得到好的葫芦
         local loot = {
-			aip_gourd_lao = 10,
+			aip_gourd_lao = 100,
+			aip_gourd_zhengxianhong = 1,
+			aip_gourd_wugui = 1,
+			aip_gourd_baolianyu = 1,
+			aip_gourd_qingtian = 1,
+		}
+
+		local targetPrefab = aipRandomLoot(loot)
+		aipReplacePrefab(inst, targetPrefab)
+    elseif target and target.prefab == "dragonflyfurnace" then
+        -- 龙蝇炉只会得到好的葫芦
+        local loot = {
+			aip_gourd_lao = 0,
 			aip_gourd_zhengxianhong = 1,
 			aip_gourd_wugui = 1,
 			aip_gourd_baolianyu = 1,

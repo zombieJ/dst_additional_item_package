@@ -269,6 +269,14 @@ local function onCharged(inst)
 	syncEatable(inst)
 end
 
+-- 添加到展台就自动恢复，我们不用清理，因为老的会删除并重新创建一个复制品
+local function onShowCase(inst, data)
+	local animName = aipGet(data, "showcase|_aipAnim")
+	if animName == "stone_lotus" or animName == "ice_lotus" then
+		aipSpawnPrefab(inst, "farm_plant_happy")
+	end
+end
+
 ------------------------------- 实体 -------------------------------
 local function commonFn(name, info)
 	local inst = CreateEntity()
@@ -322,6 +330,8 @@ local function commonFn(name, info)
 	MakeHauntableLaunch(inst)
 
 	inst._aipInfo = info
+
+	inst:ListenForEvent("aipInShowcase", onShowCase)
 
 	inst.OnSave = onSave
 	inst.OnLoad = onLoad
