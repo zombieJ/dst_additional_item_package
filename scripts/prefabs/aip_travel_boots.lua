@@ -89,7 +89,6 @@ local function onDoTeleportAction(inst, doer, data)
 end
 
 local function onDoTestClientAction(inst, doer)
-    aipPrint("Client Trigger!!!", inst, doer, ThePlayer == doer)
     if ThePlayer == doer then
         ThePlayer.components.playercontroller:PullUpMap(inst, ACTIONS.AIPC_MAP_USE)
     end
@@ -125,7 +124,11 @@ local function commonFn(anim, onDoAction)
     inst.components.aipc_action_client.onDoAction = onDoTestClientAction
 
     inst:AddTag("aip_charged")
-    inst:AddTag("aip_client_action") -- Make the non-map action pull up the map instead.
+
+    -- 添加后会认为是客户端触发 Action
+    -- 如果要再触发服务端的 aipc_action，需要自己实现一个 ACTION 来调用
+    -- 否则会死循环
+    inst:AddTag("aip_client_action")
 
     inst.entity:SetPristine()
 

@@ -9,7 +9,6 @@ env.AddReplicableComponent("aipc_buffer")
 -- 服务端组件
 local function triggerComponentAction(player, item, target, targetPoint, clientOnly)
 	if clientOnly and item.components.aipc_action_client ~= nil then
-		_G.aipPrint("Client DoAction")
 		item.components.aipc_action_client:DoAction(player)
 	elseif item.components.aipc_action ~= nil then
 		-- trigger action
@@ -204,17 +203,8 @@ local function beAction(act)
 	local mergedTarget = target or item
 
 	-- 打开地图
-	-- TODO: 这里调用不起来，服务端没有玩家
 	if mergedTarget and mergedTarget:HasTag("aip_client_action") then
-		_G.aipPrint("aipc_client_action")
-		-- _G.ThePlayer.components.playercontroller:PullUpMap(mergedTarget, _G.ACTIONS.AIPC_MAP_USE)
-		-- doer.player_classified.aipServerCallClient("travelBoots")
-		-- if _G.TheNet:IsDedicated() then
 		_G.aipRPCClient("aipClientComponentAction", doer, mergedTarget, nil, nil)
-		-- else
-		-- 	_G.aipPrint("is client")
-		-- 	triggerComponentAction(doer, mergedTarget, nil, nil)
-		-- end
 		return true
 	end
 
