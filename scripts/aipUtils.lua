@@ -1029,6 +1029,11 @@ function _G.aipRPC(funcName, ...)
 	SendModRPCToServer(MOD_RPC[env.modname][funcName], ...)
 end
 
+-- RPC 发送时自动会带上 player 作为第一个参数
+function _G.aipRPCClient(funcName, ...)
+	SendModRPCToClient(CLIENT_MOD_RPC[env.modname][funcName], ...)
+end
+
 -- 获取玩家手持的物品，仅在 AddComponentAction 中使用
 function _G.aipGetActionableItem(doer)
 	local inventory = doer.replica.inventory

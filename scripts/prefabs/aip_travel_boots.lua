@@ -88,6 +88,13 @@ local function onDoTeleportAction(inst, doer, data)
     end)
 end
 
+local function onDoTestClientAction(inst, doer)
+    aipPrint("Client Trigger!!!", inst, doer, ThePlayer == doer)
+    if ThePlayer == doer then
+        ThePlayer.components.playercontroller:PullUpMap(inst, ACTIONS.AIPC_MAP_USE)
+    end
+end
+
 -------------------------------- 充能 --------------------------------
 local function onDischarged(inst)
 	inst:RemoveTag("aip_charged")
@@ -115,9 +122,10 @@ local function commonFn(anim, onDoAction)
 
     inst:AddComponent("aipc_action_client")
 	inst.components.aipc_action_client.canBeActOn = canBeActOn
+    inst.components.aipc_action_client.onDoAction = onDoTestClientAction
 
     inst:AddTag("aip_charged")
-    inst:AddTag("aip_map_action") -- Make the non-map action pull up the map instead.
+    inst:AddTag("aip_client_action") -- Make the non-map action pull up the map instead.
 
     inst.entity:SetPristine()
 

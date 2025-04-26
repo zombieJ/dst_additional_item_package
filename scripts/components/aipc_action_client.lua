@@ -14,6 +14,8 @@ local Action = Class(function(self, inst)
 	self.canBeRead = nil
 	self.canBeEat = nil
 
+	self.onDoAction = nil
+
 	-- 是否是带网格纹理的
 	self.gridplacer = false
 end)
@@ -74,6 +76,12 @@ function Action:CanActOnPoint(doer, pos)
 		return self.canActOnPoint(self.inst, doer, pos)
 	end
 	return false
+end
+
+function Action:DoAction(doer)
+	if self.onDoAction then
+		self.onDoAction(self.inst, doer)
+	end
 end
 
 return Action

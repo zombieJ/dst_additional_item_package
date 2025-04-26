@@ -7,8 +7,11 @@ env.AddReplicableComponent("aipc_buffer")
 
 ----------------------------------- 通用组件行为 -----------------------------------
 -- 服务端组件
-local function triggerComponentAction(player, item, target, targetPoint)
-	if item.components.aipc_action ~= nil then
+local function triggerComponentAction(player, item, target, targetPoint, clientOnly)
+	if clientOnly and item.components.aipc_action_client ~= nil then
+		_G.aipPrint("Client DoAction")
+		item.components.aipc_action_client:DoAction(player)
+	elseif item.components.aipc_action ~= nil then
 		-- trigger action
 		if target ~= nil then
 			item.components.aipc_action:DoTargetAction(player, target)
@@ -26,6 +29,10 @@ end
 
 env.AddModRPCHandler(env.modname, "aipComponentAction", function(player, item, target, targetPoint)
 	triggerComponentAction(player, item, target, targetPoint)
+end)
+
+env.AddClientModRPCHandler(env.modname, "aipClientComponentAction", function(item, target, targetPoint)
+	triggerComponentAction(_G.ThePlayer, item, target, targetPoint, true)
 end)
 
 -------------------- 组合行为
@@ -197,8 +204,18 @@ local function beAction(act)
 	local mergedTarget = target or item
 
 	-- 打开地图
-	if mergedTarget and mergedTarget:HasTag("aip_map_action") then
-		_G.ThePlayer.components.playercontroller:PullUpMap(mergedTarget, _G.ACTIONS.AIPC_MAP_USE)
+	-- TODO: 这里调用不起来，服务端没有玩家
+	if mergedTarget and mergedTarget:HasTag("aip_client_action") then
+		_G.aipPrint("aipc_client_action")
+		-- _G.ThePlayer.components.playercontroller:PullUpMap(mergedTarget, _G.ACTIONS.AIPC_MAP_USE)
+		-- doer.player_classified.aipServerCallClient("travelBoots")
+		-- if _G.TheNet:IsDedicated() then
+		_G.aipRPCClient("aipClientComponentAction", doer, mergedTarget, nil, nil)
+		-- else
+		-- 	_G.aipPrint("is client")
+		-- 	triggerComponentAction(doer, mergedTarget, nil, nil)
+		-- end
+		return true
 	end
 
 	if _G.TheNet:GetIsServer() then
