@@ -215,7 +215,7 @@ local function onRefreshName(inst)
 			if topTagVal == tagVal then
 				tagBalance = true
 			-- 最高位存在，并且是有真的名字的（防止被其他 tags 污染）
-			elseif topTagVal < tagVal and LANG_VALUE[topTag] ~= nil then
+			elseif topTagVal < tagVal and LANG_VALUE[tag] ~= nil then
 				topTag = tag
 				topTagVal = tagVal
 				tagBalance = false
@@ -249,6 +249,8 @@ local function onRefreshName(inst)
 	)
 
 	--------------- 花蜜名字 ---------------
+	aipPrint("1 >>>>", topTag)
+	aipTypePrint("2 >>>>", LANG_VALUE)
 	name = LANG_VALUE[topTag]..name
 
 	-- 精酿

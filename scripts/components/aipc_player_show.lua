@@ -268,6 +268,57 @@ local function graveyardWispShow(pos)
 	end
 end
 
+-- 鱼雨
+local function fishRainShow(pos, player)
+	local chance = dev_mode and 1 or 0.05
+
+	if
+		-- 一定要是雨天
+		not TheWorld.state.israining or
+		-- 一定要在海上
+		not TheWorld.Map:IsOceanTileAtPoint(pos.x, pos.y, pos.z) or
+		-- 几率不对
+		math.random() > chance
+	then
+		return
+	end
+
+	-- 创造一个持续的下鱼雨
+	local times = 0
+	player._aipFishTask = player:DoPeriodicTask(2, function()
+		local playerPos = player:GetPosition()
+
+		local tgtPos = aipAngleDist(
+			playerPos,
+			math.random(0, 360),
+			3 + math.random() * 8
+		)
+		local loots = {
+			oceanfish_small_1_inv = 1,
+			oceanfish_small_2_inv = 1,
+			oceanfish_small_3_inv = 1,
+			oceanfish_small_4_inv = 1,
+			oceanfish_small_5_inv = 1,
+			oceanfish_small_6_inv = 1,
+			oceanfish_small_7_inv = 1,
+			oceanfish_small_8_inv = 1,
+			oceanfish_small_9_inv = 1,
+		}
+		local randomFish = aipRandomLoot(loots)
+
+		local fish = SpawnPrefab(randomFish)
+		fish.Physics:Teleport(tgtPos.x, 35, tgtPos.z)
+
+		times = times + 1
+		if times >= 30 then
+			player._aipFishTask:Cancel()
+			player._aipFishTask = nil
+		end
+	end)
+	
+	return true
+end
+
 ------------------------------ 方法 ------------------------------
 local function createIfPossible(inst, prefab, tag)
 	local oldoneHand = TheSim:FindFirstEntityWithTag(tag)
@@ -373,12 +424,13 @@ function PlayerShow:StartShow()
 			vortexShow,
 			turnMushroomShow,
 			graveyardWispShow,
+			fishRainShow,
 		}
 
-		local randomFunc = dev_mode and graveyardWispShow or aipRandomEnt(funcList)
+		local randomFunc = dev_mode and fishRainShow or aipRandomEnt(funcList)
 		
 		-- 开发模式下，指定项目
-		if randomFunc(pos) then
+		if randomFunc(pos, self.inst) then
 			self:StopShow()
 		end
 	end)
