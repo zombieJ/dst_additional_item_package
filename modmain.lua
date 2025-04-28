@@ -260,6 +260,7 @@ PrefabFiles = {
 	"aip_stone_gourd",
 	"aip_gourd_bisque",
 	"aip_gourd",
+	"aip_dirtpile",
 
 	-- 5 个挑战
 	"aip_nectar_bee",

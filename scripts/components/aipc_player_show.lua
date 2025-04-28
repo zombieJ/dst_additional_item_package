@@ -319,6 +319,30 @@ local function fishRainShow(pos, player)
 	return true
 end
 
+-- 浅埋的土堆
+local function dirtPileShow(pos)
+	local chance = dev_mode and 1 or 0.05
+
+	if
+		-- 晚上就算了
+		TheWorld.state.isnight or
+		-- 当前位置是否在海里
+		TheWorld.Map:IsOceanAtPoint(pos.x, pos.y, pos.z, false) or
+		-- 几率不对
+		math.random() > chance
+	then
+		return
+	end
+
+	-- 在附近找一个地面添加土堆
+	local newPT = aipGetSpawnPoint(pos, dev_mode and 5 or 20)
+	if newPT ~= nil then
+		aipSpawnPrefab(nil, "aip_dirtpile", newPT.x, 0, newPT.z)
+
+		return true
+	end
+end
+
 ------------------------------ 方法 ------------------------------
 local function createIfPossible(inst, prefab, tag)
 	local oldoneHand = TheSim:FindFirstEntityWithTag(tag)
@@ -425,9 +449,10 @@ function PlayerShow:StartShow()
 			turnMushroomShow,
 			graveyardWispShow,
 			fishRainShow,
+			dirtPileShow,
 		}
 
-		local randomFunc = dev_mode and fishRainShow or aipRandomEnt(funcList)
+		local randomFunc = dev_mode and dirtPileShow or aipRandomEnt(funcList)
 		
 		-- 开发模式下，指定项目
 		if randomFunc(pos, self.inst) then
