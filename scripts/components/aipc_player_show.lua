@@ -343,6 +343,37 @@ local function dirtPileShow(pos)
 	end
 end
 
+-- 掉落树叶
+local function dropLeafShow(pos)
+	local chance = dev_mode and 1 or 0.05
+	if math.random() > chance then
+		return
+	end
+
+	-- 在附近找长大的树 evergreen_tall evergreen_sparse_tall
+	local trees =  TheSim:FindEntities(
+		pos.x, pos.y, pos.z, 10, { "petrifiable", "plant", "tree" }
+	)
+
+	local matchTree = aipFilterTable(trees, function(item)
+		if
+			(item.prefab == "evergreen" or item.prefab == "evergreen_sparse") and
+			item.components.growable and item.components.growable:GetStage() == 3
+		then
+			return true
+		end
+	end)[1]
+
+	if matchTree then
+		local treePos = matchTree:GetPosition()
+		local prefabName = PrefabExists("aip_leaf_note") and "aip_leaf_note" or "pinecone"
+		local dropItem = aipSpawnPrefab(matchTree, prefabName)
+		-- aipFlingItem(dropItem)
+		dropItem.Physics:Teleport(treePos.x + 1, 3, treePos.z)
+		return true
+	end
+end
+
 ------------------------------ 方法 ------------------------------
 local function createIfPossible(inst, prefab, tag)
 	local oldoneHand = TheSim:FindFirstEntityWithTag(tag)
@@ -450,9 +481,10 @@ function PlayerShow:StartShow()
 			graveyardWispShow,
 			fishRainShow,
 			dirtPileShow,
+			dropLeafShow,
 		}
 
-		local randomFunc = dev_mode and dirtPileShow or aipRandomEnt(funcList)
+		local randomFunc = dev_mode and dropLeafShow or aipRandomEnt(funcList)
 		
 		-- 开发模式下，指定项目
 		if randomFunc(pos, self.inst) then
