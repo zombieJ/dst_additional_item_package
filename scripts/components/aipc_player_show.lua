@@ -374,6 +374,35 @@ local function dropLeafShow(pos)
 	end
 end
 
+
+-- 掉落星星碎片
+local function dropStarShow(pos)
+	local chance = dev_mode and 1 or 0.05
+
+	if
+		-- 晚上就算了
+		not TheWorld.state.isnight or
+		-- 几率不对
+		math.random() > chance
+	then
+		return
+	end
+
+	-- 身边找一个点
+	local newPT = aipGetSpawnPoint(pos, dev_mode and 5 or 10)
+	if newPT ~= nil then
+		local star = aipSpawnPrefab(nil, "aip_star_fragment")
+		star.Physics:Teleport(newPT.x, 35, newPT.z)
+		star.persists = false
+
+		if star.RandomColor then
+			star.RandomColor(star, false)
+		end
+
+		return true
+	end
+end
+
 ------------------------------ 方法 ------------------------------
 local function createIfPossible(inst, prefab, tag)
 	local oldoneHand = TheSim:FindFirstEntityWithTag(tag)
@@ -482,9 +511,10 @@ function PlayerShow:StartShow()
 			fishRainShow,
 			dirtPileShow,
 			dropLeafShow,
+			dropStarShow,
 		}
 
-		local randomFunc = dev_mode and dropLeafShow or aipRandomEnt(funcList)
+		local randomFunc = dev_mode and dropStarShow or aipRandomEnt(funcList)
 		
 		-- 开发模式下，指定项目
 		if randomFunc(pos, self.inst) then

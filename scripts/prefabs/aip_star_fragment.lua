@@ -5,23 +5,24 @@ local language = aipGetModConfig("language")
 -- 文字描述
 local LANG_MAP = {
 	english = {
-		NAME = "Decorative Ghost Fire",
-		DESC = "A ghost fire that can be pinched",
+		NAME = "Star Fragment",
+		DESC = "Wish on a shooting star?",
 	},
 	chinese = {
-		NAME = "装饰鬼火",
-		DESC = "可以随意拿捏的鬼火",
+		NAME = "星星碎片",
+		DESC = "对流星许愿了吗",
 	},
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
-STRINGS.NAMES.AIP_GHOST_FIRE = LANG.NAME
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_GHOST_FIRE = LANG.DESC
+STRINGS.NAMES.AIP_STAR_FRAGMENT = LANG.NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_STAR_FRAGMENT = LANG.DESC
 
 -- 资源
 local assets = {
-    Asset("ATLAS", "images/inventoryimages/aip_ghost_fire.xml"),
+    Asset("ANIM", "anim/aip_star_fragment.zip"),
+    Asset("ATLAS", "images/inventoryimages/aip_star_fragment.xml"),
 }
 
 ------------------------------------- 方法 -------------------------------------
@@ -33,10 +34,20 @@ local function SyncColor(inst)
             0.5 + inst._aipG / 2,
             0.5 + inst._aipB / 2
         )
+
+        if inst._aipY ~= nil then
+            local tgtPT = inst:GetPosition()
+            tgtPT.y = inst._aipY
+
+            inst.components.aipc_float:MoveToPoint(tgtPT)
+        end
+
+        inst.AnimState:PlayAnimation("idle", true)
+        inst.AnimState:SetTime(math.random() * 2)
     end)
 end
 
-local function RandomColor(inst)
+local function RandomColor(inst, skipY)
     local ori = { inst._aipR, inst._aipG, inst._aipB }
 
     local idx = 1
@@ -50,25 +61,30 @@ local function RandomColor(inst)
         end
     end
 
-    local nextColors = { math.random(), math.random(), math.random() }
+    local nextColors = {
+        math.random() / 2 + 0.5,
+        math.random() / 2 + 0.5,
+        math.random() / 2 + 0.5,
+    }
     nextColors[idx] = 1
 
     inst._aipR = nextColors[1]  -- R
     inst._aipG = nextColors[2]  -- G
     inst._aipB = nextColors[3]  -- B
 
-    SyncColor(inst)
-end
+    if skipY ~= false then
+        aipPrint("Random Y")
+        inst._aipY = math.random() * 2 + 1
+    end
 
--- 造出来后就随机颜色
-local function OnPreBuilt(inst, builder, materials, recipe)
-    RandomColor(inst)
+    SyncColor(inst)
 end
 
 local function OnSave(inst, data)
     data.r = inst._aipR
     data.g = inst._aipG
     data.b = inst._aipB
+    data.y = inst._aipY
 end
 
 local function OnLoad(inst, data)
@@ -76,8 +92,14 @@ local function OnLoad(inst, data)
         inst._aipR = data.r or 1
         inst._aipG = data.g or 1
         inst._aipB = data.b or 1
+        inst._aipY = data.y or 1
         SyncColor(inst)
     end
+end
+
+local function onPickUp(inst)
+    inst.persists = true
+    inst.components.aipc_float:Stop()
 end
 
 ------------------------------------- 实例 -------------------------------------
@@ -90,16 +112,16 @@ local function fn()
     inst.entity:AddLight()
     inst.entity:AddNetwork()
 
-    MakeProjectilePhysics(inst, 1, .25)
+    MakeProjectilePhysics(inst, 1, .1)
 
-    inst.AnimState:SetBank("coldfire_fire")
-    inst.AnimState:SetBuild("coldfire_fire")
-    inst.AnimState:PlayAnimation("level1", true)
+    inst.AnimState:SetBank("aip_star_fragment")
+    inst.AnimState:SetBuild("aip_star_fragment")
+    inst.AnimState:PlayAnimation("idle", true)
 
     inst.Light:SetColour(111/255, 111/255, 227/255)
     inst.Light:SetIntensity(0.75)
     inst.Light:SetFalloff(1)
-    inst.Light:SetRadius(1)
+    inst.Light:SetRadius(0.5)
     inst.Light:Enable(true)
 
     inst.entity:SetPristine()
@@ -108,23 +130,22 @@ local function fn()
         return inst
     end
 
-    inst.AnimState:SetTime(math.random() * 2)
-
     inst:AddComponent("inspectable")
 
-    inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_ghost_fire.xml"
+    inst:AddComponent("aipc_float")
+    inst.components.aipc_float.speed = 0.5
 
     inst:AddComponent("inventoryitem")
-
-    inst.onPreBuilt = OnPreBuilt
+	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_star_fragment.xml"
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
 
     inst.RandomColor = RandomColor
 
+    inst:ListenForEvent("onpickup", onPickUp)
+
     return inst
 end
 
-return Prefab("aip_ghost_fire", fn, assets)
+return Prefab("aip_star_fragment", fn, assets)

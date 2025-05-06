@@ -249,8 +249,6 @@ local function onRefreshName(inst)
 	)
 
 	--------------- 花蜜名字 ---------------
-	aipPrint("1 >>>>", topTag)
-	aipTypePrint("2 >>>>", LANG_VALUE)
 	name = LANG_VALUE[topTag]..name
 
 	-- 精酿
