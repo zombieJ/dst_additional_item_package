@@ -39,6 +39,7 @@ local function SyncColor(inst)
             local tgtPT = inst:GetPosition()
             tgtPT.y = inst._aipY
 
+            aipTypePrint("->", tgtPT, inst._aipY)
             inst.components.aipc_float:MoveToPoint(tgtPT)
         end
 
@@ -73,7 +74,6 @@ local function RandomColor(inst, skipY)
     inst._aipB = nextColors[3]  -- B
 
     if skipY ~= false then
-        aipPrint("Random Y")
         inst._aipY = math.random() * 2 + 1
     end
 
@@ -92,7 +92,10 @@ local function OnLoad(inst, data)
         inst._aipR = data.r or 1
         inst._aipG = data.g or 1
         inst._aipB = data.b or 1
-        inst._aipY = data.y or 1
+        inst._aipY = data.y
+
+        aipTypePrint("load", inst._aipY)
+
         SyncColor(inst)
     end
 end
@@ -100,6 +103,12 @@ end
 local function onPickUp(inst)
     inst.persists = true
     inst.components.aipc_float:Stop()
+end
+
+local function onNight(inst, isNight)
+    if not isNight and inst.persists == false then
+        inst.components.despawnfader:FadeOut()
+    end
 end
 
 ------------------------------------- 实例 -------------------------------------
@@ -126,6 +135,8 @@ local function fn()
 
     inst.entity:SetPristine()
 
+    inst:AddComponent("despawnfader")
+
     if not TheWorld.ismastersim then
         return inst
     end
@@ -138,12 +149,17 @@ local function fn()
     inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_star_fragment.xml"
 
+    inst:AddComponent("tradable")
+	inst.components.tradable.goldvalue = 3
+
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
 
     inst.RandomColor = RandomColor
 
     inst:ListenForEvent("onpickup", onPickUp)
+
+    inst:WatchWorldState("isnight", onNight)
 
     return inst
 end

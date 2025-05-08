@@ -377,7 +377,7 @@ end
 
 -- 掉落星星碎片
 local function dropStarShow(pos)
-	local chance = dev_mode and 1 or 0.05
+	local chance = dev_mode and 1 or 0.04
 
 	if
 		-- 晚上就算了

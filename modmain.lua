@@ -262,6 +262,7 @@ PrefabFiles = {
 	"aip_gourd",
 	"aip_dirtpile",
 	"aip_star_fragment",
+	"aip_gholdengo",
 
 	-- 5 个挑战
 	"aip_nectar_bee",
