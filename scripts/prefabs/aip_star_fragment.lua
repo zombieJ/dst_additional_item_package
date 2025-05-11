@@ -94,8 +94,6 @@ local function OnLoad(inst, data)
         inst._aipB = data.b or 1
         inst._aipY = data.y
 
-        aipTypePrint("load", inst._aipY)
-
         SyncColor(inst)
     end
 end

@@ -1,4 +1,3 @@
--- 武器模板
 local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 -- 配置
@@ -31,7 +30,7 @@ local LANG_MAP = {
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
 
-TUNING.AIP_GHOLDENGO_DAMAGE = DAMAGE_MAP[weapon_damage]
+TUNING.AIP_GHOLDENGO_DAMAGE = dev_mode and 100 or DAMAGE_MAP[weapon_damage]
 
 -- 资源
 local assets = {
@@ -47,10 +46,24 @@ STRINGS.NAMES.AIP_GHOLDENGO = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_GHOLDENGO = LANG.DESC
 
 -----------------------------------------------------------
-local function onKill(inst, data)
-	-- TODO: 累加生命值后给予黄金，至少 1000 点
-	if data and data.victim then
-		aipFlingItem(aipSpawnPrefab(data.victim, "goldnugget"))
+local INIT_HEALTH_LIMIT = 100
+
+local function onKill(owner, data)
+	local inst = owner._aipGholdengo
+
+	if data and data.victim and data.victim.components.health then
+		local totalHealth = data.victim.components.health.maxhealth
+		inst._aipTotalDelta = inst._aipTotalDelta + totalHealth
+
+		aipTypePrint("TTL", inst._aipTotalDelta)
+		aipTypePrint("STK", inst._aipStackTotal)
+
+		if inst._aipTotalDelta >= inst._aipStackTotal then
+			inst._aipTotalDelta = 0
+			inst._aipStackTotal = inst._aipStackTotal + 1
+
+			aipFlingItem(aipSpawnPrefab(data.victim, "goldnugget"))
+		end
 	end
 end
 
@@ -61,6 +74,7 @@ local function onequip(inst, owner)
 	owner.AnimState:Hide("ARM_normal")
 
 	owner:ListenForEvent("killed", onKill)
+	owner._aipGholdengo = inst
 end
 
 local function onunequip(inst, owner)
@@ -69,6 +83,24 @@ local function onunequip(inst, owner)
 	owner.AnimState:Show("ARM_normal")
 
 	owner:RemoveEventCallback("killed", onKill)
+	owner._aipGholdengo = nil
+end
+
+-----------------------------------------------------------
+local function getDesc(inst)
+    return STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_GHOLDENGO.."("..inst._aipStackTotal..")"
+end
+
+local function onSave(inst, data)
+	data._aipTotalDelta = inst._aipTotalDelta
+	data._aipStackTotal = inst._aipStackTotal
+end
+
+local function onLoad(inst, data)
+	if data ~= nil then
+		inst._aipTotalDelta = data._aipTotalDelta or 0
+		inst._aipStackTotal = data._aipStackTotal or INIT_HEALTH_LIMIT
+	end
 end
 
 -----------------------------------------------------------
@@ -95,6 +127,7 @@ local function fn()
 	inst.components.weapon:SetDamage(TUNING.AIP_GHOLDENGO_DAMAGE)
 
 	inst:AddComponent("inspectable")
+	inst.components.inspectable.descriptionfn = getDesc
 
 	inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_gholdengo.xml"
@@ -104,6 +137,12 @@ local function fn()
 	inst:AddComponent("equippable")
 	inst.components.equippable:SetOnEquip(onequip)
 	inst.components.equippable:SetOnUnequip(onunequip)
+
+	inst._aipStackTotal = INIT_HEALTH_LIMIT
+	inst._aipTotalDelta = 0
+
+	inst.OnSave = onSave
+	inst.OnLoad = onLoad
 
 	return inst
 end
