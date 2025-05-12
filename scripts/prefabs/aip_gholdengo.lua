@@ -55,9 +55,6 @@ local function onKill(owner, data)
 		local totalHealth = data.victim.components.health.maxhealth
 		inst._aipTotalDelta = inst._aipTotalDelta + totalHealth
 
-		aipTypePrint("TTL", inst._aipTotalDelta)
-		aipTypePrint("STK", inst._aipStackTotal)
-
 		if inst._aipTotalDelta >= inst._aipStackTotal then
 			inst._aipTotalDelta = 0
 			inst._aipStackTotal = inst._aipStackTotal + 1

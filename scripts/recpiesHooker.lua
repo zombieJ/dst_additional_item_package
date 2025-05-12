@@ -393,6 +393,13 @@ rec("aip_teleport_scroll", TECH.MAGIC_TWO, { CRAFTING_FILTERS.MAGIC },
 	Ingredient("papyrus", 1),
 })
 
+-- 赛富豪
+rec("aip_gholdengo", TECH.LOST, { CRAFTING_FILTERS.WEAPONS },
+	{
+		Ingredient("aip_oldone_meat", 1, "images/inventoryimages/aip_oldone_meat.xml"),
+		Ingredient("goldnugget", 99),
+	})
+
 ------------------------------------ 量子扰动 ------------------------------------
 -- 粒子限制器
 rec("aip_particles_bottle", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.TOOLS },
