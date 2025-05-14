@@ -134,6 +134,7 @@ local function fn()
 	inst:AddComponent("equippable")
 	inst.components.equippable:SetOnEquip(onequip)
 	inst.components.equippable:SetOnUnequip(onunequip)
+	inst.components.equippable.walkspeedmult = dev_mode and 2 or TUNING.CANE_SPEED_MULT
 
 	inst._aipStackTotal = INIT_HEALTH_LIMIT
 	inst._aipTotalDelta = 0
