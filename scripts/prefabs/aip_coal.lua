@@ -27,6 +27,8 @@ local function OnExplosion(inst, data)
     local miner = data and data.explosive or nil
     if miner then
         local loot_data = TUNING.ROCK_FRUIT_LOOT
+
+        -- TODO: Loot this
         local gem = SpawnPrefab("purplegem")
         LaunchAt(gem, inst, miner, loot_data.SPEED, loot_data.HEIGHT, nil, loot_data.ANGLE)
         aipRemove(inst)
