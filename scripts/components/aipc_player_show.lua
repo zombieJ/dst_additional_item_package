@@ -374,13 +374,12 @@ local function dropLeafShow(pos)
 	end
 end
 
-
 -- 掉落星星碎片
 local function dropStarShow(pos)
 	local chance = dev_mode and 1 or 0.04
 
 	if
-		-- 晚上就算了
+		-- 白天就算了
 		not TheWorld.state.isnight or
 		-- 几率不对
 		math.random() > chance
@@ -398,6 +397,28 @@ local function dropStarShow(pos)
 		if star.RandomColor then
 			star.RandomColor(star, false)
 		end
+
+		return true
+	end
+end
+
+-- TODO: 凋零骷髅
+local function skeletonShow(pos)
+	local chance = dev_mode and 1 or 0.04
+
+	if
+		-- 白天就算了
+		not TheWorld.state.isnight or
+		-- 几率不对
+		math.random() > chance
+	then
+		return
+	end
+
+	-- 身边找一个点
+	local newPT = aipGetSpawnPoint(pos, dev_mode and 5 or 20)
+	if newPT ~= nil then
+		local star = aipSpawnPrefab(nil, "aip_wither_skeleton", newPT.x, newPT.y, newPT.z)
 
 		return true
 	end
@@ -512,9 +533,10 @@ function PlayerShow:StartShow()
 			dirtPileShow,
 			dropLeafShow,
 			dropStarShow,
+			skeletonShow,
 		}
 
-		local randomFunc = dev_mode and dropStarShow or aipRandomEnt(funcList)
+		local randomFunc = dev_mode and skeletonShow or aipRandomEnt(funcList)
 		
 		-- 开发模式下，指定项目
 		if randomFunc(pos, self.inst) then

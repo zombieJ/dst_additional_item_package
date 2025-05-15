@@ -28,8 +28,18 @@ local function OnExplosion(inst, data)
     if miner then
         local loot_data = TUNING.ROCK_FRUIT_LOOT
 
-        -- TODO: Loot this
-        local gem = SpawnPrefab("purplegem")
+        -- 随机宝石
+        local gemsPool = {
+            redgem = 1,
+            bluegem = 1,
+            purplegem = 1,
+            orangegem = 1,
+            yellowgem = 1,
+            greengem = 1,
+            opalpreciousgem = 0.1,
+        }
+        local gem = SpawnPrefab(aipRandomLoot(gemsPool))
+
         LaunchAt(gem, inst, miner, loot_data.SPEED, loot_data.HEIGHT, nil, loot_data.ANGLE)
         aipRemove(inst)
     end
