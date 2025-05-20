@@ -236,6 +236,7 @@ PrefabFiles = {
 	"aip_armor_gambler",
 	"aip_armor_balrog",
 	"aip_xiaoyu_hat",
+	"aip_amulet",
 
 	-- Chesspiece
 	"aip_chesspiece",

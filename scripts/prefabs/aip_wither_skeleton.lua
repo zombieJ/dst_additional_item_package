@@ -31,8 +31,8 @@ local animstates = { 1, 2, 3, 4, 5, 6 }
 
 SetSharedLootTable("aip_wither_skeleton", {
     {"aip_coal", 1.00},
-    {"aip_coal", 0.50},
-    {"aip_coal", 0.25},
+    {"aip_coal", 0.40},
+    {"aip_coal", 0.10},
 })
 
 local function onhammered(inst)

@@ -66,6 +66,9 @@ local function fn()
         return inst
     end
 
+    inst:AddComponent("fuel")
+    inst.components.fuel.fuelvalue = TUNING.MED_FUEL
+
     inst:AddComponent("inspectable")
 
     MakeSmallBurnable(inst, TUNING.SMALL_BURNTIME)

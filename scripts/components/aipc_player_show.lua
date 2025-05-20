@@ -402,7 +402,7 @@ local function dropStarShow(pos)
 	end
 end
 
--- TODO: 凋零骷髅
+-- 凋零骷髅
 local function skeletonShow(pos)
 	local chance = dev_mode and 1 or 0.04
 
