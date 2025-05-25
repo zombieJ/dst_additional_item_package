@@ -26,22 +26,28 @@ local assets = {
 local function OnExplosion(inst, data)
     local miner = data and data.explosive or nil
     if miner then
-        local loot_data = TUNING.ROCK_FRUIT_LOOT
+        local count = inst.components.stackable and inst.components.stackable:StackSize() or 1
 
-        -- 随机宝石
-        local gemsPool = {
-            redgem = 1,
-            bluegem = 1,
-            purplegem = 1,
-            orangegem = 1,
-            yellowgem = 1,
-            greengem = 1,
-            opalpreciousgem = 0.1,
-        }
-        local gem = SpawnPrefab(aipRandomLoot(gemsPool))
+        for i = 1, count do
+        
+            local loot_data = TUNING.ROCK_FRUIT_LOOT
 
-        LaunchAt(gem, inst, miner, loot_data.SPEED, loot_data.HEIGHT, nil, loot_data.ANGLE)
-        aipRemove(inst)
+            -- 随机宝石
+            local gemsPool = {
+                redgem = 10,
+                bluegem = 10,
+                purplegem = 5,
+                orangegem = 1,
+                yellowgem = 1,
+                greengem = 1,
+                opalpreciousgem = 0.1,
+            }
+            local gem = SpawnPrefab(aipRandomLoot(gemsPool))
+
+            LaunchAt(gem, inst, miner, loot_data.SPEED, loot_data.HEIGHT, nil, loot_data.ANGLE)
+        end
+
+        inst:Remove()
     end
 end
 
