@@ -1197,7 +1197,7 @@ return {
             "Ocean Vortex: There exists vortex in the ocean, but it's safe to observe from a distance (Yes, be sure not to get close to it!).",
             "Animal World: I occasionally see the scene of birds and vultures hunting.",
             "Rabbit's Wisdom: Rabbits sometimes run around in the grass.",
-            "Graveyard Wisp: At night in the graveyard, you might see a will-o'-the-wisp that can be captured."
+            "Graveyard Wisp: At night in the graveyard, you might see a will-o'-the-wisp that can be captured.",
             "Wither Skeleton: Compared to skeletons, they drop 1~3 coal blocks when defeated.",
             "Star Fragments: Sometimes you can see star fragments falling from the night sky.",
             "Fish Rain: Sometimes you can see fish falling from the rain in the ocean.",
