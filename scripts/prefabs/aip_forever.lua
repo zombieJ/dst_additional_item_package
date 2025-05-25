@@ -112,6 +112,7 @@ local function fn()
 
     inst:AddTag("structure")
     inst:AddTag("aip_world_drop")
+    inst:AddTag("watersource")
 
     inst.entity:SetPristine()
 

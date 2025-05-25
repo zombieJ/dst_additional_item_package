@@ -112,6 +112,13 @@ local function egg()
 
     inst.components.equippable.dapperness = TUNING.DAPPERNESS_MED
 
+    	-- 食物
+	inst:AddComponent("edible")
+	inst.components.edible.foodtype = FOODTYPE.MEAT
+	inst.components.edible.healthvalue = 5
+	inst.components.edible.hungervalue = 25
+	inst.components.edible.sanityvalue = 5
+
     MakeHauntableLaunch(inst)
 
     return inst

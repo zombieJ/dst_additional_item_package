@@ -400,6 +400,10 @@ rec("aip_gholdengo", TECH.LOST, { CRAFTING_FILTERS.WEAPONS },
 		Ingredient("goldnugget", 99),
 	})
 
+-- 安康蛋
+recSurvival("aip_amulet_egg", TECH.MAGIC_TWO, { CRAFTING_FILTERS.CLOTHING },
+	{Ingredient("bird_egg", 1), Ingredient("rope", 1), Ingredient("charcoal", 1)})
+
 ------------------------------------ 量子扰动 ------------------------------------
 -- 粒子限制器
 rec("aip_particles_bottle", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.TOOLS },
