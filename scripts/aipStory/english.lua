@@ -137,6 +137,12 @@ return {
                 name="aip_divine_rapier",
             },
             "Force combined by the totem, can summon two sword marks to attack. Inherit all abilities of both.",
+            -- 赛富豪
+            {
+                type="img",
+                name="aip_gholdengo",
+            },
+            "I got this when I encountered a shapeshifting mushroom. Killing creatures will accumulate vitality and exchange it for gold nuggets.",
         },
     },
 
@@ -400,6 +406,13 @@ return {
                 name="aip_xiaoyu_hat",
             },
             "I got this from Shark. It will help reduce damage on the ocean and take bullkelp directly.",
+
+            -- 安康蛋
+            {
+                type="img",
+                name="aip_amulet_egg",
+            },
+            "This is a small accessory for the Dragon Boat Festival. Wearing it can bring a little joy, and it can also be eaten directly when hungry.",
         },
     },
 
@@ -1185,6 +1198,11 @@ return {
             "Animal World: I occasionally see the scene of birds and vultures hunting.",
             "Rabbit's Wisdom: Rabbits sometimes run around in the grass.",
             "Graveyard Wisp: At night in the graveyard, you might see a will-o'-the-wisp that can be captured."
+            "Wither Skeleton: Compared to skeletons, they drop 1~3 coal blocks when defeated.",
+            "Star Fragments: Sometimes you can see star fragments falling from the night sky.",
+            "Fish Rain: Sometimes you can see fish falling from the rain in the ocean.",
+            "Normal Dirt Pile: Sometimes you can see dirt pile on the ground, digging it up will yield some strange items.",
+            "Wind-swept Leaves: Nearby evergreen trees have a chance to drop leaf notes.",
         },
     },
 
