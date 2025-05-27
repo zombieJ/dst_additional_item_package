@@ -236,6 +236,7 @@ PrefabFiles = {
 	"aip_armor_gambler",
 	"aip_armor_balrog",
 	"aip_xiaoyu_hat",
+	"aip_amulet",
 
 	-- Chesspiece
 	"aip_chesspiece",
@@ -260,6 +261,11 @@ PrefabFiles = {
 	"aip_stone_gourd",
 	"aip_gourd_bisque",
 	"aip_gourd",
+	"aip_dirtpile",
+	"aip_star_fragment",
+	"aip_gholdengo",
+	"aip_wither_skeleton",
+	"aip_coal",
 
 	-- 5 个挑战
 	"aip_nectar_bee",

@@ -1,3 +1,5 @@
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
+
 require "prefabs/veggies"
 
 local cooking = require("cooking")
@@ -69,6 +71,7 @@ local stonesPool = {
     rocks = 1,
     flint = 1,
     nitre = 1,
+    goldnugget = 1,
 }
 
 -- 芦苇 与 草
@@ -124,6 +127,8 @@ local meatPool = {
     trunk_summer = 1,
     trunk_winter = 1,
     trunk_cooked = 1,
+
+    aip_oldone_meat = 1, -- 律动的肉块 的一种获取来源
 }
 
 -- 小肉类
@@ -149,6 +154,8 @@ local smallMeatPool = {
 
     eel = 1,
     eel_cooked = 1,
+
+    aip_oldone_meat = 1, -- 律动的肉块 的一种获取来源
 }
 
 -- 水果类
@@ -237,6 +244,15 @@ local function onNear(inst, player)
 
         if targetPool == nil then
             return
+        end
+
+        -- 如果玩家不会制作 赛富豪，有一定概率学会制作
+        if player.components.builder and not player.components.builder:KnowsRecipe("aip_gholdengo") then
+            local chance = dev_mode and 1 or 0.25
+
+            if aipChance(chance, player, 1) then
+                targetPool = { aip_gholdengo_blueprint = 1 }
+            end
         end
 
         -- 替换为新的物品，随机 20 次如果都不行就算了

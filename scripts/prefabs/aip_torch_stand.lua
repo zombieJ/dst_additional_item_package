@@ -67,7 +67,8 @@ local list = {
     },
     {
         name = "crab",
-        target = "crabking",
+        target = dev_mode and "not-exist" or "crabking",
+        fallbackPoint = "ocean",
         ocean = true,
         devKeep = true,
     },
@@ -167,8 +168,18 @@ local function toggleActive(inst, doer)
 
     -- 生成一个吧
     if nextPrefab == nil then
+        local tgtPos = nil
         local nextTarget = aipFindEnt(nextInfo.target)
-        local tgtPos = nextTarget:GetPosition()
+
+        if nextTarget then
+            tgtPos = nextTarget:GetPosition()
+        elseif nextInfo.fallbackPoint == "ocean" then
+            tgtPos = aipFindRandomPointInOcean(10)
+        end
+
+        if not tgtPos then
+            return
+        end
 
         local rndPt = aipGetSecretSpawnPoint(
             tgtPos,

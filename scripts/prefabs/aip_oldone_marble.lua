@@ -161,56 +161,63 @@ local function doBrain(inst)
                     hand:RemoveComponent("playerprox") -- 不会被踩熄灭
                     hand:RemoveEventCallback("enterlight", hand.dissipatefn, inst.arm) -- 白天不消失
 
+                    local function onHeadBack()
+                        -- 无论如何地震波都会消失
+                        if sinkhole ~= nil then
+                            ErodeAway(sinkhole)
+                        end
+
+                        if inst._aipVest ~= nil and inst._aipHead ~= nil then
+                            -- 计算间距
+                            local dist = aipDist(
+                                inst._aipVest:GetPosition(),
+                                inst._aipHead:GetPosition()
+                            )
+
+                            -- 如果没有被搬走，我们就移除头颅
+                            if dist < 2 and not IsDead(inst) then
+                                local owner = head.components.inventoryitem:GetGrandOwner()
+                                if owner ~= nil then
+                                    owner.components.inventory:DropItem(head, true, true)
+                                end
+
+                                -- 播放一个特效
+                                local headPos = head:GetPosition()
+                                aipReplacePrefab(
+                                    inst._aipVest,
+                                    "aip_shadow_wrapper", headPos.x, headPos.y, headPos.z
+                                ).DoShow()
+
+                                head:Remove()
+                                inst._aipHead = nil
+
+                                -- 播放长回头颅的动画
+                                inst.AnimState:PlayAnimation("back")
+                                inst.AnimState:PushAnimation("idle", true)
+                            else
+                                -- 没有取回头颅，继续待机
+                                head.persists = true
+                            end
+                        end
+
+                        -- 清理无用引用
+                        inst._aipHand = nil
+                        inst._aipVest = nil
+
+                        aipRemove(hand)
+                    end
+
                     -- 鬼手抓到后归位
                     hand:ListenForEvent("startaction", function(_, data)
                         if data.action ~= nil then
                             if data.action.action == ACTIONS.EXTINGUISH then
-                                hand:DoTaskInTime(17 * FRAMES, function()
-                                    -- 无论如何地震波都会消失
-                                    if sinkhole ~= nil then
-                                        ErodeAway(sinkhole)
-                                    end
-
-                                    if inst._aipVest ~= nil and inst._aipHead ~= nil then
-                                        -- 计算间距
-                                        local dist = aipDist(
-                                            inst._aipVest:GetPosition(),
-                                            inst._aipHead:GetPosition()
-                                        )
-
-                                        -- 如果没有被搬走，我们就移除头颅
-                                        if dist < 2 and not IsDead(inst) then
-                                            local owner = head.components.inventoryitem:GetGrandOwner()
-                                            if owner ~= nil then
-                                                owner.components.inventory:DropItem(head, true, true)
-                                            end
-
-                                            -- 播放一个特效
-                                            local headPos = head:GetPosition()
-                                            aipReplacePrefab(
-                                                inst._aipVest,
-                                                "aip_shadow_wrapper", headPos.x, headPos.y, headPos.z
-                                            ).DoShow()
-
-                                            head:Remove()
-                                            inst._aipHead = nil
-
-                                            -- 播放长回头颅的动画
-                                            inst.AnimState:PlayAnimation("back")
-                                            inst.AnimState:PushAnimation("idle", true)
-                                        else
-                                            -- 没有取回头颅，继续待机
-                                            head.persists = true
-                                        end
-                                    end
-
-                                    -- 清理无用引用
-                                    inst._aipHand = nil
-                                    inst._aipVest = nil
-                                end)
+                                hand:DoTaskInTime(17 * FRAMES, onHeadBack)
                             end
                         end
                     end)
+
+                    -- 鬼手离开加载时也归位
+                    hand.OnEntitySleep = onHeadBack
 
                     inst._aipHand = hand
                 end)
