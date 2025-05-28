@@ -42,7 +42,7 @@ local LARGE = Lang("Large", "大")
 name = Lang("Additional Item Package DEV", "AIP-额外物品包 DEV")
 description = joinArray(descList, "\n")
 author = "ZombieJ"
-forumthread = "http://steamcommunity.com/sharedfiles/filedetails/?id=1085586145"
+forumthread = ""
 icon_atlas = "modicon.xml"
 icon = "modicon.tex"
 priority = -111
