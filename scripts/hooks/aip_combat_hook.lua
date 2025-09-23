@@ -44,6 +44,10 @@ AddComponentPostInit("combat", function(self)
 		spdamage = data.spdamage
 		local dmg = data.damage
 
+		if dmg == nil then
+			return originGetAttacked(self, attacker, damage, weapon, stimuli, spdamage, ...)
+		end
+
 		-- 素罗汉 免疫黑暗伤害
 		if stimuli == "darkness" and _G.aipBufferExist(self.inst, "veg_lohan") then
 			dmg = 0
