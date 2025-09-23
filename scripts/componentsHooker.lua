@@ -254,11 +254,17 @@ env.AddComponentAction("SCENE", "aipc_action_client", function(inst, doer, actio
 		return
 	end
 
-	if inst.components.aipc_action_client:CanBeActOn(doer) then
+	if
+		inst.components.aipc_action_client and
+		inst.components.aipc_action_client:CanBeActOn(doer)
+	then
 		table.insert(actions, _G.ACTIONS.AIPC_BE_ACTION)
 	end
 	
-	if inst.components.aipc_action_client:CanBeTakeOn(doer) then
+	if
+		inst.components.aipc_action_client and
+		inst.components.aipc_action_client:CanBeTakeOn(doer)
+	then
 		table.insert(actions, _G.ACTIONS.AIPC_BE_TAKE_ACTION)
 	end
 end)
