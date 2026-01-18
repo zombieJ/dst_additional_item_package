@@ -10,3 +10,4 @@ exported/**/aip_armor_gambler.zip
 tmp/
 _tmp/
 .DS_Store
+npminstall-debug.log
