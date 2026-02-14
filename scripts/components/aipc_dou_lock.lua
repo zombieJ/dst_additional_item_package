@@ -5,7 +5,15 @@ local Lock = Class(function(self, inst)
 	self.lastDist = 999999999
 end)
 
+function Lock:CheckPhysics()
+	return self.inst.Physics ~= nil
+end
+
 function Lock:Stop()
+	if not self:CheckPhysics() then
+		return
+	end
+
 	if self.task ~= nil then
 		self.task:Cancel()
 		self.task = nil
@@ -17,10 +25,18 @@ end
 
 -- 转向目标点
 function Lock:RotateToTarget(dest)
+	if not self:CheckPhysics() then
+		return
+	end
+
 	self.inst:ForceFacePoint(dest)
 end
 
 function Lock:LockTo(pt)
+	if not self:CheckPhysics() then
+		return
+	end
+
 	self.targetPT = pt
 	self.lastDist = 999999999
 
@@ -29,10 +45,14 @@ function Lock:LockTo(pt)
 end
 
 function Lock:OnUpdate(dt)
+	if not self:CheckPhysics() then
+		return
+	end
+
 	local src = self.inst:GetPosition()
 
 	-- 如果不合法就退出位移
-	if self.targetPT == nil or not self.inst:IsValid() or not self.inst.Physics then
+	if self.targetPT == nil or not self.inst:IsValid() then
 		self:Stop()
 		return
 	end
