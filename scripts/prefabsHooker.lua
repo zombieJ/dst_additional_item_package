@@ -367,7 +367,7 @@ AddPrefabPostInit("beefalo", function(inst)
 					) and
 					#_G.aipFindNearEnts(prefab, { "aip_mud_crab" }, 20) <= 2
 				then
-					_G.ReplacePrefab(prefab, "aip_mud_crab")
+					_G.ReplacePrefab(prefab, "aip_mud_crab", nil, nil, nil, 1)
 				end
 			end)
 
