@@ -454,6 +454,28 @@ local PREFABS = {
         origin = "wobster_moonglass",
     },
 
+    ----------------------------- 猴子 -----------------------------
+    -- 猴子
+    monkey = {
+        bank = "kiki",
+        build = "kiki_basic",
+        anim = "idle_loop",
+        sg = "SGmonkey",
+        scale = 0.8,
+        face = 6,
+        postInit = function(inst)
+            inst:AddComponent("follower")
+            inst:AddComponent("amphibiouscreature")
+            inst.components.amphibiouscreature:SetBanks("kiki", "kiki")
+            inst.soundtype = ""
+
+            inst:AddComponent("combat")
+            inst.components.combat:SetAttackPeriod(TUNING.MONKEY_ATTACK_PERIOD)
+            inst.components.combat:SetRange(TUNING.MONKEY_MELEE_RANGE)
+            inst.components.combat:SetDefaultDamage(0)
+        end,
+    },
+
     ------------------------- 欧米伽黏菌团 -------------------------
     -- 欧米伽黏菌团
     aip_slime_mold = {
@@ -581,6 +603,13 @@ local SHEDDING_LOOT = {
     ------------------------- 戳食 -------------------------
     slurper = {
         beardhair = 0.01,           -- 1% 概率掉胡子
+    },
+
+    ------------------------- 猴子 -------------------------
+    monkey = {
+        smallmeat = 0.1,            -- 10% 概率掉小肉
+        cave_banana = 0.05,         -- 5% 概率掉洞穴香蕉
+        beardhair = 0.02,           -- 2% 概率掉胡子
     },
 }
 
@@ -757,6 +786,13 @@ local function getSkills(prefab, subPrefab)
     if prefab == "wobster_sheller_land" or prefab == "wobster_moonglass_land" then
         return {
             "shrimp",
+        }
+    end
+
+    ------------------------- 猴子 -------------------------
+    if prefab == "monkey" then
+        return {
+            "steal",
         }
     end
 

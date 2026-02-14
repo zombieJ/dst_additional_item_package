@@ -51,6 +51,9 @@ end
 
 -- 获取捕捉概率（完美品质有概率，但是实际上游戏里不会生成的）
 function Petable:GetQualityChance()
+	if dev_mode then
+		return 0.8
+	end
 	local chances = { 1, 0.6, 0.3, 0.1, 0.01 }
 	return chances[self:GetQuality()] or 0
 end
