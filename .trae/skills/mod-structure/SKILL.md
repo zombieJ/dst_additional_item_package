@@ -17,6 +17,39 @@ description: "介绍 DST 额外物品包 mod 的文件结构。当用户询问 m
 | [README.md](README.md) | 项目文档和用户反馈 |
 | [TODO.md](TODO.md) | 开发待办事项列表 |
 
+## 命名规范
+
+### aip 前缀规则
+
+本 mod 的所有自定义内容都使用 `aip` 前缀命名，这是识别 mod 内容的关键标识：
+
+- **预制件**：以 `aip_` 开头（如 `aip_divine_rapier`, `aip_gourd`）
+- **组件**：以 `aipc_` 开头（如 `aipc_action`, `aipc_orbit_driver`）
+- **配置**：以 `AIP_` 开头（如 `AIP_DOU_SCEPTER`, `AIP_DOU_TOTEM`）
+- **工具函数**：以 `aip` 开头（如 `aipPrint`, `aipSpawnPrefab`）
+
+### 查找顺序
+
+在开发模组时，遵循以下查找顺序：
+
+1. **优先查找 mod 文件** - 如果组件或物品以 `aip` 开头，直接在 mod 的 `scripts/` 目录中查找
+2. **检查游戏源码** - 如果找不到或不是 aip 开头，再到游戏源码中查找
+3. **使用 dst_reader skill** - 当需要查找游戏 API 时，使用 dst_reader skill 从游戏源码中获取参考
+
+### 示例
+
+```lua
+-- mod 内容（在 scripts/ 中查找）
+aip_divine_rapier          -- 预制件
+aipc_action                -- 组件
+aipPrint()                 -- 工具函数
+
+-- 游戏内容（使用 dst_reader 查找）
+inst.components.health     -- DST 原生组件
+AddRecipe2()               -- DST 原生 API
+TUNING.NIGHTSWORD_DAMAGE   -- DST 原生配置
+```
+
 ## 核心目录
 
 ### scripts/
