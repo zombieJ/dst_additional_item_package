@@ -415,10 +415,13 @@ local PREFABS = {
     -- 果冻蜗牛
     snurtle = {
         bank = "slurtle",
-        build = "snurtle",
+        build = "slurtle",
         anim = "idle",
         sg = "SGslurtle",
         scale = 0.8,
+        postInit = function(inst)
+            inst.AnimState:OverrideSymbol("shell", "slurtle_snaily", "shell")
+        end,
     },
 
     ----------------------------- 泥蟹 -----------------------------
@@ -842,7 +845,7 @@ local function getSkills(prefab, subPrefab)
     ------------------------- 蜗牛 -------------------------
     if prefab == "slurtle" or prefab == "snurtle" then
         return {
-            "defend",
+            -- "defend",
         }
     end
 
