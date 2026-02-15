@@ -252,6 +252,12 @@ local animalList = {
 
 	-- 龙虾
 	"wobster_sheller_land", "wobster_moonglass_land",
+
+	-- 蜗牛
+	"slurtle", "snurtle",
+
+	-- 猴子
+	"monkey", "powder_monkey", "prime_mate",
 }
 
 for i, prefab in ipairs(animalList) do
@@ -275,30 +281,9 @@ end)
 
 ------------------------------------------ 猴子 ------------------------------------------
 AddPrefabPostInit("monkey", function(inst)
-	-- 宠物抓捕
-	if inst.components.aipc_petable == nil then
-		inst:AddComponent("aipc_petable")
-	end
-
 	-- 猴子会概率掉落西游人物卡
 	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
 		inst.components.lootdropper:AddChanceLoot("aip_xiyou_card_monkey_king", dev_mode and 1 or 0.01)
-	end
-end)
-
------------------------------------------- 火药猴子 ------------------------------------------
-AddPrefabPostInit("powder_monkey", function(inst)
-	-- 宠物抓捕
-	if inst.components.aipc_petable == nil then
-		inst:AddComponent("aipc_petable")
-	end
-end)
-
------------------------------------------- 船员猴子 ------------------------------------------
-AddPrefabPostInit("prime_mate", function(inst)
-	-- 宠物抓捕
-	if inst.components.aipc_petable == nil then
-		inst:AddComponent("aipc_petable")
 	end
 end)
 
