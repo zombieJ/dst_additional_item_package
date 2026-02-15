@@ -465,6 +465,9 @@ local PREFABS = {
         anim = "idle",
         sg = "SGwobsterland",
         origin = "wobster_sheller",
+        postInit = function(inst)
+            inst._hit_sound = "hookline_2/creatures/wobster/hit"
+        end,
     },
 
     -- 月光龙虾
@@ -474,6 +477,9 @@ local PREFABS = {
         anim = "idle",
         sg = "SGwobsterland",
         origin = "wobster_moonglass",
+        postInit = function(inst)
+            inst._hit_sound = "hookline_2/creatures/wobster/hit"
+        end,
     },
 
     ----------------------------- 猴子 -----------------------------
