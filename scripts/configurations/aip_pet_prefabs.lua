@@ -476,6 +476,47 @@ local PREFABS = {
         end,
     },
 
+    -- 火药猴子
+    powder_monkey = {
+        bank = "monkey_small",
+        build = "monkey_small",
+        anim = "idle",
+        sg = "SGpowdermonkey",
+        scale = 0.8,
+        face = 4,
+        postInit = function(inst)
+            inst:AddComponent("follower")
+            inst:AddComponent("amphibiouscreature")
+            inst.components.amphibiouscreature:SetBanks("monkey_small", "monkey_small")
+            inst.soundtype = ""
+
+            inst:AddComponent("combat")
+            inst.components.combat:SetAttackPeriod(TUNING.MONKEY_ATTACK_PERIOD)
+            inst.components.combat:SetRange(TUNING.MONKEY_MELEE_RANGE)
+            inst.components.combat:SetDefaultDamage(0)
+        end,
+    },
+
+    -- 船员猴子
+    prime_mate = {
+        bank = "pigman",
+        build = "monkeymen_build",
+        anim = "idle_loop",
+        sg = "SGprimemate",
+        scale = 0.8,
+        face = 4,
+        postInit = function(inst)
+            inst.AnimState:Hide("ARM_carry_up")
+
+            inst.soundtype = ""
+
+            inst:AddComponent("combat")
+            inst.components.combat:SetAttackPeriod(TUNING.MONKEY_ATTACK_PERIOD)
+            inst.components.combat:SetRange(TUNING.MONKEY_MELEE_RANGE)
+            inst.components.combat:SetDefaultDamage(0)
+        end,
+    },
+
     ------------------------- 欧米伽黏菌团 -------------------------
     -- 欧米伽黏菌团
     aip_slime_mold = {
@@ -607,6 +648,20 @@ local SHEDDING_LOOT = {
 
     ------------------------- 猴子 -------------------------
     monkey = {
+        seeds = 0.1,                -- 10% 概率掉种子
+        cave_banana = 0.05,         -- 5% 概率掉洞穴香蕉
+        beardhair = 0.02,           -- 2% 概率掉胡子
+    },
+
+    ------------------------- 火药猴子 -------------------------
+    powder_monkey = {
+        seeds = 0.1,                -- 10% 概率掉种子
+        cave_banana = 0.05,         -- 5% 概率掉洞穴香蕉
+        beardhair = 0.02,           -- 2% 概率掉胡子
+    },
+
+    ------------------------- 船员猴子 -------------------------
+    prime_mate = {
         seeds = 0.1,                -- 10% 概率掉种子
         cave_banana = 0.05,         -- 5% 概率掉洞穴香蕉
         beardhair = 0.02,           -- 2% 概率掉胡子
@@ -790,7 +845,7 @@ local function getSkills(prefab, subPrefab)
     end
 
     ------------------------- 猴子 -------------------------
-    if prefab == "monkey" then
+    if prefab == "monkey" or prefab == "powder_monkey" or prefab == "prime_mate" then
         return {
             "steal",
         }

@@ -286,6 +286,22 @@ AddPrefabPostInit("monkey", function(inst)
 	end
 end)
 
+------------------------------------------ 火药猴子 ------------------------------------------
+AddPrefabPostInit("powder_monkey", function(inst)
+	-- 宠物抓捕
+	if inst.components.aipc_petable == nil then
+		inst:AddComponent("aipc_petable")
+	end
+end)
+
+------------------------------------------ 船员猴子 ------------------------------------------
+AddPrefabPostInit("prime_mate", function(inst)
+	-- 宠物抓捕
+	if inst.components.aipc_petable == nil then
+		inst:AddComponent("aipc_petable")
+	end
+end)
+
 ------------------------------------------ 骨骸 ------------------------------------------
 AddPrefabPostInit("stalker", function(inst)
 	-- 骨骸会概率掉落西游人物卡
