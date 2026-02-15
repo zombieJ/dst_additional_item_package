@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片裁剪工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .drop-zone {
+            border: 3px dashed #ccc;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: #4CAF50;
+            background: #e8f5e9;
+        }
+
+        .drop-zone p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .drop-zone input {
+            display: none;
+        }
+
+        .editor {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .editor.active {
+            display: block;
+        }
+
+        .canvas-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        #imageCanvas {
+            border: 1px solid #ddd;
+            max-width: 100%;
+            background-image: 
+                linear-gradient(45deg, #ccc 25%, transparent 25%),
+                linear-gradient(-45deg, #ccc 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #ccc 75%),
+                linear-gradient(-45deg, transparent 75%, #ccc 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            background-color: #fff;
+        }
+
+        #imageCanvas.dark-bg {
+            background-image: 
+                linear-gradient(45deg, #444 25%, transparent 25%),
+                linear-gradient(-45deg, #444 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #444 75%),
+                linear-gradient(-45deg, transparent 75%, #444 75%);
+            background-color: #000;
+        }
+
+        .crop-box {
+            position: absolute;
+            border: 2px solid #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+            cursor: move;
+            display: none;
+        }
+
+        .crop-box.active {
+            display: block;
+        }
+
+        .resize-handle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #4CAF50;
+            border: 1px solid white;
+        }
+
+        .resize-handle.nw { top: -5px; left: -5px; cursor: nw-resize; }
+        .resize-handle.ne { top: -5px; right: -5px; cursor: ne-resize; }
+        .resize-handle.sw { bottom: -5px; left: -5px; cursor: sw-resize; }
+        .resize-handle.se { bottom: -5px; right: -5px; cursor: se-resize; }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .preview {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .preview.active {
+            display: block;
+        }
+
+        .preview h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        #previewCanvas {
+            border: 1px solid #ddd;
+            max-width: 100%;
+            background-image: 
+                linear-gradient(45deg, #ccc 25%, transparent 25%),
+                linear-gradient(-45deg, #ccc 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #ccc 75%),
+                linear-gradient(-45deg, transparent 75%, #ccc 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            background-color: #fff;
+        }
+
+        #previewCanvas.dark-bg {
+            background-image: 
+                linear-gradient(45deg, #444 25%, transparent 25%),
+                linear-gradient(-45deg, #444 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #444 75%),
+                linear-gradient(-45deg, transparent 75%, #444 75%);
+            background-color: #000;
+        }
+
+        .info {
+            margin-top: 10px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .size-inputs {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .size-inputs label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .size-inputs input {
+            width: 80px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .size-inputs input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .size-inputs .separator {
+            color: #666;
+        }
+
+        .eraser-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .eraser-controls label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .eraser-controls input[type="range"] {
+            width: 100px;
+        }
+
+        .eraser-controls .brush-size {
+            color: #666;
+            font-size: 14px;
+            min-width: 30px;
+        }
+
+        .eraser-cursor {
+            position: absolute;
+            border: 2px solid #f44336;
+            border-radius: 50%;
+            pointer-events: none;
+            display: none;
+            z-index: 1000;
+        }
+
+        .bucket-cursor {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+            display: none;
+            z-index: 1000;
+        }
+
+        .bucket-cursor::before {
+            content: '🪣';
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>图片裁剪工具</h1>
+        
+        <div class="drop-zone" id="dropZone">
+            <p>拖拽图片到这里，或点击选择文件</p>
+            <input type="file" id="fileInput" accept="image/*">
+        </div>
+
+        <div class="editor" id="editor">
+            <div class="controls">
+                <button class="btn-primary" id="startCrop">开始裁剪</button>
+                <button class="btn-secondary" id="startEraser">橡皮擦</button>
+                <button class="btn-secondary" id="startBucket">油漆桶</button>
+                <button class="btn-secondary" id="toggleBg">切换背景</button>
+                <button class="btn-secondary" id="previewCrop">预览裁剪</button>
+                <button class="btn-primary" id="exportCrop">导出图片</button>
+                <button class="btn-danger" id="resetImage">重置图片</button>
+            </div>
+
+            <div class="size-inputs" id="sizeInputs" style="display: none;">
+                <label>宽度:</label>
+                <input type="number" id="widthInput" min="1" step="1">
+                <span class="separator">×</span>
+                <label>高度:</label>
+                <input type="number" id="heightInput" min="1" step="1">
+                <button class="btn-primary" id="applySize" style="padding: 5px 10px; font-size: 12px;">应用</button>
+            </div>
+
+            <div class="eraser-controls" id="eraserControls" style="display: none;">
+                <label>橡皮擦大小:</label>
+                <input type="range" id="eraserSize" min="5" max="100" value="20">
+                <span class="brush-size" id="brushSizeDisplay">20px</span>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="imageCanvas"></canvas>
+                <div class="crop-box" id="cropBox">
+                    <div class="resize-handle nw"></div>
+                    <div class="resize-handle ne"></div>
+                    <div class="resize-handle sw"></div>
+                    <div class="resize-handle se"></div>
+                </div>
+                <div class="eraser-cursor" id="eraserCursor"></div>
+                <div class="bucket-cursor" id="bucketCursor"></div>
+            </div>
+
+            <div class="info" id="imageInfo"></div>
+        </div>
+
+        <div class="preview" id="preview">
+            <h3>裁剪预览</h3>
+            <canvas id="previewCanvas"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const editor = document.getElementById('editor');
+        const imageCanvas = document.getElementById('imageCanvas');
+        const ctx = imageCanvas.getContext('2d');
+        const cropBox = document.getElementById('cropBox');
+        const preview = document.getElementById('preview');
+        const previewCanvas = document.getElementById('previewCanvas');
+        const previewCtx = previewCanvas.getContext('2d');
+        const imageInfo = document.getElementById('imageInfo');
+        const sizeInputs = document.getElementById('sizeInputs');
+        const widthInput = document.getElementById('widthInput');
+        const heightInput = document.getElementById('heightInput');
+        const eraserControls = document.getElementById('eraserControls');
+        const eraserSize = document.getElementById('eraserSize');
+        const brushSizeDisplay = document.getElementById('brushSizeDisplay');
+        const eraserCursor = document.getElementById('eraserCursor');
+        const bucketCursor = document.getElementById('bucketCursor');
+
+        let originalImage = null;
+        let isCropping = false;
+        let isErasing = false;
+        let isBucket = false;
+        let isDragging = false;
+        let isResizing = false;
+        let isErasingActive = false;
+        let currentHandle = null;
+        let startX, startY;
+        let cropX, cropY, cropWidth, cropHeight;
+        let aspectRatio = 1;
+        let eraserBrushSize = 20;
+        let lastEraserX = null;
+        let lastEraserY = null;
+        let isDarkBg = false;
+
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                loadImage(file);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                loadImage(file);
+            }
+        });
+
+        function loadImage(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    originalImage = img;
+                    displayImage();
+                    editor.classList.add('active');
+                    dropZone.style.display = 'none';
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function displayImage() {
+            const maxWidth = 800;
+            const maxHeight = 600;
+            let width = originalImage.width;
+            let height = originalImage.height;
+
+            if (width > maxWidth) {
+                height = (maxWidth / width) * height;
+                width = maxWidth;
+            }
+            if (height > maxHeight) {
+                width = (maxHeight / height) * width;
+                height = maxHeight;
+            }
+
+            imageCanvas.width = width;
+            imageCanvas.height = height;
+            ctx.drawImage(originalImage, 0, 0, width, height);
+
+            imageInfo.textContent = `原始尺寸: ${originalImage.width} x ${originalImage.height} | 显示尺寸: ${Math.round(width)} x ${Math.round(height)}`;
+        }
+
+        document.getElementById('startCrop').addEventListener('click', () => {
+            if (!isCropping) {
+                isCropping = true;
+                isErasing = false;
+                isBucket = false;
+                cropBox.classList.add('active');
+                sizeInputs.style.display = 'flex';
+                eraserControls.style.display = 'none';
+                imageCanvas.style.cursor = 'default';
+                eraserCursor.style.display = 'none';
+                bucketCursor.style.display = 'none';
+                initCropBox();
+            } else {
+                isCropping = false;
+                cropBox.classList.remove('active');
+                sizeInputs.style.display = 'none';
+            }
+        });
+
+        document.getElementById('startEraser').addEventListener('click', () => {
+            if (!isErasing) {
+                isErasing = true;
+                isBucket = false;
+                isCropping = false;
+                cropBox.classList.remove('active');
+                sizeInputs.style.display = 'none';
+                eraserControls.style.display = 'flex';
+                imageCanvas.style.cursor = 'none';
+                bucketCursor.style.display = 'none';
+            } else {
+                isErasing = false;
+                eraserControls.style.display = 'none';
+                imageCanvas.style.cursor = 'default';
+                eraserCursor.style.display = 'none';
+            }
+        });
+
+        document.getElementById('startBucket').addEventListener('click', () => {
+            if (!isBucket) {
+                isBucket = true;
+                isErasing = false;
+                isCropping = false;
+                cropBox.classList.remove('active');
+                sizeInputs.style.display = 'none';
+                eraserControls.style.display = 'none';
+                imageCanvas.style.cursor = 'crosshair';
+                eraserCursor.style.display = 'none';
+            } else {
+                isBucket = false;
+                imageCanvas.style.cursor = 'default';
+                bucketCursor.style.display = 'none';
+            }
+        });
+
+        document.getElementById('toggleBg').addEventListener('click', () => {
+            isDarkBg = !isDarkBg;
+            if (isDarkBg) {
+                imageCanvas.classList.add('dark-bg');
+                previewCanvas.classList.add('dark-bg');
+            } else {
+                imageCanvas.classList.remove('dark-bg');
+                previewCanvas.classList.remove('dark-bg');
+            }
+        });
+
+        eraserSize.addEventListener('input', (e) => {
+            eraserBrushSize = parseInt(e.target.value);
+            brushSizeDisplay.textContent = eraserBrushSize + 'px';
+            updateEraserCursor();
+        });
+
+        function updateEraserCursor() {
+            eraserCursor.style.width = eraserBrushSize + 'px';
+            eraserCursor.style.height = eraserBrushSize + 'px';
+        }
+
+        function initCropBox() {
+            const rect = imageCanvas.getBoundingClientRect();
+            const size = Math.min(rect.width, rect.height) * 0.5;
+            cropX = (rect.width - size) / 2;
+            cropY = (rect.height - size) / 2;
+            cropWidth = size;
+            cropHeight = size;
+            aspectRatio = cropWidth / cropHeight;
+            updateCropBox();
+            updateSizeInputs();
+        }
+
+        function updateSizeInputs() {
+            const scaleX = originalImage.width / imageCanvas.width;
+            const scaleY = originalImage.height / imageCanvas.height;
+            const realWidth = Math.round(cropWidth * scaleX);
+            const realHeight = Math.round(cropHeight * scaleY);
+            widthInput.value = realWidth;
+            heightInput.value = realHeight;
+        }
+
+        function updateCropBox() {
+            cropBox.style.left = cropX + 'px';
+            cropBox.style.top = cropY + 'px';
+            cropBox.style.width = cropWidth + 'px';
+            cropBox.style.height = cropHeight + 'px';
+        }
+
+        cropBox.addEventListener('mousedown', (e) => {
+            if (isErasing) return;
+            if (e.target.classList.contains('resize-handle')) {
+                isResizing = true;
+                currentHandle = e.target.className.split(' ')[1];
+            } else {
+                isDragging = true;
+            }
+            startX = e.clientX;
+            startY = e.clientY;
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isCropping) return;
+
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+
+            if (isDragging) {
+                cropX += dx;
+                cropY += dy;
+                cropX = Math.max(0, Math.min(cropX, imageCanvas.width - cropWidth));
+                cropY = Math.max(0, Math.min(cropY, imageCanvas.height - cropHeight));
+                updateCropBox();
+            } else if (isResizing) {
+                resizeCropBox(dx, dy, e.shiftKey);
+            }
+
+            startX = e.clientX;
+            startY = e.clientY;
+        });
+
+        imageCanvas.addEventListener('mousemove', (e) => {
+            if (!isErasing) return;
+
+            const rect = imageCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            eraserCursor.style.display = 'block';
+            eraserCursor.style.left = (x - eraserBrushSize / 2) + 'px';
+            eraserCursor.style.top = (y - eraserBrushSize / 2) + 'px';
+
+            if (isErasingActive) {
+                erase(x, y);
+            }
+        });
+
+        imageCanvas.addEventListener('mousemove', (e) => {
+            if (!isBucket) return;
+
+            const rect = imageCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            bucketCursor.style.display = 'block';
+            bucketCursor.style.left = (x - 10) + 'px';
+            bucketCursor.style.top = (y - 10) + 'px';
+        });
+
+        imageCanvas.addEventListener('mouseleave', () => {
+            if (isErasing) {
+                eraserCursor.style.display = 'none';
+            }
+            if (isBucket) {
+                bucketCursor.style.display = 'none';
+            }
+        });
+
+        imageCanvas.addEventListener('mousedown', (e) => {
+            if (!isErasing) return;
+            isErasingActive = true;
+            const rect = imageCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            lastEraserX = x;
+            lastEraserY = y;
+            erase(x, y);
+        });
+
+        imageCanvas.addEventListener('click', (e) => {
+            if (!isBucket) return;
+            const rect = imageCanvas.getBoundingClientRect();
+            const x = Math.floor(e.clientX - rect.left);
+            const y = Math.floor(e.clientY - rect.top);
+            floodFill(x, y);
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            isResizing = false;
+            currentHandle = null;
+            isErasingActive = false;
+            lastEraserX = null;
+            lastEraserY = null;
+        });
+
+        function erase(x, y) {
+            const radius = eraserBrushSize / 2;
+            ctx.save();
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            if (lastEraserX !== null && lastEraserY !== null) {
+                const distance = Math.sqrt(Math.pow(x - lastEraserX, 2) + Math.pow(y - lastEraserY, 2));
+                const steps = Math.ceil(distance / (radius / 2));
+                
+                for (let i = 1; i <= steps; i++) {
+                    const t = i / steps;
+                    const interpX = lastEraserX + (x - lastEraserX) * t;
+                    const interpY = lastEraserY + (y - lastEraserY) * t;
+                    ctx.beginPath();
+                    ctx.arc(interpX, interpY, radius, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            ctx.restore();
+
+            lastEraserX = x;
+            lastEraserY = y;
+        }
+
+        function floodFill(startX, startY) {
+            const imageData = ctx.getImageData(0, 0, imageCanvas.width, imageCanvas.height);
+            const data = imageData.data;
+            const width = imageCanvas.width;
+            const height = imageCanvas.height;
+
+            const targetColor = getPixelColor(data, startX, startY, width);
+
+            if (targetColor.a === 0) {
+                return;
+            }
+
+            const stack = [[startX, startY]];
+            const visited = new Set();
+
+            while (stack.length > 0) {
+                const [x, y] = stack.pop();
+                const key = `${x},${y}`;
+
+                if (visited.has(key)) continue;
+                if (x < 0 || x >= width || y < 0 || y >= height) continue;
+
+                const currentColor = getPixelColor(data, x, y, width);
+                if (!colorsMatch(currentColor, targetColor, 30)) continue;
+
+                visited.add(key);
+                setPixelColorTransparent(data, x, y, width);
+
+                stack.push([x + 1, y]);
+                stack.push([x - 1, y]);
+                stack.push([x, y + 1]);
+                stack.push([x, y - 1]);
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        function getPixelColor(data, x, y, width) {
+            const index = (y * width + x) * 4;
+            return {
+                r: data[index],
+                g: data[index + 1],
+                b: data[index + 2],
+                a: data[index + 3]
+            };
+        }
+
+        function setPixelColor(data, x, y, width, color) {
+            const index = (y * width + x) * 4;
+            data[index] = color.r;
+            data[index + 1] = color.g;
+            data[index + 2] = color.b;
+            data[index + 3] = 255;
+        }
+
+        function setPixelColorTransparent(data, x, y, width) {
+            const index = (y * width + x) * 4;
+            data[index + 3] = 0;
+        }
+
+        function colorsMatch(c1, c2, tolerance = 0) {
+            if (c1.a === 0 || c2.a === 0) return c1.a === c2.a;
+            return Math.abs(c1.r - c2.r) <= tolerance &&
+                   Math.abs(c1.g - c2.g) <= tolerance &&
+                   Math.abs(c1.b - c2.b) <= tolerance;
+        }
+
+        function resizeCropBox(dx, dy, shiftKey) {
+            const minWidth = 20;
+            const minHeight = 20;
+
+            if (shiftKey) {
+                const oldWidth = cropWidth;
+                const oldHeight = cropHeight;
+                let newWidth, newHeight;
+
+                switch (currentHandle) {
+                    case 'se':
+                        newWidth = Math.max(minWidth, cropWidth + dx);
+                        newHeight = newWidth / aspectRatio;
+                        break;
+                    case 'sw':
+                        newWidth = Math.max(minWidth, cropWidth - dx);
+                        newHeight = newWidth / aspectRatio;
+                        cropX += (cropWidth - newWidth);
+                        break;
+                    case 'ne':
+                        newWidth = Math.max(minWidth, cropWidth + dx);
+                        newHeight = newWidth / aspectRatio;
+                        cropY += (cropHeight - newHeight);
+                        break;
+                    case 'nw':
+                        newWidth = Math.max(minWidth, cropWidth - dx);
+                        newHeight = newWidth / aspectRatio;
+                        cropX += (cropWidth - newWidth);
+                        cropY += (cropHeight - newHeight);
+                        break;
+                }
+
+                cropWidth = newWidth;
+                cropHeight = newHeight;
+            } else {
+                switch (currentHandle) {
+                    case 'se':
+                        cropWidth = Math.max(minWidth, cropWidth + dx);
+                        cropHeight = Math.max(minHeight, cropHeight + dy);
+                        break;
+                    case 'sw':
+                        cropWidth = Math.max(minWidth, cropWidth - dx);
+                        cropHeight = Math.max(minHeight, cropHeight + dy);
+                        cropX += dx;
+                        break;
+                    case 'ne':
+                        cropWidth = Math.max(minWidth, cropWidth + dx);
+                        cropHeight = Math.max(minHeight, cropHeight - dy);
+                        cropY += dy;
+                        break;
+                    case 'nw':
+                        cropWidth = Math.max(minWidth, cropWidth - dx);
+                        cropHeight = Math.max(minHeight, cropHeight - dy);
+                        cropX += dx;
+                        cropY += dy;
+                        break;
+                }
+            }
+
+            cropX = Math.max(0, cropX);
+            cropY = Math.max(0, cropY);
+            cropWidth = Math.min(cropWidth, imageCanvas.width - cropX);
+            cropHeight = Math.min(cropHeight, imageCanvas.height - cropY);
+
+            updateCropBox();
+            updateSizeInputs();
+        }
+
+        document.getElementById('previewCrop').addEventListener('click', () => {
+            if (!isCropping) {
+                alert('请先开始裁剪');
+                return;
+            }
+
+            const scaleX = originalImage.width / imageCanvas.width;
+            const scaleY = originalImage.height / imageCanvas.height;
+
+            const sourceX = cropX * scaleX;
+            const sourceY = cropY * scaleY;
+            const sourceWidth = cropWidth * scaleX;
+            const sourceHeight = cropHeight * scaleY;
+
+            previewCanvas.width = sourceWidth;
+            previewCanvas.height = sourceHeight;
+
+            previewCtx.drawImage(
+                imageCanvas,
+                cropX, cropY, cropWidth, cropHeight,
+                0, 0, sourceWidth, sourceHeight
+            );
+
+            preview.classList.add('active');
+        });
+
+        document.getElementById('exportCrop').addEventListener('click', () => {
+            if (isErasing || isBucket) {
+                const link = document.createElement('a');
+                link.download = 'edited_image.png';
+                link.href = imageCanvas.toDataURL('image/png');
+                link.click();
+                return;
+            }
+
+            if (!isCropping) {
+                alert('请先开始裁剪');
+                return;
+            }
+
+            const scaleX = originalImage.width / imageCanvas.width;
+            const scaleY = originalImage.height / imageCanvas.height;
+
+            const sourceX = cropX * scaleX;
+            const sourceY = cropY * scaleY;
+            const sourceWidth = cropWidth * scaleX;
+            const sourceHeight = cropHeight * scaleY;
+
+            const exportCanvas = document.createElement('canvas');
+            exportCanvas.width = sourceWidth;
+            exportCanvas.height = sourceHeight;
+            const exportCtx = exportCanvas.getContext('2d');
+
+            exportCtx.drawImage(
+                imageCanvas,
+                cropX, cropY, cropWidth, cropHeight,
+                0, 0, sourceWidth, sourceHeight
+            );
+
+            const link = document.createElement('a');
+            link.download = 'cropped_image.png';
+            link.href = exportCanvas.toDataURL('image/png');
+            link.click();
+        });
+
+        document.getElementById('resetImage').addEventListener('click', () => {
+            isCropping = false;
+            isErasing = false;
+            isBucket = false;
+            cropBox.classList.remove('active');
+            preview.classList.remove('active');
+            sizeInputs.style.display = 'none';
+            eraserControls.style.display = 'none';
+            imageCanvas.style.cursor = 'default';
+            eraserCursor.style.display = 'none';
+            bucketCursor.style.display = 'none';
+            displayImage();
+        });
+
+        document.getElementById('applySize').addEventListener('click', () => {
+            const scaleX = originalImage.width / imageCanvas.width;
+            const scaleY = originalImage.height / imageCanvas.height;
+            const targetWidth = parseInt(widthInput.value) / scaleX;
+            const targetHeight = parseInt(heightInput.value) / scaleY;
+
+            if (targetWidth > 0 && targetHeight > 0) {
+                cropWidth = Math.min(targetWidth, imageCanvas.width - cropX);
+                cropHeight = Math.min(targetHeight, imageCanvas.height - cropY);
+                aspectRatio = cropWidth / cropHeight;
+                updateCropBox();
+            }
+        });
+
+        widthInput.addEventListener('input', () => {
+            if (widthInput.value && heightInput.value) {
+                const scaleX = originalImage.width / imageCanvas.width;
+                const scaleY = originalImage.height / imageCanvas.height;
+                const targetWidth = parseInt(widthInput.value) / scaleX;
+                const targetHeight = parseInt(heightInput.value) / scaleY;
+
+                if (targetWidth > 0 && targetHeight > 0) {
+                    cropWidth = Math.min(targetWidth, imageCanvas.width - cropX);
+                    cropHeight = Math.min(targetHeight, imageCanvas.height - cropY);
+                    aspectRatio = cropWidth / cropHeight;
+                    updateCropBox();
+                }
+            }
+        });
+
+        heightInput.addEventListener('input', () => {
+            if (widthInput.value && heightInput.value) {
+                const scaleX = originalImage.width / imageCanvas.width;
+                const scaleY = originalImage.height / imageCanvas.height;
+                const targetWidth = parseInt(widthInput.value) / scaleX;
+                const targetHeight = parseInt(heightInput.value) / scaleY;
+
+                if (targetWidth > 0 && targetHeight > 0) {
+                    cropWidth = Math.min(targetWidth, imageCanvas.width - cropX);
+                    cropHeight = Math.min(targetHeight, imageCanvas.height - cropY);
+                    aspectRatio = cropWidth / cropHeight;
+                    updateCropBox();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
