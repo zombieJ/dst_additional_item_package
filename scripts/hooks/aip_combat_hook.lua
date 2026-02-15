@@ -269,6 +269,18 @@ AddComponentPostInit("combat", function(self)
 				end
 			end
 
+			-- 偷窃 从目标身上偷取物品
+			local stealInfo, stealLv = self.inst.components.aipc_pet_owner:GetSkillInfo("steal")
+			if stealInfo ~= nil and target.components.lootdropper ~= nil then
+				local stealChance = stealInfo.multi * stealLv
+				if _G.aipChance(stealChance, self.inst) then
+					if not target._aipPetStolen then
+						target.components.lootdropper:DropLoot()
+						target._aipPetStolen = true
+					end
+				end
+			end
+
 			-- 青尘 增加伤害
 			local balrogInfo, balrogLv = self.inst.components.aipc_pet_owner:GetSkillInfo("balrog")
 			if
