@@ -402,6 +402,25 @@ local PREFABS = {
         end,
     },
 
+    ----------------------------- 蜗牛 -----------------------------
+    -- 蜗牛
+    slurtle = {
+        bank = "slurtle",
+        build = "slurtle",
+        anim = "idle",
+        sg = "SGslurtle",
+        scale = 0.8,
+    },
+
+    -- 果冻蜗牛
+    snurtle = {
+        bank = "slurtle",
+        build = "snurtle",
+        anim = "idle",
+        sg = "SGslurtle",
+        scale = 0.8,
+    },
+
     ----------------------------- 泥蟹 -----------------------------
     -- 泥蟹
     aip_mud_crab = {
@@ -646,23 +665,15 @@ local SHEDDING_LOOT = {
         beardhair = 0.01,           -- 1% 概率掉胡子
     },
 
+    ------------------------- 蜗牛 -------------------------
+    slurtle = {
+        rocks = 0.1,                    -- 10% 概率掉石头
+        slurtle_shellpieces = 0.05,     -- 5% 概率掉蜗牛壳碎片
+        slurtleslime = 0.05,            -- 5% 概率掉蜗牛黏液
+    },
+
     ------------------------- 猴子 -------------------------
     monkey = {
-        seeds = 0.1,                -- 10% 概率掉种子
-        cave_banana = 0.05,         -- 5% 概率掉洞穴香蕉
-        beardhair = 0.02,           -- 2% 概率掉胡子
-    },
-
-    ------------------------- 火药猴子 -------------------------
-    powder_monkey = {
-        seeds = 0.1,                -- 10% 概率掉种子
-        cave_banana = 0.05,         -- 5% 概率掉洞穴香蕉
-        beardhair = 0.02,           -- 2% 概率掉胡子
-    },
-
-    ------------------------- 船员猴子 -------------------------
-    prime_mate = {
-        seeds = 0.1,                -- 10% 概率掉种子
         cave_banana = 0.05,         -- 5% 概率掉洞穴香蕉
         beardhair = 0.02,           -- 2% 概率掉胡子
     },
@@ -676,6 +687,11 @@ SHEDDING_LOOT.spider_water = SHEDDING_LOOT.spider_warrior       -- 海生蜘蛛
 SHEDDING_LOOT.beeguard = SHEDDING_LOOT.bee                      -- 蜜蜂守卫
 
 SHEDDING_LOOT.stalker_minion2 = SHEDDING_LOOT.stalker_minion1   -- 编织暗影
+
+SHEDDING_LOOT.snurtle = SHEDDING_LOOT.slurtle                   -- 果冻蜗牛
+
+SHEDDING_LOOT.powder_monkey = SHEDDING_LOOT.monkey              -- 火药猴子
+SHEDDING_LOOT.prime_mate = SHEDDING_LOOT.monkey                 -- 船员猴子
 
 local function getPrefab(inst, seer)
 	local prefab = inst.prefab
@@ -820,6 +836,13 @@ local function getSkills(prefab, subPrefab)
     if prefab == "slurper" then
         return {
             "migao",
+        }
+    end
+
+    ------------------------- 蜗牛 -------------------------
+    if prefab == "slurtle" or prefab == "snurtle" then
+        return {
+            "defend",
         }
     end
 
