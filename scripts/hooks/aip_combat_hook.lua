@@ -352,6 +352,23 @@ AddComponentPostInit("combat", function(self)
 				-- 破坏一层
 				target.components.aipc_grave_cloak:Break()
 			end
+
+			-- 碎甲 技能：将一定比例伤害转化为护甲耐久消耗
+			local defendInfo, defendLv = target.components.aipc_pet_owner:GetSkillInfo("defend")
+			if defendInfo ~= nil and target.components.inventory ~= nil and dmg > 0 then
+				local equip = target.components.inventory:GetEquippedItem(_G.EQUIPSLOTS.BODY)
+				if equip ~= nil and equip.components.armor ~= nil then
+					local armor = equip.components.armor
+					local convertPTG = defendInfo.multi * defendLv
+					local convertDmg = dmg * convertPTG
+					local newCondition = armor.condition - convertDmg
+					if newCondition < 1 then
+						newCondition = 1
+					end
+					armor:SetCondition(newCondition)
+					petDmgDiv = petDmgDiv * (1 - convertPTG)
+				end
+			end
 		end
 
 		-- 如果有 火莲 buff 就加伤害

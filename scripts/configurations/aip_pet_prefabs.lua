@@ -851,7 +851,7 @@ local function getSkills(prefab, subPrefab)
     ------------------------- 蜗牛 -------------------------
     if prefab == "slurtle" or prefab == "snurtle" then
         return {
-            -- "defend",
+            "defend",
         }
     end
 
