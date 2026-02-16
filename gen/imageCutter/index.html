@@ -291,6 +291,7 @@
                 <button class="btn-primary" id="startCrop">开始裁剪</button>
                 <button class="btn-secondary" id="startEraser">橡皮擦</button>
                 <button class="btn-secondary" id="startBucket">油漆桶</button>
+                <button class="btn-secondary" id="edgeFade">边缘透明</button>
                 <button class="btn-secondary" id="toggleBg">切换背景</button>
                 <button class="btn-secondary" id="previewCrop">预览裁剪</button>
                 <button class="btn-primary" id="exportCrop">导出图片</button>
@@ -368,6 +369,7 @@
         let lastEraserX = null;
         let lastEraserY = null;
         let isDarkBg = false;
+        let isEdgeFade = false;
 
         dropZone.addEventListener('click', () => fileInput.click());
         dropZone.addEventListener('dragover', (e) => {
@@ -435,6 +437,7 @@
                 isCropping = true;
                 isErasing = false;
                 isBucket = false;
+                isEdgeFade = false;
                 cropBox.classList.add('active');
                 sizeInputs.style.display = 'flex';
                 eraserControls.style.display = 'none';
@@ -454,6 +457,7 @@
                 isErasing = true;
                 isBucket = false;
                 isCropping = false;
+                isEdgeFade = false;
                 cropBox.classList.remove('active');
                 sizeInputs.style.display = 'none';
                 eraserControls.style.display = 'flex';
@@ -472,6 +476,7 @@
                 isBucket = true;
                 isErasing = false;
                 isCropping = false;
+                isEdgeFade = false;
                 cropBox.classList.remove('active');
                 sizeInputs.style.display = 'none';
                 eraserControls.style.display = 'none';
@@ -479,6 +484,7 @@
                 eraserCursor.style.display = 'none';
             } else {
                 isBucket = false;
+                isEdgeFade = false;
                 imageCanvas.style.cursor = 'default';
                 bucketCursor.style.display = 'none';
             }
@@ -499,6 +505,15 @@
             eraserBrushSize = parseInt(e.target.value);
             brushSizeDisplay.textContent = eraserBrushSize + 'px';
             updateEraserCursor();
+        });
+
+        document.getElementById('edgeFade').addEventListener('click', () => {
+            if (!isCropping && !isErasing && !isBucket) {
+                applyEdgeFade();
+                isEdgeFade = true;
+            } else {
+                alert('请先关闭其他工具');
+            }
         });
 
         function updateEraserCursor() {
@@ -821,40 +836,55 @@
         });
 
         document.getElementById('exportCrop').addEventListener('click', () => {
-            if (isErasing || isBucket) {
-                const link = document.createElement('a');
-                link.download = 'edited_image.png';
-                link.href = imageCanvas.toDataURL('image/png');
-                link.click();
+            let exportWidth, exportHeight;
+            let sourceX = 0, sourceY = 0, sourceWidth = imageCanvas.width, sourceHeight = imageCanvas.height;
+
+            if (isCropping) {
+                const scaleX = originalImage.width / imageCanvas.width;
+                const scaleY = originalImage.height / imageCanvas.height;
+
+                sourceX = cropX * scaleX;
+                sourceY = cropY * scaleY;
+                sourceWidth = cropWidth * scaleX;
+                sourceHeight = cropHeight * scaleY;
+
+                exportWidth = Math.round(sourceWidth);
+                exportHeight = Math.round(sourceHeight);
+            } else {
+                exportWidth = Math.round(imageCanvas.width);
+                exportHeight = Math.round(imageCanvas.height);
+            }
+
+            const widthInput = prompt(`请输入导出宽度（默认：${exportWidth}）`, exportWidth);
+            const heightInput = prompt(`请输入导出高度（默认：${exportHeight}）`, exportHeight);
+
+            if (widthInput === null || heightInput === null) {
                 return;
             }
 
-            if (!isCropping) {
-                alert('请先开始裁剪');
-                return;
-            }
-
-            const scaleX = originalImage.width / imageCanvas.width;
-            const scaleY = originalImage.height / imageCanvas.height;
-
-            const sourceX = cropX * scaleX;
-            const sourceY = cropY * scaleY;
-            const sourceWidth = cropWidth * scaleX;
-            const sourceHeight = cropHeight * scaleY;
+            const targetWidth = parseInt(widthInput) || exportWidth;
+            const targetHeight = parseInt(heightInput) || exportHeight;
 
             const exportCanvas = document.createElement('canvas');
-            exportCanvas.width = sourceWidth;
-            exportCanvas.height = sourceHeight;
+            exportCanvas.width = targetWidth;
+            exportCanvas.height = targetHeight;
             const exportCtx = exportCanvas.getContext('2d');
 
-            exportCtx.drawImage(
-                imageCanvas,
-                cropX, cropY, cropWidth, cropHeight,
-                0, 0, sourceWidth, sourceHeight
-            );
+            if (isCropping) {
+                const scaleX = originalImage.width / imageCanvas.width;
+                const scaleY = originalImage.height / imageCanvas.height;
+
+                exportCtx.drawImage(
+                    imageCanvas,
+                    cropX, cropY, cropWidth, cropHeight,
+                    0, 0, targetWidth, targetHeight
+                );
+            } else {
+                exportCtx.drawImage(imageCanvas, 0, 0, targetWidth, targetHeight);
+            }
 
             const link = document.createElement('a');
-            link.download = 'cropped_image.png';
+            link.download = `export_${targetWidth}x${targetHeight}.png`;
             link.href = exportCanvas.toDataURL('image/png');
             link.click();
         });
@@ -863,6 +893,7 @@
             isCropping = false;
             isErasing = false;
             isBucket = false;
+            isEdgeFade = false;
             cropBox.classList.remove('active');
             preview.classList.remove('active');
             sizeInputs.style.display = 'none';
@@ -872,6 +903,73 @@
             bucketCursor.style.display = 'none';
             displayImage();
         });
+
+        function applyEdgeFade() {
+            const imageData = ctx.getImageData(0, 0, imageCanvas.width, imageCanvas.height);
+            const data = imageData.data;
+            const width = imageCanvas.width;
+            const height = imageCanvas.height;
+
+            const distanceMap = new Float32Array(width * height).fill(Infinity);
+            const queue = [];
+
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const index = (y * width + x) * 4;
+                    const a = data[index + 3];
+
+                    if (a === 0) {
+                        const pixelIndex = y * width + x;
+                        distanceMap[pixelIndex] = 0;
+                        queue.push([x, y]);
+                    }
+                }
+            }
+
+            const directions = [[0, 1], [0, -1], [1, 0], [-1, 0]];
+            let queueIndex = 0;
+
+            while (queueIndex < queue.length) {
+                const [x, y] = queue[queueIndex++];
+                const currentDist = distanceMap[y * width + x];
+
+                if (currentDist >= 2) continue;
+
+                for (const [dx, dy] of directions) {
+                    const nx = x + dx;
+                    const ny = y + dy;
+
+                    if (nx < 0 || nx >= width || ny < 0 || ny >= height) continue;
+
+                    const pixelIndex = ny * width + nx;
+                    const newDist = currentDist + 1;
+
+                    if (newDist < distanceMap[pixelIndex]) {
+                        distanceMap[pixelIndex] = newDist;
+                        queue.push([nx, ny]);
+                    }
+                }
+            }
+
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const pixelIndex = y * width + x;
+                    const distance = distanceMap[pixelIndex];
+
+                    if (distance > 0 && distance <= 2) {
+                        const index = pixelIndex * 4;
+                        const a = data[index + 3];
+
+                        if (a > 0) {
+                            const alpha = distance === 1 ? Math.floor(a * 0.33) : Math.floor(a * 0.66);
+                            data[index + 3] = alpha;
+                        }
+                    }
+                }
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+        }
 
         document.getElementById('applySize').addEventListener('click', () => {
             const scaleX = originalImage.width / imageCanvas.width;
