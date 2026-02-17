@@ -359,13 +359,9 @@ AddComponentPostInit("combat", function(self)
 				local equip = target.components.inventory:GetEquippedItem(_G.EQUIPSLOTS.BODY)
 				if equip ~= nil and equip.components.armor ~= nil then
 					local armor = equip.components.armor
-					local convertPTG = defendInfo.multi * defendLv
-					local convertDmg = dmg * convertPTG
-					local newCondition = armor.condition - convertDmg
-					if newCondition < 1 then
-						newCondition = 1
-					end
-					armor:SetCondition(newCondition)
+					local convertPTG = math.min(1, defendInfo.multi * defendLv)
+					local convertDmg = math.min(dmg * convertPTG, armor.condition)
+					armor:TakeDamage(convertDmg)
 					petDmgDiv = petDmgDiv * (1 - convertPTG)
 				end
 			end

@@ -73,6 +73,7 @@
             position: relative;
             display: inline-block;
             margin-bottom: 20px;
+            overflow: visible;
         }
 
         #imageCanvas {
@@ -156,6 +157,15 @@
         .btn-danger {
             background: #f44336;
             color: white;
+        }
+
+        .btn-transparent-eraser {
+            background: #9C27B0;
+            color: white;
+        }
+
+        .btn-transparent-eraser.active {
+            background: #7B1FA2;
         }
 
         .preview {
@@ -262,6 +272,11 @@
             z-index: 1000;
         }
 
+        .eraser-cursor.transparent {
+            border: 2px solid #9C27B0;
+            background: rgba(156, 39, 176, 0.2);
+        }
+
         .bucket-cursor {
             position: absolute;
             width: 20px;
@@ -290,11 +305,13 @@
             <div class="controls">
                 <button class="btn-primary" id="startCrop">开始裁剪</button>
                 <button class="btn-secondary" id="startEraser">橡皮擦</button>
+                <button class="btn-transparent-eraser" id="startTransparentEraser">透明橡皮擦</button>
                 <button class="btn-secondary" id="startBucket">油漆桶</button>
                 <button class="btn-secondary" id="edgeFade">边缘透明</button>
                 <button class="btn-secondary" id="toggleBg">切换背景</button>
                 <button class="btn-secondary" id="previewCrop">预览裁剪</button>
                 <button class="btn-primary" id="exportCrop">导出图片</button>
+                <button class="btn-secondary" id="undo">撤销</button>
                 <button class="btn-danger" id="resetImage">重置图片</button>
             </div>
 
@@ -357,6 +374,7 @@
         let originalImage = null;
         let isCropping = false;
         let isErasing = false;
+        let isTransparentErasing = false;
         let isBucket = false;
         let isDragging = false;
         let isResizing = false;
@@ -368,8 +386,11 @@
         let eraserBrushSize = 20;
         let lastEraserX = null;
         let lastEraserY = null;
-        let isDarkBg = false;
+        let isDarkBg = true;
         let isEdgeFade = false;
+        let transparentErasedPixels = new Set();
+        let historyStack = [];
+        let historyIndex = -1;
 
         dropZone.addEventListener('click', () => fileInput.click());
         dropZone.addEventListener('dragover', (e) => {
@@ -430,6 +451,30 @@
             ctx.drawImage(originalImage, 0, 0, width, height);
 
             imageInfo.textContent = `原始尺寸: ${originalImage.width} x ${originalImage.height} | 显示尺寸: ${Math.round(width)} x ${Math.round(height)}`;
+            
+            transparentErasedPixels.clear();
+            
+            if (isDarkBg) {
+                imageCanvas.classList.add('dark-bg');
+                previewCanvas.classList.add('dark-bg');
+            }
+            
+            saveToHistory();
+        }
+
+        function saveToHistory() {
+            const imageData = ctx.getImageData(0, 0, imageCanvas.width, imageCanvas.height);
+            historyStack = historyStack.slice(0, historyIndex + 1);
+            historyStack.push(imageData);
+            historyIndex = historyStack.length - 1;
+        }
+
+        function undo() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                ctx.putImageData(historyStack[historyIndex], 0, 0);
+                transparentErasedPixels.clear();
+            }
         }
 
         document.getElementById('startCrop').addEventListener('click', () => {
@@ -455,6 +500,7 @@
         document.getElementById('startEraser').addEventListener('click', () => {
             if (!isErasing) {
                 isErasing = true;
+                isTransparentErasing = false;
                 isBucket = false;
                 isCropping = false;
                 isEdgeFade = false;
@@ -463,6 +509,8 @@
                 eraserControls.style.display = 'flex';
                 imageCanvas.style.cursor = 'none';
                 bucketCursor.style.display = 'none';
+                eraserCursor.classList.remove('transparent');
+                transparentErasedPixels.clear();
             } else {
                 isErasing = false;
                 eraserControls.style.display = 'none';
@@ -471,10 +519,33 @@
             }
         });
 
+        document.getElementById('startTransparentEraser').addEventListener('click', () => {
+            if (!isTransparentErasing) {
+                isTransparentErasing = true;
+                isErasing = false;
+                isBucket = false;
+                isCropping = false;
+                isEdgeFade = false;
+                cropBox.classList.remove('active');
+                sizeInputs.style.display = 'none';
+                eraserControls.style.display = 'flex';
+                imageCanvas.style.cursor = 'none';
+                bucketCursor.style.display = 'none';
+                eraserCursor.classList.add('transparent');
+            } else {
+                isTransparentErasing = false;
+                eraserControls.style.display = 'none';
+                imageCanvas.style.cursor = 'default';
+                eraserCursor.style.display = 'none';
+                eraserCursor.classList.remove('transparent');
+            }
+        });
+
         document.getElementById('startBucket').addEventListener('click', () => {
             if (!isBucket) {
                 isBucket = true;
                 isErasing = false;
+                isTransparentErasing = false;
                 isCropping = false;
                 isEdgeFade = false;
                 cropBox.classList.remove('active');
@@ -509,6 +580,7 @@
 
         document.getElementById('edgeFade').addEventListener('click', () => {
             if (!isCropping && !isErasing && !isBucket) {
+                saveToHistory();
                 applyEdgeFade();
                 isEdgeFade = true;
             } else {
@@ -550,7 +622,7 @@
         }
 
         cropBox.addEventListener('mousedown', (e) => {
-            if (isErasing) return;
+            if (isErasing || isTransparentErasing) return;
             if (e.target.classList.contains('resize-handle')) {
                 isResizing = true;
                 currentHandle = e.target.className.split(' ')[1];
@@ -571,8 +643,6 @@
             if (isDragging) {
                 cropX += dx;
                 cropY += dy;
-                cropX = Math.max(0, Math.min(cropX, imageCanvas.width - cropWidth));
-                cropY = Math.max(0, Math.min(cropY, imageCanvas.height - cropHeight));
                 updateCropBox();
             } else if (isResizing) {
                 resizeCropBox(dx, dy, e.shiftKey);
@@ -583,7 +653,7 @@
         });
 
         imageCanvas.addEventListener('mousemove', (e) => {
-            if (!isErasing) return;
+            if (!isErasing && !isTransparentErasing) return;
 
             const rect = imageCanvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
@@ -594,7 +664,24 @@
             eraserCursor.style.top = (y - eraserBrushSize / 2) + 'px';
 
             if (isErasingActive) {
-                erase(x, y);
+                if (isErasing) {
+                    erase(x, y);
+                } else if (isTransparentErasing) {
+                    transparentErase(x, y);
+                    if (lastEraserX !== null && lastEraserY !== null) {
+                        const distance = Math.sqrt(Math.pow(x - lastEraserX, 2) + Math.pow(y - lastEraserY, 2));
+                        const steps = Math.ceil(distance / (eraserBrushSize / 4));
+                        
+                        for (let i = 1; i <= steps; i++) {
+                            const t = i / steps;
+                            const interpX = lastEraserX + (x - lastEraserX) * t;
+                            const interpY = lastEraserY + (y - lastEraserY) * t;
+                            transparentErase(interpX, interpY);
+                        }
+                    }
+                    lastEraserX = x;
+                    lastEraserY = y;
+                }
             }
         });
 
@@ -611,7 +698,7 @@
         });
 
         imageCanvas.addEventListener('mouseleave', () => {
-            if (isErasing) {
+            if (isErasing || isTransparentErasing) {
                 eraserCursor.style.display = 'none';
             }
             if (isBucket) {
@@ -620,18 +707,24 @@
         });
 
         imageCanvas.addEventListener('mousedown', (e) => {
-            if (!isErasing) return;
+            if (!isErasing && !isTransparentErasing) return;
+            saveToHistory();
             isErasingActive = true;
             const rect = imageCanvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             lastEraserX = x;
             lastEraserY = y;
-            erase(x, y);
+            if (isErasing) {
+                erase(x, y);
+            } else if (isTransparentErasing) {
+                transparentErase(x, y);
+            }
         });
 
         imageCanvas.addEventListener('click', (e) => {
             if (!isBucket) return;
+            saveToHistory();
             const rect = imageCanvas.getBoundingClientRect();
             const x = Math.floor(e.clientX - rect.left);
             const y = Math.floor(e.clientY - rect.top);
@@ -672,6 +765,54 @@
 
             lastEraserX = x;
             lastEraserY = y;
+        }
+
+        function transparentErase(x, y) {
+            const radius = eraserBrushSize / 2;
+            const startX = Math.max(0, Math.floor(x - radius));
+            const startY = Math.max(0, Math.floor(y - radius));
+            const endX = Math.min(imageCanvas.width, Math.ceil(x + radius));
+            const endY = Math.min(imageCanvas.height, Math.ceil(y + radius));
+
+            const imageData = ctx.getImageData(startX, startY, endX - startX, endY - startY);
+            const data = imageData.data;
+
+            for (let py = 0; py < endY - startY; py++) {
+                for (let px = 0; px < endX - startX; px++) {
+                    const worldX = startX + px;
+                    const worldY = startY + py;
+                    const dist = Math.sqrt(Math.pow(worldX - x, 2) + Math.pow(worldY - y, 2));
+
+                    if (dist <= radius) {
+                        const pixelKey = `${worldX},${worldY}`;
+                        
+                        if (transparentErasedPixels.has(pixelKey)) {
+                            continue;
+                        }
+
+                        const index = (py * (endX - startX) + px) * 4;
+                        const r = data[index];
+                        const g = data[index + 1];
+                        const b = data[index + 2];
+                        const a = data[index + 3];
+
+                        if (a === 0) {
+                            continue;
+                        }
+
+                        const alpha = Math.floor(255 - (r + g + b) / 3);
+
+                        data[index] = 0;
+                        data[index + 1] = 0;
+                        data[index + 2] = 0;
+                        data[index + 3] = alpha;
+                        
+                        transparentErasedPixels.add(pixelKey);
+                    }
+                }
+            }
+
+            ctx.putImageData(imageData, startX, startY);
         }
 
         function floodFill(startX, startY) {
@@ -800,11 +941,6 @@
                 }
             }
 
-            cropX = Math.max(0, cropX);
-            cropY = Math.max(0, cropY);
-            cropWidth = Math.min(cropWidth, imageCanvas.width - cropX);
-            cropHeight = Math.min(cropHeight, imageCanvas.height - cropY);
-
             updateCropBox();
             updateSizeInputs();
         }
@@ -826,11 +962,27 @@
             previewCanvas.width = sourceWidth;
             previewCanvas.height = sourceHeight;
 
-            previewCtx.drawImage(
-                imageCanvas,
-                cropX, cropY, cropWidth, cropHeight,
-                0, 0, sourceWidth, sourceHeight
-            );
+            previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+
+            const intersectX = Math.max(0, cropX);
+            const intersectY = Math.max(0, cropY);
+            const intersectRight = Math.min(cropX + cropWidth, imageCanvas.width);
+            const intersectBottom = Math.min(cropY + cropHeight, imageCanvas.height);
+            const intersectWidth = Math.max(0, intersectRight - intersectX);
+            const intersectHeight = Math.max(0, intersectBottom - intersectY);
+
+            if (intersectWidth > 0 && intersectHeight > 0) {
+                const destX = (intersectX - cropX) * scaleX;
+                const destY = (intersectY - cropY) * scaleY;
+                const destWidth = intersectWidth * scaleX;
+                const destHeight = intersectHeight * scaleY;
+
+                previewCtx.drawImage(
+                    imageCanvas,
+                    intersectX, intersectY, intersectWidth, intersectHeight,
+                    destX, destY, destWidth, destHeight
+                );
+            }
 
             preview.classList.add('active');
         });
@@ -874,11 +1026,25 @@
                 const scaleX = originalImage.width / imageCanvas.width;
                 const scaleY = originalImage.height / imageCanvas.height;
 
-                exportCtx.drawImage(
-                    imageCanvas,
-                    cropX, cropY, cropWidth, cropHeight,
-                    0, 0, targetWidth, targetHeight
-                );
+                const intersectX = Math.max(0, cropX);
+                const intersectY = Math.max(0, cropY);
+                const intersectRight = Math.min(cropX + cropWidth, imageCanvas.width);
+                const intersectBottom = Math.min(cropY + cropHeight, imageCanvas.height);
+                const intersectWidth = Math.max(0, intersectRight - intersectX);
+                const intersectHeight = Math.max(0, intersectBottom - intersectY);
+
+                if (intersectWidth > 0 && intersectHeight > 0) {
+                    const destX = (intersectX - cropX) / cropWidth * targetWidth;
+                    const destY = (intersectY - cropY) / cropHeight * targetHeight;
+                    const destWidth = intersectWidth / cropWidth * targetWidth;
+                    const destHeight = intersectHeight / cropHeight * targetHeight;
+
+                    exportCtx.drawImage(
+                        imageCanvas,
+                        intersectX, intersectY, intersectWidth, intersectHeight,
+                        destX, destY, destWidth, destHeight
+                    );
+                }
             } else {
                 exportCtx.drawImage(imageCanvas, 0, 0, targetWidth, targetHeight);
             }
@@ -892,6 +1058,7 @@
         document.getElementById('resetImage').addEventListener('click', () => {
             isCropping = false;
             isErasing = false;
+            isTransparentErasing = false;
             isBucket = false;
             isEdgeFade = false;
             cropBox.classList.remove('active');
@@ -900,8 +1067,16 @@
             eraserControls.style.display = 'none';
             imageCanvas.style.cursor = 'default';
             eraserCursor.style.display = 'none';
+            eraserCursor.classList.remove('transparent');
             bucketCursor.style.display = 'none';
+            transparentErasedPixels.clear();
+            historyStack = [];
+            historyIndex = -1;
             displayImage();
+        });
+
+        document.getElementById('undo').addEventListener('click', () => {
+            undo();
         });
 
         function applyEdgeFade() {
@@ -978,8 +1153,8 @@
             const targetHeight = parseInt(heightInput.value) / scaleY;
 
             if (targetWidth > 0 && targetHeight > 0) {
-                cropWidth = Math.min(targetWidth, imageCanvas.width - cropX);
-                cropHeight = Math.min(targetHeight, imageCanvas.height - cropY);
+                cropWidth = targetWidth;
+                cropHeight = targetHeight;
                 aspectRatio = cropWidth / cropHeight;
                 updateCropBox();
             }
@@ -993,8 +1168,8 @@
                 const targetHeight = parseInt(heightInput.value) / scaleY;
 
                 if (targetWidth > 0 && targetHeight > 0) {
-                    cropWidth = Math.min(targetWidth, imageCanvas.width - cropX);
-                    cropHeight = Math.min(targetHeight, imageCanvas.height - cropY);
+                    cropWidth = targetWidth;
+                    cropHeight = targetHeight;
                     aspectRatio = cropWidth / cropHeight;
                     updateCropBox();
                 }
@@ -1009,8 +1184,8 @@
                 const targetHeight = parseInt(heightInput.value) / scaleY;
 
                 if (targetWidth > 0 && targetHeight > 0) {
-                    cropWidth = Math.min(targetWidth, imageCanvas.width - cropX);
-                    cropHeight = Math.min(targetHeight, imageCanvas.height - cropY);
+                    cropWidth = targetWidth;
+                    cropHeight = targetHeight;
                     aspectRatio = cropWidth / cropHeight;
                     updateCropBox();
                 }

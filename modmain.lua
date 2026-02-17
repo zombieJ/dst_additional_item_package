@@ -75,6 +75,7 @@ PrefabFiles = {
 	"aip_xinyue_hoe",
 	"aip_xinyue_gridplacer",
 	"aip_22_fish",
+	"aip_luna_watch",
 
 	-- survival
 	"aip_blood_package",
