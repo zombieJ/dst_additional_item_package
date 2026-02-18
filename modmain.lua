@@ -8,6 +8,7 @@ Assets = {
 	Asset("ATLAS", "images/inventoryimages/incinerator.xml"),
 	Asset("ATLAS", "images/inventoryimages/dark_observer.xml"),
 	Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_doomsday_clock.xml"),
 
 	-- 神秘权杖需要提前加载
 	Asset("ATLAS", "images/inventoryimages/aip_dou_tech.xml"),
@@ -86,6 +87,7 @@ PrefabFiles = {
 	"aip_dragon_footprint",
 	"aip_krampus_plus",
 	"aip_fig_salve",
+	"aip_doomsday_clock",
 
 	-- Weapon
 	"popcorngun",
