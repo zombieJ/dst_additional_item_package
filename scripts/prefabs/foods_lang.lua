@@ -116,6 +116,10 @@ local LANG_MAP = {
 			NAME = "Spring Lucky Bag",
 			DESC = "Hello, Spring!",
 		},
+		AIP_BLOOD_BREAD = {
+			NAME = "Blood Bread",
+			DESC = "Power at a cost",
+		},
 	},
 	spanish = {
 		EGG_PANCAKE = {
@@ -177,6 +181,10 @@ local LANG_MAP = {
 		FROZEN_HEART = {
 			NAME = "Corazón Congelado",
 			DESC = "¿Porqué se puede cocinar esto?",
+		},
+		AIP_BLOOD_BREAD = {
+			NAME = "Pan de Sangre",
+			DESC = "Poder a un costo",
 		},
 	},
 	russian = {
@@ -271,7 +279,11 @@ local LANG_MAP = {
 		AIP_FOOD_CUBE_SUGAR = {
 			NAME = "Кубики сахара",
 			DESC = "Лучший вид для сахара.",
-		},	
+		},
+		AIP_BLOOD_BREAD = {
+			NAME = "Кровавый хлеб",
+			DESC = "Сила ценой разума",
+		},
 	},
 	portuguese = {
 		EGG_PANCAKE = {
@@ -334,6 +346,10 @@ local LANG_MAP = {
 			NAME = "Coração congelado",
 			DESC = "Porque pot pode fazer isso",
 		},
+		AIP_BLOOD_BREAD = {
+			NAME = "Pão de Sangue",
+			DESC = "Poder com um custo",
+		},
 	},
 	korean = {
 		EGG_PANCAKE = {
@@ -395,6 +411,10 @@ local LANG_MAP = {
 		FROZEN_HEART = {
 			NAME = "얼음 심장",
 			DESC = "왜 냄비에서 이런 게 만들어졌지?",
+		},
+		AIP_BLOOD_BREAD = {
+			NAME = "피의 빵",
+			DESC = "힘은 대가가 필요해",
 		},
 	},
 	chinese = {
@@ -513,6 +533,10 @@ local LANG_MAP = {
 		AIP_FOOD_SPRING_BALL = {
 			NAME = "咬春福袋",
 			DESC = "春天，你好！",
+		},
+		AIP_BLOOD_BREAD = {
+			NAME = "血面包",
+			DESC = "力量伴随着代价",
 		},
 	},
 }

@@ -744,6 +744,21 @@ local food_recipes = {
 			inst.components.repairer.boatrepairsound = "turnoftides/common/together/boat/repair_with_wood"
 		end,
 	},
+
+	-- 血面包
+	aip_blood_bread = {
+		test = function(cooker, names, tags)
+			return tags.meat and tags.meat >= 0.5 and tags.indescribable and tags.indescribable >= 0.5 and tags.starch and tags.starch >= 1
+		end,
+		priority = 99,
+		weight = 1,
+		foodtype = FOODTYPE.MEAT,
+		health = HP * 200,
+		hunger = HU * 200,
+		sanity = SAN * -200,
+		perishtime = PER * 20,
+		cooktime = CO * 10,
+	},
 }
 
 --------------------------------------------------
