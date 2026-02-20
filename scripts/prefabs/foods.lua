@@ -759,6 +759,32 @@ local food_recipes = {
 		perishtime = PER * 20,
 		cooktime = CO * 10,
 	},
+
+	-- 胡佛炖菜
+	aip_hoover_stew = {
+		test = function(cooker, names, tags)
+			return tags.meat and tags.meat > 0 and tags.starch and tags.starch >= 1 and
+				(names.tomato or names.tomato_cooked) and
+				(names.potato or names.potato_cooked or names.corn or names.corn_cooked or names.carrot or names.carrot_cooked)
+		end,
+		priority = 20,
+		weight = 1,
+		foodtype = FOODTYPE.MEAT,
+		health = HP * 12,
+		hunger = HU * 62.5,
+		sanity = SAN * 5,
+		perishtime = PER * 20,
+		cooktime = CO * 20,
+		oneatenfn = function(inst, eater)
+			local hungerThreshold = dev_mode and 200 or 10
+			local foodHunger = inst.components.edible.hungervalue or 0
+			if eater.components.hunger ~= nil and (eater.components.hunger.current - foodHunger) < hungerThreshold then
+				if eater.components.sanity ~= nil then
+					eater.components.sanity:DoDelta(50)
+				end
+			end
+		end,
+	},
 }
 
 --------------------------------------------------

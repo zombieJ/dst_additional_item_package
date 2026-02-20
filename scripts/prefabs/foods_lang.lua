@@ -120,6 +120,10 @@ local LANG_MAP = {
 			NAME = "Blood Bread",
 			DESC = "Power at a cost",
 		},
+		AIP_HOOVER_STEW = {
+			NAME = "Hoover Stew",
+			DESC = "Unwilling to recall the time",
+		},
 	},
 	spanish = {
 		EGG_PANCAKE = {
@@ -185,6 +189,10 @@ local LANG_MAP = {
 		AIP_BLOOD_BREAD = {
 			NAME = "Pan de Sangre",
 			DESC = "Poder a un costo",
+		},
+		AIP_HOOVER_STEW = {
+			NAME = "Estofado de Hoover",
+			DESC = "Tiempo que no quiero recordar",
 		},
 	},
 	russian = {
@@ -284,6 +292,10 @@ local LANG_MAP = {
 			NAME = "Кровавый хлеб",
 			DESC = "Сила ценой разума",
 		},
+		AIP_HOOVER_STEW = {
+			NAME = "Рагу Гувера",
+			DESC = "Время, которое не хочется вспоминать",
+		},
 	},
 	portuguese = {
 		EGG_PANCAKE = {
@@ -350,6 +362,10 @@ local LANG_MAP = {
 			NAME = "Pão de Sangue",
 			DESC = "Poder com um custo",
 		},
+		AIP_HOOVER_STEW = {
+			NAME = "Ensopado de Hoover",
+			DESC = "Tempo que não quero lembrar",
+		},
 	},
 	korean = {
 		EGG_PANCAKE = {
@@ -415,6 +431,10 @@ local LANG_MAP = {
 		AIP_BLOOD_BREAD = {
 			NAME = "피의 빵",
 			DESC = "힘은 대가가 필요해",
+		},
+		AIP_HOOVER_STEW = {
+			NAME = "후버 스튜",
+			DESC = "기억하고 싶지 않은 시간",
 		},
 	},
 	chinese = {
@@ -537,6 +557,10 @@ local LANG_MAP = {
 		AIP_BLOOD_BREAD = {
 			NAME = "血面包",
 			DESC = "力量伴随着代价",
+		},
+		AIP_HOOVER_STEW = {
+			NAME = "胡佛炖菜",
+			DESC = "不愿回忆的时光",
 		},
 	},
 }
