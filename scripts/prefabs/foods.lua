@@ -67,11 +67,11 @@ local prefabs =
 	"spoiled_food",
 }
 
-local HP = TUNING.HEALING_TINY -- 1 healing
+local HP = TUNING.HEALING_TINY       -- 1 healing
 local HU = TUNING.CALORIES_HUGE / 75 -- 1 hunger
-local SAN = TUNING.SANITY_SUPERTINY -- 1 sanity
-local PER = TUNING.PERISH_ONE_DAY -- 1 day
-local CO = 1 / 20 -- 1 second
+local SAN = TUNING.SANITY_SUPERTINY  -- 1 sanity
+local PER = TUNING.PERISH_ONE_DAY    -- 1 day
+local CO = 1 / 20                    -- 1 second
 
 -- 方法
 local function getCount(entity, name)
@@ -80,33 +80,33 @@ end
 
 -- 香料
 local function oneaten_garlic(inst, eater)
-    if eater.components.debuffable ~= nil and eater.components.debuffable:IsEnabled() and
-        not (eater.components.health ~= nil and eater.components.health:IsDead()) and
-        not eater:HasTag("playerghost") then
-        eater.components.debuffable:AddDebuff("buff_playerabsorption", "buff_playerabsorption")
-    end
+	if eater.components.debuffable ~= nil and eater.components.debuffable:IsEnabled() and
+		not (eater.components.health ~= nil and eater.components.health:IsDead()) and
+		not eater:HasTag("playerghost") then
+		eater.components.debuffable:AddDebuff("buff_playerabsorption", "buff_playerabsorption")
+	end
 end
 
 local function oneaten_sugar(inst, eater)
-    if eater.components.debuffable ~= nil and eater.components.debuffable:IsEnabled() and
-        not (eater.components.health ~= nil and eater.components.health:IsDead()) and
-        not eater:HasTag("playerghost") then
-        eater.components.debuffable:AddDebuff("buff_workeffectiveness", "buff_workeffectiveness")
-    end
+	if eater.components.debuffable ~= nil and eater.components.debuffable:IsEnabled() and
+		not (eater.components.health ~= nil and eater.components.health:IsDead()) and
+		not eater:HasTag("playerghost") then
+		eater.components.debuffable:AddDebuff("buff_workeffectiveness", "buff_workeffectiveness")
+	end
 end
 
 local function oneaten_chili(inst, eater)
-    if eater.components.debuffable ~= nil and eater.components.debuffable:IsEnabled() and
-        not (eater.components.health ~= nil and eater.components.health:IsDead()) and
-        not eater:HasTag("playerghost") then
-        eater.components.debuffable:AddDebuff("buff_attack", "buff_attack")
-    end
+	if eater.components.debuffable ~= nil and eater.components.debuffable:IsEnabled() and
+		not (eater.components.health ~= nil and eater.components.health:IsDead()) and
+		not eater:HasTag("playerghost") then
+		eater.components.debuffable:AddDebuff("buff_attack", "buff_attack")
+	end
 end
 
 local SPICES = {
-    SPICE_GARLIC = { rgba = { 0.6, 0.6, 1.0, 0.9 }, oneatenfn = oneaten_garlic, prefabs = { "buff_playerabsorption" } },
-    SPICE_SUGAR  = { rgba = { 1.0, 1.0, 0.3, 1.0 }, oneatenfn = oneaten_sugar, prefabs = { "buff_workeffectiveness" } },
-    SPICE_CHILI  = { rgba = { 1.0, 0.5, 0.5, 1.0 }, oneatenfn = oneaten_chili, prefabs = { "buff_attack" } },
+	SPICE_GARLIC = { rgba = { 0.6, 0.6, 1.0, 0.9 }, oneatenfn = oneaten_garlic, prefabs = { "buff_playerabsorption" } },
+	SPICE_SUGAR  = { rgba = { 1.0, 1.0, 0.3, 1.0 }, oneatenfn = oneaten_sugar, prefabs = { "buff_workeffectiveness" } },
+	SPICE_CHILI  = { rgba = { 1.0, 0.5, 0.5, 1.0 }, oneatenfn = oneaten_chili, prefabs = { "buff_attack" } },
 }
 
 ----------------------------------- 方法 -----------------------------------
@@ -169,7 +169,8 @@ local food_recipes = {
 	},
 
 	monster_salad = {
-		test = function(cooker, names, tags) return tags.monster and tags.veggie and tags.veggie >= 3 and not tags.inedible end,
+		test = function(cooker, names, tags) return tags.monster and tags.veggie and tags.veggie >= 3 and
+			not tags.inedible end,
 		priority = 0,
 		weight = 1,
 		foodtype = FOODTYPE.VEGGIE,
@@ -182,10 +183,11 @@ local food_recipes = {
 			duration = dev_mode and 20 or 120,
 		},
 	},
-	
+
 	skunk_smoothies = {
 		test = function(cooker, names, tags)
-			return (names.durian or names.durian_cooked) and tags.frozen and tags.fruit and tags.fruit >= 2 and not tags.inedible
+			return (names.durian or names.durian_cooked) and tags.frozen and tags.fruit and tags.fruit >= 2 and
+			not tags.inedible
 		end,
 		priority = 1,
 		weight = 1,
@@ -222,7 +224,8 @@ local food_recipes = {
 	},
 	bamboo_light = {
 		test = function(cooker, names, tags)
-			return (names.corn or names.corn_cooked) and (names.carrot or names.carrot_cooked) and (names.pumpkin or names.pumpkin_cooked)
+			return (names.corn or names.corn_cooked) and (names.carrot or names.carrot_cooked) and
+			(names.pumpkin or names.pumpkin_cooked)
 		end,
 		priority = 1,
 		weight = 1,
@@ -247,7 +250,8 @@ local food_recipes = {
 	},
 	vegetaballs = {
 		test = function(cooker, names, tags)
-			return tags.meat and tags.meat == 2 and tags.veggie and not tags.inedible and not tags.frozen and not tags.fruit and not names.foliage
+			return tags.meat and tags.meat == 2 and tags.veggie and not tags.inedible and not tags.frozen and
+			not tags.fruit and not names.foliage
 		end,
 		priority = 0,
 		weight = 1,
@@ -270,9 +274,9 @@ local food_recipes = {
 	},
 	veg_lohan = {
 		test = function(cooker, names, tags)
-			local red = getCount(names, "red_cap") +  getCount(names, "red_cap_cooked")
-			local green = getCount(names, "green_cap") +  getCount(names, "green_cap_cooked")
-			local blue = getCount(names, "blue_cap") +  getCount(names, "blue_cap_cooked")
+			local red = getCount(names, "red_cap") + getCount(names, "red_cap_cooked")
+			local green = getCount(names, "green_cap") + getCount(names, "green_cap_cooked")
+			local blue = getCount(names, "blue_cap") + getCount(names, "blue_cap_cooked")
 			return red + green + blue > 3
 		end,
 		priority = 1,
@@ -299,7 +303,7 @@ local food_recipes = {
 		sanity = SAN * 5,
 		perishtime = PER * 6,
 		cooktime = CO * 30,
-		tags = {"honeyed"},
+		tags = { "honeyed" },
 		buff = {
 			duration = 30,
 			startFn = function(source, inst, info)
@@ -423,7 +427,7 @@ local food_recipes = {
 		sanity = SAN * 20,
 		perishtime = PER * 15,
 		cooktime = CO * 30,
-		tags = {"honeyed"},
+		tags = { "honeyed" },
 	},
 	frozen_heart = {
 		test = function(cooker, names, tags)
@@ -440,7 +444,7 @@ local food_recipes = {
 		temperature = TUNING.COLD_FOOD_BONUS_TEMP,
 		temperatureduration = TUNING.FOOD_TEMP_LONG,
 		goldvalue = TUNING.GOLD_VALUES.MEAT,
-		tags = {"frozen", "aip_nectar_material"},
+		tags = { "frozen", "aip_nectar_material" },
 	},
 	aip_food_egg_fried_rice = {
 		test = function(cooker, names, tags)
@@ -560,7 +564,7 @@ local food_recipes = {
 		sanity = SAN * 15,
 		perishtime = PER * 30,
 		cooktime = CO * 15,
-		tags = {"honeyed"},
+		tags = { "honeyed" },
 		goldvalue = 0, -- 加一个数值，让其可以给若光交易
 	},
 	aip_food_cube_sugar = {
@@ -575,12 +579,13 @@ local food_recipes = {
 		sanity = SAN * 15,
 		perishtime = PER * 15,
 		cooktime = CO * 40,
-		tags = {"honeyed", "aip_nectar_material", "aip_exquisite"},
+		tags = { "honeyed", "aip_nectar_material", "aip_exquisite" },
 	},
 
-	aip_food_nest_sausage = {	-- 大肠包小肠
+	aip_food_nest_sausage = { -- 大肠包小肠
 		test = function(cooker, names, tags)
-			return names.aip_cold_skin and tags.meat and tags.meat >= 1 and tags.starch and tags.starch > 1 and not tags.inedible
+			return names.aip_cold_skin and tags.meat and tags.meat >= 1 and tags.starch and tags.starch > 1 and
+			not tags.inedible
 		end,
 		priority = 20,
 		weight = 1,
@@ -595,7 +600,7 @@ local food_recipes = {
 		},
 	},
 
-	aip_food_vermicelli_roll = {	-- 肠粉
+	aip_food_vermicelli_roll = { -- 肠粉
 		test = function(cooker, names, tags)
 			return names.aip_cold_skin and names.aip_cold_skin >= 2 and tags.egg and not tags.inedible
 		end,
@@ -619,7 +624,7 @@ local food_recipes = {
 		end,
 	},
 
-	aip_food_braised_intestine = {	-- 九转大肠
+	aip_food_braised_intestine = { -- 九转大肠
 		test = function(cooker, names, tags)
 			return names.aip_cold_skin and tags.meat and tags.monster and not tags.inedible
 		end,
@@ -642,7 +647,7 @@ local food_recipes = {
 		},
 	},
 
-	aip_food_spring_ball = {	-- 咬春福袋
+	aip_food_spring_ball = { -- 咬春福袋
 		test = function(cooker, names, tags)
 			return names.aip_cold_skin and tags.egg and
 				(names.carrot or names.carrot_cooked) and
@@ -662,14 +667,14 @@ local food_recipes = {
 		end,
 	},
 
-	aip_food_maltose = {	-- 麦芽糖
+	aip_food_maltose = { -- 麦芽糖
 		test = function(cooker, names, tags)
 			return tags.starch and tags.starch == 2 and names.twigs and names.twigs == 2
 		end,
 		priority = 20,
 		weight = 1,
 		foodtype = FOODTYPE.GOODIES,
-		health = - HP * 5,
+		health = -HP * 5,
 		hunger = HU * 25,
 		sanity = SAN * 55,
 		perishtime = PER * 15,
@@ -706,7 +711,7 @@ local food_recipes = {
 		sanity = SAN * -10,
 		perishtime = PER * 5,
 		cooktime = CO * 20,
-		tags = {"honeyed"},
+		tags = { "honeyed" },
 		oneatenfn = function(inst, eater)
 			aipBufferPatch(inst, eater, "aip_see_eyes", dev_mode and 20 or 120)
 
@@ -748,7 +753,8 @@ local food_recipes = {
 	-- 血面包
 	aip_blood_bread = {
 		test = function(cooker, names, tags)
-			return tags.meat and tags.meat >= 0.5 and tags.indescribable and tags.indescribable >= 0.5 and tags.starch and tags.starch >= 1
+			return tags.meat and tags.meat >= 0.5 and tags.indescribable and tags.indescribable >= 0.5 and tags.starch and
+			tags.starch >= 1
 		end,
 		priority = 99,
 		weight = 1,
@@ -775,12 +781,28 @@ local food_recipes = {
 		sanity = SAN * 5,
 		perishtime = PER * 20,
 		cooktime = CO * 20,
-		oneatenfn = function(inst, eater)
-			local hungerThreshold = dev_mode and 200 or 10
-			local foodHunger = inst.components.edible.hungervalue or 0
-			if eater.components.hunger ~= nil and (eater.components.hunger.current - foodHunger) < hungerThreshold then
-				if eater.components.sanity ~= nil then
-					eater.components.sanity:DoDelta(50)
+		postFn = function(inst)
+			inst.components.edible.aipStartEat = function(inst, eater)
+				aipPrint("aipStartEat1", inst)
+				aipPrint("aipStartEat2", eater)
+				
+				local hungerThreshold = dev_mode and 200 or 10
+				aipPrint("hungerThreshold", hungerThreshold)
+				
+				local hasHunger = eater.components.hunger ~= nil
+				aipPrint("hasHunger", hasHunger)
+				
+				if hasHunger then
+					local currentHunger = eater.components.hunger.current
+					aipPrint("currentHunger", currentHunger)
+					aipPrint("compare", currentHunger, "<", hungerThreshold, "=", currentHunger < hungerThreshold)
+				end
+				
+				if eater.components.hunger ~= nil and eater.components.hunger.current < hungerThreshold then
+					aipPrint("sanity bonus triggered")
+					if eater.components.sanity ~= nil then
+						eater.components.sanity:DoDelta(50)
+					end
 				end
 			end
 		end,
@@ -788,9 +810,9 @@ local food_recipes = {
 }
 
 --------------------------------------------------
-for name,data in pairs(food_recipes) do
-	local atlas = "images/inventoryimages/"..name..".xml"
-	local tex = name..".tex"
+for name, data in pairs(food_recipes) do
+	local atlas = "images/inventoryimages/" .. name .. ".xml"
+	local tex = name .. ".tex"
 
 	-- 预处理
 	data.name = name
@@ -812,7 +834,7 @@ for name,data in pairs(food_recipes) do
 	-- 添加文字
 	local upperCase = string.upper(name)
 	local FOOD_LANG = LANG[upperCase] or LANG_ENG[upperCase]
-	
+
 	STRINGS.NAMES[upperCase] = FOOD_LANG.NAME
 	STRINGS.CHARACTERS.GENERIC.DESCRIBE[upperCase] = FOOD_LANG.DESC
 
@@ -851,8 +873,8 @@ for name,data in pairs(food_recipes) do
 	-------------------- 创建食物实体 --------------------
 	local assets = {
 		Asset("ATLAS", atlas),
-		Asset("IMAGE", "images/inventoryimages/"..tex),
-		Asset("ANIM", "anim/"..data.name..".zip"),
+		Asset("IMAGE", "images/inventoryimages/" .. tex),
+		Asset("ANIM", "anim/" .. data.name .. ".zip"),
 	}
 
 	function getFn(r, g, b, a)
@@ -873,7 +895,7 @@ for name,data in pairs(food_recipes) do
 
 			inst:AddTag("preparedfood")
 			if data.tags then
-				for i,v in pairs(data.tags) do
+				for i, v in pairs(data.tags) do
 					inst:AddTag(v)
 				end
 			end
@@ -915,7 +937,7 @@ for name,data in pairs(food_recipes) do
 
 			-- 物品栏
 			inst:AddComponent("inventoryitem")
-			inst.components.inventoryitem.atlasname = "images/inventoryimages/"..data.name..".xml"
+			inst.components.inventoryitem.atlasname = "images/inventoryimages/" .. data.name .. ".xml"
 			inst.components.inventoryitem.imagename = data.name
 
 			inst:AddComponent("stackable")
@@ -944,14 +966,14 @@ for name,data in pairs(food_recipes) do
 		end
 	end
 
-	local prefab = Prefab(name, getFn(1,1,1,1), assets, prefabs)
+	local prefab = Prefab(name, getFn(1, 1, 1, 1), assets, prefabs)
 	table.insert(prefabList, prefab)
 
 	-------------------- 添加香料支持 --------------------
 	for spicenameupper, spicedata in pairs(SPICES) do
 		local newdata = shallowcopy(data)
 		local spicename = string.lower(spicenameupper)
-		local newFoodName = name.."_"..spicename
+		local newFoodName = name .. "_" .. spicename
 
 		newdata.test = function(cooker, names, tags) return names[name] and names[spicename] end
 		newdata.priority = 100
@@ -961,7 +983,7 @@ for name,data in pairs(food_recipes) do
 		newdata.spice = spicenameupper
 		newdata.basename = name
 		newdata.name = newFoodName
-		newdata.floater = {"med", nil, {0.85, 0.7, 0.85}}
+		newdata.floater = { "med", nil, { 0.85, 0.7, 0.85 } }
 		-- spicedfoods[newdata.name] = newdata
 
 		AddModPrefabCookerRecipe("portablespicer", newdata)
@@ -981,7 +1003,8 @@ for name,data in pairs(food_recipes) do
 
 		if spicedata.prefabs ~= nil then
 			--make a copy (via ArrayUnion) if there are dependencies from the original food
-			newdata.prefabs = newdata.prefabs ~= nil and ArrayUnion(newdata.prefabs, spicedata.prefabs) or spicedata.prefabs
+			newdata.prefabs = newdata.prefabs ~= nil and ArrayUnion(newdata.prefabs, spicedata.prefabs) or
+			spicedata.prefabs
 		end
 
 		if spicedata.oneatenfn ~= nil then
@@ -999,7 +1022,7 @@ for name,data in pairs(food_recipes) do
 		-- 添加文字
 		local newUpperCase = string.upper(newFoodName)
 		local FOOD_LANG = LANG[newUpperCase] or LANG_ENG[newUpperCase]
-		
+
 		STRINGS.NAMES[newUpperCase] = FOOD_LANG.NAME
 		STRINGS.CHARACTERS.GENERIC.DESCRIBE[newUpperCase] = FOOD_LANG.DESC
 
