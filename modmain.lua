@@ -269,6 +269,7 @@ PrefabFiles = {
 	"aip_gholdengo",
 	"aip_wither_skeleton",
 	"aip_coal",
+	"aip_phoenix_feather",
 
 	-- 5 个挑战
 	"aip_nectar_bee",

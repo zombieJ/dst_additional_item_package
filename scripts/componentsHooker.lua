@@ -492,7 +492,7 @@ AipPostComp("health", function(self)
 			amount = amount * 2
 		end
 
-		local data = { amount = amount, afflicter = afflicter }
+		local data = { amount = amount, afflicter = afflicter, cause = cause }
 		self.inst:PushEvent("aip_healthdelta", data)
 
 		return originDoDelta(
