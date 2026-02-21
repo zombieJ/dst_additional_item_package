@@ -132,6 +132,34 @@ Mod 选项在 [modinfo.lua](modinfo.lua) 中定义：
 5. 在 [modmain.lua](modmain.lua) 中注册物品
 6. 使用 [package.json](package.json) 中的脚本构建和测试
 
+## 查看代码变更
+
+在开发过程中，查看代码变更时必须使用 `git diff --no-pager` 命令：
+
+```bash
+git diff --no-pager
+```
+
+**使用 `--no-pager` 参数的原因：**
+- 避免分页器干扰输出
+- 确保变更内容完整显示
+- 便于在终端中直接查看和复制
+
+**常用命令：**
+```bash
+# 查看所有变更
+git diff --no-pager
+
+# 查看特定文件的变更
+git diff --no-pager scripts/prefabs/aip_divine_rapier.lua
+
+# 查看暂存区的变更
+git diff --cached --no-pager
+
+# 查看最近一次提交的变更
+git show --no-pager HEAD
+```
+
 ## 关键工具
 
 - [aipUtils.lua](scripts/aipUtils.lua) - 辅助函数
