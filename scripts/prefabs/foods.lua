@@ -783,23 +783,9 @@ local food_recipes = {
 		cooktime = CO * 20,
 		postFn = function(inst)
 			inst.components.edible.aipStartEat = function(inst, eater)
-				aipPrint("aipStartEat1", inst)
-				aipPrint("aipStartEat2", eater)
-				
 				local hungerThreshold = dev_mode and 200 or 10
-				aipPrint("hungerThreshold", hungerThreshold)
-				
-				local hasHunger = eater.components.hunger ~= nil
-				aipPrint("hasHunger", hasHunger)
-				
-				if hasHunger then
-					local currentHunger = eater.components.hunger.current
-					aipPrint("currentHunger", currentHunger)
-					aipPrint("compare", currentHunger, "<", hungerThreshold, "=", currentHunger < hungerThreshold)
-				end
 				
 				if eater.components.hunger ~= nil and eater.components.hunger.current < hungerThreshold then
-					aipPrint("sanity bonus triggered")
 					if eater.components.sanity ~= nil then
 						eater.components.sanity:DoDelta(50)
 					end
