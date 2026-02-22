@@ -570,6 +570,17 @@ local PREFABS = {
             inst._soundpath = "terraria1/eyeofterror/"
         end,
     },
+
+    ----------------------------- 虚影 -----------------------------
+    gestalt = {
+        bank = "brightmare_gestalt",
+        build = "brightmare_gestalt",
+        anim = "idle",
+        sg = "SGbrightmare_gestalt",
+        origin = "gestalt",
+        scale = 0.6,
+        face = 4,
+    },
 }
 
 -- 填充一下 origin
@@ -686,6 +697,11 @@ local SHEDDING_LOOT = {
         cave_banana = 0.05,         -- 5% 概率掉洞穴香蕉
         beardhair = 0.02,           -- 2% 概率掉胡子
     },
+
+    ------------------------- 虚影 -------------------------
+    gestalt = {
+        moonglass = 0.05,           -- 5% 概率掉月光玻璃
+    },
 }
 
 SHEDDING_LOOT.spider_hider = SHEDDING_LOOT.spider_warrior       -- 洞穴蜘蛛
@@ -745,6 +761,11 @@ local function getPrefab(inst, seer)
     ----------------------- 恐怖之眼 -----------------------
     if prefab == "aip_pet_eyeofterror" then
         prefab = "eyeofterror"
+    end
+
+    ------------------------- 虚影 -------------------------
+    if prefab == "aip_pet_gestalt" then
+        prefab = "gestalt"
     end
 
 	return prefab, subPrefab
@@ -887,6 +908,13 @@ local function getSkills(prefab, subPrefab)
     if prefab == "aip_slime_mold" then
         return {
             "resonance",
+        }
+    end
+
+    ------------------------- 虚影 -------------------------
+    if prefab == "gestalt" then
+        return {
+            "brightshadeKiller",
         }
     end
 end

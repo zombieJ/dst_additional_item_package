@@ -258,6 +258,9 @@ local animalList = {
 
 	-- 猴子
 	"monkey", "powder_monkey", "prime_mate",
+
+	-- 虚影
+	"gestalt",
 }
 
 for i, prefab in ipairs(animalList) do

@@ -132,6 +132,7 @@ local SKILL_LANG = {
 		coldDog = "Cold Dog",
 		steal = "Steal",
 		defend = "Shatter Armor",
+		brightshadeKiller = "Brightshade Killer",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -173,6 +174,7 @@ local SKILL_LANG = {
 		coldDog = "霜之哀伤",
 		steal = "偷窃",
 		defend = "碎甲",
+		brightshadeKiller = "亮茄杀手",
 	},
 }
 
@@ -217,6 +219,7 @@ local SKILL_MAX_LEVEL = {
 	coldDog = { 1, 2, 3, 4, 5 },
 	steal = { 1, 2, 3, 4, 5 },
 	defend = { 6, 7, 8, 9, 10 },
+	brightshadeKiller = { 2, 4, 6, 8, 10 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -387,6 +390,10 @@ local SKILL_CONSTANT = {
 		special = true,
 		multi = dev_mode and 1 or 0.08,				-- 每个等级将 8% 伤害转化为护甲耐久
 	},
+	brightshadeKiller = {
+		special = true,
+		atk = dev_mode and 0.34 or 0.01,					-- 每个等级对亮茄造成额外 20% 伤害
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -430,6 +437,7 @@ local SKILL_DESC_LANG = {
 		coldDog = "Increase ATK% max health damage to ice hound and turn hound to ice hound",
 		steal = "Has PTG% chance to steal item from enemy when attacking",
 		defend = "Convert PTG% of received damage into armor durability loss",
+		brightshadeKiller = "Deal PTG% max health damage to Brightshades",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -471,6 +479,7 @@ local SKILL_DESC_LANG = {
 		coldDog = "攻击会将猎犬转化为冰猎犬，对冰猎犬造成额外ATK%最大生命值的伤害",
 		steal = "攻击时有PTG%概率从敌人身上偷取物品",
 		defend = "将PTG%的受到伤害转化为护甲耐久度",
+		brightshadeKiller = "对亮茄造成额外PTG%最大生命值的伤害",
 	},
 }
 
@@ -652,6 +661,11 @@ local SKILL_DESC_VARS = {
 	defend = function(info, lv)
 		return {
 			PTG = info.multi * lv * 100,
+		}
+	end,
+	brightshadeKiller = function(info, lv)
+		return {
+			PTG = info.atk * lv * 100,
 		}
 	end,
 }
