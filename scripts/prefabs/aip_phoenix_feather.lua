@@ -27,16 +27,24 @@ local function onHealthDelta(owner, data)
 	end
 end
 
+local function onFireDamage(owner, data)
+	if data ~= nil then
+		data.amount = 0
+	end
+end
+
 local function onPickup(inst, data)
 	local owner = data.owner
 	inst._owner = owner
 	owner:ListenForEvent("aip_healthdelta", onHealthDelta)
+	owner:ListenForEvent("aip_health_firedamage", onFireDamage)
 end
 
 local function onDrop(inst)
 	local owner = inst._owner
 	if owner then
 		owner:RemoveEventCallback("aip_healthdelta", onHealthDelta)
+		owner:RemoveEventCallback("aip_health_firedamage", onFireDamage)
 		inst._owner = nil
 	end
 end
@@ -45,6 +53,7 @@ local function onRemove(inst)
 	local owner = inst._owner
 	if owner then
 		owner:RemoveEventCallback("aip_healthdelta", onHealthDelta)
+		owner:RemoveEventCallback("aip_health_firedamage", onFireDamage)
 	end
 end
 

@@ -495,8 +495,26 @@ AipPostComp("health", function(self)
 		local data = { amount = amount, afflicter = afflicter, cause = cause }
 		self.inst:PushEvent("aip_healthdelta", data)
 
+		if data.amount == 0 then
+			return
+		end
+
 		return originDoDelta(
 			self, data.amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb, ...
+		)
+	end
+
+	local originDoFireDamage = self.DoFireDamage
+	function self:DoFireDamage(amount, doer, instant, ...)
+		local data = { amount = amount, doer = doer, instant = instant }
+		self.inst:PushEvent("aip_health_firedamage", data)
+
+		if data.amount == 0 then
+			return
+		end
+
+		return originDoFireDamage(
+			self, data.amount, doer, instant, ...
 		)
 	end
 
