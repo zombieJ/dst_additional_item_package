@@ -57,8 +57,8 @@ local function fn()
 
 	MakeInventoryPhysics(inst)
 
-	inst.AnimState:SetBank("feather_crow")
-	inst.AnimState:SetBuild("feather_crow")
+	inst.AnimState:SetBank("aip_phoenix_feather")
+	inst.AnimState:SetBuild("aip_phoenix_feather")
 	inst.AnimState:PlayAnimation("idle")
 
 	inst:AddTag("cattoy")
