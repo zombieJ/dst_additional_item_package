@@ -1496,6 +1496,27 @@ return {
                 name="aip_travel_boots",
             },
             "可以飞到任何地方的神奇鞋子，但是作为代价会失去一些生命。",
+
+            -- 月相怀表
+            {
+                type="img",
+                name="aip_luna_watch",
+            },
+            "来自东方神秘的幸运祝福，在满月时会带来额外的幸运值。",
+
+            -- 末日时钟
+            {
+                type="img",
+                name="aip_doomsday_clock",
+            },
+            "让我回到过去的状态，可以记录并回溯玩家的生命、理智、饥饿和位置。",
+
+            -- 凤凰羽毛
+            {
+                type="img",
+                name="aip_phoenix_feather",
+            },
+            "可以抵挡高温伤害，佩戴在身上时免疫火焰和高温造成的伤害。",
         }
     },
 
