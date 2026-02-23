@@ -269,6 +269,16 @@ AddComponentPostInit("combat", function(self)
 				end
 			end
 
+			-- brightshadeKiller 生命值百分比伤害
+			local brightshadeKillerInfo, brightshadeKillerLv = self.inst.components.aipc_pet_owner:GetSkillInfo("brightshadeKiller")
+			if brightshadeKillerInfo ~= nil then
+				if target.components.health ~= nil and (target.prefab == "lunarthrall_plant" or target.prefab == "lunarthrall_plant_vine_end" or target.prefab == "lunarthrall_plant_vine") then
+					local hpPercent = brightshadeKillerInfo.ptg * brightshadeKillerLv
+					local extraDmg = target.components.health.currenthealth * hpPercent
+					petDmgPlus = petDmgPlus + extraDmg
+				end
+			end
+
 			-- 偷窃 从目标身上偷取物品
 			local stealInfo, stealLv = self.inst.components.aipc_pet_owner:GetSkillInfo("steal")
 			if stealInfo ~= nil and target.components.lootdropper ~= nil then

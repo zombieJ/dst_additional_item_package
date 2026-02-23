@@ -392,7 +392,7 @@ local SKILL_CONSTANT = {
 	},
 	brightshadeKiller = {
 		special = true,
-		atk = dev_mode and 0.34 or 0.01,					-- 每个等级对亮茄造成额外 20% 伤害
+		ptg = dev_mode and 0.8 or 0.03,					-- 每个等级对亮茄造成额外 1% 伤害
 	},
 }
 
@@ -665,7 +665,7 @@ local SKILL_DESC_VARS = {
 	end,
 	brightshadeKiller = function(info, lv)
 		return {
-			PTG = info.atk * lv * 100,
+			PTG = info.ptg * lv * 100,
 		}
 	end,
 }
