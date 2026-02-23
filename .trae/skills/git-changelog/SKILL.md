@@ -1,6 +1,6 @@
 ---
 name: "git-changelog"
-description: "生成 git commit 信息或 changelog。先通过 git 指令将变更写到 _diff.md，再读取 _diff.md 生成内容。Windows 下 git diff 会卡死，必须使用此流程。"
+description: "生成 git commit 信息或 changelog。先通过 git 指令将变更写到 _diff.md，再读取 _diff.md 生成内容。Windows 下 git diff 会卡死，且 PowerShell 重定向会导致乱码，必须使用 [System.IO.File]::WriteAllText 方法。"
 ---
 
 # Git Changelog & Commit Message Generator
@@ -11,25 +11,32 @@ description: "生成 git commit 信息或 changelog。先通过 git 指令将变
 
 ### 第一步：生成变更文件
 
-每次需要查看变更时，必须先执行以下命令将变更写入 `_diff.md` 文件：
+每次需要查看变更时，必须先执行以下命令将变更写入 `_diff.md` 文件。
 
-```bash
-git diff > _diff.md
+**注意**：由于 Windows PowerShell 的编码问题，必须使用以下 PowerShell 命令来正确处理 UTF-8 编码：
+
+查看工作区与暂存区的差异：
+
+```powershell
+$output = git diff; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)
 ```
 
 或者查看已暂存的变更：
 
-```bash
-git diff --cached > _diff.md
+```powershell
+$output = git diff --cached; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)
 ```
 
 或者查看最近一次提交的变更：
 
-```bash
-git diff HEAD~1 HEAD > _diff.md
+```powershell
+$output = git diff HEAD~1 HEAD; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)
 ```
 
-**重要**：不要直接执行 `git diff` 查看输出，必须重定向到文件。
+**重要**：
+- 不要直接执行 `git diff` 查看输出
+- 不要使用 `git diff > _diff.md`（会导致乱码）
+- 必须使用上述 PowerShell 命令确保 UTF-8 编码正确
 
 ### 第二步：读取变更文件
 
@@ -64,11 +71,22 @@ Read _diff.md
 
 1. **必须先写入文件**：永远不要直接执行 `git diff` 查看输出
 2. **文件位置**：`_diff.md` 应位于项目根目录
-3. **清理文件**：生成完成后可以删除 `_diff.md` 文件
-4. **变更范围**：根据用户需求选择合适的 git diff 命令（未暂存、已暂存、提交之间等）
+3. **编码问题**：在 Windows PowerShell 中，必须使用 `[System.IO.File]::WriteAllText` 方法并指定 UTF-8 编码，否则会出现乱码
+4. **避免重定向**：不要使用 `>` 重定向操作符（如 `git diff > _diff.md`），这会导致编码问题
+5. **清理文件**：生成完成后可以删除 `_diff.md` 文件
+6. **变更范围**：根据用户需求选择合适的 git diff 命令（未暂存、已暂存、提交之间等）
 
 ## 常用 Git Diff 命令
 
+**PowerShell 命令（推荐，避免乱码）**：
+- `$output = git diff; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)`：工作区与暂存区的差异
+- `$output = git diff --cached; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)`：暂存区与最后一次提交的差异
+- `$output = git diff HEAD; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)`：工作区与最后一次提交的差异
+- `$output = git diff HEAD~1 HEAD; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)`：查看最近一次提交的变更
+- `$output = git diff <branch1> <branch2>; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)`：比较两个分支的差异
+- `$output = git diff --stat; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)`：显示变更统计信息
+
+**Git 原始命令（仅作参考）**：
 - `git diff`：工作区与暂存区的差异
 - `git diff --cached`：暂存区与最后一次提交的差异
 - `git diff HEAD`：工作区与最后一次提交的差异
