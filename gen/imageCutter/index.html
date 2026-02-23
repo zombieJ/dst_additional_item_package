@@ -464,16 +464,21 @@
 
         function saveToHistory() {
             const imageData = ctx.getImageData(0, 0, imageCanvas.width, imageCanvas.height);
+            const erasedPixelsCopy = new Set(transparentErasedPixels);
             historyStack = historyStack.slice(0, historyIndex + 1);
-            historyStack.push(imageData);
+            historyStack.push({
+                imageData: imageData,
+                erasedPixels: erasedPixelsCopy
+            });
             historyIndex = historyStack.length - 1;
         }
 
         function undo() {
             if (historyIndex > 0) {
                 historyIndex--;
-                ctx.putImageData(historyStack[historyIndex], 0, 0);
-                transparentErasedPixels.clear();
+                const state = historyStack[historyIndex];
+                ctx.putImageData(state.imageData, 0, 0);
+                transparentErasedPixels = new Set(state.erasedPixels);
             }
         }
 
