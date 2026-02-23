@@ -437,7 +437,7 @@ local SKILL_DESC_LANG = {
 		coldDog = "Increase ATK% max health damage to ice hound and turn hound to ice hound",
 		steal = "Has PTG% chance to steal item from enemy when attacking",
 		defend = "Convert PTG% of received damage into armor durability loss",
-		brightshadeKiller = "Deal PTG% max health damage to Brightshades",
+		brightshadeKiller = "Deal PTG% max health normal damage to Brightshades",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -479,7 +479,7 @@ local SKILL_DESC_LANG = {
 		coldDog = "攻击会将猎犬转化为冰猎犬，对冰猎犬造成额外ATK%最大生命值的伤害",
 		steal = "攻击时有PTG%概率从敌人身上偷取物品",
 		defend = "将PTG%的受到伤害转化为护甲耐久度",
-		brightshadeKiller = "对亮茄造成额外PTG%最大生命值的伤害",
+		brightshadeKiller = "对亮茄造成额外PTG%最大生命值的普通伤害",
 	},
 }
 

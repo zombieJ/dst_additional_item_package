@@ -580,6 +580,23 @@ local PREFABS = {
         origin = "gestalt",
         scale = 0.6,
         face = 4,
+        noShadow = true,
+        preInit = function(inst)
+            inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+            inst.AnimState:Hide("mouseover")
+        end,
+        postInit = function(inst)
+            inst:AddComponent("gestaltcapturable")
+            inst.components.gestaltcapturable:SetLevel(1)
+
+            if not TheNet:IsDedicated() then
+                inst.blobhead = SpawnPrefab("gestalt_head")
+                inst.blobhead.entity:SetParent(inst.entity)
+                inst.blobhead.Follower:FollowSymbol(inst.GUID, "head_fx", 0, 0, 0)
+                inst.blobhead.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+                inst.highlightchildren = { inst.blobhead }
+            end
+        end,
     },
 }
 
