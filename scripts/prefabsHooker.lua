@@ -252,6 +252,15 @@ local animalList = {
 
 	-- 龙虾
 	"wobster_sheller_land", "wobster_moonglass_land",
+
+	-- 蜗牛
+	"slurtle", "snurtle",
+
+	-- 猴子
+	"monkey", "powder_monkey", "prime_mate",
+
+	-- 虚影
+	"gestalt",
 }
 
 for i, prefab in ipairs(animalList) do
@@ -367,7 +376,7 @@ AddPrefabPostInit("beefalo", function(inst)
 					) and
 					#_G.aipFindNearEnts(prefab, { "aip_mud_crab" }, 20) <= 2
 				then
-					_G.ReplacePrefab(prefab, "aip_mud_crab")
+					_G.ReplacePrefab(prefab, "aip_mud_crab", nil, nil, nil, 1)
 				end
 			end)
 
@@ -857,6 +866,9 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 						"aip_hearthstone",
 						"aip_armor_king",
 						"aip_travel_boots",
+						"aip_luna_watch",
+						"aip_doomsday_clock",
+						"aip_phoenix_feather",
 					}
 
 					local structureList = {

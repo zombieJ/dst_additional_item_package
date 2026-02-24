@@ -269,6 +269,28 @@ AddComponentPostInit("combat", function(self)
 				end
 			end
 
+			-- brightshadeKiller 生命值百分比伤害
+			local brightshadeKillerInfo, brightshadeKillerLv = self.inst.components.aipc_pet_owner:GetSkillInfo("brightshadeKiller")
+			if brightshadeKillerInfo ~= nil then
+				if target.components.health ~= nil and (target.prefab == "lunarthrall_plant" or target.prefab == "lunarthrall_plant_vine_end" or target.prefab == "lunarthrall_plant_vine") then
+					local hpPercent = brightshadeKillerInfo.ptg * brightshadeKillerLv
+					local extraDmg = target.components.health.currenthealth * hpPercent
+					petDmgPlus = petDmgPlus + extraDmg
+				end
+			end
+
+			-- 偷窃 从目标身上偷取物品
+			local stealInfo, stealLv = self.inst.components.aipc_pet_owner:GetSkillInfo("steal")
+			if stealInfo ~= nil and target.components.lootdropper ~= nil then
+				local stealChance = stealInfo.multi * stealLv
+				if _G.aipChance(stealChance, self.inst) then
+					if not target._aipPetStolen then
+						target.components.lootdropper:DropLoot()
+						target._aipPetStolen = true
+					end
+				end
+			end
+
 			-- 青尘 增加伤害
 			local balrogInfo, balrogLv = self.inst.components.aipc_pet_owner:GetSkillInfo("balrog")
 			if
@@ -339,6 +361,19 @@ AddComponentPostInit("combat", function(self)
 
 				-- 破坏一层
 				target.components.aipc_grave_cloak:Break()
+			end
+
+			-- 碎甲 技能：将一定比例伤害转化为护甲耐久消耗
+			local defendInfo, defendLv = target.components.aipc_pet_owner:GetSkillInfo("defend")
+			if defendInfo ~= nil and target.components.inventory ~= nil and dmg > 0 then
+				local equip = target.components.inventory:GetEquippedItem(_G.EQUIPSLOTS.BODY)
+				if equip ~= nil and equip.components.armor ~= nil then
+					local armor = equip.components.armor
+					local convertPTG = math.min(1, defendInfo.multi * defendLv)
+					local convertDmg = math.min(dmg * convertPTG, armor.condition)
+					armor:TakeDamage(convertDmg)
+					petDmgDiv = petDmgDiv * (1 - convertPTG)
+				end
 			end
 		end
 

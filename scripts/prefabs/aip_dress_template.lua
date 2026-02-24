@@ -16,6 +16,7 @@
 		},
 		waterproofer: bool,
 		dapperness: number - 恢复理智值
+		luck: number - 幸运值
 
 		onEquip(inst, owner)
 		onUnequip(inst, owner)
@@ -154,6 +155,12 @@ local function template(name, config)
 			if config.armor.tag then
 				inst.components.armor:SetTags(config.armor.tag)
 			end
+		end
+
+		-- 幸运值
+		if config.luck then
+			inst:AddComponent("luckitem")
+			inst.components.luckitem:SetLuck(config.luck)
 		end
 
 		-- 额外功能

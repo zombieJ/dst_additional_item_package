@@ -1497,6 +1497,27 @@ return {
                 name="aip_travel_boots",
             },
             "A magical shoe that can fly anywhere, but maybe sick.",
+
+            -- 月相怀表
+            {
+                type="img",
+                name="aip_luna_watch",
+            },
+            "A mysterious lucky blessing from the East, brings extra luck during full moon.",
+
+            -- 末日时钟
+            {
+                type="img",
+                name="aip_doomsday_clock",
+            },
+            "Rewind to a previous state, can record and restore player's health, sanity, hunger and position.",
+
+            -- 凤凰羽毛
+            {
+                type="img",
+                name="aip_phoenix_feather",
+            },
+            "Protects from heat damage, immune to fire and high temperature damage when equipped.",
         },
     },
 

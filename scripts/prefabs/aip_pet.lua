@@ -115,12 +115,16 @@ local function createPet(name, info)
         inst.entity:AddTransform()
         inst.entity:AddAnimState()
         inst.entity:AddSoundEmitter()
-        inst.entity:AddDynamicShadow()
+        if not info.noShadow then
+            inst.entity:AddDynamicShadow()
+        end
         inst.entity:AddNetwork()
 
         MakeFlyingCharacterPhysics(inst, 1, .5)
 
-        inst.DynamicShadow:SetSize(1, .75)
+        if not info.noShadow then
+            inst.DynamicShadow:SetSize(1, .75)
+        end
 
         if info.face == 2 then
             inst.Transform:SetTwoFaced()

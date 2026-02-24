@@ -492,11 +492,29 @@ AipPostComp("health", function(self)
 			amount = amount * 2
 		end
 
-		local data = { amount = amount, afflicter = afflicter }
+		local data = { amount = amount, afflicter = afflicter, cause = cause }
 		self.inst:PushEvent("aip_healthdelta", data)
+
+		if data.amount == 0 then
+			return
+		end
 
 		return originDoDelta(
 			self, data.amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb, ...
+		)
+	end
+
+	local originDoFireDamage = self.DoFireDamage
+	function self:DoFireDamage(amount, doer, instant, ...)
+		local data = { amount = amount, doer = doer, instant = instant }
+		self.inst:PushEvent("aip_health_firedamage", data)
+
+		if data.amount == 0 then
+			return
+		end
+
+		return originDoFireDamage(
+			self, data.amount, doer, instant, ...
 		)
 	end
 
@@ -772,6 +790,7 @@ end)
 -- 食客
 AipPostComp("eater", function(self)
 	local originTestFood = self.TestFood
+	local originEat = self.Eat
 
 	-- 玩家点不中的，其他生物也不能吃
 	function self:TestFood(food, testvalues, ...)
@@ -780,6 +799,15 @@ AipPostComp("eater", function(self)
 		end
 
 		return originTestFood(self, food, testvalues, ...)
+	end
+
+	-- 吃的时候触发 aipStartEat
+	function self:Eat(food, ...)
+		if food ~= nil and food.components.edible ~= nil and food.components.edible.aipStartEat ~= nil then
+			food.components.edible.aipStartEat(food, self.inst)
+		end
+
+		return originEat(self, food, ...)
 	end
 end)
 

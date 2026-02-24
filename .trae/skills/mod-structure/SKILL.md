@@ -17,6 +17,39 @@ description: "介绍 DST 额外物品包 mod 的文件结构。当用户询问 m
 | [README.md](README.md) | 项目文档和用户反馈 |
 | [TODO.md](TODO.md) | 开发待办事项列表 |
 
+## 命名规范
+
+### aip 前缀规则
+
+本 mod 的所有自定义内容都使用 `aip` 前缀命名，这是识别 mod 内容的关键标识：
+
+- **预制件**：以 `aip_` 开头（如 `aip_divine_rapier`, `aip_gourd`）
+- **组件**：以 `aipc_` 开头（如 `aipc_action`, `aipc_orbit_driver`）
+- **配置**：以 `AIP_` 开头（如 `AIP_DOU_SCEPTER`, `AIP_DOU_TOTEM`）
+- **工具函数**：以 `aip` 开头（如 `aipPrint`, `aipSpawnPrefab`）
+
+### 查找顺序
+
+在开发模组时，遵循以下查找顺序：
+
+1. **优先查找 mod 文件** - 如果组件或物品以 `aip` 开头，直接在 mod 的 `scripts/` 目录中查找
+2. **检查游戏源码** - 如果找不到或不是 aip 开头，再到游戏源码中查找
+3. **使用 dst_reader skill** - 当需要查找游戏 API 时，使用 dst_reader skill 从游戏源码中获取参考
+
+### 示例
+
+```lua
+-- mod 内容（在 scripts/ 中查找）
+aip_divine_rapier          -- 预制件
+aipc_action                -- 组件
+aipPrint()                 -- 工具函数
+
+-- 游戏内容（使用 dst_reader 查找）
+inst.components.health     -- DST 原生组件
+AddRecipe2()               -- DST 原生 API
+TUNING.NIGHTSWORD_DAMAGE   -- DST 原生配置
+```
+
 ## 核心目录
 
 ### scripts/
@@ -99,12 +132,147 @@ Mod 选项在 [modinfo.lua](modinfo.lua) 中定义：
 5. 在 [modmain.lua](modmain.lua) 中注册物品
 6. 使用 [package.json](package.json) 中的脚本构建和测试
 
+## 查看代码变更
+
+在开发过程中，查看代码变更时必须使用 `git diff --no-pager` 命令：
+
+```bash
+git diff --no-pager
+```
+
+**使用 `--no-pager` 参数的原因：**
+- 避免分页器干扰输出
+- 确保变更内容完整显示
+- 便于在终端中直接查看和复制
+
+**常用命令：**
+```bash
+# 查看所有变更
+git diff --no-pager
+
+# 查看特定文件的变更
+git diff --no-pager scripts/prefabs/aip_divine_rapier.lua
+
+# 查看暂存区的变更
+git diff --cached --no-pager
+
+# 查看最近一次提交的变更
+git show --no-pager HEAD
+```
+
 ## 关键工具
 
 - [aipUtils.lua](scripts/aipUtils.lua) - 辅助函数
 - [componentsHooker.lua](scripts/componentsHooker.lua) - 组件系统集成
 - [prefabsHooker.lua](scripts/prefabsHooker.lua) - 预制件系统集成
 - [custom_tech_tree.lua](scripts/custom_tech_tree.lua) - 自定义科技树
+
+## aipUtils.lua 函数检查规范
+
+本 mod 的核心辅助工具是 [aipUtils.lua](scripts/aipUtils.lua)，其中定义了 60+ 个全局辅助函数。在进行任何代码开发或修改时，**必须**遵循以下规范：
+
+### 1. 优先检查 aipUtils.lua
+
+当代码中出现 `_G.aip` 开头的函数调用时，**必须首先**检查该函数是否已在 [aipUtils.lua](scripts/aipUtils.lua) 中定义。避免重复实现已存在的功能。
+
+### 2. aipUtils.lua 核心函数列表
+
+**表格操作：**
+| 函数 | 描述 |
+|------|------|
+| `aipCountTable(tbl)` | 计算表格元素数量 |
+| `aipInTable(tbl, match)` | 查询元素是否在表格中 |
+| `aipFlattenTable(originTbl)` | 打平表格 |
+| `aipTableRemove(tbl, item)` | 从表格中移除元素 |
+| `aipTableSlice(tbl, start, len)` | 表格切片 |
+| `aipTableConcat(tbl1, tbl2)` | 合并表格 |
+| `aipTableIndex(tbl, item)` | 查找元素索引 |
+| `aipFilterTable(originTbl, filterFn)` | 过滤表格 |
+| `aipCloneTable(originTbl)` | 复制表格 |
+| `aipFilterKeysTable(originTbl, keys)` | 按 key 过滤 |
+| `aipTableKeys(tbl)` | 获取所有 key |
+| `aipTableMap(tbl, fn)` | Map 遍历表格 |
+
+**调试输出：**
+| 函数 | 描述 |
+|------|------|
+| `aipPrint(...)` | 基础打印 |
+| `aipStr(...)` | 字符串拼接 |
+| `aipTypePrint(...)` | 带类型打印 |
+
+**位置与距离：**
+| 函数 | 描述 |
+|------|------|
+| `aipGetAngle(src, tgt)` | 获取角度 (0~360) |
+| `aipAngleDist(sourcePos, angle, distance)` | 按角度前进 |
+| `aipDiffAngle(a1, a2)` | 计算角度偏差 |
+| `aipToAngle(srcAngle, tgtAngle, step)` | 角度过渡 |
+| `aipDist(p1, p2, includeY)` | 两点距离 |
+
+**实体查找：**
+| 函数 | 描述 |
+|------|------|
+| `aipFindNearEnts(inst, prefabNames, distance, includeInv)` | 查找附近实体 |
+| `aipFindNearPlayers(inst, dist)` | 查找附近玩家 |
+| `aipFindCloseEnt(inst, targetList)` | 查找最近实体 |
+| `aipFindEnt(...)` | 查找单个实体 |
+| `aipFindEnts(...)` | 查找多个实体 |
+| `aipCountEnts(...)` | 统计实体数量 |
+| `aipFindRandomEnt(...)` | 随机查找实体 |
+
+**生成与移除：**
+| 函数 | 描述 |
+|------|------|
+| `aipSpawnPrefab(inst, prefab, tx, ty, tz)` | 生成预制件 |
+| `aipReplacePrefab(inst, prefab, ...)` | 替换预制件 |
+| `aipRemove(inst)` | 移除实体 |
+| `aipGetOne(inst)` | 获取单个物品 |
+| `aipCopy(item)` | 复制物品 |
+| `aipFlingItem(loot, pt, config)` | 丢弃物品 |
+
+**位置计算：**
+| 函数 | 描述 |
+|------|------|
+| `aipGetSpawnPoint(startPT, distance, onGround)` | 获取可生成点 |
+| `aipFindNearbyOcean(pt, dist)` | 找海边点 |
+| `aipIsNaturalPoint(pt)` | 检查自然地皮 |
+| `aipGetSecretSpawnPoint(...)` | 获取隐秘生成点 |
+| `aipFindRandomPointInOcean(...)` | 随机海上点 |
+| `aipFindRandomPointInLand(emptyDistance)` | 随机陆地点 |
+| `aipValidateOceanPoint(pt, radius, prefabRadius)` | 验证海点 |
+| `aipGetTopologyPoint(tag, prefab, dist)` | 拓扑点查找 |
+
+**其他工具：**
+| 函数 | 描述 |
+|------|------|
+| `aipGetModConfig(key)` | 获取 Mod 配置 |
+| `aipGetAnimation(inst)` | 获取动画名 |
+| `aipGetAnimState(inst)` | 获取 AnimState |
+| `aipJoin(strList, spliter)` | 字符串拼接 |
+| `aipSplit(str, spliter)` | 字符串分割 |
+| `aipCanAttack(target, attacker, keepTarget)` | 检查可攻击 |
+| `aipIsShadowCreature(inst)` | 检查暗影生物 |
+| `aipRandomLoot(lootTbl)` | 随机概率抽取 |
+| `aipChance(chance, inst, bonus)` | 概率判定 |
+| `aipRPC(funcName, ...)` | 服务端 RPC |
+| `aipRPCClient(funcName, ...)` | 客户端 RPC |
+| `aipGetActionableItem(doer)` | 获取可交互物品 |
+| `aipQueue(tasks)` | 任务队列 |
+
+### 3. 代码复用原则
+
+当需要实现新功能时，应优先：
+
+1. **检查现有函数** - 在 aipUtils.lua 中寻找可复用的函数
+2. **扩展而非重写** - 如果现有函数功能不足，考虑扩展而非重新实现
+3. **保持一致性** - 使用统一的辅助函数确保代码风格一致
+
+### 4. 添加新函数的规范
+
+如需在 aipUtils.lua 中添加新函数，应遵循：
+- 使用 `function _G.aipXXX(...)` 格式定义
+- 添加清晰的函数注释说明用途
+- 考虑函数的通用性，避免过于业务特定的逻辑
 
 ## 中英文翻译实现
 

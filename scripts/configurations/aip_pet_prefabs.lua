@@ -402,6 +402,28 @@ local PREFABS = {
         end,
     },
 
+    ----------------------------- 蜗牛 -----------------------------
+    -- 蜗牛
+    slurtle = {
+        bank = "slurtle",
+        build = "slurtle",
+        anim = "idle",
+        sg = "SGslurtle",
+        scale = 0.8,
+    },
+
+    -- 果冻蜗牛
+    snurtle = {
+        bank = "slurtle",
+        build = "slurtle",
+        anim = "idle",
+        sg = "SGslurtle",
+        scale = 0.8,
+        postInit = function(inst)
+            inst.AnimState:OverrideSymbol("shell", "slurtle_snaily", "shell")
+        end,
+    },
+
     ----------------------------- 泥蟹 -----------------------------
     -- 泥蟹
     aip_mud_crab = {
@@ -443,6 +465,9 @@ local PREFABS = {
         anim = "idle",
         sg = "SGwobsterland",
         origin = "wobster_sheller",
+        postInit = function(inst)
+            inst._hit_sound = "hookline_2/creatures/wobster/hit"
+        end,
     },
 
     -- 月光龙虾
@@ -452,6 +477,72 @@ local PREFABS = {
         anim = "idle",
         sg = "SGwobsterland",
         origin = "wobster_moonglass",
+        postInit = function(inst)
+            inst._hit_sound = "hookline_2/creatures/wobster/hit"
+        end,
+    },
+
+    ----------------------------- 猴子 -----------------------------
+    -- 猴子
+    monkey = {
+        bank = "kiki",
+        build = "kiki_basic",
+        anim = "idle_loop",
+        sg = "SGmonkey",
+        scale = 0.8,
+        face = 6,
+        postInit = function(inst)
+            inst:AddComponent("follower")
+            inst:AddComponent("amphibiouscreature")
+            inst.components.amphibiouscreature:SetBanks("kiki", "kiki")
+            inst.soundtype = ""
+
+            inst:AddComponent("combat")
+            inst.components.combat:SetAttackPeriod(TUNING.MONKEY_ATTACK_PERIOD)
+            inst.components.combat:SetRange(TUNING.MONKEY_MELEE_RANGE)
+            inst.components.combat:SetDefaultDamage(0)
+        end,
+    },
+
+    -- 火药猴子
+    powder_monkey = {
+        bank = "monkey_small",
+        build = "monkey_small",
+        anim = "idle",
+        sg = "SGpowdermonkey",
+        scale = 0.8,
+        face = 4,
+        postInit = function(inst)
+            inst:AddComponent("follower")
+            inst:AddComponent("amphibiouscreature")
+            inst.components.amphibiouscreature:SetBanks("monkey_small", "monkey_small")
+            inst.soundtype = ""
+
+            inst:AddComponent("combat")
+            inst.components.combat:SetAttackPeriod(TUNING.MONKEY_ATTACK_PERIOD)
+            inst.components.combat:SetRange(TUNING.MONKEY_MELEE_RANGE)
+            inst.components.combat:SetDefaultDamage(0)
+        end,
+    },
+
+    -- 船员猴子
+    prime_mate = {
+        bank = "pigman",
+        build = "monkeymen_build",
+        anim = "idle_loop",
+        sg = "SGprimemate",
+        scale = 0.8,
+        face = 4,
+        postInit = function(inst)
+            inst.AnimState:Hide("ARM_carry_up")
+
+            inst.soundtype = ""
+
+            inst:AddComponent("combat")
+            inst.components.combat:SetAttackPeriod(TUNING.MONKEY_ATTACK_PERIOD)
+            inst.components.combat:SetRange(TUNING.MONKEY_MELEE_RANGE)
+            inst.components.combat:SetDefaultDamage(0)
+        end,
     },
 
     ------------------------- 欧米伽黏菌团 -------------------------
@@ -477,6 +568,34 @@ local PREFABS = {
         face = 6,
         postInit = function(inst) -- 添加一下声音
             inst._soundpath = "terraria1/eyeofterror/"
+        end,
+    },
+
+    ----------------------------- 虚影 -----------------------------
+    gestalt = {
+        bank = "brightmare_gestalt",
+        build = "brightmare_gestalt",
+        anim = "idle",
+        sg = "SGbrightmare_gestalt",
+        origin = "gestalt",
+        scale = 0.6,
+        face = 4,
+        noShadow = true,
+        preInit = function(inst)
+            inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+            inst.AnimState:Hide("mouseover")
+        end,
+        postInit = function(inst)
+            inst:AddComponent("gestaltcapturable")
+            inst.components.gestaltcapturable:SetLevel(1)
+
+            if not TheNet:IsDedicated() then
+                inst.blobhead = SpawnPrefab("gestalt_head")
+                inst.blobhead.entity:SetParent(inst.entity)
+                inst.blobhead.Follower:FollowSymbol(inst.GUID, "head_fx", 0, 0, 0)
+                inst.blobhead.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+                inst.highlightchildren = { inst.blobhead }
+            end
         end,
     },
 }
@@ -582,6 +701,24 @@ local SHEDDING_LOOT = {
     slurper = {
         beardhair = 0.01,           -- 1% 概率掉胡子
     },
+
+    ------------------------- 蜗牛 -------------------------
+    slurtle = {
+        rocks = 0.1,                    -- 10% 概率掉石头
+        slurtle_shellpieces = 0.05,     -- 5% 概率掉蜗牛壳碎片
+        slurtleslime = 0.05,            -- 5% 概率掉蜗牛黏液
+    },
+
+    ------------------------- 猴子 -------------------------
+    monkey = {
+        cave_banana = 0.05,         -- 5% 概率掉洞穴香蕉
+        beardhair = 0.02,           -- 2% 概率掉胡子
+    },
+
+    ------------------------- 虚影 -------------------------
+    gestalt = {
+        moonglass = 0.05,           -- 5% 概率掉月光玻璃
+    },
 }
 
 SHEDDING_LOOT.spider_hider = SHEDDING_LOOT.spider_warrior       -- 洞穴蜘蛛
@@ -592,6 +729,11 @@ SHEDDING_LOOT.spider_water = SHEDDING_LOOT.spider_warrior       -- 海生蜘蛛
 SHEDDING_LOOT.beeguard = SHEDDING_LOOT.bee                      -- 蜜蜂守卫
 
 SHEDDING_LOOT.stalker_minion2 = SHEDDING_LOOT.stalker_minion1   -- 编织暗影
+
+SHEDDING_LOOT.snurtle = SHEDDING_LOOT.slurtle                   -- 果冻蜗牛
+
+SHEDDING_LOOT.powder_monkey = SHEDDING_LOOT.monkey              -- 火药猴子
+SHEDDING_LOOT.prime_mate = SHEDDING_LOOT.monkey                 -- 船员猴子
 
 local function getPrefab(inst, seer)
 	local prefab = inst.prefab
@@ -636,6 +778,11 @@ local function getPrefab(inst, seer)
     ----------------------- 恐怖之眼 -----------------------
     if prefab == "aip_pet_eyeofterror" then
         prefab = "eyeofterror"
+    end
+
+    ------------------------- 虚影 -------------------------
+    if prefab == "aip_pet_gestalt" then
+        prefab = "gestalt"
     end
 
 	return prefab, subPrefab
@@ -739,6 +886,13 @@ local function getSkills(prefab, subPrefab)
         }
     end
 
+    ------------------------- 蜗牛 -------------------------
+    if prefab == "slurtle" or prefab == "snurtle" then
+        return {
+            "defend",
+        }
+    end
+
     ------------------------- 泥蟹 -------------------------
     if prefab == "aip_mud_crab" then
         return {
@@ -760,10 +914,24 @@ local function getSkills(prefab, subPrefab)
         }
     end
 
+    ------------------------- 猴子 -------------------------
+    if prefab == "monkey" or prefab == "powder_monkey" or prefab == "prime_mate" then
+        return {
+            "steal",
+        }
+    end
+
     --------------------- 欧米伽黏菌团 ---------------------
     if prefab == "aip_slime_mold" then
         return {
             "resonance",
+        }
+    end
+
+    ------------------------- 虚影 -------------------------
+    if prefab == "gestalt" then
+        return {
+            "brightshadeKiller",
         }
     end
 end

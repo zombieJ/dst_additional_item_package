@@ -46,6 +46,7 @@ return tempalte("aip_horse_head", {
 		level = TUNING.AIP_HORSE_HEAD_FUEL,
 	},
 	waterproofer = true,
+	luck = 0.1,
 })
 
 -----------------------------------------------------------

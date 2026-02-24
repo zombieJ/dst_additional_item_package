@@ -130,6 +130,9 @@ local SKILL_LANG = {
 		balrog = "Balrog",
 		hotDog = "Hot Dog",
 		coldDog = "Cold Dog",
+		steal = "Steal",
+		defend = "Shatter Armor",
+		brightshadeKiller = "Brightshade Killer",
 	},
 	chinese = {
 		shedding = "捡拾",
@@ -169,6 +172,9 @@ local SKILL_LANG = {
 		balrog = "青尘",
 		hotDog = "炎之雀跃",
 		coldDog = "霜之哀伤",
+		steal = "偷窃",
+		defend = "碎甲",
+		brightshadeKiller = "亮茄杀手",
 	},
 }
 
@@ -211,6 +217,9 @@ local SKILL_MAX_LEVEL = {
 	balrog = { 4, 5, 6, 7, 8 },
 	hotDog = { 1, 2, 3, 4, 5 },
 	coldDog = { 1, 2, 3, 4, 5 },
+	steal = { 1, 2, 3, 4, 5 },
+	defend = { 6, 7, 8, 9, 10 },
+	brightshadeKiller = { 2, 4, 6, 8, 10 },
 }
 
 local dt = TUNING.TOTAL_DAY_TIME			-- 1 天
@@ -373,6 +382,18 @@ local SKILL_CONSTANT = {
 		special = true,
 		atk = dev_mode and 0.8 or 0.2,					-- 每个等级对冰狗造成额外 20% 伤害
 	},
+	steal = {
+		special = true,
+		multi = dev_mode and 1 or 0.01,					-- 每个等级提升 1% 偷窃概率
+	},
+	defend = {
+		special = true,
+		multi = dev_mode and 1 or 0.08,				-- 每个等级将 8% 伤害转化为护甲耐久
+	},
+	brightshadeKiller = {
+		special = true,
+		ptg = dev_mode and 0.8 or 0.03,					-- 每个等级对亮茄造成额外 1% 伤害
+	},
 }
 
 local SKILL_DESC_LANG = {
@@ -414,6 +435,9 @@ local SKILL_DESC_LANG = {
 		balrog = "Increase ATK point damage when burning",
 		hotDog = "Increase ATK% max health damage to fire hound and turn hound to fire hound",
 		coldDog = "Increase ATK% max health damage to ice hound and turn hound to ice hound",
+		steal = "Has PTG% chance to steal item from enemy when attacking",
+		defend = "Convert PTG% of received damage into armor durability loss",
+		brightshadeKiller = "Deal PTG% max health normal damage to Brightshades",
 	},
 	chinese = {
 		shedding = "每隔DAY天会丢出捡到的物品",
@@ -453,6 +477,9 @@ local SKILL_DESC_LANG = {
 		balrog = "火焰即是力量。在被点燃时，攻击伤害提升ATK点",
 		hotDog = "攻击会将猎犬转化为火猎犬，对火猎犬造成额外ATK%最大生命值的伤害",
 		coldDog = "攻击会将猎犬转化为冰猎犬，对冰猎犬造成额外ATK%最大生命值的伤害",
+		steal = "攻击时有PTG%概率从敌人身上偷取物品",
+		defend = "将PTG%的受到伤害转化为护甲耐久度",
+		brightshadeKiller = "对亮茄造成额外PTG%最大生命值的普通伤害",
 	},
 }
 
@@ -624,6 +651,21 @@ local SKILL_DESC_VARS = {
 	coldDog = function(info, lv)
 		return {
 			ATK = info.atk * lv * 100,
+		}
+	end,
+	steal = function(info, lv)
+		return {
+			PTG = info.multi * lv * 100,
+		}
+	end,
+	defend = function(info, lv)
+		return {
+			PTG = info.multi * lv * 100,
+		}
+	end,
+	brightshadeKiller = function(info, lv)
+		return {
+			PTG = info.ptg * lv * 100,
 		}
 	end,
 }

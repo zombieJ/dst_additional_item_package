@@ -8,6 +8,7 @@ Assets = {
 	Asset("ATLAS", "images/inventoryimages/incinerator.xml"),
 	Asset("ATLAS", "images/inventoryimages/dark_observer.xml"),
 	Asset("ATLAS", "images/inventoryimages/aip_fish_sword.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_doomsday_clock.xml"),
 
 	-- 神秘权杖需要提前加载
 	Asset("ATLAS", "images/inventoryimages/aip_dou_tech.xml"),
@@ -75,6 +76,7 @@ PrefabFiles = {
 	"aip_xinyue_hoe",
 	"aip_xinyue_gridplacer",
 	"aip_22_fish",
+	"aip_luna_watch",
 
 	-- survival
 	"aip_blood_package",
@@ -85,6 +87,7 @@ PrefabFiles = {
 	"aip_dragon_footprint",
 	"aip_krampus_plus",
 	"aip_fig_salve",
+	"aip_doomsday_clock",
 
 	-- Weapon
 	"popcorngun",
@@ -266,6 +269,7 @@ PrefabFiles = {
 	"aip_gholdengo",
 	"aip_wither_skeleton",
 	"aip_coal",
+	"aip_phoenix_feather",
 
 	-- 5 个挑战
 	"aip_nectar_bee",

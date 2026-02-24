@@ -126,6 +126,8 @@ local function fn()
     inst:AddComponent("aipc_action")
     inst.components.aipc_action.onDoGiveAction = onDoGiveAction
 
+    inst:AddComponent("watersource")
+
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
     inst.components.workable:SetWorkLeft(4)
