@@ -18,19 +18,19 @@ description: "生成 git commit 信息或 changelog。先通过 git 指令将变
 查看工作区与暂存区的差异：
 
 ```powershell
-$output = git diff; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $output = git diff; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)
 ```
 
 或者查看已暂存的变更：
 
 ```powershell
-$output = git diff --cached; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $output = git diff --cached; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)
 ```
 
 或者查看最近一次提交的变更：
 
 ```powershell
-$output = git diff HEAD~1 HEAD; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $output = git diff HEAD~1 HEAD; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)
 ```
 
 **重要**：
@@ -79,12 +79,12 @@ Read _diff.md
 ## 常用 Git Diff 命令
 
 **PowerShell 命令（推荐，避免乱码）**：
-- `$output = git diff; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)`：工作区与暂存区的差异
-- `$output = git diff --cached; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)`：暂存区与最后一次提交的差异
-- `$output = git diff HEAD; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)`：工作区与最后一次提交的差异
-- `$output = git diff HEAD~1 HEAD; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)`：查看最近一次提交的变更
-- `$output = git diff <branch1> <branch2>; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)`：比较两个分支的差异
-- `$output = git diff --stat; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)`：显示变更统计信息
+- `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $output = git diff; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)`：工作区与暂存区的差异
+- `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $output = git diff --cached; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)`：暂存区与最后一次提交的差异
+- `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $output = git diff HEAD; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)`：工作区与最后一次提交的差异
+- `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $output = git diff HEAD~1 HEAD; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)`：查看最近一次提交的变更
+- `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $output = git diff <branch1> <branch2>; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)`：比较两个分支的差异
+- `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; $output = git diff --stat; [System.IO.File]::WriteAllText((Resolve-Path _diff.md).Path, $output, [System.Text.Encoding]::UTF8)`：显示变更统计信息
 
 **Git 原始命令（仅作参考）**：
 - `git diff`：工作区与暂存区的差异
