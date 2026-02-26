@@ -225,6 +225,10 @@ function Driver:StopDrive()
 end
 
 function Driver:AbortDrive()
+	if not self:isDriving() then
+		return
+	end
+
 	self:StopDrive()
 	self.inst:RemoveTag("aip_orbit_driver")
 	MakeCharacterPhysics(self.inst, 75, .5)
