@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="body">
+        <file id="0" name="body/shadow.png" width="530" height="530" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="body/fur.png" width="530" height="530" pivot_x="0" pivot_y="1"/>
+        <file id="2" name="body/eyes.png" width="530" height="530" pivot_x="0" pivot_y="1"/>
+        <file id="3" name="body/item.png" width="256" height="256" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_oldone_thestral_watcher">
+        <animation id="0" name="idle" length="2000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="shadow" folder="0" file="0" abs_x="1" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="fur" folder="0" file="1" abs_x="0.001883" abs_y="0" abs_pivot_x="0.498117" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="999">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="0" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="shadow">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="1" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+                <key id="1" time="999" spin="0">
+                    <object folder="0" file="0" x="1" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="1.05" scale_y="1.05"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="fur">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="0.001883" pivot_x="0.498117" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="1" name="turn" length="500">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="shadow" folder="0" file="0" abs_x="1" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="fur" folder="0" file="1" abs_x="0.001883" abs_y="0" abs_pivot_x="0.498117" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="175">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+                <key id="2" time="386">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="2" z_index="1"/>
+                </key>
+                <key id="3" time="500">
+                    <object_ref id="0" timeline="0" key="3" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="3" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="shadow">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="1" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+                <key id="1" time="175" spin="0">
+                    <object folder="0" file="0" x="1" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.870056" scale_y="0.870056"/>
+                </key>
+                <key id="2" time="386" spin="0">
+                    <object folder="0" file="0" x="1" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="1.15" scale_y="1.15"/>
+                </key>
+                <key id="3" time="500" spin="0">
+                    <object folder="0" file="0" x="1" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="fur">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="0.001883" pivot_x="0.498117" pivot_y="0.5" angle="0"/>
+                </key>
+                <key id="1" time="175" spin="0">
+                    <object folder="0" file="1" x="0.001883" pivot_x="0.498117" pivot_y="0.5" angle="0" scale_x="0.714557" scale_y="0.714557"/>
+                </key>
+                <key id="2" time="386" spin="0">
+                    <object folder="0" file="1" x="0.001883" pivot_x="0.498117" pivot_y="0.5" angle="0" scale_x="1.2" scale_y="1.2"/>
+                </key>
+                <key id="3" time="500" spin="0">
+                    <object folder="0" file="1" x="0.001883" pivot_x="0.498117" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="active" length="2000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="shadow" folder="0" file="0" abs_x="1" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="fur" folder="0" file="1" abs_x="0.001883" abs_y="0" abs_pivot_x="0.498117" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="2" name="eyes" folder="0" file="2" abs_x="3.00565" abs_y="-0.003766" abs_pivot_x="0.49435" abs_pivot_y="0.503766" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2"/>
+                </key>
+                <key id="1" time="1000">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="2" timeline="2" key="1" z_index="2"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="shadow">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="1" pivot_x="0.5" pivot_y="0.5" angle="0"/>
+                </key>
+                <key id="1" time="1000" spin="0">
+                    <object folder="0" file="0" x="1" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="1.1" scale_y="1.1"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="fur">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="0.001883" pivot_x="0.498117" pivot_y="0.5" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="2" name="eyes">
+                <key id="0" spin="0">
+                    <object folder="0" file="2" x="3.00565" y="-0.003766" pivot_x="0.49435" pivot_y="0.503766" angle="0"/>
+                </key>
+                <key id="1" time="1000" spin="0">
+                    <object folder="0" file="2" x="3.00565" y="-0.003766" pivot_x="0.49435" pivot_y="0.503766" angle="0" scale_x="0.934822" scale_y="0.971537"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="3" name="item" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="item" folder="0" file="3" abs_x="-1.976654" abs_y="-2.828794" abs_pivot_x="0.476654" abs_pivot_y="0.328794" abs_angle="360" abs_scale_x="0.8" abs_scale_y="0.8" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="item">
+                <key id="0" spin="0">
+                    <object folder="0" file="3" x="-1.976654" y="-2.828794" pivot_x="0.476654" pivot_y="0.328794" scale_x="0.8" scale_y="0.8"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

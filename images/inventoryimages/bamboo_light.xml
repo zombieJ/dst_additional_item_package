@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Atlas>
+	<Texture filename="bamboo_light.tex" />
+	<Elements>
+		<Element name="bamboo_light.tex" u1="0.001" u2="0.952125" v2="0.999" v1="0.141625" variant="" />
+	</Elements>
+</Atlas>

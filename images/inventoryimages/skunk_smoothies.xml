@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Atlas>
+	<Texture filename="skunk_smoothies.tex" />
+	<Elements>
+		<Element name="skunk_smoothies.tex" u1="0.001" u2="0.65525" v2="0.999" v1="0.047875" variant="" />
+	</Elements>
+</Atlas>

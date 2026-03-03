@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Atlas>
+	<Texture filename="aip_dou_totem.tex" />
+	<Elements>
+		<Element name="aip_dou_totem.tex" u1="0" u2="1" v2="1" v1="0" variant="" />
+	</Elements>
+</Atlas>

@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Atlas>
+	<Texture filename="chesspiece_aip_moon_stone.tex" />
+	<Elements>
+		<Element name="chesspiece_aip_moon_stone.tex" u1="0.001" u2="0.9365" v2="0.999" v1="0.001" variant="" />
+	</Elements>
+</Atlas>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="popcorn">
+        <file id="0" name="popcorn/popcorngun.png" width="76" height="40" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="popcorn/popcorn.png" width="176" height="128" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <folder id="1" name="grass">
+        <file id="0" name="grass/grass-0.png" width="108" height="32" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="popcorn_gun">
+        <animation id="0" name="idle" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="popcorngun" folder="0" file="0" abs_x="-82.470779" abs_y="60.937907" abs_pivot_x="0" abs_pivot_y="1" abs_angle="0" abs_scale_x="2.058442" abs_scale_y="2.115973" abs_a="1" timeline="1" key="0" z_index="0"/>
+                    <object_ref id="1" name="grass" folder="1" file="0" abs_x="-69.393145" abs_y="17.71547" abs_pivot_x="0" abs_pivot_y="1" abs_angle="0.493125" abs_scale_x="1.217717" abs_scale_y="1.687447" abs_a="1" timeline="0" key="0" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="grass">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="-69.393145" y="17.71547" angle="0.493125" scale_x="1.217717" scale_y="1.687447"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="popcorngun">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-82.470779" y="60.937907" angle="0" scale_x="2.058442" scale_y="2.115973"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="1" name="projectile" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="popcorn" folder="0" file="1" abs_x="-35.292373" abs_y="30" abs_pivot_x="0" abs_pivot_y="1" abs_angle="0" abs_scale_x="0.415254" abs_scale_y="0.414202" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="popcorn">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="-35.292373" y="30" angle="0" scale_x="0.415254" scale_y="0.414202"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

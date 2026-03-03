@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Atlas>
+	<Texture filename="aip_horse_head.tex" />
+	<Elements>
+		<Element name="aip_horse_head.tex" u1="0.001" u2="0.999" v2="0.999" v1="0.03225" variant="" />
+	</Elements>
+</Atlas>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="body">
+        <file id="0" name="body/full.png" width="351" height="316" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="body/face.png" width="351" height="254" pivot_x="0" pivot_y="1"/>
+        <file id="2" name="body/tail.png" width="320" height="148" pivot_x="0" pivot_y="1"/>
+        <file id="3" name="body/ear.png" width="104" height="149" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_oldone_box">
+        <animation id="0" name="idle" length="3300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="face" folder="0" file="1" abs_x="42.899148" abs_y="1.309804" abs_pivot_x="0.600852" abs_pivot_y="0.190196" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="tail" folder="0" file="2" abs_x="-111.660436" abs_y="12.771812" abs_pivot_x="0.160436" abs_pivot_y="0.728188" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="2" name="ear" folder="0" file="3" abs_x="-27.380952" abs_y="146.596667" abs_pivot_x="0.880952" abs_pivot_y="0.903333" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2"/>
+                </key>
+                <key id="1" time="1510">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                    <object_ref id="2" timeline="2" key="1" z_index="2"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="face">
+                <key id="0">
+                    <object folder="0" file="1" x="42.899148" y="1.309804" pivot_x="0.600852" pivot_y="0.190196" angle="0"/>
+                </key>
+                <key id="1" time="1510" spin="-1">
+                    <object folder="0" file="1" x="42.899148" y="1.309804" pivot_x="0.600852" pivot_y="0.190196" angle="0.922339" scale_y="1"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="tail">
+                <key id="0" spin="-1">
+                    <object folder="0" file="2" x="-111.660436" y="12.771812" pivot_x="0.160436" pivot_y="0.728188" angle="0"/>
+                </key>
+                <key id="1" time="1510">
+                    <object folder="0" file="2" x="-111.660436" y="12.771812" pivot_x="0.160436" pivot_y="0.728188" angle="358.907487" scale_x="1" scale_y="1"/>
+                </key>
+            </timeline>
+            <timeline id="2" name="ear">
+                <key id="0" spin="-1">
+                    <object folder="0" file="3" x="-27.380952" y="146.596667" pivot_x="0.880952" pivot_y="0.903333" angle="0"/>
+                </key>
+                <key id="1" time="1510">
+                    <object folder="0" file="3" x="-27.380952" y="146.596667" pivot_x="0.880952" pivot_y="0.903333" angle="356.320703" scale_x="1" scale_y="1"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="body">
+        <file id="0" name="body/full.png" width="300" height="400" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="body/broken.png" width="300" height="400" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_oldone_pot">
+        <animation id="0" name="idle" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="full" folder="0" file="0" abs_x="3.986711" abs_y="-1.648379" abs_pivot_x="0.513289" abs_pivot_y="0.148379" abs_angle="0" abs_scale_x="0.6" abs_scale_y="0.6" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="full">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="3.986711" y="-1.648379" pivot_x="0.513289" pivot_y="0.148379" angle="0" scale_x="0.6" scale_y="0.6"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="1" name="dead" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="full" folder="0" file="1" abs_x="3.986711" abs_y="-24.648379" abs_pivot_x="0.513289" abs_pivot_y="0.148379" abs_angle="0" abs_scale_x="0.6" abs_scale_y="0.6" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="full">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="3.986711" y="-24.648379" pivot_x="0.513289" pivot_y="0.148379" angle="0" scale_x="0.6" scale_y="0.6"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="empty" length="100">
+            <mainline>
+                <key id="0"/>
+            </mainline>
+        </animation>
+    </entity>
+</spriter_data>

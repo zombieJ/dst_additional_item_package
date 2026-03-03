@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="full">
+        <file id="0" name="full/meat.png" width="439" height="343" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="full/shadow.png" width="449" height="141" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_oldone_meat">
+        <animation id="0" name="idle" length="3000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="shadow" folder="0" file="1" abs_x="4.000029" abs_y="1.977696" abs_pivot_x="0.499883" abs_pivot_y="0.589215" abs_angle="0" abs_scale_x="0.25" abs_scale_y="0.25" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="meat" folder="0" file="0" abs_x="4.998837" abs_y="4.313433" abs_pivot_x="0.501163" abs_pivot_y="0.186567" abs_angle="0" abs_scale_x="0.25" abs_scale_y="0.2" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+                <key id="1" time="1501">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="shadow">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="4.000029" y="1.977696" pivot_x="0.499883" pivot_y="0.589215" angle="0" scale_x="0.25" scale_y="0.25"/>
+                </key>
+                <key id="1" time="1501" spin="0">
+                    <object folder="0" file="1" x="4.000029" y="0.977696" pivot_x="0.499883" pivot_y="0.589215" angle="0" scale_x="0.239944" scale_y="0.274921"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="meat">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="4.998837" y="4.313433" pivot_x="0.501163" pivot_y="0.186567" angle="0" scale_x="0.25" scale_y="0.2"/>
+                </key>
+                <key id="1" time="1501" spin="0">
+                    <object folder="0" file="0" x="4.998837" y="3.313433" pivot_x="0.501163" pivot_y="0.186567" angle="0" scale_x="0.23" scale_y="0.22"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

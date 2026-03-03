@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Atlas>
+	<Texture filename="chesspiece_aip_doujiang_marble.tex" />
+	<Elements>
+		<Element name="chesspiece_aip_doujiang_marble.tex" u1="0.001" u2="0.795875" v2="0.999" v1="0.001" variant="" />
+	</Elements>
+</Atlas>

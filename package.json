@@ -1,0 +1,41 @@
+{
+  "name": "dst_additional_item_package",
+  "version": "1.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dist": "node ./tools-scripts/dist.js",
+    "dist-test": "node ./tools-scripts/dist.js --target='../aip_output'",
+    "test": "npm run dist-test",
+    "gen:preview": "node gen/foodPreview",
+    "gen:seed": "node gen/veggie",
+    "ktech": "node ./tools-scripts/ktech.js",
+    "krane": "node ./tools-scripts/krane.js",
+    "init": "node gen/init",
+    "compile": "node gen/init --compile",
+    "preview": "node gen/introPreview.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zombieJ/dst_additional_item_package.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zombieJ/dst_additional_item_package/issues"
+  },
+  "homepage": "https://github.com/zombieJ/dst_additional_item_package#readme",
+  "config": {
+    "registry": "http://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "fs-extra": "^4.0.1",
+    "jimp": "^0.2.28",
+    "xml2js": "^0.4.19"
+  },
+  "devDependencies": {
+    "archiver": "^5.0.0",
+    "chalk": "^2.4.2",
+    "yargs": "^13.3.2"
+  }
+}

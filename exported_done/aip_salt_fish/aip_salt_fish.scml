@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="body">
+        <file id="0" name="body/full.png" width="256" height="256" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_salt_fish">
+        <animation id="0" name="idle" length="1000">
+            <mainline>
+                <key id="0"/>
+                <key id="1" time="737">
+                    <object_ref id="0" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="full">
+                <key id="0" time="737" spin="0">
+                    <object folder="0" file="0" x="-29.692607" y="-4.657588" pivot_x="0.192607" pivot_y="0.157588" scale_x="0.6" scale_y="0.6"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

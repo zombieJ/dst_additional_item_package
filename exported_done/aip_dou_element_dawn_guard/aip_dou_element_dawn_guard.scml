@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="body">
+        <file id="0" name="body/person.png" width="202" height="397" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="body/star.png" width="35" height="41" pivot_x="0" pivot_y="1"/>
+        <file id="2" name="body/good.png" width="74" height="104" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_dou_element_dawn_guard">
+        <animation id="0" name="idle" length="2000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="person" folder="0" file="0" abs_x="2.985222" abs_y="-0.511307" abs_pivot_x="0.514778" abs_pivot_y="0.011307" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="star" folder="0" file="1" abs_x="-119.013889" abs_y="284.035714" abs_pivot_x="0.513889" abs_pivot_y="0.464286" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="2" name="good" folder="0" file="2" abs_x="-117.386667" abs_y="169.380952" abs_pivot_x="0.886667" abs_pivot_y="0.119048" abs_angle="360" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2"/>
+                </key>
+                <key id="1" time="999">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="1" z_index="1"/>
+                    <object_ref id="2" timeline="2" key="1" z_index="2"/>
+                </key>
+                <key id="2" time="2000">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                    <object_ref id="1" timeline="1" key="2" z_index="1"/>
+                    <object_ref id="2" timeline="2" key="2" z_index="2"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="person">
+                <key id="0" spin="-1">
+                    <object folder="0" file="0" x="2.985222" y="-0.511307" pivot_x="0.514778" pivot_y="0.011307" angle="0"/>
+                </key>
+                <key id="1" time="999">
+                    <object folder="0" file="0" x="2.985222" y="-0.511307" pivot_x="0.514778" pivot_y="0.011307" angle="359.277283" scale_y="1"/>
+                </key>
+                <key id="2" time="2000" spin="0">
+                    <object folder="0" file="0" x="2.985222" y="-0.511307" pivot_x="0.514778" pivot_y="0.011307" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="star">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="-119.013889" y="284.035714" pivot_x="0.513889" pivot_y="0.464286"/>
+                </key>
+                <key id="1" time="999" spin="0">
+                    <object folder="0" file="1" x="-115.013889" y="289.035714" pivot_x="0.513889" pivot_y="0.464286"/>
+                </key>
+                <key id="2" time="2000" spin="0">
+                    <object folder="0" file="1" x="-119.013889" y="284.035714" pivot_x="0.513889" pivot_y="0.464286"/>
+                </key>
+            </timeline>
+            <timeline id="2" name="good">
+                <key id="0">
+                    <object folder="0" file="2" x="-117.386667" y="169.380952" pivot_x="0.886667" pivot_y="0.119048"/>
+                </key>
+                <key id="1" time="999" spin="-1">
+                    <object folder="0" file="2" x="-113.386667" y="164.380952" pivot_x="0.886667" pivot_y="0.119048" angle="2.952924" scale_y="1"/>
+                </key>
+                <key id="2" time="2000" spin="0">
+                    <object folder="0" file="2" x="-117.386667" y="169.380952" pivot_x="0.886667" pivot_y="0.119048"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

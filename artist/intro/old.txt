@@ -1,0 +1,407 @@
+[h1]提供额外的物品与事件，可随时安装，享受更加丰富的游戏内容吧！[/h1]
+
+QQ 群：591827072
+
+[img]https://i.imgur.com/MSQFG0c.png[/img]
+
+移动端可以在 [url=https://wap.fireleaves.cn/#/wiki/modDetail?mid=6045d32fe3a3fb1f530b75c0]掌上饥荒[/url]查看模组相关介绍，网页端可以在 [url=https://github.com/zombieJ/dst_additional_item_package/wiki]Github[/url]查看介绍：
+[img]https://i.imgur.com/dqoTbir.png[/img]
+
+
+[h2]下期预告：古神低语[/h2]
+[img]https://i.imgur.com/nT08Q8x.png[/img]
+
+[h2]过往更新：[/h2]
+诡影迷踪
+[img]https://i.imgur.com/0aIB1Tb.png[/img]
+[img]https://i.imgur.com/IJTPvOX.png[/img]
+
+神秘权杖
+[img]https://i.imgur.com/8t0uASf.png[/img]
+
+
+========================================================
+
+2022/05/28 新增谜团 幕后黑手；新增谜团 搁浅水母；新增物品 恒温水母；修复 赌徒铠甲 贴图问题；修复 月轨 移除时矿车一并消失的问题；修复 启迪时克雕塑 有时会创建过多的问题；修复 食材 在食谱中不显示的问题；
+2022/05/22 新增 瞬息谜团；修复偶发寻物问题；修复客户端矿车加载显示问题；尝试修复 mod 冲突导致的自动采集报错问题；
+2022/05/21 新增 闹鬼陶罐 谜团；新增 旺盛之树 谜团；新增 鱼仔帽，钓鱼时不会扯断鱼线，在杀死 乌贼 时概率获得；在洞穴中会生成 漆黑的鹿 石像，可以用火烤加热；新增食材 菇茑；修复 某些情况下 mod 冲突导致崩溃的问题；修复玩家携带 月光矿车 创建 月轨 会被自动铺设的问题；微调 月光矿车 在水中漂浮的样式
+2022/05/08 燧石现在可以打水漂了；新增小型盐洞、荷花水漂谜团；新增食物 盐渍鱼。
+2022/05/04 添加四季专属谜团：春日谜团、化缘谜团、枯叶谜团、雪人谜团。修复陶轮不能直接显示豆酱、守望者、月光星尘雕像的问题。
+2022/05/02 劳动节快乐；修复部分玩家会看到他人模因状态的问题；新增三种鲜花谜团，地图上最多存在一个谜团。解开谜团会累积谜团因子，每当新的一天开始都会恢复玩家对应生命值。快去寻找吧！
+2022/04/27 解决与 新成就 mod 的冲突问题
+2022/04/26 重写 Buffer 系统，期望降低 mod 间冲突；修复 污损的雕像 攻击有时候崩溃的问题；
+
+
+更多更新内容请查看 [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1085586145]更新日志[/url]
+
+========================================================
+
+[h1]!!! 由于字数限制，无法写下更多内容。请移步 wiki 查阅 !!![/h1]
+
+[h1]生存类[/h1]
+[img]http://i.imgur.com/0SCoGlJ.png[/img]
+血袋：使用蚊子袋囊制作的治疗道具
+
+[img]https://i.imgur.com/htG3EVy.png[/img]
+草木灰：立即治愈过热效果
+
+[img]https://i.imgur.com/qkANupM.png[/img]
+矿车：放在轨道上驾驶（AWSD控制 X下车，可用8次）
+
+[img]https://i.imgur.com/vC3dk1p.png[/img]
+雪人小屋：冬天不会消耗耐久度
+
+[img]https://i.imgur.com/CuRYgd7.png[/img]
+暗影碎牙：恢复 50% 损失理智值，可赋能神秘权杖
+
+[img]https://i.imgur.com/lRTUqU6.png[/img]
+古早沙滩壶：恢复 1 点生命值，并使得理智值向 30% 靠近。
+[spoiler]可以听懂饼干粉碎机的言语[/spoiler]
+
+[img]https://i.imgur.com/Qj1kW3K.png[/img]
+守财奴的背包：12 格背包。放置的物品越多移动速度越快，但是被攻击时会掉落其中的物品。
+
+
+[h1]农场类[/h1]
+[img]https://i.imgur.com/eUqXuBi.png[/img]
+花蜜酿造桶：制作各种不同效果的花蜜饮（恢复、持续恢复、攻击增强、速度增加、吸血）
+[spoiler]检查物品可知晓额外功效[/spoiler]
+
+[img]https://i.imgur.com/C5NwXhu.png[/img]
+心悦锄：一次性耕地+播种+对话 3x3 作物，通过金块充能。
+
+
+[h1]武器类[/h1]
+[img]http://i.imgur.com/sf7esy7.png[/img]
+玉米枪：远程武器
+
+[img]http://i.imgur.com/rKbHHPQ.png[/img]
+鱼刀：使用一段时间后会腐烂的近战武器，海上将始终保持最高伤害
+
+[img]http://i.imgur.com/UjRIyUa.png[/img]
+蜂语：每五次攻击会召唤一只暗影蜜蜂来助战，对蜂类生物造成双倍伤害
+（暗影蜜蜂1点生命值，攻击力为普通蜜蜂1/2。持续10秒）
+
+[img]https://i.imgur.com/XTYHVmY.png[/img]
+神秘法杖：自定义你的魔法！
+
+[img]https://i.imgur.com/lsg0vJP.png[/img]
+子卿：附近没有其他玩家时造成 2 倍伤害，地图没有其他玩家时造成 3 倍伤害
+
+
+[h1]服饰[/h1]
+[img]http://i.imgur.com/qFxGhUT.png[/img]
+马头：穿戴时，移动速度增加25%。
+
+[img]http://i.imgur.com/V1siHWx.png[/img]
+谜之声：欢乐的帽子，可以恢复你与附近玩家的理智。
+[spoiler]（将马头扔进焚烧炉，有几率获得）[/spoiler]
+
+[img]https://i.imgur.com/eNYNgs4.png[/img]
+岚色眼镜：减少来自暗影怪的伤害
+
+[img]https://i.imgur.com/v6kktoy.png[/img]
+赌徒铠甲：受到致死伤害有 88% 概率保留 1 点生命
+
+[img]https://i.imgur.com/bxx8Sbh.png[/img]
+诙谐面具：召唤火球环绕与你，攻击附近的敌人
+
+[img]https://i.imgur.com/3VCnyH1.png[/img]
+闹鬼巫师帽：受到暗影怪与鬼魂攻击时不产生硬直，同时可以清晰的看到诡影脚印
+
+
+[h1]建筑类[/h1]
+[img]http://i.imgur.com/VbYH9Y3.png[/img]
+焚烧炉：将一切物品烧成灰
+
+[img]http://i.imgur.com/zeAM5rc.png[/img]
+贪婪观察者：支付黄金来获得Boss坐标
+（注：部分Boss如龙蝇、蟾蜍游戏机制里只有玩家靠近才会生成是观察不到的）
+
+[img]https://i.imgur.com/ObyEsjz.png[/img]
+轨道：让矿车行驶
+
+[img]https://i.imgur.com/QAquY4z.png[/img][img]https://i.imgur.com/7mQgNVG.png[/img]
+木图腾：通过祭祀木头和活木获得树精木浆，会自动种植容器内的树种
+树精木浆：持续攻击同一目标将不断提升伤害
+
+[img]https://i.imgur.com/LlgjEb0.png[/img]
+劣质的飞行图腾：充能后可以飞行到其他飞行图腾
+
+
+[h1]魔法类[/h1]
+[img]https://i.imgur.com/PnKW6OJ.png[/img]
+暗隐打包纸：将你的建筑打包带走吧！
+
+[img]https://i.imgur.com/GW3GZvc.png[/img]
+翡翠箱：所有箱子之间共享 12 格容器，同时会窃取食人花吞噬的物品
+
+[img]https://i.imgur.com/dckl4qU.png[/img]
+符文袋：收纳你的符文
+
+
+[h1]杂项类[/h1]
+[img]https://i.imgur.com/QWl4oNt.png[/img]
+[img]https://i.imgur.com/W3NZCEM.png[/img]
+西游人物卡包 & 卡组：吸收附近暗影生物总计 444 点生命值
+[spoiler]（神话书说人物检查对应人物卡牌时会有不同描述）[/spoiler]
+
+[img]https://i.imgur.com/Jammtdz.png[/img]
+油纸包：查看饼干破碎者位置，或者拆出相关物资。
+
+[img]https://i.imgur.com/oNtEv2K.png[/img]
+饼干碎石：会朝着饼干破碎者方向投去。
+
+[img]https://i.imgur.com/C3GN3BX.png[/img]
+棱镜石：激活魔力方阵。
+
+
+[h1]雕塑类[/h1]
+[img]http://i.imgur.com/4dr2iBB.png[/img]
+月光星尘：一个能够散发隐隐光芒的雕塑
+
+[img]https://i.imgur.com/73uJqWF.png[/img]
+豆酱：可爱的小雕塑
+
+[img]https://i.imgur.com/5ivNE5X.png[/img]
+守望者：它似乎在等待什么
+
+
+[h1]农作物类[/h1]
+[img]https://i.imgur.com/B0AVBH2.png[/img]
+小麦
+
+[img]https://i.imgur.com/9jBWZuh.png[/img]
+向日葵
+
+[img]https://i.imgur.com/YCHk2hg.png[/img]
+葡萄
+
+
+[h1]食品类[/h1]
+[img]https://i.imgur.com/ulaJ0pG.png[/img]
+
+感谢翻译志愿者：
+FreyaMaluk, Mr.MagVI, Diegora, Fluxx
+
+微博：@二货爱吃白萝卜
+
+[spoiler][img]https://i.imgur.com/WnMYZrV.png[/img][/spoiler]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[h1]Provide additional items for game. You can install this mod any time. Enjoy your new package![/h1]
+
+If you want part of them, you can disable by type in options. (English,Chinese,Spanish,Russian,Portuguese, Korean support in option, welcome volunteer to help for translation)
+
+[img]https://i.imgur.com/MSQFG0c.png[/img]
+
+[h2]Developing: OLDONE WHISPER[/h2]
+[img]https://i.imgur.com/nT08Q8x.png[/img]
+
+[h2]Past Update:[/h2]
+[img]https://i.imgur.com/0aIB1Tb.png[/img]
+[img]https://i.imgur.com/ykJeyME.png[/img]
+
+Mystic Scepter:
+[img]https://i.imgur.com/gtS0LBi.png[/img]
+
+
+========================================================
+
+2022/05/28 Added Mystery behind the scenes; Added Mystery Stranded Jellyfish; Added item Thermostat Jellyfish; Problem; fix the problem that ingredients are not displayed in recipes;
+2022/05/22 Newly adding instant mysteries; repairing occasional problems; repairing the client mining car loading display problem; trying to repair the automatic collection and reporting problem caused by the MOD conflict;
+2022/05/21 adds a new haunted pottery mystery; newly added the tree mystery; new fisher hat which will not break the fish line when fishing, the probability of obtaining the probability when killing the squid; the dark deer will be generated in the cave Stone statues can be heated with fire; new ingredients lantern berry; fixing the problem of MOD conflicts in some cases; repairing players to carry moonlight cars to create a monthly rail, which will be automatically laid; Adjust the style of the moonlight ore car in the water
+2022/05/08 flint can now throw water drifting; New mini Salt Hole puzzle and Ocean Lotus Leaf puzzle; New food salf fish.
+2022/05/04 Add Sesson related flower puzzle. Fix sculptingtable do not show API recipe directly
+2022/05/02 Fix some player can see other player eyeing status; New 3 flower puzzle, each resolve will increse factor and it will help player restore health in each moring.
+2022/04/27 Resolve mod conflict with New Achievement
+2022/04/26 Rewrite buffer system to try to reduce mod conflict; Fix Marble Head attack sometime crash;
+2022/04/24: Nectar now has a new texture based on quality, and nectar containing food expires into alcohol; added a weapon, the Garnet; added defaced statues in swamps; Secret); Enlightenment Statues can now be activated by Mystic Scepter Moon (Activate Gift Smile Statue, Octopus Statue, Mermaid Statue, Rhythmic Wall); special techs can now be viewed directly in the build list;
+2022/03/28 Update: Fix all tech recipes in new UI
+2022/03/27 Update: Fix most item recipes in new UI; Strange bulb will more hardly to spawn
+
+
+View more update please check [url=http://steamcommunity.com/sharedfiles/filedetails/changelog/1085586145]here[/url]
+
+========================================================
+
+[h1]Since Steam limit description length, I can not write more new item here. Sorry...[/h1]
+
+[h1]Survival[/h1]
+[img]http://i.imgur.com/0SCoGlJ.png[/img]
+Blood Package: Treatment made by Mosquito Sack
+
+
+[img]https://i.imgur.com/htG3EVy.png[/img]
+Plantash: Cure over hot effect
+
+[img]https://i.imgur.com/qkANupM.png[/img]
+Minecart: Drive on the orbit (AWSD control, X get off,8 usage)
+
+[img]https://i.imgur.com/vC3dk1p.png[/img]
+Igloo: No break in winter
+
+[img]https://i.imgur.com/CuRYgd7.png[/img]
+Shadow Broken Tooth: Restore 50% lossing sanity and can empower Mystic Scepter
+
+[img]https://i.imgur.com/lRTUqU6.png[/img]
+Olden Seapot: Restore 1 HP. And let sanity come close 30%
+[spoiler]Can know cookie breaker speach[/spoiler]
+
+[img]https://i.imgur.com/Qj1kW3K.png[/img]
+Miser Pack: 12 item container. Move more faster when includes more items but will drop item when attacked.
+
+
+[h1]Farm[/h1]
+[img]https://i.imgur.com/eUqXuBi.png[/img]
+Nectar Maker(Experiment): Make customize nectar (recover, continue recover, damage enhance,speed enhance, vampirism)
+[spoiler]Inspect to check addtional effect[/spoiler]
+
+[img]https://i.imgur.com/C5NwXhu.png[/img]
+Xinyue hoe: Dig + plant + speak 3x3 plants at same time. Refuel with gold nut.
+
+
+
+[h1]Weapon[/h1]
+[img]http://i.imgur.com/sf7esy7.png[/img]
+Popcorn Gun: Ranged weapon
+
+[img]http://i.imgur.com/rKbHHPQ.png[/img]
+Fish Sword: Perishable melee weapon. Will keep max damage on the ocean
+
+[img]http://i.imgur.com/UjRIyUa.png[/img]
+Beehave: Spawn shadow bee every 5 attck. Double damage for bee creature.
+(Shadow bee have 1 hp, half damage as normal bee. Duration: 10s)
+
+[img]https://i.imgur.com/XTYHVmY.png[/img]
+Mystic Scepter: Customize your own magic!
+
+[img]https://i.imgur.com/lsg0vJP.png[/img]
+Zi Qing: Cause x2 damage when not other player nearby. Cause x3 damage when not other player in world
+
+
+[h1]Dress[/h1]
+[img]http://i.imgur.com/qFxGhUT.png[/img]
+Horse Head: Increase 25% moving speed when dressed
+
+[img]http://i.imgur.com/V1siHWx.png[/img]
+SOM: Happy hat. Can restores you and nearby players sanity
+[spoiler](Put horse head into Incinerator. Can get it randomly)[/spoiler]
+
+[img]https://i.imgur.com/eNYNgs4.png[/img]
+Blue Glasses: Reduce damage from shadow monsters
+
+[img]https://i.imgur.com/v6kktoy.png[/img]
+Gambler Armor: Have 88% change to keep 1 hp when getting lethal damage
+
+[img]https://i.imgur.com/bxx8Sbh.png[/img]
+Joker Face: Spawn orb around you to attack enemies
+
+[img]https://i.imgur.com/3VCnyH1.png[/img]
+Haunted Wizard Hat: No stun for shadow creature and ghost. Will see shadow footprint clearly
+
+
+[h1]Building[/h1]
+[img]http://i.imgur.com/VbYH9Y3.png[/img]
+Incinerator: Burn everything into ash
+
+[img]http://i.imgur.com/zeAM5rc.png[/img]
+Greedy Observer: Show the boss position by give gold
+
+[img]https://i.imgur.com/ObyEsjz.png[/img]
+Orbit: For minecart usage
+
+[img]https://i.imgur.com/QAquY4z.png[/img][img]https://i.imgur.com/7mQgNVG.png[/img]
+Woodener: Get woodead oar by contributing log and livelog. Will auto plant pinecone if has
+Woodead Oar: Will increase damage when you attack same enemy
+
+[img]https://i.imgur.com/LlgjEb0.png[/img]
+Inferior Fly Totem: Make nearby player fly to target place but need charge
+
+
+[h1]Magic[/h1]
+[img]https://i.imgur.com/PnKW6OJ.png[/img]
+Shadow Packager: Package your building!
+
+[img]https://i.imgur.com/GW3GZvc.png[/img]
+Jade Chest: Share 12 slot with each jade chest. And also take items eaten by lure plant
+
+[img]https://i.imgur.com/dckl4qU.png[/img]
+Inscription Package: Hold your inscriptions!
+
+
+[h1]Others[/h1]
+[img]https://i.imgur.com/QWl4oNt.png[/img]
+[img]https://i.imgur.com/W3NZCEM.png[/img]
+Character Cards: Average 444 damage to nearby shadow creatures
+
+[img]https://i.imgur.com/Jammtdz.png[/img]
+Paper Package: Check cookie breaker position or get related items
+
+[img]https://i.imgur.com/oNtEv2K.png[/img]
+Cutter Stone: Throw the direction of cookie breaker
+
+[img]https://i.imgur.com/C3GN3BX.png[/img]
+Legion stone： Active magic rubik
+
+
+[h1]Sculpture[/h1]
+[img]http://i.imgur.com/4dr2iBB.png[/img]
+Moon Ash: With little light
+
+[img]https://i.imgur.com/73uJqWF.png[/img]
+Dou Jiang: A lovely chesspiece
+
+[img]https://i.imgur.com/5ivNE5X.png[/img]
+Watcher: What's it waiting for?
+
+
+[h1]Crops[/h1]
+[img]https://i.imgur.com/B0AVBH2.png[/img]
+Wheat
+
+[img]https://i.imgur.com/9jBWZuh.png[/img]
+Sunflower
+
+[img]https://i.imgur.com/YCHk2hg.png[/img]
+Grape
+
+
+[h1]Food Recipes[/h1]
+[img]https://i.imgur.com/ulaJ0pG.png[/img]
+
+
+Thanks for Translation Volunteer:
+FreyaMaluk, Mr.MagVI, Diegora, Fluxx
+
+[spoiler][img]https://i.imgur.com/WnMYZrV.png[/img][/spoiler]

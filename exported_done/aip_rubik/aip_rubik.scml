@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="body">
+        <file id="0" name="body/full.png" width="500" height="500" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <folder id="1" name="fire_marker">
+        <file id="0" name="fire_marker/fire_marker.png" width="10" height="10" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_rubik">
+        <animation id="0" name="idle" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="full" folder="0" file="0" abs_x="-2.992104" abs_y="0.131695" abs_pivot_x="0.492104" abs_pivot_y="0.368305" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="fire_marker" folder="1" file="0" abs_x="-4.393011" abs_y="186.027749" abs_pivot_x="0.57628" abs_pivot_y="0.50418" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="full">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="-2.992104" y="0.131695" pivot_x="0.492104" pivot_y="0.368305" angle="0"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="fire_marker">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="-4.393011" y="186.027749" pivot_x="0.57628" pivot_y="0.50418" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>
