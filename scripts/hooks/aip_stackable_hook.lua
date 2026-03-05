@@ -7,6 +7,8 @@ AddComponentPostInit("stackable", function(self)
 	function self:Put(item, source_pos, ...)
 		local mergeType = self.aipMergeType
 
+		_G.aipTypePrint("mergeType", self.inst, mergeType)
+
 		if mergeType ~= nil then
 			local canMerge = false
 

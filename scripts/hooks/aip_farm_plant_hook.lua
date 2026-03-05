@@ -19,13 +19,25 @@ for plant_name, plant_data in pairs(PLANT_DEFS) do
             end)
         end
 
-        -- AddPrefabPostInit(oversized_prefab, function(inst)
-        --     inst:ListenForEvent("loot_prefab_spawned", function(inst, data)
-        --         local loot = data.loot
-        --         if loot ~= nil and loot.prefab == plant_data.seed then
+        -- 种子合并要添加品质检查
+        AddPrefabPostInit(seed_prefab, function(inst)
+            if inst.components.stackable then
+                inst.components.stackable.aipMergeType = function(this, other)
+                    local thisQ = this.components.aipc_quality ~= nil and this.components.aipc_quality:GetVal() or 1
+                    local otherQ = other.components.aipc_quality ~= nil and other.components.aipc_quality:GetVal() or 1
+                    return thisQ == otherQ
+                end
+            end
+        end)
 
-        --         end
-        --     end)
-        -- end)
+        --  oversized_prefab 生成时，种子的质量 +1
+        AddPrefabPostInit(oversized_prefab, function(inst)
+            inst:ListenForEvent("loot_prefab_spawned", function(inst, data)
+                local loot = data.loot
+                if loot ~= nil and loot.prefab == plant_data.seed and loot.components.aipc_quality then
+                    loot.components.aipc_quality:DoDelta(1)
+                end
+            end)
+        end)
     end
 end
