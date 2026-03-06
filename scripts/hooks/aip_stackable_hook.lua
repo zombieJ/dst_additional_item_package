@@ -3,6 +3,7 @@ local dev_mode = _G.aipGetModConfig("dev_mode") == "enabled"
 
 AddComponentPostInit("stackable", function(self)
 	local oldPut = self.Put
+	local oldIsFull = self.IsFull
 
 	function self:Put(item, source_pos, ...)
 		local mergeType = self.aipMergeType
@@ -22,10 +23,21 @@ AddComponentPostInit("stackable", function(self)
 			end
 
 			if not canMerge then
-				return false
+				self.aipIsFullLocked = true
+				self.inst:DoTaskInTime(0.1, function()
+					self.aipIsFullLocked = false
+				end)
+				return item
 			end
 		end
 
 		return oldPut(self, item, source_pos, ...)
+	end
+
+	function self:IsFull()
+		if self.aipIsFullLocked then
+			return true
+		end
+		return oldIsFull(self)
 	end
 end)
