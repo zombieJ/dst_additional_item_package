@@ -5,8 +5,9 @@ for plant_name, plant_data in pairs(PLANT_DEFS) do
     if not plant_data.is_randomseed then
         local seed_prefab = plant_data.seed
         local oversized_prefab = plant_name .. "_oversized"
+        local farm_plant_prefab = "farm_plant_" .. plant_name
 
-        local prefabList = { seed_prefab, plant_name, oversized_prefab }
+        local prefabList = { seed_prefab, plant_name, oversized_prefab, farm_plant_prefab }
 
         for _, prefab in ipairs(prefabList) do
             AddPrefabPostInit(prefab, function(inst)
@@ -18,6 +19,16 @@ for plant_name, plant_data in pairs(PLANT_DEFS) do
                 end
             end)
         end
+
+        -- 植物种植时继承种子品质
+        AddPrefabPostInit(farm_plant_prefab, function(inst)
+            inst:ListenForEvent("on_planted", function(inst, data)
+                if data ~= nil and data.seed ~= nil and data.seed.components.aipc_quality then
+                    local seedQ = data.seed.components.aipc_quality:GetVal()
+                    inst.components.aipc_quality:SetVal(seedQ)
+                end
+            end)
+        end)
 
         -- 种子合并要添加品质检查
         AddPrefabPostInit(seed_prefab, function(inst)

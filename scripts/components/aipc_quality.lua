@@ -5,12 +5,6 @@ local QUALITY_COLORS = petConfig.QUALITY_COLORS
 local QUALITY_MIN = 1
 local QUALITY_MAX = 5
 
-_G.aipTypePrint("thx", petConfig)
-
-_G.aipTypePrint(QUALITY_LANG)
-
-_G.aipTypePrint(QUALITY_COLORS)
-
 local Quality = Class(function(self, inst)
 	self.inst = inst
 	self.quality = 1

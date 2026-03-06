@@ -1,5 +1,4 @@
 local _G = GLOBAL
-local dev_mode = _G.aipGetModConfig("dev_mode") == "enabled"
 
 AddComponentPostInit("stackable", function(self)
 	local oldPut = self.Put
@@ -7,8 +6,6 @@ AddComponentPostInit("stackable", function(self)
 
 	function self:Put(item, source_pos, ...)
 		local mergeType = self.aipMergeType
-
-		_G.aipTypePrint("mergeType", self.inst, mergeType)
 
 		if mergeType ~= nil then
 			local canMerge = false
