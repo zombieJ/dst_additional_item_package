@@ -3,6 +3,18 @@ local _G = GLOBAL
 AddComponentPostInit("stackable", function(self)
 	local oldPut = self.Put
 	local oldIsFull = self.IsFull
+	local oldGet = self.Get
+
+	function self:Get(...)
+		local result = oldGet(self, ...)
+		if result and self.inst and self.inst.components.aipc_quality then
+			local sourceQuality = self.inst.components.aipc_quality:GetVal()
+			if result.components.aipc_quality then
+				result.components.aipc_quality:SetVal(sourceQuality)
+			end
+		end
+		return result
+	end
 
 	function self:Put(item, source_pos, ...)
 		local mergeType = self.aipMergeType
