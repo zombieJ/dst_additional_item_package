@@ -312,6 +312,18 @@ local function onRefreshName(inst)
 		maxQuality = 2
 	end
 
+	-- 根据 baseline 调整品质范围
+	local baseline = nectarValues.baseline or 0
+	if baseline > 0 then
+		local baselineQuality = math.min(5, math.floor(baseline / math.pow(6, (nectarValues.generation or 1))))
+		if baselineQuality > minQuality then
+			minQuality = baselineQuality
+		end
+		if baselineQuality > maxQuality then
+			maxQuality = baselineQuality
+		end
+	end
+
 	-- 品质计算
 	--> 纯度
 	if purePTG <= 0.3 then
@@ -358,6 +370,7 @@ local function onRefreshName(inst)
 	currentQuality = math.min(maxQuality, currentQuality)
 	currentQuality = math.max(minQuality, currentQuality)
 	currentQuality = math.floor(currentQuality)
+
 	local qualityName = "quality_"..currentQuality
 
 	-- 记录一下，给其他地方用（比如 雄蜂）

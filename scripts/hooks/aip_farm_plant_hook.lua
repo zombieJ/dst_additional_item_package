@@ -28,10 +28,26 @@ for plant_name, plant_data in pairs(PLANT_DEFS) do
                     inst.components.aipc_quality:SetVal(seedQ)
                 end
             end)
+
+            inst:ListenForEvent("loot_prefab_spawned", function(inst, data)
+                local loot = data.loot
+                if loot ~= nil and loot.components.aipc_quality then
+                    local plantQ = inst.components.aipc_quality:GetVal()
+                    loot.components.aipc_quality:SetVal(plantQ)
+                end
+            end)
         end)
 
         -- 种子合并要添加品质检查
         AddPrefabPostInit(seed_prefab, function(inst)
+            inst:ListenForEvent("on_loot_dropped", function(inst, data)
+                local dropper = data.dropper
+                if dropper ~= nil and dropper.components.aipc_quality then
+                    local dropperQ = dropper.components.aipc_quality:GetVal()
+                    inst.components.aipc_quality:SetVal(dropperQ)
+                end
+            end)
+
             if inst.components.stackable then
                 inst.components.stackable.aipMergeType = function(this, other)
                     local thisQ = this.components.aipc_quality ~= nil and this.components.aipc_quality:GetVal() or 1
