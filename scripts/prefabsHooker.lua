@@ -441,6 +441,12 @@ AddPrefabPostInit("reskin_tool", function(inst)
 				then
 					return true
 				end
+
+				-- dev 模式下允许对农场植物使用
+				if dev_mode and target:HasTag("farm_plant") then
+					return true
+				end
+
 				return originCanCast(doer, target, pos, ...)
 			end)
 
@@ -450,6 +456,11 @@ AddPrefabPostInit("reskin_tool", function(inst)
 					if target.prefab == "aip_wheat" then
 						_G.aipSpawnPrefab(target, "explode_reskin")
 						_G.aipReplacePrefab(target, "grass")
+						return
+
+					-- dev 模式：农场植物强制巨大化
+					elseif dev_mode and target:HasTag("farm_plant") then
+						target.force_oversized = true
 						return
 
 					-- 鬼火换颜色
