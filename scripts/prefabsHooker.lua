@@ -447,6 +447,11 @@ AddPrefabPostInit("reskin_tool", function(inst)
 					return true
 				end
 
+				-- dev 模式下允许对种子使用
+				if dev_mode and target.components.aipc_quality then
+					return true
+				end
+
 				return originCanCast(doer, target, pos, ...)
 			end)
 
@@ -461,6 +466,11 @@ AddPrefabPostInit("reskin_tool", function(inst)
 					-- dev 模式：农场植物强制巨大化
 					elseif dev_mode and target:HasTag("farm_plant") then
 						target.force_oversized = true
+						return
+
+					-- dev 模式：种子品质+1
+					elseif dev_mode and target.components.aipc_quality then
+						target.components.aipc_quality:DoDelta(1)
 						return
 
 					-- 鬼火换颜色
