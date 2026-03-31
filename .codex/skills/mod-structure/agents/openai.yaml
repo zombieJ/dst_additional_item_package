@@ -1,0 +1,7 @@
+interface:
+  display_name: "Mod Structure"
+  short_description: "Orient within this DST mod's files, hooks, and naming conventions."
+  default_prompt: "Use $mod-structure to map where this feature lives in the dst_additional_item_package repository."
+
+policy:
+  allow_implicit_invocation: true
