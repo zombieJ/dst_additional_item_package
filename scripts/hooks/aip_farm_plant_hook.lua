@@ -1,13 +1,25 @@
 local _G = GLOBAL
 local PLANT_DEFS = _G.require("prefabs/farm_plant_defs").PLANT_DEFS
 
+-- 有品质的物品只和同品质合堆，避免吃的时候品质被混掉。
+local function patchQualityStackable(inst)
+    if inst.components.stackable then
+        inst.components.stackable.aipMergeType = function(this, other)
+            local thisQ = this.components.aipc_quality ~= nil and this.components.aipc_quality:GetVal() or 1
+            local otherQ = other.components.aipc_quality ~= nil and other.components.aipc_quality:GetVal() or 1
+            return thisQ == otherQ
+        end
+    end
+end
+
 for plant_name, plant_data in pairs(PLANT_DEFS) do
     if not plant_data.is_randomseed then
         local seed_prefab = plant_data.seed
+        local cooked_prefab = plant_name .. "_cooked"
         local oversized_prefab = plant_name .. "_oversized"
         local farm_plant_prefab = "farm_plant_" .. plant_name
 
-        local prefabList = { seed_prefab, plant_name, oversized_prefab, farm_plant_prefab }
+        local prefabList = { seed_prefab, plant_name, cooked_prefab, oversized_prefab, farm_plant_prefab }
 
         for _, prefab in ipairs(prefabList) do
             AddPrefabPostInit(prefab, function(inst)
@@ -17,6 +29,8 @@ for plant_name, plant_data in pairs(PLANT_DEFS) do
                 if not _G.TheWorld.ismastersim then
                     return
                 end
+
+                patchQualityStackable(inst)
             end)
         end
 
@@ -48,13 +62,6 @@ for plant_name, plant_data in pairs(PLANT_DEFS) do
                 end
             end)
 
-            if inst.components.stackable then
-                inst.components.stackable.aipMergeType = function(this, other)
-                    local thisQ = this.components.aipc_quality ~= nil and this.components.aipc_quality:GetVal() or 1
-                    local otherQ = other.components.aipc_quality ~= nil and other.components.aipc_quality:GetVal() or 1
-                    return thisQ == otherQ
-                end
-            end
         end)
 
         --  oversized_prefab 生成时，种子的质量 +1

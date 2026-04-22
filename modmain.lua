@@ -357,6 +357,7 @@ modimport("scripts/hooks/aip_pet_hook.lua")
 
 modimport("scripts/hooks/aip_combat_hook.lua")
 modimport("scripts/hooks/aip_stackable_hook.lua")
+modimport("scripts/hooks/aip_edible_hook.lua")
 modimport("scripts/hooks/aip_farm_plant_hook.lua")
 
 ------------------------------------- 测试专用 -------------------------------------
