@@ -207,7 +207,7 @@ local function onRefreshName(inst)
 	local tagBalance = false
 
 	for tag, tagVal in pairs (nectarValues) do
-		if tag ~= "exquisite" and tag ~= "generation" and tag ~= "purity" then
+		if tag ~= "exquisite" and tag ~= "generation" and tag ~= "purity" and tag ~= "baseline" then
 			totalTagVal = totalTagVal + tagVal
 			totalTagCount = totalTagCount + 1
 
