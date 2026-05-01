@@ -1,0 +1,7 @@
+interface:
+  display_name: "Git Changelog"
+  short_description: "Summarize diffs and draft commit or changelog text."
+  default_prompt: "Use $git-changelog to summarize the current git diff and draft a Conventional Commit message."
+
+policy:
+  allow_implicit_invocation: true

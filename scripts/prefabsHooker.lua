@@ -441,6 +441,17 @@ AddPrefabPostInit("reskin_tool", function(inst)
 				then
 					return true
 				end
+
+				-- dev 模式下允许对农场植物使用
+				if dev_mode and target:HasTag("farm_plant") then
+					return true
+				end
+
+				-- dev 模式下允许对种子使用
+				if dev_mode and target.components.aipc_quality then
+					return true
+				end
+
 				return originCanCast(doer, target, pos, ...)
 			end)
 
@@ -450,6 +461,33 @@ AddPrefabPostInit("reskin_tool", function(inst)
 					if target.prefab == "aip_wheat" then
 						_G.aipSpawnPrefab(target, "explode_reskin")
 						_G.aipReplacePrefab(target, "grass")
+						return
+
+					-- dev 模式：农场植物强制巨大化并催熟
+					elseif dev_mode and target:HasTag("farm_plant") then
+						target.force_oversized = true
+
+						if target.components.growable ~= nil then
+							for i = 1, 100 do
+								if target.components.pickable ~= nil and target.components.pickable:CanBePicked() then
+									break
+								end
+
+								local oldStage = target.components.growable.stage
+								if not target.components.growable:DoGrowth() then
+									break
+								end
+								if target.components.growable.stage == oldStage then
+									break
+								end
+							end
+						end
+
+						return
+
+					-- dev 模式：种子品质+1
+					elseif dev_mode and target.components.aipc_quality then
+						target.components.aipc_quality:DoDelta(1)
 						return
 
 					-- 鬼火换颜色

@@ -1,0 +1,7 @@
+interface:
+  display_name: "DST Test Plan"
+  short_description: "Generate manual DST test plans from git diffs."
+  default_prompt: "Use $dst-test-plan to compare the current branch with master and write a concise manual test plan for this DST mod."
+
+policy:
+  allow_implicit_invocation: true

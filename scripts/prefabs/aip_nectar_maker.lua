@@ -89,6 +89,11 @@ local function onMakeNectar(inst, doer)
 	for k, item in pairs (inst.components.container.slots) do
 		local itemTagVals = getNectarValues(item) or {}
 
+		-- 检查素材的品质属性，这个属性决定了最低品质
+		if item.components.aipc_quality then
+			itemTagVals.baseline = (itemTagVals.baseline or 0) + item.components.aipc_quality:GetVal()
+		end
+
 		for tag, tagVal in pairs (itemTagVals) do
 			if tag == "generation" then
 				tagVals.generation = math.max(tagVals.generation, tagVal)
