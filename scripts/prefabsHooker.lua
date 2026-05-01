@@ -463,9 +463,26 @@ AddPrefabPostInit("reskin_tool", function(inst)
 						_G.aipReplacePrefab(target, "grass")
 						return
 
-					-- dev 模式：农场植物强制巨大化
+					-- dev 模式：农场植物强制巨大化并催熟
 					elseif dev_mode and target:HasTag("farm_plant") then
 						target.force_oversized = true
+
+						if target.components.growable ~= nil then
+							for i = 1, 100 do
+								if target.components.pickable ~= nil and target.components.pickable:CanBePicked() then
+									break
+								end
+
+								local oldStage = target.components.growable.stage
+								if not target.components.growable:DoGrowth() then
+									break
+								end
+								if target.components.growable.stage == oldStage then
+									break
+								end
+							end
+						end
+
 						return
 
 					-- dev 模式：种子品质+1
