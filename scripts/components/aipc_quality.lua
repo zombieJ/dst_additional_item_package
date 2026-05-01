@@ -14,6 +14,7 @@ end)
 
 function Quality:InitNetKeys()
 	if self.inst.components.aipc_info_client then
+		self.inst.components.aipc_info_client:SetUInt("aip_quality", nil, true)
 		self.inst.components.aipc_info_client:SetString("aip_info", nil, true)
 		self.inst.components.aipc_info_client:SetByteArray("aip_info_color", nil, true)
 	end
@@ -29,7 +30,13 @@ function Quality:DoDelta(delta)
 end
 
 function Quality:syncToClient()
+	if TheWorld ~= nil and not TheWorld.ismastersim then
+		return
+	end
+
 	if self.inst.components.aipc_info_client then
+		self.inst.components.aipc_info_client:SetUInt("aip_quality", self.quality)
+
 		if self.quality > 1 then
 			self.inst.components.aipc_info_client:SetString("aip_info", self:GetName())
 		else
@@ -41,6 +48,13 @@ function Quality:syncToClient()
 end
 
 function Quality:GetVal()
+	if TheWorld ~= nil and not TheWorld.ismastersim and self.inst.components.aipc_info_client then
+		local clientQuality = self.inst.components.aipc_info_client:Get("aip_quality")
+		if clientQuality ~= nil and clientQuality > 0 then
+			return clientQuality
+		end
+	end
+
 	return self.quality
 end
 
