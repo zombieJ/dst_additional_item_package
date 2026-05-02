@@ -67,8 +67,21 @@ local skinner = skinUtil.CreatePrefabSkinner(cozyNestConfig, {
 local DISPLAY_DIRTY = "aip_cozy_nest_display_dirty"
 local DISPLAY_SYMBOL = "swap_item"
 local SPECIAL_GUESTS = {
-	chester_eyebone = "chester",
-	glommerflower = "glommer",
+	chester_eyebone = {
+		prefab = "chester",
+		x = 0,
+		z = .35,
+		face_x = 1,
+		face_z = .35,
+		scale = .85,
+	},
+	glommerflower = {
+		prefab = "glommer",
+		x = 0,
+		z = .25,
+		face_x = 1,
+		face_z = .25,
+	},
 }
 
 local function getStoredItem(inst)
@@ -136,24 +149,87 @@ local function syncDisplay(inst)
 	end
 end
 
+local function releaseSpecialGuest(inst)
+	local follower = inst._aipCozyNestGuest
+	if follower ~= nil then
+		inst._aipCozyNestGuest = nil
+
+		if follower:IsValid() and follower._aipCozyNest == inst then
+			follower._aipCozyNest = nil
+
+			if follower._aipCozyNestScale ~= nil then
+				follower.Transform:SetScale(
+					follower._aipCozyNestScale.x,
+					follower._aipCozyNestScale.y,
+					follower._aipCozyNestScale.z
+				)
+				follower._aipCozyNestScale = nil
+			end
+
+			if follower.components.sleeper ~= nil and follower.components.sleeper:IsAsleep() then
+				follower.components.sleeper:WakeUp()
+			end
+		end
+	end
+end
+
+local function getGuestSleepPoint(inst, config)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	return x + (config.x or 0), y, z + (config.z or 0)
+end
+
+local function setSpecialGuestPose(inst, follower, config)
+	if follower._aipCozyNest ~= inst then
+		if follower._aipCozyNest ~= nil and follower._aipCozyNest:IsValid() then
+			releaseSpecialGuest(follower._aipCozyNest)
+		end
+
+		releaseSpecialGuest(inst)
+		inst._aipCozyNestGuest = follower
+		follower._aipCozyNest = inst
+	end
+
+	if config.scale ~= nil and follower._aipCozyNestScale == nil then
+		local x, y, z = follower.Transform:GetScale()
+		follower._aipCozyNestScale = { x = x, y = y, z = z }
+		follower.Transform:SetScale(config.scale, config.scale, config.scale)
+	end
+
+	local x, y, z = getGuestSleepPoint(inst, config)
+	if follower.Physics ~= nil then
+		follower.Physics:Teleport(x, y, z)
+	else
+		follower.Transform:SetPosition(x, y, z)
+	end
+
+	if config.face_x ~= nil or config.face_z ~= nil then
+		follower:FacePoint(x + (config.face_x or 0), y, z + (config.face_z or 0))
+	end
+end
+
 local function syncSpecialGuest(inst)
 	local item = getStoredItem(inst)
-	local guestPrefab = item ~= nil and SPECIAL_GUESTS[item.prefab] or nil
+	local guestConfig = item ~= nil and SPECIAL_GUESTS[item.prefab] or nil
 
-	if guestPrefab == nil or item.components.leader == nil then
+	if guestConfig == nil or item.components.leader == nil then
+		releaseSpecialGuest(inst)
 		return
 	elseif item.prefab == "glommerflower" and not item:HasTag("glommerflower") then
+		releaseSpecialGuest(inst)
 		return
 	end
 
 	for follower in pairs(item.components.leader.followers) do
-		if follower:IsValid() and follower.prefab == guestPrefab then
+		if follower:IsValid() and follower.prefab == guestConfig.prefab then
+			local x, y, z = getGuestSleepPoint(inst, guestConfig)
+
 			if follower.components.knownlocations ~= nil then
-				follower.components.knownlocations:RememberLocation("home", inst:GetPosition())
+				follower.components.knownlocations:RememberLocation("home", Point(x, y, z))
 			end
 
 			if follower.components.sleeper ~= nil then
 				if follower:IsNear(inst, 2.5) then
+					setSpecialGuestPose(inst, follower, guestConfig)
 					follower.components.sleeper:GoToSleep()
 				else
 					if follower.components.sleeper:IsAsleep() then
@@ -163,12 +239,16 @@ local function syncSpecialGuest(inst)
 					if follower.components.locomotor ~= nil and
 						(follower.components.combat == nil or follower.components.combat.target == nil)
 					then
-						follower.components.locomotor:GoToPoint(inst:GetPosition(), nil, true)
+						follower.components.locomotor:GoToPoint(Point(x, y, z), nil, true)
 					end
 				end
 			end
+
+			return
 		end
 	end
+
+	releaseSpecialGuest(inst)
 end
 
 local refreshNest
@@ -198,6 +278,7 @@ end
 local function onhammered(inst)
 	inst.components.lootdropper:DropLoot()
 	clearDisplay(inst)
+	releaseSpecialGuest(inst)
 
 	if inst.components.container ~= nil then
 		inst.components.container:DropEverything()
