@@ -1,6 +1,6 @@
 ---
 name: "dst-test-plan"
-description: "通过对比当前分支与 `master`（或用户指定的其他基准引用）、检查差异，并把变更行为整理成最小可行的游戏内检查清单，为这个 Don't Starve Together 模组生成手动测试计划，同时同步写入仓库根目录 `test.md`。当用户要求测试计划、QA 清单、验证步骤、回归清单，或询问如何在没有自动化测试的情况下手动测试 DST 模组改动时使用。"
+description: "通过对比当前分支与合适基准引用（PR 分支优先使用 PR base，否则使用用户指定基准或 `master`）、检查差异，并把变更行为整理成最小可行的游戏内检查清单，为这个 Don't Starve Together 模组生成手动测试计划，同时同步写入仓库根目录 `test.md`。当用户要求测试计划、QA 清单、验证步骤、回归清单，或询问如何在没有自动化测试的情况下手动测试 DST 模组改动时使用。"
 ---
 
 # DST 测试计划
@@ -9,10 +9,15 @@ description: "通过对比当前分支与 `master`（或用户指定的其他基
 
 ## 工作流程
 
-1. 除非用户指定其他基准，否则将当前分支与 `master` 对比：
-   - `git --no-pager diff --stat master...HEAD`
-   - `git --no-pager diff --name-status master...HEAD`
-   - `git --no-pager log --oneline master..HEAD`
+1. 选择对比基准：
+   - 如果用户指定了基准引用，使用用户指定的基准。
+   - 否则先检查当前分支是否是一个 PR 分支：运行 `gh pr view --json baseRefName,headRefName,url`。如果能取到 PR，使用该 PR 的 `baseRefName` 作为基准。
+   - 如果当前分支不是 PR 分支，回退到 `master`。
+   - 如果基准来自远端分支，先运行 `git fetch origin <base>`，并优先使用 `origin/<base>` 对比。
+   - 对选定的 `<base>` 运行：
+     - `git --no-pager diff --stat <base>...HEAD`
+     - `git --no-pager diff --name-status <base>...HEAD`
+     - `git --no-pager log --oneline <base>..HEAD`
 2. 只读取理解行为所需的已变更文件。
 3. 将 diff 归纳为少量测试主题，而不是逐文件叙述。
 4. 为每个变更行为编写能证明它的最短手动测试。
