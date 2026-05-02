@@ -39,6 +39,7 @@ end
 
 local DEFAULT_SKIN = cozyNestConfig.DEFAULT_SKIN
 local GUEST_ANIM_SUFFIX = "_guest"
+local GUEST_FINAL_OFFSET = -2
 local applyDisplayImage
 local hasSleepingGuest
 
@@ -157,6 +158,7 @@ local function syncDisplay(inst)
 end
 
 local function refreshGuestVisual(inst)
+	inst.AnimState:SetFinalOffset(hasSleepingGuest(inst) and GUEST_FINAL_OFFSET or 0)
 	skinner.PlayCurrent(inst)
 	applyDisplayImage(inst)
 end
