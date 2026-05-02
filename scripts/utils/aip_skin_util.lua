@@ -2,9 +2,27 @@ local SkinUtil = {}
 
 local configsByPrefab = {}
 
+local function containsValue(list, value)
+	if type(list) ~= "table" then
+		return false
+	end
+
+	for _, item in ipairs(list) do
+		if item == value then
+			return true
+		end
+	end
+
+	return false
+end
+
 local function containsSkin(skinsList, skinName)
+	if type(skinsList) ~= "table" then
+		return false
+	end
+
 	for _, skin in ipairs(skinsList) do
-		if skin.item == skinName then
+		if type(skin) == "table" and skin.item == skinName then
 			return true
 		end
 	end
@@ -76,10 +94,22 @@ function SkinUtil.CreateConfig(options)
 	end
 
 	function config.RegisterPrefabSkins()
-		PREFAB_SKINS[prefab] = buildSkins
-		PREFAB_SKINS_IDS[prefab] = {}
+		local prefabSkins = PREFAB_SKINS[prefab]
+		if type(prefabSkins) ~= "table" then
+			prefabSkins = {}
+			PREFAB_SKINS[prefab] = prefabSkins
+		end
 
-		for index, skin in ipairs(buildSkins) do
+		for _, skin in ipairs(buildSkins) do
+			if not containsValue(prefabSkins, skin) then
+				table.insert(prefabSkins, skin)
+			end
+		end
+
+		if type(PREFAB_SKINS_IDS[prefab]) ~= "table" then
+			PREFAB_SKINS_IDS[prefab] = {}
+		end
+		for index, skin in ipairs(prefabSkins) do
 			PREFAB_SKINS_IDS[prefab][skin] = index
 		end
 	end
@@ -141,6 +171,11 @@ end
 function SkinUtil.AppendBuildSkins(recipe, skinsList)
 	local config = recipe ~= nil and SkinUtil.GetConfig(recipe.product) or nil
 	if config == nil then
+		return skinsList
+	end
+	if skinsList == nil then
+		skinsList = {}
+	elseif type(skinsList) ~= "table" then
 		return skinsList
 	end
 

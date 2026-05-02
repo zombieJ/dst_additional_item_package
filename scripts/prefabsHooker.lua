@@ -426,6 +426,39 @@ AddPrefabPostInit("messagebottle", function(inst)
 end)
 
 ---------------------------------------- 魔法扫把 ----------------------------------------
+local function getReskinToolTarget(doer, target)
+	if target == nil then
+		return nil
+	end
+
+	if target.reskin_tool_target_redirect ~= nil and target.reskin_tool_target_redirect:IsValid() then
+		target = target.reskin_tool_target_redirect
+	end
+
+	if target._playerlink ~= nil and target._playerlink ~= doer then
+		return nil
+	end
+
+	if target.reskin_tool_cannot_target_this then
+		return nil
+	end
+
+	return target
+end
+
+local function getAipSkinTarget(target)
+	if target.prefab == nil or target.SetAipSkin == nil then
+		return nil, nil
+	end
+
+	local skinConfig = skinUtil.GetConfig(target.prefab)
+	if skinConfig == nil then
+		return nil, nil
+	end
+
+	return target, skinConfig
+end
+
 AddPrefabPostInit("reskin_tool", function(inst)
 	if inst.components.spellcaster ~= nil then
 		local originCanCast = inst.components.spellcaster.can_cast_fn
@@ -438,13 +471,18 @@ AddPrefabPostInit("reskin_tool", function(inst)
 					return originCanCast(doer, target, pos, ...)
 				end
 
+				target = getReskinToolTarget(doer, target)
+				if target == nil then
+					return false
+				end
+
 				if
 					table.contains({
 						"aip_wheat",
 						"aip_ghost_fire",
 						"aip_star_fragment",
 					}, target.prefab)
-					or skinUtil.GetConfig(target.prefab) ~= nil
+					or getAipSkinTarget(target) ~= nil
 				then
 					return true
 				end
@@ -463,7 +501,17 @@ AddPrefabPostInit("reskin_tool", function(inst)
 			end)
 
 			inst.components.spellcaster:SetSpellFn(function(tool, target, pos, ...)
+				local caster = select(1, ...)
+				local originalTarget = target
+				target = getReskinToolTarget(caster, target)
+
+				if originalTarget ~= nil and target == nil then
+					return
+				end
+
 				if target then
+					local aipSkinTarget, aipSkinConfig = getAipSkinTarget(target)
+
 					-- 小麦变回草
 					if target.prefab == "aip_wheat" then
 						_G.aipSpawnPrefab(target, "explode_reskin")
@@ -498,14 +546,13 @@ AddPrefabPostInit("reskin_tool", function(inst)
 						return
 
 					-- AIP build skin cycle
-					elseif skinUtil.GetConfig(target.prefab) ~= nil and target.SetAipSkin ~= nil then
-						local skinConfig = skinUtil.GetConfig(target.prefab)
-						local nextSkin = skinConfig.GetNextBuildSkin(target.skinname)
+					elseif aipSkinTarget ~= nil then
+						local nextSkin = aipSkinConfig.GetNextBuildSkin(aipSkinTarget.skinname)
 
-						_G.aipSpawnPrefab(target, "explode_reskin")
-						target:SetAipSkin(nextSkin)
-						if target.SoundEmitter ~= nil then
-							target.SoundEmitter:PlaySound("dontstarve/common/together/skin_change")
+						_G.aipSpawnPrefab(aipSkinTarget, "explode_reskin")
+						aipSkinTarget:SetAipSkin(nextSkin)
+						if aipSkinTarget.SoundEmitter ~= nil then
+							aipSkinTarget.SoundEmitter:PlaySound("dontstarve/common/together/skin_change")
 						end
 						return
 

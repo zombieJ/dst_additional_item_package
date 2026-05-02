@@ -15,7 +15,7 @@ local function onBuildStructure(builder, data)
 end
 
 AddComponentPostInit("builder", function(self)
-	if _G.TheWorld ~= nil and not _G.TheWorld.ismastersim then
+	if _G.TheWorld == nil or not _G.TheWorld.ismastersim then
 		return
 	end
 
@@ -29,6 +29,10 @@ local function patchSkinList(packageName)
 	end
 
 	local oldGetSkinsList = class.GetSkinsList
+	if type(oldGetSkinsList) ~= "function" then
+		return
+	end
+
 	class.GetSkinsList = function(self, ...)
 		return skinUtil.AppendBuildSkins(self.recipe, oldGetSkinsList(self, ...))
 	end
