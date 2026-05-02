@@ -351,72 +351,72 @@
         <animation id="12" name="pillow_guest" length="100">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="pillow" folder="0" file="0" abs_x="0" abs_y="-36" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="1.5" abs_scale_y="1.5" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="0" name="pillow" folder="0" file="0" abs_x="0" abs_y="-90" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="1.5" abs_scale_y="1.5" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
             </mainline>
             <timeline id="0" name="pillow">
                 <key id="0" spin="0">
-                    <object folder="0" file="0" x="0" y="-36" pivot_x="0.5" pivot_y="0.25" angle="0" scale_x="1.5" scale_y="1.5"/>
+                    <object folder="0" file="0" x="0" y="-90" pivot_x="0.5" pivot_y="0.25" angle="0" scale_x="1.5" scale_y="1.5"/>
                 </key>
             </timeline>
         </animation>
         <animation id="13" name="colorful_guest" length="100">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="colorful" folder="0" file="1" abs_x="0" abs_y="-36" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="1.5" abs_scale_y="1.5" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="0" name="colorful" folder="0" file="1" abs_x="0" abs_y="-90" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="1.5" abs_scale_y="1.5" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
             </mainline>
             <timeline id="0" name="colorful">
                 <key id="0" spin="0">
-                    <object folder="0" file="1" x="0" y="-36" pivot_x="0.5" pivot_y="0.25" angle="0" scale_x="1.5" scale_y="1.5"/>
+                    <object folder="0" file="1" x="0" y="-90" pivot_x="0.5" pivot_y="0.25" angle="0" scale_x="1.5" scale_y="1.5"/>
                 </key>
             </timeline>
         </animation>
         <animation id="14" name="pile_guest" length="100">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="pile" folder="0" file="2" abs_x="0" abs_y="-36" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="1.5" abs_scale_y="1.5" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="0" name="pile" folder="0" file="2" abs_x="0" abs_y="-90" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="1.5" abs_scale_y="1.5" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
             </mainline>
             <timeline id="0" name="pile">
                 <key id="0" spin="0">
-                    <object folder="0" file="2" x="0" y="-36" pivot_x="0.5" pivot_y="0.25" angle="0" scale_x="1.5" scale_y="1.5"/>
+                    <object folder="0" file="2" x="0" y="-90" pivot_x="0.5" pivot_y="0.25" angle="0" scale_x="1.5" scale_y="1.5"/>
                 </key>
             </timeline>
         </animation>
         <animation id="15" name="rare_guest" length="100">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="rare" folder="0" file="3" abs_x="0" abs_y="-36" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="1.5" abs_scale_y="1.5" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="0" name="rare" folder="0" file="3" abs_x="0" abs_y="-90" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="1.5" abs_scale_y="1.5" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
             </mainline>
             <timeline id="0" name="rare">
                 <key id="0" spin="0">
-                    <object folder="0" file="3" x="0" y="-36" pivot_x="0.5" pivot_y="0.25" angle="0" scale_x="1.5" scale_y="1.5"/>
+                    <object folder="0" file="3" x="0" y="-90" pivot_x="0.5" pivot_y="0.25" angle="0" scale_x="1.5" scale_y="1.5"/>
                 </key>
             </timeline>
         </animation>
         <animation id="16" name="red_guest" length="100">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="red" folder="0" file="4" abs_x="0" abs_y="-36" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="1.5" abs_scale_y="1.5" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="0" name="red" folder="0" file="4" abs_x="0" abs_y="-90" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="1.5" abs_scale_y="1.5" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
             </mainline>
             <timeline id="0" name="red">
                 <key id="0" spin="0">
-                    <object folder="0" file="4" x="0" y="-36" pivot_x="0.5" pivot_y="0.25" angle="0" scale_x="1.5" scale_y="1.5"/>
+                    <object folder="0" file="4" x="0" y="-90" pivot_x="0.5" pivot_y="0.25" angle="0" scale_x="1.5" scale_y="1.5"/>
                 </key>
             </timeline>
         </animation>
         <animation id="17" name="patch_guest" length="100">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="patch" folder="0" file="5" abs_x="0" abs_y="-36" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="1.5" abs_scale_y="1.5" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="0" name="patch" folder="0" file="5" abs_x="0" abs_y="-90" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="1.5" abs_scale_y="1.5" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
             </mainline>
             <timeline id="0" name="patch">
                 <key id="0" spin="0">
-                    <object folder="0" file="5" x="0" y="-36" pivot_x="0.5" pivot_y="0.25" angle="0" scale_x="1.5" scale_y="1.5"/>
+                    <object folder="0" file="5" x="0" y="-90" pivot_x="0.5" pivot_y="0.25" angle="0" scale_x="1.5" scale_y="1.5"/>
                 </key>
             </timeline>
         </animation>
