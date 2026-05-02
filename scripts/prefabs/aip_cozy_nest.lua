@@ -2,6 +2,10 @@ local language = aipGetModConfig("language")
 
 require "prefabutil"
 
+local cozyNestConfig = require("configurations/aip_cozy_nest")
+cozyNestConfig.RegisterPrefabSkins()
+cozyNestConfig.RegisterInventoryAtlases()
+
 local LANG_MAP = {
 	english = {
 		NAME = "Cozy Nest",
@@ -20,29 +24,38 @@ local LANG = LANG_MAP[language] or LANG_MAP.english
 STRINGS.NAMES.AIP_COZY_NEST = LANG.NAME
 STRINGS.RECIPE_DESC.AIP_COZY_NEST = LANG.REC_DESC
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_COZY_NEST = LANG.DESC
+cozyNestConfig.RegisterStrings(language, LANG.DESC)
 
 local assets = {
 	Asset("ANIM", "anim/aip_cozy_nest.zip"),
 	Asset("ATLAS", "images/inventoryimages/aip_cozy_nest.xml"),
 }
 
-local SKINS = {
-	"pillow",
-	"colorful",
-	"pile",
-	"rare",
-	"red",
-	"patch",
-}
+for _, skin in ipairs(cozyNestConfig.SKINS) do
+	if skin.prefab ~= nil then
+		table.insert(assets, Asset("ATLAS", "images/inventoryimages/"..skin.prefab..".xml"))
+	end
+end
 
-local DEFAULT_SKIN = SKINS[1]
+local SKINS = cozyNestConfig.SKINS
+local DEFAULT_SKIN = cozyNestConfig.DEFAULT_SKIN
 local SKIN_INDEX = {}
+local SKIN_ID_BY_PREFAB = {}
+local SKIN_PREFAB_BY_ID = {}
+
 for index, skin in ipairs(SKINS) do
-	SKIN_INDEX[skin] = index
+	SKIN_INDEX[skin.id] = index
+
+	if skin.prefab ~= nil then
+		SKIN_INDEX[skin.prefab] = index
+		SKIN_ID_BY_PREFAB[skin.prefab] = skin.id
+		SKIN_PREFAB_BY_ID[skin.id] = skin.prefab
+	end
 end
 
 local function getSkin(skin)
-	return SKIN_INDEX[skin] ~= nil and skin or DEFAULT_SKIN
+	local index = SKIN_INDEX[skin]
+	return index ~= nil and SKINS[index].id or DEFAULT_SKIN
 end
 
 local function playSkin(inst, skin, hit)
@@ -69,18 +82,30 @@ end
 local function setNestSkin(inst, skin)
 	skin = getSkin(skin)
 	inst._aipCurrentSkin = skin
-	inst._aipCozyNestSkin:set(skin)
+	if inst._aipCozyNestSkin ~= nil and TheWorld.ismastersim then
+		inst._aipCozyNestSkin:set(skin)
+	end
 	playSkin(inst, skin)
 end
 
 local function nextNestSkin(inst)
 	local index = SKIN_INDEX[inst._aipCurrentSkin] or 1
 	index = index % #SKINS + 1
-	setNestSkin(inst, SKINS[index])
+	local skin = SKINS[index].id
+
+	if TheWorld.ismastersim then
+		TheSim:ReskinEntity(inst.GUID, inst.skinname, SKIN_PREFAB_BY_ID[skin], nil, nil)
+	else
+		setNestSkin(inst, skin)
+	end
 
 	if inst.SoundEmitter ~= nil then
 		inst.SoundEmitter:PlaySound("dontstarve/common/together/skin_change")
 	end
+end
+
+_G.aip_cozy_nest_clear_fn = function(inst)
+	setNestSkin(inst, DEFAULT_SKIN)
 end
 
 local function onhammered(inst)
@@ -110,8 +135,10 @@ local function onsave(inst, data)
 end
 
 local function onload(inst, data)
-	if data ~= nil then
+	if data ~= nil and data.skin ~= nil then
 		setNestSkin(inst, data.skin)
+	elseif inst.skinname ~= nil then
+		setNestSkin(inst, inst.skinname)
 	end
 end
 
@@ -136,6 +163,9 @@ local function fn()
 	applySkin(inst, DEFAULT_SKIN)
 
 	inst.scrapbook_anim = DEFAULT_SKIN
+	inst.SetNestSkin = setNestSkin
+	inst.NextNestSkin = nextNestSkin
+	inst.NextSkin = nextNestSkin
 
 	inst.entity:SetPristine()
 
@@ -154,10 +184,6 @@ local function fn()
 	inst.components.workable:SetOnFinishCallback(onhammered)
 	inst.components.workable:SetOnWorkCallback(onhit)
 
-	inst.SetNestSkin = setNestSkin
-	inst.NextNestSkin = nextNestSkin
-	inst.NextSkin = nextNestSkin
-
 	inst.OnSave = onsave
 	inst.OnLoad = onload
 
@@ -168,5 +194,36 @@ local function fn()
 	return inst
 end
 
-return Prefab("aip_cozy_nest", fn, assets),
-	MakePlacer("aip_cozy_nest_placer", "aip_cozy_nest", "aip_cozy_nest", DEFAULT_SKIN)
+local skinAssets = {}
+for _, skin in ipairs(SKINS) do
+	if skin.prefab ~= nil then
+		skinAssets[skin.prefab] = {
+			Asset("ATLAS", "images/inventoryimages/"..skin.prefab..".xml"),
+		}
+	end
+end
+
+local prefabs = {
+	Prefab("aip_cozy_nest", fn, assets),
+	MakePlacer("aip_cozy_nest_placer", "aip_cozy_nest", "aip_cozy_nest", DEFAULT_SKIN),
+}
+
+for _, skin in ipairs(SKINS) do
+	if skin.prefab ~= nil then
+		local skinId = SKIN_ID_BY_PREFAB[skin.prefab]
+
+		table.insert(prefabs, CreatePrefabSkin(skin.prefab, {
+			base_prefab = "aip_cozy_nest",
+			type = "item",
+			rarity = "Complimentary",
+			init_fn = function(inst)
+				setNestSkin(inst, skinId)
+			end,
+			skin_tags = { "AIP_COZY_NEST", "CRAFTABLE" },
+			assets = skinAssets[skin.prefab],
+			release_group = 0,
+		}))
+	end
+end
+
+return unpack(prefabs)

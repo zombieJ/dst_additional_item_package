@@ -9,12 +9,12 @@ const PREFAB = "aip_cozy_nest";
 const SIZE = 512;
 
 const SKINS = [
-  { id: "pillow", file: "枕头小窝.png" },
-  { id: "colorful", file: "彩色小窝.png" },
-  { id: "pile", file: "枕头堆小窝.png" },
-  { id: "rare", file: "珍品小窝.png" },
-  { id: "red", file: "红色小窝.png" },
-  { id: "patch", file: "补丁小窝.png" },
+  { id: "pillow", prefab: PREFAB, file: "枕头小窝.png" },
+  { id: "colorful", prefab: `${PREFAB}_colorful`, file: "彩色小窝.png" },
+  { id: "pile", prefab: `${PREFAB}_pile`, file: "枕头堆小窝.png" },
+  { id: "rare", prefab: `${PREFAB}_rare`, file: "珍品小窝.png" },
+  { id: "red", prefab: `${PREFAB}_red`, file: "红色小窝.png" },
+  { id: "patch", prefab: `${PREFAB}_patch`, file: "补丁小窝.png" },
 ];
 
 function makeDir(path) {
@@ -149,26 +149,29 @@ async function buildFolder(base) {
   FSE.removeSync(prefabPath);
   makeDir(nestPath);
 
-  let defaultImage = null;
+  const normalizedImages = {};
   for (const skin of SKINS) {
     const normalized = await normalizeSkin(skin, PATH.join(nestPath, `${skin.id}.png`));
-    if (skin.id === "pillow") {
-      defaultImage = normalized;
-    }
+    normalizedImages[skin.id] = normalized;
   }
 
   FS.writeFileSync(PATH.join(prefabPath, `${PREFAB}.scml`), createScml(), "utf8");
 
-  return defaultImage;
+  return normalizedImages;
 }
 
 async function run() {
-  const defaultImage = await buildFolder(PATH.join(ROOT, "exported_done"));
+  const normalizedImages = await buildFolder(PATH.join(ROOT, "exported_done"));
   await buildFolder(PATH.join(ROOT, "exported"));
 
-  const inventoryPath = PATH.join(ROOT, "images", "inventoryimages", `${PREFAB}.png`);
-  makeDir(PATH.dirname(inventoryPath));
-  await writeImage(defaultImage.clone().resize(64, 64), inventoryPath);
+  const inventoryRoot = PATH.join(ROOT, "images", "inventoryimages");
+  makeDir(inventoryRoot);
+
+  for (const skin of SKINS) {
+    const image = normalizedImages[skin.id];
+    const inventoryPath = PATH.join(inventoryRoot, `${skin.prefab}.png`);
+    await writeImage(image.clone().resize(64, 64), inventoryPath);
+  }
 }
 
 run().catch(err => {

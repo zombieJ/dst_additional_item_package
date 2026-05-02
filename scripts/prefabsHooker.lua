@@ -6,6 +6,10 @@ local open_beta = _G.aipGetModConfig("open_beta") == "open"
 -- 开发模式
 local dev_mode = _G.aipGetModConfig("dev_mode") == "enabled"
 
+local cozyNestConfig = _G.require("configurations/aip_cozy_nest")
+cozyNestConfig.RegisterPrefabSkins()
+cozyNestConfig.RegisterInventoryAtlases()
+
 -- 额外食物
 local additional_food = _G.aipGetModConfig("additional_food") == "open"
 
@@ -496,9 +500,29 @@ AddPrefabPostInit("reskin_tool", function(inst)
 						return
 
 					-- Cozy nest skin cycle
-					elseif target.prefab == "aip_cozy_nest" and target.NextSkin ~= nil then
+					elseif target.prefab == "aip_cozy_nest" then
+						local nextSkin = nil
+
+						if target.skinname == nil then
+							nextSkin = cozyNestConfig.BUILD_SKINS[1]
+						else
+							local foundSkin = false
+
+							for index, skinName in ipairs(cozyNestConfig.BUILD_SKINS) do
+								if skinName == target.skinname then
+									foundSkin = true
+									nextSkin = cozyNestConfig.BUILD_SKINS[index + 1]
+									break
+								end
+							end
+
+							if not foundSkin then
+								nextSkin = cozyNestConfig.BUILD_SKINS[1]
+							end
+						end
+
 						_G.aipSpawnPrefab(target, "explode_reskin")
-						target:NextSkin()
+						_G.TheSim:ReskinEntity(target.GUID, target.skinname, nextSkin, nil, tool.parent and tool.parent.userid or nil)
 						return
 
 					-- 鬼火换颜色
