@@ -8,6 +8,41 @@ end
 -------------------- 警告信息 --------------------
 _G.aipPrint("!!! 你正在使用《额外物品包》开发模式，如果是正式游玩请在设置中关闭该设置 !!!")
 
+-------------------- 开发宠物命令 --------------------
+function _G.c_aip_pet()
+	if _G.TheWorld ~= nil and not _G.TheWorld.ismastersim then
+		return _G.c_remote("c_aip_pet()")
+	end
+
+	local player = _G.ConsoleCommandPlayer()
+	if player == nil or player.components.aipc_pet_owner == nil then
+		return nil
+	end
+
+	if player.components.aipc_pet_owner:IsFull() then
+		if player.components.talker ~= nil then
+			player.components.talker:Say("Pet list is full")
+		end
+		return nil
+	end
+
+	local rabbit = _G.SpawnPrefab("rabbit")
+	if rabbit == nil then
+		return nil
+	end
+
+	rabbit.Transform:SetPosition(player.Transform:GetWorldPosition())
+
+	if rabbit.components.aipc_petable == nil then
+		rabbit:AddComponent("aipc_petable")
+	end
+
+	local pet = player.components.aipc_pet_owner:AddPet(rabbit)
+	_G.aipRemove(rabbit)
+
+	return pet
+end
+
 ----------------- 锁定玩家 3 值 -----------------
 local function PlayerPrefabPostInit(inst)
     if not _G.TheWorld.ismastersim then

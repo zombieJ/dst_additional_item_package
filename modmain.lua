@@ -225,6 +225,7 @@ PrefabFiles = {
 	"aip_pet_catcher",
 	"aip_pet",
 	"aip_pet_trigger",
+	"aip_cozy_nest",
 	"aip_pet_box",
 	"aip_grave_cloak",
 	"aip_fishman_mucus",
@@ -353,6 +354,7 @@ modimport("scripts/flyWrapper.lua")
 modimport("scripts/sgHooker.lua")
 modimport("scripts/hooks/aip_hover_hook.lua")
 modimport("scripts/hooks/aip_buffer_hook.lua")
+modimport("scripts/hooks/aip_skin_hook.lua")
 modimport("scripts/hooks/aip_pet_hook.lua")
 
 modimport("scripts/hooks/aip_combat_hook.lua")

@@ -6,6 +6,8 @@ local open_beta = _G.aipGetModConfig("open_beta") == "open"
 -- 开发模式
 local dev_mode = _G.aipGetModConfig("dev_mode") == "enabled"
 
+local skinUtil = _G.require("utils/aip_skin_util")
+
 -- 额外食物
 local additional_food = _G.aipGetModConfig("additional_food") == "open"
 
@@ -424,6 +426,39 @@ AddPrefabPostInit("messagebottle", function(inst)
 end)
 
 ---------------------------------------- 魔法扫把 ----------------------------------------
+local function getReskinToolTarget(doer, target)
+	if target == nil then
+		return nil
+	end
+
+	if target.reskin_tool_target_redirect ~= nil and target.reskin_tool_target_redirect:IsValid() then
+		target = target.reskin_tool_target_redirect
+	end
+
+	if target._playerlink ~= nil and target._playerlink ~= doer then
+		return nil
+	end
+
+	if target.reskin_tool_cannot_target_this then
+		return nil
+	end
+
+	return target
+end
+
+local function getAipSkinTarget(target)
+	if target.prefab == nil or target.SetAipSkin == nil then
+		return nil, nil
+	end
+
+	local skinConfig = skinUtil.GetConfig(target.prefab)
+	if skinConfig == nil then
+		return nil, nil
+	end
+
+	return target, skinConfig
+end
+
 AddPrefabPostInit("reskin_tool", function(inst)
 	if inst.components.spellcaster ~= nil then
 		local originCanCast = inst.components.spellcaster.can_cast_fn
@@ -432,12 +467,22 @@ AddPrefabPostInit("reskin_tool", function(inst)
 		-- 注入对小麦的改造
 		if originCanCast and originSpell then
 			inst.components.spellcaster:SetCanCastFn(function(doer, target, pos, ...)
+				if target == nil then
+					return originCanCast(doer, target, pos, ...)
+				end
+
+				target = getReskinToolTarget(doer, target)
+				if target == nil then
+					return false
+				end
+
 				if
 					table.contains({
 						"aip_wheat",
 						"aip_ghost_fire",
 						"aip_star_fragment",
 					}, target.prefab)
+					or getAipSkinTarget(target) ~= nil
 				then
 					return true
 				end
@@ -456,7 +501,17 @@ AddPrefabPostInit("reskin_tool", function(inst)
 			end)
 
 			inst.components.spellcaster:SetSpellFn(function(tool, target, pos, ...)
+				local caster = select(1, ...)
+				local originalTarget = target
+				target = getReskinToolTarget(caster, target)
+
+				if originalTarget ~= nil and target == nil then
+					return
+				end
+
 				if target then
+					local aipSkinTarget, aipSkinConfig = getAipSkinTarget(target)
+
 					-- 小麦变回草
 					if target.prefab == "aip_wheat" then
 						_G.aipSpawnPrefab(target, "explode_reskin")
@@ -488,6 +543,17 @@ AddPrefabPostInit("reskin_tool", function(inst)
 					-- dev 模式：种子品质+1
 					elseif dev_mode and target.components.aipc_quality then
 						target.components.aipc_quality:DoDelta(1)
+						return
+
+					-- AIP build skin cycle
+					elseif aipSkinTarget ~= nil then
+						local nextSkin = aipSkinConfig.GetNextBuildSkin(aipSkinTarget.skinname)
+
+						_G.aipSpawnPrefab(aipSkinTarget, "explode_reskin")
+						aipSkinTarget:SetAipSkin(nextSkin)
+						if aipSkinTarget.SoundEmitter ~= nil then
+							aipSkinTarget.SoundEmitter:PlaySound("dontstarve/common/together/skin_change")
+						end
 						return
 
 					-- 鬼火换颜色
