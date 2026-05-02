@@ -33,6 +33,25 @@ local function appendCozyNestSkins(self, skinsList)
 	return skinsList
 end
 
+local function onBuildStructure(builder, data)
+	if
+		data ~= nil and
+		data.item ~= nil and
+		data.item.prefab == cozyNestConfig.PREFAB and
+		data.item.SetNestSkin ~= nil
+	then
+		data.item:SetNestSkin(data.skin)
+	end
+end
+
+AddComponentPostInit("builder", function(self)
+	if _G.TheWorld ~= nil and not _G.TheWorld.ismastersim then
+		return
+	end
+
+	self.inst:ListenForEvent("buildstructure", onBuildStructure)
+end)
+
 local function patchSkinList(packageName)
 	local class = _G.require(packageName)
 	if class._aip_cozy_nest_skin_list_patched then

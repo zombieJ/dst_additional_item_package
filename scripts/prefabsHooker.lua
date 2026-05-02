@@ -522,7 +522,12 @@ AddPrefabPostInit("reskin_tool", function(inst)
 						end
 
 						_G.aipSpawnPrefab(target, "explode_reskin")
-						_G.TheSim:ReskinEntity(target.GUID, target.skinname, nextSkin, nil, tool.parent and tool.parent.userid or nil)
+						if target.SetNestSkin ~= nil then
+							target:SetNestSkin(nextSkin)
+						end
+						if target.SoundEmitter ~= nil then
+							target.SoundEmitter:PlaySound("dontstarve/common/together/skin_change")
+						end
 						return
 
 					-- 鬼火换颜色

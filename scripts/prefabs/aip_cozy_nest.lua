@@ -75,6 +75,14 @@ local function applySkin(inst, skin)
 	playSkin(inst, skin)
 end
 
+local function applySkinName(inst, skin)
+	skin = getSkin(skin)
+	inst.skinname = SKIN_PREFAB_BY_ID[skin]
+	inst.skin_id = nil
+	inst.alt_skin_ids = nil
+	inst.skin_build_name = nil
+end
+
 local function onSkinDirty(inst)
 	applySkin(inst, inst._aipCozyNestSkin:value())
 end
@@ -82,8 +90,12 @@ end
 local function setNestSkin(inst, skin)
 	skin = getSkin(skin)
 	inst._aipCurrentSkin = skin
-	if inst._aipCozyNestSkin ~= nil and TheWorld.ismastersim then
-		inst._aipCozyNestSkin:set(skin)
+	if TheWorld.ismastersim then
+		applySkinName(inst, skin)
+
+		if inst._aipCozyNestSkin ~= nil then
+			inst._aipCozyNestSkin:set(skin)
+		end
 	end
 	playSkin(inst, skin)
 end
@@ -93,11 +105,7 @@ local function nextNestSkin(inst)
 	index = index % #SKINS + 1
 	local skin = SKINS[index].id
 
-	if TheWorld.ismastersim then
-		TheSim:ReskinEntity(inst.GUID, inst.skinname, SKIN_PREFAB_BY_ID[skin], nil, nil)
-	else
-		setNestSkin(inst, skin)
-	end
+	setNestSkin(inst, skin)
 
 	if inst.SoundEmitter ~= nil then
 		inst.SoundEmitter:PlaySound("dontstarve/common/together/skin_change")
@@ -135,10 +143,10 @@ local function onsave(inst, data)
 end
 
 local function onload(inst, data)
-	if data ~= nil and data.skin ~= nil then
-		setNestSkin(inst, data.skin)
-	elseif inst.skinname ~= nil then
+	if inst.skinname ~= nil then
 		setNestSkin(inst, inst.skinname)
+	elseif data ~= nil and data.skin ~= nil then
+		setNestSkin(inst, data.skin)
 	end
 end
 
