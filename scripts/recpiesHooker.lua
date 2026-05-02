@@ -499,6 +499,14 @@ rec("aip_pet_trigger", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.TOOLS },
 		Ingredient("flint", 1),
 	})
 
+-- 温馨小窝
+rec("aip_cozy_nest", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.STRUCTURES, CRAFTING_FILTERS.DECOR },
+{
+	Ingredient("beefalowool", 2),
+	Ingredient("silk", 2),
+	Ingredient("petals", 4),
+}, "aip_cozy_nest_placer")
+
 -- 宠物盒子
 rec("aip_pet_box", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.TOOLS },
 {

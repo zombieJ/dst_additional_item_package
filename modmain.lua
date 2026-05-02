@@ -225,6 +225,7 @@ PrefabFiles = {
 	"aip_pet_catcher",
 	"aip_pet",
 	"aip_pet_trigger",
+	"aip_cozy_nest",
 	"aip_pet_box",
 	"aip_grave_cloak",
 	"aip_fishman_mucus",

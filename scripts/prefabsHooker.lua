@@ -437,6 +437,7 @@ AddPrefabPostInit("reskin_tool", function(inst)
 						"aip_wheat",
 						"aip_ghost_fire",
 						"aip_star_fragment",
+						"aip_cozy_nest",
 					}, target.prefab)
 				then
 					return true
@@ -488,6 +489,12 @@ AddPrefabPostInit("reskin_tool", function(inst)
 					-- dev 模式：种子品质+1
 					elseif dev_mode and target.components.aipc_quality then
 						target.components.aipc_quality:DoDelta(1)
+						return
+
+					-- Cozy nest skin cycle
+					elseif target.prefab == "aip_cozy_nest" and target.NextSkin ~= nil then
+						_G.aipSpawnPrefab(target, "explode_reskin")
+						target:NextSkin()
 						return
 
 					-- 鬼火换颜色
