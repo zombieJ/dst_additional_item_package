@@ -38,6 +38,7 @@ for _, asset in ipairs(cozyNestConfig.GetInventoryAtlasAssets(true)) do
 end
 
 local DEFAULT_SKIN = cozyNestConfig.DEFAULT_SKIN
+local applyDisplayImage
 
 local function playSkin(inst, skin, hit)
 	skin = cozyNestConfig.GetSkin(skin)
@@ -47,6 +48,10 @@ local function playSkin(inst, skin, hit)
 		inst.AnimState:PushAnimation(skin, true)
 	else
 		inst.AnimState:PlayAnimation(skin, true)
+	end
+
+	if applyDisplayImage ~= nil and inst._aipDisplayImage ~= nil then
+		applyDisplayImage(inst)
 	end
 end
 
@@ -82,7 +87,7 @@ local function normalizeTex(image)
 	return string.sub(image, -4) == ".tex" and image or image..".tex"
 end
 
-local function applyDisplayImage(inst)
+applyDisplayImage = function(inst)
 	local image = inst._aipDisplayImage:value()
 	if image == "" then
 		inst.AnimState:ClearOverrideSymbol(DISPLAY_SYMBOL)

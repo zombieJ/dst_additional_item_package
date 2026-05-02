@@ -501,7 +501,7 @@ AddPrefabPostInit("reskin_tool", function(inst)
 			end)
 
 			inst.components.spellcaster:SetSpellFn(function(tool, target, pos, ...)
-				local caster = select(1, ...)
+				local caster = ...
 				local originalTarget = target
 				target = getReskinToolTarget(caster, target)
 
