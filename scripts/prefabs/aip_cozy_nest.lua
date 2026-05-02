@@ -235,8 +235,6 @@ local function fn()
 	inst.entity:AddSoundEmitter()
 	inst.entity:AddNetwork()
 
-	MakeObstaclePhysics(inst, .45)
-
 	inst:AddTag("structure")
 	inst:AddTag("chest")
 
