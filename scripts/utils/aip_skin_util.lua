@@ -261,10 +261,11 @@ function SkinUtil.CreatePrefabSkinner(config, options)
 
 	function skinner.CreatePrefabSkins()
 		local prefabs = {}
+		local clearFnName = config.PREFAB.."_clear_fn"
 
-		_G[config.PREFAB.."_clear_fn"] = function(inst)
+		rawset(_G, clearFnName, function(inst)
 			skinner.Set(inst, config.DEFAULT_SKIN)
-		end
+		end)
 
 		for _, skin in ipairs(config.SKINS) do
 			if skin.prefab ~= nil then
