@@ -531,6 +531,7 @@ params.aip_showcase = {
 
 params.aip_showcase_ice = params.aip_showcase
 params.aip_showcase_vest = params.aip_showcase
+params.aip_cozy_nest = params.aip_showcase
 
 ------------------ 饭盒 ------------------
 params.aip_oldone_rice = {
