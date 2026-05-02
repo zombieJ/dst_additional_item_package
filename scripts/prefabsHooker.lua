@@ -432,6 +432,10 @@ AddPrefabPostInit("reskin_tool", function(inst)
 		-- 注入对小麦的改造
 		if originCanCast and originSpell then
 			inst.components.spellcaster:SetCanCastFn(function(doer, target, pos, ...)
+				if target == nil then
+					return originCanCast(doer, target, pos, ...)
+				end
+
 				if
 					table.contains({
 						"aip_wheat",
