@@ -66,11 +66,11 @@ local skinner = skinUtil.CreatePrefabSkinner(cozyNestConfig, {
 
 local DISPLAY_DIRTY = "aip_cozy_nest_display_dirty"
 local DISPLAY_SYMBOL = "swap_item"
+local GUEST_NEST_SCALE_MULT = 2
 local SPECIAL_GUESTS = {
 	chester_eyebone = {
 		prefab = "chester",
 		x = 0,
-		y = .2,
 		z = .35,
 		face_x = 1,
 		face_z = .35,
@@ -78,7 +78,6 @@ local SPECIAL_GUESTS = {
 	glommerflower = {
 		prefab = "glommer",
 		x = 0,
-		y = .12,
 		z = .25,
 		face_x = 1,
 		face_z = .25,
@@ -150,23 +149,33 @@ local function syncDisplay(inst)
 	end
 end
 
+local function setNestGuestScale(inst, enabled)
+	if enabled then
+		if inst._aipCozyNestGuestScale == nil then
+			local x, y, z = inst.Transform:GetScale()
+			inst._aipCozyNestGuestScale = { x = x, y = y, z = z }
+			inst.Transform:SetScale(
+				x * GUEST_NEST_SCALE_MULT,
+				y * GUEST_NEST_SCALE_MULT,
+				z * GUEST_NEST_SCALE_MULT
+			)
+		end
+	elseif inst._aipCozyNestGuestScale ~= nil then
+		local scale = inst._aipCozyNestGuestScale
+		inst.Transform:SetScale(scale.x, scale.y, scale.z)
+		inst._aipCozyNestGuestScale = nil
+	end
+end
+
 local function releaseSpecialGuest(inst)
 	local follower = inst._aipCozyNestGuest
+	setNestGuestScale(inst, false)
+
 	if follower ~= nil then
 		inst._aipCozyNestGuest = nil
 
 		if follower:IsValid() and follower._aipCozyNest == inst then
 			follower._aipCozyNest = nil
-
-			if follower._aipCozyNestGroundPoint ~= nil then
-				local pt = follower._aipCozyNestGroundPoint
-				if follower.Physics ~= nil then
-					follower.Physics:Teleport(pt.x, pt.y, pt.z)
-				else
-					follower.Transform:SetPosition(pt.x, pt.y, pt.z)
-				end
-				follower._aipCozyNestGroundPoint = nil
-			end
 
 			if follower.components.sleeper ~= nil and follower.components.sleeper:IsAsleep() then
 				follower.components.sleeper:WakeUp()
@@ -175,14 +184,9 @@ local function releaseSpecialGuest(inst)
 	end
 end
 
-local function getGuestGroundPoint(inst, config)
+local function getGuestPoint(inst, config)
 	local x, y, z = inst.Transform:GetWorldPosition()
 	return x + (config.x or 0), y, z + (config.z or 0)
-end
-
-local function getGuestSleepPoint(inst, config)
-	local x, y, z = getGuestGroundPoint(inst, config)
-	return x, y + (config.y or 0), z
 end
 
 local function setSpecialGuestPose(inst, follower, config)
@@ -196,9 +200,7 @@ local function setSpecialGuestPose(inst, follower, config)
 		follower._aipCozyNest = inst
 	end
 
-	local gx, gy, gz = getGuestGroundPoint(inst, config)
-	follower._aipCozyNestGroundPoint = Point(gx, gy, gz)
-	local x, y, z = getGuestSleepPoint(inst, config)
+	local x, y, z = getGuestPoint(inst, config)
 	if follower.Physics ~= nil then
 		follower.Physics:Teleport(x, y, z)
 	else
@@ -224,7 +226,7 @@ local function syncSpecialGuest(inst)
 
 	for follower in pairs(item.components.leader.followers) do
 		if follower:IsValid() and follower.prefab == guestConfig.prefab then
-			local x, y, z = getGuestGroundPoint(inst, guestConfig)
+			local x, y, z = getGuestPoint(inst, guestConfig)
 
 			if follower.components.knownlocations ~= nil then
 				follower.components.knownlocations:RememberLocation("home", Point(x, y, z))
@@ -234,7 +236,10 @@ local function syncSpecialGuest(inst)
 				if follower:IsNear(inst, 2.5) then
 					setSpecialGuestPose(inst, follower, guestConfig)
 					follower.components.sleeper:GoToSleep()
+					setNestGuestScale(inst, follower.components.sleeper:IsAsleep())
 				else
+					releaseSpecialGuest(inst)
+
 					if follower.components.sleeper:IsAsleep() then
 						follower.components.sleeper:WakeUp()
 					end
