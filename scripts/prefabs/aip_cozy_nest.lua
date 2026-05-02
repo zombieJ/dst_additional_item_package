@@ -27,7 +27,6 @@ skinUtil.RegisterBuildSkinConfig(cozyNestConfig, language, LANG.DESC)
 
 local assets = {
 	Asset("ANIM", "anim/aip_cozy_nest.zip"),
-	Asset("ANIM", "anim/aip_showcase.zip"),
 	Asset("ATLAS_BUILD", "images/inventoryimages1.xml", 256),
 	Asset("ATLAS_BUILD", "images/inventoryimages2.xml", 256),
 	Asset("ATLAS_BUILD", "images/inventoryimages3.xml", 256),
@@ -61,6 +60,7 @@ local skinner = skinUtil.CreatePrefabSkinner(cozyNestConfig, {
 })
 
 local DISPLAY_DIRTY = "aip_cozy_nest_display_dirty"
+local DISPLAY_SYMBOL = "swap_item"
 local SPECIAL_GUESTS = {
 	chester_eyebone = "chester",
 	glommerflower = "glommer",
@@ -85,7 +85,8 @@ end
 local function applyDisplayImage(inst)
 	local image = inst._aipDisplayImage:value()
 	if image == "" then
-		inst.AnimState:HideSymbol("swap_item")
+		inst.AnimState:ClearOverrideSymbol(DISPLAY_SYMBOL)
+		inst.AnimState:HideSymbol(DISPLAY_SYMBOL)
 		return
 	end
 
@@ -94,10 +95,11 @@ local function applyDisplayImage(inst)
 	atlas = atlas ~= "" and atlas or GetInventoryItemAtlas(tex)
 
 	if atlas ~= nil then
-		inst.AnimState:ShowSymbol("swap_item")
-		inst.AnimState:OverrideSymbol("swap_item", atlas, tex)
+		inst.AnimState:OverrideSymbol(DISPLAY_SYMBOL, atlas, tex)
+		inst.AnimState:ShowSymbol(DISPLAY_SYMBOL)
 	else
-		inst.AnimState:HideSymbol("swap_item")
+		inst.AnimState:ClearOverrideSymbol(DISPLAY_SYMBOL)
+		inst.AnimState:HideSymbol(DISPLAY_SYMBOL)
 	end
 end
 
@@ -108,15 +110,9 @@ local function setDisplayImage(inst, image, atlas)
 end
 
 local function clearDisplay(inst)
-	if inst._aipCozyNestDisplay ~= nil then
-		if inst._aipCozyNestDisplay:IsValid() then
-			inst._aipCozyNestDisplay:Remove()
-		end
-		inst._aipCozyNestDisplay = nil
-	end
-
 	inst._aipDisplayItemImage = nil
 	inst._aipDisplayItemAtlas = nil
+	setDisplayImage(inst)
 end
 
 local function syncDisplay(inst)
@@ -128,16 +124,10 @@ local function syncDisplay(inst)
 		return
 	end
 
-	if inst._aipCozyNestDisplay == nil or not inst._aipCozyNestDisplay:IsValid() then
-		inst._aipCozyNestDisplay = SpawnPrefab("aip_cozy_nest_display")
-		inst._aipCozyNestDisplay.entity:SetParent(inst.entity)
-		inst._aipCozyNestDisplay.Transform:SetPosition(0, 0, 0)
-	end
-
 	if image ~= inst._aipDisplayItemImage or atlas ~= inst._aipDisplayItemAtlas then
 		inst._aipDisplayItemImage = image
 		inst._aipDisplayItemAtlas = atlas
-		inst._aipCozyNestDisplay:SetItemImage(image, atlas)
+		setDisplayImage(inst, image, atlas)
 	end
 end
 
@@ -232,41 +222,6 @@ local function onload(inst, data)
 	startRefreshTask(inst)
 end
 
-local function displayFn()
-	local inst = CreateEntity()
-
-	inst.entity:AddTransform()
-	inst.entity:AddAnimState()
-	inst.entity:AddNetwork()
-
-	inst:AddTag("FX")
-	inst:AddTag("NOCLICK")
-	inst:AddTag("CLASSIFIED")
-
-	inst.Transform:SetScale(.35, .35, .35)
-	inst.AnimState:SetBank("aip_showcase")
-	inst.AnimState:SetBuild("aip_showcase")
-	inst.AnimState:PlayAnimation("stone")
-	inst.AnimState:HideSymbol("stone")
-	inst.AnimState:HideSymbol("swap_item")
-	inst.AnimState:SetFinalOffset(1)
-
-	inst._aipDisplayImage = net_string(inst.GUID, "aip_cozy_nest_display.image", DISPLAY_DIRTY)
-	inst._aipDisplayAtlas = net_string(inst.GUID, "aip_cozy_nest_display.atlas", DISPLAY_DIRTY)
-	inst:ListenForEvent(DISPLAY_DIRTY, applyDisplayImage)
-
-	inst.entity:SetPristine()
-
-	if not TheWorld.ismastersim then
-		return inst
-	end
-
-	inst.persists = false
-	inst.SetItemImage = setDisplayImage
-
-	return inst
-end
-
 local function fn()
 	local inst = CreateEntity()
 
@@ -282,8 +237,13 @@ local function fn()
 
 	inst.AnimState:SetBank("aip_cozy_nest")
 	inst.AnimState:SetBuild("aip_cozy_nest")
+	inst.AnimState:HideSymbol(DISPLAY_SYMBOL)
 
 	skinner.SetupNetwork(inst)
+
+	inst._aipDisplayImage = net_string(inst.GUID, "aip_cozy_nest.display_image", DISPLAY_DIRTY)
+	inst._aipDisplayAtlas = net_string(inst.GUID, "aip_cozy_nest.display_atlas", DISPLAY_DIRTY)
+	inst:ListenForEvent(DISPLAY_DIRTY, applyDisplayImage)
 
 	inst.entity:SetPristine()
 
@@ -311,7 +271,6 @@ local function fn()
 	inst:ListenForEvent("onbuilt", onbuilt)
 	inst:ListenForEvent("itemget", startRefreshTask)
 	inst:ListenForEvent("itemlose", startRefreshTask)
-	inst:ListenForEvent("onremove", clearDisplay)
 
 	MakeHauntableWork(inst)
 
@@ -320,7 +279,6 @@ end
 
 local prefabs = {
 	Prefab("aip_cozy_nest", fn, assets),
-	Prefab("aip_cozy_nest_display", displayFn, assets),
 	MakePlacer("aip_cozy_nest_placer", "aip_cozy_nest", "aip_cozy_nest", DEFAULT_SKIN),
 }
 
