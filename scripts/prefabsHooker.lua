@@ -6,9 +6,7 @@ local open_beta = _G.aipGetModConfig("open_beta") == "open"
 -- 开发模式
 local dev_mode = _G.aipGetModConfig("dev_mode") == "enabled"
 
-local cozyNestConfig = _G.require("configurations/aip_cozy_nest")
-cozyNestConfig.RegisterPrefabSkins()
-cozyNestConfig.RegisterInventoryAtlases()
+local skinUtil = _G.require("utils/aip_skin_util")
 
 -- 额外食物
 local additional_food = _G.aipGetModConfig("additional_food") == "open"
@@ -445,8 +443,8 @@ AddPrefabPostInit("reskin_tool", function(inst)
 						"aip_wheat",
 						"aip_ghost_fire",
 						"aip_star_fragment",
-						"aip_cozy_nest",
 					}, target.prefab)
+					or skinUtil.GetConfig(target.prefab) ~= nil
 				then
 					return true
 				end
@@ -499,32 +497,13 @@ AddPrefabPostInit("reskin_tool", function(inst)
 						target.components.aipc_quality:DoDelta(1)
 						return
 
-					-- Cozy nest skin cycle
-					elseif target.prefab == "aip_cozy_nest" then
-						local nextSkin = nil
-
-						if target.skinname == nil then
-							nextSkin = cozyNestConfig.BUILD_SKINS[1]
-						else
-							local foundSkin = false
-
-							for index, skinName in ipairs(cozyNestConfig.BUILD_SKINS) do
-								if skinName == target.skinname then
-									foundSkin = true
-									nextSkin = cozyNestConfig.BUILD_SKINS[index + 1]
-									break
-								end
-							end
-
-							if not foundSkin then
-								nextSkin = cozyNestConfig.BUILD_SKINS[1]
-							end
-						end
+					-- AIP build skin cycle
+					elseif skinUtil.GetConfig(target.prefab) ~= nil and target.SetAipSkin ~= nil then
+						local skinConfig = skinUtil.GetConfig(target.prefab)
+						local nextSkin = skinConfig.GetNextBuildSkin(target.skinname)
 
 						_G.aipSpawnPrefab(target, "explode_reskin")
-						if target.SetNestSkin ~= nil then
-							target:SetNestSkin(nextSkin)
-						end
+						target:SetAipSkin(nextSkin)
 						if target.SoundEmitter ~= nil then
 							target.SoundEmitter:PlaySound("dontstarve/common/together/skin_change")
 						end
