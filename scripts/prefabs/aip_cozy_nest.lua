@@ -40,6 +40,7 @@ end
 local DEFAULT_SKIN = cozyNestConfig.DEFAULT_SKIN
 local GUEST_ANIM_SUFFIX = "_guest"
 local GUEST_FINAL_OFFSET = -2
+local GUEST_FOLLOWER_FINAL_OFFSET = 4
 local applyDisplayImage
 local hasSleepingGuest
 
@@ -171,6 +172,12 @@ local function setSleepingGuestVisual(inst, enabled)
 	refreshGuestVisual(inst)
 end
 
+local function setGuestFollowerRenderLayer(follower, enabled)
+	if follower ~= nil and follower:IsValid() and follower.AnimState ~= nil then
+		follower.AnimState:SetFinalOffset(enabled and GUEST_FOLLOWER_FINAL_OFFSET or 0)
+	end
+end
+
 local function releaseSpecialGuest(inst)
 	local follower = inst._aipCozyNestGuest
 	setSleepingGuestVisual(inst, false)
@@ -180,6 +187,7 @@ local function releaseSpecialGuest(inst)
 
 		if follower:IsValid() and follower._aipCozyNest == inst then
 			follower._aipCozyNest = nil
+			setGuestFollowerRenderLayer(follower, false)
 
 			if follower.components.sleeper ~= nil and follower.components.sleeper:IsAsleep() then
 				follower.components.sleeper:WakeUp()
@@ -240,7 +248,9 @@ local function syncSpecialGuest(inst)
 				if follower:IsNear(inst, 2.5) then
 					setSpecialGuestPose(inst, follower, guestConfig)
 					follower.components.sleeper:GoToSleep()
-					setSleepingGuestVisual(inst, follower.components.sleeper:IsAsleep())
+					local isAsleep = follower.components.sleeper:IsAsleep()
+					setSleepingGuestVisual(inst, isAsleep)
+					setGuestFollowerRenderLayer(follower, isAsleep)
 				else
 					releaseSpecialGuest(inst)
 
