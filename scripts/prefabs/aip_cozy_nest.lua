@@ -38,16 +38,19 @@ for _, asset in ipairs(cozyNestConfig.GetInventoryAtlasAssets(true)) do
 end
 
 local DEFAULT_SKIN = cozyNestConfig.DEFAULT_SKIN
+local GUEST_ANIM_SUFFIX = "_guest"
 local applyDisplayImage
+local hasSleepingGuest
 
 local function playSkin(inst, skin, hit)
 	skin = cozyNestConfig.GetSkin(skin)
+	local idleAnim = hasSleepingGuest ~= nil and hasSleepingGuest(inst) and skin..GUEST_ANIM_SUFFIX or skin
 
-	if hit then
+	if hit and idleAnim == skin then
 		inst.AnimState:PlayAnimation(skin.."_hit")
-		inst.AnimState:PushAnimation(skin, true)
+		inst.AnimState:PushAnimation(idleAnim, true)
 	else
-		inst.AnimState:PlayAnimation(skin, true)
+		inst.AnimState:PlayAnimation(idleAnim, true)
 	end
 
 	if applyDisplayImage ~= nil and inst._aipDisplayImage ~= nil then
@@ -66,7 +69,7 @@ local skinner = skinUtil.CreatePrefabSkinner(cozyNestConfig, {
 
 local DISPLAY_DIRTY = "aip_cozy_nest_display_dirty"
 local DISPLAY_SYMBOL = "swap_item"
-local GUEST_NEST_SCALE_MULT = 2
+local GUEST_DIRTY = "aip_cozy_nest_guest_dirty"
 local SPECIAL_GUESTS = {
 	chester_eyebone = {
 		prefab = "chester",
@@ -100,9 +103,13 @@ local function normalizeTex(image)
 	return string.sub(image, -4) == ".tex" and image or image..".tex"
 end
 
+hasSleepingGuest = function(inst)
+	return inst._aipCozyNestHasGuest ~= nil and inst._aipCozyNestHasGuest:value()
+end
+
 applyDisplayImage = function(inst)
 	local image = inst._aipDisplayImage:value()
-	if image == "" then
+	if image == "" or hasSleepingGuest(inst) then
 		inst.AnimState:ClearOverrideSymbol(DISPLAY_SYMBOL)
 		inst.AnimState:HideSymbol(DISPLAY_SYMBOL)
 		return
@@ -149,27 +156,22 @@ local function syncDisplay(inst)
 	end
 end
 
-local function setNestGuestScale(inst, enabled)
-	if enabled then
-		if inst._aipCozyNestGuestScale == nil then
-			local x, y, z = inst.Transform:GetScale()
-			inst._aipCozyNestGuestScale = { x = x, y = y, z = z }
-			inst.Transform:SetScale(
-				x * GUEST_NEST_SCALE_MULT,
-				y * GUEST_NEST_SCALE_MULT,
-				z * GUEST_NEST_SCALE_MULT
-			)
-		end
-	elseif inst._aipCozyNestGuestScale ~= nil then
-		local scale = inst._aipCozyNestGuestScale
-		inst.Transform:SetScale(scale.x, scale.y, scale.z)
-		inst._aipCozyNestGuestScale = nil
+local function refreshGuestVisual(inst)
+	skinner.PlayCurrent(inst)
+	applyDisplayImage(inst)
+end
+
+local function setSleepingGuestVisual(inst, enabled)
+	if inst._aipCozyNestHasGuest ~= nil then
+		inst._aipCozyNestHasGuest:set(enabled == true)
 	end
+
+	refreshGuestVisual(inst)
 end
 
 local function releaseSpecialGuest(inst)
 	local follower = inst._aipCozyNestGuest
-	setNestGuestScale(inst, false)
+	setSleepingGuestVisual(inst, false)
 
 	if follower ~= nil then
 		inst._aipCozyNestGuest = nil
@@ -236,7 +238,7 @@ local function syncSpecialGuest(inst)
 				if follower:IsNear(inst, 2.5) then
 					setSpecialGuestPose(inst, follower, guestConfig)
 					follower.components.sleeper:GoToSleep()
-					setNestGuestScale(inst, follower.components.sleeper:IsAsleep())
+					setSleepingGuestVisual(inst, follower.components.sleeper:IsAsleep())
 				else
 					releaseSpecialGuest(inst)
 
@@ -335,7 +337,9 @@ local function fn()
 
 	inst._aipDisplayImage = net_string(inst.GUID, "aip_cozy_nest.display_image", DISPLAY_DIRTY)
 	inst._aipDisplayAtlas = net_string(inst.GUID, "aip_cozy_nest.display_atlas", DISPLAY_DIRTY)
+	inst._aipCozyNestHasGuest = net_bool(inst.GUID, "aip_cozy_nest.has_guest", GUEST_DIRTY)
 	inst:ListenForEvent(DISPLAY_DIRTY, applyDisplayImage)
+	inst:ListenForEvent(GUEST_DIRTY, refreshGuestVisual)
 
 	inst.entity:SetPristine()
 
