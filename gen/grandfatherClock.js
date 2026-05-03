@@ -7,8 +7,10 @@ const ROOT = PATH.join(__dirname, "..");
 const SOURCE = PATH.join(ROOT, "_\u7d20\u6750");
 const PREFAB = "aip_grandfather_clock";
 const SIZE = 512;
+const MAX_SCENE_WIDTH = SIZE - 104;
+const MAX_SCENE_HEIGHT = SIZE - 52;
+const TRIM_PADDING = 12;
 const SCENE_SCALE = 1.1;
-const BASE_PIVOT_Y = 0.06;
 
 const SKINS = [
   { id: "normal", prefab: PREFAB, file: "\u666e\u901a\u5ea7\u949f.png" },
@@ -27,7 +29,11 @@ function writeImage(img, path) {
   });
 }
 
-function findAlphaBounds(img) {
+function formatNumber(value) {
+  return Number(value.toFixed(6));
+}
+
+function findRawAlphaBounds(img) {
   const { width, height, data } = img.bitmap;
   let left = width;
   let right = 0;
@@ -50,13 +56,32 @@ function findAlphaBounds(img) {
     return { x: 0, y: 0, w: width, h: height };
   }
 
+  return { x: left, y: top, w: right - left + 1, h: bottom - top + 1 };
+}
+
+function findAlphaBounds(img) {
+  const raw = findRawAlphaBounds(img);
+  let left = raw.x;
+  let right = raw.x + raw.w - 1;
+  let top = raw.y;
+  let bottom = raw.y + raw.h - 1;
   const padding = Math.ceil(Math.max(right - left, bottom - top) * 0.03);
   left = Math.max(0, left - padding);
-  right = Math.min(width - 1, right + padding);
+  right = Math.min(img.bitmap.width - 1, right + padding);
   top = Math.max(0, top - padding);
-  bottom = Math.min(height - 1, bottom + padding);
+  bottom = Math.min(img.bitmap.height - 1, bottom + padding);
 
   return { x: left, y: top, w: right - left + 1, h: bottom - top + 1 };
+}
+
+function trimAlpha(img, padding) {
+  const bounds = findRawAlphaBounds(img);
+  const left = Math.max(0, bounds.x - padding);
+  const top = Math.max(0, bounds.y - padding);
+  const right = Math.min(img.bitmap.width, bounds.x + bounds.w + padding);
+  const bottom = Math.min(img.bitmap.height, bounds.y + bounds.h + padding);
+
+  return img.clone().crop(left, top, right - left, bottom - top);
 }
 
 async function normalizeSkin(skin, outputPath) {
@@ -68,16 +93,25 @@ async function normalizeSkin(skin, outputPath) {
   const image = await Jimp.read(src);
   const bounds = findAlphaBounds(image);
   const cropped = image.clone().crop(bounds.x, bounds.y, bounds.w, bounds.h);
-  const scale = Math.min((SIZE - 104) / cropped.bitmap.width, (SIZE - 52) / cropped.bitmap.height);
+  const scale = Math.min(MAX_SCENE_WIDTH / cropped.bitmap.width, MAX_SCENE_HEIGHT / cropped.bitmap.height);
   const width = Math.max(1, Math.round(cropped.bitmap.width * scale));
   const height = Math.max(1, Math.round(cropped.bitmap.height * scale));
   cropped.resize(width, height);
 
-  const canvas = new Jimp(SIZE, SIZE, 0x00000000);
-  canvas.composite(cropped, Math.round((SIZE - width) / 2), SIZE - height - 18);
+  const inventory = new Jimp(SIZE, SIZE, 0x00000000);
+  inventory.composite(cropped.clone(), Math.round((SIZE - width) / 2), SIZE - height - 18);
 
-  await writeImage(canvas, outputPath);
-  return canvas;
+  const normalized = trimAlpha(cropped, TRIM_PADDING);
+  skin.width = normalized.bitmap.width;
+  skin.height = normalized.bitmap.height;
+  skin.pivotX = 0.5;
+  skin.pivotY = formatNumber(TRIM_PADDING / normalized.bitmap.height);
+
+  await writeImage(normalized, outputPath);
+  return {
+    scene: normalized,
+    inventory,
+  };
 }
 
 function createAnimation(id, skin, fileId, hit) {
@@ -95,7 +129,7 @@ function createAnimation(id, skin, fileId, hit) {
     .map(frame => {
       const time = frame.time == null ? "" : ` time="${frame.time}"`;
       return `                <key id="${frame.id}"${time}>
-                    <object_ref id="0" name="${skin.id}" folder="0" file="${fileId}" abs_x="${frame.x}" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="${BASE_PIVOT_Y}" abs_angle="${frame.angle}" abs_scale_x="${SCENE_SCALE}" abs_scale_y="${SCENE_SCALE}" abs_a="1" timeline="0" key="${frame.id}" z_index="0"/>
+                    <object_ref id="0" name="${skin.id}" folder="0" file="${fileId}" abs_x="${frame.x}" abs_y="0" abs_pivot_x="${skin.pivotX}" abs_pivot_y="${skin.pivotY}" abs_angle="${frame.angle}" abs_scale_x="${SCENE_SCALE}" abs_scale_y="${SCENE_SCALE}" abs_a="1" timeline="0" key="${frame.id}" z_index="0"/>
                 </key>`;
     })
     .join("\n");
@@ -105,7 +139,7 @@ function createAnimation(id, skin, fileId, hit) {
       const time = frame.time == null ? "" : ` time="${frame.time}"`;
       const spin = hit ? ' spin="-1"' : ' spin="0"';
       return `                <key id="${frame.id}"${time}${spin}>
-                    <object folder="0" file="${fileId}" x="${frame.x}" y="0" pivot_x="0.5" pivot_y="${BASE_PIVOT_Y}" angle="${frame.angle}" scale_x="${SCENE_SCALE}" scale_y="${SCENE_SCALE}"/>
+                    <object folder="0" file="${fileId}" x="${frame.x}" y="0" pivot_x="${skin.pivotX}" pivot_y="${skin.pivotY}" angle="${frame.angle}" scale_x="${SCENE_SCALE}" scale_y="${SCENE_SCALE}"/>
                 </key>`;
     })
     .join("\n");
@@ -122,7 +156,7 @@ ${timelineKeys}
 
 function createScml() {
   const files = SKINS.map((skin, index) => {
-    return `        <file id="${index}" name="clock/${skin.id}.png" width="${SIZE}" height="${SIZE}" pivot_x="0" pivot_y="1"/>`;
+    return `        <file id="${index}" name="clock/${skin.id}.png" width="${skin.width}" height="${skin.height}" pivot_x="0" pivot_y="1"/>`;
   }).join("\n");
 
   const animations = [];
@@ -169,7 +203,7 @@ async function run() {
   for (const skin of SKINS) {
     const image = normalizedImages[skin.id];
     const inventoryPath = PATH.join(inventoryRoot, `${skin.prefab}.png`);
-    await writeImage(image.clone().resize(64, 64), inventoryPath);
+    await writeImage(image.inventory.clone().resize(64, 64), inventoryPath);
   }
 }
 
