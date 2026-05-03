@@ -15,6 +15,7 @@ local additional_food = _G.aipGetModConfig("additional_food") == "open"
 local additional_chesspieces = _G.aipGetModConfig("additional_chesspieces") == "open"
 
 ------------------------------------ Cozy nest guests ------------------------------------
+-- FollowSymbol requires an entity-level Follower component, even on vanilla followers.
 local function AddCozyNestGuestFollower(inst)
 	if inst.Follower == nil then
 		inst.entity:AddFollower()

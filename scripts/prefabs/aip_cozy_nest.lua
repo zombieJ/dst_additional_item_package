@@ -95,6 +95,7 @@ local SPECIAL_GUESTS = {
 	},
 }
 
+-- Only living leader items can drive a guest into the nest.
 local function getSpecialGuestConfig(item)
 	if item == nil or item.components.leader == nil then
 		return nil
@@ -128,10 +129,12 @@ local function normalizeTex(image)
 	return string.sub(image, -4) == ".tex" and image or image..".tex"
 end
 
+-- The guest animation keeps swap_item available as the follower anchor.
 hasSleepingGuest = function(inst)
 	return inst._aipCozyNestHasGuest ~= nil and inst._aipCozyNestHasGuest:value()
 end
 
+-- Mirror the stored item's inventory icon onto the nest's swap_item symbol.
 applyDisplayImage = function(inst)
 	local image = inst._aipDisplayImage:value()
 
@@ -172,6 +175,7 @@ local function clearDisplay(inst)
 	setDisplayImage(inst)
 end
 
+-- Cache the last displayed icon so container refreshes do not spam net strings.
 local function syncDisplay(inst, item)
 	local image, atlas = getItemImage(item)
 
@@ -200,6 +204,7 @@ local function setSleepingGuestVisual(inst, enabled)
 	refreshGuestVisual(inst)
 end
 
+-- Attach the sleeping guest to the nest animation instead of sorting it by final offset.
 local function bindSpecialGuest(inst, follower)
 	if follower.Follower == nil then
 		follower.entity:AddFollower()
@@ -222,6 +227,7 @@ local function unbindSpecialGuest(follower)
 	end
 end
 
+-- Fully detach the current guest before changing items or removing the nest.
 local function releaseSpecialGuest(inst)
 	local follower = inst._aipCozyNestGuest
 	setSleepingGuestVisual(inst, false)
@@ -245,6 +251,7 @@ local function getGuestPoint(inst, config)
 	return x + (config.x or 0), y, z + (config.z or 0)
 end
 
+-- Move the guest close enough for its vanilla sleeper test, then face it into the nest.
 local function setSpecialGuestPose(inst, follower, config)
 	if follower._aipCozyNest ~= inst then
 		if follower._aipCozyNest ~= nil and follower._aipCozyNest:IsValid() then
@@ -268,6 +275,7 @@ local function setSpecialGuestPose(inst, follower, config)
 	end
 end
 
+-- Pull the matching follower toward the nest until vanilla sleep succeeds.
 local function syncSpecialGuest(inst, item)
 	local guestConfig = getSpecialGuestConfig(item)
 
@@ -333,6 +341,7 @@ local function startRefreshTask(inst)
 	end
 end
 
+-- Keep polling only while a special guest item can still move a follower.
 local function updateRefreshTask(inst, item)
 	if getSpecialGuestConfig(item) ~= nil then
 		startRefreshTask(inst)
@@ -349,6 +358,7 @@ refreshNest = function(inst)
 	updateRefreshTask(inst, item)
 end
 
+-- Container itemget/itemlose can arrive in pairs during swaps; collapse them to one refresh.
 local function queueRefreshNest(inst)
 	if inst._aipCozyNestRefreshQueued == nil then
 		inst._aipCozyNestRefreshQueued = inst:DoTaskInTime(0, function(inst)
