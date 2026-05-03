@@ -43,6 +43,7 @@ local GUEST_FOLLOW_Z_OFFSET = .1
 local applyDisplayImage
 local hasSleepingGuest
 
+-- 播放当前皮肤动画，客人睡觉时切到对应的 _guest 动画。
 local function playSkin(inst, skin, hit)
 	skin = cozyNestConfig.GetSkin(skin)
 	local idleAnim = hasSleepingGuest ~= nil and hasSleepingGuest(inst) and skin..GUEST_ANIM_SUFFIX or skin
@@ -95,7 +96,7 @@ local SPECIAL_GUESTS = {
 	},
 }
 
--- Only living leader items can drive a guest into the nest.
+-- 只有带 leader 的有效道具才能驱动对应客人进入小窝。
 local function getSpecialGuestConfig(item)
 	if item == nil or item.components.leader == nil then
 		return nil
@@ -113,10 +114,12 @@ local function getSpecialGuestConfig(item)
 	return config
 end
 
+-- 读取小窝容器里当前展示或驱动客人的唯一物品。
 local function getStoredItem(inst)
 	return inst.components.container ~= nil and inst.components.container:GetItemInSlot(1) or nil
 end
 
+-- 提取物品库存贴图信息，用于直接覆盖到小窝动画符号上。
 local function getItemImage(item)
 	if item == nil or item.components.inventoryitem == nil then
 		return nil, nil
@@ -125,16 +128,17 @@ local function getItemImage(item)
 	return item.components.inventoryitem.imagename or item.prefab, item.components.inventoryitem.atlasname
 end
 
+-- DST 贴图覆盖接口需要 .tex 后缀，这里兼容 imagename 未带后缀的情况。
 local function normalizeTex(image)
 	return string.sub(image, -4) == ".tex" and image or image..".tex"
 end
 
--- The guest animation keeps swap_item available as the follower anchor.
+-- 判断当前是否处在客人睡觉展示状态。
 hasSleepingGuest = function(inst)
 	return inst._aipCozyNestHasGuest ~= nil and inst._aipCozyNestHasGuest:value()
 end
 
--- Mirror the stored item's inventory icon onto the nest's swap_item symbol.
+-- 将容器物品的库存贴图同步到小窝的 swap_item 符号上。
 applyDisplayImage = function(inst)
 	local image = inst._aipDisplayImage:value()
 
@@ -163,19 +167,21 @@ applyDisplayImage = function(inst)
 	end
 end
 
+-- 更新网络字段并立即应用展示贴图。
 local function setDisplayImage(inst, image, atlas)
 	inst._aipDisplayAtlas:set(atlas or "")
 	inst._aipDisplayImage:set(image or "")
 	applyDisplayImage(inst)
 end
 
+-- 清理缓存的展示物品信息，并隐藏展示符号。
 local function clearDisplay(inst)
 	inst._aipDisplayItemImage = nil
 	inst._aipDisplayItemAtlas = nil
 	setDisplayImage(inst)
 end
 
--- Cache the last displayed icon so container refreshes do not spam net strings.
+-- 缓存上次展示的贴图，避免容器刷新时重复写 net string。
 local function syncDisplay(inst, item)
 	local image, atlas = getItemImage(item)
 
@@ -191,11 +197,13 @@ local function syncDisplay(inst, item)
 	end
 end
 
+-- 重新播放小窝外观动画，并重新套回展示贴图。
 local function refreshGuestVisual(inst)
 	skinner.PlayCurrent(inst)
 	applyDisplayImage(inst)
 end
 
+-- 切换客人睡觉标记，让客户端也播放对应的 guest 动画。
 local function setSleepingGuestVisual(inst, enabled)
 	if inst._aipCozyNestHasGuest ~= nil then
 		inst._aipCozyNestHasGuest:set(enabled == true)
@@ -204,7 +212,7 @@ local function setSleepingGuestVisual(inst, enabled)
 	refreshGuestVisual(inst)
 end
 
--- Attach the sleeping guest to the nest animation instead of sorting it by final offset.
+-- 将睡着的客人绑定到小窝动画里的 swap_item 锚点上。
 local function bindSpecialGuest(inst, follower)
 	if follower.Follower == nil then
 		follower.entity:AddFollower()
@@ -219,6 +227,7 @@ local function bindSpecialGuest(inst, follower)
 	)
 end
 
+-- 客人离开小窝时停止跟随小窝动画锚点。
 local function unbindSpecialGuest(follower)
 	if follower ~= nil and follower:IsValid() then
 		if follower.Follower ~= nil then
@@ -227,7 +236,7 @@ local function unbindSpecialGuest(follower)
 	end
 end
 
--- Fully detach the current guest before changing items or removing the nest.
+-- 更换物品或移除小窝前，完整释放当前绑定的客人。
 local function releaseSpecialGuest(inst)
 	local follower = inst._aipCozyNestGuest
 	setSleepingGuestVisual(inst, false)
@@ -246,12 +255,13 @@ local function releaseSpecialGuest(inst)
 	end
 end
 
+-- 根据配置计算客人在小窝旁的目标站位。
 local function getGuestPoint(inst, config)
 	local x, y, z = inst.Transform:GetWorldPosition()
 	return x + (config.x or 0), y, z + (config.z or 0)
 end
 
--- Move the guest close enough for its vanilla sleeper test, then face it into the nest.
+-- 把客人移动到足够接近小窝的位置，让原版 sleeper 测试可以成功。
 local function setSpecialGuestPose(inst, follower, config)
 	if follower._aipCozyNest ~= inst then
 		if follower._aipCozyNest ~= nil and follower._aipCozyNest:IsValid() then
@@ -275,7 +285,7 @@ local function setSpecialGuestPose(inst, follower, config)
 	end
 end
 
--- Pull the matching follower toward the nest until vanilla sleep succeeds.
+-- 周期性同步特殊客人：靠近时入睡，太远时引导它走向小窝。
 local function syncSpecialGuest(inst, item)
 	local guestConfig = getSpecialGuestConfig(item)
 
@@ -328,6 +338,7 @@ end
 
 local refreshNest
 
+-- 停止特殊客人的周期刷新任务。
 local function stopRefreshTask(inst)
 	if inst._aipCozyNestRefreshTask ~= nil then
 		inst._aipCozyNestRefreshTask:Cancel()
@@ -335,13 +346,14 @@ local function stopRefreshTask(inst)
 	end
 end
 
+-- 启动特殊客人的周期刷新任务，用来持续拉近客人直到入睡。
 local function startRefreshTask(inst)
 	if inst._aipCozyNestRefreshTask == nil then
 		inst._aipCozyNestRefreshTask = inst:DoPeriodicTask(2, refreshNest)
 	end
 end
 
--- Keep polling only while a special guest item can still move a follower.
+-- 只有当前物品能驱动特殊客人时，才保留周期刷新。
 local function updateRefreshTask(inst, item)
 	if getSpecialGuestConfig(item) ~= nil then
 		startRefreshTask(inst)
@@ -350,6 +362,7 @@ local function updateRefreshTask(inst, item)
 	end
 end
 
+-- 统一刷新展示贴图、特殊客人状态和周期任务开关。
 refreshNest = function(inst)
 	local item = getStoredItem(inst)
 
@@ -358,7 +371,7 @@ refreshNest = function(inst)
 	updateRefreshTask(inst, item)
 end
 
--- Container itemget/itemlose can arrive in pairs during swaps; collapse them to one refresh.
+-- 物品替换会连续触发 itemlose/itemget，这里合并到下一帧刷新一次。
 local function queueRefreshNest(inst)
 	if inst._aipCozyNestRefreshQueued == nil then
 		inst._aipCozyNestRefreshQueued = inst:DoTaskInTime(0, function(inst)
@@ -368,6 +381,7 @@ local function queueRefreshNest(inst)
 	end
 end
 
+-- 敲毁小窝时释放客人、掉落容器内容并清理展示。
 local function onhammered(inst)
 	inst.components.lootdropper:DropLoot()
 	clearDisplay(inst)
@@ -384,10 +398,12 @@ local function onhammered(inst)
 	inst:Remove()
 end
 
+-- 受击时播放当前皮肤的 hit 动画。
 local function onhit(inst)
 	skinner.PlayCurrent(inst, true)
 end
 
+-- 建造完成后播放当前皮肤并补放放置音效。
 local function onbuilt(inst)
 	skinner.PlayCurrent(inst)
 
@@ -396,11 +412,13 @@ local function onbuilt(inst)
 	end
 end
 
+-- 读档后恢复皮肤，并排队刷新容器展示和客人状态。
 local function onload(inst, data)
 	skinner.OnLoad(inst, data)
 	queueRefreshNest(inst)
 end
 
+-- 创建温馨小窝实体，挂载网络字段、容器和可锤毁逻辑。
 local function fn()
 	local inst = CreateEntity()
 
