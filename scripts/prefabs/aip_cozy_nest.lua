@@ -321,11 +321,23 @@ local function startRefreshTask(inst)
 	end
 end
 
+local function queueRefreshNest(inst)
+	startRefreshTask(inst)
+
+	if inst._aipCozyNestRefreshQueued == nil then
+		inst._aipCozyNestRefreshQueued = inst:DoTaskInTime(0, function(inst)
+			inst._aipCozyNestRefreshQueued = nil
+			refreshNest(inst)
+		end)
+	end
+end
+
 refreshNest = function(inst)
 	syncDisplay(inst)
 	syncSpecialGuest(inst)
 
-	if getStoredItem(inst) == nil then
+	local item = getStoredItem(inst)
+	if item == nil or SPECIAL_GUESTS[item.prefab] == nil then
 		stopRefreshTask(inst)
 	end
 end
@@ -410,8 +422,8 @@ local function fn()
 	inst.OnLoad = onload
 
 	inst:ListenForEvent("onbuilt", onbuilt)
-	inst:ListenForEvent("itemget", startRefreshTask)
-	inst:ListenForEvent("itemlose", startRefreshTask)
+	inst:ListenForEvent("itemget", queueRefreshNest)
+	inst:ListenForEvent("itemlose", queueRefreshNest)
 
 	MakeHauntableWork(inst)
 
