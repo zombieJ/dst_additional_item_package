@@ -27,10 +27,6 @@ skinUtil.RegisterBuildSkinConfig(cozyNestConfig, language, LANG.DESC)
 
 local assets = {
 	Asset("ANIM", "anim/aip_cozy_nest.zip"),
-	Asset("ATLAS_BUILD", "images/inventoryimages1.xml", 256),
-	Asset("ATLAS_BUILD", "images/inventoryimages2.xml", 256),
-	Asset("ATLAS_BUILD", "images/inventoryimages3.xml", 256),
-	Asset("ATLAS_BUILD", "images/inventoryimages4.xml", 256),
 }
 
 for _, asset in ipairs(cozyNestConfig.GetInventoryAtlasAssets(true)) do
