@@ -14,6 +14,17 @@ local additional_food = _G.aipGetModConfig("additional_food") == "open"
 -- 额外食物
 local additional_chesspieces = _G.aipGetModConfig("additional_chesspieces") == "open"
 
+------------------------------------ Cozy nest guests ------------------------------------
+local function AddCozyNestGuestFollower(inst)
+	if inst.Follower == nil then
+		inst.entity:AddFollower()
+	end
+end
+
+AddPrefabPostInit("chester", AddCozyNestGuestFollower)
+AddPrefabPostInit("hutch", AddCozyNestGuestFollower)
+AddPrefabPostInit("glommer", AddCozyNestGuestFollower)
+
 ------------------------------------ 贪婪观察者 ------------------------------------
 -- 暗影跟随者
 function ShadowFollowerPrefabPostInit(inst)
