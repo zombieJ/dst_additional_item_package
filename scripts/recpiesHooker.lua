@@ -512,7 +512,7 @@ rec("aip_grandfather_clock", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.STRUCTURES, CR
 {
 	Ingredient("boards", 4),
 	Ingredient("goldnugget", 2),
-	Ingredient("gears", 1),
+	Ingredient("aip_particles_bottle_charged", 1, "images/inventoryimages/aip_particles_bottle_charged.xml"),
 }, "aip_grandfather_clock_placer")
 
 -- 宠物盒子
