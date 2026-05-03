@@ -10,7 +10,7 @@ const SIZE = 512;
 const MAX_SCENE_WIDTH = SIZE - 104;
 const MAX_SCENE_HEIGHT = SIZE - 52;
 const TRIM_PADDING = 12;
-const SCENE_SCALE = 1.1;
+const SCENE_SCALE = 1.35;
 const SCENE_Y_OFFSET = -14;
 
 const SKINS = [
