@@ -8,6 +8,7 @@ const SOURCE = PATH.join(ROOT, "_\u7d20\u6750");
 const PREFAB = "aip_grandfather_clock";
 const SIZE = 512;
 const SCENE_SCALE = 1.1;
+const BASE_PIVOT_Y = 0.06;
 
 const SKINS = [
   { id: "normal", prefab: PREFAB, file: "\u666e\u901a\u5ea7\u949f.png" },
@@ -94,7 +95,7 @@ function createAnimation(id, skin, fileId, hit) {
     .map(frame => {
       const time = frame.time == null ? "" : ` time="${frame.time}"`;
       return `                <key id="${frame.id}"${time}>
-                    <object_ref id="0" name="${skin.id}" folder="0" file="${fileId}" abs_x="${frame.x}" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.18" abs_angle="${frame.angle}" abs_scale_x="${SCENE_SCALE}" abs_scale_y="${SCENE_SCALE}" abs_a="1" timeline="0" key="${frame.id}" z_index="0"/>
+                    <object_ref id="0" name="${skin.id}" folder="0" file="${fileId}" abs_x="${frame.x}" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="${BASE_PIVOT_Y}" abs_angle="${frame.angle}" abs_scale_x="${SCENE_SCALE}" abs_scale_y="${SCENE_SCALE}" abs_a="1" timeline="0" key="${frame.id}" z_index="0"/>
                 </key>`;
     })
     .join("\n");
@@ -104,7 +105,7 @@ function createAnimation(id, skin, fileId, hit) {
       const time = frame.time == null ? "" : ` time="${frame.time}"`;
       const spin = hit ? ' spin="-1"' : ' spin="0"';
       return `                <key id="${frame.id}"${time}${spin}>
-                    <object folder="0" file="${fileId}" x="${frame.x}" y="0" pivot_x="0.5" pivot_y="0.18" angle="${frame.angle}" scale_x="${SCENE_SCALE}" scale_y="${SCENE_SCALE}"/>
+                    <object folder="0" file="${fileId}" x="${frame.x}" y="0" pivot_x="0.5" pivot_y="${BASE_PIVOT_Y}" angle="${frame.angle}" scale_x="${SCENE_SCALE}" scale_y="${SCENE_SCALE}"/>
                 </key>`;
     })
     .join("\n");
