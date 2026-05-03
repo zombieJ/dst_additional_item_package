@@ -121,7 +121,15 @@ end
 
 -- 提取物品库存贴图信息，用于直接覆盖到小窝动画符号上。
 local function getItemImage(item)
-	if item == nil or item.components.inventoryitem == nil then
+	if item == nil then
+		return nil, nil
+	end
+
+	if item.replica.inventoryitem ~= nil then
+		return item.replica.inventoryitem:GetImage(), item.replica.inventoryitem:GetAtlas()
+	end
+
+	if item.components.inventoryitem == nil then
 		return nil, nil
 	end
 
