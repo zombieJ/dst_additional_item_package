@@ -226,6 +226,7 @@ PrefabFiles = {
 	"aip_pet",
 	"aip_pet_trigger",
 	"aip_cozy_nest",
+	"aip_grandfather_clock",
 	"aip_pet_box",
 	"aip_grave_cloak",
 	"aip_fishman_mucus",

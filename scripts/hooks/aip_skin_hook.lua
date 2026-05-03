@@ -4,6 +4,7 @@ local skinUtil = _G.require("utils/aip_skin_util")
 
 local SKIN_CONFIGS = {
 	_G.require("configurations/skin/aip_cozy_nest"),
+	_G.require("configurations/skin/aip_grandfather_clock"),
 }
 
 for _, config in ipairs(SKIN_CONFIGS) do
