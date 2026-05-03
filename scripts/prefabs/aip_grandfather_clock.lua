@@ -42,6 +42,7 @@ local HOUR_HAND_SCALE = 0.72
 local MINUTE_HAND_SCALE = 1
 local HOUR_HAND_Z_OFFSET = 0.2
 local MINUTE_HAND_Z_OFFSET = 0.3
+local HAND_UPDATE_PERIOD = 1
 
 local function playSkin(inst, skin, hit)
 	skin = clockConfig.GetSkin(skin)
@@ -55,15 +56,19 @@ local function playSkin(inst, skin, hit)
 end
 
 local function setHandTime(inst)
-	local time = TheWorld.state.time or 0
-	local hours = time * 24
+	local now = os.date("*t")
+	local hour = now.hour or 0
+	local minute = now.min or 0
+	local second = now.sec or 0
+	local minuteProgress = (minute + second / 60) / 60
+	local hourProgress = ((hour % 12) + minuteProgress) / 12
 
 	if inst._aipHourHand ~= nil and inst._aipHourHand:IsValid() then
-		inst._aipHourHand.AnimState:SetPercent(HAND_ANIM, (hours % 12) / 12)
+		inst._aipHourHand.AnimState:SetPercent(HAND_ANIM, hourProgress)
 	end
 
 	if inst._aipMinuteHand ~= nil and inst._aipMinuteHand:IsValid() then
-		inst._aipMinuteHand.AnimState:SetPercent(HAND_ANIM, hours % 1)
+		inst._aipMinuteHand.AnimState:SetPercent(HAND_ANIM, minuteProgress)
 	end
 end
 
@@ -85,7 +90,10 @@ local function createHand(inst, scale, zOffset, finalOffset)
 end
 
 local function clearHands(inst)
-	inst:StopWatchingWorldState("time", setHandTime)
+	if inst._aipHandTask ~= nil then
+		inst._aipHandTask:Cancel()
+		inst._aipHandTask = nil
+	end
 
 	if inst._aipHourHand ~= nil and inst._aipHourHand:IsValid() then
 		inst._aipHourHand:Remove()
@@ -115,7 +123,7 @@ local function setupHands(inst)
 		table.insert(inst.highlightchildren, inst._aipMinuteHand)
 	end
 
-	inst:WatchWorldState("time", setHandTime)
+	inst._aipHandTask = inst:DoPeriodicTask(HAND_UPDATE_PERIOD, setHandTime)
 	inst:ListenForEvent("onremove", clearHands)
 	setHandTime(inst)
 end
