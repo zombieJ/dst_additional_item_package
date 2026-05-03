@@ -22,3 +22,7 @@
 ## DST Logs
 
 - Local log directory: `[用户目录]\Documents\Klei\DoNotStarveTogether`
+
+## 资源处理
+
+- `exported`、`images` 等资源目录里的文件处理完成后，默认不要移动到 `exported_done`、`images_done` 或类似 `xxx_done` 目录中；除非用户明确要求移动。
