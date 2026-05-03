@@ -95,6 +95,23 @@ local SPECIAL_GUESTS = {
 	},
 }
 
+local function getSpecialGuestConfig(item)
+	if item == nil or item.components.leader == nil then
+		return nil
+	end
+
+	local config = SPECIAL_GUESTS[item.prefab]
+	if config == nil then
+		return nil
+	end
+
+	if item.prefab == "glommerflower" and not item:HasTag("glommerflower") then
+		return nil
+	end
+
+	return config
+end
+
 local function getStoredItem(inst)
 	return inst.components.container ~= nil and inst.components.container:GetItemInSlot(1) or nil
 end
@@ -155,8 +172,7 @@ local function clearDisplay(inst)
 	setDisplayImage(inst)
 end
 
-local function syncDisplay(inst)
-	local item = getStoredItem(inst)
+local function syncDisplay(inst, item)
 	local image, atlas = getItemImage(item)
 
 	if image == nil then
@@ -252,14 +268,10 @@ local function setSpecialGuestPose(inst, follower, config)
 	end
 end
 
-local function syncSpecialGuest(inst)
-	local item = getStoredItem(inst)
-	local guestConfig = item ~= nil and SPECIAL_GUESTS[item.prefab] or nil
+local function syncSpecialGuest(inst, item)
+	local guestConfig = getSpecialGuestConfig(item)
 
-	if guestConfig == nil or item.components.leader == nil then
-		releaseSpecialGuest(inst)
-		return
-	elseif item.prefab == "glommerflower" and not item:HasTag("glommerflower") then
+	if guestConfig == nil then
 		releaseSpecialGuest(inst)
 		return
 	end
@@ -317,28 +329,32 @@ end
 
 local function startRefreshTask(inst)
 	if inst._aipCozyNestRefreshTask == nil then
-		inst._aipCozyNestRefreshTask = inst:DoPeriodicTask(2, refreshNest, 0)
+		inst._aipCozyNestRefreshTask = inst:DoPeriodicTask(2, refreshNest)
 	end
 end
 
-local function queueRefreshNest(inst)
-	startRefreshTask(inst)
+local function updateRefreshTask(inst, item)
+	if getSpecialGuestConfig(item) ~= nil then
+		startRefreshTask(inst)
+	else
+		stopRefreshTask(inst)
+	end
+end
 
+refreshNest = function(inst)
+	local item = getStoredItem(inst)
+
+	syncDisplay(inst, item)
+	syncSpecialGuest(inst, item)
+	updateRefreshTask(inst, item)
+end
+
+local function queueRefreshNest(inst)
 	if inst._aipCozyNestRefreshQueued == nil then
 		inst._aipCozyNestRefreshQueued = inst:DoTaskInTime(0, function(inst)
 			inst._aipCozyNestRefreshQueued = nil
 			refreshNest(inst)
 		end)
-	end
-end
-
-refreshNest = function(inst)
-	syncDisplay(inst)
-	syncSpecialGuest(inst)
-
-	local item = getStoredItem(inst)
-	if item == nil or SPECIAL_GUESTS[item.prefab] == nil then
-		stopRefreshTask(inst)
 	end
 end
 
@@ -372,7 +388,7 @@ end
 
 local function onload(inst, data)
 	skinner.OnLoad(inst, data)
-	startRefreshTask(inst)
+	queueRefreshNest(inst)
 end
 
 local function fn()
