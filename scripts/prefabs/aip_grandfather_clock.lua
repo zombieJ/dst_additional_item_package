@@ -27,6 +27,7 @@ skinUtil.RegisterBuildSkinConfig(clockConfig, language, LANG.DESC)
 
 local assets = {
 	Asset("ANIM", "anim/aip_grandfather_clock.zip"),
+	Asset("ANIM", "anim/aip_grandfather_clock_hand.zip"),
 }
 
 for _, asset in ipairs(clockConfig.GetInventoryAtlasAssets(true)) do
@@ -34,6 +35,13 @@ for _, asset in ipairs(clockConfig.GetInventoryAtlasAssets(true)) do
 end
 
 local DEFAULT_SKIN = clockConfig.DEFAULT_SKIN
+local HAND_PREFAB = "aip_grandfather_clock_hand"
+local HAND_SYMBOL = "clock_hand_root"
+local HAND_ANIM = "idle"
+local HOUR_HAND_SCALE = 0.72
+local MINUTE_HAND_SCALE = 1
+local HOUR_HAND_Z_OFFSET = 0.2
+local MINUTE_HAND_Z_OFFSET = 0.3
 
 local function playSkin(inst, skin, hit)
 	skin = clockConfig.GetSkin(skin)
@@ -44,6 +52,72 @@ local function playSkin(inst, skin, hit)
 	else
 		inst.AnimState:PlayAnimation(skin, true)
 	end
+end
+
+local function setHandTime(inst)
+	local time = TheWorld.state.time or 0
+	local hours = time * 24
+
+	if inst._aipHourHand ~= nil and inst._aipHourHand:IsValid() then
+		inst._aipHourHand.AnimState:SetPercent(HAND_ANIM, (hours % 12) / 12)
+	end
+
+	if inst._aipMinuteHand ~= nil and inst._aipMinuteHand:IsValid() then
+		inst._aipMinuteHand.AnimState:SetPercent(HAND_ANIM, hours % 1)
+	end
+end
+
+local function createHand(inst, scale, zOffset, finalOffset)
+	local hand = SpawnPrefab(HAND_PREFAB)
+	if hand == nil then
+		return nil
+	end
+
+	hand.entity:SetParent(inst.entity)
+	hand.entity:AddFollower()
+	hand.Follower:FollowSymbol(inst.GUID, HAND_SYMBOL, 0, 0, zOffset, true)
+	hand.Transform:SetScale(scale, scale, scale)
+	hand.AnimState:SetFinalOffset(finalOffset)
+
+	hand:AddTag("NOCLICK")
+
+	return hand
+end
+
+local function clearHands(inst)
+	inst:StopWatchingWorldState("time", setHandTime)
+
+	if inst._aipHourHand ~= nil and inst._aipHourHand:IsValid() then
+		inst._aipHourHand:Remove()
+	end
+
+	if inst._aipMinuteHand ~= nil and inst._aipMinuteHand:IsValid() then
+		inst._aipMinuteHand:Remove()
+	end
+
+	inst._aipHourHand = nil
+	inst._aipMinuteHand = nil
+end
+
+local function setupHands(inst)
+	if TheNet:IsDedicated() then
+		return
+	end
+
+	inst.highlightchildren = inst.highlightchildren or {}
+	inst._aipHourHand = createHand(inst, HOUR_HAND_SCALE, HOUR_HAND_Z_OFFSET, 1)
+	inst._aipMinuteHand = createHand(inst, MINUTE_HAND_SCALE, MINUTE_HAND_Z_OFFSET, 2)
+
+	if inst._aipHourHand ~= nil then
+		table.insert(inst.highlightchildren, inst._aipHourHand)
+	end
+	if inst._aipMinuteHand ~= nil then
+		table.insert(inst.highlightchildren, inst._aipMinuteHand)
+	end
+
+	inst:WatchWorldState("time", setHandTime)
+	inst:ListenForEvent("onremove", clearHands)
+	setHandTime(inst)
 end
 
 local skinner = skinUtil.CreatePrefabSkinner(clockConfig, {
@@ -81,6 +155,31 @@ local function onload(inst, data)
 	skinner.OnLoad(inst, data)
 end
 
+local function handFn()
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+
+	inst.AnimState:SetBank("aip_grandfather_clock_hand")
+	inst.AnimState:SetBuild("aip_grandfather_clock_hand")
+	inst.AnimState:PlayAnimation(HAND_ANIM)
+	inst.AnimState:Pause()
+
+	inst:AddTag("NOCLICK")
+	inst:AddTag("DECOR")
+
+	inst.entity:SetPristine()
+
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
+	inst.persists = false
+
+	return inst
+end
+
 local function fn()
 	local inst = CreateEntity()
 
@@ -99,6 +198,7 @@ local function fn()
 	skinner.SetupNetwork(inst)
 
 	inst.entity:SetPristine()
+	inst:DoTaskInTime(0, setupHands)
 
 	if not TheWorld.ismastersim then
 		return inst
@@ -126,7 +226,8 @@ local function fn()
 end
 
 local prefabs = {
-	Prefab("aip_grandfather_clock", fn, assets),
+	Prefab("aip_grandfather_clock", fn, assets, { "collapse_small", HAND_PREFAB }),
+	Prefab(HAND_PREFAB, handFn, { Asset("ANIM", "anim/aip_grandfather_clock_hand.zip") }),
 	MakePlacer("aip_grandfather_clock_placer", "aip_grandfather_clock", "aip_grandfather_clock", DEFAULT_SKIN),
 }
 

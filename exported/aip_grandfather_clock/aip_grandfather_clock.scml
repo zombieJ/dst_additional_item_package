@@ -6,11 +6,15 @@
         <file id="2" name="clock/metal.png" width="166" height="460" pivot_x="0" pivot_y="1"/>
         <file id="3" name="clock/tall.png" width="155" height="458" pivot_x="0" pivot_y="1"/>
     </folder>
+    <folder id="1" name="clock_hand_root">
+        <file id="0" name="clock_hand_root/clock_hand_root.png" width="1" height="1" pivot_x="0.5" pivot_y="0.5"/>
+    </folder>
     <entity id="0" name="aip_grandfather_clock">
         <animation id="0" name="normal" length="100">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="normal" folder="0" file="0" abs_x="0" abs_y="-14" abs_pivot_x="0.5" abs_pivot_y="0.026087" abs_angle="0" abs_scale_x="1.35" abs_scale_y="1.35" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="clock_hand_root" folder="1" file="0" abs_x="0.675" abs_y="439.599973" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="normal">
@@ -18,17 +22,25 @@
                     <object folder="0" file="0" x="0" y="-14" pivot_x="0.5" pivot_y="0.026087" angle="0" scale_x="1.35" scale_y="1.35"/>
                 </key>
             </timeline>
+            <timeline id="1" name="clock_hand_root">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="0.675" y="439.599973" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="1" scale_y="1"/>
+                </key>
+            </timeline>
         </animation>
         <animation id="1" name="normal_hit" length="300">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="normal" folder="0" file="0" abs_x="0" abs_y="-14" abs_pivot_x="0.5" abs_pivot_y="0.026087" abs_angle="0" abs_scale_x="1.35" abs_scale_y="1.35" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="clock_hand_root" folder="1" file="0" abs_x="0.675" abs_y="439.599973" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
                 <key id="1" time="100">
                     <object_ref id="0" name="normal" folder="0" file="0" abs_x="5" abs_y="-14" abs_pivot_x="0.5" abs_pivot_y="0.026087" abs_angle="358" abs_scale_x="1.35" abs_scale_y="1.35" abs_a="1" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" name="clock_hand_root" folder="1" file="0" abs_x="21.505" abs_y="439.300095" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="358" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="1" z_index="1"/>
                 </key>
                 <key id="2" time="200">
                     <object_ref id="0" name="normal" folder="0" file="0" abs_x="-5" abs_y="-14" abs_pivot_x="0.5" abs_pivot_y="0.026087" abs_angle="2" abs_scale_x="1.35" abs_scale_y="1.35" abs_a="1" timeline="0" key="2" z_index="0"/>
+                    <object_ref id="1" name="clock_hand_root" folder="1" file="0" abs_x="-20.155822" abs_y="439.347209" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="2" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="2" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="normal">
@@ -42,11 +54,23 @@
                     <object folder="0" file="0" x="-5" y="-14" pivot_x="0.5" pivot_y="0.026087" angle="2" scale_x="1.35" scale_y="1.35"/>
                 </key>
             </timeline>
+            <timeline id="1" name="clock_hand_root">
+                <key id="0" spin="-1">
+                    <object folder="1" file="0" x="0.675" y="439.599973" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="1" scale_y="1"/>
+                </key>
+                <key id="1" time="100" spin="-1">
+                    <object folder="1" file="0" x="21.505" y="439.300095" pivot_x="0.5" pivot_y="0.5" angle="358" scale_x="1" scale_y="1"/>
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="1" file="0" x="-20.155822" y="439.347209" pivot_x="0.5" pivot_y="0.5" angle="2" scale_x="1" scale_y="1"/>
+                </key>
+            </timeline>
         </animation>
         <animation id="2" name="ruined" length="100">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="ruined" folder="0" file="1" abs_x="0" abs_y="-14" abs_pivot_x="0.5" abs_pivot_y="0.026087" abs_angle="0" abs_scale_x="1.35" abs_scale_y="1.35" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="clock_hand_root" folder="1" file="0" abs_x="1.35" abs_y="351.849973" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="ruined">
@@ -54,17 +78,25 @@
                     <object folder="0" file="1" x="0" y="-14" pivot_x="0.5" pivot_y="0.026087" angle="0" scale_x="1.35" scale_y="1.35"/>
                 </key>
             </timeline>
+            <timeline id="1" name="clock_hand_root">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="1.35" y="351.849973" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="1" scale_y="1"/>
+                </key>
+            </timeline>
         </animation>
         <animation id="3" name="ruined_hit" length="300">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="ruined" folder="0" file="1" abs_x="0" abs_y="-14" abs_pivot_x="0.5" abs_pivot_y="0.026087" abs_angle="0" abs_scale_x="1.35" abs_scale_y="1.35" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="clock_hand_root" folder="1" file="0" abs_x="1.35" abs_y="351.849973" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
                 <key id="1" time="100">
                     <object_ref id="0" name="ruined" folder="0" file="1" abs_x="5" abs_y="-14" abs_pivot_x="0.5" abs_pivot_y="0.026087" abs_angle="358" abs_scale_x="1.35" abs_scale_y="1.35" abs_a="1" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" name="clock_hand_root" folder="1" file="0" abs_x="19.117158" abs_y="351.579993" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="358" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="1" z_index="1"/>
                 </key>
                 <key id="2" time="200">
                     <object_ref id="0" name="ruined" folder="0" file="1" abs_x="-5" abs_y="-14" abs_pivot_x="0.5" abs_pivot_y="0.026087" abs_angle="2" abs_scale_x="1.35" abs_scale_y="1.35" abs_a="1" timeline="0" key="2" z_index="0"/>
+                    <object_ref id="1" name="clock_hand_root" folder="1" file="0" abs_x="-16.418802" abs_y="351.674221" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="2" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="2" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="ruined">
@@ -78,11 +110,23 @@
                     <object folder="0" file="1" x="-5" y="-14" pivot_x="0.5" pivot_y="0.026087" angle="2" scale_x="1.35" scale_y="1.35"/>
                 </key>
             </timeline>
+            <timeline id="1" name="clock_hand_root">
+                <key id="0" spin="-1">
+                    <object folder="1" file="0" x="1.35" y="351.849973" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="1" scale_y="1"/>
+                </key>
+                <key id="1" time="100" spin="-1">
+                    <object folder="1" file="0" x="19.117158" y="351.579993" pivot_x="0.5" pivot_y="0.5" angle="358" scale_x="1" scale_y="1"/>
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="1" file="0" x="-16.418802" y="351.674221" pivot_x="0.5" pivot_y="0.5" angle="2" scale_x="1" scale_y="1"/>
+                </key>
+            </timeline>
         </animation>
         <animation id="4" name="metal" length="100">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="metal" folder="0" file="2" abs_x="0" abs_y="-14" abs_pivot_x="0.5" abs_pivot_y="0.026087" abs_angle="0" abs_scale_x="1.35" abs_scale_y="1.35" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="clock_hand_root" folder="1" file="0" abs_x="0" abs_y="444.999973" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="metal">
@@ -90,17 +134,25 @@
                     <object folder="0" file="2" x="0" y="-14" pivot_x="0.5" pivot_y="0.026087" angle="0" scale_x="1.35" scale_y="1.35"/>
                 </key>
             </timeline>
+            <timeline id="1" name="clock_hand_root">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="0" y="444.999973" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="1" scale_y="1"/>
+                </key>
+            </timeline>
         </animation>
         <animation id="5" name="metal_hit" length="300">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="metal" folder="0" file="2" abs_x="0" abs_y="-14" abs_pivot_x="0.5" abs_pivot_y="0.026087" abs_angle="0" abs_scale_x="1.35" abs_scale_y="1.35" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="clock_hand_root" folder="1" file="0" abs_x="0" abs_y="444.999973" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
                 <key id="1" time="100">
                     <object_ref id="0" name="metal" folder="0" file="2" abs_x="5" abs_y="-14" abs_pivot_x="0.5" abs_pivot_y="0.026087" abs_angle="358" abs_scale_x="1.35" abs_scale_y="1.35" abs_a="1" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" name="clock_hand_root" folder="1" file="0" abs_x="21.018868" abs_y="444.720363" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="358" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="1" z_index="1"/>
                 </key>
                 <key id="2" time="200">
                     <object_ref id="0" name="metal" folder="0" file="2" abs_x="-5" abs_y="-14" abs_pivot_x="0.5" abs_pivot_y="0.026087" abs_angle="2" abs_scale_x="1.35" abs_scale_y="1.35" abs_a="1" timeline="0" key="2" z_index="0"/>
+                    <object_ref id="1" name="clock_hand_root" folder="1" file="0" abs_x="-21.018868" abs_y="444.720363" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="2" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="2" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="metal">
@@ -114,11 +166,23 @@
                     <object folder="0" file="2" x="-5" y="-14" pivot_x="0.5" pivot_y="0.026087" angle="2" scale_x="1.35" scale_y="1.35"/>
                 </key>
             </timeline>
+            <timeline id="1" name="clock_hand_root">
+                <key id="0" spin="-1">
+                    <object folder="1" file="0" x="0" y="444.999973" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="1" scale_y="1"/>
+                </key>
+                <key id="1" time="100" spin="-1">
+                    <object folder="1" file="0" x="21.018868" y="444.720363" pivot_x="0.5" pivot_y="0.5" angle="358" scale_x="1" scale_y="1"/>
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="1" file="0" x="-21.018868" y="444.720363" pivot_x="0.5" pivot_y="0.5" angle="2" scale_x="1" scale_y="1"/>
+                </key>
+            </timeline>
         </animation>
         <animation id="6" name="tall" length="100">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="tall" folder="0" file="3" abs_x="0" abs_y="-14" abs_pivot_x="0.5" abs_pivot_y="0.026201" abs_angle="0" abs_scale_x="1.35" abs_scale_y="1.35" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="clock_hand_root" folder="1" file="0" abs_x="0.675" abs_y="415.299922" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="tall">
@@ -126,17 +190,25 @@
                     <object folder="0" file="3" x="0" y="-14" pivot_x="0.5" pivot_y="0.026201" angle="0" scale_x="1.35" scale_y="1.35"/>
                 </key>
             </timeline>
+            <timeline id="1" name="clock_hand_root">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="0.675" y="415.299922" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="1" scale_y="1"/>
+                </key>
+            </timeline>
         </animation>
         <animation id="7" name="tall_hit" length="300">
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="tall" folder="0" file="3" abs_x="0" abs_y="-14" abs_pivot_x="0.5" abs_pivot_y="0.026201" abs_angle="0" abs_scale_x="1.35" abs_scale_y="1.35" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="1" name="clock_hand_root" folder="1" file="0" abs_x="0.675" abs_y="415.299922" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
                 <key id="1" time="100">
                     <object_ref id="0" name="tall" folder="0" file="3" abs_x="5" abs_y="-14" abs_pivot_x="0.5" abs_pivot_y="0.026201" abs_angle="358" abs_scale_x="1.35" abs_scale_y="1.35" abs_a="1" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="1" name="clock_hand_root" folder="1" file="0" abs_x="20.65694" abs_y="415.014847" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="358" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="1" z_index="1"/>
                 </key>
                 <key id="2" time="200">
                     <object_ref id="0" name="tall" folder="0" file="3" abs_x="-5" abs_y="-14" abs_pivot_x="0.5" abs_pivot_y="0.026201" abs_angle="2" abs_scale_x="1.35" abs_scale_y="1.35" abs_a="1" timeline="0" key="2" z_index="0"/>
+                    <object_ref id="1" name="clock_hand_root" folder="1" file="0" abs_x="-19.307762" abs_y="415.061961" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="2" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="2" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="tall">
@@ -148,6 +220,17 @@
                 </key>
                 <key id="2" time="200" spin="-1">
                     <object folder="0" file="3" x="-5" y="-14" pivot_x="0.5" pivot_y="0.026201" angle="2" scale_x="1.35" scale_y="1.35"/>
+                </key>
+            </timeline>
+            <timeline id="1" name="clock_hand_root">
+                <key id="0" spin="-1">
+                    <object folder="1" file="0" x="0.675" y="415.299922" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="1" scale_y="1"/>
+                </key>
+                <key id="1" time="100" spin="-1">
+                    <object folder="1" file="0" x="20.65694" y="415.014847" pivot_x="0.5" pivot_y="0.5" angle="358" scale_x="1" scale_y="1"/>
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="1" file="0" x="-19.307762" y="415.061961" pivot_x="0.5" pivot_y="0.5" angle="2" scale_x="1" scale_y="1"/>
                 </key>
             </timeline>
         </animation>
