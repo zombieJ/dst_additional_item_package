@@ -478,6 +478,8 @@ local function fn()
 	inst:AddTag("structure")
 	inst:AddTag("chest")
 
+	MakeObstaclePhysics(inst, .1)
+
 	inst.AnimState:SetBank("aip_cozy_nest")
 	inst.AnimState:SetBuild("aip_cozy_nest")
 	inst.AnimState:HideSymbol(DISPLAY_SYMBOL)

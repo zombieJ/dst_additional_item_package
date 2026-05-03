@@ -16,7 +16,7 @@
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="pillow" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="0" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="pillow">
@@ -26,7 +26,7 @@
             </timeline>
             <timeline id="1" name="swap_item">
                 <key id="0" spin="0">
-                    <object folder="1" file="0" x="0" y="68" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="0" y="60" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.58" scale_y="0.58"/>
                 </key>
             </timeline>
         </animation>
@@ -34,15 +34,15 @@
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="pillow" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="0" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
                 <key id="1" time="100">
                     <object_ref id="0" name="pillow" folder="0" file="0" abs_x="8" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="356" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="1" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="8" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="356" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="1" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="8" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="356" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="1" z_index="1"/>
                 </key>
                 <key id="2" time="200">
                     <object_ref id="0" name="pillow" folder="0" file="0" abs_x="-8" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="5" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="2" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-8" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="5" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="2" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-8" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="5" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="2" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="pillow">
@@ -58,13 +58,13 @@
             </timeline>
             <timeline id="1" name="swap_item">
                 <key id="0" spin="-1">
-                    <object folder="1" file="0" x="0" y="68" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="0" y="60" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.58" scale_y="0.58"/>
                 </key>
                 <key id="1" time="100" spin="-1">
-                    <object folder="1" file="0" x="8" y="68" pivot_x="0.5" pivot_y="0.5" angle="356" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="8" y="60" pivot_x="0.5" pivot_y="0.5" angle="356" scale_x="0.58" scale_y="0.58"/>
                 </key>
                 <key id="2" time="200" spin="-1">
-                    <object folder="1" file="0" x="-8" y="68" pivot_x="0.5" pivot_y="0.5" angle="5" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="-8" y="60" pivot_x="0.5" pivot_y="0.5" angle="5" scale_x="0.58" scale_y="0.58"/>
                 </key>
             </timeline>
         </animation>
@@ -72,7 +72,7 @@
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="colorful" folder="0" file="1" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="0" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="colorful">
@@ -82,7 +82,7 @@
             </timeline>
             <timeline id="1" name="swap_item">
                 <key id="0" spin="0">
-                    <object folder="1" file="0" x="0" y="68" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="0" y="60" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.58" scale_y="0.58"/>
                 </key>
             </timeline>
         </animation>
@@ -90,15 +90,15 @@
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="colorful" folder="0" file="1" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="0" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
                 <key id="1" time="100">
                     <object_ref id="0" name="colorful" folder="0" file="1" abs_x="8" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="356" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="1" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="8" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="356" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="1" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="8" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="356" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="1" z_index="1"/>
                 </key>
                 <key id="2" time="200">
                     <object_ref id="0" name="colorful" folder="0" file="1" abs_x="-8" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="5" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="2" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-8" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="5" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="2" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-8" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="5" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="2" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="colorful">
@@ -114,13 +114,13 @@
             </timeline>
             <timeline id="1" name="swap_item">
                 <key id="0" spin="-1">
-                    <object folder="1" file="0" x="0" y="68" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="0" y="60" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.58" scale_y="0.58"/>
                 </key>
                 <key id="1" time="100" spin="-1">
-                    <object folder="1" file="0" x="8" y="68" pivot_x="0.5" pivot_y="0.5" angle="356" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="8" y="60" pivot_x="0.5" pivot_y="0.5" angle="356" scale_x="0.58" scale_y="0.58"/>
                 </key>
                 <key id="2" time="200" spin="-1">
-                    <object folder="1" file="0" x="-8" y="68" pivot_x="0.5" pivot_y="0.5" angle="5" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="-8" y="60" pivot_x="0.5" pivot_y="0.5" angle="5" scale_x="0.58" scale_y="0.58"/>
                 </key>
             </timeline>
         </animation>
@@ -128,7 +128,7 @@
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="pile" folder="0" file="2" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="0" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="pile">
@@ -138,7 +138,7 @@
             </timeline>
             <timeline id="1" name="swap_item">
                 <key id="0" spin="0">
-                    <object folder="1" file="0" x="0" y="68" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="0" y="60" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.58" scale_y="0.58"/>
                 </key>
             </timeline>
         </animation>
@@ -146,15 +146,15 @@
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="pile" folder="0" file="2" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="0" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
                 <key id="1" time="100">
                     <object_ref id="0" name="pile" folder="0" file="2" abs_x="8" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="356" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="1" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="8" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="356" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="1" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="8" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="356" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="1" z_index="1"/>
                 </key>
                 <key id="2" time="200">
                     <object_ref id="0" name="pile" folder="0" file="2" abs_x="-8" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="5" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="2" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-8" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="5" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="2" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-8" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="5" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="2" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="pile">
@@ -170,13 +170,13 @@
             </timeline>
             <timeline id="1" name="swap_item">
                 <key id="0" spin="-1">
-                    <object folder="1" file="0" x="0" y="68" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="0" y="60" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.58" scale_y="0.58"/>
                 </key>
                 <key id="1" time="100" spin="-1">
-                    <object folder="1" file="0" x="8" y="68" pivot_x="0.5" pivot_y="0.5" angle="356" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="8" y="60" pivot_x="0.5" pivot_y="0.5" angle="356" scale_x="0.58" scale_y="0.58"/>
                 </key>
                 <key id="2" time="200" spin="-1">
-                    <object folder="1" file="0" x="-8" y="68" pivot_x="0.5" pivot_y="0.5" angle="5" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="-8" y="60" pivot_x="0.5" pivot_y="0.5" angle="5" scale_x="0.58" scale_y="0.58"/>
                 </key>
             </timeline>
         </animation>
@@ -184,7 +184,7 @@
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="rare" folder="0" file="3" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="0" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="rare">
@@ -194,7 +194,7 @@
             </timeline>
             <timeline id="1" name="swap_item">
                 <key id="0" spin="0">
-                    <object folder="1" file="0" x="0" y="68" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="0" y="60" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.58" scale_y="0.58"/>
                 </key>
             </timeline>
         </animation>
@@ -202,15 +202,15 @@
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="rare" folder="0" file="3" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="0" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
                 <key id="1" time="100">
                     <object_ref id="0" name="rare" folder="0" file="3" abs_x="8" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="356" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="1" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="8" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="356" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="1" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="8" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="356" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="1" z_index="1"/>
                 </key>
                 <key id="2" time="200">
                     <object_ref id="0" name="rare" folder="0" file="3" abs_x="-8" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="5" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="2" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-8" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="5" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="2" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-8" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="5" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="2" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="rare">
@@ -226,13 +226,13 @@
             </timeline>
             <timeline id="1" name="swap_item">
                 <key id="0" spin="-1">
-                    <object folder="1" file="0" x="0" y="68" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="0" y="60" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.58" scale_y="0.58"/>
                 </key>
                 <key id="1" time="100" spin="-1">
-                    <object folder="1" file="0" x="8" y="68" pivot_x="0.5" pivot_y="0.5" angle="356" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="8" y="60" pivot_x="0.5" pivot_y="0.5" angle="356" scale_x="0.58" scale_y="0.58"/>
                 </key>
                 <key id="2" time="200" spin="-1">
-                    <object folder="1" file="0" x="-8" y="68" pivot_x="0.5" pivot_y="0.5" angle="5" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="-8" y="60" pivot_x="0.5" pivot_y="0.5" angle="5" scale_x="0.58" scale_y="0.58"/>
                 </key>
             </timeline>
         </animation>
@@ -240,7 +240,7 @@
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="red" folder="0" file="4" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="0" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="red">
@@ -250,7 +250,7 @@
             </timeline>
             <timeline id="1" name="swap_item">
                 <key id="0" spin="0">
-                    <object folder="1" file="0" x="0" y="68" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="0" y="60" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.58" scale_y="0.58"/>
                 </key>
             </timeline>
         </animation>
@@ -258,15 +258,15 @@
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="red" folder="0" file="4" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="0" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
                 <key id="1" time="100">
                     <object_ref id="0" name="red" folder="0" file="4" abs_x="8" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="356" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="1" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="8" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="356" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="1" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="8" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="356" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="1" z_index="1"/>
                 </key>
                 <key id="2" time="200">
                     <object_ref id="0" name="red" folder="0" file="4" abs_x="-8" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="5" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="2" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-8" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="5" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="2" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-8" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="5" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="2" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="red">
@@ -282,13 +282,13 @@
             </timeline>
             <timeline id="1" name="swap_item">
                 <key id="0" spin="-1">
-                    <object folder="1" file="0" x="0" y="68" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="0" y="60" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.58" scale_y="0.58"/>
                 </key>
                 <key id="1" time="100" spin="-1">
-                    <object folder="1" file="0" x="8" y="68" pivot_x="0.5" pivot_y="0.5" angle="356" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="8" y="60" pivot_x="0.5" pivot_y="0.5" angle="356" scale_x="0.58" scale_y="0.58"/>
                 </key>
                 <key id="2" time="200" spin="-1">
-                    <object folder="1" file="0" x="-8" y="68" pivot_x="0.5" pivot_y="0.5" angle="5" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="-8" y="60" pivot_x="0.5" pivot_y="0.5" angle="5" scale_x="0.58" scale_y="0.58"/>
                 </key>
             </timeline>
         </animation>
@@ -296,7 +296,7 @@
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="patch" folder="0" file="5" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="0" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="patch">
@@ -306,7 +306,7 @@
             </timeline>
             <timeline id="1" name="swap_item">
                 <key id="0" spin="0">
-                    <object folder="1" file="0" x="0" y="68" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="0" y="60" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.58" scale_y="0.58"/>
                 </key>
             </timeline>
         </animation>
@@ -314,15 +314,15 @@
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="patch" folder="0" file="5" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="0" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
                 <key id="1" time="100">
                     <object_ref id="0" name="patch" folder="0" file="5" abs_x="8" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="356" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="1" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="8" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="356" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="1" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="8" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="356" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="1" z_index="1"/>
                 </key>
                 <key id="2" time="200">
                     <object_ref id="0" name="patch" folder="0" file="5" abs_x="-8" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="5" abs_scale_x="0.75" abs_scale_y="0.75" abs_a="1" timeline="0" key="2" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-8" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="5" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="2" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="-8" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="5" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="2" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="patch">
@@ -338,13 +338,13 @@
             </timeline>
             <timeline id="1" name="swap_item">
                 <key id="0" spin="-1">
-                    <object folder="1" file="0" x="0" y="68" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="0" y="60" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.58" scale_y="0.58"/>
                 </key>
                 <key id="1" time="100" spin="-1">
-                    <object folder="1" file="0" x="8" y="68" pivot_x="0.5" pivot_y="0.5" angle="356" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="8" y="60" pivot_x="0.5" pivot_y="0.5" angle="356" scale_x="0.58" scale_y="0.58"/>
                 </key>
                 <key id="2" time="200" spin="-1">
-                    <object folder="1" file="0" x="-8" y="68" pivot_x="0.5" pivot_y="0.5" angle="5" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="-8" y="60" pivot_x="0.5" pivot_y="0.5" angle="5" scale_x="0.58" scale_y="0.58"/>
                 </key>
             </timeline>
         </animation>
@@ -352,7 +352,7 @@
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="pillow" folder="0" file="0" abs_x="-15" abs_y="-40" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="1.5" abs_scale_y="1.5" abs_a="1" timeline="0" key="0" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="pillow">
@@ -362,7 +362,7 @@
             </timeline>
             <timeline id="1" name="swap_item">
                 <key id="0" spin="0">
-                    <object folder="1" file="0" x="0" y="68" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="0" y="60" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.58" scale_y="0.58"/>
                 </key>
             </timeline>
         </animation>
@@ -370,7 +370,7 @@
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="colorful" folder="0" file="1" abs_x="0" abs_y="-60" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="1.5" abs_scale_y="1.5" abs_a="1" timeline="0" key="0" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="colorful">
@@ -380,7 +380,7 @@
             </timeline>
             <timeline id="1" name="swap_item">
                 <key id="0" spin="0">
-                    <object folder="1" file="0" x="0" y="68" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="0" y="60" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.58" scale_y="0.58"/>
                 </key>
             </timeline>
         </animation>
@@ -388,7 +388,7 @@
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="pile" folder="0" file="2" abs_x="0" abs_y="-60" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="1.5" abs_scale_y="1.5" abs_a="1" timeline="0" key="0" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="pile">
@@ -398,7 +398,7 @@
             </timeline>
             <timeline id="1" name="swap_item">
                 <key id="0" spin="0">
-                    <object folder="1" file="0" x="0" y="68" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="0" y="60" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.58" scale_y="0.58"/>
                 </key>
             </timeline>
         </animation>
@@ -406,7 +406,7 @@
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="rare" folder="0" file="3" abs_x="0" abs_y="-60" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="1.5" abs_scale_y="1.5" abs_a="1" timeline="0" key="0" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="rare">
@@ -416,7 +416,7 @@
             </timeline>
             <timeline id="1" name="swap_item">
                 <key id="0" spin="0">
-                    <object folder="1" file="0" x="0" y="68" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="0" y="60" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.58" scale_y="0.58"/>
                 </key>
             </timeline>
         </animation>
@@ -424,7 +424,7 @@
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="red" folder="0" file="4" abs_x="0" abs_y="-60" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="1.5" abs_scale_y="1.5" abs_a="1" timeline="0" key="0" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="red">
@@ -434,7 +434,7 @@
             </timeline>
             <timeline id="1" name="swap_item">
                 <key id="0" spin="0">
-                    <object folder="1" file="0" x="0" y="68" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="0" y="60" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.58" scale_y="0.58"/>
                 </key>
             </timeline>
         </animation>
@@ -442,7 +442,7 @@
             <mainline>
                 <key id="0">
                     <object_ref id="0" name="patch" folder="0" file="5" abs_x="0" abs_y="-60" abs_pivot_x="0.5" abs_pivot_y="0.25" abs_angle="0" abs_scale_x="1.5" abs_scale_y="1.5" abs_a="1" timeline="0" key="0" z_index="0"/>
-                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="68" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.55" abs_scale_y="0.55" abs_a="1" timeline="1" key="0" z_index="1"/>
+                    <object_ref id="1" name="swap_item" folder="1" file="0" abs_x="0" abs_y="60" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="0.58" abs_scale_y="0.58" abs_a="1" timeline="1" key="0" z_index="1"/>
                 </key>
             </mainline>
             <timeline id="0" name="patch">
@@ -452,7 +452,7 @@
             </timeline>
             <timeline id="1" name="swap_item">
                 <key id="0" spin="0">
-                    <object folder="1" file="0" x="0" y="68" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.55" scale_y="0.55"/>
+                    <object folder="1" file="0" x="0" y="60" pivot_x="0.5" pivot_y="0.5" angle="0" scale_x="0.58" scale_y="0.58"/>
                 </key>
             </timeline>
         </animation>
