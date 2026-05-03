@@ -1,4 +1,5 @@
 local language = aipGetModConfig("language")
+local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 require "prefabutil"
 
@@ -40,8 +41,8 @@ end
 local DEFAULT_SKIN = cozyNestConfig.DEFAULT_SKIN
 local GUEST_ANIM_SUFFIX = "_guest"
 local GUEST_FOLLOW_Z_OFFSET = .1
-local applyDisplayImage
 local hasSleepingGuest
+local syncDisplay
 
 -- 播放当前皮肤动画，客人睡觉时切到对应的 _guest 动画。
 local function playSkin(inst, skin, hit)
@@ -55,9 +56,6 @@ local function playSkin(inst, skin, hit)
 		inst.AnimState:PlayAnimation(idleAnim, true)
 	end
 
-	if applyDisplayImage ~= nil and inst._aipDisplayImage ~= nil then
-		applyDisplayImage(inst)
-	end
 end
 
 local skinner = skinUtil.CreatePrefabSkinner(cozyNestConfig, {
@@ -69,8 +67,8 @@ local skinner = skinUtil.CreatePrefabSkinner(cozyNestConfig, {
 	play_fn = playSkin,
 })
 
-local DISPLAY_DIRTY = "aip_cozy_nest_display_dirty"
 local DISPLAY_SYMBOL = "swap_item"
+local DISPLAY_FOLLOW_Z_OFFSET = .1
 local GUEST_DIRTY = "aip_cozy_nest_guest_dirty"
 local SPECIAL_GUESTS = {
 	chester_eyebone = {
@@ -96,6 +94,15 @@ local SPECIAL_GUESTS = {
 	},
 }
 
+local function debugDisplayLog(inst, ...)
+	if not dev_mode then
+		return
+	end
+
+	local side = TheWorld ~= nil and (TheWorld.ismastersim and "server" or "client") or "unknown"
+	aipPrint("[cozy_nest_display]", side, inst ~= nil and inst.GUID or "nil", ...)
+end
+
 -- 只有带 leader 的有效道具才能驱动对应客人进入小窝。
 local function getSpecialGuestConfig(item)
 	if item == nil or item.components.leader == nil then
@@ -119,96 +126,125 @@ local function getStoredItem(inst)
 	return inst.components.container ~= nil and inst.components.container:GetItemInSlot(1) or nil
 end
 
--- 提取物品库存贴图信息，用于直接覆盖到小窝动画符号上。
-local function getItemImage(item)
-	if item == nil then
-		return nil, nil
-	end
-
-	if item.replica.inventoryitem ~= nil then
-		return item.replica.inventoryitem:GetImage(), item.replica.inventoryitem:GetAtlas()
-	end
-
-	if item.components.inventoryitem == nil then
-		return nil, nil
-	end
-
-	return item.components.inventoryitem.imagename or item.prefab, item.components.inventoryitem.atlasname
-end
-
--- DST 贴图覆盖接口需要 .tex 后缀，这里兼容 imagename 未带后缀的情况。
-local function normalizeTex(image)
-	return string.sub(image, -4) == ".tex" and image or image..".tex"
-end
-
 -- 判断当前是否处在客人睡觉展示状态。
 hasSleepingGuest = function(inst)
 	return inst._aipCozyNestHasGuest ~= nil and inst._aipCozyNestHasGuest:value()
 end
 
--- 将容器物品的库存贴图同步到小窝的 swap_item 符号上。
-applyDisplayImage = function(inst)
-	local image = inst._aipDisplayImage:value()
+local function isStoredDisplayItem(inst, item)
+	return item ~= nil and item:IsValid() and
+		item.components.inventoryitem ~= nil and
+		item.components.inventoryitem.owner == inst and
+		inst.components.container ~= nil and
+		inst.components.container:GetItemInSlot(1) == item
+end
 
-	if hasSleepingGuest(inst) then
-		inst.AnimState:ClearOverrideSymbol(DISPLAY_SYMBOL)
-		inst.AnimState:ShowSymbol(DISPLAY_SYMBOL)
+-- 展示物需要像容器被多人打开时一样对所有客户端可见，否则关箱后会被收回到 owner 可见范围。
+local function exposeDisplayItem(item)
+	if item.Network ~= nil then
+		item.Network:SetClassifiedTarget(nil)
+	end
+
+	local classified = item.replica ~= nil and
+		item.replica.inventoryitem ~= nil and
+		item.replica.inventoryitem.classified or nil
+
+	if classified ~= nil and classified.Network ~= nil then
+		classified.Network:SetClassifiedTarget(nil)
+	end
+end
+
+-- 容器会把物品放进 limbo；展示时把原物品临时拉回场景并挂到小窝锚点。
+local function bindDisplayItem(inst, item)
+	if item == nil or not item:IsValid() or hasSleepingGuest(inst) then
+		return false
+	end
+
+	if item.Follower == nil then
+		item.entity:AddFollower()
+	end
+
+	-- 关闭容器流程会把库存物品重新压回 limbo；这里先降后升，强制重发展示状态。
+	item:ForceOutOfLimbo(false)
+	item:ForceOutOfLimbo(true)
+	item:ReturnToScene()
+	exposeDisplayItem(item)
+	item.Transform:SetPosition(inst.Transform:GetWorldPosition())
+	item.Follower:FollowSymbol(inst.GUID, DISPLAY_SYMBOL, 0, 0, DISPLAY_FOLLOW_Z_OFFSET)
+	item:AddTag("INLIMBO")
+	item:AddTag("NOCLICK")
+
+	if item.Physics ~= nil then
+		item.Physics:SetActive(false)
+	end
+
+	if item.StopBrain ~= nil then
+		item:StopBrain()
+	end
+
+	inst._aipDisplayItem = item
+	inst.AnimState:ShowSymbol(DISPLAY_SYMBOL)
+	debugDisplayLog(inst, "display_bind", "prefab="..tostring(item.prefab), "guid="..tostring(item.GUID))
+
+	return true
+end
+
+-- 释放展示绑定；如果物品仍在小窝容器里，就重新隐藏回容器状态。
+local function unbindDisplayItem(inst)
+	local item = inst._aipDisplayItem
+	inst._aipDisplayItem = nil
+
+	if item == nil or not item:IsValid() then
 		return
 	end
 
-	if image == "" then
-		inst.AnimState:ClearOverrideSymbol(DISPLAY_SYMBOL)
+	if item.Follower ~= nil then
+		item.Follower:StopFollowing()
+	end
+
+	item:RemoveTag("NOCLICK")
+	item:ForceOutOfLimbo(false)
+
+	if isStoredDisplayItem(inst, item) then
+		item:RemoveFromScene()
+		item.Transform:SetPosition(0, 0, 0)
+	elseif item.components.inventoryitem == nil or item.components.inventoryitem.owner == nil then
+		item:RemoveTag("INLIMBO")
+		item:ReturnToScene()
+	end
+
+	debugDisplayLog(inst, "display_unbind", "prefab="..tostring(item.prefab), "guid="..tostring(item.GUID))
+end
+
+-- 同步小窝容器里的原物品展示状态。
+syncDisplay = function(inst, item)
+	debugDisplayLog(inst, "syncDisplay", "item="..tostring(item ~= nil and item.prefab or nil))
+
+	if item == nil or not item:IsValid() or hasSleepingGuest(inst) then
+		unbindDisplayItem(inst)
 		inst.AnimState:HideSymbol(DISPLAY_SYMBOL)
 		return
 	end
 
-	local tex = normalizeTex(image)
-	local atlas = inst._aipDisplayAtlas:value()
-	atlas = atlas ~= "" and atlas or GetInventoryItemAtlas(tex)
-
-	if atlas ~= nil then
-		inst.AnimState:OverrideSymbol(DISPLAY_SYMBOL, atlas, tex)
-		inst.AnimState:ShowSymbol(DISPLAY_SYMBOL)
-	else
-		inst.AnimState:ClearOverrideSymbol(DISPLAY_SYMBOL)
-		inst.AnimState:HideSymbol(DISPLAY_SYMBOL)
+	if inst._aipDisplayItem ~= item then
+		unbindDisplayItem(inst)
 	end
+
+	bindDisplayItem(inst, item)
 end
 
--- 更新网络字段并立即应用展示贴图。
-local function setDisplayImage(inst, image, atlas)
-	inst._aipDisplayAtlas:set(atlas or "")
-	inst._aipDisplayImage:set(image or "")
-	applyDisplayImage(inst)
-end
-
--- 清理缓存的展示物品信息，并隐藏展示符号。
 local function clearDisplay(inst)
-	inst._aipDisplayItemImage = nil
-	inst._aipDisplayItemAtlas = nil
-	setDisplayImage(inst)
+	unbindDisplayItem(inst)
+	inst.AnimState:HideSymbol(DISPLAY_SYMBOL)
 end
 
--- 缓存上次展示的贴图，避免容器刷新时重复写 net string。
-local function syncDisplay(inst, item)
-	local image, atlas = getItemImage(item)
-
-	if image == nil then
-		clearDisplay(inst)
-		return
-	end
-
-	if image ~= inst._aipDisplayItemImage or atlas ~= inst._aipDisplayItemAtlas then
-		inst._aipDisplayItemImage = image
-		inst._aipDisplayItemAtlas = atlas
-		setDisplayImage(inst, image, atlas)
-	end
-end
-
--- 重新播放小窝外观动画，并重新套回展示贴图。
+-- 重新播放小窝外观动画，并重新同步展示物品。
 local function refreshGuestVisual(inst)
 	skinner.PlayCurrent(inst)
-	applyDisplayImage(inst)
+
+	if TheWorld.ismastersim then
+		syncDisplay(inst, getStoredItem(inst))
+	end
 end
 
 -- 切换客人睡觉标记，让客户端也播放对应的 guest 动画。
@@ -219,7 +255,6 @@ local function setSleepingGuestVisual(inst, enabled)
 
 	refreshGuestVisual(inst)
 end
-
 -- 将睡着的客人绑定到小窝动画里的 swap_item 锚点上。
 local function bindSpecialGuest(inst, follower)
 	if follower.Follower == nil then
@@ -426,6 +461,11 @@ local function onload(inst, data)
 	queueRefreshNest(inst)
 end
 
+-- 读档后所有实体引用恢复完毕时，再刷新一次，确保容器里已有物品也能重新展示。
+local function onloadpostpass(inst)
+	queueRefreshNest(inst)
+end
+
 -- 创建温馨小窝实体，挂载网络字段、容器和可锤毁逻辑。
 local function fn()
 	local inst = CreateEntity()
@@ -444,10 +484,7 @@ local function fn()
 
 	skinner.SetupNetwork(inst)
 
-	inst._aipDisplayImage = net_string(inst.GUID, "aip_cozy_nest.display_image", DISPLAY_DIRTY)
-	inst._aipDisplayAtlas = net_string(inst.GUID, "aip_cozy_nest.display_atlas", DISPLAY_DIRTY)
 	inst._aipCozyNestHasGuest = net_bool(inst.GUID, "aip_cozy_nest.has_guest", GUEST_DIRTY)
-	inst:ListenForEvent(DISPLAY_DIRTY, applyDisplayImage)
 	inst:ListenForEvent(GUEST_DIRTY, refreshGuestVisual)
 
 	inst.entity:SetPristine()
@@ -472,10 +509,13 @@ local function fn()
 
 	inst.OnSave = skinner.OnSave
 	inst.OnLoad = onload
+	inst.OnLoadPostPass = onloadpostpass
 
 	inst:ListenForEvent("onbuilt", onbuilt)
 	inst:ListenForEvent("itemget", queueRefreshNest)
 	inst:ListenForEvent("itemlose", queueRefreshNest)
+	inst:ListenForEvent("onopen", queueRefreshNest)
+	inst:ListenForEvent("onclose", queueRefreshNest)
 
 	MakeHauntableWork(inst)
 
