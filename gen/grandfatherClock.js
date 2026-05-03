@@ -11,6 +11,7 @@ const MAX_SCENE_WIDTH = SIZE - 104;
 const MAX_SCENE_HEIGHT = SIZE - 52;
 const TRIM_PADDING = 12;
 const SCENE_SCALE = 1.1;
+const SCENE_Y_OFFSET = -8;
 
 const SKINS = [
   { id: "normal", prefab: PREFAB, file: "\u666e\u901a\u5ea7\u949f.png" },
@@ -129,7 +130,7 @@ function createAnimation(id, skin, fileId, hit) {
     .map(frame => {
       const time = frame.time == null ? "" : ` time="${frame.time}"`;
       return `                <key id="${frame.id}"${time}>
-                    <object_ref id="0" name="${skin.id}" folder="0" file="${fileId}" abs_x="${frame.x}" abs_y="0" abs_pivot_x="${skin.pivotX}" abs_pivot_y="${skin.pivotY}" abs_angle="${frame.angle}" abs_scale_x="${SCENE_SCALE}" abs_scale_y="${SCENE_SCALE}" abs_a="1" timeline="0" key="${frame.id}" z_index="0"/>
+                    <object_ref id="0" name="${skin.id}" folder="0" file="${fileId}" abs_x="${frame.x}" abs_y="${SCENE_Y_OFFSET}" abs_pivot_x="${skin.pivotX}" abs_pivot_y="${skin.pivotY}" abs_angle="${frame.angle}" abs_scale_x="${SCENE_SCALE}" abs_scale_y="${SCENE_SCALE}" abs_a="1" timeline="0" key="${frame.id}" z_index="0"/>
                 </key>`;
     })
     .join("\n");
@@ -139,7 +140,7 @@ function createAnimation(id, skin, fileId, hit) {
       const time = frame.time == null ? "" : ` time="${frame.time}"`;
       const spin = hit ? ' spin="-1"' : ' spin="0"';
       return `                <key id="${frame.id}"${time}${spin}>
-                    <object folder="0" file="${fileId}" x="${frame.x}" y="0" pivot_x="${skin.pivotX}" pivot_y="${skin.pivotY}" angle="${frame.angle}" scale_x="${SCENE_SCALE}" scale_y="${SCENE_SCALE}"/>
+                    <object folder="0" file="${fileId}" x="${frame.x}" y="${SCENE_Y_OFFSET}" pivot_x="${skin.pivotX}" pivot_y="${skin.pivotY}" angle="${frame.angle}" scale_x="${SCENE_SCALE}" scale_y="${SCENE_SCALE}"/>
                 </key>`;
     })
     .join("\n");
