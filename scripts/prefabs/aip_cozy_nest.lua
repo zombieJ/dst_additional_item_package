@@ -1,5 +1,4 @@
 local language = aipGetModConfig("language")
-local dev_mode = aipGetModConfig("dev_mode") == "enabled"
 
 require "prefabutil"
 
@@ -42,7 +41,6 @@ local DEFAULT_SKIN = cozyNestConfig.DEFAULT_SKIN
 local GUEST_ANIM_SUFFIX = "_guest"
 local GUEST_FOLLOW_Z_OFFSET = .1
 local hasSleepingGuest
-local syncDisplay
 
 -- 播放当前皮肤动画，客人睡觉时切到对应的 _guest 动画。
 local function playSkin(inst, skin, hit)
@@ -55,7 +53,6 @@ local function playSkin(inst, skin, hit)
 	else
 		inst.AnimState:PlayAnimation(idleAnim, true)
 	end
-
 end
 
 local skinner = skinUtil.CreatePrefabSkinner(cozyNestConfig, {
@@ -93,15 +90,6 @@ local SPECIAL_GUESTS = {
 		face_z = .25,
 	},
 }
-
-local function debugDisplayLog(inst, ...)
-	if not dev_mode then
-		return
-	end
-
-	local side = TheWorld ~= nil and (TheWorld.ismastersim and "server" or "client") or "unknown"
-	aipPrint("[cozy_nest_display]", side, inst ~= nil and inst.GUID or "nil", ...)
-end
 
 -- 只有带 leader 的有效道具才能驱动对应客人进入小窝。
 local function getSpecialGuestConfig(item)
@@ -184,7 +172,6 @@ local function bindDisplayItem(inst, item)
 
 	inst._aipDisplayItem = item
 	inst.AnimState:ShowSymbol(DISPLAY_SYMBOL)
-	debugDisplayLog(inst, "display_bind", "prefab="..tostring(item.prefab), "guid="..tostring(item.GUID))
 
 	return true
 end
@@ -212,14 +199,10 @@ local function unbindDisplayItem(inst)
 		item:RemoveTag("INLIMBO")
 		item:ReturnToScene()
 	end
-
-	debugDisplayLog(inst, "display_unbind", "prefab="..tostring(item.prefab), "guid="..tostring(item.GUID))
 end
 
 -- 同步小窝容器里的原物品展示状态。
-syncDisplay = function(inst, item)
-	debugDisplayLog(inst, "syncDisplay", "item="..tostring(item ~= nil and item.prefab or nil))
-
+local function syncDisplay(inst, item)
 	if item == nil or not item:IsValid() or hasSleepingGuest(inst) then
 		unbindDisplayItem(inst)
 		inst.AnimState:HideSymbol(DISPLAY_SYMBOL)
