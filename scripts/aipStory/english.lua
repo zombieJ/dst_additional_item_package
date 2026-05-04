@@ -1521,7 +1521,7 @@ return {
                 type="img",
                 name="aip_ocean_tear",
             },
-            "When carried, the Ocean Tear increases wetness by 5 every second. Use it to switch to the dry state, which reduces wetness by 5 every second.",
+            "When carried, the Ocean Tear slowly brings moisture. Use it to switch to the dry state and let that wetness fade away.",
 
             -- 凤凰羽毛
             {
