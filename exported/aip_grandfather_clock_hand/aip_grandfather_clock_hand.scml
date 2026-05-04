@@ -1,42 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
     <folder id="0" name="hand">
-        <file id="0" name="hand/hand.png" width="9" height="48" pivot_x="0" pivot_y="1"/>
+        <file id="0" name="hand/hour.png" width="29" height="112" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="hand/minute.png" width="17" height="128" pivot_x="0" pivot_y="1"/>
     </folder>
     <entity id="0" name="aip_grandfather_clock_hand">
-        <animation id="0" name="idle" length="1000">
+        <animation id="0" name="hour" length="1000">
             <mainline>
                 <key id="0">
-                    <object_ref id="0" name="hand" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.166667" abs_angle="0" abs_scale_x="1.35" abs_scale_y="1.35" abs_a="1" timeline="0" key="0" z_index="0"/>
+                    <object_ref id="0" name="hour" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.505792" abs_pivot_y="0.116071" abs_angle="0" abs_scale_x="0.45" abs_scale_y="0.35" abs_a="1" timeline="0" key="0" z_index="0"/>
                 </key>
                 <key id="1" time="250">
-                    <object_ref id="0" name="hand" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.166667" abs_angle="270" abs_scale_x="1.35" abs_scale_y="1.35" abs_a="1" timeline="0" key="1" z_index="0"/>
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
                 </key>
                 <key id="2" time="500">
-                    <object_ref id="0" name="hand" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.166667" abs_angle="180" abs_scale_x="1.35" abs_scale_y="1.35" abs_a="1" timeline="0" key="2" z_index="0"/>
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
                 </key>
                 <key id="3" time="750">
-                    <object_ref id="0" name="hand" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.166667" abs_angle="90" abs_scale_x="1.35" abs_scale_y="1.35" abs_a="1" timeline="0" key="3" z_index="0"/>
-                </key>
-                <key id="4" time="999">
-                    <object_ref id="0" name="hand" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.166667" abs_angle="0" abs_scale_x="1.35" abs_scale_y="1.35" abs_a="1" timeline="0" key="4" z_index="0"/>
+                    <object_ref id="0" timeline="0" key="3" z_index="0"/>
                 </key>
             </mainline>
-            <timeline id="0" name="hand">
+            <timeline id="0" name="hour">
                 <key id="0" spin="-1">
-                    <object folder="0" file="0" x="0" y="0" pivot_x="0.5" pivot_y="0.166667" angle="0" scale_x="1.35" scale_y="1.35"/>
+                    <object folder="0" file="0" pivot_x="0.505792" pivot_y="0.116071" angle="0" scale_x="0.45" scale_y="0.35"/>
                 </key>
                 <key id="1" time="250" spin="-1">
-                    <object folder="0" file="0" x="0" y="0" pivot_x="0.5" pivot_y="0.166667" angle="270" scale_x="1.35" scale_y="1.35"/>
+                    <object folder="0" file="0" pivot_x="0.505792" pivot_y="0.116071" angle="270" scale_x="0.45" scale_y="0.35"/>
                 </key>
                 <key id="2" time="500" spin="-1">
-                    <object folder="0" file="0" x="0" y="0" pivot_x="0.5" pivot_y="0.166667" angle="180" scale_x="1.35" scale_y="1.35"/>
+                    <object folder="0" file="0" pivot_x="0.505792" pivot_y="0.116071" angle="180" scale_x="0.45" scale_y="0.35"/>
                 </key>
                 <key id="3" time="750" spin="-1">
-                    <object folder="0" file="0" x="0" y="0" pivot_x="0.5" pivot_y="0.166667" angle="90" scale_x="1.35" scale_y="1.35"/>
+                    <object folder="0" file="0" pivot_x="0.505792" pivot_y="0.116071" angle="90" scale_x="0.45" scale_y="0.35"/>
                 </key>
-                <key id="4" time="999" spin="-1">
-                    <object folder="0" file="0" x="0" y="0" pivot_x="0.5" pivot_y="0.166667" angle="0" scale_x="1.35" scale_y="1.35"/>
+            </timeline>
+        </animation>
+        <animation id="1" name="minute" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="minute" folder="0" file="1" abs_x="0" abs_y="0" abs_pivot_x="0.493506" abs_pivot_y="0.049743" abs_angle="0" abs_scale_x="0.45" abs_scale_y="0.45" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+                <key id="1" time="250">
+                    <object_ref id="0" timeline="0" key="1" z_index="0"/>
+                </key>
+                <key id="2" time="500">
+                    <object_ref id="0" timeline="0" key="2" z_index="0"/>
+                </key>
+                <key id="3" time="750">
+                    <object_ref id="0" timeline="0" key="3" z_index="0"/>
+                </key>
+                <key id="4" time="999">
+                    <object_ref id="0" timeline="0" key="4" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="minute">
+                <key id="0" spin="-1">
+                    <object folder="0" file="1" pivot_x="0.493506" pivot_y="0.049743" angle="0" scale_x="0.45" scale_y="0.45"/>
+                </key>
+                <key id="1" time="250" spin="-1">
+                    <object folder="0" file="1" pivot_x="0.493506" pivot_y="0.049743" angle="270" scale_x="0.45" scale_y="0.45"/>
+                </key>
+                <key id="2" time="500" spin="-1">
+                    <object folder="0" file="1" pivot_x="0.493506" pivot_y="0.049743" angle="180" scale_x="0.45" scale_y="0.45"/>
+                </key>
+                <key id="3" time="750" spin="-1">
+                    <object folder="0" file="1" pivot_x="0.493506" pivot_y="0.049743" angle="90" scale_x="0.45" scale_y="0.45"/>
+                </key>
+                <key id="4" time="999" spin="0">
+                    <object folder="0" file="1" pivot_x="0.493506" pivot_y="0.049743" angle="0" scale_x="0.45" scale_y="0.45"/>
                 </key>
             </timeline>
         </animation>

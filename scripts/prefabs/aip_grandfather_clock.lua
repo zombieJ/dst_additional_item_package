@@ -37,11 +37,12 @@ end
 local DEFAULT_SKIN = clockConfig.DEFAULT_SKIN
 local HAND_PREFAB = "aip_grandfather_clock_hand"
 local HAND_SYMBOL = "clock_hand_root"
-local HAND_ANIM = "idle"
+local HOUR_HAND_ANIM = "hour"
+local MINUTE_HAND_ANIM = "minute"
 local HOUR_HAND_SCALE = 0.72
 local MINUTE_HAND_SCALE = 1
-local HOUR_HAND_Z_OFFSET = 0.2
-local MINUTE_HAND_Z_OFFSET = 0.3
+local HOUR_HAND_Z_OFFSET = 0.05
+local MINUTE_HAND_Z_OFFSET = 0.05
 local HAND_UPDATE_PERIOD = 1
 
 local function playSkin(inst, skin, hit)
@@ -64,20 +65,22 @@ local function setHandTime(inst)
 	local hourProgress = ((hour % 12) + minuteProgress) / 12
 
 	if inst._aipHourHand ~= nil and inst._aipHourHand:IsValid() then
-		inst._aipHourHand.AnimState:SetPercent(HAND_ANIM, hourProgress)
+		inst._aipHourHand.AnimState:SetPercent(HOUR_HAND_ANIM, hourProgress)
 	end
 
 	if inst._aipMinuteHand ~= nil and inst._aipMinuteHand:IsValid() then
-		inst._aipMinuteHand.AnimState:SetPercent(HAND_ANIM, minuteProgress)
+		inst._aipMinuteHand.AnimState:SetPercent(MINUTE_HAND_ANIM, minuteProgress)
 	end
 end
 
-local function createHand(inst, scale, zOffset, finalOffset)
+local function createHand(inst, anim, scale, zOffset, finalOffset)
 	local hand = SpawnPrefab(HAND_PREFAB)
 	if hand == nil then
 		return nil
 	end
 
+	hand.AnimState:PlayAnimation(anim)
+	hand.AnimState:Pause()
 	hand.entity:SetParent(inst.entity)
 	hand.entity:AddFollower()
 	hand.Follower:FollowSymbol(inst.GUID, HAND_SYMBOL, 0, 0, zOffset, true)
@@ -113,8 +116,8 @@ local function setupHands(inst)
 	end
 
 	inst.highlightchildren = inst.highlightchildren or {}
-	inst._aipHourHand = createHand(inst, HOUR_HAND_SCALE, HOUR_HAND_Z_OFFSET, 1)
-	inst._aipMinuteHand = createHand(inst, MINUTE_HAND_SCALE, MINUTE_HAND_Z_OFFSET, 2)
+	inst._aipHourHand = createHand(inst, HOUR_HAND_ANIM, HOUR_HAND_SCALE, HOUR_HAND_Z_OFFSET, 1)
+	inst._aipMinuteHand = createHand(inst, MINUTE_HAND_ANIM, MINUTE_HAND_SCALE, MINUTE_HAND_Z_OFFSET, 2)
 
 	if inst._aipHourHand ~= nil then
 		table.insert(inst.highlightchildren, inst._aipHourHand)
@@ -171,7 +174,7 @@ local function handFn()
 
 	inst.AnimState:SetBank("aip_grandfather_clock_hand")
 	inst.AnimState:SetBuild("aip_grandfather_clock_hand")
-	inst.AnimState:PlayAnimation(HAND_ANIM)
+	inst.AnimState:PlayAnimation(HOUR_HAND_ANIM)
 	inst.AnimState:Pause()
 
 	inst:AddTag("NOCLICK")

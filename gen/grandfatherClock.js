@@ -14,23 +14,24 @@ const TRIM_PADDING = 12;
 const SCENE_SCALE = 1.35;
 const SCENE_Y_OFFSET = -14;
 const CLOCK_HAND_ROOT_SYMBOL = "clock_hand_root";
-const HAND_SCALE = 1.35;
 const CLOCK_HAND_ROOT_FILE = {
   id: 0,
   name: `${CLOCK_HAND_ROOT_SYMBOL}/${CLOCK_HAND_ROOT_SYMBOL}.png`,
-  width: 1,
-  height: 1,
+  width: 10,
+  height: 10,
   pivotX: 0.5,
   pivotY: 0.5,
 };
-const HAND_FILE = {
-  id: 0,
-  name: "hand/hand.png",
-  width: 9,
-  height: 48,
-  pivotX: 0.5,
-  pivotY: 8 / 48,
-};
+const HAND_TEXTURE_HEIGHT = 128;
+const HAND_DISPLAY_SCALE = 0.45;
+const HAND_SOURCE_FILES = [
+  { id: "hour", file: "\u65f6\u9488.png", lengthScale: 0.86 },
+  { id: "minute", file: "\u5206\u9488.png" },
+];
+const BACKGROUND_TRANSPARENT_LUMINANCE = 226;
+const BACKGROUND_FADE_LUMINANCE = 210;
+const BACKGROUND_NEUTRAL_TOLERANCE = 16;
+const HAND_ALPHA_PADDING = 0;
 
 const SKINS = [
   { id: "normal", prefab: PREFAB, file: "\u666e\u901a\u5ea7\u949f.png", face: { x: 86, y: 112 } },
@@ -57,59 +58,8 @@ function color(r, g, b, a = 255) {
   return Jimp.rgbaToInt(r, g, b, a);
 }
 
-function setPixel(img, x, y, pixelColor) {
-  if (x >= 0 && x < img.bitmap.width && y >= 0 && y < img.bitmap.height) {
-    img.setPixelColor(pixelColor, x, y);
-  }
-}
-
-function drawRect(img, left, top, right, bottom, pixelColor) {
-  for (let y = top; y <= bottom; y += 1) {
-    for (let x = left; x <= right; x += 1) {
-      setPixel(img, x, y, pixelColor);
-    }
-  }
-}
-
-function drawCircle(img, cx, cy, radius, pixelColor) {
-  const radiusSq = radius * radius;
-  for (let y = cy - radius; y <= cy + radius; y += 1) {
-    for (let x = cx - radius; x <= cx + radius; x += 1) {
-      const dx = x - cx;
-      const dy = y - cy;
-      if (dx * dx + dy * dy <= radiusSq) {
-        setPixel(img, x, y, pixelColor);
-      }
-    }
-  }
-}
-
 function createAnchorImage() {
-  const img = new Jimp(CLOCK_HAND_ROOT_FILE.width, CLOCK_HAND_ROOT_FILE.height, 0x00000000);
-  img.setPixelColor(color(255, 255, 255), 0, 0);
-  return img;
-}
-
-function createHandImage() {
-  const img = new Jimp(HAND_FILE.width, HAND_FILE.height, 0x00000000);
-  const cx = Math.floor(HAND_FILE.width / 2);
-  const pivotY = HAND_FILE.height - 8;
-  const dark = color(20, 18, 12);
-  const gold = color(194, 153, 63);
-  const shine = color(237, 205, 112);
-
-  drawRect(img, cx - 1, 5, cx + 1, pivotY + 5, dark);
-  drawRect(img, cx, 4, cx, pivotY + 4, gold);
-  drawRect(img, cx, 5, cx, pivotY - 2, shine);
-
-  drawRect(img, cx - 2, 7, cx + 2, 9, dark);
-  drawRect(img, cx - 1, 7, cx + 1, 8, gold);
-
-  drawCircle(img, cx, pivotY, 4, dark);
-  drawCircle(img, cx, pivotY, 2, gold);
-  drawCircle(img, cx, pivotY, 1, dark);
-
-  return img;
+  return new Jimp(CLOCK_HAND_ROOT_FILE.width, CLOCK_HAND_ROOT_FILE.height, 0x00000000);
 }
 
 function findRawAlphaBounds(img) {
@@ -136,6 +86,140 @@ function findRawAlphaBounds(img) {
   }
 
   return { x: left, y: top, w: right - left + 1, h: bottom - top + 1 };
+}
+
+function padBounds(img, bounds, padding) {
+  const left = Math.max(0, bounds.x - padding);
+  const top = Math.max(0, bounds.y - padding);
+  const right = Math.min(img.bitmap.width, bounds.x + bounds.w + padding);
+  const bottom = Math.min(img.bitmap.height, bounds.y + bounds.h + padding);
+
+  return { x: left, y: top, w: right - left, h: bottom - top };
+}
+
+function clamp01(value) {
+  return Math.max(0, Math.min(1, value));
+}
+
+function getLuminance(r, g, b) {
+  return (r + g + b) / 3;
+}
+
+function removeCheckerBackground(img) {
+  const cleaned = img.clone();
+  const { data } = cleaned.bitmap;
+
+  cleaned.scan(0, 0, cleaned.bitmap.width, cleaned.bitmap.height, function scanPixel(x, y, idx) {
+    const r = data[idx];
+    const g = data[idx + 1];
+    const b = data[idx + 2];
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const luminance = getLuminance(r, g, b);
+    const neutral = max - min <= BACKGROUND_NEUTRAL_TOLERANCE;
+
+    if (neutral && luminance >= BACKGROUND_FADE_LUMINANCE) {
+      const alpha =
+        luminance >= BACKGROUND_TRANSPARENT_LUMINANCE
+          ? 0
+          : Math.round(
+              ((BACKGROUND_TRANSPARENT_LUMINANCE - luminance) /
+                (BACKGROUND_TRANSPARENT_LUMINANCE - BACKGROUND_FADE_LUMINANCE)) *
+                255
+            );
+
+      data[idx + 3] = Math.min(data[idx + 3], alpha);
+
+      if (data[idx + 3] <= 0) {
+        data[idx] = 0;
+        data[idx + 1] = 0;
+        data[idx + 2] = 0;
+      }
+    }
+  });
+
+  return cleaned;
+}
+
+function findHandPivot(img) {
+  const { width, height, data } = img.bitmap;
+  const x = Math.floor(width / 2);
+  const spans = [];
+  let spanStart = null;
+
+  for (let y = 0; y < height; y += 1) {
+    const alpha = data[(width * y + x) * 4 + 3];
+    const transparent = alpha <= 8;
+
+    if (transparent && spanStart == null) {
+      spanStart = y;
+    } else if (!transparent && spanStart != null) {
+      spans.push({ start: spanStart, end: y - 1 });
+      spanStart = null;
+    }
+  }
+
+  if (spanStart != null) {
+    spans.push({ start: spanStart, end: height - 1 });
+  }
+
+  const candidates = spans.filter(span => span.start > height * 0.55 && span.end < height - 2);
+  const pivotSpan = candidates.sort((a, b) => b.end - a.end)[0];
+
+  return {
+    x: width / 2,
+    y: pivotSpan == null ? height * 0.86 : (pivotSpan.start + pivotSpan.end) / 2,
+  };
+}
+
+function shortenHandLength(img, pivotYFromBottom, lengthScale) {
+  if (lengthScale == null || lengthScale >= 1) {
+    return { image: img, pivotYFromBottom };
+  }
+
+  const width = img.bitmap.width;
+  const height = img.bitmap.height;
+  const bottomHeight = Math.max(1, Math.round(height * pivotYFromBottom));
+  const topHeight = height - bottomHeight;
+  const newTopHeight = Math.max(1, Math.round(topHeight * lengthScale));
+  const shortened = new Jimp(width, newTopHeight + bottomHeight, 0x00000000);
+  const top = img.clone().crop(0, 0, width, topHeight).resize(width, newTopHeight);
+  const bottom = img.clone().crop(0, topHeight, width, bottomHeight);
+
+  shortened.composite(top, 0, 0);
+  shortened.composite(bottom, 0, newTopHeight);
+
+  return {
+    image: shortened,
+    pivotYFromBottom: bottomHeight / shortened.bitmap.height,
+  };
+}
+
+async function createHandImage(hand, fileId) {
+  const src = PATH.join(SOURCE, hand.file);
+  if (!FS.existsSync(src)) {
+    throw new Error(`Missing source: ${src}`);
+  }
+
+  const image = removeCheckerBackground(await Jimp.read(src));
+  const pivot = findHandPivot(image);
+  const bounds = padBounds(image, findRawAlphaBounds(image), HAND_ALPHA_PADDING);
+  const cropped = image.clone().crop(bounds.x, bounds.y, bounds.w, bounds.h);
+  const width = Math.max(1, Math.round((cropped.bitmap.width * HAND_TEXTURE_HEIGHT) / cropped.bitmap.height));
+  cropped.resize(width, HAND_TEXTURE_HEIGHT);
+  const pivotY = clamp01((bounds.y + bounds.h - pivot.y) / bounds.h);
+  const shortened = shortenHandLength(cropped, pivotY, hand.lengthScale);
+
+  return {
+    image: shortened.image,
+    id: hand.id,
+    fileId,
+    name: `hand/${hand.id}.png`,
+    width,
+    height: shortened.image.bitmap.height,
+    pivotX: formatNumber(clamp01((pivot.x - bounds.x) / bounds.w)),
+    pivotY: formatNumber(clamp01(shortened.pivotYFromBottom)),
+  };
 }
 
 function findAlphaBounds(img) {
@@ -269,7 +353,7 @@ ${rootTimelineKeys}
         </animation>`;
 }
 
-function createHandScml() {
+function createHandAnimation(animationId, hand) {
   const frames = [
     { id: 0, time: null, angle: 0 },
     { id: 1, time: 250, angle: 270 },
@@ -282,7 +366,7 @@ function createHandScml() {
     .map(frame => {
       const time = frame.time == null ? "" : ` time="${frame.time}"`;
       return `                <key id="${frame.id}"${time}>
-                    <object_ref id="0" name="hand" folder="0" file="${HAND_FILE.id}" abs_x="0" abs_y="0" abs_pivot_x="${HAND_FILE.pivotX}" abs_pivot_y="${formatNumber(HAND_FILE.pivotY)}" abs_angle="${frame.angle}" abs_scale_x="${HAND_SCALE}" abs_scale_y="${HAND_SCALE}" abs_a="1" timeline="0" key="${frame.id}" z_index="0"/>
+                    <object_ref id="0" name="${hand.id}" folder="0" file="${hand.fileId}" abs_x="0" abs_y="0" abs_pivot_x="${hand.pivotX}" abs_pivot_y="${hand.pivotY}" abs_angle="${frame.angle}" abs_scale_x="${HAND_DISPLAY_SCALE}" abs_scale_y="${HAND_DISPLAY_SCALE}" abs_a="1" timeline="0" key="${frame.id}" z_index="0"/>
                 </key>`;
     })
     .join("\n");
@@ -291,25 +375,37 @@ function createHandScml() {
     .map(frame => {
       const time = frame.time == null ? "" : ` time="${frame.time}"`;
       return `                <key id="${frame.id}"${time} spin="-1">
-                    <object folder="0" file="${HAND_FILE.id}" x="0" y="0" pivot_x="${HAND_FILE.pivotX}" pivot_y="${formatNumber(HAND_FILE.pivotY)}" angle="${frame.angle}" scale_x="${HAND_SCALE}" scale_y="${HAND_SCALE}"/>
+                    <object folder="0" file="${hand.fileId}" x="0" y="0" pivot_x="${hand.pivotX}" pivot_y="${hand.pivotY}" angle="${frame.angle}" scale_x="${HAND_DISPLAY_SCALE}" scale_y="${HAND_DISPLAY_SCALE}"/>
                 </key>`;
     })
     .join("\n");
 
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
-    <folder id="0" name="hand">
-        <file id="${HAND_FILE.id}" name="${HAND_FILE.name}" width="${HAND_FILE.width}" height="${HAND_FILE.height}" pivot_x="0" pivot_y="1"/>
-    </folder>
-    <entity id="0" name="${HAND_PREFAB}">
-        <animation id="0" name="idle" length="1000">
+  return `        <animation id="${animationId}" name="${hand.id}" length="1000">
             <mainline>
 ${mainlineKeys}
             </mainline>
-            <timeline id="0" name="hand">
+            <timeline id="0" name="${hand.id}">
 ${timelineKeys}
             </timeline>
-        </animation>
+        </animation>`;
+}
+
+function createHandScml(hands) {
+  const files = hands
+    .map(hand => {
+      return `        <file id="${hand.fileId}" name="${hand.name}" width="${hand.width}" height="${hand.height}" pivot_x="0" pivot_y="1"/>`;
+    })
+    .join("\n");
+
+  const animations = hands.map((hand, index) => createHandAnimation(index, hand)).join("\n");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="hand">
+${files}
+    </folder>
+    <entity id="0" name="${HAND_PREFAB}">
+${animations}
     </entity>
 </spriter_data>
 `;
@@ -367,13 +463,24 @@ async function buildHandFolder(base) {
   FSE.removeSync(handPrefabPath);
   makeDir(handPath);
 
-  await writeImage(createHandImage(), PATH.join(handPath, "hand.png"));
-  FS.writeFileSync(PATH.join(handPrefabPath, `${HAND_PREFAB}.scml`), createHandScml(), "utf8");
+  const hands = [];
+  for (const [index, hand] of HAND_SOURCE_FILES.entries()) {
+    const handImage = await createHandImage(hand, index);
+    hands.push(handImage);
+    await writeImage(handImage.image, PATH.join(handPrefabPath, handImage.name));
+  }
+
+  FS.writeFileSync(PATH.join(handPrefabPath, `${HAND_PREFAB}.scml`), createHandScml(hands), "utf8");
 }
 
 async function run() {
-  const normalizedImages = await buildFolder(PATH.join(ROOT, "exported"));
+  const handOnly = process.argv.includes("--hand-only");
+  const normalizedImages = handOnly ? null : await buildFolder(PATH.join(ROOT, "exported"));
   await buildHandFolder(PATH.join(ROOT, "exported"));
+
+  if (handOnly) {
+    return;
+  }
 
   const inventoryRoot = PATH.join(ROOT, "images", "inventoryimages");
   makeDir(inventoryRoot);
