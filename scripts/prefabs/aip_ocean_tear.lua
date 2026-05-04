@@ -25,9 +25,7 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_OCEAN_TEAR_DRY = LANG.DRY_DESC
 local assets = {
 	Asset("ANIM", "anim/aip_ocean_tear.zip"),
 	Asset("ATLAS", "images/inventoryimages/aip_ocean_tear.xml"),
-	Asset("IMAGE", "images/inventoryimages/aip_ocean_tear.tex"),
 	Asset("ATLAS", "images/inventoryimages/aip_ocean_tear_dry.xml"),
-	Asset("IMAGE", "images/inventoryimages/aip_ocean_tear_dry.tex"),
 }
 
 local function canBeActOn(inst, doer)
