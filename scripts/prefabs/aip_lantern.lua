@@ -150,8 +150,10 @@ local function turnOn(inst)
 
 	inst._light.entity:SetParent((inst.components.inventoryitem.owner or inst._body or inst).entity)
 
+	inst.AnimState:Show("LIGHT")
+
 	if inst._body ~= nil then
-		inst._body.AnimState:SetLightOverride(.2)
+		inst._body.AnimState:Show("LIGHT")
 	end
 
 	if not (inst._body ~= nil and inst._body.entity:IsVisible())
@@ -169,8 +171,10 @@ local function turnOff(inst)
 		inst._light:Remove()
 	end
 
+	inst.AnimState:Hide("LIGHT")
+
 	if inst._body ~= nil then
-		inst._body.AnimState:SetLightOverride(0)
+		inst._body.AnimState:Hide("LIGHT")
 	end
 
 	if inst.components.equippable:IsEquipped() then
@@ -213,6 +217,7 @@ local function onequip(inst, owner)
 	owner.AnimState:Show("ARM_carry")
 	owner.AnimState:Hide("ARM_normal")
 	owner.AnimState:Hide("LANTERN_OVERLAY")
+	owner.AnimState:OverrideSymbol("swap_object", SWAP_BUILD, SWAP_STICK_SYMBOL)
 
 	if inst._body ~= nil then
 		inst._body:Remove()
@@ -240,7 +245,7 @@ local function onequip(inst, owner)
 	end
 
 	if inst.components.fueled:IsEmpty() then
-		inst._body.AnimState:SetLightOverride(0)
+		inst._body.AnimState:Hide("LIGHT")
 		owner.AnimState:Hide("LANTERN_OVERLAY")
 	else
 		owner.AnimState:Hide("LANTERN_OVERLAY")
