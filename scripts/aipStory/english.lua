@@ -314,7 +314,7 @@ return {
                 name="aip_xinyue_hoe",
             },
             "'Xinyue Hoe' is an upgraded version of the hoe. It can directly put 9 seeds into it. When the hoe goes down, it will dig 9 holes and plant the seeds. Plants will be very happy.",
-            "Recently I found that farm crops can have different qualities: Normal, Nice, Great, Outstanding, and even Perfect. A seed passes its quality to the plant that grows from it, and the harvest keeps that quality too. If it grows into an oversized crop, the seeds keep the same quality, while the produce drops slightly.",
+            "Recently I found that farm crops can have different qualities: Normal, Nice, Great, Outstanding, and even Perfect. A seed passes its quality to the plant that grows from it, and the harvest keeps that quality too. If it grows into an oversized crop, the produce keeps the same quality, while the seeds improve by one level.",
             "Cooking does not destroy crop quality, and a bird in a birdcage will remember the quality of the vegetable it eats when it spits out seeds.",
             "Higher-quality food makes positive eating effects stronger and weakens negative effects.",
         },

@@ -76,16 +76,16 @@ for plant_name, plant_data in pairs(PLANT_DEFS) do
 
         end)
 
-        -- Oversized crops drop lower-quality produce, while seeds keep crop quality.
+        -- Oversized crops keep produce quality, while seeds improve by one level.
         AddPrefabPostInit(oversized_prefab, function(inst)
             inst:ListenForEvent("loot_prefab_spawned", function(inst, data)
                 local loot = data.loot
                 if loot ~= nil and loot.components.aipc_quality then
                     local dropperQ = inst.components.aipc_quality:GetVal()
                     if loot.prefab == plant_data.seed then
-                        loot.components.aipc_quality:SetVal(dropperQ)
+                        loot.components.aipc_quality:SetVal(dropperQ + 1)
                     elseif loot.prefab == plant_name then
-                        loot.components.aipc_quality:SetVal(dropperQ - 1)
+                        loot.components.aipc_quality:SetVal(dropperQ)
                     end
                 end
             end)
