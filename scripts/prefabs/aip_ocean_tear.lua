@@ -38,12 +38,38 @@ local function onDoAction(inst, doer)
 	end
 end
 
-local function updateOwnerMoisture(inst)
-	local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem:GetGrandOwner() or nil
-
-	if owner ~= nil and owner:HasTag("player") and owner.components.moisture ~= nil then
-		owner.components.moisture:DoDelta(inst._aipMoistureDelta or 0, true)
+local function removeMoistureRate(inst)
+	if inst._aipMoistureOwner ~= nil and inst._aipMoistureOwner.components.moisture ~= nil then
+		inst._aipMoistureOwner.components.moisture:RemoveRateBonus(inst)
 	end
+
+	inst._aipMoistureOwner = nil
+end
+
+local function getMoistureOwner(inst)
+	local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem:GetGrandOwner() or nil
+	if owner ~= nil and owner:HasTag("player") and owner.components.moisture ~= nil then
+		return owner
+	end
+end
+
+local function updateMoistureRate(inst)
+	local owner = getMoistureOwner(inst)
+
+	if owner == inst._aipMoistureOwner then
+		return
+	end
+
+	removeMoistureRate(inst)
+
+	if owner ~= nil then
+		owner.components.moisture:AddRateBonus(inst, inst._aipMoistureDelta or 0)
+		inst._aipMoistureOwner = owner
+	end
+end
+
+local function onPutInInventory(inst)
+	inst:DoTaskInTime(0, updateMoistureRate)
 end
 
 local function makeFn(anim, image, delta, nextPrefab)
@@ -86,7 +112,11 @@ local function makeFn(anim, image, delta, nextPrefab)
 		inst:AddComponent("tradable")
 		inst.components.tradable.goldvalue = 1
 
-		inst:DoPeriodicTask(1, updateOwnerMoisture)
+		inst:ListenForEvent("onputininventory", onPutInInventory)
+		inst:ListenForEvent("ondropped", removeMoistureRate)
+		inst:DoPeriodicTask(1, updateMoistureRate)
+
+		inst.OnRemoveEntity = removeMoistureRate
 
 		MakeHauntableLaunch(inst)
 
