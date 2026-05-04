@@ -126,10 +126,10 @@ end
 
 return Prefab(
 	"aip_ocean_tear",
-	makeFn("idle", "aip_ocean_tear", 3, "aip_ocean_tear_dry"),
+	makeFn("idle", "aip_ocean_tear", 5, "aip_ocean_tear_dry"),
 	assets
 ), Prefab(
 	"aip_ocean_tear_dry",
-	makeFn("dry", "aip_ocean_tear_dry", -3, "aip_ocean_tear"),
+	makeFn("dry", "aip_ocean_tear_dry", -5, "aip_ocean_tear"),
 	assets
 )
