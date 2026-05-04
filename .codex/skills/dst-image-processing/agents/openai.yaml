@@ -1,4 +1,0 @@
-interface:
-  display_name: "DST Image Processing"
-  short_description: "Cut images to transparent PNGs"
-  default_prompt: "Process image assets in this DST mod according to the repository image workflow."
