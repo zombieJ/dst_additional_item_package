@@ -985,6 +985,7 @@ if _G.TheNet:GetIsServer() or _G.TheNet:IsDedicated() then
 						"aip_luna_watch",
 						"aip_doomsday_clock",
 						"aip_phoenix_feather",
+						"aip_ocean_tear",
 					}
 
 					local structureList = {

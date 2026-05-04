@@ -1516,6 +1516,13 @@ return {
             },
             "Rewind to a previous state, can record and restore player's health, sanity, hunger and position.",
 
+            -- Ocean Tear
+            {
+                type="img",
+                name="aip_ocean_tear",
+            },
+            "When carried, the Ocean Tear slowly brings moisture. Use it to switch to the dry state and let that wetness fade away.",
+
             -- 凤凰羽毛
             {
                 type="img",

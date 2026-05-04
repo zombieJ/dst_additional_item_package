@@ -434,23 +434,22 @@
         function displayImage() {
             const maxWidth = 800;
             const maxHeight = 600;
-            let width = originalImage.width;
-            let height = originalImage.height;
+            const displayScale = Math.min(
+                maxWidth / originalImage.width,
+                maxHeight / originalImage.height,
+                1
+            );
+            const displayWidth = Math.round(originalImage.width * displayScale);
+            const displayHeight = Math.round(originalImage.height * displayScale);
 
-            if (width > maxWidth) {
-                height = (maxWidth / width) * height;
-                width = maxWidth;
-            }
-            if (height > maxHeight) {
-                width = (maxHeight / height) * width;
-                height = maxHeight;
-            }
+            imageCanvas.width = originalImage.width;
+            imageCanvas.height = originalImage.height;
+            imageCanvas.style.width = displayWidth + 'px';
+            imageCanvas.style.height = displayHeight + 'px';
+            ctx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
+            ctx.drawImage(originalImage, 0, 0);
 
-            imageCanvas.width = width;
-            imageCanvas.height = height;
-            ctx.drawImage(originalImage, 0, 0, width, height);
-
-            imageInfo.textContent = `原始尺寸: ${originalImage.width} x ${originalImage.height} | 显示尺寸: ${Math.round(width)} x ${Math.round(height)}`;
+            imageInfo.textContent = `原始尺寸: ${originalImage.width} x ${originalImage.height} | 显示尺寸: ${displayWidth} x ${displayHeight}`;
             
             transparentErasedPixels.clear();
             
@@ -460,6 +459,42 @@
             }
             
             saveToHistory();
+        }
+
+        function getCanvasDisplayMetrics() {
+            const rect = imageCanvas.getBoundingClientRect();
+            const displayToCanvasX = rect.width > 0 ? imageCanvas.width / rect.width : 1;
+            const displayToCanvasY = rect.height > 0 ? imageCanvas.height / rect.height : 1;
+            const canvasToDisplayX = imageCanvas.width > 0 ? rect.width / imageCanvas.width : 1;
+            const canvasToDisplayY = imageCanvas.height > 0 ? rect.height / imageCanvas.height : 1;
+
+            return {
+                rect,
+                displayToCanvasX,
+                displayToCanvasY,
+                canvasToDisplayX,
+                canvasToDisplayY
+            };
+        }
+
+        function getCanvasPoint(e) {
+            const metrics = getCanvasDisplayMetrics();
+            return {
+                x: (e.clientX - metrics.rect.left) * metrics.displayToCanvasX,
+                y: (e.clientY - metrics.rect.top) * metrics.displayToCanvasY
+            };
+        }
+
+        function getCanvasBrushRadius(metrics = getCanvasDisplayMetrics()) {
+            const averageScale = (metrics.displayToCanvasX + metrics.displayToCanvasY) / 2;
+            return Math.max(0.5, eraserBrushSize * averageScale / 2);
+        }
+
+        function enableHighQualityScaling(context) {
+            context.imageSmoothingEnabled = true;
+            if ('imageSmoothingQuality' in context) {
+                context.imageSmoothingQuality = 'high';
+            }
         }
 
         function saveToHistory() {
@@ -599,10 +634,9 @@
         }
 
         function initCropBox() {
-            const rect = imageCanvas.getBoundingClientRect();
-            const size = Math.min(rect.width, rect.height) * 0.5;
-            cropX = (rect.width - size) / 2;
-            cropY = (rect.height - size) / 2;
+            const size = Math.min(imageCanvas.width, imageCanvas.height) * 0.5;
+            cropX = (imageCanvas.width - size) / 2;
+            cropY = (imageCanvas.height - size) / 2;
             cropWidth = size;
             cropHeight = size;
             aspectRatio = cropWidth / cropHeight;
@@ -611,19 +645,16 @@
         }
 
         function updateSizeInputs() {
-            const scaleX = originalImage.width / imageCanvas.width;
-            const scaleY = originalImage.height / imageCanvas.height;
-            const realWidth = Math.round(cropWidth * scaleX);
-            const realHeight = Math.round(cropHeight * scaleY);
-            widthInput.value = realWidth;
-            heightInput.value = realHeight;
+            widthInput.value = Math.round(cropWidth);
+            heightInput.value = Math.round(cropHeight);
         }
 
         function updateCropBox() {
-            cropBox.style.left = cropX + 'px';
-            cropBox.style.top = cropY + 'px';
-            cropBox.style.width = cropWidth + 'px';
-            cropBox.style.height = cropHeight + 'px';
+            const metrics = getCanvasDisplayMetrics();
+            cropBox.style.left = (cropX * metrics.canvasToDisplayX) + 'px';
+            cropBox.style.top = (cropY * metrics.canvasToDisplayY) + 'px';
+            cropBox.style.width = (cropWidth * metrics.canvasToDisplayX) + 'px';
+            cropBox.style.height = (cropHeight * metrics.canvasToDisplayY) + 'px';
         }
 
         cropBox.addEventListener('mousedown', (e) => {
@@ -642,8 +673,9 @@
         document.addEventListener('mousemove', (e) => {
             if (!isCropping) return;
 
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
+            const metrics = getCanvasDisplayMetrics();
+            const dx = (e.clientX - startX) * metrics.displayToCanvasX;
+            const dy = (e.clientY - startY) * metrics.displayToCanvasY;
 
             if (isDragging) {
                 cropX += dx;
@@ -660,28 +692,32 @@
         imageCanvas.addEventListener('mousemove', (e) => {
             if (!isErasing && !isTransparentErasing) return;
 
-            const rect = imageCanvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            const metrics = getCanvasDisplayMetrics();
+            const displayX = e.clientX - metrics.rect.left;
+            const displayY = e.clientY - metrics.rect.top;
+            const point = getCanvasPoint(e);
+            const x = point.x;
+            const y = point.y;
+            const radius = getCanvasBrushRadius(metrics);
 
             eraserCursor.style.display = 'block';
-            eraserCursor.style.left = (x - eraserBrushSize / 2) + 'px';
-            eraserCursor.style.top = (y - eraserBrushSize / 2) + 'px';
+            eraserCursor.style.left = (displayX - eraserBrushSize / 2) + 'px';
+            eraserCursor.style.top = (displayY - eraserBrushSize / 2) + 'px';
 
             if (isErasingActive) {
                 if (isErasing) {
-                    erase(x, y);
+                    erase(x, y, radius);
                 } else if (isTransparentErasing) {
-                    transparentErase(x, y);
+                    transparentErase(x, y, radius);
                     if (lastEraserX !== null && lastEraserY !== null) {
                         const distance = Math.sqrt(Math.pow(x - lastEraserX, 2) + Math.pow(y - lastEraserY, 2));
-                        const steps = Math.ceil(distance / (eraserBrushSize / 4));
+                        const steps = Math.ceil(distance / Math.max(1, radius / 2));
                         
                         for (let i = 1; i <= steps; i++) {
                             const t = i / steps;
                             const interpX = lastEraserX + (x - lastEraserX) * t;
                             const interpY = lastEraserY + (y - lastEraserY) * t;
-                            transparentErase(interpX, interpY);
+                            transparentErase(interpX, interpY, radius);
                         }
                     }
                     lastEraserX = x;
@@ -715,24 +751,25 @@
             if (!isErasing && !isTransparentErasing) return;
             saveToHistory();
             isErasingActive = true;
-            const rect = imageCanvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            const point = getCanvasPoint(e);
+            const x = point.x;
+            const y = point.y;
+            const radius = getCanvasBrushRadius();
             lastEraserX = x;
             lastEraserY = y;
             if (isErasing) {
-                erase(x, y);
+                erase(x, y, radius);
             } else if (isTransparentErasing) {
-                transparentErase(x, y);
+                transparentErase(x, y, radius);
             }
         });
 
         imageCanvas.addEventListener('click', (e) => {
             if (!isBucket) return;
             saveToHistory();
-            const rect = imageCanvas.getBoundingClientRect();
-            const x = Math.floor(e.clientX - rect.left);
-            const y = Math.floor(e.clientY - rect.top);
+            const point = getCanvasPoint(e);
+            const x = Math.floor(point.x);
+            const y = Math.floor(point.y);
             floodFill(x, y);
         });
 
@@ -745,8 +782,7 @@
             lastEraserY = null;
         });
 
-        function erase(x, y) {
-            const radius = eraserBrushSize / 2;
+        function erase(x, y, radius) {
             ctx.save();
             ctx.globalCompositeOperation = 'destination-out';
             ctx.beginPath();
@@ -772,8 +808,7 @@
             lastEraserY = y;
         }
 
-        function transparentErase(x, y) {
-            const radius = eraserBrushSize / 2;
+        function transparentErase(x, y, radius) {
             const startX = Math.max(0, Math.floor(x - radius));
             const startY = Math.max(0, Math.floor(y - radius));
             const endX = Math.min(imageCanvas.width, Math.ceil(x + radius));
@@ -956,31 +991,29 @@
                 return;
             }
 
-            const scaleX = originalImage.width / imageCanvas.width;
-            const scaleY = originalImage.height / imageCanvas.height;
+            const sourceX = cropX;
+            const sourceY = cropY;
+            const sourceWidth = cropWidth;
+            const sourceHeight = cropHeight;
 
-            const sourceX = cropX * scaleX;
-            const sourceY = cropY * scaleY;
-            const sourceWidth = cropWidth * scaleX;
-            const sourceHeight = cropHeight * scaleY;
-
-            previewCanvas.width = sourceWidth;
-            previewCanvas.height = sourceHeight;
+            previewCanvas.width = Math.max(1, Math.round(sourceWidth));
+            previewCanvas.height = Math.max(1, Math.round(sourceHeight));
 
             previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+            enableHighQualityScaling(previewCtx);
 
-            const intersectX = Math.max(0, cropX);
-            const intersectY = Math.max(0, cropY);
-            const intersectRight = Math.min(cropX + cropWidth, imageCanvas.width);
-            const intersectBottom = Math.min(cropY + cropHeight, imageCanvas.height);
+            const intersectX = Math.max(0, sourceX);
+            const intersectY = Math.max(0, sourceY);
+            const intersectRight = Math.min(sourceX + sourceWidth, imageCanvas.width);
+            const intersectBottom = Math.min(sourceY + sourceHeight, imageCanvas.height);
             const intersectWidth = Math.max(0, intersectRight - intersectX);
             const intersectHeight = Math.max(0, intersectBottom - intersectY);
 
             if (intersectWidth > 0 && intersectHeight > 0) {
-                const destX = (intersectX - cropX) * scaleX;
-                const destY = (intersectY - cropY) * scaleY;
-                const destWidth = intersectWidth * scaleX;
-                const destHeight = intersectHeight * scaleY;
+                const destX = intersectX - sourceX;
+                const destY = intersectY - sourceY;
+                const destWidth = intersectWidth;
+                const destHeight = intersectHeight;
 
                 previewCtx.drawImage(
                     imageCanvas,
@@ -997,13 +1030,10 @@
             let sourceX = 0, sourceY = 0, sourceWidth = imageCanvas.width, sourceHeight = imageCanvas.height;
 
             if (isCropping) {
-                const scaleX = originalImage.width / imageCanvas.width;
-                const scaleY = originalImage.height / imageCanvas.height;
-
-                sourceX = cropX * scaleX;
-                sourceY = cropY * scaleY;
-                sourceWidth = cropWidth * scaleX;
-                sourceHeight = cropHeight * scaleY;
+                sourceX = cropX;
+                sourceY = cropY;
+                sourceWidth = cropWidth;
+                sourceHeight = cropHeight;
 
                 exportWidth = Math.round(sourceWidth);
                 exportHeight = Math.round(sourceHeight);
@@ -1019,30 +1049,28 @@
                 return;
             }
 
-            const targetWidth = parseInt(widthInput) || exportWidth;
-            const targetHeight = parseInt(heightInput) || exportHeight;
+            const targetWidth = Math.max(1, parseInt(widthInput) || exportWidth);
+            const targetHeight = Math.max(1, parseInt(heightInput) || exportHeight);
 
             const exportCanvas = document.createElement('canvas');
             exportCanvas.width = targetWidth;
             exportCanvas.height = targetHeight;
             const exportCtx = exportCanvas.getContext('2d');
+            enableHighQualityScaling(exportCtx);
 
             if (isCropping) {
-                const scaleX = originalImage.width / imageCanvas.width;
-                const scaleY = originalImage.height / imageCanvas.height;
-
-                const intersectX = Math.max(0, cropX);
-                const intersectY = Math.max(0, cropY);
-                const intersectRight = Math.min(cropX + cropWidth, imageCanvas.width);
-                const intersectBottom = Math.min(cropY + cropHeight, imageCanvas.height);
+                const intersectX = Math.max(0, sourceX);
+                const intersectY = Math.max(0, sourceY);
+                const intersectRight = Math.min(sourceX + sourceWidth, imageCanvas.width);
+                const intersectBottom = Math.min(sourceY + sourceHeight, imageCanvas.height);
                 const intersectWidth = Math.max(0, intersectRight - intersectX);
                 const intersectHeight = Math.max(0, intersectBottom - intersectY);
 
                 if (intersectWidth > 0 && intersectHeight > 0) {
-                    const destX = (intersectX - cropX) / cropWidth * targetWidth;
-                    const destY = (intersectY - cropY) / cropHeight * targetHeight;
-                    const destWidth = intersectWidth / cropWidth * targetWidth;
-                    const destHeight = intersectHeight / cropHeight * targetHeight;
+                    const destX = (intersectX - sourceX) / sourceWidth * targetWidth;
+                    const destY = (intersectY - sourceY) / sourceHeight * targetHeight;
+                    const destWidth = intersectWidth / sourceWidth * targetWidth;
+                    const destHeight = intersectHeight / sourceHeight * targetHeight;
 
                     exportCtx.drawImage(
                         imageCanvas,
@@ -1152,10 +1180,8 @@
         }
 
         document.getElementById('applySize').addEventListener('click', () => {
-            const scaleX = originalImage.width / imageCanvas.width;
-            const scaleY = originalImage.height / imageCanvas.height;
-            const targetWidth = parseInt(widthInput.value) / scaleX;
-            const targetHeight = parseInt(heightInput.value) / scaleY;
+            const targetWidth = parseInt(widthInput.value);
+            const targetHeight = parseInt(heightInput.value);
 
             if (targetWidth > 0 && targetHeight > 0) {
                 cropWidth = targetWidth;
@@ -1167,10 +1193,8 @@
 
         widthInput.addEventListener('input', () => {
             if (widthInput.value && heightInput.value) {
-                const scaleX = originalImage.width / imageCanvas.width;
-                const scaleY = originalImage.height / imageCanvas.height;
-                const targetWidth = parseInt(widthInput.value) / scaleX;
-                const targetHeight = parseInt(heightInput.value) / scaleY;
+                const targetWidth = parseInt(widthInput.value);
+                const targetHeight = parseInt(heightInput.value);
 
                 if (targetWidth > 0 && targetHeight > 0) {
                     cropWidth = targetWidth;
@@ -1183,10 +1207,8 @@
 
         heightInput.addEventListener('input', () => {
             if (widthInput.value && heightInput.value) {
-                const scaleX = originalImage.width / imageCanvas.width;
-                const scaleY = originalImage.height / imageCanvas.height;
-                const targetWidth = parseInt(widthInput.value) / scaleX;
-                const targetHeight = parseInt(heightInput.value) / scaleY;
+                const targetWidth = parseInt(widthInput.value);
+                const targetHeight = parseInt(heightInput.value);
 
                 if (targetWidth > 0 && targetHeight > 0) {
                     cropWidth = targetWidth;

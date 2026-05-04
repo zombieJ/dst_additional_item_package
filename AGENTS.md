@@ -1,4 +1,6 @@
-# Codex 记忆
+# Agent Instructions
+
+这些规则适用于本仓库内的智能体协作、代码修改、资源处理和 PR 描述。开始处理任务前先阅读本文件，并在没有用户明确覆盖要求时遵守这些约定。
 
 ## Lua 注释
 
@@ -27,5 +29,6 @@
 
 - `exported`、`images` 等资源目录里的文件处理完成后，默认不要移动到 `exported_done`、`images_done` 或类似 `xxx_done` 目录中；除非用户明确要求移动。
 - `exported_done` 是人工确认后的归档目录；新增或更新素材时，只把源导出文件放在 `exported`，不要主动写入或提交 `exported_done`。
+- `gen/imageCutter/imageCutter.js` 可用于预处理 `_素材` 图片、透明背景、批量裁剪并导出到 `_素材/out`；不要使用这个脚本处理 `exported` 里的图片。
 - 不要主动运行 DST 编译工具生成 `anim/*.zip`、`*.tex`、`*.xml` 等编译产物；用户启动游戏时会自动编译。
 - 如果误跑了编译工具，提交前清理本次新增的编译产物，只保留源码、`exported` 资源和必要的 PNG 源图，没有误跑则不用管。
