@@ -261,6 +261,7 @@ PrefabFiles = {
 	"aip_ocean_jellyfish",
 	"aip_blink_flower",
 	"aip_ocean_vortex",
+	"aip_ocean_tear",
 	"aip_turn_mushroom",
 	"aip_graveyard_wisp",
 	"aip_stone_gourd",
