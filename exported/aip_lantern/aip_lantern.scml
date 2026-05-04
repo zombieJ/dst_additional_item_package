@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="body">
+        <file id="0" name="body/rabbit.png" width="256" height="256" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="body/round.png" width="256" height="256" pivot_x="0" pivot_y="1"/>
+        <file id="2" name="body/square.png" width="256" height="256" pivot_x="0" pivot_y="1"/>
+        <file id="3" name="body/gourd.png" width="256" height="256" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="aip_lantern">
+        <animation id="0" name="rabbit_idle_loop" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="rabbit" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="360" abs_scale_x="0.6" abs_scale_y="0.6" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="rabbit">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="0" y="0" pivot_x="0.5" pivot_y="0.5" scale_x="0.6" scale_y="0.6"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="1" name="rabbit_idle_body_loop" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="rabbit" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="360" abs_scale_x="0.6" abs_scale_y="0.6" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="rabbit">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="0" y="0" pivot_x="0.5" pivot_y="0.5" scale_x="0.6" scale_y="0.6"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="rabbit_float" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="rabbit" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="360" abs_scale_x="0.6" abs_scale_y="0.6" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="rabbit">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="0" y="0" pivot_x="0.5" pivot_y="0.5" scale_x="0.6" scale_y="0.6"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="3" name="round_idle_loop" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="round" folder="0" file="1" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="360" abs_scale_x="0.6" abs_scale_y="0.6" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="round">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="0" y="0" pivot_x="0.5" pivot_y="0.5" scale_x="0.6" scale_y="0.6"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="4" name="round_idle_body_loop" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="round" folder="0" file="1" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="360" abs_scale_x="0.6" abs_scale_y="0.6" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="round">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="0" y="0" pivot_x="0.5" pivot_y="0.5" scale_x="0.6" scale_y="0.6"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="5" name="round_float" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="round" folder="0" file="1" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="360" abs_scale_x="0.6" abs_scale_y="0.6" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="round">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="0" y="0" pivot_x="0.5" pivot_y="0.5" scale_x="0.6" scale_y="0.6"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="6" name="square_idle_loop" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="square" folder="0" file="2" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="360" abs_scale_x="0.6" abs_scale_y="0.6" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="square">
+                <key id="0" spin="0">
+                    <object folder="0" file="2" x="0" y="0" pivot_x="0.5" pivot_y="0.5" scale_x="0.6" scale_y="0.6"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="7" name="square_idle_body_loop" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="square" folder="0" file="2" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="360" abs_scale_x="0.6" abs_scale_y="0.6" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="square">
+                <key id="0" spin="0">
+                    <object folder="0" file="2" x="0" y="0" pivot_x="0.5" pivot_y="0.5" scale_x="0.6" scale_y="0.6"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="8" name="square_float" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="square" folder="0" file="2" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="360" abs_scale_x="0.6" abs_scale_y="0.6" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="square">
+                <key id="0" spin="0">
+                    <object folder="0" file="2" x="0" y="0" pivot_x="0.5" pivot_y="0.5" scale_x="0.6" scale_y="0.6"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="9" name="gourd_idle_loop" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="gourd" folder="0" file="3" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="360" abs_scale_x="0.6" abs_scale_y="0.6" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="gourd">
+                <key id="0" spin="0">
+                    <object folder="0" file="3" x="0" y="0" pivot_x="0.5" pivot_y="0.5" scale_x="0.6" scale_y="0.6"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="10" name="gourd_idle_body_loop" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="gourd" folder="0" file="3" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="360" abs_scale_x="0.6" abs_scale_y="0.6" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="gourd">
+                <key id="0" spin="0">
+                    <object folder="0" file="3" x="0" y="0" pivot_x="0.5" pivot_y="0.5" scale_x="0.6" scale_y="0.6"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="11" name="gourd_float" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="gourd" folder="0" file="3" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="360" abs_scale_x="0.6" abs_scale_y="0.6" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="gourd">
+                <key id="0" spin="0">
+                    <object folder="0" file="3" x="0" y="0" pivot_x="0.5" pivot_y="0.5" scale_x="0.6" scale_y="0.6"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

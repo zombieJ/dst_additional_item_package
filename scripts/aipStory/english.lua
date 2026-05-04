@@ -1456,7 +1456,14 @@ return {
                 name="aip_glory_hand",
             },
             "'Hand of Glory' will summon a light source for everyone, so that friends without torches can see clearly ahead in the dark. It can be fueled by 'Nightmare Fuel'.",
-            
+
+            -- Lantern
+            {
+                type="img",
+                name="aip_lantern",
+            },
+            "A red lantern that can be carried by hand and keeps glowing when dropped. It has several looks that can be changed with the Clean Sweeper.",
+
             -- 石鬼面
             {
                 type="img",

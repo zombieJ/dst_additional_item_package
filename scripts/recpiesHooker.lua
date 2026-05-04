@@ -530,6 +530,14 @@ rec("aip_pet_fudge", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.TOOLS },
 })
 
 ------------------------------------ 5 种测试 ------------------------------------
+-- 灯笼
+rec("aip_lantern", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.LIGHT, CRAFTING_FILTERS.DECOR },
+{
+	Ingredient("papyrus", 2),
+	Ingredient("silk", 2),
+	Ingredient("lightbulb", 1),
+})
+
 -- 火炬
 rec("aip_torch", TECH.LOST, { CRAFTING_FILTERS.LIGHT },
 	{ Ingredient("driftwood_log", 1), Ingredient("gunpowder", 1), Ingredient("ash", 1) })
