@@ -29,5 +29,6 @@
 
 - `exported`、`images` 等资源目录里的文件处理完成后，默认不要移动到 `exported_done`、`images_done` 或类似 `xxx_done` 目录中；除非用户明确要求移动。
 - `exported_done` 是人工确认后的归档目录；新增或更新素材时，只把源导出文件放在 `exported`，不要主动写入或提交 `exported_done`。
+- 处理 `_素材` 图片、透明背景、批量裁剪或导出到 `_素材/out` 时，使用 `dst-image-processing` skill，并优先通过 `gen/imageCutter/imageCutter.js` 批处理。
 - 不要主动运行 DST 编译工具生成 `anim/*.zip`、`*.tex`、`*.xml` 等编译产物；用户启动游戏时会自动编译。
 - 如果误跑了编译工具，提交前清理本次新增的编译产物，只保留源码、`exported` 资源和必要的 PNG 源图，没有误跑则不用管。
