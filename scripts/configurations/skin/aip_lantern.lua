@@ -4,22 +4,34 @@ local PREFAB = "aip_lantern"
 
 return skinUtil.CreateConfig({
 	prefab = PREFAB,
+	default_skin = "round",
 	skin_tags = { "AIP_LANTERN", "CRAFTABLE" },
 	skins = {
 		{
-			id = "rabbit",
-			prefab = PREFAB.."_rabbit",
+			id = "round",
+		},
+		{
+			id = "cloth",
+			prefab = PREFAB.."_cloth",
 			name = {
-				english = "Rabbit Lantern",
-				chinese = "兔子灯",
+				english = "Cloth Lantern",
+				chinese = "布艺灯",
 			},
 		},
 		{
-			id = "round",
-			prefab = PREFAB.."_round",
+			id = "horror",
+			prefab = PREFAB.."_horror",
 			name = {
-				english = "Round Lantern",
-				chinese = "圆形灯",
+				english = "Horror Lantern",
+				chinese = "恐怖灯",
+			},
+		},
+		{
+			id = "oval",
+			prefab = PREFAB.."_oval",
+			name = {
+				english = "Oval Lantern",
+				chinese = "扁圆灯",
 			},
 		},
 		{
@@ -36,6 +48,22 @@ return skinUtil.CreateConfig({
 			name = {
 				english = "Gourd Lantern",
 				chinese = "歪瓜灯",
+			},
+		},
+		{
+			id = "pattern",
+			prefab = PREFAB.."_pattern",
+			name = {
+				english = "Pattern Lantern",
+				chinese = "花纹灯",
+			},
+		},
+		{
+			id = "skull",
+			prefab = PREFAB.."_skull",
+			name = {
+				english = "Skull Lantern",
+				chinese = "骷髅灯",
 			},
 		},
 	},
