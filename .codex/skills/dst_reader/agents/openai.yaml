@@ -1,7 +1,7 @@
 interface:
   display_name: "DST Reader"
-  short_description: "Verify DST APIs from base-game Lua before changing mod code."
-  default_prompt: "Use $dst_reader to inspect the relevant DST base-game API before modifying this mod."
+  short_description: "Verify DST Lua APIs and inspect referenced animation resources."
+  default_prompt: "Use $dst_reader to inspect the relevant DST base-game API or animation resource before modifying this mod."
 
 policy:
   allow_implicit_invocation: true
