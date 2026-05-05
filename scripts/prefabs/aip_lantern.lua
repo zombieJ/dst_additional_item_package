@@ -8,6 +8,7 @@ local BUILD = "aip_lantern"
 local LIGHT_PREFAB = "aip_lantern_light"
 local BODY_PREFAB = "aip_lantern_body"
 local SWAP_BUILD = "swap_redlantern"
+local SWAP_FULL_SYMBOL = "swap_redlantern"
 local SWAP_STICK_SYMBOL = "swap_redlantern_stick"
 local BODY_SKIN_DIRTY = "aip_lantern_body_skindirty"
 
@@ -196,15 +197,22 @@ local function onDropped(inst)
 	turnOn(inst)
 end
 
+local function shouldHideBody(owner)
+	return owner.sg ~= nil
+		and owner.components.rider ~= nil
+		and owner.components.rider:IsRiding()
+		and not owner.sg:HasStateTag("forcedangle")
+end
+
 local function toggleOverrideSymbols(inst, owner)
-	owner.AnimState:OverrideSymbol("swap_object", SWAP_BUILD, SWAP_STICK_SYMBOL)
 	owner.AnimState:Hide("LANTERN_OVERLAY")
 
-	if owner.sg ~= nil and (owner.sg:HasStateTag("nodangle")
-		or (owner.components.rider ~= nil and owner.components.rider:IsRiding()
-			and not owner.sg:HasStateTag("forcedangle"))) then
+	if shouldHideBody(owner) then
+		owner.AnimState:OverrideSymbol("swap_object", SWAP_BUILD, SWAP_FULL_SYMBOL)
 		inst._body:Hide()
 	else
+		-- 装备切换时玩家会短暂进入 nodangle，仍保持自定义灯体可见，避免先空手再出现。
+		owner.AnimState:OverrideSymbol("swap_object", SWAP_BUILD, SWAP_STICK_SYMBOL)
 		inst._body:Show()
 	end
 end
@@ -256,7 +264,7 @@ end
 local function onunequip(inst, owner)
 	if inst._body ~= nil then
 		if inst._body.entity:IsVisible() then
-			owner.AnimState:OverrideSymbol("swap_object", SWAP_BUILD, SWAP_STICK_SYMBOL)
+			owner.AnimState:OverrideSymbol("swap_object", SWAP_BUILD, SWAP_FULL_SYMBOL)
 		end
 		if inst._light ~= nil then
 			inst._light.entity:SetParent((inst.components.inventoryitem.owner or inst).entity)
@@ -277,7 +285,7 @@ end
 local function onequiptomodel(inst, owner)
 	if inst._body ~= nil then
 		if inst._body.entity:IsVisible() then
-			owner.AnimState:OverrideSymbol("swap_object", SWAP_BUILD, SWAP_STICK_SYMBOL)
+			owner.AnimState:OverrideSymbol("swap_object", SWAP_BUILD, SWAP_FULL_SYMBOL)
 		end
 		if inst._light ~= nil then
 			inst._light.entity:SetParent((inst.components.inventoryitem.owner or inst).entity)
