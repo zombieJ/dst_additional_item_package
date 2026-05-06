@@ -83,16 +83,14 @@ local function setDisplayTassle(inst, enabled)
 	end
 end
 
-local function playDisplaySkin(inst, skin, lit, showTassle, syncPercent, syncLength)
-	local anim = getSkinAnim(skin, ANIM_BODY_SUFFIX)
-
-	inst.AnimState:PlayAnimation(anim, true)
-
+local function syncDisplayAnim(inst, anim, syncPercent, syncLength)
 	if syncLength ~= nil and syncLength > 0 then
 		local length = inst.AnimState:GetCurrentAnimationLength()
 
 		if length ~= nil and length > 0 then
 			inst.AnimState:SetDeltaTimeMultiplier(length / syncLength)
+		else
+			inst.AnimState:SetDeltaTimeMultiplier(1)
 		end
 	else
 		inst.AnimState:SetDeltaTimeMultiplier(1)
@@ -101,6 +99,13 @@ local function playDisplaySkin(inst, skin, lit, showTassle, syncPercent, syncLen
 	if syncPercent ~= nil then
 		inst.AnimState:SetPercent(anim, syncPercent % 1)
 	end
+end
+
+local function playDisplaySkin(inst, skin, lit, showTassle, syncPercent, syncLength)
+	local anim = getSkinAnim(skin, ANIM_BODY_SUFFIX)
+
+	inst.AnimState:PlayAnimation(anim, true)
+	syncDisplayAnim(inst, anim, syncPercent, syncLength)
 
 	setDisplayTassle(inst, showTassle == true)
 	setVisualLight(inst, lit == true)
@@ -261,6 +266,21 @@ local function setLanternStandDisplay(inst, lit, showTassle, syncPercent, syncLe
 		inst._aipCurrentSkin,
 		inst._aipLanternStandDisplayLit,
 		inst._aipLanternStandDisplayTassle,
+		inst._aipLanternStandDisplayPercent,
+		inst._aipLanternStandDisplayLength
+	)
+end
+
+local function syncLanternStandDisplay(inst, syncPercent, syncLength)
+	if not inst._aipLanternStandDisplay then
+		return
+	end
+
+	inst._aipLanternStandDisplayPercent = syncPercent
+	inst._aipLanternStandDisplayLength = syncLength
+	syncDisplayAnim(
+		inst,
+		getSkinAnim(inst._aipCurrentSkin, ANIM_BODY_SUFFIX),
 		inst._aipLanternStandDisplayPercent,
 		inst._aipLanternStandDisplayLength
 	)
@@ -528,6 +548,7 @@ local function fn()
 	inst:AddTag("aip_lantern")
 
 	inst.SetLanternStandDisplay = setLanternStandDisplay
+	inst.SyncLanternStandDisplay = syncLanternStandDisplay
 	inst.ClearLanternStandDisplay = clearLanternStandDisplay
 
 	MakeInventoryFloatable(inst, "med", nil, { .775, .5, .775 })
