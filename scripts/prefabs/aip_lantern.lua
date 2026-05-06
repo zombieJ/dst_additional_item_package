@@ -53,6 +53,7 @@ local LIGHT_FALLOFF = .5
 local ANIM_IDLE_SUFFIX = "_idle_loop"
 local ANIM_BODY_SUFFIX = "_idle_body_loop"
 local ANIM_FLOAT_SUFFIX = "_float"
+local TASSLE_SYMBOL = "Tassle"
 
 local function getSkinAnim(skin, suffix)
 	return lanternConfig.GetSkin(skin)..suffix
@@ -74,8 +75,17 @@ local function setVisualLight(inst, enabled)
 	end
 end
 
-local function playDisplaySkin(inst, skin, lit)
+local function setDisplayTassle(inst, enabled)
+	if enabled then
+		inst.AnimState:Show(TASSLE_SYMBOL)
+	else
+		inst.AnimState:Hide(TASSLE_SYMBOL)
+	end
+end
+
+local function playDisplaySkin(inst, skin, lit, showTassle)
 	inst.AnimState:PlayAnimation(getSkinAnim(skin, ANIM_BODY_SUFFIX), true)
+	setDisplayTassle(inst, showTassle == true)
 	setVisualLight(inst, lit == true)
 end
 
@@ -119,9 +129,15 @@ end
 local function playSkin(inst, skin)
 	skin = lanternConfig.GetSkin(skin)
 	if inst._aipLanternStandDisplay then
-		playDisplaySkin(inst, skin, inst._aipLanternStandDisplayLit)
+		playDisplaySkin(
+			inst,
+			skin,
+			inst._aipLanternStandDisplayLit,
+			inst._aipLanternStandDisplayTassle
+		)
 	else
 		inst.AnimState:PlayAnimation(getSkinAnim(skin, ANIM_IDLE_SUFFIX), true)
+		setDisplayTassle(inst, true)
 	end
 	applyInventoryImage(inst, skin)
 
@@ -200,7 +216,7 @@ local function turnOff(inst)
 	end
 end
 
-local function setLanternStandDisplay(inst, lit)
+local function setLanternStandDisplay(inst, lit, showTassle)
 	stopTrackingOwner(inst)
 
 	if inst.components.fueled ~= nil then
@@ -217,7 +233,13 @@ local function setLanternStandDisplay(inst, lit)
 	-- 灯笼架展示真实灯笼实体时，只播放无棍灯体动画，由架子负责挂点和整体光照。
 	inst._aipLanternStandDisplay = true
 	inst._aipLanternStandDisplayLit = lit == true
-	playDisplaySkin(inst, inst._aipCurrentSkin, inst._aipLanternStandDisplayLit)
+	inst._aipLanternStandDisplayTassle = showTassle == true
+	playDisplaySkin(
+		inst,
+		inst._aipCurrentSkin,
+		inst._aipLanternStandDisplayLit,
+		inst._aipLanternStandDisplayTassle
+	)
 end
 
 local function clearLanternStandDisplay(inst)
@@ -227,6 +249,7 @@ local function clearLanternStandDisplay(inst)
 
 	inst._aipLanternStandDisplay = nil
 	inst._aipLanternStandDisplayLit = nil
+	inst._aipLanternStandDisplayTassle = nil
 	skinner.PlayCurrent(inst)
 
 	if inst.components.fueled ~= nil and inst.components.fueled:IsEmpty() then

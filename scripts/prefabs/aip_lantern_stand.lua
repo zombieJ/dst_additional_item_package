@@ -68,6 +68,10 @@ local function getDisplaySymbol(slot)
 	return DISPLAY_SYMBOL_PREFIX..slot
 end
 
+local function getDisplayZOffset(slot)
+	return DISPLAY_FOLLOW_Z_OFFSET + (SLOT_COUNT - slot + 1) * .01
+end
+
 local function isLanternLit(item)
 	return item ~= nil
 		and item.components.fueled ~= nil
@@ -200,7 +204,7 @@ local function unbindDisplaySlot(inst, slot, leaving)
 	unbindDisplayItem(inst, item, leaving)
 end
 
-local function bindDisplayItem(inst, item, slot)
+local function bindDisplayItem(inst, item, slot, showTassle)
 	if item == nil or not item:IsValid() then
 		unbindDisplaySlot(inst, slot, false)
 		return false
@@ -234,7 +238,7 @@ local function bindDisplayItem(inst, item, slot)
 	item.Transform:SetScale(DISPLAY_SCALE, DISPLAY_SCALE, DISPLAY_SCALE)
 
 	if item.SetLanternStandDisplay ~= nil then
-		item:SetLanternStandDisplay(isLanternLit(item))
+		item:SetLanternStandDisplay(isLanternLit(item), showTassle)
 	end
 
 	item.Follower:FollowSymbol(
@@ -242,7 +246,7 @@ local function bindDisplayItem(inst, item, slot)
 		getDisplaySymbol(slot),
 		0,
 		0,
-		DISPLAY_FOLLOW_Z_OFFSET + slot * .01
+		getDisplayZOffset(slot)
 	)
 	item:AddTag("INLIMBO")
 	item:AddTag("NOCLICK")
@@ -279,18 +283,30 @@ local function refreshLanternDisplays(inst)
 
 	local displaySlot = 1
 	local lightCount = 0
+	local displayItems = {}
 
 	-- 容器可能有空槽，展示时按实际存在的灯笼重新压紧顺序。
 	for slot = 1, SLOT_COUNT do
 		local item = inst.components.container:GetItemInSlot(slot)
 
 		if item ~= nil then
-			if bindDisplayItem(inst, item, displaySlot) and isLanternLit(item) then
+			table.insert(displayItems, item)
+		end
+	end
+
+	for _, item in ipairs(displayItems) do
+		if bindDisplayItem(
+			inst,
+			item,
+			displaySlot,
+			displaySlot == #displayItems
+		) then
+			if isLanternLit(item) then
 				lightCount = lightCount + 1
 			end
-
-			displaySlot = displaySlot + 1
 		end
+
+		displaySlot = displaySlot + 1
 	end
 
 	for slot = displaySlot, SLOT_COUNT do
