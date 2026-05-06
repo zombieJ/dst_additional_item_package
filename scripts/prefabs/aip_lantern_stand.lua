@@ -9,7 +9,7 @@ local PREFAB = "aip_lantern_stand"
 local BUILD = "aip_lantern_stand"
 local SLOT_COUNT = 3
 local DISPLAY_SYMBOL_PREFIX = "swap_lantern_"
-local DISPLAY_SCALE = .34
+local DISPLAY_SCALE = .45
 local DISPLAY_FOLLOW_Z_OFFSET = .1
 local LIGHT_COLOUR = Vector3(200 / 255, 100 / 255, 100 / 255)
 
