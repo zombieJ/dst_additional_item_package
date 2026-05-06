@@ -83,8 +83,25 @@ local function setDisplayTassle(inst, enabled)
 	end
 end
 
-local function playDisplaySkin(inst, skin, lit, showTassle)
-	inst.AnimState:PlayAnimation(getSkinAnim(skin, ANIM_BODY_SUFFIX), true)
+local function playDisplaySkin(inst, skin, lit, showTassle, syncPercent, syncLength)
+	local anim = getSkinAnim(skin, ANIM_BODY_SUFFIX)
+
+	inst.AnimState:PlayAnimation(anim, true)
+
+	if syncLength ~= nil and syncLength > 0 then
+		local length = inst.AnimState:GetCurrentAnimationLength()
+
+		if length ~= nil and length > 0 then
+			inst.AnimState:SetDeltaTimeMultiplier(length / syncLength)
+		end
+	else
+		inst.AnimState:SetDeltaTimeMultiplier(1)
+	end
+
+	if syncPercent ~= nil then
+		inst.AnimState:SetPercent(anim, syncPercent % 1)
+	end
+
 	setDisplayTassle(inst, showTassle == true)
 	setVisualLight(inst, lit == true)
 end
@@ -133,9 +150,12 @@ local function playSkin(inst, skin)
 			inst,
 			skin,
 			inst._aipLanternStandDisplayLit,
-			inst._aipLanternStandDisplayTassle
+			inst._aipLanternStandDisplayTassle,
+			inst._aipLanternStandDisplayPercent,
+			inst._aipLanternStandDisplayLength
 		)
 	else
+		inst.AnimState:SetDeltaTimeMultiplier(1)
 		inst.AnimState:PlayAnimation(getSkinAnim(skin, ANIM_IDLE_SUFFIX), true)
 		setDisplayTassle(inst, true)
 	end
@@ -216,7 +236,7 @@ local function turnOff(inst)
 	end
 end
 
-local function setLanternStandDisplay(inst, lit, showTassle)
+local function setLanternStandDisplay(inst, lit, showTassle, syncPercent, syncLength)
 	stopTrackingOwner(inst)
 
 	if inst.components.fueled ~= nil then
@@ -234,11 +254,15 @@ local function setLanternStandDisplay(inst, lit, showTassle)
 	inst._aipLanternStandDisplay = true
 	inst._aipLanternStandDisplayLit = lit == true
 	inst._aipLanternStandDisplayTassle = showTassle == true
+	inst._aipLanternStandDisplayPercent = syncPercent
+	inst._aipLanternStandDisplayLength = syncLength
 	playDisplaySkin(
 		inst,
 		inst._aipCurrentSkin,
 		inst._aipLanternStandDisplayLit,
-		inst._aipLanternStandDisplayTassle
+		inst._aipLanternStandDisplayTassle,
+		inst._aipLanternStandDisplayPercent,
+		inst._aipLanternStandDisplayLength
 	)
 end
 
@@ -250,6 +274,8 @@ local function clearLanternStandDisplay(inst)
 	inst._aipLanternStandDisplay = nil
 	inst._aipLanternStandDisplayLit = nil
 	inst._aipLanternStandDisplayTassle = nil
+	inst._aipLanternStandDisplayPercent = nil
+	inst._aipLanternStandDisplayLength = nil
 	skinner.PlayCurrent(inst)
 
 	if inst.components.fueled ~= nil and inst.components.fueled:IsEmpty() then

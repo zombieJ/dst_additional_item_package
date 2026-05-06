@@ -11,6 +11,7 @@ local SLOT_COUNT = 3
 local DISPLAY_SYMBOL_PREFIX = "swap_lantern_"
 local DISPLAY_SCALE = .9
 local DISPLAY_FOLLOW_Z_OFFSET = .1
+local DISPLAY_FOLLOW_Z_STEP = .25
 local LIGHT_COLOUR = Vector3(200 / 255, 100 / 255, 100 / 255)
 
 local LANG_MAP = {
@@ -52,6 +53,10 @@ local function playSkin(inst, skin, hit)
 		inst.AnimState:PushAnimation(skin, true)
 	else
 		inst.AnimState:PlayAnimation(skin, true)
+
+		if TheWorld.ismastersim and queueRefreshLanternDisplays ~= nil then
+			queueRefreshLanternDisplays(inst)
+		end
 	end
 end
 
@@ -69,7 +74,25 @@ local function getDisplaySymbol(slot)
 end
 
 local function getDisplayZOffset(slot)
-	return DISPLAY_FOLLOW_Z_OFFSET + (SLOT_COUNT - slot + 1) * .01
+	return DISPLAY_FOLLOW_Z_OFFSET + (SLOT_COUNT - slot) * DISPLAY_FOLLOW_Z_STEP
+end
+
+local function getDisplayFinalOffset(slot)
+	return SLOT_COUNT - slot + 1
+end
+
+local function getDisplayAnimSync(inst)
+	if not inst.AnimState:IsCurrentAnimation(standConfig.GetSkin(inst._aipCurrentSkin)) then
+		return nil, nil
+	end
+
+	local length = inst.AnimState:GetCurrentAnimationLength()
+
+	if length ~= nil and length > 0 then
+		return (inst.AnimState:GetCurrentAnimationTime() % length) / length, length
+	end
+
+	return nil, nil
 end
 
 local function isLanternLit(item)
@@ -181,6 +204,9 @@ local function unbindDisplayItem(inst, item, leaving)
 	end
 
 	restoreDisplayScale(item)
+	if item.AnimState ~= nil then
+		item.AnimState:SetFinalOffset(0)
+	end
 	item:RemoveTag("NOCLICK")
 	item:ForceOutOfLimbo(false)
 
@@ -204,7 +230,7 @@ local function unbindDisplaySlot(inst, slot, leaving)
 	unbindDisplayItem(inst, item, leaving)
 end
 
-local function bindDisplayItem(inst, item, slot, showTassle)
+local function bindDisplayItem(inst, item, slot, showTassle, syncPercent, syncLength)
 	if item == nil or not item:IsValid() then
 		unbindDisplaySlot(inst, slot, false)
 		return false
@@ -238,7 +264,11 @@ local function bindDisplayItem(inst, item, slot, showTassle)
 	item.Transform:SetScale(DISPLAY_SCALE, DISPLAY_SCALE, DISPLAY_SCALE)
 
 	if item.SetLanternStandDisplay ~= nil then
-		item:SetLanternStandDisplay(isLanternLit(item), showTassle)
+		item:SetLanternStandDisplay(isLanternLit(item), showTassle, syncPercent, syncLength)
+	end
+
+	if item.AnimState ~= nil then
+		item.AnimState:SetFinalOffset(getDisplayFinalOffset(slot))
 	end
 
 	item.Follower:FollowSymbol(
@@ -284,6 +314,7 @@ local function refreshLanternDisplays(inst)
 	local displaySlot = 1
 	local lightCount = 0
 	local displayItems = {}
+	local syncPercent, syncLength = getDisplayAnimSync(inst)
 
 	-- 容器可能有空槽，展示时按实际存在的灯笼重新压紧顺序。
 	for slot = 1, SLOT_COUNT do
@@ -299,7 +330,9 @@ local function refreshLanternDisplays(inst)
 			inst,
 			item,
 			displaySlot,
-			displaySlot == #displayItems
+			displaySlot == #displayItems,
+			syncPercent,
+			syncLength
 		) then
 			if isLanternLit(item) then
 				lightCount = lightCount + 1
@@ -342,6 +375,20 @@ end
 
 local function onhit(inst)
 	skinner.PlayCurrent(inst, true)
+
+	if inst._aipLanternStandHitSyncTask ~= nil then
+		inst._aipLanternStandHitSyncTask:Cancel()
+	end
+
+	-- hit 动画结束后架子会重新进入 idle，需要把真实灯笼同步到新的摇摆帧。
+	local hitLength = inst.AnimState:GetCurrentAnimationLength() or 0
+	inst._aipLanternStandHitSyncTask = inst:DoTaskInTime(
+		hitLength,
+		function(inst)
+			inst._aipLanternStandHitSyncTask = nil
+			queueRefreshLanternDisplays(inst)
+		end
+	)
 end
 
 local function onbuilt(inst)
