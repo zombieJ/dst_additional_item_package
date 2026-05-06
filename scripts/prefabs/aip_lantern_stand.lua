@@ -4,17 +4,14 @@ require "prefabutil"
 
 local skinUtil = require("utils/aip_skin_util")
 local standConfig = require("configurations/skin/aip_lantern_stand")
-local lanternConfig = require("configurations/skin/aip_lantern")
 
 local PREFAB = "aip_lantern_stand"
 local BUILD = "aip_lantern_stand"
 local SLOT_COUNT = 3
-local DISPLAY_DIRTY_PREFIX = "aip_lantern_stand_display_dirty_"
+local DISPLAY_SYMBOL_PREFIX = "swap_lantern_"
+local DISPLAY_SCALE = .34
+local DISPLAY_FOLLOW_Z_OFFSET = .1
 local LIGHT_COLOUR = Vector3(200 / 255, 100 / 255, 100 / 255)
-local DISPLAY_BODY_PREFIX = "lantern_body_"
-local DISPLAY_TASSLE_PREFIX = "lantern_tassle_"
-local DISPLAY_LIGHT_PREFIX = "lantern_light_"
-local DISPLAY_LIGHT_SOURCE = "lantern_light_source"
 
 local LANG_MAP = {
 	english = {
@@ -45,7 +42,7 @@ for _, asset in ipairs(standConfig.GetInventoryAtlasAssets(true)) do
 end
 
 local DEFAULT_SKIN = standConfig.DEFAULT_SKIN
-local refreshDisplaySymbols
+local queueRefreshLanternDisplays
 
 local function playSkin(inst, skin, hit)
 	skin = standConfig.GetSkin(skin)
@@ -55,10 +52,6 @@ local function playSkin(inst, skin, hit)
 		inst.AnimState:PushAnimation(skin, true)
 	else
 		inst.AnimState:PlayAnimation(skin, true)
-	end
-
-	if refreshDisplaySymbols ~= nil then
-		refreshDisplaySymbols(inst)
 	end
 end
 
@@ -71,100 +64,14 @@ local skinner = skinUtil.CreatePrefabSkinner(standConfig, {
 	play_fn = playSkin,
 })
 
-local function parseLanternDisplay(value)
-	if value == nil or value == "" then
-		return nil, false
-	end
-
-	local skin, lit = string.match(value, "^([^|]+)|(%d)$")
-	return skin, lit == "1"
-end
-
-local function packLanternDisplay(skin, lit)
-	return skin ~= nil and skin ~= "" and skin.."|"..(lit and "1" or "0") or ""
-end
-
-local function getLanternSkin(item)
-	if item == nil then
-		return nil
-	end
-
-	if item._aipCurrentSkin ~= nil then
-		return lanternConfig.GetSkin(item._aipCurrentSkin)
-	end
-
-	if item.skinname ~= nil then
-		return lanternConfig.GetSkin(item.skinname)
-	end
-
-	if lanternConfig.SKIN_ID_BY_PREFAB[item.prefab] ~= nil then
-		return lanternConfig.GetSkin(item.prefab)
-	end
-
-	return lanternConfig.DEFAULT_SKIN
+local function getDisplaySymbol(slot)
+	return DISPLAY_SYMBOL_PREFIX..slot
 end
 
 local function isLanternLit(item)
 	return item ~= nil
 		and item.components.fueled ~= nil
 		and not item.components.fueled:IsEmpty()
-end
-
--- 挂灯直接复用灯笼架自己的动画符号，避免客户端创建额外跟随 FX 导致渲染层崩溃。
-local function clearDisplaySlotSymbols(inst, slot)
-	local bodySymbol = DISPLAY_BODY_PREFIX..slot
-	local tassleSymbol = DISPLAY_TASSLE_PREFIX..slot
-	local lightSymbol = DISPLAY_LIGHT_PREFIX..slot
-
-	inst.AnimState:HideSymbol(bodySymbol)
-	inst.AnimState:HideSymbol(tassleSymbol)
-	inst.AnimState:HideSymbol(lightSymbol)
-	inst.AnimState:ClearOverrideSymbol(bodySymbol)
-	inst.AnimState:ClearOverrideSymbol(tassleSymbol)
-	inst.AnimState:ClearOverrideSymbol(lightSymbol)
-end
-
-local function applyDisplaySlotSymbols(inst, slot)
-	if TheNet:IsDedicated() or inst._aipLanternStandDisplays == nil then
-		return
-	end
-
-	local skin, lit = parseLanternDisplay(inst._aipLanternStandDisplays[slot]:value())
-
-	clearDisplaySlotSymbols(inst, slot)
-
-	if skin == nil then
-		return
-	end
-
-	skin = lanternConfig.GetSkin(skin)
-
-	local bodySymbol = DISPLAY_BODY_PREFIX..slot
-	local tassleSymbol = DISPLAY_TASSLE_PREFIX..slot
-
-	inst.AnimState:OverrideSymbol(bodySymbol, BUILD, DISPLAY_BODY_PREFIX..skin)
-	inst.AnimState:OverrideSymbol(tassleSymbol, BUILD, DISPLAY_TASSLE_PREFIX..skin)
-	inst.AnimState:ShowSymbol(bodySymbol)
-	inst.AnimState:ShowSymbol(tassleSymbol)
-
-	if lit then
-		local lightSymbol = DISPLAY_LIGHT_PREFIX..slot
-
-		inst.AnimState:OverrideSymbol(lightSymbol, BUILD, DISPLAY_LIGHT_SOURCE)
-		inst.AnimState:ShowSymbol(lightSymbol)
-	end
-end
-
-refreshDisplaySymbols = function(inst)
-	for slot = 1, SLOT_COUNT do
-		applyDisplaySlotSymbols(inst, slot)
-	end
-end
-
-local function hideDisplaySymbols(inst)
-	for slot = 1, SLOT_COUNT do
-		clearDisplaySlotSymbols(inst, slot)
-	end
 end
 
 local function setLightCount(inst, count)
@@ -182,11 +89,186 @@ local function setLightCount(inst, count)
 	end
 end
 
-local function setDisplaySlot(inst, slot, value)
-	inst._aipLanternStandDisplays[slot]:set(value or "")
+local function exposeDisplayItem(item)
+	if item.Network ~= nil then
+		item.Network:SetClassifiedTarget(nil)
+	end
 
-	if not TheNet:IsDedicated() then
-		applyDisplaySlotSymbols(inst, slot)
+	local classified = item.replica ~= nil and
+		item.replica.inventoryitem ~= nil and
+		item.replica.inventoryitem.classified or nil
+
+	if classified ~= nil and classified.Network ~= nil then
+		classified.Network:SetClassifiedTarget(nil)
+	end
+end
+
+local function isStoredDisplayItem(inst, item)
+	return item ~= nil
+		and item.components.inventoryitem ~= nil
+		and item.components.inventoryitem.owner == inst
+		and inst.components.container ~= nil
+		and inst.components.container:GetItemSlot(item) ~= nil
+end
+
+local function forgetDisplayItem(inst, item)
+	if inst._aipLanternStandDisplayItems == nil then
+		return
+	end
+
+	for slot = 1, SLOT_COUNT do
+		if inst._aipLanternStandDisplayItems[slot] == item then
+			inst._aipLanternStandDisplayItems[slot] = nil
+		end
+	end
+end
+
+local function getDisplaySlotForItem(inst, item)
+	if inst._aipLanternStandDisplayItems == nil then
+		return nil
+	end
+
+	for slot = 1, SLOT_COUNT do
+		if inst._aipLanternStandDisplayItems[slot] == item then
+			return slot
+		end
+	end
+
+	return nil
+end
+
+local function restoreDisplayScale(item)
+	if item._aipLanternStandScale ~= nil then
+		item.Transform:SetScale(unpack(item._aipLanternStandScale))
+		item._aipLanternStandScale = nil
+	else
+		item.Transform:SetScale(1, 1, 1)
+	end
+end
+
+local function onDisplayLanternFuelChanged(item)
+	local stand = item._aipLanternStand
+
+	if stand ~= nil and stand:IsValid() and queueRefreshLanternDisplays ~= nil then
+		queueRefreshLanternDisplays(stand)
+	end
+end
+
+local function unbindDisplayItem(inst, item, leaving)
+	if item == nil or not item:IsValid() then
+		forgetDisplayItem(inst, item)
+		return
+	end
+
+	forgetDisplayItem(inst, item)
+	inst:RemoveEventCallback("percentusedchange", onDisplayLanternFuelChanged, item)
+
+	if item._aipLanternStand == inst then
+		item._aipLanternStand = nil
+		item._aipLanternStandDisplaySlot = nil
+	end
+
+	if item.Follower ~= nil then
+		item.Follower:StopFollowing()
+	end
+
+	if item.ClearLanternStandDisplay ~= nil then
+		item:ClearLanternStandDisplay()
+	end
+
+	restoreDisplayScale(item)
+	item:RemoveTag("NOCLICK")
+	item:ForceOutOfLimbo(false)
+
+	if leaving or not isStoredDisplayItem(inst, item) then
+		item:RemoveTag("INLIMBO")
+		item:ReturnToScene()
+
+		if item.Physics ~= nil then
+			item.Physics:SetActive(true)
+		end
+	else
+		item:RemoveFromScene()
+		item.Transform:SetPosition(0, 0, 0)
+	end
+end
+
+local function unbindDisplaySlot(inst, slot, leaving)
+	local item = inst._aipLanternStandDisplayItems ~= nil and
+		inst._aipLanternStandDisplayItems[slot] or nil
+
+	unbindDisplayItem(inst, item, leaving)
+end
+
+local function bindDisplayItem(inst, item, slot)
+	if item == nil or not item:IsValid() then
+		unbindDisplaySlot(inst, slot, false)
+		return false
+	end
+
+	local oldSlot = getDisplaySlotForItem(inst, item)
+	if oldSlot ~= nil and oldSlot ~= slot then
+		unbindDisplaySlot(inst, oldSlot, false)
+	end
+
+	local oldItem = inst._aipLanternStandDisplayItems[slot]
+	if oldItem ~= item then
+		unbindDisplaySlot(inst, slot, false)
+	end
+	local alreadyBound = item._aipLanternStand == inst
+
+	if item.Follower == nil then
+		item.entity:AddFollower()
+	end
+
+	if item._aipLanternStandScale == nil then
+		item._aipLanternStandScale = { item.Transform:GetScale() }
+	end
+
+	-- 容器会把物品放进 limbo；展示时临时拉回场景并绑定到架子的挂点。
+	item:ForceOutOfLimbo(false)
+	item:ForceOutOfLimbo(true)
+	item:ReturnToScene()
+	exposeDisplayItem(item)
+	item.Transform:SetPosition(inst.Transform:GetWorldPosition())
+	item.Transform:SetScale(DISPLAY_SCALE, DISPLAY_SCALE, DISPLAY_SCALE)
+
+	if item.SetLanternStandDisplay ~= nil then
+		item:SetLanternStandDisplay(isLanternLit(item))
+	end
+
+	item.Follower:FollowSymbol(
+		inst.GUID,
+		getDisplaySymbol(slot),
+		0,
+		0,
+		DISPLAY_FOLLOW_Z_OFFSET + slot * .01
+	)
+	item:AddTag("INLIMBO")
+	item:AddTag("NOCLICK")
+
+	if item.Physics ~= nil then
+		item.Physics:SetActive(false)
+	end
+
+	item._aipLanternStand = inst
+	item._aipLanternStandDisplaySlot = slot
+	inst._aipLanternStandDisplayItems[slot] = item
+
+	if not alreadyBound then
+		inst:ListenForEvent("percentusedchange", onDisplayLanternFuelChanged, item)
+	end
+
+	return true
+end
+
+local function releaseDisplayItems(inst, leaving)
+	if inst._aipLanternStandDisplayItems == nil then
+		return
+	end
+
+	for slot = 1, SLOT_COUNT do
+		unbindDisplaySlot(inst, slot, leaving)
 	end
 end
 
@@ -203,24 +285,22 @@ local function refreshLanternDisplays(inst)
 		local item = inst.components.container:GetItemInSlot(slot)
 
 		if item ~= nil then
-			local lit = isLanternLit(item)
-			setDisplaySlot(inst, displaySlot, packLanternDisplay(getLanternSkin(item), lit))
-			displaySlot = displaySlot + 1
-
-			if lit then
+			if bindDisplayItem(inst, item, displaySlot) and isLanternLit(item) then
 				lightCount = lightCount + 1
 			end
+
+			displaySlot = displaySlot + 1
 		end
 	end
 
 	for slot = displaySlot, SLOT_COUNT do
-		setDisplaySlot(inst, slot, "")
+		unbindDisplaySlot(inst, slot, false)
 	end
 
 	setLightCount(inst, lightCount)
 end
 
-local function queueRefreshLanternDisplays(inst)
+queueRefreshLanternDisplays = function(inst)
 	if inst._aipLanternStandRefreshTask == nil then
 		-- itemget/itemlose 常常连着触发，延后一帧统一刷新挂灯和光照。
 		inst._aipLanternStandRefreshTask = inst:DoTaskInTime(0, function(inst)
@@ -265,21 +345,20 @@ local function onloadpostpass(inst)
 	queueRefreshLanternDisplays(inst)
 end
 
-local OnDisplayDirty = {}
-for slot = 1, SLOT_COUNT do
-	OnDisplayDirty[slot] = function(inst)
-		applyDisplaySlotSymbols(inst, slot)
-	end
+local function onitemget(inst)
+	queueRefreshLanternDisplays(inst)
 end
 
-local function setupDisplayNetVars(inst)
-	inst._aipLanternStandDisplays = {}
-
-	for slot = 1, SLOT_COUNT do
-		local event = DISPLAY_DIRTY_PREFIX..slot
-		inst._aipLanternStandDisplays[slot] = net_string(inst.GUID, "aip_lantern_stand.display_"..slot, event)
-		inst:ListenForEvent(event, OnDisplayDirty[slot])
+local function onitemlose(inst, data)
+	if data ~= nil and data.prev_item ~= nil then
+		unbindDisplayItem(inst, data.prev_item, true)
 	end
+
+	queueRefreshLanternDisplays(inst)
+end
+
+local function onremoveentity(inst)
+	releaseDisplayItems(inst, false)
 end
 
 local function fn()
@@ -299,10 +378,8 @@ local function fn()
 
 	inst.AnimState:SetBank(BUILD)
 	inst.AnimState:SetBuild(BUILD)
-	hideDisplaySymbols(inst)
 
 	setLightCount(inst, 0)
-	setupDisplayNetVars(inst)
 	skinner.SetupNetwork(inst)
 
 	inst.entity:SetPristine()
@@ -312,6 +389,7 @@ local function fn()
 	end
 
 	skinner.SetupMaster(inst)
+	inst._aipLanternStandDisplayItems = {}
 
 	inst:AddComponent("inspectable")
 
@@ -328,10 +406,11 @@ local function fn()
 	inst.OnSave = skinner.OnSave
 	inst.OnLoad = onload
 	inst.OnLoadPostPass = onloadpostpass
+	inst.OnRemoveEntity = onremoveentity
 
 	inst:ListenForEvent("onbuilt", onbuilt)
-	inst:ListenForEvent("itemget", queueRefreshLanternDisplays)
-	inst:ListenForEvent("itemlose", queueRefreshLanternDisplays)
+	inst:ListenForEvent("itemget", onitemget)
+	inst:ListenForEvent("itemlose", onitemlose)
 
 	MakeHauntableWork(inst)
 
