@@ -58,6 +58,27 @@ local function getSkinAnim(skin, suffix)
 	return lanternConfig.GetSkin(skin)..suffix
 end
 
+local function setVisualLight(inst, enabled)
+	if enabled then
+		inst.AnimState:Show("LIGHT")
+	else
+		inst.AnimState:Hide("LIGHT")
+	end
+
+	if inst._body ~= nil then
+		if enabled then
+			inst._body.AnimState:Show("LIGHT")
+		else
+			inst._body.AnimState:Hide("LIGHT")
+		end
+	end
+end
+
+local function playDisplaySkin(inst, skin, lit)
+	inst.AnimState:PlayAnimation(getSkinAnim(skin, ANIM_BODY_SUFFIX), true)
+	setVisualLight(inst, lit == true)
+end
+
 local function onUpdateFlicker(inst, starttime)
 	local time = starttime ~= nil and (GetTime() - starttime) * 15 or 0
 	local flicker = (math.sin(time) + math.sin(time + 2) + math.sin(time + 0.7777)) * .5
@@ -97,7 +118,11 @@ end
 
 local function playSkin(inst, skin)
 	skin = lanternConfig.GetSkin(skin)
-	inst.AnimState:PlayAnimation(getSkinAnim(skin, ANIM_IDLE_SUFFIX), true)
+	if inst._aipLanternStandDisplay then
+		playDisplaySkin(inst, skin, inst._aipLanternStandDisplayLit)
+	else
+		inst.AnimState:PlayAnimation(getSkinAnim(skin, ANIM_IDLE_SUFFIX), true)
+	end
 	applyInventoryImage(inst, skin)
 
 	if inst._body ~= nil and inst._body:IsValid() and inst._body.SetLanternSkin ~= nil then
@@ -151,11 +176,7 @@ local function turnOn(inst)
 
 	inst._light.entity:SetParent((inst.components.inventoryitem.owner or inst._body or inst).entity)
 
-	inst.AnimState:Show("LIGHT")
-
-	if inst._body ~= nil then
-		inst._body.AnimState:Show("LIGHT")
-	end
+	setVisualLight(inst, true)
 
 	if not (inst._body ~= nil and inst._body.entity:IsVisible())
 		and inst.components.equippable:IsEquipped()
@@ -172,14 +193,44 @@ local function turnOff(inst)
 		inst._light:Remove()
 	end
 
-	inst.AnimState:Hide("LIGHT")
-
-	if inst._body ~= nil then
-		inst._body.AnimState:Hide("LIGHT")
-	end
+	setVisualLight(inst, false)
 
 	if inst.components.equippable:IsEquipped() then
 		inst.components.inventoryitem.owner.AnimState:Hide("LANTERN_OVERLAY")
+	end
+end
+
+local function setLanternStandDisplay(inst, lit)
+	stopTrackingOwner(inst)
+
+	if inst.components.fueled ~= nil then
+		inst.components.fueled:StopConsuming()
+	end
+
+	if inst._light ~= nil then
+		inst._light:Remove()
+	end
+	if inst._body ~= nil then
+		inst._body:Remove()
+	end
+
+	-- 灯笼架展示真实灯笼实体时，只播放无棍灯体动画，由架子负责挂点和整体光照。
+	inst._aipLanternStandDisplay = true
+	inst._aipLanternStandDisplayLit = lit == true
+	playDisplaySkin(inst, inst._aipCurrentSkin, inst._aipLanternStandDisplayLit)
+end
+
+local function clearLanternStandDisplay(inst)
+	if not inst._aipLanternStandDisplay then
+		return
+	end
+
+	inst._aipLanternStandDisplay = nil
+	inst._aipLanternStandDisplayLit = nil
+	skinner.PlayCurrent(inst)
+
+	if inst.components.fueled ~= nil and inst.components.fueled:IsEmpty() then
+		setVisualLight(inst, false)
 	end
 end
 
@@ -193,6 +244,7 @@ local function onRemove(inst)
 end
 
 local function onDropped(inst)
+	clearLanternStandDisplay(inst)
 	turnOff(inst)
 	turnOn(inst)
 end
@@ -425,6 +477,9 @@ local function fn()
 	inst:AddTag("light")
 	inst:AddTag("redlantern")
 	inst:AddTag("aip_lantern")
+
+	inst.SetLanternStandDisplay = setLanternStandDisplay
+	inst.ClearLanternStandDisplay = clearLanternStandDisplay
 
 	MakeInventoryFloatable(inst, "med", nil, { .775, .5, .775 })
 
