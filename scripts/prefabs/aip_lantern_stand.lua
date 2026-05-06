@@ -44,6 +44,7 @@ end
 
 local DEFAULT_SKIN = standConfig.DEFAULT_SKIN
 local queueRefreshLanternDisplays
+local syncDisplayAnimations
 
 local function playSkin(inst, skin, hit)
 	skin = standConfig.GetSkin(skin)
@@ -306,6 +307,46 @@ local function releaseDisplayItems(inst, leaving)
 	end
 end
 
+local function stopDisplayAnimSync(inst)
+	if inst._aipLanternStandAnimSyncTask ~= nil then
+		inst._aipLanternStandAnimSyncTask:Cancel()
+		inst._aipLanternStandAnimSyncTask = nil
+	end
+end
+
+syncDisplayAnimations = function(inst)
+	local syncPercent, syncLength = getDisplayAnimSync(inst)
+
+	if syncPercent == nil then
+		return
+	end
+
+	for slot = 1, SLOT_COUNT do
+		local item = inst._aipLanternStandDisplayItems ~= nil and
+			inst._aipLanternStandDisplayItems[slot] or nil
+
+		if item ~= nil
+			and item:IsValid()
+			and item.SyncLanternStandDisplay ~= nil then
+			item:SyncLanternStandDisplay(syncPercent, syncLength)
+		end
+	end
+end
+
+local function updateDisplayAnimSyncTask(inst, enabled)
+	if enabled then
+		if inst._aipLanternStandAnimSyncTask == nil then
+			-- 真实灯笼有独立 AnimState，挂着时持续对齐灯笼架当前帧，避免后加入或客户端漂移。
+			inst._aipLanternStandAnimSyncTask = inst:DoPeriodicTask(
+				FRAMES,
+				syncDisplayAnimations
+			)
+		end
+	else
+		stopDisplayAnimSync(inst)
+	end
+end
+
 local function refreshLanternDisplays(inst)
 	if inst.components.container == nil then
 		return
@@ -347,6 +388,8 @@ local function refreshLanternDisplays(inst)
 	end
 
 	setLightCount(inst, lightCount)
+	updateDisplayAnimSyncTask(inst, #displayItems > 0)
+	syncDisplayAnimations(inst)
 end
 
 queueRefreshLanternDisplays = function(inst)
@@ -359,10 +402,19 @@ queueRefreshLanternDisplays = function(inst)
 	end
 end
 
-local function onhammered(inst)
+local function dropLanterns(inst)
+	stopDisplayAnimSync(inst)
+
 	if inst.components.container ~= nil then
+		-- 灯笼架被敲击时不再保持展示绑定，直接把挂着的灯笼全部掉落。
 		inst.components.container:DropEverything()
 	end
+
+	setLightCount(inst, 0)
+end
+
+local function onhammered(inst)
+	dropLanterns(inst)
 
 	inst.components.lootdropper:DropLoot()
 
@@ -374,21 +426,8 @@ local function onhammered(inst)
 end
 
 local function onhit(inst)
+	dropLanterns(inst)
 	skinner.PlayCurrent(inst, true)
-
-	if inst._aipLanternStandHitSyncTask ~= nil then
-		inst._aipLanternStandHitSyncTask:Cancel()
-	end
-
-	-- hit 动画结束后架子会重新进入 idle，需要把真实灯笼同步到新的摇摆帧。
-	local hitLength = inst.AnimState:GetCurrentAnimationLength() or 0
-	inst._aipLanternStandHitSyncTask = inst:DoTaskInTime(
-		hitLength,
-		function(inst)
-			inst._aipLanternStandHitSyncTask = nil
-			queueRefreshLanternDisplays(inst)
-		end
-	)
 end
 
 local function onbuilt(inst)
@@ -421,6 +460,7 @@ local function onitemlose(inst, data)
 end
 
 local function onremoveentity(inst)
+	stopDisplayAnimSync(inst)
 	releaseDisplayItems(inst, false)
 end
 
