@@ -32,3 +32,10 @@
 - `gen/imageCutter/imageCutter.js` 可用于预处理 `_素材` 图片、透明背景、批量裁剪并导出到 `_素材/out`；不要使用这个脚本处理 `exported` 里的图片。
 - 不要主动运行 DST 编译工具生成 `anim/*.zip`、`*.tex`、`*.xml` 等编译产物；用户启动游戏时会自动编译。
 - 如果误跑了编译工具，提交前清理本次新增的编译产物，只保留源码、`exported` 资源和必要的 PNG 源图，没有误跑则不用管。
+
+## SCML 跟随贴图规则
+
+- `Follower:FollowSymbol(parent.GUID, symbol, ...)` 跟的是实体级 `Follower`，目标 `symbol` 必须在 scml 里真实存在；推荐让 `folder`、PNG 路径、`object_ref name`、`timeline name` 使用同名锚点。
+- 跟随锚点通常用 10x10 透明 PNG，只提供位置、角度、缩放、层级，不承担可见贴图。
+- 所有需要支持跟随的动画都要在 mainline 和 timeline 里引用该锚点；当前动画缺少此 symbol 时，Follower 没有可靠挂载位置。
+- Follower 跟随当前帧 symbol 的变换；锚点的 `x/y/angle/scale/pivot` 会影响子实体，锚点做动画时子实体也会随之移动。
