@@ -6,6 +6,7 @@ local SKIN_CONFIGS = {
 	_G.require("configurations/skin/aip_cozy_nest"),
 	_G.require("configurations/skin/aip_grandfather_clock"),
 	_G.require("configurations/skin/aip_lantern"),
+	_G.require("configurations/skin/aip_lantern_stand"),
 }
 
 for _, config in ipairs(SKIN_CONFIGS) do

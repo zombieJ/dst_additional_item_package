@@ -1464,6 +1464,13 @@ return {
             },
             "A red lantern that can be carried by hand and keeps glowing when dropped. It has several looks that can be changed with the Clean Sweeper.",
 
+            -- Lantern Stand
+            {
+                type="img",
+                name="aip_lantern_stand",
+            },
+            "A stand that can hold up to three lanterns. Hung lanterns line up in order and sway gently in the breeze.",
+
             -- 石鬼面
             {
                 type="img",
