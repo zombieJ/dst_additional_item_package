@@ -27,10 +27,15 @@ local function OnIsDay(inst, isday)
 		local stones = TheSim:FindEntities(pt.x, pt.y, pt.z, 0.1, { "aip_bloodstone" })
 		local first = stones[1]
 		if first ~= nil and first.components.finiteuses ~= nil then
-			first.components.finiteuses:Use(-factor)
+			local finiteuses = first.components.finiteuses
+			local maxUses = finiteuses.total
 
-			if first.components.finiteuses:GetPercent() > 1 then
-				first.components.finiteuses:SetPercent(1)
+			-- 满充能时重复叠加会导致次数异常，直接按上限截断
+			if maxUses ~= nil and maxUses > 0 then
+				local currUses = finiteuses:GetUses()
+				if currUses < maxUses then
+					finiteuses:SetUses(math.min(maxUses, currUses + factor))
+				end
 			end
 		end
 	end
