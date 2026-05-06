@@ -44,7 +44,6 @@ end
 
 local DEFAULT_SKIN = standConfig.DEFAULT_SKIN
 local queueRefreshLanternDisplays
-local syncDisplayAnimations
 
 local function playSkin(inst, skin, hit)
 	skin = standConfig.GetSkin(skin)
@@ -80,20 +79,6 @@ end
 
 local function getDisplayFinalOffset(slot)
 	return SLOT_COUNT - slot + 1
-end
-
-local function getDisplayAnimSync(inst)
-	if not inst.AnimState:IsCurrentAnimation(standConfig.GetSkin(inst._aipCurrentSkin)) then
-		return nil, nil
-	end
-
-	local length = inst.AnimState:GetCurrentAnimationLength()
-
-	if length ~= nil and length > 0 then
-		return (inst.AnimState:GetCurrentAnimationTime() % length) / length, length
-	end
-
-	return nil, nil
 end
 
 local function isLanternLit(item)
@@ -231,7 +216,7 @@ local function unbindDisplaySlot(inst, slot, leaving)
 	unbindDisplayItem(inst, item, leaving)
 end
 
-local function bindDisplayItem(inst, item, slot, showTassle, syncPercent, syncLength)
+local function bindDisplayItem(inst, item, slot, showTassle)
 	if item == nil or not item:IsValid() then
 		unbindDisplaySlot(inst, slot, false)
 		return false
@@ -265,7 +250,7 @@ local function bindDisplayItem(inst, item, slot, showTassle, syncPercent, syncLe
 	item.Transform:SetScale(DISPLAY_SCALE, DISPLAY_SCALE, DISPLAY_SCALE)
 
 	if item.SetLanternStandDisplay ~= nil then
-		item:SetLanternStandDisplay(isLanternLit(item), showTassle, syncPercent, syncLength)
+		item:SetLanternStandDisplay(isLanternLit(item), showTassle)
 	end
 
 	if item.AnimState ~= nil then
@@ -307,46 +292,6 @@ local function releaseDisplayItems(inst, leaving)
 	end
 end
 
-local function stopDisplayAnimSync(inst)
-	if inst._aipLanternStandAnimSyncTask ~= nil then
-		inst._aipLanternStandAnimSyncTask:Cancel()
-		inst._aipLanternStandAnimSyncTask = nil
-	end
-end
-
-syncDisplayAnimations = function(inst)
-	local syncPercent, syncLength = getDisplayAnimSync(inst)
-
-	if syncPercent == nil then
-		return
-	end
-
-	for slot = 1, SLOT_COUNT do
-		local item = inst._aipLanternStandDisplayItems ~= nil and
-			inst._aipLanternStandDisplayItems[slot] or nil
-
-		if item ~= nil
-			and item:IsValid()
-			and item.SyncLanternStandDisplay ~= nil then
-			item:SyncLanternStandDisplay(syncPercent, syncLength)
-		end
-	end
-end
-
-local function updateDisplayAnimSyncTask(inst, enabled)
-	if enabled then
-		if inst._aipLanternStandAnimSyncTask == nil then
-			-- 真实灯笼有独立 AnimState，挂着时持续对齐灯笼架当前帧，避免后加入或客户端漂移。
-			inst._aipLanternStandAnimSyncTask = inst:DoPeriodicTask(
-				FRAMES,
-				syncDisplayAnimations
-			)
-		end
-	else
-		stopDisplayAnimSync(inst)
-	end
-end
-
 local function refreshLanternDisplays(inst)
 	if inst.components.container == nil then
 		return
@@ -355,7 +300,6 @@ local function refreshLanternDisplays(inst)
 	local displaySlot = 1
 	local lightCount = 0
 	local displayItems = {}
-	local syncPercent, syncLength = getDisplayAnimSync(inst)
 
 	-- 容器可能有空槽，展示时按实际存在的灯笼重新压紧顺序。
 	for slot = 1, SLOT_COUNT do
@@ -371,9 +315,7 @@ local function refreshLanternDisplays(inst)
 			inst,
 			item,
 			displaySlot,
-			displaySlot == #displayItems,
-			syncPercent,
-			syncLength
+			displaySlot == #displayItems
 		) then
 			if isLanternLit(item) then
 				lightCount = lightCount + 1
@@ -388,8 +330,6 @@ local function refreshLanternDisplays(inst)
 	end
 
 	setLightCount(inst, lightCount)
-	updateDisplayAnimSyncTask(inst, #displayItems > 0)
-	syncDisplayAnimations(inst)
 end
 
 queueRefreshLanternDisplays = function(inst)
@@ -403,8 +343,6 @@ queueRefreshLanternDisplays = function(inst)
 end
 
 local function dropLanterns(inst)
-	stopDisplayAnimSync(inst)
-
 	if inst.components.container ~= nil then
 		-- 灯笼架被敲击时不再保持展示绑定，直接把挂着的灯笼全部掉落。
 		inst.components.container:DropEverything()
@@ -460,7 +398,6 @@ local function onitemlose(inst, data)
 end
 
 local function onremoveentity(inst)
-	stopDisplayAnimSync(inst)
 	releaseDisplayItems(inst, false)
 end
 
