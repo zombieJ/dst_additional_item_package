@@ -538,6 +538,18 @@ rec("aip_lantern", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.LIGHT, CRAFTING_FILTERS.
 	Ingredient("lightbulb", 1),
 })
 
+-- 灯笼架
+rec("aip_lantern_stand", TECH.SCIENCE_TWO, {
+	CRAFTING_FILTERS.LIGHT,
+	CRAFTING_FILTERS.CONTAINERS,
+	CRAFTING_FILTERS.STRUCTURES,
+	CRAFTING_FILTERS.DECOR,
+}, {
+	Ingredient("twigs", 4),
+	Ingredient("boards", 2),
+	Ingredient("rope", 2),
+}, "aip_lantern_stand_placer")
+
 -- 火炬
 rec("aip_torch", TECH.LOST, { CRAFTING_FILTERS.LIGHT },
 	{ Ingredient("driftwood_log", 1), Ingredient("gunpowder", 1), Ingredient("ash", 1) })

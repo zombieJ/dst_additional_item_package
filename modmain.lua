@@ -216,6 +216,7 @@ PrefabFiles = {
 	"aip_forever",
 	"aip_glory_hand",
 	"aip_lantern",
+	"aip_lantern_stand",
 	"aip_stone_mask",
 	"aip_dream_stone",
 	"aip_hearthstone",
