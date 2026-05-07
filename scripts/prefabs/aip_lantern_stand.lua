@@ -348,7 +348,7 @@ local function bindDisplayItem(inst, item, slot, showTassle, standOn)
 
 	setDisplayItemFuelConsuming(item, inst, lit)
 
-	return true
+	return true, lit
 end
 
 -- 释放所有正在展示的灯笼。
@@ -383,16 +383,16 @@ local function refreshLanternDisplays(inst, standOn)
 	end
 
 	for _, item in ipairs(displayItems) do
-		if bindDisplayItem(
+		local bound, lit = bindDisplayItem(
 			inst,
 			item,
 			displaySlot,
 			displaySlot == #displayItems,
 			standOn
-		) then
-			if standOn and isLanternLit(item) then
-				lightCount = lightCount + 1
-			end
+		)
+
+		if bound and lit then
+			lightCount = lightCount + 1
 		end
 
 		displaySlot = displaySlot + 1

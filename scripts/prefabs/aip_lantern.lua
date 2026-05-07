@@ -158,7 +158,9 @@ local skinner = skinUtil.CreatePrefabSkinner(lanternConfig, {
 })
 
 local function onRemoveLight(light)
-	light._lantern._light = nil
+	if light._lantern ~= nil then
+		light._lantern._light = nil
+	end
 end
 
 local function stopTrackingOwner(inst)
@@ -176,6 +178,22 @@ local function startTrackingOwner(inst, owner)
 			inst._owner = owner
 			inst:ListenForEvent("equip", inst._onownerequip, owner)
 		end
+	end
+end
+
+-- 移除灯笼本体挂载的独立光源。
+local function removeLanternLight(inst)
+	if inst._light ~= nil then
+		inst._light:Remove()
+		inst._light = nil
+	end
+end
+
+-- 移除装备时跟随玩家手部的灯体。
+local function removeLanternBody(inst)
+	if inst._body ~= nil then
+		inst._body:Remove()
+		inst._body = nil
 	end
 end
 
@@ -207,14 +225,13 @@ local function turnOff(inst)
 	stopTrackingOwner(inst)
 	inst.components.fueled:StopConsuming()
 
-	if inst._light ~= nil then
-		inst._light:Remove()
-	end
+	removeLanternLight(inst)
 
 	setVisualLight(inst, false)
 
-	if inst.components.equippable:IsEquipped() then
-		inst.components.inventoryitem.owner.AnimState:Hide("LANTERN_OVERLAY")
+	local owner = inst.components.inventoryitem.owner
+	if owner ~= nil and inst.components.equippable:IsEquipped() then
+		owner.AnimState:Hide("LANTERN_OVERLAY")
 	end
 end
 
@@ -225,12 +242,8 @@ local function setLanternStandDisplay(inst, lit, showTassle)
 		inst.components.fueled:StopConsuming()
 	end
 
-	if inst._light ~= nil then
-		inst._light:Remove()
-	end
-	if inst._body ~= nil then
-		inst._body:Remove()
-	end
+	removeLanternLight(inst)
+	removeLanternBody(inst)
 
 	-- 灯笼架展示真实灯笼实体时，只播放无棍灯体动画，由架子负责挂点和整体光照。
 	inst._aipLanternStandDisplay = true
@@ -260,12 +273,8 @@ local function clearLanternStandDisplay(inst)
 end
 
 local function onRemove(inst)
-	if inst._light ~= nil then
-		inst._light:Remove()
-	end
-	if inst._body ~= nil then
-		inst._body:Remove()
-	end
+	removeLanternLight(inst)
+	removeLanternBody(inst)
 end
 
 local function onDropped(inst)
@@ -295,7 +304,22 @@ local function toggleOverrideSymbols(inst, owner)
 end
 
 local function onRemoveBody(body)
-	body._lantern._body = nil
+	if body._lantern ~= nil then
+		body._lantern._body = nil
+	end
+end
+
+-- 卸下时回收手部灯体并恢复玩家手持贴图。
+local function removeEquippedBody(inst, owner)
+	if inst._body ~= nil then
+		if inst._body.entity:IsVisible() then
+			owner.AnimState:OverrideSymbol("swap_object", SWAP_BUILD, SWAP_FULL_SYMBOL)
+		end
+		if inst._light ~= nil then
+			inst._light.entity:SetParent((inst.components.inventoryitem.owner or inst).entity)
+		end
+		removeLanternBody(inst)
+	end
 end
 
 local function onequip(inst, owner)
@@ -304,9 +328,7 @@ local function onequip(inst, owner)
 	owner.AnimState:Hide("LANTERN_OVERLAY")
 	owner.AnimState:OverrideSymbol("swap_object", SWAP_BUILD, SWAP_STICK_SYMBOL)
 
-	if inst._body ~= nil then
-		inst._body:Remove()
-	end
+	removeLanternBody(inst)
 
 	inst._body = SpawnPrefab(BODY_PREFAB)
 	inst._body._lantern = inst
@@ -331,23 +353,13 @@ local function onequip(inst, owner)
 
 	if inst.components.fueled:IsEmpty() then
 		inst._body.AnimState:Hide("LIGHT")
-		owner.AnimState:Hide("LANTERN_OVERLAY")
 	else
-		owner.AnimState:Hide("LANTERN_OVERLAY")
 		turnOn(inst)
 	end
 end
 
 local function onunequip(inst, owner)
-	if inst._body ~= nil then
-		if inst._body.entity:IsVisible() then
-			owner.AnimState:OverrideSymbol("swap_object", SWAP_BUILD, SWAP_FULL_SYMBOL)
-		end
-		if inst._light ~= nil then
-			inst._light.entity:SetParent((inst.components.inventoryitem.owner or inst).entity)
-		end
-		inst._body:Remove()
-	end
+	removeEquippedBody(inst, owner)
 
 	owner.AnimState:Hide("ARM_carry")
 	owner.AnimState:Show("ARM_normal")
@@ -360,20 +372,7 @@ local function onunequip(inst, owner)
 end
 
 local function onequiptomodel(inst, owner)
-	if inst._body ~= nil then
-		if inst._body.entity:IsVisible() then
-			owner.AnimState:OverrideSymbol("swap_object", SWAP_BUILD, SWAP_FULL_SYMBOL)
-		end
-		if inst._light ~= nil then
-			inst._light.entity:SetParent((inst.components.inventoryitem.owner or inst).entity)
-		end
-		inst._body:Remove()
-	end
-
-	if inst.components.fueled.consuming then
-		startTrackingOwner(inst, owner)
-	end
-
+	removeEquippedBody(inst, owner)
 	turnOff(inst)
 end
 
