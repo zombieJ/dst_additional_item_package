@@ -391,21 +391,11 @@ local function noFuel(inst)
 	end
 end
 
-local function onUpdateFueledDraining(inst)
+local function onTakeFuel(inst)
 	local owner = inst.components.inventoryitem.owner
-	inst.components.fueled.rate =
-		owner ~= nil and
-		(owner.components.sheltered ~= nil and owner.components.sheltered.sheltered or owner.components.rainimmunity ~= nil) and
-		1 or 1 + TUNING.REDLANTERN_RAIN_RATE * TheWorld.state.precipitationrate
-end
 
-local function onIsRaining(inst, israining)
-	if israining then
-		inst.components.fueled:SetUpdateFn(onUpdateFueledDraining)
-		onUpdateFueledDraining(inst)
-	else
-		inst.components.fueled:SetUpdateFn()
-		inst.components.fueled.rate = 1
+	if owner == nil or inst.components.equippable:IsEquipped() then
+		turnOn(inst)
 	end
 end
 
@@ -530,19 +520,18 @@ local function fn()
 	inst.components.equippable:SetOnEquipToModel(onequiptomodel)
 
 	inst:AddComponent("fueled")
-	inst.components.fueled.fueltype = FUELTYPE.MAGIC
-	inst.components.fueled:InitializeFuelLevel(TUNING.REDLANTERN_LIGHTTIME)
+	inst.components.fueled.fueltype = FUELTYPE.CAVE
+	inst.components.fueled:InitializeFuelLevel(TUNING.LANTERN_LIGHTTIME)
 	inst.components.fueled:SetDepletedFn(noFuel)
+	inst.components.fueled:SetTakeFuelFn(onTakeFuel)
 	inst.components.fueled:SetFirstPeriod(TUNING.TURNON_FUELED_CONSUMPTION, TUNING.TURNON_FULL_FUELED_CONSUMPTION)
+	inst.components.fueled.accepting = true
 
 	inst:AddComponent("fuel")
 	inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
 
 	inst:ListenForEvent("floater_startfloating", startFloating)
 	inst:ListenForEvent("floater_stopfloating", stopFloating)
-
-	inst:WatchWorldState("israining", onIsRaining)
-	onIsRaining(inst, TheWorld.state.israining)
 
 	MakeSmallBurnable(inst, TUNING.TINY_BURNTIME)
 	MakeSmallPropagator(inst)

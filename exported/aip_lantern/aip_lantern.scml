@@ -14,7 +14,7 @@
 		<file id="0" name="body/body_round.png" width="256" height="256" pivot_x="0.508022" pivot_y="0.94194" />
 		<file id="1" name="body/body_cloth.png" width="256" height="256" pivot_x="0.508022" pivot_y="0.94194" />
 		<file id="2" name="body/body_horror.png" width="256" height="256" pivot_x="0.508022" pivot_y="0.94194" />
-		<file id="3" name="body/body_oval.png" width="256" height="256" pivot_x="0.508022" pivot_y="0.94194" />
+		<file id="3" name="body/body_oval.png" width="256" height="192" pivot_x="0.508022" pivot_y="0.922587" />
 		<file id="4" name="body/body_square.png" width="256" height="256" pivot_x="0.508022" pivot_y="0.94194" />
 		<file id="5" name="body/body_gourd.png" width="256" height="256" pivot_x="0.508022" pivot_y="0.94194" />
 		<file id="6" name="body/body_pattern.png" width="256" height="256" pivot_x="0.508022" pivot_y="0.94194" />
@@ -5212,7 +5212,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="0" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="0" z_index="1" />
 						</key>
@@ -5220,7 +5220,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="1" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="1" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="1" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="1" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="1" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="1" z_index="1" />
 						</key>
@@ -5228,7 +5228,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="2" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="2" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="2" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="2" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="2" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="2" z_index="1" />
 						</key>
@@ -5236,7 +5236,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="3" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="3" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="3" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="3" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="3" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="3" z_index="1" />
 						</key>
@@ -5244,7 +5244,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="4" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="4" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="4" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="4" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="4" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="4" z_index="1" />
 						</key>
@@ -5252,7 +5252,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="5" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="5" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="5" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="5" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="5" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="5" z_index="1" />
 						</key>
@@ -5260,7 +5260,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="6" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="6" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="6" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="6" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="6" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="6" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="6" z_index="1" />
 						</key>
@@ -5268,7 +5268,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="7" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="7" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="7" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="7" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="7" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="7" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="7" z_index="1" />
 						</key>
@@ -5276,7 +5276,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="8" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="8" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="8" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="8" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="8" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="8" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="8" z_index="1" />
 						</key>
@@ -5284,7 +5284,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="9" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="9" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="9" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="9" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="9" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="9" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="9" z_index="1" />
 						</key>
@@ -5292,7 +5292,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="10" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="10" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="10" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="10" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="10" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="10" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="10" z_index="1" />
 						</key>
@@ -5300,7 +5300,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="11" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="11" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="11" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="11" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="11" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="11" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="11" z_index="1" />
 						</key>
@@ -5308,7 +5308,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="12" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="12" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="12" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="12" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="12" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="12" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="12" z_index="1" />
 						</key>
@@ -5316,7 +5316,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="13" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="13" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="13" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="13" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="13" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="13" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="13" z_index="1" />
 						</key>
@@ -5324,7 +5324,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="14" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="14" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="14" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="14" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="14" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="14" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="14" z_index="1" />
 						</key>
@@ -5332,7 +5332,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="15" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="15" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="15" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="15" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="15" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="15" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="15" z_index="1" />
 						</key>
@@ -5340,7 +5340,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="16" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="16" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="16" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="16" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="16" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="16" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="16" z_index="1" />
 						</key>
@@ -5348,7 +5348,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="17" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="17" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="17" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="17" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="17" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="17" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="17" z_index="1" />
 						</key>
@@ -5356,7 +5356,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="18" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="18" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="18" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="18" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="18" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="18" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="18" z_index="1" />
 						</key>
@@ -5364,7 +5364,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="19" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="19" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="19" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="19" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="19" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="19" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="19" z_index="1" />
 						</key>
@@ -5372,7 +5372,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="20" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="20" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="20" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="20" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="20" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="20" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="20" z_index="1" />
 						</key>
@@ -5380,7 +5380,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="21" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="21" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="21" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="21" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="21" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="21" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="21" z_index="1" />
 						</key>
@@ -5388,7 +5388,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="22" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="22" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="22" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="22" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="22" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="22" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="22" z_index="1" />
 						</key>
@@ -5396,7 +5396,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="23" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="23" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="23" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="23" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="23" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="23" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="23" z_index="1" />
 						</key>
@@ -5404,7 +5404,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="24" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="24" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="24" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="24" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="24" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="24" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="24" z_index="1" />
 						</key>
@@ -5412,7 +5412,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="25" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="25" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="25" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="25" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="25" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="25" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="25" z_index="1" />
 						</key>
@@ -5420,7 +5420,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="26" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="26" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="26" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="26" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="26" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="26" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="26" z_index="1" />
 						</key>
@@ -5428,7 +5428,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="27" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="27" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="27" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="27" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="27" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="27" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="27" z_index="1" />
 						</key>
@@ -5436,7 +5436,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="28" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="28" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="28" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="28" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="28" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="28" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="28" z_index="1" />
 						</key>
@@ -5444,7 +5444,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="29" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="29" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="29" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="29" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="29" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="29" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="29" z_index="1" />
 						</key>
@@ -5452,7 +5452,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="30" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="30" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="30" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="30" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="30" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="30" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="30" z_index="1" />
 						</key>
@@ -5460,7 +5460,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="31" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="31" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="31" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="31" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="31" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="31" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="31" z_index="1" />
 						</key>
@@ -5468,7 +5468,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="32" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="32" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="32" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="32" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="32" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="32" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="32" z_index="1" />
 						</key>
@@ -5476,7 +5476,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="33" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="33" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="33" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="33" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="33" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="33" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="33" z_index="1" />
 						</key>
@@ -5484,7 +5484,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="34" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="34" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="34" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="34" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="34" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="34" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="34" z_index="1" />
 						</key>
@@ -5492,7 +5492,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="35" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="35" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="35" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="35" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="35" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="35" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="35" z_index="1" />
 						</key>
@@ -5500,7 +5500,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="36" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="36" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="36" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="36" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="36" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="36" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="36" z_index="1" />
 						</key>
@@ -5508,7 +5508,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="37" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="37" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="37" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="37" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="37" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="37" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="37" z_index="1" />
 						</key>
@@ -5516,7 +5516,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="38" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="38" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="38" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="38" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="38" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="38" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="38" z_index="1" />
 						</key>
@@ -5524,7 +5524,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="39" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="39" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="39" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="39" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="39" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="39" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="39" z_index="1" />
 						</key>
@@ -5532,7 +5532,7 @@
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="40" z_index="6" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="40" z_index="5" />
 							<object_ref id="2" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="40" z_index="4" />
-							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="40" z_index="3" />
+							<object_ref id="3" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="40" z_index="3" />
 							<object_ref id="4" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="40" z_index="2" />
 							<object_ref id="5" name="dirt" abs_x="0" abs_y="0" abs_pivot_x="0.500038" abs_pivot_y="0.500428" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="5" key="40" z_index="1" />
 						</key>
@@ -6292,207 +6292,207 @@
 					<mainline>
 						<key id="0" time="0">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="1" />
 						</key>
 						<key id="1" time="34">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="1" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="1" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="1" z_index="1" />
 						</key>
 						<key id="2" time="67">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="2" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="2" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="2" z_index="1" />
 						</key>
 						<key id="3" time="100">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="3" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="3" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="3" z_index="1" />
 						</key>
 						<key id="4" time="134">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="4" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="4" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="4" z_index="1" />
 						</key>
 						<key id="5" time="167">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="5" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="5" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="5" z_index="1" />
 						</key>
 						<key id="6" time="200">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="6" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="6" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="6" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="6" z_index="1" />
 						</key>
 						<key id="7" time="234">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="7" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="7" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="7" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="7" z_index="1" />
 						</key>
 						<key id="8" time="267">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="8" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="8" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="8" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="8" z_index="1" />
 						</key>
 						<key id="9" time="300">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="9" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="9" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="9" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="9" z_index="1" />
 						</key>
 						<key id="10" time="334">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="10" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="10" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="10" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="10" z_index="1" />
 						</key>
 						<key id="11" time="367">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="11" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="11" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="11" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="11" z_index="1" />
 						</key>
 						<key id="12" time="400">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="12" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="12" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="12" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="12" z_index="1" />
 						</key>
 						<key id="13" time="434">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="13" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="13" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="13" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="13" z_index="1" />
 						</key>
 						<key id="14" time="467">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="14" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="14" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="14" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="14" z_index="1" />
 						</key>
 						<key id="15" time="500">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="15" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="15" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="15" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="15" z_index="1" />
 						</key>
 						<key id="16" time="534">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="16" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="16" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="16" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="16" z_index="1" />
 						</key>
 						<key id="17" time="567">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="17" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="17" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="17" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="17" z_index="1" />
 						</key>
 						<key id="18" time="600">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="18" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="18" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="18" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="18" z_index="1" />
 						</key>
 						<key id="19" time="634">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="19" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="19" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="19" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="19" z_index="1" />
 						</key>
 						<key id="20" time="667">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="20" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="20" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="20" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="20" z_index="1" />
 						</key>
 						<key id="21" time="700">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="21" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="21" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="21" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="21" z_index="1" />
 						</key>
 						<key id="22" time="734">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="22" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="22" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="22" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="22" z_index="1" />
 						</key>
 						<key id="23" time="767">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="23" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="23" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="23" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="23" z_index="1" />
 						</key>
 						<key id="24" time="800">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="24" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="24" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="24" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="24" z_index="1" />
 						</key>
 						<key id="25" time="834">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="25" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="25" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="25" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="25" z_index="1" />
 						</key>
 						<key id="26" time="867">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="26" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="26" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="26" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="26" z_index="1" />
 						</key>
 						<key id="27" time="900">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="27" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="27" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="27" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="27" z_index="1" />
 						</key>
 						<key id="28" time="934">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="28" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="28" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="28" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="28" z_index="1" />
 						</key>
 						<key id="29" time="967">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="29" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="29" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="29" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="29" z_index="1" />
 						</key>
 						<key id="30" time="1000">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="30" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="30" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="30" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="30" z_index="1" />
 						</key>
 						<key id="31" time="1034">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="31" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="31" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="31" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="31" z_index="1" />
 						</key>
 						<key id="32" time="1067">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="32" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="32" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="32" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="32" z_index="1" />
 						</key>
 						<key id="33" time="1100">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="33" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="33" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="33" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="33" z_index="1" />
 						</key>
 						<key id="34" time="1134">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="34" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="34" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="34" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="34" z_index="1" />
 						</key>
 						<key id="35" time="1167">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="35" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="35" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="35" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="35" z_index="1" />
 						</key>
 						<key id="36" time="1201">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="36" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="36" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="36" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="36" z_index="1" />
 						</key>
 						<key id="37" time="1234">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="37" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="37" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="37" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="37" z_index="1" />
 						</key>
 						<key id="38" time="1267">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="38" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="38" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="38" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="38" z_index="1" />
 						</key>
 						<key id="39" time="1301">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="39" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="39" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="39" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="39" z_index="1" />
 						</key>
 						<key id="40" time="1334">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="40" z_index="3" />
-							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="40" z_index="2" />
+							<object_ref id="1" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="40" z_index="2" />
 							<object_ref id="2" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="40" z_index="1" />
 						</key>
 					</mainline>
@@ -6877,14 +6877,14 @@
 						<key id="0" time="0">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="5" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="4" />
-							<object_ref id="2" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="3" />
+							<object_ref id="2" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="3" />
 							<object_ref id="3" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="2" />
 							<object_ref id="4" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="0" z_index="1" />
 						</key>
 						<key id="1" time="34">
 							<object_ref id="0" name="LIGHT" abs_x="0" abs_y="0" abs_pivot_x="0.489315" abs_pivot_y="0.393471" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="5" />
 							<object_ref id="1" name="GoldRope" abs_x="0" abs_y="0" abs_pivot_x="0.513306" abs_pivot_y="0.494286" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="1" z_index="4" />
-							<object_ref id="2" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.94194" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="1" z_index="3" />
+							<object_ref id="2" name="PaperLantern_Swing" abs_x="0" abs_y="0" abs_pivot_x="0.508022" abs_pivot_y="0.922587" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="1" z_index="3" />
 							<object_ref id="3" name="Tassle" abs_x="0" abs_y="0" abs_pivot_x="0.486207" abs_pivot_y="0.675705" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="1" z_index="2" />
 							<object_ref id="4" name="PaperLantern_Stick" abs_x="0" abs_y="0" abs_pivot_x="0.502703" abs_pivot_y="0.503475" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="4" key="1" z_index="1" />
 						</key>
