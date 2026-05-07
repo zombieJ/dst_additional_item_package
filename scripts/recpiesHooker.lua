@@ -529,7 +529,7 @@ rec("aip_pet_fudge", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.TOOLS },
 	Ingredient("monstermeat_dried", 1),
 })
 
------------------------------------- 5 种测试 ------------------------------------
+------------------------------------ 生活质量 ------------------------------------
 -- 灯笼
 rec("aip_lantern", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.LIGHT, CRAFTING_FILTERS.DECOR },
 {
@@ -550,6 +550,7 @@ rec("aip_lantern_stand", TECH.SCIENCE_TWO, {
 	Ingredient("rope", 2),
 }, "aip_lantern_stand_placer")
 
+------------------------------------ 5 种测试 ------------------------------------
 -- 火炬
 rec("aip_torch", TECH.LOST, { CRAFTING_FILTERS.LIGHT },
 	{ Ingredient("driftwood_log", 1), Ingredient("gunpowder", 1), Ingredient("ash", 1) })
