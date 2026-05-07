@@ -545,7 +545,7 @@ rec("aip_lantern_stand", TECH.SCIENCE_TWO, {
 	CRAFTING_FILTERS.STRUCTURES,
 	CRAFTING_FILTERS.DECOR,
 }, {
-	Ingredient("twigs", 4),
+	Ingredient("phlegm", 1),
 	Ingredient("boards", 2),
 	Ingredient("rope", 2),
 }, "aip_lantern_stand_placer")
