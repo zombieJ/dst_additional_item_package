@@ -13,7 +13,8 @@ for _, config in ipairs(SKIN_CONFIGS) do
 	skinUtil.RegisterBuildSkinConfig(config, _G.aipGetModConfig("language"))
 end
 
-local function onBuildStructure(builder, data)
+-- 建造完成后把配方里选择的皮肤应用到成品。
+local function onBuildProduct(builder, data)
 	skinUtil.ApplyBuiltSkin(data)
 end
 
@@ -22,7 +23,9 @@ AddComponentPostInit("builder", function(self)
 		return
 	end
 
-	self.inst:ListenForEvent("buildstructure", onBuildStructure)
+	-- 灯笼这类物品走 builditem，建筑类皮肤走 buildstructure。
+	self.inst:ListenForEvent("builditem", onBuildProduct)
+	self.inst:ListenForEvent("buildstructure", onBuildProduct)
 end)
 
 local function patchSkinList(packageName)
