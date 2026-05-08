@@ -94,6 +94,9 @@
             display: block;
             border: 1px solid #ddd;
             max-width: none;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-drag: none;
             background-image: 
                 linear-gradient(45deg, #ccc 25%, transparent 25%),
                 linear-gradient(-45deg, #ccc 25%, transparent 25%),
@@ -269,7 +272,7 @@
         }
 
         .eraser-controls input[type="range"] {
-            width: 100px;
+            width: 320px;
         }
 
         .eraser-controls .brush-size {
@@ -461,10 +464,14 @@
         let baseDisplayWidth = 0;
         let baseDisplayHeight = 0;
         let canvasZoomPercent = 100;
+        let activeEraserPointerId = null;
 
         const minZoomPercent = 25;
         const maxZoomPercent = 400;
         const zoomStep = 25;
+        const supportsPointerEvents = window.PointerEvent !== undefined;
+
+        imageCanvas.draggable = false;
 
         dropZone.addEventListener('click', () => fileInput.click());
         dropZone.addEventListener('dragover', (e) => {
@@ -780,6 +787,90 @@
             eraserCursor.style.height = eraserBrushSize + 'px';
         }
 
+        function isEraserToolActive() {
+            return isErasing || isTransparentErasing;
+        }
+
+        function updateEraserCursorPosition(e, metrics = getCanvasDisplayMetrics()) {
+            const displayX = e.clientX - metrics.rect.left;
+            const displayY = e.clientY - metrics.rect.top;
+
+            eraserCursor.style.display = 'block';
+            eraserCursor.style.left = (displayX - eraserBrushSize / 2) + 'px';
+            eraserCursor.style.top = (displayY - eraserBrushSize / 2) + 'px';
+        }
+
+        function applyEraserStroke(x, y, radius) {
+            if (isErasing) {
+                erase(x, y, radius);
+            } else if (isTransparentErasing) {
+                transparentErase(x, y, radius);
+                if (lastEraserX !== null && lastEraserY !== null) {
+                    const distance = Math.sqrt(Math.pow(x - lastEraserX, 2) + Math.pow(y - lastEraserY, 2));
+                    const steps = Math.ceil(distance / Math.max(1, radius / 2));
+
+                    for (let i = 1; i <= steps; i++) {
+                        const t = i / steps;
+                        const interpX = lastEraserX + (x - lastEraserX) * t;
+                        const interpY = lastEraserY + (y - lastEraserY) * t;
+                        transparentErase(interpX, interpY, radius);
+                    }
+                }
+                lastEraserX = x;
+                lastEraserY = y;
+            }
+        }
+
+        function beginEraserStroke(e) {
+            if (!isEraserToolActive()) return;
+
+            e.preventDefault();
+            saveToHistory();
+            isErasingActive = true;
+
+            const point = getCanvasPoint(e);
+            const radius = getCanvasBrushRadius();
+            lastEraserX = point.x;
+            lastEraserY = point.y;
+            applyEraserStroke(point.x, point.y, radius);
+        }
+
+        function moveEraserStroke(e, shouldErase) {
+            if (!isEraserToolActive()) return;
+
+            e.preventDefault();
+            const metrics = getCanvasDisplayMetrics();
+            const point = getCanvasPoint(e);
+            const radius = getCanvasBrushRadius(metrics);
+
+            updateEraserCursorPosition(e, metrics);
+
+            if (shouldErase) {
+                applyEraserStroke(point.x, point.y, radius);
+            }
+        }
+
+        function endEraserStroke(e) {
+            if (e !== null && e !== undefined &&
+                activeEraserPointerId !== null &&
+                e.pointerId !== activeEraserPointerId) {
+                return;
+            }
+
+            if (activeEraserPointerId !== null && imageCanvas.releasePointerCapture !== undefined) {
+                try {
+                    imageCanvas.releasePointerCapture(activeEraserPointerId);
+                } catch (err) {
+                    // 指针可能已被浏览器释放，忽略即可。
+                }
+            }
+
+            activeEraserPointerId = null;
+            isErasingActive = false;
+            lastEraserX = null;
+            lastEraserY = null;
+        }
+
         function initCropBox() {
             const size = Math.min(imageCanvas.width, imageCanvas.height) * 0.5;
             cropX = (imageCanvas.width - size) / 2;
@@ -836,41 +927,33 @@
             startY = e.clientY;
         });
 
-        imageCanvas.addEventListener('mousemove', (e) => {
-            if (!isErasing && !isTransparentErasing) return;
+        imageCanvas.addEventListener('pointerdown', (e) => {
+            if (!supportsPointerEvents || !isEraserToolActive() || e.button !== 0 || e.isPrimary === false) return;
 
-            const metrics = getCanvasDisplayMetrics();
-            const displayX = e.clientX - metrics.rect.left;
-            const displayY = e.clientY - metrics.rect.top;
-            const point = getCanvasPoint(e);
-            const x = point.x;
-            const y = point.y;
-            const radius = getCanvasBrushRadius(metrics);
+            activeEraserPointerId = e.pointerId;
+            imageCanvas.setPointerCapture(e.pointerId);
+            beginEraserStroke(e);
+        }, { passive: false });
 
-            eraserCursor.style.display = 'block';
-            eraserCursor.style.left = (displayX - eraserBrushSize / 2) + 'px';
-            eraserCursor.style.top = (displayY - eraserBrushSize / 2) + 'px';
+        imageCanvas.addEventListener('pointermove', (e) => {
+            if (!supportsPointerEvents || !isEraserToolActive() || e.isPrimary === false) return;
 
-            if (isErasingActive) {
-                if (isErasing) {
-                    erase(x, y, radius);
-                } else if (isTransparentErasing) {
-                    transparentErase(x, y, radius);
-                    if (lastEraserX !== null && lastEraserY !== null) {
-                        const distance = Math.sqrt(Math.pow(x - lastEraserX, 2) + Math.pow(y - lastEraserY, 2));
-                        const steps = Math.ceil(distance / Math.max(1, radius / 2));
-                        
-                        for (let i = 1; i <= steps; i++) {
-                            const t = i / steps;
-                            const interpX = lastEraserX + (x - lastEraserX) * t;
-                            const interpY = lastEraserY + (y - lastEraserY) * t;
-                            transparentErase(interpX, interpY, radius);
-                        }
-                    }
-                    lastEraserX = x;
-                    lastEraserY = y;
-                }
+            moveEraserStroke(e, isErasingActive && e.pointerId === activeEraserPointerId);
+        }, { passive: false });
+
+        imageCanvas.addEventListener('pointerup', endEraserStroke);
+        imageCanvas.addEventListener('pointercancel', endEraserStroke);
+
+        imageCanvas.addEventListener('dragstart', (e) => {
+            if (isEraserToolActive()) {
+                e.preventDefault();
             }
+        });
+
+        imageCanvas.addEventListener('mousemove', (e) => {
+            if (supportsPointerEvents || !isEraserToolActive()) return;
+
+            moveEraserStroke(e, isErasingActive);
         });
 
         imageCanvas.addEventListener('mousemove', (e) => {
@@ -886,7 +969,7 @@
         });
 
         imageCanvas.addEventListener('mouseleave', () => {
-            if (isErasing || isTransparentErasing) {
+            if (isEraserToolActive() && activeEraserPointerId === null) {
                 eraserCursor.style.display = 'none';
             }
             if (isBucket) {
@@ -895,20 +978,9 @@
         });
 
         imageCanvas.addEventListener('mousedown', (e) => {
-            if (!isErasing && !isTransparentErasing) return;
-            saveToHistory();
-            isErasingActive = true;
-            const point = getCanvasPoint(e);
-            const x = point.x;
-            const y = point.y;
-            const radius = getCanvasBrushRadius();
-            lastEraserX = x;
-            lastEraserY = y;
-            if (isErasing) {
-                erase(x, y, radius);
-            } else if (isTransparentErasing) {
-                transparentErase(x, y, radius);
-            }
+            if (supportsPointerEvents || !isEraserToolActive()) return;
+
+            beginEraserStroke(e);
         });
 
         imageCanvas.addEventListener('click', (e) => {
@@ -924,9 +996,10 @@
             isDragging = false;
             isResizing = false;
             currentHandle = null;
-            isErasingActive = false;
-            lastEraserX = null;
-            lastEraserY = null;
+
+            if (!supportsPointerEvents) {
+                endEraserStroke();
+            }
         });
 
         function erase(x, y, radius) {
