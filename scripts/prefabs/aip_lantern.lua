@@ -55,10 +55,12 @@ local ANIM_BODY_SUFFIX = "_idle_body_loop"
 local ANIM_FLOAT_SUFFIX = "_float"
 local TASSLE_SYMBOL = "Tassle"
 
+-- 获取指定皮肤对应的动画名称。
 local function getSkinAnim(skin, suffix)
 	return lanternConfig.GetSkin(skin)..suffix
 end
 
+-- 同步灯笼本体和手持灯体的发光贴图。
 local function setVisualLight(inst, enabled)
 	if enabled then
 		inst.AnimState:Show("LIGHT")
@@ -75,6 +77,7 @@ local function setVisualLight(inst, enabled)
 	end
 end
 
+-- 控制灯笼流苏显示。
 local function setDisplayTassle(inst, enabled)
 	if enabled then
 		inst.AnimState:Show(TASSLE_SYMBOL)
@@ -83,6 +86,7 @@ local function setDisplayTassle(inst, enabled)
 	end
 end
 
+-- 播放灯笼架展示用的无杆灯体动画。
 local function playDisplaySkin(inst, skin, lit, showTassle)
 	inst.AnimState:SetDeltaTimeMultiplier(1)
 	inst.AnimState:PlayAnimation(getSkinAnim(skin, ANIM_BODY_SUFFIX), true)
@@ -90,6 +94,7 @@ local function playDisplaySkin(inst, skin, lit, showTassle)
 	setVisualLight(inst, lit == true)
 end
 
+-- 按时间轻微抖动灯光半径和颜色。
 local function onUpdateFlicker(inst, starttime)
 	local time = starttime ~= nil and (GetTime() - starttime) * 15 or 0
 	local flicker = (math.sin(time) + math.sin(time + 2) + math.sin(time + 0.7777)) * .5
@@ -100,11 +105,13 @@ local function onUpdateFlicker(inst, starttime)
 	inst.Light:SetColour(LIGHT_COLOUR.x + flicker, LIGHT_COLOUR.y + flicker, LIGHT_COLOUR.z + flicker)
 end
 
+-- 播放手持灯体皮肤动画。
 local function playBodySkin(inst, skin)
 	skin = lanternConfig.GetSkin(skin)
 	inst.AnimState:PlayAnimation(getSkinAnim(skin, ANIM_BODY_SUFFIX), true)
 end
 
+-- 同步手持灯体皮肤网络字段并刷新动画。
 local function setBodySkin(inst, skin)
 	skin = lanternConfig.GetSkin(skin)
 
@@ -115,10 +122,12 @@ local function setBodySkin(inst, skin)
 	playBodySkin(inst, skin)
 end
 
+-- 获取当前皮肤对应的物品栏贴图名。
 local function getSkinImage(skin)
 	return lanternConfig.GetSkinPrefab(skin) or PREFAB
 end
 
+-- 根据皮肤刷新物品栏图标。
 local function applyInventoryImage(inst, skin)
 	if inst.components.inventoryitem ~= nil then
 		local image = getSkinImage(skin)
@@ -127,6 +136,7 @@ local function applyInventoryImage(inst, skin)
 	end
 end
 
+-- 播放灯笼本体或灯笼架展示状态的当前皮肤。
 local function playSkin(inst, skin)
 	skin = lanternConfig.GetSkin(skin)
 	if inst._aipLanternStandDisplay then
@@ -157,12 +167,14 @@ local skinner = skinUtil.CreatePrefabSkinner(lanternConfig, {
 	play_fn = playSkin,
 })
 
+-- 光源移除时清理灯笼反向引用。
 local function onRemoveLight(light)
 	if light._lantern ~= nil then
 		light._lantern._light = nil
 	end
 end
 
+-- 停止监听拥有者换装事件。
 local function stopTrackingOwner(inst)
 	if inst._owner ~= nil then
 		inst:RemoveEventCallback("equip", inst._onownerequip, inst._owner)
@@ -170,6 +182,7 @@ local function stopTrackingOwner(inst)
 	end
 end
 
+-- 开始监听拥有者换装以便被遮挡时熄灯。
 local function startTrackingOwner(inst, owner)
 	if owner ~= inst._owner then
 		stopTrackingOwner(inst)
@@ -197,11 +210,14 @@ local function removeLanternBody(inst)
 	end
 end
 
+-- 点亮灯笼并启动燃料消耗。
 local function turnOn(inst)
+	-- 没有燃料时只保持实体，不创建光源。
 	if inst.components.fueled:IsEmpty() then
 		return
 	end
 
+	-- 只有成功点亮才消耗燃料。
 	inst.components.fueled:StartConsuming()
 
 	if inst._light == nil then
@@ -210,10 +226,12 @@ local function turnOn(inst)
 		inst:ListenForEvent("onremove", onRemoveLight, inst._light)
 	end
 
+	-- 独立光源挂到物品、手持灯体或地面实体上，保证掉落和装备都能发光。
 	inst._light.entity:SetParent((inst.components.inventoryitem.owner or inst._body or inst).entity)
 
 	setVisualLight(inst, true)
 
+	-- 使用自定义手持灯体时隐藏原版提灯覆盖层，避免双层贴图。
 	if not (inst._body ~= nil and inst._body.entity:IsVisible())
 		and inst.components.equippable:IsEquipped()
 		and inst.components.inventoryitem.owner ~= nil then
@@ -221,6 +239,7 @@ local function turnOn(inst)
 	end
 end
 
+-- 熄灭灯笼并停止燃料消耗。
 local function turnOff(inst)
 	stopTrackingOwner(inst)
 	inst.components.fueled:StopConsuming()
@@ -235,6 +254,7 @@ local function turnOff(inst)
 	end
 end
 
+-- 切换到灯笼架展示状态。
 local function setLanternStandDisplay(inst, lit, showTassle)
 	stopTrackingOwner(inst)
 
@@ -257,6 +277,7 @@ local function setLanternStandDisplay(inst, lit, showTassle)
 	)
 end
 
+-- 退出灯笼架展示状态并恢复普通灯笼动画。
 local function clearLanternStandDisplay(inst)
 	if not inst._aipLanternStandDisplay then
 		return
@@ -272,17 +293,20 @@ local function clearLanternStandDisplay(inst)
 	end
 end
 
+-- 实体移除时清理临时光源和手持灯体。
 local function onRemove(inst)
 	removeLanternLight(inst)
 	removeLanternBody(inst)
 end
 
+-- 掉落到地面时恢复普通灯笼状态并按燃料重新点亮。
 local function onDropped(inst)
 	clearLanternStandDisplay(inst)
 	turnOff(inst)
 	turnOn(inst)
 end
 
+-- 判断骑乘等状态下是否应隐藏自定义手持灯体。
 local function shouldHideBody(owner)
 	return owner.sg ~= nil
 		and owner.components.rider ~= nil
@@ -290,6 +314,7 @@ local function shouldHideBody(owner)
 		and not owner.sg:HasStateTag("forcedangle")
 end
 
+-- 根据玩家动作状态切换手持贴图和自定义灯体显示。
 local function toggleOverrideSymbols(inst, owner)
 	owner.AnimState:Hide("LANTERN_OVERLAY")
 
@@ -303,6 +328,7 @@ local function toggleOverrideSymbols(inst, owner)
 	end
 end
 
+-- 手持灯体移除时清理灯笼反向引用。
 local function onRemoveBody(body)
 	if body._lantern ~= nil then
 		body._lantern._body = nil
@@ -322,6 +348,7 @@ local function removeEquippedBody(inst, owner)
 	end
 end
 
+-- 装备灯笼时创建跟随玩家手部的灯体。
 local function onequip(inst, owner)
 	owner.AnimState:Show("ARM_carry")
 	owner.AnimState:Hide("ARM_normal")
@@ -330,6 +357,7 @@ local function onequip(inst, owner)
 
 	removeLanternBody(inst)
 
+	-- 手持灯体是独立 FX，便于在玩家手上显示无杆灯笼本体。
 	inst._body = SpawnPrefab(BODY_PREFAB)
 	inst._body._lantern = inst
 	inst._body:SetLanternSkin(inst._aipCurrentSkin)
@@ -338,6 +366,7 @@ local function onequip(inst, owner)
 	inst._body.entity:SetParent(owner.entity)
 	inst._body.entity:AddFollower()
 	inst._body.Follower:FollowSymbol(owner.GUID, "swap_object", 68, -126, 0)
+	-- 玩家状态变化时重新判断是否显示自定义手持灯体。
 	inst._body:ListenForEvent("newstate", function(owner)
 		toggleOverrideSymbols(inst, owner)
 	end, owner)
@@ -358,6 +387,7 @@ local function onequip(inst, owner)
 	end
 end
 
+-- 卸下灯笼时恢复玩家手部状态。
 local function onunequip(inst, owner)
 	removeEquippedBody(inst, owner)
 
@@ -371,11 +401,13 @@ local function onunequip(inst, owner)
 	end
 end
 
+-- 放入展示模型时移除手持灯体并熄灭灯笼。
 local function onequiptomodel(inst, owner)
 	removeEquippedBody(inst, owner)
 	turnOff(inst)
 end
 
+-- 燃料耗尽时关灯但保留灯笼本体。
 local function noFuel(inst)
 	if inst.components.equippable:IsEquipped() and inst.components.inventoryitem.owner ~= nil then
 		local data = {
@@ -383,6 +415,7 @@ local function noFuel(inst)
 			equipslot = inst.components.equippable.equipslot,
 		}
 
+		-- 耐久耗尽只关灯并触发玩家提示，后续仍可重新充能。
 		turnOff(inst)
 		inst.components.inventoryitem.owner:PushEvent("torchranout", data)
 	else
@@ -390,6 +423,7 @@ local function noFuel(inst)
 	end
 end
 
+-- 补充燃料后按持有状态重新点亮灯笼。
 local function onTakeFuel(inst)
 	local owner = inst.components.inventoryitem.owner
 
@@ -398,6 +432,7 @@ local function onTakeFuel(inst)
 	end
 end
 
+-- 载入存档后恢复皮肤并同步空燃料状态。
 local function onLoad(inst, data)
 	skinner.OnLoad(inst, data)
 
@@ -406,14 +441,17 @@ local function onLoad(inst, data)
 	end
 end
 
+-- 开始漂浮时播放水面动画。
 local function startFloating(inst)
 	inst.AnimState:PlayAnimation(getSkinAnim(inst._aipCurrentSkin, ANIM_FLOAT_SUFFIX))
 end
 
+-- 停止漂浮时恢复当前皮肤动画。
 local function stopFloating(inst)
 	skinner.PlayCurrent(inst)
 end
 
+-- 创建灯笼使用的独立光源实体。
 local function lightFn()
 	local inst = CreateEntity()
 
@@ -441,6 +479,7 @@ local function lightFn()
 	return inst
 end
 
+-- 创建装备时跟随玩家手部的灯体实体。
 local function bodyFn()
 	local inst = CreateEntity()
 
@@ -454,6 +493,7 @@ local function bodyFn()
 	inst:AddTag("FX")
 
 	inst._aipLanternBodySkin = net_string(inst.GUID, "aip_lantern.bodyskin", BODY_SKIN_DIRTY)
+	-- 客户端收到皮肤字段变化后刷新手持灯体动画。
 	inst:ListenForEvent(BODY_SKIN_DIRTY, function(inst)
 		local skin = inst._aipLanternBodySkin:value()
 
@@ -475,6 +515,7 @@ local function bodyFn()
 	return inst
 end
 
+-- 创建可携带、可充能、可装备的灯笼实体。
 local function fn()
 	local inst = CreateEntity()
 
@@ -488,10 +529,12 @@ local function fn()
 	inst.AnimState:SetBank(BUILD)
 	inst.AnimState:SetBuild(BUILD)
 
+	-- 这些标签用于原版照明交互、红灯笼兼容和灯笼架筛选。
 	inst:AddTag("light")
 	inst:AddTag("redlantern")
 	inst:AddTag("aip_lantern")
 
+	-- 灯笼架通过这两个方法临时接管灯笼展示。
 	inst.SetLanternStandDisplay = setLanternStandDisplay
 	inst.ClearLanternStandDisplay = clearLanternStandDisplay
 
@@ -518,6 +561,7 @@ local function fn()
 	inst.components.equippable:SetOnUnequip(onunequip)
 	inst.components.equippable:SetOnEquipToModel(onequiptomodel)
 
+	-- 使用 fueled 记录灯笼耐久；耗尽时只熄灭，不移除实体。
 	inst:AddComponent("fueled")
 	inst.components.fueled.fueltype = FUELTYPE.CAVE
 	inst.components.fueled:InitializeFuelLevel(TUNING.LANTERN_LIGHTTIME)
@@ -526,6 +570,7 @@ local function fn()
 	inst.components.fueled:SetFirstPeriod(TUNING.TURNON_FUELED_CONSUMPTION, TUNING.TURNON_FULL_FUELED_CONSUMPTION)
 	inst.components.fueled.accepting = true
 
+	-- 灯笼自身也可作为小燃料被投入火堆。
 	inst:AddComponent("fuel")
 	inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
 
@@ -543,6 +588,7 @@ local function fn()
 
 	turnOn(inst)
 
+	-- 拥有者换到手部或重物装备时，收起灯笼光源避免错位。
 	inst._onownerequip = function(owner, data)
 		if data.item ~= inst and
 			(data.eslot == EQUIPSLOTS.HANDS or
