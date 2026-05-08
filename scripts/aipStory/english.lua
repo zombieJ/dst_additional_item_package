@@ -317,6 +317,20 @@ return {
             "Recently I found that farm crops can have different qualities: Normal, Nice, Great, Outstanding, and even Perfect. A seed passes its quality to the plant that grows from it, and the harvest keeps that quality too. If it grows into an oversized crop, the produce keeps the same quality, while the seeds improve by one level.",
             "Cooking does not destroy crop quality, and a bird in a birdcage will remember the quality of the vegetable it eats when it spits out seeds.",
             "Higher-quality food makes positive eating effects stronger and weakens negative effects.",
+
+            -- Lantern
+            {
+                type="img",
+                name="aip_lantern",
+            },
+            "A red lantern that can be carried by hand and keeps glowing when dropped. It has several looks that can be changed with the Clean Sweeper.",
+
+            -- Lantern Stand
+            {
+                type="img",
+                name="aip_lantern_stand",
+            },
+            "A stand that can hold up to three lanterns. Hung lanterns line up in order and sway gently in the breeze.",
         },
     },
 
@@ -1456,7 +1470,7 @@ return {
                 name="aip_glory_hand",
             },
             "'Hand of Glory' will summon a light source for everyone, so that friends without torches can see clearly ahead in the dark. It can be fueled by 'Nightmare Fuel'.",
-            
+
             -- 石鬼面
             {
                 type="img",

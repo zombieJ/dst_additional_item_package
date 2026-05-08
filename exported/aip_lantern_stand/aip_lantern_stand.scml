@@ -1,0 +1,1083 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="stand">
+        <file id="0" name="stand/upturn.png" width="306" height="569" pivot_x="0.5" pivot_y="0" />
+        <file id="1" name="stand/thorn.png" width="321" height="667" pivot_x="0.5" pivot_y="0" />
+        <file id="2" name="stand/primitive.png" width="271" height="566" pivot_x="0.5" pivot_y="0" />
+        <file id="3" name="stand/luxury.png" width="274" height="597" pivot_x="0.5" pivot_y="0" />
+        <file id="4" name="stand/branch.png" width="263" height="666" pivot_x="0.5" pivot_y="0" />
+        <file id="5" name="stand/bamboo.png" width="406" height="586" pivot_x="0.5" pivot_y="0" />
+        <file id="6" name="stand/thin.png" width="197" height="617" pivot_x="0.5" pivot_y="0" />
+        <file id="7" name="stand/ironhook.png" width="265" height="568" pivot_x="0.5" pivot_y="0" />
+        <file id="8" name="stand/post.png" width="208" height="678" pivot_x="0.5" pivot_y="0" />
+        <file id="9" name="stand/tall.png" width="217" height="646" pivot_x="0.5" pivot_y="0" />
+        <file id="10" name="stand/blackiron.png" width="271" height="630" pivot_x="0.5" pivot_y="0" />
+    </folder>
+    <folder id="1" name="swap_lantern_1">
+        <file id="0" name="swap_lantern_1/swap_lantern_1.png" width="10" height="10" pivot_x="0.5" pivot_y="0.5" />
+    </folder>
+    <folder id="2" name="swap_lantern_2">
+        <file id="0" name="swap_lantern_2/swap_lantern_2.png" width="10" height="10" pivot_x="0.5" pivot_y="0.5" />
+    </folder>
+    <folder id="3" name="swap_lantern_3">
+        <file id="0" name="swap_lantern_3/swap_lantern_3.png" width="10" height="10" pivot_x="0.5" pivot_y="0.5" />
+    </folder>
+    <entity id="0" name="aip_lantern_stand">
+        <animation id="0" name="upturn" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stand" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+                    <object_ref id="1" name="swap_lantern_1" folder="1" file="0" abs_x="104" abs_y="493.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1" />
+                    <object_ref id="2" name="swap_lantern_2" folder="2" file="0" abs_x="104" abs_y="387.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2" />
+                    <object_ref id="3" name="swap_lantern_3" folder="3" file="0" abs_x="104" abs_y="281.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+                </key>
+            </mainline>
+            <timeline id="0" name="stand">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_lantern_1">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="104" y="493.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="2" name="swap_lantern_2">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="104" y="387.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="3" name="swap_lantern_3">
+                <key id="0" spin="0">
+                    <object folder="3" file="0" x="104" y="281.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+        </animation>
+        <animation id="1" name="upturn_hit" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stand" folder="0" file="0" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+                    <object_ref id="1" name="swap_lantern_1" folder="1" file="0" abs_x="104" abs_y="493.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1" />
+                    <object_ref id="2" name="swap_lantern_2" folder="2" file="0" abs_x="104" abs_y="387.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2" />
+                    <object_ref id="3" name="swap_lantern_3" folder="3" file="0" abs_x="104" abs_y="281.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0" />
+                    <object_ref id="1" timeline="1" key="1" z_index="1" />
+                    <object_ref id="2" timeline="2" key="1" z_index="2" />
+                    <object_ref id="3" timeline="3" key="1" z_index="3" />
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="0" key="2" z_index="0" />
+                    <object_ref id="1" timeline="1" key="2" z_index="1" />
+                    <object_ref id="2" timeline="2" key="2" z_index="2" />
+                    <object_ref id="3" timeline="3" key="2" z_index="3" />
+                </key>
+            </mainline>
+            <timeline id="0" name="stand">
+                <key id="0" spin="-1">
+                    <object folder="0" file="0" pivot_x="0.5" pivot_y="0" angle="0" />
+                </key>
+                <key id="1" time="100">
+                    <object folder="0" file="0" x="4" pivot_x="0.5" pivot_y="0" angle="358" />
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="0" file="0" x="-4" pivot_x="0.5" pivot_y="0" angle="2" />
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_lantern_1">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="104" y="493.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="1" file="0" x="104" y="493.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="1" file="0" x="104" y="493.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="2" name="swap_lantern_2">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="104" y="387.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="2" file="0" x="104" y="387.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="2" file="0" x="104" y="387.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="3" name="swap_lantern_3">
+                <key id="0" spin="0">
+                    <object folder="3" file="0" x="104" y="281.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="3" file="0" x="104" y="281.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="3" file="0" x="104" y="281.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="thorn" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stand" folder="0" file="1" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+                    <object_ref id="1" name="swap_lantern_1" folder="1" file="0" abs_x="100.556056" abs_y="575.46563" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1" />
+                    <object_ref id="2" name="swap_lantern_2" folder="2" file="0" abs_x="100.556056" abs_y="469.46563" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2" />
+                    <object_ref id="3" name="swap_lantern_3" folder="3" file="0" abs_x="100.556056" abs_y="363.46563" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+                </key>
+            </mainline>
+            <timeline id="0" name="stand">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" pivot_x="0.5" pivot_y="0" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_lantern_1">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="100.556056" y="575.46563" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="2" name="swap_lantern_2">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="100.556056" y="469.46563" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="3" name="swap_lantern_3">
+                <key id="0" spin="0">
+                    <object folder="3" file="0" x="100.556056" y="363.46563" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+        </animation>
+        <animation id="3" name="thorn_hit" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stand" folder="0" file="1" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+                    <object_ref id="1" name="swap_lantern_1" folder="1" file="0" abs_x="117.25" abs_y="564.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1" />
+                    <object_ref id="2" name="swap_lantern_2" folder="2" file="0" abs_x="117.25" abs_y="458.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2" />
+                    <object_ref id="3" name="swap_lantern_3" folder="3" file="0" abs_x="117.25" abs_y="352.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0" />
+                    <object_ref id="1" timeline="1" key="1" z_index="1" />
+                    <object_ref id="2" timeline="2" key="1" z_index="2" />
+                    <object_ref id="3" timeline="3" key="1" z_index="3" />
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="0" key="2" z_index="0" />
+                    <object_ref id="1" timeline="1" key="2" z_index="1" />
+                    <object_ref id="2" timeline="2" key="2" z_index="2" />
+                    <object_ref id="3" timeline="3" key="2" z_index="3" />
+                </key>
+            </mainline>
+            <timeline id="0" name="stand">
+                <key id="0" spin="-1">
+                    <object folder="0" file="1" pivot_x="0.5" pivot_y="0" angle="0" />
+                </key>
+                <key id="1" time="100">
+                    <object folder="0" file="1" x="4" pivot_x="0.5" pivot_y="0" angle="358" />
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="0" file="1" x="-4" pivot_x="0.5" pivot_y="0" angle="2" />
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_lantern_1">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="117.25" y="564.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="1" file="0" x="117.25" y="564.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="1" file="0" x="117.25" y="564.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="2" name="swap_lantern_2">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="117.25" y="458.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="2" file="0" x="117.25" y="458.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="2" file="0" x="117.25" y="458.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="3" name="swap_lantern_3">
+                <key id="0" spin="0">
+                    <object folder="3" file="0" x="117.25" y="352.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="3" file="0" x="117.25" y="352.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="3" file="0" x="117.25" y="352.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+        </animation>
+        <animation id="4" name="primitive" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stand" folder="0" file="2" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+                    <object_ref id="1" name="swap_lantern_1" folder="1" file="0" abs_x="80.726678" abs_y="451.712766" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1" />
+                    <object_ref id="2" name="swap_lantern_2" folder="2" file="0" abs_x="80.726678" abs_y="345.712766" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2" />
+                    <object_ref id="3" name="swap_lantern_3" folder="3" file="0" abs_x="80.726678" abs_y="239.712766" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+                </key>
+            </mainline>
+            <timeline id="0" name="stand">
+                <key id="0" spin="0">
+                    <object folder="0" file="2" pivot_x="0.5" pivot_y="0" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_lantern_1">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="80.726678" y="451.712766" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="2" name="swap_lantern_2">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="80.726678" y="345.712766" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="3" name="swap_lantern_3">
+                <key id="0" spin="0">
+                    <object folder="3" file="0" x="80.726678" y="239.712766" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+        </animation>
+        <animation id="5" name="primitive_hit" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stand" folder="0" file="2" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+                    <object_ref id="1" name="swap_lantern_1" folder="1" file="0" abs_x="84" abs_y="481.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1" />
+                    <object_ref id="2" name="swap_lantern_2" folder="2" file="0" abs_x="84" abs_y="375.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2" />
+                    <object_ref id="3" name="swap_lantern_3" folder="3" file="0" abs_x="84" abs_y="269.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0" />
+                    <object_ref id="1" timeline="1" key="1" z_index="1" />
+                    <object_ref id="2" timeline="2" key="1" z_index="2" />
+                    <object_ref id="3" timeline="3" key="1" z_index="3" />
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="0" key="2" z_index="0" />
+                    <object_ref id="1" timeline="1" key="2" z_index="1" />
+                    <object_ref id="2" timeline="2" key="2" z_index="2" />
+                    <object_ref id="3" timeline="3" key="2" z_index="3" />
+                </key>
+            </mainline>
+            <timeline id="0" name="stand">
+                <key id="0" spin="-1">
+                    <object folder="0" file="2" pivot_x="0.5" pivot_y="0" angle="0" />
+                </key>
+                <key id="1" time="100">
+                    <object folder="0" file="2" x="4" pivot_x="0.5" pivot_y="0" angle="358" />
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="0" file="2" x="-4" pivot_x="0.5" pivot_y="0" angle="2" />
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_lantern_1">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="84" y="481.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="1" file="0" x="84" y="481.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="1" file="0" x="84" y="481.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="2" name="swap_lantern_2">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="84" y="375.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="2" file="0" x="84" y="375.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="2" file="0" x="84" y="375.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="3" name="swap_lantern_3">
+                <key id="0" spin="0">
+                    <object folder="3" file="0" x="84" y="269.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="3" file="0" x="84" y="269.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="3" file="0" x="84" y="269.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+        </animation>
+        <animation id="6" name="luxury" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stand" folder="0" file="3" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+                    <object_ref id="1" name="swap_lantern_1" folder="1" file="0" abs_x="110.395663" abs_y="448.018822" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1" />
+                    <object_ref id="2" name="swap_lantern_2" folder="2" file="0" abs_x="110.395663" abs_y="342.018822" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2" />
+                    <object_ref id="3" name="swap_lantern_3" folder="3" file="0" abs_x="110.395663" abs_y="236.018822" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+                </key>
+            </mainline>
+            <timeline id="0" name="stand">
+                <key id="0" spin="0">
+                    <object folder="0" file="3" pivot_x="0.5" pivot_y="0" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_lantern_1">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="110.395663" y="448.018822" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="2" name="swap_lantern_2">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="110.395663" y="342.018822" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="3" name="swap_lantern_3">
+                <key id="0" spin="0">
+                    <object folder="3" file="0" x="110.395663" y="236.018822" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+        </animation>
+        <animation id="7" name="luxury_hit" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stand" folder="0" file="3" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+                    <object_ref id="1" name="swap_lantern_1" folder="1" file="0" abs_x="109.25" abs_y="494.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1" />
+                    <object_ref id="2" name="swap_lantern_2" folder="2" file="0" abs_x="109.25" abs_y="388.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2" />
+                    <object_ref id="3" name="swap_lantern_3" folder="3" file="0" abs_x="109.25" abs_y="282.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0" />
+                    <object_ref id="1" timeline="1" key="1" z_index="1" />
+                    <object_ref id="2" timeline="2" key="1" z_index="2" />
+                    <object_ref id="3" timeline="3" key="1" z_index="3" />
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="0" key="2" z_index="0" />
+                    <object_ref id="1" timeline="1" key="2" z_index="1" />
+                    <object_ref id="2" timeline="2" key="2" z_index="2" />
+                    <object_ref id="3" timeline="3" key="2" z_index="3" />
+                </key>
+            </mainline>
+            <timeline id="0" name="stand">
+                <key id="0" spin="-1">
+                    <object folder="0" file="3" pivot_x="0.5" pivot_y="0" angle="0" />
+                </key>
+                <key id="1" time="100">
+                    <object folder="0" file="3" x="4" pivot_x="0.5" pivot_y="0" angle="358" />
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="0" file="3" x="-4" pivot_x="0.5" pivot_y="0" angle="2" />
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_lantern_1">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="109.25" y="494.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="1" file="0" x="109.25" y="494.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="1" file="0" x="109.25" y="494.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="2" name="swap_lantern_2">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="109.25" y="388.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="2" file="0" x="109.25" y="388.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="2" file="0" x="109.25" y="388.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="3" name="swap_lantern_3">
+                <key id="0" spin="0">
+                    <object folder="3" file="0" x="109.25" y="282.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="3" file="0" x="109.25" y="282.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="3" file="0" x="109.25" y="282.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+        </animation>
+        <animation id="8" name="branch" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stand" folder="0" file="4" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+                    <object_ref id="1" name="swap_lantern_1" folder="1" file="0" abs_x="87.313011" abs_y="497.080196" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1" />
+                    <object_ref id="2" name="swap_lantern_2" folder="2" file="0" abs_x="87.313011" abs_y="391.080196" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2" />
+                    <object_ref id="3" name="swap_lantern_3" folder="3" file="0" abs_x="87.313011" abs_y="285.080196" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+                </key>
+            </mainline>
+            <timeline id="0" name="stand">
+                <key id="0" spin="0">
+                    <object folder="0" file="4" pivot_x="0.5" pivot_y="0" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_lantern_1">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="87.313011" y="497.080196" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="2" name="swap_lantern_2">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="87.313011" y="391.080196" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="3" name="swap_lantern_3">
+                <key id="0" spin="0">
+                    <object folder="3" file="0" x="87.313011" y="285.080196" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+        </animation>
+        <animation id="9" name="branch_hit" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stand" folder="0" file="4" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+                    <object_ref id="1" name="swap_lantern_1" folder="1" file="0" abs_x="90.75" abs_y="556" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1" />
+                    <object_ref id="2" name="swap_lantern_2" folder="2" file="0" abs_x="90.75" abs_y="450" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2" />
+                    <object_ref id="3" name="swap_lantern_3" folder="3" file="0" abs_x="90.75" abs_y="344" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0" />
+                    <object_ref id="1" timeline="1" key="1" z_index="1" />
+                    <object_ref id="2" timeline="2" key="1" z_index="2" />
+                    <object_ref id="3" timeline="3" key="1" z_index="3" />
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="0" key="2" z_index="0" />
+                    <object_ref id="1" timeline="1" key="2" z_index="1" />
+                    <object_ref id="2" timeline="2" key="2" z_index="2" />
+                    <object_ref id="3" timeline="3" key="2" z_index="3" />
+                </key>
+            </mainline>
+            <timeline id="0" name="stand">
+                <key id="0" spin="-1">
+                    <object folder="0" file="4" pivot_x="0.5" pivot_y="0" angle="0" />
+                </key>
+                <key id="1" time="100">
+                    <object folder="0" file="4" x="4" pivot_x="0.5" pivot_y="0" angle="358" />
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="0" file="4" x="-4" pivot_x="0.5" pivot_y="0" angle="2" />
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_lantern_1">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="90.75" y="556" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="1" file="0" x="90.75" y="556" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="1" file="0" x="90.75" y="556" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="2" name="swap_lantern_2">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="90.75" y="450" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="2" file="0" x="90.75" y="450" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="2" file="0" x="90.75" y="450" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="3" name="swap_lantern_3">
+                <key id="0" spin="0">
+                    <object folder="3" file="0" x="90.75" y="344" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="3" file="0" x="90.75" y="344" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="3" file="0" x="90.75" y="344" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+        </animation>
+        <animation id="10" name="bamboo" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stand" folder="0" file="5" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+                    <object_ref id="1" name="swap_lantern_1" folder="1" file="0" abs_x="118.25" abs_y="493.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1" />
+                    <object_ref id="2" name="swap_lantern_2" folder="2" file="0" abs_x="118.25" abs_y="387.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2" />
+                    <object_ref id="3" name="swap_lantern_3" folder="3" file="0" abs_x="118.25" abs_y="281.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+                </key>
+            </mainline>
+            <timeline id="0" name="stand">
+                <key id="0" spin="0">
+                    <object folder="0" file="5" pivot_x="0.5" pivot_y="0" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_lantern_1">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="118.25" y="493.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="2" name="swap_lantern_2">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="118.25" y="387.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="3" name="swap_lantern_3">
+                <key id="0" spin="0">
+                    <object folder="3" file="0" x="118.25" y="281.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+        </animation>
+        <animation id="11" name="bamboo_hit" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stand" folder="0" file="5" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+                    <object_ref id="1" name="swap_lantern_1" folder="1" file="0" abs_x="118.25" abs_y="493.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1" />
+                    <object_ref id="2" name="swap_lantern_2" folder="2" file="0" abs_x="118.25" abs_y="387.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2" />
+                    <object_ref id="3" name="swap_lantern_3" folder="3" file="0" abs_x="118.25" abs_y="281.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0" />
+                    <object_ref id="1" timeline="1" key="1" z_index="1" />
+                    <object_ref id="2" timeline="2" key="1" z_index="2" />
+                    <object_ref id="3" timeline="3" key="1" z_index="3" />
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="0" key="2" z_index="0" />
+                    <object_ref id="1" timeline="1" key="2" z_index="1" />
+                    <object_ref id="2" timeline="2" key="2" z_index="2" />
+                    <object_ref id="3" timeline="3" key="2" z_index="3" />
+                </key>
+            </mainline>
+            <timeline id="0" name="stand">
+                <key id="0" spin="-1">
+                    <object folder="0" file="5" pivot_x="0.5" pivot_y="0" angle="0" />
+                </key>
+                <key id="1" time="100">
+                    <object folder="0" file="5" x="4" pivot_x="0.5" pivot_y="0" angle="358" />
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="0" file="5" x="-4" pivot_x="0.5" pivot_y="0" angle="2" />
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_lantern_1">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="118.25" y="493.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="1" file="0" x="118.25" y="493.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="1" file="0" x="118.25" y="493.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="2" name="swap_lantern_2">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="118.25" y="387.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="2" file="0" x="118.25" y="387.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="2" file="0" x="118.25" y="387.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="3" name="swap_lantern_3">
+                <key id="0" spin="0">
+                    <object folder="3" file="0" x="118.25" y="281.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="3" file="0" x="118.25" y="281.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="3" file="0" x="118.25" y="281.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+        </animation>
+        <animation id="12" name="thin" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stand" folder="0" file="6" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+                    <object_ref id="1" name="swap_lantern_1" folder="1" file="0" abs_x="46.466039" abs_y="496.847791" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1" />
+                    <object_ref id="2" name="swap_lantern_2" folder="2" file="0" abs_x="46.466039" abs_y="390.847791" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2" />
+                    <object_ref id="3" name="swap_lantern_3" folder="3" file="0" abs_x="46.466039" abs_y="284.847791" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+                </key>
+            </mainline>
+            <timeline id="0" name="stand">
+                <key id="0" spin="0">
+                    <object folder="0" file="6" pivot_x="0.5" pivot_y="0" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_lantern_1">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="46.466039" y="496.847791" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="2" name="swap_lantern_2">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="46.466039" y="390.847791" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="3" name="swap_lantern_3">
+                <key id="0" spin="0">
+                    <object folder="3" file="0" x="46.466039" y="284.847791" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+        </animation>
+        <animation id="13" name="thin_hit" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stand" folder="0" file="6" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+                    <object_ref id="1" name="swap_lantern_1" folder="1" file="0" abs_x="58.25" abs_y="534" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1" />
+                    <object_ref id="2" name="swap_lantern_2" folder="2" file="0" abs_x="58.25" abs_y="428" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2" />
+                    <object_ref id="3" name="swap_lantern_3" folder="3" file="0" abs_x="58.25" abs_y="322" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0" />
+                    <object_ref id="1" timeline="1" key="1" z_index="1" />
+                    <object_ref id="2" timeline="2" key="1" z_index="2" />
+                    <object_ref id="3" timeline="3" key="1" z_index="3" />
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="0" key="2" z_index="0" />
+                    <object_ref id="1" timeline="1" key="2" z_index="1" />
+                    <object_ref id="2" timeline="2" key="2" z_index="2" />
+                    <object_ref id="3" timeline="3" key="2" z_index="3" />
+                </key>
+            </mainline>
+            <timeline id="0" name="stand">
+                <key id="0" spin="-1">
+                    <object folder="0" file="6" pivot_x="0.5" pivot_y="0" angle="0" />
+                </key>
+                <key id="1" time="100">
+                    <object folder="0" file="6" x="4" pivot_x="0.5" pivot_y="0" angle="358" />
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="0" file="6" x="-4" pivot_x="0.5" pivot_y="0" angle="2" />
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_lantern_1">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="58.25" y="534" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="1" file="0" x="58.25" y="534" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="1" file="0" x="58.25" y="534" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="2" name="swap_lantern_2">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="58.25" y="428" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="2" file="0" x="58.25" y="428" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="2" file="0" x="58.25" y="428" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="3" name="swap_lantern_3">
+                <key id="0" spin="0">
+                    <object folder="3" file="0" x="58.25" y="322" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="3" file="0" x="58.25" y="322" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="3" file="0" x="58.25" y="322" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+        </animation>
+        <animation id="14" name="ironhook" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stand" folder="0" file="7" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+                    <object_ref id="1" name="swap_lantern_1" folder="1" file="0" abs_x="107.253372" abs_y="431.190751" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1" />
+                    <object_ref id="2" name="swap_lantern_2" folder="2" file="0" abs_x="107.253372" abs_y="325.190751" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2" />
+                    <object_ref id="3" name="swap_lantern_3" folder="3" file="0" abs_x="107.253372" abs_y="219.190751" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+                </key>
+            </mainline>
+            <timeline id="0" name="stand">
+                <key id="0" spin="0">
+                    <object folder="0" file="7" pivot_x="0.5" pivot_y="0" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_lantern_1">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="107.253372" y="431.190751" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="2" name="swap_lantern_2">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="107.253372" y="325.190751" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="3" name="swap_lantern_3">
+                <key id="0" spin="0">
+                    <object folder="3" file="0" x="107.253372" y="219.190751" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+        </animation>
+        <animation id="15" name="ironhook_hit" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stand" folder="0" file="7" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+                    <object_ref id="1" name="swap_lantern_1" folder="1" file="0" abs_x="95.5" abs_y="452" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1" />
+                    <object_ref id="2" name="swap_lantern_2" folder="2" file="0" abs_x="95.5" abs_y="346" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2" />
+                    <object_ref id="3" name="swap_lantern_3" folder="3" file="0" abs_x="95.5" abs_y="240" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0" />
+                    <object_ref id="1" timeline="1" key="1" z_index="1" />
+                    <object_ref id="2" timeline="2" key="1" z_index="2" />
+                    <object_ref id="3" timeline="3" key="1" z_index="3" />
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="0" key="2" z_index="0" />
+                    <object_ref id="1" timeline="1" key="2" z_index="1" />
+                    <object_ref id="2" timeline="2" key="2" z_index="2" />
+                    <object_ref id="3" timeline="3" key="2" z_index="3" />
+                </key>
+            </mainline>
+            <timeline id="0" name="stand">
+                <key id="0" spin="-1">
+                    <object folder="0" file="7" pivot_x="0.5" pivot_y="0" angle="0" />
+                </key>
+                <key id="1" time="100">
+                    <object folder="0" file="7" x="4" pivot_x="0.5" pivot_y="0" angle="358" />
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="0" file="7" x="-4" pivot_x="0.5" pivot_y="0" angle="2" />
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_lantern_1">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="95.5" y="452" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="1" file="0" x="95.5" y="452" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="1" file="0" x="95.5" y="452" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="2" name="swap_lantern_2">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="95.5" y="346" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="2" file="0" x="95.5" y="346" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="2" file="0" x="95.5" y="346" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="3" name="swap_lantern_3">
+                <key id="0" spin="0">
+                    <object folder="3" file="0" x="95.5" y="240" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="3" file="0" x="95.5" y="240" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="3" file="0" x="95.5" y="240" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+        </animation>
+        <animation id="16" name="post" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stand" folder="0" file="8" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+                    <object_ref id="1" name="swap_lantern_1" folder="1" file="0" abs_x="58.157104" abs_y="536.516393" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1" />
+                    <object_ref id="2" name="swap_lantern_2" folder="2" file="0" abs_x="58.157104" abs_y="430.516393" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2" />
+                    <object_ref id="3" name="swap_lantern_3" folder="3" file="0" abs_x="58.157104" abs_y="324.516393" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+                </key>
+            </mainline>
+            <timeline id="0" name="stand">
+                <key id="0" spin="0">
+                    <object folder="0" file="8" pivot_x="0.5" pivot_y="0" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_lantern_1">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="58.157104" y="536.516393" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="2" name="swap_lantern_2">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="58.157104" y="430.516393" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="3" name="swap_lantern_3">
+                <key id="0" spin="0">
+                    <object folder="3" file="0" x="58.157104" y="324.516393" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+        </animation>
+        <animation id="17" name="post_hit" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stand" folder="0" file="8" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+                    <object_ref id="1" name="swap_lantern_1" folder="1" file="0" abs_x="59.25" abs_y="577.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1" />
+                    <object_ref id="2" name="swap_lantern_2" folder="2" file="0" abs_x="59.25" abs_y="471.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2" />
+                    <object_ref id="3" name="swap_lantern_3" folder="3" file="0" abs_x="59.25" abs_y="365.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0" />
+                    <object_ref id="1" timeline="1" key="1" z_index="1" />
+                    <object_ref id="2" timeline="2" key="1" z_index="2" />
+                    <object_ref id="3" timeline="3" key="1" z_index="3" />
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="0" key="2" z_index="0" />
+                    <object_ref id="1" timeline="1" key="2" z_index="1" />
+                    <object_ref id="2" timeline="2" key="2" z_index="2" />
+                    <object_ref id="3" timeline="3" key="2" z_index="3" />
+                </key>
+            </mainline>
+            <timeline id="0" name="stand">
+                <key id="0" spin="-1">
+                    <object folder="0" file="8" pivot_x="0.5" pivot_y="0" angle="0" />
+                </key>
+                <key id="1" time="100">
+                    <object folder="0" file="8" x="4" pivot_x="0.5" pivot_y="0" angle="358" />
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="0" file="8" x="-4" pivot_x="0.5" pivot_y="0" angle="2" />
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_lantern_1">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="59.25" y="577.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="1" file="0" x="59.25" y="577.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="1" file="0" x="59.25" y="577.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="2" name="swap_lantern_2">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="59.25" y="471.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="2" file="0" x="59.25" y="471.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="2" file="0" x="59.25" y="471.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="3" name="swap_lantern_3">
+                <key id="0" spin="0">
+                    <object folder="3" file="0" x="59.25" y="365.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="3" file="0" x="59.25" y="365.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="3" file="0" x="59.25" y="365.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+        </animation>
+        <animation id="18" name="tall" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stand" folder="0" file="9" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+                    <object_ref id="1" name="swap_lantern_1" folder="1" file="0" abs_x="74.429417" abs_y="537.678506" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1" />
+                    <object_ref id="2" name="swap_lantern_2" folder="2" file="0" abs_x="74.429417" abs_y="431.678506" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2" />
+                    <object_ref id="3" name="swap_lantern_3" folder="3" file="0" abs_x="74.429417" abs_y="325.678506" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+                </key>
+            </mainline>
+            <timeline id="0" name="stand">
+                <key id="0" spin="0">
+                    <object folder="0" file="9" pivot_x="0.5" pivot_y="0" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_lantern_1">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="74.429417" y="537.678506" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="2" name="swap_lantern_2">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="74.429417" y="431.678506" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="3" name="swap_lantern_3">
+                <key id="0" spin="0">
+                    <object folder="3" file="0" x="74.429417" y="325.678506" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+        </animation>
+        <animation id="19" name="tall_hit" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stand" folder="0" file="9" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+                    <object_ref id="1" name="swap_lantern_1" folder="1" file="0" abs_x="50.75" abs_y="539.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1" />
+                    <object_ref id="2" name="swap_lantern_2" folder="2" file="0" abs_x="50.75" abs_y="433.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2" />
+                    <object_ref id="3" name="swap_lantern_3" folder="3" file="0" abs_x="50.75" abs_y="327.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0" />
+                    <object_ref id="1" timeline="1" key="1" z_index="1" />
+                    <object_ref id="2" timeline="2" key="1" z_index="2" />
+                    <object_ref id="3" timeline="3" key="1" z_index="3" />
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="0" key="2" z_index="0" />
+                    <object_ref id="1" timeline="1" key="2" z_index="1" />
+                    <object_ref id="2" timeline="2" key="2" z_index="2" />
+                    <object_ref id="3" timeline="3" key="2" z_index="3" />
+                </key>
+            </mainline>
+            <timeline id="0" name="stand">
+                <key id="0" spin="-1">
+                    <object folder="0" file="9" pivot_x="0.5" pivot_y="0" angle="0" />
+                </key>
+                <key id="1" time="100">
+                    <object folder="0" file="9" x="4" pivot_x="0.5" pivot_y="0" angle="358" />
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="0" file="9" x="-4" pivot_x="0.5" pivot_y="0" angle="2" />
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_lantern_1">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="50.75" y="539.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="1" file="0" x="50.75" y="539.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="1" file="0" x="50.75" y="539.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="2" name="swap_lantern_2">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="50.75" y="433.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="2" file="0" x="50.75" y="433.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="2" file="0" x="50.75" y="433.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="3" name="swap_lantern_3">
+                <key id="0" spin="0">
+                    <object folder="3" file="0" x="50.75" y="327.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="3" file="0" x="50.75" y="327.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="3" file="0" x="50.75" y="327.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+        </animation>
+        <animation id="20" name="blackiron" length="100">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stand" folder="0" file="10" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+                    <object_ref id="1" name="swap_lantern_1" folder="1" file="0" abs_x="101.582878" abs_y="463.026412" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1" />
+                    <object_ref id="2" name="swap_lantern_2" folder="2" file="0" abs_x="101.582878" abs_y="357.026412" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2" />
+                    <object_ref id="3" name="swap_lantern_3" folder="3" file="0" abs_x="101.582878" abs_y="251.026412" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+                </key>
+            </mainline>
+            <timeline id="0" name="stand">
+                <key id="0" spin="0">
+                    <object folder="0" file="10" pivot_x="0.5" pivot_y="0" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_lantern_1">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="101.582878" y="463.026412" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="2" name="swap_lantern_2">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="101.582878" y="357.026412" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="3" name="swap_lantern_3">
+                <key id="0" spin="0">
+                    <object folder="3" file="0" x="101.582878" y="251.026412" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+        </animation>
+        <animation id="21" name="blackiron_hit" length="300">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="stand" folder="0" file="10" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+                    <object_ref id="1" name="swap_lantern_1" folder="1" file="0" abs_x="81" abs_y="523.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="1" key="0" z_index="1" />
+                    <object_ref id="2" name="swap_lantern_2" folder="2" file="0" abs_x="81" abs_y="417.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="2" key="0" z_index="2" />
+                    <object_ref id="3" name="swap_lantern_3" folder="3" file="0" abs_x="81" abs_y="311.5" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="3" key="0" z_index="3" />
+                </key>
+                <key id="1" time="100">
+                    <object_ref id="0" timeline="0" key="1" z_index="0" />
+                    <object_ref id="1" timeline="1" key="1" z_index="1" />
+                    <object_ref id="2" timeline="2" key="1" z_index="2" />
+                    <object_ref id="3" timeline="3" key="1" z_index="3" />
+                </key>
+                <key id="2" time="200">
+                    <object_ref id="0" timeline="0" key="2" z_index="0" />
+                    <object_ref id="1" timeline="1" key="2" z_index="1" />
+                    <object_ref id="2" timeline="2" key="2" z_index="2" />
+                    <object_ref id="3" timeline="3" key="2" z_index="3" />
+                </key>
+            </mainline>
+            <timeline id="0" name="stand">
+                <key id="0" spin="-1">
+                    <object folder="0" file="10" pivot_x="0.5" pivot_y="0" angle="0" />
+                </key>
+                <key id="1" time="100">
+                    <object folder="0" file="10" x="4" pivot_x="0.5" pivot_y="0" angle="358" />
+                </key>
+                <key id="2" time="200" spin="-1">
+                    <object folder="0" file="10" x="-4" pivot_x="0.5" pivot_y="0" angle="2" />
+                </key>
+            </timeline>
+            <timeline id="1" name="swap_lantern_1">
+                <key id="0" spin="0">
+                    <object folder="1" file="0" x="81" y="523.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="1" file="0" x="81" y="523.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="1" file="0" x="81" y="523.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="2" name="swap_lantern_2">
+                <key id="0" spin="0">
+                    <object folder="2" file="0" x="81" y="417.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="2" file="0" x="81" y="417.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="2" file="0" x="81" y="417.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+            <timeline id="3" name="swap_lantern_3">
+                <key id="0" spin="0">
+                    <object folder="3" file="0" x="81" y="311.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="1" time="100" spin="0">
+                    <object folder="3" file="0" x="81" y="311.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+                <key id="2" time="200" spin="0">
+                    <object folder="3" file="0" x="81" y="311.5" pivot_x="0.5" pivot_y="0.5" angle="0" />
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

@@ -71,14 +71,32 @@
 
         .canvas-container {
             position: relative;
-            display: inline-block;
-            margin-bottom: 20px;
+            display: block;
+            width: fit-content;
+            margin: 0 auto 10px;
             overflow: visible;
+            vertical-align: top;
+        }
+
+        .canvas-viewport {
+            width: 100%;
+            max-height: 70vh;
+            overflow: auto;
+            text-align: left;
+            padding: 10px;
+            margin: 10px 0 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #f7f7f7;
         }
 
         #imageCanvas {
+            display: block;
             border: 1px solid #ddd;
-            max-width: 100%;
+            max-width: none;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-drag: none;
             background-image: 
                 linear-gradient(45deg, #ccc 25%, transparent 25%),
                 linear-gradient(-45deg, #ccc 25%, transparent 25%),
@@ -254,13 +272,47 @@
         }
 
         .eraser-controls input[type="range"] {
-            width: 100px;
+            width: 320px;
         }
 
         .eraser-controls .brush-size {
             color: #666;
             font-size: 14px;
             min-width: 30px;
+        }
+
+        .zoom-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .zoom-controls label,
+        .zoom-controls .zoom-value,
+        .zoom-controls .zoom-hint {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .zoom-controls input[type="range"] {
+            width: 180px;
+        }
+
+        .zoom-controls button {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .zoom-controls .zoom-value {
+            min-width: 42px;
+            text-align: right;
+        }
+
+        .zoom-controls .zoom-hint {
+            color: #888;
         }
 
         .eraser-cursor {
@@ -330,16 +382,28 @@
                 <span class="brush-size" id="brushSizeDisplay">20px</span>
             </div>
 
-            <div class="canvas-container">
-                <canvas id="imageCanvas"></canvas>
-                <div class="crop-box" id="cropBox">
-                    <div class="resize-handle nw"></div>
-                    <div class="resize-handle ne"></div>
-                    <div class="resize-handle sw"></div>
-                    <div class="resize-handle se"></div>
+            <div class="zoom-controls" id="zoomControls">
+                <label>画布缩放:</label>
+                <button class="btn-secondary" id="zoomOut">-</button>
+                <input type="range" id="canvasZoom" min="25" max="400" step="5" value="100">
+                <span class="zoom-value" id="zoomDisplay">100%</span>
+                <button class="btn-secondary" id="zoomIn">+</button>
+                <button class="btn-secondary" id="zoomReset">适应</button>
+                <span class="zoom-hint">Ctrl/Alt + 滚轮</span>
+            </div>
+
+            <div class="canvas-viewport" id="canvasViewport">
+                <div class="canvas-container">
+                    <canvas id="imageCanvas"></canvas>
+                    <div class="crop-box" id="cropBox">
+                        <div class="resize-handle nw"></div>
+                        <div class="resize-handle ne"></div>
+                        <div class="resize-handle sw"></div>
+                        <div class="resize-handle se"></div>
+                    </div>
+                    <div class="eraser-cursor" id="eraserCursor"></div>
+                    <div class="bucket-cursor" id="bucketCursor"></div>
                 </div>
-                <div class="eraser-cursor" id="eraserCursor"></div>
-                <div class="bucket-cursor" id="bucketCursor"></div>
             </div>
 
             <div class="info" id="imageInfo"></div>
@@ -355,6 +419,7 @@
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
         const editor = document.getElementById('editor');
+        const canvasViewport = document.getElementById('canvasViewport');
         const imageCanvas = document.getElementById('imageCanvas');
         const ctx = imageCanvas.getContext('2d');
         const cropBox = document.getElementById('cropBox');
@@ -370,6 +435,11 @@
         const brushSizeDisplay = document.getElementById('brushSizeDisplay');
         const eraserCursor = document.getElementById('eraserCursor');
         const bucketCursor = document.getElementById('bucketCursor');
+        const zoomOut = document.getElementById('zoomOut');
+        const zoomIn = document.getElementById('zoomIn');
+        const zoomReset = document.getElementById('zoomReset');
+        const canvasZoom = document.getElementById('canvasZoom');
+        const zoomDisplay = document.getElementById('zoomDisplay');
 
         let originalImage = null;
         let isCropping = false;
@@ -391,6 +461,17 @@
         let transparentErasedPixels = new Set();
         let historyStack = [];
         let historyIndex = -1;
+        let baseDisplayWidth = 0;
+        let baseDisplayHeight = 0;
+        let canvasZoomPercent = 100;
+        let activeEraserPointerId = null;
+
+        const minZoomPercent = 25;
+        const maxZoomPercent = 400;
+        const zoomStep = 25;
+        const supportsPointerEvents = window.PointerEvent !== undefined;
+
+        imageCanvas.draggable = false;
 
         dropZone.addEventListener('click', () => fileInput.click());
         dropZone.addEventListener('dragover', (e) => {
@@ -442,14 +523,16 @@
             const displayWidth = Math.round(originalImage.width * displayScale);
             const displayHeight = Math.round(originalImage.height * displayScale);
 
+            baseDisplayWidth = displayWidth;
+            baseDisplayHeight = displayHeight;
+            canvasZoomPercent = 100;
             imageCanvas.width = originalImage.width;
             imageCanvas.height = originalImage.height;
-            imageCanvas.style.width = displayWidth + 'px';
-            imageCanvas.style.height = displayHeight + 'px';
+            applyCanvasZoom();
             ctx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
             ctx.drawImage(originalImage, 0, 0);
 
-            imageInfo.textContent = `原始尺寸: ${originalImage.width} x ${originalImage.height} | 显示尺寸: ${displayWidth} x ${displayHeight}`;
+            updateImageInfo();
             
             transparentErasedPixels.clear();
             
@@ -459,6 +542,37 @@
             }
             
             saveToHistory();
+        }
+
+        function updateImageInfo() {
+            const displayWidth = Math.round(baseDisplayWidth * canvasZoomPercent / 100);
+            const displayHeight = Math.round(baseDisplayHeight * canvasZoomPercent / 100);
+            imageInfo.textContent = `原始尺寸: ${imageCanvas.width} x ${imageCanvas.height} | 显示尺寸: ${displayWidth} x ${displayHeight} | 缩放: ${canvasZoomPercent}%`;
+        }
+
+        function applyCanvasZoom() {
+            const displayWidth = Math.max(1, Math.round(baseDisplayWidth * canvasZoomPercent / 100));
+            const displayHeight = Math.max(1, Math.round(baseDisplayHeight * canvasZoomPercent / 100));
+
+            imageCanvas.style.width = displayWidth + 'px';
+            imageCanvas.style.height = displayHeight + 'px';
+            canvasZoom.value = String(canvasZoomPercent);
+            zoomDisplay.textContent = canvasZoomPercent + '%';
+            updateImageInfo();
+
+            if (isCropping) {
+                updateCropBox();
+            }
+        }
+
+        function setCanvasZoom(nextZoomPercent) {
+            if (!originalImage) return;
+
+            canvasZoomPercent = Math.min(
+                maxZoomPercent,
+                Math.max(minZoomPercent, Math.round(nextZoomPercent))
+            );
+            applyCanvasZoom();
         }
 
         function getCanvasDisplayMetrics() {
@@ -618,6 +732,46 @@
             updateEraserCursor();
         });
 
+        function zoomCanvasBy(deltaPercent, anchorEvent = null) {
+            const oldZoomPercent = canvasZoomPercent;
+            const viewportRect = canvasViewport.getBoundingClientRect();
+            const anchorX = anchorEvent ? anchorEvent.clientX - viewportRect.left : canvasViewport.clientWidth / 2;
+            const anchorY = anchorEvent ? anchorEvent.clientY - viewportRect.top : canvasViewport.clientHeight / 2;
+            const scrollX = canvasViewport.scrollLeft + anchorX;
+            const scrollY = canvasViewport.scrollTop + anchorY;
+
+            setCanvasZoom(canvasZoomPercent + deltaPercent);
+
+            const zoomRatio = canvasZoomPercent / oldZoomPercent;
+            canvasViewport.scrollLeft = scrollX * zoomRatio - anchorX;
+            canvasViewport.scrollTop = scrollY * zoomRatio - anchorY;
+        }
+
+        canvasZoom.addEventListener('input', (e) => {
+            setCanvasZoom(parseInt(e.target.value, 10));
+        });
+
+        zoomOut.addEventListener('click', () => {
+            zoomCanvasBy(-zoomStep);
+        });
+
+        zoomIn.addEventListener('click', () => {
+            zoomCanvasBy(zoomStep);
+        });
+
+        zoomReset.addEventListener('click', () => {
+            setCanvasZoom(100);
+            canvasViewport.scrollLeft = 0;
+            canvasViewport.scrollTop = 0;
+        });
+
+        canvasViewport.addEventListener('wheel', (e) => {
+            if (!e.ctrlKey && !e.altKey) return;
+
+            e.preventDefault();
+            zoomCanvasBy(e.deltaY < 0 ? zoomStep : -zoomStep, e);
+        }, { passive: false });
+
         document.getElementById('edgeFade').addEventListener('click', () => {
             if (!isCropping && !isErasing && !isBucket) {
                 saveToHistory();
@@ -631,6 +785,90 @@
         function updateEraserCursor() {
             eraserCursor.style.width = eraserBrushSize + 'px';
             eraserCursor.style.height = eraserBrushSize + 'px';
+        }
+
+        function isEraserToolActive() {
+            return isErasing || isTransparentErasing;
+        }
+
+        function updateEraserCursorPosition(e, metrics = getCanvasDisplayMetrics()) {
+            const displayX = e.clientX - metrics.rect.left;
+            const displayY = e.clientY - metrics.rect.top;
+
+            eraserCursor.style.display = 'block';
+            eraserCursor.style.left = (displayX - eraserBrushSize / 2) + 'px';
+            eraserCursor.style.top = (displayY - eraserBrushSize / 2) + 'px';
+        }
+
+        function applyEraserStroke(x, y, radius) {
+            if (isErasing) {
+                erase(x, y, radius);
+            } else if (isTransparentErasing) {
+                transparentErase(x, y, radius);
+                if (lastEraserX !== null && lastEraserY !== null) {
+                    const distance = Math.sqrt(Math.pow(x - lastEraserX, 2) + Math.pow(y - lastEraserY, 2));
+                    const steps = Math.ceil(distance / Math.max(1, radius / 2));
+
+                    for (let i = 1; i <= steps; i++) {
+                        const t = i / steps;
+                        const interpX = lastEraserX + (x - lastEraserX) * t;
+                        const interpY = lastEraserY + (y - lastEraserY) * t;
+                        transparentErase(interpX, interpY, radius);
+                    }
+                }
+                lastEraserX = x;
+                lastEraserY = y;
+            }
+        }
+
+        function beginEraserStroke(e) {
+            if (!isEraserToolActive()) return;
+
+            e.preventDefault();
+            saveToHistory();
+            isErasingActive = true;
+
+            const point = getCanvasPoint(e);
+            const radius = getCanvasBrushRadius();
+            lastEraserX = point.x;
+            lastEraserY = point.y;
+            applyEraserStroke(point.x, point.y, radius);
+        }
+
+        function moveEraserStroke(e, shouldErase) {
+            if (!isEraserToolActive()) return;
+
+            e.preventDefault();
+            const metrics = getCanvasDisplayMetrics();
+            const point = getCanvasPoint(e);
+            const radius = getCanvasBrushRadius(metrics);
+
+            updateEraserCursorPosition(e, metrics);
+
+            if (shouldErase) {
+                applyEraserStroke(point.x, point.y, radius);
+            }
+        }
+
+        function endEraserStroke(e) {
+            if (e !== null && e !== undefined &&
+                activeEraserPointerId !== null &&
+                e.pointerId !== activeEraserPointerId) {
+                return;
+            }
+
+            if (activeEraserPointerId !== null && imageCanvas.releasePointerCapture !== undefined) {
+                try {
+                    imageCanvas.releasePointerCapture(activeEraserPointerId);
+                } catch (err) {
+                    // 指针可能已被浏览器释放，忽略即可。
+                }
+            }
+
+            activeEraserPointerId = null;
+            isErasingActive = false;
+            lastEraserX = null;
+            lastEraserY = null;
         }
 
         function initCropBox() {
@@ -689,41 +927,33 @@
             startY = e.clientY;
         });
 
-        imageCanvas.addEventListener('mousemove', (e) => {
-            if (!isErasing && !isTransparentErasing) return;
+        imageCanvas.addEventListener('pointerdown', (e) => {
+            if (!supportsPointerEvents || !isEraserToolActive() || e.button !== 0 || e.isPrimary === false) return;
 
-            const metrics = getCanvasDisplayMetrics();
-            const displayX = e.clientX - metrics.rect.left;
-            const displayY = e.clientY - metrics.rect.top;
-            const point = getCanvasPoint(e);
-            const x = point.x;
-            const y = point.y;
-            const radius = getCanvasBrushRadius(metrics);
+            activeEraserPointerId = e.pointerId;
+            imageCanvas.setPointerCapture(e.pointerId);
+            beginEraserStroke(e);
+        }, { passive: false });
 
-            eraserCursor.style.display = 'block';
-            eraserCursor.style.left = (displayX - eraserBrushSize / 2) + 'px';
-            eraserCursor.style.top = (displayY - eraserBrushSize / 2) + 'px';
+        imageCanvas.addEventListener('pointermove', (e) => {
+            if (!supportsPointerEvents || !isEraserToolActive() || e.isPrimary === false) return;
 
-            if (isErasingActive) {
-                if (isErasing) {
-                    erase(x, y, radius);
-                } else if (isTransparentErasing) {
-                    transparentErase(x, y, radius);
-                    if (lastEraserX !== null && lastEraserY !== null) {
-                        const distance = Math.sqrt(Math.pow(x - lastEraserX, 2) + Math.pow(y - lastEraserY, 2));
-                        const steps = Math.ceil(distance / Math.max(1, radius / 2));
-                        
-                        for (let i = 1; i <= steps; i++) {
-                            const t = i / steps;
-                            const interpX = lastEraserX + (x - lastEraserX) * t;
-                            const interpY = lastEraserY + (y - lastEraserY) * t;
-                            transparentErase(interpX, interpY, radius);
-                        }
-                    }
-                    lastEraserX = x;
-                    lastEraserY = y;
-                }
+            moveEraserStroke(e, isErasingActive && e.pointerId === activeEraserPointerId);
+        }, { passive: false });
+
+        imageCanvas.addEventListener('pointerup', endEraserStroke);
+        imageCanvas.addEventListener('pointercancel', endEraserStroke);
+
+        imageCanvas.addEventListener('dragstart', (e) => {
+            if (isEraserToolActive()) {
+                e.preventDefault();
             }
+        });
+
+        imageCanvas.addEventListener('mousemove', (e) => {
+            if (supportsPointerEvents || !isEraserToolActive()) return;
+
+            moveEraserStroke(e, isErasingActive);
         });
 
         imageCanvas.addEventListener('mousemove', (e) => {
@@ -739,7 +969,7 @@
         });
 
         imageCanvas.addEventListener('mouseleave', () => {
-            if (isErasing || isTransparentErasing) {
+            if (isEraserToolActive() && activeEraserPointerId === null) {
                 eraserCursor.style.display = 'none';
             }
             if (isBucket) {
@@ -748,20 +978,9 @@
         });
 
         imageCanvas.addEventListener('mousedown', (e) => {
-            if (!isErasing && !isTransparentErasing) return;
-            saveToHistory();
-            isErasingActive = true;
-            const point = getCanvasPoint(e);
-            const x = point.x;
-            const y = point.y;
-            const radius = getCanvasBrushRadius();
-            lastEraserX = x;
-            lastEraserY = y;
-            if (isErasing) {
-                erase(x, y, radius);
-            } else if (isTransparentErasing) {
-                transparentErase(x, y, radius);
-            }
+            if (supportsPointerEvents || !isEraserToolActive()) return;
+
+            beginEraserStroke(e);
         });
 
         imageCanvas.addEventListener('click', (e) => {
@@ -777,9 +996,10 @@
             isDragging = false;
             isResizing = false;
             currentHandle = null;
-            isErasingActive = false;
-            lastEraserX = null;
-            lastEraserY = null;
+
+            if (!supportsPointerEvents) {
+                endEraserStroke();
+            }
         });
 
         function erase(x, y, radius) {
