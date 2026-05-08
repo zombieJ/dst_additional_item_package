@@ -7,11 +7,13 @@ local standConfig = require("configurations/skin/aip_lantern_stand")
 
 local PREFAB = "aip_lantern_stand"
 local BUILD = "aip_lantern_stand"
+local MIRROR_PREFAB = "aip_lantern_body"
 local SLOT_COUNT = 3
 local DISPLAY_SYMBOL_PREFIX = "swap_lantern_"
 local DISPLAY_SCALE = .9
 local DISPLAY_FOLLOW_Z_OFFSET = .1
 local DISPLAY_FOLLOW_Z_STEP = .25
+local TASSLE_SYMBOL = "Tassle"
 local LIGHT_COLOUR = Vector3(200 / 255, 100 / 255, 100 / 255)
 local LIGHT_RADIUS_BASE = 1.05
 local LIGHT_RADIUS_STEP = .55
@@ -148,66 +150,99 @@ local function setLightCount(inst, count)
 	end
 end
 
--- 让被展示的灯笼在客户端可见。
-local function exposeDisplayItem(item)
-	if item.Network ~= nil then
-		item.Network:SetClassifiedTarget(nil)
+-- 读取指定展示槽的绑定记录。
+local function getDisplayRecord(inst, slot)
+	return inst._aipLanternStandDisplayItems ~= nil and
+		inst._aipLanternStandDisplayItems[slot] or nil
+end
+
+-- 从展示记录中取出真实储物灯笼。
+local function getDisplayItem(record)
+	return record ~= nil and record.item or nil
+end
+
+-- 移除展示槽里额外创建的镜像灯笼。
+local function removeDisplayMirror(record)
+	local mirror = record ~= nil and record.mirror or nil
+
+	if mirror ~= nil and mirror:IsValid() then
+		mirror:Remove()
 	end
 
-	local classified = item.replica ~= nil and
-		item.replica.inventoryitem ~= nil and
-		item.replica.inventoryitem.classified or nil
-
-	if classified ~= nil and classified.Network ~= nil then
-		classified.Network:SetClassifiedTarget(nil)
+	if record ~= nil then
+		record.mirror = nil
 	end
 end
 
--- 判断物品是否仍存放在本架子的容器里。
-local function isStoredDisplayItem(inst, item)
-	return item ~= nil
-		and item.components.inventoryitem ~= nil
-		and item.components.inventoryitem.owner == inst
-		and inst.components.container ~= nil
-		and inst.components.container:GetItemSlot(item) ~= nil
+-- 创建或复用展示槽的镜像灯笼。
+local function ensureDisplayMirror(record)
+	if record.mirror == nil or not record.mirror:IsValid() then
+		record.mirror = SpawnPrefab(MIRROR_PREFAB)
+	end
+
+	return record.mirror
 end
 
--- 从展示槽记录里忘记指定物品。
-local function forgetDisplayItem(inst, item)
-	if inst._aipLanternStandDisplayItems == nil then
+-- 同步镜像灯笼的皮肤。
+local function syncDisplayMirrorSkin(mirror, item)
+	if item ~= nil and mirror.SetLanternSkin ~= nil then
+		mirror:SetLanternSkin(item._aipCurrentSkin or item.skinname)
+	end
+end
+
+-- 同步镜像灯笼的显隐、层级和挂点。
+local function syncDisplayMirror(inst, record, slot, lit, showTassle)
+	local mirror = ensureDisplayMirror(record)
+
+	if mirror == nil then
 		return
 	end
 
-	for slot = 1, SLOT_COUNT do
-		if inst._aipLanternStandDisplayItems[slot] == item then
-			inst._aipLanternStandDisplayItems[slot] = nil
-		end
+	syncDisplayMirrorSkin(mirror, record.item)
+	mirror.Transform:SetPosition(inst.Transform:GetWorldPosition())
+	mirror.Transform:SetScale(DISPLAY_SCALE, DISPLAY_SCALE, DISPLAY_SCALE)
+	mirror.AnimState:SetFinalOffset(getDisplayFinalOffset(slot))
+
+	if lit then
+		mirror.AnimState:Show("LIGHT")
+	else
+		mirror.AnimState:Hide("LIGHT")
 	end
+
+	if showTassle then
+		mirror.AnimState:Show(TASSLE_SYMBOL)
+	else
+		mirror.AnimState:Hide(TASSLE_SYMBOL)
+	end
+
+	if mirror.Follower == nil then
+		mirror.entity:AddFollower()
+	end
+	mirror.Follower:FollowSymbol(
+		inst.GUID,
+		getDisplaySymbol(slot),
+		0,
+		0,
+		getDisplayZOffset(slot)
+	)
+
+	mirror._aipLanternStand = inst
+	mirror._aipLanternStandDisplaySlot = slot
 end
 
--- 查找物品当前占用的展示槽。
+-- 查找真实灯笼当前占用的展示槽。
 local function getDisplaySlotForItem(inst, item)
 	if inst._aipLanternStandDisplayItems == nil then
 		return nil
 	end
 
 	for slot = 1, SLOT_COUNT do
-		if inst._aipLanternStandDisplayItems[slot] == item then
+		if getDisplayItem(inst._aipLanternStandDisplayItems[slot]) == item then
 			return slot
 		end
 	end
 
 	return nil
-end
-
--- 还原灯笼展示前的缩放。
-local function restoreDisplayScale(item)
-	if item._aipLanternStandScale ~= nil then
-		item.Transform:SetScale(unpack(item._aipLanternStandScale))
-		item._aipLanternStandScale = nil
-	else
-		item.Transform:SetScale(1, 1, 1)
-	end
 end
 
 -- 灯笼燃料变化后排队刷新展示。
@@ -219,14 +254,22 @@ local function onDisplayLanternFuelChanged(item)
 	end
 end
 
--- 解除灯笼与架子挂点的展示绑定。
-local function unbindDisplayItem(inst, item, leaving)
-	if item == nil or not item:IsValid() then
-		forgetDisplayItem(inst, item)
+-- 解除指定展示槽的真实灯笼和镜像绑定。
+local function unbindDisplaySlot(inst, slot, leaving)
+	local record = getDisplayRecord(inst, slot)
+	local item = getDisplayItem(record)
+
+	if record == nil then
 		return
 	end
 
-	forgetDisplayItem(inst, item)
+	inst._aipLanternStandDisplayItems[slot] = nil
+	removeDisplayMirror(record)
+
+	if item == nil or not item:IsValid() then
+		return
+	end
+
 	inst:RemoveEventCallback("percentusedchange", onDisplayLanternFuelChanged, item)
 	if leaving then
 		clearDisplayItemFuelRate(item, inst)
@@ -238,44 +281,18 @@ local function unbindDisplayItem(inst, item, leaving)
 		item._aipLanternStand = nil
 		item._aipLanternStandDisplaySlot = nil
 	end
+end
 
-	if item.Follower ~= nil then
-		item.Follower:StopFollowing()
-	end
+-- 解除真实灯笼当前占用的展示槽。
+local function unbindDisplayItem(inst, item, leaving)
+	local slot = getDisplaySlotForItem(inst, item)
 
-	if item.ClearLanternStandDisplay ~= nil then
-		item:ClearLanternStandDisplay()
-	end
-
-	restoreDisplayScale(item)
-	if item.AnimState ~= nil then
-		item.AnimState:SetFinalOffset(0)
-	end
-	item:RemoveTag("NOCLICK")
-	item:ForceOutOfLimbo(false)
-
-	if leaving or not isStoredDisplayItem(inst, item) then
-		item:RemoveTag("INLIMBO")
-		item:ReturnToScene()
-
-		if item.Physics ~= nil then
-			item.Physics:SetActive(true)
-		end
-	else
-		item:RemoveFromScene()
-		item.Transform:SetPosition(0, 0, 0)
+	if slot ~= nil then
+		unbindDisplaySlot(inst, slot, leaving)
 	end
 end
 
--- 解除指定展示槽的灯笼绑定。
-local function unbindDisplaySlot(inst, slot, leaving)
-	local item = inst._aipLanternStandDisplayItems ~= nil and
-		inst._aipLanternStandDisplayItems[slot] or nil
-
-	unbindDisplayItem(inst, item, leaving)
-end
-
--- 把容器灯笼绑定到指定挂点展示。
+-- 把容器灯笼绑定到指定挂点的镜像展示。
 local function bindDisplayItem(inst, item, slot, showTassle, standOn)
 	if item == nil or not item:IsValid() then
 		unbindDisplaySlot(inst, slot, false)
@@ -287,62 +304,29 @@ local function bindDisplayItem(inst, item, slot, showTassle, standOn)
 		unbindDisplaySlot(inst, oldSlot, false)
 	end
 
-	local oldItem = inst._aipLanternStandDisplayItems[slot]
-	if oldItem ~= item then
+	local oldRecord = getDisplayRecord(inst, slot)
+	local oldItem = getDisplayItem(oldRecord)
+	if oldItem ~= nil and oldItem ~= item then
 		unbindDisplaySlot(inst, slot, false)
-	end
-	local alreadyBound = item._aipLanternStand == inst
-
-	if item.Follower == nil then
-		item.entity:AddFollower()
+		oldRecord = nil
 	end
 
-	if item._aipLanternStandScale == nil then
-		item._aipLanternStandScale = { item.Transform:GetScale() }
-	end
-
-	-- 容器会把物品放进 limbo；展示时临时拉回场景并绑定到架子的挂点。
-	item:ForceOutOfLimbo(false)
-	item:ForceOutOfLimbo(true)
-	item:ReturnToScene()
-	exposeDisplayItem(item)
-	item.Transform:SetPosition(inst.Transform:GetWorldPosition())
-	item.Transform:SetScale(DISPLAY_SCALE, DISPLAY_SCALE, DISPLAY_SCALE)
+	local alreadyBound = item._aipLanternStand == inst and oldRecord ~= nil
+	local record = oldRecord or { item = item }
+	record.item = item
+	inst._aipLanternStandDisplayItems[slot] = record
 
 	local lit = isStandTurnedOn(inst, standOn) and isLanternLit(item)
 	local displayTassle = showTassle == true
-	if item.SetLanternStandDisplay ~= nil and (
-		not alreadyBound or
-		item._aipLanternStandDisplay ~= true or
-		item._aipLanternStandDisplayLit ~= lit or
-		item._aipLanternStandDisplayTassle ~= displayTassle
-	) then
-		item:SetLanternStandDisplay(lit, displayTassle)
-	end
 
-	if item.AnimState ~= nil then
-		item.AnimState:SetFinalOffset(getDisplayFinalOffset(slot))
-	end
-
-	item.Follower:FollowSymbol(
-		inst.GUID,
-		getDisplaySymbol(slot),
-		0,
-		0,
-		getDisplayZOffset(slot)
-	)
-	item:AddTag("INLIMBO")
-	item:AddTag("NOCLICK")
-
-	if item.Physics ~= nil then
-		item.Physics:SetActive(false)
-	end
+	-- 真实灯笼继续留在容器里消耗耐久；场景中只显示额外镜像，避免开关储物时闪烁。
+	syncDisplayMirror(inst, record, slot, lit, displayTassle)
 
 	item._aipLanternStand = inst
 	item._aipLanternStandDisplaySlot = slot
-	inst._aipLanternStandDisplayItems[slot] = item
 
 	if not alreadyBound then
+		inst:RemoveEventCallback("percentusedchange", onDisplayLanternFuelChanged, item)
 		inst:ListenForEvent("percentusedchange", onDisplayLanternFuelChanged, item)
 	end
 
@@ -559,7 +543,7 @@ local function fn()
 end
 
 local prefabs = {
-	Prefab(PREFAB, fn, assets, { "collapse_small" }),
+	Prefab(PREFAB, fn, assets, { "collapse_small", MIRROR_PREFAB }),
 	MakePlacer("aip_lantern_stand_placer", BUILD, BUILD, DEFAULT_SKIN),
 }
 
