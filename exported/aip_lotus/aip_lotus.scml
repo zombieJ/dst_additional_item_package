@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
 	<folder id="0" name="lotus">
-		<file id="0" name="lotus/lotus_1.png" width="600" height="500" pivot_x="0.5" pivot_y="0.15" />
-		<file id="1" name="lotus/lotus_2.png" width="464" height="600" pivot_x="0.5" pivot_y="0.15" />
-		<file id="2" name="lotus/lotus_3.png" width="600" height="318" pivot_x="0.5" pivot_y="0.15" />
-		<file id="3" name="lotus/lotus_4.png" width="600" height="430" pivot_x="0.5" pivot_y="0.15" />
-		<file id="4" name="lotus/lotus_5.png" width="600" height="472" pivot_x="0.5" pivot_y="0.15" />
+		<file id="0" name="lotus/lotus_1.png" width="600" height="504" pivot_x="0.5" pivot_y="0.15" />
+		<file id="1" name="lotus/lotus_2.png" width="600" height="503" pivot_x="0.5" pivot_y="0.15" />
+		<file id="2" name="lotus/lotus_3.png" width="600" height="508" pivot_x="0.5" pivot_y="0.15" />
+		<file id="3" name="lotus/lotus_4.png" width="600" height="542" pivot_x="0.5" pivot_y="0.15" />
+		<file id="4" name="lotus/lotus_5.png" width="600" height="537" pivot_x="0.5" pivot_y="0.15" />
+		<file id="5" name="lotus/lotus_6.png" width="600" height="512" pivot_x="0.5" pivot_y="0.15" />
+		<file id="6" name="lotus/lotus_7.png" width="600" height="525" pivot_x="0.5" pivot_y="0.15" />
 	</folder>
 	<entity id="0" name="aip_lotus">
 		<animation id="0" name="idle_1" length="1000">
@@ -65,6 +67,30 @@
 			<timeline id="0" name="lotus_5">
 				<key id="0">
 					<object folder="0" file="4" x="0" y="0" pivot_x="0.5" pivot_y="0.15" angle="0" />
+				</key>
+			</timeline>
+		</animation>
+		<animation id="5" name="idle_6" length="1000">
+			<mainline>
+				<key id="0">
+					<object_ref id="0" name="lotus_6" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.15" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+				</key>
+			</mainline>
+			<timeline id="0" name="lotus_6">
+				<key id="0">
+					<object folder="0" file="5" x="0" y="0" pivot_x="0.5" pivot_y="0.15" angle="0" />
+				</key>
+			</timeline>
+		</animation>
+		<animation id="6" name="idle_7" length="1000">
+			<mainline>
+				<key id="0">
+					<object_ref id="0" name="lotus_7" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.15" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+				</key>
+			</mainline>
+			<timeline id="0" name="lotus_7">
+				<key id="0">
+					<object folder="0" file="6" x="0" y="0" pivot_x="0.5" pivot_y="0.15" angle="0" />
 				</key>
 			</timeline>
 		</animation>

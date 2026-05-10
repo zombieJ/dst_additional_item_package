@@ -6,7 +6,7 @@ end
 
 local language = aipGetModConfig("language")
 
-local LOTUS_VARIANTS = 5
+local LOTUS_VARIANTS = 7
 local PLANT_SCALE = 0.7
 local RIPPLE_SCALE = 2
 
