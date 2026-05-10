@@ -8,6 +8,7 @@ local language = aipGetModConfig("language")
 
 local LOTUS_VARIANTS = 5
 local PLANT_SCALE = 0.7
+local RIPPLE_SCALE = 2
 
 local LANG_MAP = {
 	english = {
@@ -44,7 +45,7 @@ local assets = {
 	Asset("ATLAS", "images/inventoryimages/aip_lotus_seed.xml"),
 }
 
-local lotusPrefabs = { "aip_lotus_seed" }
+local lotusPrefabs = { "aip_lotus_seed", "oceanfishinghook_ripple" }
 local seedPrefabs = { "aip_lotus", "spoiled_food" }
 
 -- 切换莲花样式，读档时保持外观一致。
@@ -67,6 +68,20 @@ end
 local function onLoad(inst, data)
 	if data ~= nil and data.variant ~= nil then
 		inst:SetAipLotusVariant(data.variant)
+	end
+end
+
+-- 在莲花下方挂载原版水面波纹。
+local function addWaterRipple(inst)
+	if TheNet:IsDedicated() then
+		return
+	end
+
+	local ripple = SpawnPrefab("oceanfishinghook_ripple")
+	if ripple ~= nil then
+		inst:AddChild(ripple)
+		ripple.Transform:SetPosition(0, 0, 0)
+		ripple.Transform:SetScale(RIPPLE_SCALE, RIPPLE_SCALE, RIPPLE_SCALE)
 	end
 end
 
@@ -100,6 +115,7 @@ local function lotusFn()
 	inst.AnimState:SetRayTestOnBB(true)
 	inst.SetAipLotusVariant = setLotusVariant
 	setLotusVariant(inst, 1)
+	addWaterRipple(inst)
 
 	inst:SetDeploySmartRadius(DEPLOYSPACING_RADIUS[DEPLOYSPACING.MEDIUM] / 2)
 

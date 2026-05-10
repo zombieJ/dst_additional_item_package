@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
 	<folder id="0" name="lotus">
-		<file id="0" name="lotus/lotus_1.png" width="300" height="250" pivot_x="0.5" pivot_y="0.15" />
-		<file id="1" name="lotus/lotus_2.png" width="232" height="300" pivot_x="0.5" pivot_y="0.15" />
-		<file id="2" name="lotus/lotus_3.png" width="300" height="159" pivot_x="0.5" pivot_y="0.15" />
-		<file id="3" name="lotus/lotus_4.png" width="300" height="215" pivot_x="0.5" pivot_y="0.15" />
-		<file id="4" name="lotus/lotus_5.png" width="300" height="236" pivot_x="0.5" pivot_y="0.15" />
+		<file id="0" name="lotus/lotus_1.png" width="600" height="500" pivot_x="0.5" pivot_y="0.15" />
+		<file id="1" name="lotus/lotus_2.png" width="464" height="600" pivot_x="0.5" pivot_y="0.15" />
+		<file id="2" name="lotus/lotus_3.png" width="600" height="318" pivot_x="0.5" pivot_y="0.15" />
+		<file id="3" name="lotus/lotus_4.png" width="600" height="430" pivot_x="0.5" pivot_y="0.15" />
+		<file id="4" name="lotus/lotus_5.png" width="600" height="472" pivot_x="0.5" pivot_y="0.15" />
 	</folder>
 	<entity id="0" name="aip_lotus">
 		<animation id="0" name="idle_1" length="1000">
