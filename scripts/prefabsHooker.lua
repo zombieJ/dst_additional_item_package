@@ -370,6 +370,16 @@ AddPrefabPostInit("shark", function(inst)
 	end
 end)
 
+------------------------------------------ 青蛙 ------------------------------------------
+-- 青蛙死亡时有概率掉落莲子。
+local function dropLotusSeed(inst)
+	if additional_food and _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
+		inst.components.lootdropper:AddChanceLoot("aip_lotus_seed", dev_mode and 1 or 0.1)
+	end
+end
+
+AddPrefabPostInit("frog", dropLotusSeed)
+AddPrefabPostInit("lunarfrog", dropLotusSeed)
 
 ------------------------------------------ 牛牛 ------------------------------------------
 AddPrefabPostInit("beefalo", function(inst)
@@ -1040,6 +1050,13 @@ for name, data in pairs(VEGGIES) do
 	table.insert(cookbookAtlas, fullname)
 	env.AddIngredientValues({fullname}, data.tags or {}, data.cancook or false, data.candry or false)
 end
+
+-- 莲子按小麦的粮食度参与烹饪。
+if additional_food then
+	table.insert(cookbookAtlas, "aip_lotus_seed")
+	env.AddIngredientValues({ "aip_lotus_seed" }, { starch = 1 }, false, false)
+end
+
 
 -- 粘衣赋值
 env.AddIngredientValues(
