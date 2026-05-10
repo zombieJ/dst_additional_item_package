@@ -504,6 +504,7 @@ AddPrefabPostInit("reskin_tool", function(inst)
 						"aip_ghost_fire",
 						"aip_star_fragment",
 					}, target.prefab)
+					or (target.prefab == "aip_lotus" and target.RandomAipLotusStyle ~= nil)
 					or getAipSkinTarget(target) ~= nil
 				then
 					return true
@@ -538,6 +539,15 @@ AddPrefabPostInit("reskin_tool", function(inst)
 					if target.prefab == "aip_wheat" then
 						_G.aipSpawnPrefab(target, "explode_reskin")
 						_G.aipReplacePrefab(target, "grass")
+						return
+
+					-- 无限之莲重新随机固定花位和散件样式
+					elseif target.prefab == "aip_lotus" and target.RandomAipLotusStyle ~= nil then
+						_G.aipSpawnPrefab(target, "explode_reskin")
+						target:RandomAipLotusStyle()
+						if target.SoundEmitter ~= nil then
+							target.SoundEmitter:PlaySound("dontstarve/common/together/skin_change")
+						end
 						return
 
 					-- dev 模式：农场植物强制巨大化并催熟

@@ -1,96 +1,278 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
-	<folder id="0" name="lotus">
-		<file id="0" name="lotus/lotus_1.png" width="600" height="504" pivot_x="0.5" pivot_y="0.15" />
-		<file id="1" name="lotus/lotus_2.png" width="600" height="503" pivot_x="0.5" pivot_y="0.15" />
-		<file id="2" name="lotus/lotus_3.png" width="600" height="508" pivot_x="0.5" pivot_y="0.15" />
-		<file id="3" name="lotus/lotus_4.png" width="600" height="542" pivot_x="0.5" pivot_y="0.15" />
-		<file id="4" name="lotus/lotus_5.png" width="600" height="537" pivot_x="0.5" pivot_y="0.15" />
-		<file id="5" name="lotus/lotus_6.png" width="600" height="512" pivot_x="0.5" pivot_y="0.15" />
-		<file id="6" name="lotus/lotus_7.png" width="600" height="525" pivot_x="0.5" pivot_y="0.15" />
+	<folder id="0" name="parts">
+		<file id="0" name="parts/clickbox.png" width="760" height="520" pivot_x="0.5" pivot_y="0.5" />
+		<file id="1" name="parts/leaf_1.png" width="300" height="245" pivot_x="0.5" pivot_y="0.5" />
+		<file id="2" name="parts/leaf_2.png" width="300" height="247" pivot_x="0.5" pivot_y="0.5" />
+		<file id="3" name="parts/leaf_3.png" width="300" height="252" pivot_x="0.5" pivot_y="0.5" />
+		<file id="4" name="parts/leaf_4.png" width="300" height="224" pivot_x="0.5" pivot_y="0.5" />
+		<file id="5" name="parts/leaf_5.png" width="300" height="231" pivot_x="0.5" pivot_y="0.5" />
+		<file id="6" name="parts/leaf_6.png" width="300" height="210" pivot_x="0.5" pivot_y="0.5" />
+		<file id="7" name="parts/flower_1.png" width="171" height="330" pivot_x="0.5" pivot_y="0.03" />
+		<file id="8" name="parts/flower_2.png" width="198" height="330" pivot_x="0.5" pivot_y="0.03" />
+		<file id="9" name="parts/flower_3.png" width="196" height="330" pivot_x="0.5" pivot_y="0.03" />
+		<file id="10" name="parts/flower_4.png" width="90" height="330" pivot_x="0.5" pivot_y="0.03" />
+		<file id="11" name="parts/flower_5.png" width="207" height="330" pivot_x="0.5" pivot_y="0.03" />
+		<file id="12" name="parts/flower_6.png" width="177" height="330" pivot_x="0.5" pivot_y="0.03" />
+		<file id="13" name="parts/flower_7.png" width="95" height="330" pivot_x="0.5" pivot_y="0.03" />
+		<file id="14" name="parts/flower_8.png" width="316" height="330" pivot_x="0.5" pivot_y="0.03" />
+		<file id="15" name="parts/flower_9.png" width="148" height="330" pivot_x="0.5" pivot_y="0.03" />
+		<file id="16" name="parts/flower_10.png" width="333" height="330" pivot_x="0.5" pivot_y="0.03" />
+		<file id="17" name="parts/flower_11.png" width="189" height="330" pivot_x="0.5" pivot_y="0.03" />
+		<file id="18" name="parts/flower_12.png" width="405" height="330" pivot_x="0.5" pivot_y="0.03" />
+		<file id="19" name="parts/flower_13.png" width="233" height="330" pivot_x="0.5" pivot_y="0.03" />
+		<file id="20" name="parts/flower_14.png" width="380" height="330" pivot_x="0.5" pivot_y="0.03" />
 	</folder>
 	<entity id="0" name="aip_lotus">
-		<animation id="0" name="idle_1" length="1000">
+		<animation id="0" name="clickbox" length="1000">
 			<mainline>
 				<key id="0">
-					<object_ref id="0" name="lotus_1" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.15" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+					<object_ref id="0" name="clickbox" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
 				</key>
 			</mainline>
-			<timeline id="0" name="lotus_1">
+			<timeline id="0" name="clickbox">
 				<key id="0">
-					<object folder="0" file="0" x="0" y="0" pivot_x="0.5" pivot_y="0.15" angle="0" />
+					<object folder="0" file="0" x="0" y="0" pivot_x="0.5" pivot_y="0.5" angle="0" />
 				</key>
 			</timeline>
 		</animation>
-		<animation id="1" name="idle_2" length="1000">
+		<animation id="1" name="leaf_1" length="1000">
 			<mainline>
 				<key id="0">
-					<object_ref id="0" name="lotus_2" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.15" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+					<object_ref id="0" name="leaf_1" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
 				</key>
 			</mainline>
-			<timeline id="0" name="lotus_2">
+			<timeline id="0" name="leaf_1">
 				<key id="0">
-					<object folder="0" file="1" x="0" y="0" pivot_x="0.5" pivot_y="0.15" angle="0" />
+					<object folder="0" file="1" x="0" y="0" pivot_x="0.5" pivot_y="0.5" angle="0" />
 				</key>
 			</timeline>
 		</animation>
-		<animation id="2" name="idle_3" length="1000">
+		<animation id="2" name="leaf_2" length="1000">
 			<mainline>
 				<key id="0">
-					<object_ref id="0" name="lotus_3" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.15" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+					<object_ref id="0" name="leaf_2" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
 				</key>
 			</mainline>
-			<timeline id="0" name="lotus_3">
+			<timeline id="0" name="leaf_2">
 				<key id="0">
-					<object folder="0" file="2" x="0" y="0" pivot_x="0.5" pivot_y="0.15" angle="0" />
+					<object folder="0" file="2" x="0" y="0" pivot_x="0.5" pivot_y="0.5" angle="0" />
 				</key>
 			</timeline>
 		</animation>
-		<animation id="3" name="idle_4" length="1000">
+		<animation id="3" name="leaf_3" length="1000">
 			<mainline>
 				<key id="0">
-					<object_ref id="0" name="lotus_4" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.15" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+					<object_ref id="0" name="leaf_3" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
 				</key>
 			</mainline>
-			<timeline id="0" name="lotus_4">
+			<timeline id="0" name="leaf_3">
 				<key id="0">
-					<object folder="0" file="3" x="0" y="0" pivot_x="0.5" pivot_y="0.15" angle="0" />
+					<object folder="0" file="3" x="0" y="0" pivot_x="0.5" pivot_y="0.5" angle="0" />
 				</key>
 			</timeline>
 		</animation>
-		<animation id="4" name="idle_5" length="1000">
+		<animation id="4" name="leaf_4" length="1000">
 			<mainline>
 				<key id="0">
-					<object_ref id="0" name="lotus_5" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.15" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+					<object_ref id="0" name="leaf_4" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
 				</key>
 			</mainline>
-			<timeline id="0" name="lotus_5">
+			<timeline id="0" name="leaf_4">
 				<key id="0">
-					<object folder="0" file="4" x="0" y="0" pivot_x="0.5" pivot_y="0.15" angle="0" />
+					<object folder="0" file="4" x="0" y="0" pivot_x="0.5" pivot_y="0.5" angle="0" />
 				</key>
 			</timeline>
 		</animation>
-		<animation id="5" name="idle_6" length="1000">
+		<animation id="5" name="leaf_5" length="1000">
 			<mainline>
 				<key id="0">
-					<object_ref id="0" name="lotus_6" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.15" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+					<object_ref id="0" name="leaf_5" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
 				</key>
 			</mainline>
-			<timeline id="0" name="lotus_6">
+			<timeline id="0" name="leaf_5">
 				<key id="0">
-					<object folder="0" file="5" x="0" y="0" pivot_x="0.5" pivot_y="0.15" angle="0" />
+					<object folder="0" file="5" x="0" y="0" pivot_x="0.5" pivot_y="0.5" angle="0" />
 				</key>
 			</timeline>
 		</animation>
-		<animation id="6" name="idle_7" length="1000">
+		<animation id="6" name="leaf_6" length="1000">
 			<mainline>
 				<key id="0">
-					<object_ref id="0" name="lotus_7" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.15" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+					<object_ref id="0" name="leaf_6" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.5" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
 				</key>
 			</mainline>
-			<timeline id="0" name="lotus_7">
+			<timeline id="0" name="leaf_6">
 				<key id="0">
-					<object folder="0" file="6" x="0" y="0" pivot_x="0.5" pivot_y="0.15" angle="0" />
+					<object folder="0" file="6" x="0" y="0" pivot_x="0.5" pivot_y="0.5" angle="0" />
+				</key>
+			</timeline>
+		</animation>
+		<animation id="7" name="flower_1" length="1000">
+			<mainline>
+				<key id="0">
+					<object_ref id="0" name="flower_1" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.03" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+				</key>
+			</mainline>
+			<timeline id="0" name="flower_1">
+				<key id="0">
+					<object folder="0" file="7" x="0" y="0" pivot_x="0.5" pivot_y="0.03" angle="0" />
+				</key>
+			</timeline>
+		</animation>
+		<animation id="8" name="flower_2" length="1000">
+			<mainline>
+				<key id="0">
+					<object_ref id="0" name="flower_2" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.03" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+				</key>
+			</mainline>
+			<timeline id="0" name="flower_2">
+				<key id="0">
+					<object folder="0" file="8" x="0" y="0" pivot_x="0.5" pivot_y="0.03" angle="0" />
+				</key>
+			</timeline>
+		</animation>
+		<animation id="9" name="flower_3" length="1000">
+			<mainline>
+				<key id="0">
+					<object_ref id="0" name="flower_3" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.03" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+				</key>
+			</mainline>
+			<timeline id="0" name="flower_3">
+				<key id="0">
+					<object folder="0" file="9" x="0" y="0" pivot_x="0.5" pivot_y="0.03" angle="0" />
+				</key>
+			</timeline>
+		</animation>
+		<animation id="10" name="flower_4" length="1000">
+			<mainline>
+				<key id="0">
+					<object_ref id="0" name="flower_4" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.03" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+				</key>
+			</mainline>
+			<timeline id="0" name="flower_4">
+				<key id="0">
+					<object folder="0" file="10" x="0" y="0" pivot_x="0.5" pivot_y="0.03" angle="0" />
+				</key>
+			</timeline>
+		</animation>
+		<animation id="11" name="flower_5" length="1000">
+			<mainline>
+				<key id="0">
+					<object_ref id="0" name="flower_5" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.03" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+				</key>
+			</mainline>
+			<timeline id="0" name="flower_5">
+				<key id="0">
+					<object folder="0" file="11" x="0" y="0" pivot_x="0.5" pivot_y="0.03" angle="0" />
+				</key>
+			</timeline>
+		</animation>
+		<animation id="12" name="flower_6" length="1000">
+			<mainline>
+				<key id="0">
+					<object_ref id="0" name="flower_6" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.03" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+				</key>
+			</mainline>
+			<timeline id="0" name="flower_6">
+				<key id="0">
+					<object folder="0" file="12" x="0" y="0" pivot_x="0.5" pivot_y="0.03" angle="0" />
+				</key>
+			</timeline>
+		</animation>
+		<animation id="13" name="flower_7" length="1000">
+			<mainline>
+				<key id="0">
+					<object_ref id="0" name="flower_7" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.03" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+				</key>
+			</mainline>
+			<timeline id="0" name="flower_7">
+				<key id="0">
+					<object folder="0" file="13" x="0" y="0" pivot_x="0.5" pivot_y="0.03" angle="0" />
+				</key>
+			</timeline>
+		</animation>
+		<animation id="14" name="flower_8" length="1000">
+			<mainline>
+				<key id="0">
+					<object_ref id="0" name="flower_8" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.03" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+				</key>
+			</mainline>
+			<timeline id="0" name="flower_8">
+				<key id="0">
+					<object folder="0" file="14" x="0" y="0" pivot_x="0.5" pivot_y="0.03" angle="0" />
+				</key>
+			</timeline>
+		</animation>
+		<animation id="15" name="flower_9" length="1000">
+			<mainline>
+				<key id="0">
+					<object_ref id="0" name="flower_9" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.03" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+				</key>
+			</mainline>
+			<timeline id="0" name="flower_9">
+				<key id="0">
+					<object folder="0" file="15" x="0" y="0" pivot_x="0.5" pivot_y="0.03" angle="0" />
+				</key>
+			</timeline>
+		</animation>
+		<animation id="16" name="flower_10" length="1000">
+			<mainline>
+				<key id="0">
+					<object_ref id="0" name="flower_10" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.03" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+				</key>
+			</mainline>
+			<timeline id="0" name="flower_10">
+				<key id="0">
+					<object folder="0" file="16" x="0" y="0" pivot_x="0.5" pivot_y="0.03" angle="0" />
+				</key>
+			</timeline>
+		</animation>
+		<animation id="17" name="flower_11" length="1000">
+			<mainline>
+				<key id="0">
+					<object_ref id="0" name="flower_11" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.03" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+				</key>
+			</mainline>
+			<timeline id="0" name="flower_11">
+				<key id="0">
+					<object folder="0" file="17" x="0" y="0" pivot_x="0.5" pivot_y="0.03" angle="0" />
+				</key>
+			</timeline>
+		</animation>
+		<animation id="18" name="flower_12" length="1000">
+			<mainline>
+				<key id="0">
+					<object_ref id="0" name="flower_12" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.03" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+				</key>
+			</mainline>
+			<timeline id="0" name="flower_12">
+				<key id="0">
+					<object folder="0" file="18" x="0" y="0" pivot_x="0.5" pivot_y="0.03" angle="0" />
+				</key>
+			</timeline>
+		</animation>
+		<animation id="19" name="flower_13" length="1000">
+			<mainline>
+				<key id="0">
+					<object_ref id="0" name="flower_13" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.03" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+				</key>
+			</mainline>
+			<timeline id="0" name="flower_13">
+				<key id="0">
+					<object folder="0" file="19" x="0" y="0" pivot_x="0.5" pivot_y="0.03" angle="0" />
+				</key>
+			</timeline>
+		</animation>
+		<animation id="20" name="flower_14" length="1000">
+			<mainline>
+				<key id="0">
+					<object_ref id="0" name="flower_14" abs_x="0" abs_y="0" abs_pivot_x="0.5" abs_pivot_y="0.03" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0" />
+				</key>
+			</mainline>
+			<timeline id="0" name="flower_14">
+				<key id="0">
+					<object folder="0" file="20" x="0" y="0" pivot_x="0.5" pivot_y="0.03" angle="0" />
 				</key>
 			</timeline>
 		</animation>
