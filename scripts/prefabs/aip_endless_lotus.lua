@@ -55,6 +55,7 @@ local LOTUS_RIPPLE_SCALE = 2.85
 -- 刷新当前莲花样式动画。
 local function playSkin(inst, skin)
 	inst.AnimState:PlayAnimation(lotusConfig.GetSkin(skin), true)
+	inst.AnimState:SetTime(math.random() * inst.AnimState:GetCurrentAnimationLength())
 end
 
 local skinner = skinUtil.CreatePrefabSkinner(lotusConfig, {
