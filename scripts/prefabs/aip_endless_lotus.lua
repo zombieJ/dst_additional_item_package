@@ -43,7 +43,8 @@ for _, asset in ipairs(lotusConfig.GetInventoryAtlasAssets(true)) do
 end
 
 local LOTUS_SKINS = { "style_1", "style_2", "style_3" }
-local LOTUS_DEPLOY_RADIUS = DEPLOYSPACING_RADIUS[DEPLOYSPACING.LARGE] / 2
+local LOTUS_DEPLOY_RANGE_SPACING = DEPLOYSPACING.LARGE
+local LOTUS_WATER_DEPLOY_RADIUS = 0
 
 -- 刷新当前莲花样式动画。
 local function playSkin(inst, skin)
@@ -108,6 +109,15 @@ local function onDeploy(inst, pt, deployer)
 	inst:Remove()
 end
 
+-- 判断莲子是否能种到目标水面，避免把长距离操作误用为落点清空半径。
+local function canDeployLotusSeed(inst, pt, mouseover)
+	return TheWorld.Map:CanDeployAtPointInWater(pt, inst, mouseover, {
+		land = 0.2,
+		boat = 0.2,
+		radius = LOTUS_WATER_DEPLOY_RADIUS,
+	})
+end
+
 local function lotusFn()
 	local inst = CreateEntity()
 
@@ -116,9 +126,6 @@ local function lotusFn()
 	inst.entity:AddSoundEmitter()
 	inst.entity:AddNetwork()
 
-	MakeInventoryPhysics(inst, nil, 0.7)
-	inst:SetDeploySmartRadius(LOTUS_DEPLOY_RADIUS)
-
 	inst:AddTag("plant")
 	inst:AddTag("aip_endless_lotus")
 	inst:AddTag("ignorewalkableplatforms")
@@ -126,6 +133,7 @@ local function lotusFn()
 	inst.AnimState:SetBank(BUILD)
 	inst.AnimState:SetBuild(BUILD)
 	inst.AnimState:SetFinalOffset(1)
+	inst.AnimState:SetRayTestOnBB(true)
 
 	skinner.SetupNetwork(inst)
 	inst.RandomLotusSkin = setRandomSkin
@@ -172,8 +180,9 @@ local function seedFn()
 	inst.AnimState:PlayAnimation("seed")
 
 	inst:AddTag("deployedplant")
-	-- 海面点位不容易贴近，借用水面部署偏移让种植动作保持较长距离。
+	-- 海边种植需要更远的操作距离，实际落点半径由自定义部署函数控制。
 	inst:AddTag("usedeployspacingasoffset")
+	inst._custom_candeploy_fn = canDeployLotusSeed
 
 	inst.scrapbook_specialinfo = "PLANTABLE"
 	inst.overridedeployplacername = PLACER
@@ -199,8 +208,8 @@ local function seedFn()
 	inst.components.tradable.goldvalue = 1
 
 	inst:AddComponent("deployable")
-	inst.components.deployable:SetDeployMode(DEPLOYMODE.WATER)
-	inst.components.deployable:SetDeploySpacing(DEPLOYSPACING.LARGE)
+	inst.components.deployable:SetDeployMode(DEPLOYMODE.CUSTOM)
+	inst.components.deployable:SetDeploySpacing(LOTUS_DEPLOY_RANGE_SPACING)
 	inst.components.deployable.ondeploy = onDeploy
 
 	MakeHauntableLaunch(inst)
