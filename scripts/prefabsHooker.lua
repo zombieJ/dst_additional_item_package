@@ -205,6 +205,27 @@ AddPrefabPostInit("rabbit", function(inst)
 end)
 
 
+------------------------------------------ 青蛙 ------------------------------------------
+local function onFrogAttacked(inst, data)
+	if
+		data ~= nil and data.attacker ~= nil and data.attacker:HasTag("player") and
+		inst.components.lootdropper ~= nil and
+		_G.aipChance(dev_mode and 1 or 0.05, data.attacker, 0.01)
+	then
+		local seed = inst.components.lootdropper:SpawnLootPrefab("aip_endless_lotus_seed")
+		if seed ~= nil then
+			_G.aipFlingItem(seed)
+		end
+	end
+end
+
+AddPrefabPostInit("frog", function(inst)
+	if _G.TheWorld.ismastersim then
+		-- 攻击青蛙时小概率抖落无尽之莲子。
+		inst:ListenForEvent("attacked", onFrogAttacked)
+	end
+end)
+
 ------------------------------------------ 金石 ------------------------------------------
 local function onRock2Worked(inst, data)
 	if
@@ -557,12 +578,16 @@ AddPrefabPostInit("reskin_tool", function(inst)
 						target.components.aipc_quality:DoDelta(1)
 						return
 
-					-- AIP build skin cycle
+					-- AIP 构建皮肤切换
 					elseif aipSkinTarget ~= nil then
-						local nextSkin = aipSkinConfig.GetNextBuildSkin(aipSkinTarget.skinname)
-
 						_G.aipSpawnPrefab(aipSkinTarget, "explode_reskin")
-						aipSkinTarget:SetAipSkin(nextSkin)
+						if aipSkinTarget.RandomAipSkin ~= nil then
+							-- 部分装饰只需要随机外观，不走固定皮肤轮换顺序。
+							aipSkinTarget:RandomAipSkin()
+						else
+							local nextSkin = aipSkinConfig.GetNextBuildSkin(aipSkinTarget.skinname)
+							aipSkinTarget:SetAipSkin(nextSkin)
+						end
 						if aipSkinTarget.SoundEmitter ~= nil then
 							aipSkinTarget.SoundEmitter:PlaySound("dontstarve/common/together/skin_change")
 						end
