@@ -50,7 +50,7 @@ end
 local LOTUS_SKINS = { "style_1", "style_2", "style_3" }
 local LOTUS_DEPLOY_RANGE_SPACING = DEPLOYSPACING.LARGE
 local LOTUS_WATER_DEPLOY_RADIUS = 0
-local LOTUS_RIPPLE_SCALE = 2.35
+local LOTUS_RIPPLE_SCALE = 2.85
 
 -- 刷新当前莲花样式动画。
 local function playSkin(inst, skin)
