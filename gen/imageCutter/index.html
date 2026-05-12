@@ -1056,7 +1056,8 @@
                         const b = data[index + 2];
                         const a = data[index + 3];
 
-                        if (a === 0) {
+                        // 已有透明度的像素保持原样，避免被颜色重新推导 alpha。
+                        if (a < 255) {
                             continue;
                         }
 

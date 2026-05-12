@@ -7,6 +7,7 @@ local lotusConfig = require("configurations/skin/aip_endless_lotus")
 
 local PREFAB = "aip_endless_lotus"
 local SEED_PREFAB = "aip_endless_lotus_seed"
+local RIPPLE_PREFAB = "aip_endless_lotus_ripple"
 local BUILD = "aip_endless_lotus"
 local PLACER = "aip_endless_lotus_placer"
 
@@ -38,6 +39,10 @@ local assets = {
 	Asset("ATLAS", "images/inventoryimages/aip_endless_lotus_seed.xml"),
 }
 
+local rippleAssets = {
+	Asset("ANIM", "anim/oceanfishing_hook.zip"),
+}
+
 for _, asset in ipairs(lotusConfig.GetInventoryAtlasAssets(true)) do
 	table.insert(assets, asset)
 end
@@ -45,6 +50,7 @@ end
 local LOTUS_SKINS = { "style_1", "style_2", "style_3" }
 local LOTUS_DEPLOY_RANGE_SPACING = DEPLOYSPACING.LARGE
 local LOTUS_WATER_DEPLOY_RADIUS = 0
+local LOTUS_RIPPLE_SCALE = 2.35
 
 -- 刷新当前莲花样式动画。
 local function playSkin(inst, skin)
@@ -118,6 +124,43 @@ local function canDeployLotusSeed(inst, pt, mouseover)
 	})
 end
 
+-- 创建跟随莲花循环播放的水波纹特效。
+local function rippleFn()
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+
+	inst:AddTag("CLASSIFIED")
+	inst:AddTag("FX")
+	inst:AddTag("NOCLICK")
+
+	inst.AnimState:SetBank("oceanfishing_hook")
+	inst.AnimState:SetBuild("oceanfishing_hook")
+	inst.AnimState:PlayAnimation("fx_ripple_small", true)
+	inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+	inst.AnimState:SetLayer(LAYER_BELOW_GROUND)
+	inst.AnimState:SetSortOrder(ANIM_SORT_ORDER_BELOW_GROUND.UNDERWATER)
+
+	inst.persists = false
+
+	return inst
+end
+
+-- 在客户端给莲花挂上动态水波纹。
+local function addRippleFx(inst)
+	if not TheNet:IsDedicated() then
+		local ripple = SpawnPrefab(RIPPLE_PREFAB)
+
+		if ripple ~= nil then
+			inst:AddChild(ripple)
+			ripple.Transform:SetPosition(0, 0, 0)
+			ripple.Transform:SetScale(LOTUS_RIPPLE_SCALE, LOTUS_RIPPLE_SCALE, LOTUS_RIPPLE_SCALE)
+			inst._aipRipple = ripple
+		end
+	end
+end
+
 local function lotusFn()
 	local inst = CreateEntity()
 
@@ -134,11 +177,11 @@ local function lotusFn()
 	inst.AnimState:SetBuild(BUILD)
 	inst.AnimState:SetFinalOffset(1)
 	inst.AnimState:SetRayTestOnBB(true)
-	AddDefaultRippleSymbols(inst, true, false)
 
 	skinner.SetupNetwork(inst)
 	inst.RandomLotusSkin = setRandomSkin
 	inst.RandomAipSkin = setRandomSkin
+	addRippleFx(inst)
 
 	inst.entity:SetPristine()
 
@@ -219,8 +262,9 @@ local function seedFn()
 end
 
 local prefabs = {
-	Prefab(PREFAB, lotusFn, assets, { "splash", SEED_PREFAB }),
+	Prefab(PREFAB, lotusFn, assets, { "splash", SEED_PREFAB, RIPPLE_PREFAB }),
 	Prefab(SEED_PREFAB, seedFn, assets, { "splash", PREFAB }),
+	Prefab(RIPPLE_PREFAB, rippleFn, rippleAssets),
 	MakePlacer(PLACER, BUILD, BUILD, lotusConfig.DEFAULT_SKIN),
 }
 
