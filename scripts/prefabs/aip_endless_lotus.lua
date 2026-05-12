@@ -134,6 +134,7 @@ local function lotusFn()
 	inst.AnimState:SetBuild(BUILD)
 	inst.AnimState:SetFinalOffset(1)
 	inst.AnimState:SetRayTestOnBB(true)
+	AddDefaultRippleSymbols(inst, true, false)
 
 	skinner.SetupNetwork(inst)
 	inst.RandomLotusSkin = setRandomSkin
