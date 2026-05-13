@@ -206,23 +206,12 @@ end)
 
 
 ------------------------------------------ 青蛙 ------------------------------------------
-local function onFrogAttacked(inst, data)
-	if
-		data ~= nil and data.attacker ~= nil and data.attacker:HasTag("player") and
-		inst.components.lootdropper ~= nil and
-		_G.aipChance(dev_mode and 1 or 0.05, data.attacker, 0.01)
-	then
-		local seed = inst.components.lootdropper:SpawnLootPrefab("aip_endless_lotus_seed")
-		if seed ~= nil then
-			_G.aipFlingItem(seed)
-		end
-	end
-end
+local FROG_LOTUS_SEED_DROP_CHANCE = 0.05
 
 AddPrefabPostInit("frog", function(inst)
-	if _G.TheWorld.ismastersim then
-		-- 攻击青蛙时小概率抖落无尽之莲子。
-		inst:ListenForEvent("attacked", onFrogAttacked)
+	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
+		-- 青蛙死亡掉落表里小概率加入无尽之莲子。
+		inst.components.lootdropper:AddChanceLoot("aip_endless_lotus_seed", dev_mode and 1 or FROG_LOTUS_SEED_DROP_CHANCE)
 	end
 end)
 

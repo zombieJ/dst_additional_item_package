@@ -52,7 +52,9 @@ local LOTUS_DEPLOY_RANGE_SPACING = DEPLOYSPACING.LARGE
 local LOTUS_WATER_DEPLOY_RADIUS = DEPLOYSPACING_RADIUS[DEPLOYSPACING.DEFAULT]
 local LOTUS_RIPPLE_SCALE = 2.85
 local LOTUS_RIPPLE_Y_OFFSET = -0.15
-local LOTUS_BLOOM_TIME = TUNING.TOTAL_DAY_TIME
+local LOTUS_BLOOM_TIME = TUNING.TOTAL_DAY_TIME * 3
+local LOTUS_PHYSICS_RADIUS = 1
+local LOTUS_PHYSICS_HEIGHT = 1
 local LOTUS_BUD_ANIMS = {
 	style_1 = "bud_1",
 	style_2 = "bud_2",
@@ -165,6 +167,28 @@ local function canDeployLotusSeed(inst, pt, mouseover)
 	})
 end
 
+-- 创建可被船物品碰撞壳推动的莲花物理体。
+local function addLotusPhysics(inst)
+	inst:SetPhysicsRadiusOverride(LOTUS_PHYSICS_RADIUS)
+	inst:SetDeploySmartRadius(LOTUS_WATER_DEPLOY_RADIUS / 2)
+
+	local phys = inst.entity:AddPhysics()
+	phys:SetMass(1)
+	phys:SetFriction(0)
+	phys:SetDamping(5)
+	phys:SetRestitution(0.1)
+	phys:SetCollisionGroup(COLLISION.ITEMS)
+	phys:SetCollisionMask(
+		COLLISION.WORLD,
+		COLLISION.OBSTACLES,
+		COLLISION.SMALLOBSTACLES,
+		COLLISION.ITEMS
+	)
+	phys:SetCapsule(LOTUS_PHYSICS_RADIUS, LOTUS_PHYSICS_HEIGHT)
+
+	return phys
+end
+
 -- 创建跟随莲花循环播放的水波纹特效。
 local function rippleFn()
 	local inst = CreateEntity()
@@ -209,6 +233,8 @@ local function lotusFn()
 	inst.entity:AddAnimState()
 	inst.entity:AddSoundEmitter()
 	inst.entity:AddNetwork()
+
+	addLotusPhysics(inst)
 
 	inst:AddTag("plant")
 	inst:AddTag("aip_endless_lotus")
