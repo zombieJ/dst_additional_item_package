@@ -51,6 +51,7 @@ local LOTUS_SKINS = { "style_1", "style_2", "style_3" }
 local LOTUS_DEPLOY_RANGE_SPACING = DEPLOYSPACING.LARGE
 local LOTUS_WATER_DEPLOY_RADIUS = 0
 local LOTUS_RIPPLE_SCALE = 2.85
+local LOTUS_RIPPLE_Y_OFFSET = -0.15
 
 -- 刷新当前莲花样式动画。
 local function playSkin(inst, skin)
@@ -155,7 +156,7 @@ local function addRippleFx(inst)
 
 		if ripple ~= nil then
 			inst:AddChild(ripple)
-			ripple.Transform:SetPosition(0, 0, 0)
+			ripple.Transform:SetPosition(0, LOTUS_RIPPLE_Y_OFFSET, 0)
 			ripple.Transform:SetScale(LOTUS_RIPPLE_SCALE, LOTUS_RIPPLE_SCALE, LOTUS_RIPPLE_SCALE)
 			inst._aipRipple = ripple
 		end
