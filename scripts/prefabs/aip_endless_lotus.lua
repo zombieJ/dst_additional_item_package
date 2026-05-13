@@ -49,13 +49,28 @@ end
 
 local LOTUS_SKINS = { "style_1", "style_2", "style_3" }
 local LOTUS_DEPLOY_RANGE_SPACING = DEPLOYSPACING.LARGE
-local LOTUS_WATER_DEPLOY_RADIUS = 0
+local LOTUS_WATER_DEPLOY_RADIUS = DEPLOYSPACING_RADIUS[DEPLOYSPACING.DEFAULT]
 local LOTUS_RIPPLE_SCALE = 2.85
 local LOTUS_RIPPLE_Y_OFFSET = -0.15
+local LOTUS_BLOOM_TIME = TUNING.TOTAL_DAY_TIME
+local LOTUS_BUD_ANIMS = {
+	style_1 = "bud_1",
+	style_2 = "bud_2",
+	style_3 = "bud_3",
+}
+
+-- 获取当前开放阶段对应的莲花动画。
+local function getLotusAnim(inst, skin)
+	skin = lotusConfig.GetSkin(skin)
+
+	return inst._aipLotusBloomed ~= nil and inst._aipLotusBloomed:value() and skin
+		or LOTUS_BUD_ANIMS[skin]
+		or LOTUS_BUD_ANIMS[lotusConfig.DEFAULT_SKIN]
+end
 
 -- 刷新当前莲花样式动画。
 local function playSkin(inst, skin)
-	inst.AnimState:PlayAnimation(lotusConfig.GetSkin(skin), true)
+	inst.AnimState:PlayAnimation(getLotusAnim(inst, skin), true)
 	inst.AnimState:SetTime(math.random() * inst.AnimState:GetCurrentAnimationLength())
 end
 
@@ -67,6 +82,15 @@ local skinner = skinUtil.CreatePrefabSkinner(lotusConfig, {
 	next_fn_name = "NextLotusSkin",
 	play_fn = playSkin,
 })
+
+-- 切换莲花开放状态并刷新当前样式。
+local function setLotusBloomed(inst, bloomed)
+	if inst._aipLotusBloomed ~= nil then
+		inst._aipLotusBloomed:set(bloomed)
+	end
+
+	skinner.PlayCurrent(inst)
+end
 
 -- 随机切换一种莲花样式。
 local function setRandomSkin(inst, allowSame)
@@ -94,6 +118,21 @@ local function onDug(inst)
 	inst:Remove()
 end
 
+-- 莲花重新开放时恢复可采摘外观。
+local function onBloomed(inst)
+	setLotusBloomed(inst, true)
+end
+
+-- 莲花被采摘后回到未开花状态。
+local function onPicked(inst)
+	setLotusBloomed(inst, false)
+end
+
+-- 初始化或读档为空时显示未开花状态。
+local function makeEmpty(inst)
+	setLotusBloomed(inst, false)
+end
+
 -- 读取存档时恢复魔法扫把切换过的样式。
 local function onLoad(inst, data)
 	skinner.OnLoad(inst, data)
@@ -117,7 +156,7 @@ local function onDeploy(inst, pt, deployer)
 	inst:Remove()
 end
 
--- 判断莲子是否能种到目标水面，避免把长距离操作误用为落点清空半径。
+-- 判断莲子是否能种到目标水面，并按荷花占地半径避开岸边。
 local function canDeployLotusSeed(inst, pt, mouseover)
 	return TheWorld.Map:CanDeployAtPointInWater(pt, inst, mouseover, {
 		land = 0.2,
@@ -180,7 +219,13 @@ local function lotusFn()
 	inst.AnimState:SetFinalOffset(1)
 	inst.AnimState:SetRayTestOnBB(true)
 
+	inst._aipLotusBloomed = net_bool(inst.GUID, "aip_endless_lotus._aipLotusBloomed", "aip_endless_lotus_bloomdirty")
+	inst:ListenForEvent("aip_endless_lotus_bloomdirty", function(inst)
+		skinner.PlayCurrent(inst)
+	end)
+
 	skinner.SetupNetwork(inst)
+	inst.scrapbook_anim = LOTUS_BUD_ANIMS[lotusConfig.DEFAULT_SKIN]
 	inst.RandomLotusSkin = setRandomSkin
 	inst.RandomAipSkin = setRandomSkin
 	addRippleFx(inst)
@@ -197,6 +242,15 @@ local function lotusFn()
 
 	inst:AddComponent("lootdropper")
 	inst.components.lootdropper:SetLoot({ SEED_PREFAB })
+
+	inst:AddComponent("pickable")
+	inst.components.pickable.picksound = "dontstarve/wilson/harvest_berries"
+	inst.components.pickable:SetUp(SEED_PREFAB, LOTUS_BLOOM_TIME, 1)
+	inst.components.pickable.onregenfn = onBloomed
+	inst.components.pickable.onpickedfn = onPicked
+	inst.components.pickable.makeemptyfn = makeEmpty
+	inst.components.pickable.makefullfn = onBloomed
+	inst.components.pickable:MakeEmpty()
 
 	inst:AddComponent("workable")
 	inst.components.workable:SetWorkAction(ACTIONS.DIG)
@@ -267,7 +321,7 @@ local prefabs = {
 	Prefab(PREFAB, lotusFn, assets, { "splash", SEED_PREFAB, RIPPLE_PREFAB }),
 	Prefab(SEED_PREFAB, seedFn, assets, { "splash", PREFAB }),
 	Prefab(RIPPLE_PREFAB, rippleFn, rippleAssets),
-	MakePlacer(PLACER, BUILD, BUILD, lotusConfig.DEFAULT_SKIN),
+	MakePlacer(PLACER, BUILD, BUILD, LOTUS_BUD_ANIMS[lotusConfig.DEFAULT_SKIN]),
 }
 
 for _, skinPrefab in ipairs(skinner.CreatePrefabSkins()) do
