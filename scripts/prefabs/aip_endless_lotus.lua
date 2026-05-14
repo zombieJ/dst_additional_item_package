@@ -7,6 +7,8 @@ local lotusConfig = require("configurations/skin/aip_endless_lotus")
 
 local PREFAB = "aip_endless_lotus"
 local SEED_PREFAB = "aip_endless_lotus_seed"
+local FLOWER_PREFAB = "aip_endless_lotus_flower"
+local LEAF_PREFAB = "aip_endless_lotus_leaf"
 local RIPPLE_PREFAB = "aip_endless_lotus_ripple"
 local BUILD = "aip_endless_lotus"
 local PLACER = "aip_endless_lotus_placer"
@@ -17,12 +19,20 @@ local LANG_MAP = {
 		LOTUS_DESC = "It blooms between waves.",
 		SEED_NAME = "Endless Lotus Seed",
 		SEED_DESC = "It wants a quiet stretch of sea.",
+		FLOWER_NAME = "Endless Lotus Bloom",
+		FLOWER_DESC = "Tender enough to eat.",
+		LEAF_NAME = "Endless Lotus Leaf",
+		LEAF_DESC = "A quiet green sheet.",
 	},
 	chinese = {
 		LOTUS_NAME = "无尽之莲",
 		LOTUS_DESC = "它在浪间静静绽放。",
 		SEED_NAME = "无尽之莲子",
 		SEED_DESC = "它想落在一片安静的海面上。",
+		FLOWER_NAME = "无尽之莲花朵",
+		FLOWER_DESC = "柔嫩得可以入口。",
+		LEAF_NAME = "无尽之莲荷叶",
+		LEAF_DESC = "一片安静的青绿。",
 	},
 }
 
@@ -32,11 +42,17 @@ STRINGS.NAMES.AIP_ENDLESS_LOTUS = LANG.LOTUS_NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_ENDLESS_LOTUS = LANG.LOTUS_DESC
 STRINGS.NAMES.AIP_ENDLESS_LOTUS_SEED = LANG.SEED_NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_ENDLESS_LOTUS_SEED = LANG.SEED_DESC
+STRINGS.NAMES.AIP_ENDLESS_LOTUS_FLOWER = LANG.FLOWER_NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_ENDLESS_LOTUS_FLOWER = LANG.FLOWER_DESC
+STRINGS.NAMES.AIP_ENDLESS_LOTUS_LEAF = LANG.LEAF_NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_ENDLESS_LOTUS_LEAF = LANG.LEAF_DESC
 skinUtil.RegisterBuildSkinConfig(lotusConfig, language, LANG.LOTUS_DESC)
 
 local assets = {
 	Asset("ANIM", "anim/aip_endless_lotus.zip"),
 	Asset("ATLAS", "images/inventoryimages/aip_endless_lotus_seed.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_endless_lotus_flower.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_endless_lotus_leaf.xml"),
 }
 
 local rippleAssets = {
@@ -55,6 +71,8 @@ local LOTUS_RIPPLE_Y_OFFSET = -0.15
 local LOTUS_BLOOM_TIME = TUNING.TOTAL_DAY_TIME * 3
 local LOTUS_PHYSICS_RADIUS = 1
 local LOTUS_PHYSICS_HEIGHT = 1
+local LOTUS_INTERACT_RADIUS = 2.8
+local LOTUS_DEPLOY_BLOCK_TAGS = { "aip_endless_lotus" }
 local LOTUS_BUD_ANIMS = {
 	style_1 = "bud_1",
 	style_2 = "bud_2",
@@ -108,9 +126,15 @@ local function setRandomSkin(inst, allowSame)
 	inst:SetAipSkin(nextSkin)
 end
 
--- 挖掉莲花时返还一颗莲子。
+-- 挖掉莲花时掉落荷叶，盛开可采时额外掉落花朵。
 local function onDug(inst)
-	inst.components.lootdropper:DropLoot()
+	local loot = { LEAF_PREFAB }
+
+	if inst.components.pickable ~= nil and inst.components.pickable:CanBePicked() then
+		table.insert(loot, FLOWER_PREFAB)
+	end
+
+	inst.components.lootdropper:DropLoot(nil, loot)
 
 	local splash = SpawnPrefab("splash")
 	if splash ~= nil then
@@ -158,18 +182,30 @@ local function onDeploy(inst, pt, deployer)
 	inst:Remove()
 end
 
+-- 避免 walkableperipheral 被原版部署检测忽略后导致莲花重叠种植。
+local function isNearOtherLotus(pt)
+	for _, lotus in ipairs(TheSim:FindEntities(pt.x, 0, pt.z, LOTUS_INTERACT_RADIUS, LOTUS_DEPLOY_BLOCK_TAGS)) do
+		if lotus.entity:IsVisible() and lotus.entity:GetParent() == nil then
+			return true
+		end
+	end
+
+	return false
+end
+
 -- 判断莲子是否能种到目标水面，并按荷花占地半径避开岸边。
 local function canDeployLotusSeed(inst, pt, mouseover)
 	return TheWorld.Map:CanDeployAtPointInWater(pt, inst, mouseover, {
 		land = 0.2,
 		boat = 0.2,
 		radius = LOTUS_WATER_DEPLOY_RADIUS,
-	})
+	}) and not isNearOtherLotus(pt)
 end
 
 -- 创建可被船物品碰撞壳推动的莲花物理体。
 local function addLotusPhysics(inst)
-	inst:SetPhysicsRadiusOverride(LOTUS_PHYSICS_RADIUS)
+	-- 原版会用 PhysicsRadiusOverride 计算动作到达距离，这里只放大交互范围，不放大真实碰撞壳。
+	inst:SetPhysicsRadiusOverride(LOTUS_INTERACT_RADIUS)
 	inst:SetDeploySmartRadius(LOTUS_WATER_DEPLOY_RADIUS / 2)
 
 	local phys = inst.entity:AddPhysics()
@@ -239,6 +275,8 @@ local function lotusFn()
 	inst:AddTag("plant")
 	inst:AddTag("aip_endless_lotus")
 	inst:AddTag("ignorewalkableplatforms")
+	-- 原版船边缘目标会用这个标签放宽右键工具动作，保证岸边/船边能挖到。
+	inst:AddTag("walkableperipheral")
 
 	inst.AnimState:SetBank(BUILD)
 	inst.AnimState:SetBuild(BUILD)
@@ -267,11 +305,11 @@ local function lotusFn()
 	inst:AddComponent("inspectable")
 
 	inst:AddComponent("lootdropper")
-	inst.components.lootdropper:SetLoot({ SEED_PREFAB })
+	inst.components.lootdropper:SetLoot({ LEAF_PREFAB })
 
 	inst:AddComponent("pickable")
 	inst.components.pickable.picksound = "dontstarve/wilson/harvest_berries"
-	inst.components.pickable:SetUp(SEED_PREFAB, LOTUS_BLOOM_TIME, 1)
+	inst.components.pickable:SetUp(FLOWER_PREFAB, LOTUS_BLOOM_TIME, 1)
 	inst.components.pickable.onregenfn = onBloomed
 	inst.components.pickable.onpickedfn = onPicked
 	inst.components.pickable.makeemptyfn = makeEmpty
@@ -287,6 +325,94 @@ local function lotusFn()
 	inst.OnLoad = onLoad
 
 	MakeHauntableWork(inst)
+
+	return inst
+end
+
+-- 创建可食用且可入锅的无尽之莲花朵。
+local function flowerFn()
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddNetwork()
+
+	MakeInventoryPhysics(inst)
+
+	inst.AnimState:SetBank(BUILD)
+	inst.AnimState:SetBuild(BUILD)
+	inst.AnimState:PlayAnimation("flower")
+
+	MakeInventoryFloatable(inst, "small", 0.15, 0.85)
+
+	inst.entity:SetPristine()
+
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
+	inst:AddComponent("inspectable")
+
+	inst:AddComponent("inventoryitem")
+	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_endless_lotus_flower.xml"
+	inst.components.inventoryitem.imagename = FLOWER_PREFAB
+
+	inst:AddComponent("edible")
+	inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
+	inst.components.edible.healthvalue = TUNING.HEALING_MEDSMALL
+	inst.components.edible.sanityvalue = TUNING.SANITY_TINY
+	inst.components.edible.foodtype = FOODTYPE.VEGGIE
+
+	inst:AddComponent("perishable")
+	inst.components.perishable:SetPerishTime(TUNING.PERISH_SUPERFAST)
+	inst.components.perishable:StartPerishing()
+	inst.components.perishable.onperishreplacement = "spoiled_food"
+
+	inst:AddComponent("stackable")
+	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
+
+	inst:AddComponent("tradable")
+
+	MakeSmallBurnable(inst)
+	MakeSmallPropagator(inst)
+
+	MakeHauntableLaunchAndPerish(inst)
+
+	return inst
+end
+
+-- 创建暂时只用于掉落和收纳的无尽之莲荷叶。
+local function leafFn()
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddNetwork()
+
+	MakeInventoryPhysics(inst)
+
+	inst.AnimState:SetBank(BUILD)
+	inst.AnimState:SetBuild(BUILD)
+	inst.AnimState:PlayAnimation("leaf")
+
+	MakeInventoryFloatable(inst, "small", 0.15, 0.85)
+
+	inst.entity:SetPristine()
+
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
+	inst:AddComponent("inspectable")
+
+	inst:AddComponent("inventoryitem")
+	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_endless_lotus_leaf.xml"
+	inst.components.inventoryitem.imagename = LEAF_PREFAB
+
+	inst:AddComponent("stackable")
+	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
+
+	MakeHauntableLaunch(inst)
 
 	return inst
 end
@@ -344,8 +470,10 @@ local function seedFn()
 end
 
 local prefabs = {
-	Prefab(PREFAB, lotusFn, assets, { "splash", SEED_PREFAB, RIPPLE_PREFAB }),
+	Prefab(PREFAB, lotusFn, assets, { "splash", SEED_PREFAB, FLOWER_PREFAB, LEAF_PREFAB, RIPPLE_PREFAB }),
 	Prefab(SEED_PREFAB, seedFn, assets, { "splash", PREFAB }),
+	Prefab(FLOWER_PREFAB, flowerFn, assets, { "spoiled_food" }),
+	Prefab(LEAF_PREFAB, leafFn, assets),
 	Prefab(RIPPLE_PREFAB, rippleFn, rippleAssets),
 	MakePlacer(PLACER, BUILD, BUILD, LOTUS_BUD_ANIMS[lotusConfig.DEFAULT_SKIN]),
 }

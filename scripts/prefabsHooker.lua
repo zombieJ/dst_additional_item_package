@@ -1055,6 +1055,46 @@ for name, data in pairs(VEGGIES) do
 	env.AddIngredientValues({fullname}, data.tags or {}, data.cancook or false, data.candry or false)
 end
 
+-- 让无尽之莲花朵按仙人掌花的蔬菜值进入料理锅。
+local LOTUS_FLOWER_PREFAB = "aip_endless_lotus_flower"
+env.AddIngredientValues({ LOTUS_FLOWER_PREFAB }, { veggie = .5 })
+env.RegisterInventoryItemAtlas(
+	"images/inventoryimages/"..LOTUS_FLOWER_PREFAB..".xml",
+	LOTUS_FLOWER_PREFAB..".tex"
+)
+
+-- 让花沙拉把无尽之莲花朵视作仙人掌花材。
+local function PatchFlowerSaladRecipe(cooker)
+	local cooking = _G.require("cooking")
+	local recipes = cooking.recipes ~= nil and cooking.recipes[cooker] or nil
+	local recipe = recipes ~= nil and recipes.flowersalad or nil
+
+	if recipe == nil or recipe.aip_lotus_patched then
+		return
+	end
+
+	local oldTest = recipe.test
+	recipe.test = function(cooker, names, tags)
+		if names[LOTUS_FLOWER_PREFAB] ~= nil then
+			local cactusFlower = names.cactus_flower
+			names.cactus_flower = (cactusFlower or 0) + names[LOTUS_FLOWER_PREFAB]
+
+			local result = oldTest(cooker, names, tags)
+			names.cactus_flower = cactusFlower
+
+			return result
+		end
+
+		return oldTest(cooker, names, tags)
+	end
+
+	recipe.aip_lotus_patched = true
+end
+
+for _, cooker in ipairs({ "cookpot", "portablecookpot", "archive_cookpot" }) do
+	PatchFlowerSaladRecipe(cooker)
+end
+
 -- 粘衣赋值
 env.AddIngredientValues(
 	{"aip_oldone_plant_broken"},
