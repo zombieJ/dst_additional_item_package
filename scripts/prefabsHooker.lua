@@ -1055,12 +1055,18 @@ for name, data in pairs(VEGGIES) do
 	env.AddIngredientValues({fullname}, data.tags or {}, data.cancook or false, data.candry or false)
 end
 
--- 让无尽之莲花朵按仙人掌花的蔬菜值进入料理锅。
+-- 让无尽之莲花朵按仙人掌花的蔬菜值进入料理锅，荷叶只作为命名配方材料。
 local LOTUS_FLOWER_PREFAB = "aip_endless_lotus_flower"
+local LOTUS_LEAF_PREFAB = "aip_endless_lotus_leaf"
 env.AddIngredientValues({ LOTUS_FLOWER_PREFAB }, { veggie = .5 })
+env.AddIngredientValues({ LOTUS_LEAF_PREFAB }, { inedible = 1 })
 env.RegisterInventoryItemAtlas(
 	"images/inventoryimages/"..LOTUS_FLOWER_PREFAB..".xml",
 	LOTUS_FLOWER_PREFAB..".tex"
+)
+env.RegisterInventoryItemAtlas(
+	"images/inventoryimages/"..LOTUS_LEAF_PREFAB..".xml",
+	LOTUS_LEAF_PREFAB..".tex"
 )
 
 -- 让花沙拉把无尽之莲花朵视作仙人掌花材。

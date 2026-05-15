@@ -412,7 +412,13 @@ local function leafFn()
 	inst:AddComponent("stackable")
 	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
-	MakeHauntableLaunch(inst)
+	inst:AddComponent("fuel")
+	inst.components.fuel.fuelvalue = TUNING.MED_FUEL
+
+	MakeSmallBurnable(inst, TUNING.MED_BURNTIME)
+	MakeSmallPropagator(inst)
+
+	MakeHauntableLaunchAndIgnite(inst)
 
 	return inst
 end

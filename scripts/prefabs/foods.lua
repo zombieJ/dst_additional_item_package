@@ -78,6 +78,19 @@ local function getCount(entity, name)
 	return entity[name] or 0
 end
 
+-- 统计锅中所有蘑菇数量。
+local function getMushroomCount(names)
+	return getCount(names, "red_cap") + getCount(names, "red_cap_cooked") +
+		getCount(names, "green_cap") + getCount(names, "green_cap_cooked") +
+		getCount(names, "blue_cap") + getCount(names, "blue_cap_cooked") +
+		getCount(names, "moon_cap") + getCount(names, "moon_cap_cooked")
+end
+
+-- 判断不可食用材料是否只有荷叶。
+local function onlyLotusLeafInedible(names, tags)
+	return (tags.inedible or 0) <= getCount(names, "aip_endless_lotus_leaf")
+end
+
 -- 香料
 local function oneaten_garlic(inst, eater)
 	if eater.components.debuffable ~= nil and eater.components.debuffable:IsEnabled() and
@@ -135,6 +148,27 @@ end
 
 local function getSummerSanity(inst, eater)
 	if TheWorld.state.issummer then
+		return inst.components.edible.sanityvalue * 2
+	end
+	return inst.components.edible.sanityvalue
+end
+
+-- 新鲜度高于 60% 时恢复效果翻倍。
+local function isFreshEnough(inst)
+	return inst.components.perishable ~= nil and inst.components.perishable:GetPercent() > 0.6
+end
+
+-- 高新鲜度生命恢复翻倍。
+local function getFreshHealth(inst, eater)
+	if isFreshEnough(inst) then
+		return inst.components.edible.healthvalue * 2
+	end
+	return inst.components.edible.healthvalue
+end
+
+-- 高新鲜度理智恢复翻倍。
+local function getFreshSanity(inst, eater)
+	if isFreshEnough(inst) then
 		return inst.components.edible.sanityvalue * 2
 	end
 	return inst.components.edible.sanityvalue
@@ -719,6 +753,54 @@ local food_recipes = {
 			if TheWorld.state.isfullmoon and eater.components.aipc_player_show ~= nil then
 				eater.components.aipc_player_show:CreateLivingFriendship()
 			end
+		end,
+	},
+
+	-- 荷叶粥，荷叶 + 粮食 + 蘑菇
+	aip_food_lotus_porridge = {
+		test = function(cooker, names, tags)
+			return getCount(names, "aip_endless_lotus_leaf") >= 1 and
+				tags.starch and tags.starch >= 1 and
+				getMushroomCount(names) >= 1 and
+				not tags.meat and not tags.egg and
+				onlyLotusLeafInedible(names, tags)
+		end,
+		priority = 99,
+		weight = 1,
+		foodtype = FOODTYPE.VEGGIE,
+		health = HP * 15,
+		hunger = HU * 37.5,
+		sanity = SAN * 5,
+		perishtime = PER * 10,
+		cooktime = CO * 20,
+		postFn = function(inst)
+			inst.components.edible:SetGetHealthFn(getSummerHealth)
+			inst.components.edible:SetGetSanityFn(getSummerSanity)
+		end,
+	},
+
+	-- 荷叶糯米鸡，荷叶 + 粮食 + 鸡腿
+	aip_food_lotus_chicken = {
+		test = function(cooker, names, tags)
+			return getCount(names, "aip_endless_lotus_leaf") >= 1 and
+				tags.starch and tags.starch >= 1 and
+				(
+					getCount(names, "drumstick") +
+					getCount(names, "drumstick_cooked")
+				) >= 1 and
+				onlyLotusLeafInedible(names, tags)
+		end,
+		priority = 99,
+		weight = 1,
+		foodtype = FOODTYPE.MEAT,
+		health = HP * 20,
+		hunger = HU * 75,
+		sanity = SAN * 5,
+		perishtime = PER * 15,
+		cooktime = CO * 30,
+		postFn = function(inst)
+			inst.components.edible:SetGetHealthFn(getFreshHealth)
+			inst.components.edible:SetGetSanityFn(getFreshSanity)
 		end,
 	},
 

@@ -96,6 +96,14 @@ local LANG_MAP = {
 			NAME = "Chestnut Rice",
 			DESC = "Satisfy hunger and fix boat",
 		},
+		AIP_FOOD_LOTUS_PORRIDGE = {
+			NAME = "Lotus Porridge",
+			DESC = "Warm rice wrapped in a quiet leaf.",
+		},
+		AIP_FOOD_LOTUS_CHICKEN = {
+			NAME = "Lotus Sticky Rice Chicken",
+			DESC = "A neat bundle of rice and drumstick.",
+		},
 		AIP_FOOD_NEST_SAUSAGE = {
 			NAME = "Nest Sausage",
 			DESC = "Impermanence of life",
@@ -533,6 +541,14 @@ local LANG_MAP = {
 		AIP_FOOD_RICE_BALLS = {
 			NAME = "栗饭团",
 			DESC = "充饥修船皆可用",
+		},
+		AIP_FOOD_LOTUS_PORRIDGE = {
+			NAME = "荷叶粥",
+			DESC = "荷香把米粥裹得很安静。",
+		},
+		AIP_FOOD_LOTUS_CHICKEN = {
+			NAME = "荷叶糯米鸡",
+			DESC = "米香和鸡腿都被荷叶收好了。",
 		},
 		AIP_FOOD_NEST_SAUSAGE = {
 			NAME = "大肠包小肠",
