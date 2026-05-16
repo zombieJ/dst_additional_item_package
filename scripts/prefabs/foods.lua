@@ -39,6 +39,7 @@ local BUFF_LANG_MAP = {
 		aip_food_egg_tart = "More Sugar!",
 		aip_food_braised_intestine = "Think back...",
 		aip_food_nest_sausage = "Soul Resonance",
+		aip_food_lotus_root_box = "Crispy Armor",
 	},
 	chinese = {
 		foodMaltose = "甜蜜蜜",
@@ -55,6 +56,7 @@ local BUFF_LANG_MAP = {
 		aip_food_egg_tart = "更多糖分!",
 		aip_food_braised_intestine = "仔细一想...",
 		aip_food_nest_sausage = "灵魂共鸣",
+		aip_food_lotus_root_box = "酥脆护身",
 	},
 }
 
@@ -65,6 +67,7 @@ local prefabList = {}
 local prefabs =
 {
 	"spoiled_food",
+	"buff_workeffectiveness",
 }
 
 local HP = TUNING.HEALING_TINY       -- 1 healing
@@ -148,6 +151,21 @@ end
 
 local function getSummerSanity(inst, eater)
 	if TheWorld.state.issummer then
+		return inst.components.edible.sanityvalue * 2
+	end
+	return inst.components.edible.sanityvalue
+end
+
+-- 冬天效果翻倍
+local function getWinterHealth(inst, eater)
+	if TheWorld.state.iswinter then
+		return inst.components.edible.healthvalue * 2
+	end
+	return inst.components.edible.healthvalue
+end
+
+local function getWinterSanity(inst, eater)
+	if TheWorld.state.iswinter then
 		return inst.components.edible.sanityvalue * 2
 	end
 	return inst.components.edible.sanityvalue
@@ -804,6 +822,92 @@ local food_recipes = {
 		end,
 	},
 
+	-- 莲藕排骨汤，莲藕 + 肉类
+	aip_food_lotus_root_soup = {
+		test = function(cooker, names, tags)
+			return getCount(names, "aip_endless_lotus_root") >= 1 and
+				tags.meat and tags.meat >= 1 and
+				not tags.egg and not tags.starch and not tags.inedible
+		end,
+		priority = 99,
+		weight = 1,
+		foodtype = FOODTYPE.MEAT,
+		health = HP * 20,
+		hunger = HU * 50,
+		sanity = SAN * 5,
+		perishtime = PER * 8,
+		cooktime = CO * 30,
+		oneatenfn = function(inst, eater)
+			-- 冬天额外恢复一次饥饿，用原版 GetHunger 结果复用新鲜度与品质修正。
+			if TheWorld.state.iswinter and eater.components.hunger ~= nil then
+				eater.components.hunger:DoDelta(inst.components.edible:GetHunger(eater))
+			end
+		end,
+		postFn = function(inst)
+			inst.components.edible:SetGetHealthFn(getWinterHealth)
+			inst.components.edible:SetGetSanityFn(getWinterSanity)
+		end,
+	},
+
+	-- 酸辣藕片，莲藕 + 辣椒 + 番茄
+	aip_food_lotus_root_slices = {
+		test = function(cooker, names, tags)
+			return getCount(names, "aip_endless_lotus_root") >= 1 and
+				(
+					getCount(names, "pepper") +
+					getCount(names, "pepper_cooked")
+				) >= 1 and
+				(
+					getCount(names, "tomato") +
+					getCount(names, "tomato_cooked")
+				) >= 1 and
+				not tags.meat and not tags.egg and not tags.inedible
+		end,
+		priority = 99,
+		weight = 1,
+		foodtype = FOODTYPE.VEGGIE,
+		health = HP * 10,
+		hunger = HU * 25,
+		sanity = SAN * 5,
+		perishtime = PER * 8,
+		cooktime = CO * 20,
+		oneatenfn = function(inst, eater)
+			-- 复用原版糖香料工作效率 Buff：砍树、采矿、锤击效率翻倍。
+			if eater.components.debuffable ~= nil and eater.components.debuffable:IsEnabled() and
+				not (eater.components.health ~= nil and eater.components.health:IsDead()) and
+				not eater:HasTag("playerghost") then
+				eater.components.debuffable:AddDebuff("buff_workeffectiveness", "buff_workeffectiveness")
+			end
+		end,
+	},
+
+	-- 炸藕盒，莲藕 + 肉类 + 鸡蛋 + 淀粉
+	aip_food_lotus_root_box = {
+		test = function(cooker, names, tags)
+			return getCount(names, "aip_endless_lotus_root") >= 1 and
+				tags.meat and tags.meat >= 0.5 and
+				tags.egg and tags.egg >= 1 and
+				tags.starch and tags.starch >= 1 and
+				not tags.inedible
+		end,
+		priority = 99,
+		weight = 1,
+		foodtype = FOODTYPE.MEAT,
+		health = HP * 15,
+		hunger = HU * 62.5,
+		sanity = SAN * 5,
+		perishtime = PER * 10,
+		cooktime = CO * 30,
+		buff = {
+			duration = 60,
+			stack = function(info)
+				-- 记录剩余免伤次数，同时同步到 Buffer UI 的堆叠数字。
+				info.data.count = 3
+				return info.data.count
+			end,
+		},
+	},
+
 	-- 量力而行
 	aip_food_rice_balls = { -- 栗饭团，栗子 + 粮食
 		test = function(cooker, names, tags)
@@ -932,7 +1036,7 @@ for name, data in pairs(food_recipes) do
 				oriOnEaten(inst, eater)
 			end
 
-			aipBufferPatch(inst, eater, buffName, buffInfo.duration)
+			aipBufferPatch(inst, eater, buffName, buffInfo.duration, buffInfo.stack)
 		end
 	end
 

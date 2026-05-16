@@ -104,6 +104,18 @@ local LANG_MAP = {
 			NAME = "Lotus Sticky Rice Chicken",
 			DESC = "A neat bundle of rice and drumstick.",
 		},
+		AIP_FOOD_LOTUS_ROOT_SOUP = {
+			NAME = "Lotus Root Rib Soup",
+			DESC = "A warm bowl with crisp roots and rich broth.",
+		},
+		AIP_FOOD_LOTUS_ROOT_SLICES = {
+			NAME = "Hot Sour Lotus Root Slices",
+			DESC = "Crisp slices with a bright, sharp kick.",
+		},
+		AIP_FOOD_LOTUS_ROOT_BOX = {
+			NAME = "Fried Lotus Root Box",
+			DESC = "Crunchy outside, savory in the middle.",
+		},
 		AIP_FOOD_NEST_SAUSAGE = {
 			NAME = "Nest Sausage",
 			DESC = "Impermanence of life",
@@ -549,6 +561,18 @@ local LANG_MAP = {
 		AIP_FOOD_LOTUS_CHICKEN = {
 			NAME = "荷叶糯米鸡",
 			DESC = "米香和鸡腿都被荷叶收好了。",
+		},
+		AIP_FOOD_LOTUS_ROOT_SOUP = {
+			NAME = "莲藕排骨汤",
+			DESC = "一碗清甜的藕香肉汤。",
+		},
+		AIP_FOOD_LOTUS_ROOT_SLICES = {
+			NAME = "酸辣藕片",
+			DESC = "脆爽得让人精神一振。",
+		},
+		AIP_FOOD_LOTUS_ROOT_BOX = {
+			NAME = "炸藕盒",
+			DESC = "酥脆外壳里夹着热乎肉馅。",
 		},
 		AIP_FOOD_NEST_SAUSAGE = {
 			NAME = "大肠包小肠",

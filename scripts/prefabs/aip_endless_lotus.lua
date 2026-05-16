@@ -9,6 +9,7 @@ local PREFAB = "aip_endless_lotus"
 local SEED_PREFAB = "aip_endless_lotus_seed"
 local FLOWER_PREFAB = "aip_endless_lotus_flower"
 local LEAF_PREFAB = "aip_endless_lotus_leaf"
+local ROOT_PREFAB = "aip_endless_lotus_root"
 local RIPPLE_PREFAB = "aip_endless_lotus_ripple"
 local BUILD = "aip_endless_lotus"
 local PLACER = "aip_endless_lotus_placer"
@@ -23,6 +24,8 @@ local LANG_MAP = {
 		FLOWER_DESC = "Tender enough to eat.",
 		LEAF_NAME = "Endless Lotus Leaf",
 		LEAF_DESC = "A quiet green sheet.",
+		ROOT_NAME = "Endless Lotus Root",
+		ROOT_DESC = "Crisp and hollow-hearted.",
 	},
 	chinese = {
 		LOTUS_NAME = "无尽之莲",
@@ -33,6 +36,8 @@ local LANG_MAP = {
 		FLOWER_DESC = "柔嫩得可以入口。",
 		LEAF_NAME = "无尽之莲荷叶",
 		LEAF_DESC = "一片安静的青绿。",
+		ROOT_NAME = "无尽之莲藕",
+		ROOT_DESC = "埋在水下的清脆根茎。",
 	},
 }
 
@@ -46,13 +51,17 @@ STRINGS.NAMES.AIP_ENDLESS_LOTUS_FLOWER = LANG.FLOWER_NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_ENDLESS_LOTUS_FLOWER = LANG.FLOWER_DESC
 STRINGS.NAMES.AIP_ENDLESS_LOTUS_LEAF = LANG.LEAF_NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_ENDLESS_LOTUS_LEAF = LANG.LEAF_DESC
+STRINGS.NAMES.AIP_ENDLESS_LOTUS_ROOT = LANG.ROOT_NAME
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_ENDLESS_LOTUS_ROOT = LANG.ROOT_DESC
 skinUtil.RegisterBuildSkinConfig(lotusConfig, language, LANG.LOTUS_DESC)
 
 local assets = {
 	Asset("ANIM", "anim/aip_endless_lotus.zip"),
+	Asset("ANIM", "anim/aip_endless_lotus_root.zip"),
 	Asset("ATLAS", "images/inventoryimages/aip_endless_lotus_seed.xml"),
 	Asset("ATLAS", "images/inventoryimages/aip_endless_lotus_flower.xml"),
 	Asset("ATLAS", "images/inventoryimages/aip_endless_lotus_leaf.xml"),
+	Asset("ATLAS", "images/inventoryimages/aip_endless_lotus_root.xml"),
 }
 
 local rippleAssets = {
@@ -69,6 +78,8 @@ local LOTUS_WATER_DEPLOY_RADIUS = DEPLOYSPACING_RADIUS[DEPLOYSPACING.DEFAULT]
 local LOTUS_RIPPLE_SCALE = 2.85
 local LOTUS_RIPPLE_Y_OFFSET = -0.15
 local LOTUS_BLOOM_TIME = TUNING.TOTAL_DAY_TIME * 3
+local LOTUS_ROOT_GROW_TIME = TUNING.TOTAL_DAY_TIME * 5
+local LOTUS_ROOT_TIMER = "aip_lotus_root_ready"
 local LOTUS_PHYSICS_RADIUS = 1
 local LOTUS_PHYSICS_HEIGHT = 1
 local LOTUS_INTERACT_RADIUS = 2.8
@@ -126,12 +137,41 @@ local function setRandomSkin(inst, allowSame)
 	inst:SetAipSkin(nextSkin)
 end
 
--- 挖掉莲花时掉落荷叶，盛开可采时额外掉落花朵。
+-- 标记莲藕已经成熟，可以在挖掘时掉落。
+local function setLotusRootReady(inst)
+	inst._aipLotusRootReady = true
+
+	if inst.components.timer ~= nil and inst.components.timer:TimerExists(LOTUS_ROOT_TIMER) then
+		inst.components.timer:StopTimer(LOTUS_ROOT_TIMER)
+	end
+end
+
+-- 从种下开始记录莲藕成熟时间。
+local function startLotusRootTimer(inst)
+	inst._aipLotusRootReady = false
+
+	if inst.components.timer ~= nil and not inst.components.timer:TimerExists(LOTUS_ROOT_TIMER) then
+		inst.components.timer:StartTimer(LOTUS_ROOT_TIMER, LOTUS_ROOT_GROW_TIME)
+	end
+end
+
+-- 监听计时器结束并开放莲藕掉落。
+local function onTimerDone(inst, data)
+	if data ~= nil and data.name == LOTUS_ROOT_TIMER then
+		setLotusRootReady(inst)
+	end
+end
+
+-- 挖掉莲花时掉落荷叶，盛开可采时额外掉落花朵，成熟后额外掉落莲藕。
 local function onDug(inst)
 	local loot = { LEAF_PREFAB }
 
 	if inst.components.pickable ~= nil and inst.components.pickable:CanBePicked() then
 		table.insert(loot, FLOWER_PREFAB)
+	end
+
+	if inst._aipLotusRootReady then
+		table.insert(loot, ROOT_PREFAB)
 	end
 
 	inst.components.lootdropper:DropLoot(nil, loot)
@@ -159,9 +199,20 @@ local function makeEmpty(inst)
 	setLotusBloomed(inst, false)
 end
 
--- 读取存档时恢复魔法扫把切换过的样式。
+-- 保存莲花样式与莲藕成熟状态。
+local function onSave(inst, data)
+	skinner.OnSave(inst, data)
+	data.aipLotusRootReady = inst._aipLotusRootReady or nil
+end
+
+-- 读取存档时恢复魔法扫把切换过的样式与莲藕成熟状态。
 local function onLoad(inst, data)
 	skinner.OnLoad(inst, data)
+
+	if data ~= nil and data.aipLotusRootReady then
+		inst._aipLotusRootReady = true
+		inst:DoTaskInTime(0, setLotusRootReady)
+	end
 end
 
 -- 将莲子种到海面并随机选择莲花样式。
@@ -307,6 +358,10 @@ local function lotusFn()
 	inst:AddComponent("lootdropper")
 	inst.components.lootdropper:SetLoot({ LEAF_PREFAB })
 
+	inst:AddComponent("timer")
+	inst:ListenForEvent("timerdone", onTimerDone)
+	startLotusRootTimer(inst)
+
 	inst:AddComponent("pickable")
 	inst.components.pickable.picksound = "dontstarve/wilson/harvest_berries"
 	inst.components.pickable:SetUp(FLOWER_PREFAB, LOTUS_BLOOM_TIME, 1)
@@ -321,7 +376,7 @@ local function lotusFn()
 	inst.components.workable:SetWorkLeft(1)
 	inst.components.workable:SetOnFinishCallback(onDug)
 
-	inst.OnSave = skinner.OnSave
+	inst.OnSave = onSave
 	inst.OnLoad = onLoad
 
 	MakeHauntableWork(inst)
@@ -423,6 +478,53 @@ local function leafFn()
 	return inst
 end
 
+-- 创建可食用的无尽之莲藕。
+local function rootFn()
+	local inst = CreateEntity()
+
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddNetwork()
+
+	MakeInventoryPhysics(inst)
+
+	inst.AnimState:SetBank(ROOT_PREFAB)
+	inst.AnimState:SetBuild(ROOT_PREFAB)
+	inst.AnimState:PlayAnimation("BUILD", false)
+
+	MakeInventoryFloatable(inst, "small", 0.15, 0.85)
+
+	inst.entity:SetPristine()
+
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
+	inst:AddComponent("inspectable")
+
+	inst:AddComponent("inventoryitem")
+	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_endless_lotus_root.xml"
+	inst.components.inventoryitem.imagename = ROOT_PREFAB
+
+	inst:AddComponent("edible")
+	inst.components.edible.hungervalue = 2
+	inst.components.edible.healthvalue = 0
+	inst.components.edible.sanityvalue = 0
+	inst.components.edible.foodtype = FOODTYPE.VEGGIE
+
+	inst:AddComponent("stackable")
+	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
+
+	inst:AddComponent("tradable")
+
+	MakeSmallBurnable(inst)
+	MakeSmallPropagator(inst)
+
+	MakeHauntableLaunch(inst)
+
+	return inst
+end
+
 local function seedFn()
 	local inst = CreateEntity()
 
@@ -476,10 +578,11 @@ local function seedFn()
 end
 
 local prefabs = {
-	Prefab(PREFAB, lotusFn, assets, { "splash", SEED_PREFAB, FLOWER_PREFAB, LEAF_PREFAB, RIPPLE_PREFAB }),
+	Prefab(PREFAB, lotusFn, assets, { "splash", SEED_PREFAB, FLOWER_PREFAB, LEAF_PREFAB, ROOT_PREFAB, RIPPLE_PREFAB }),
 	Prefab(SEED_PREFAB, seedFn, assets, { "splash", PREFAB }),
 	Prefab(FLOWER_PREFAB, flowerFn, assets, { "spoiled_food" }),
 	Prefab(LEAF_PREFAB, leafFn, assets),
+	Prefab(ROOT_PREFAB, rootFn, assets),
 	Prefab(RIPPLE_PREFAB, rippleFn, rippleAssets),
 	MakePlacer(PLACER, BUILD, BUILD, LOTUS_BUD_ANIMS[lotusConfig.DEFAULT_SKIN]),
 }

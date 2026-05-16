@@ -62,6 +62,22 @@ AddComponentPostInit("combat", function(self)
 			end
 		end
 
+		-- 炸藕盒 免疫 3 次伤害
+		if dmg > 0 then
+			local lotusRootBoxInfo = _G.aipBufferInfo(self.inst, "aip_food_lotus_root_box")
+			if lotusRootBoxInfo ~= nil and lotusRootBoxInfo.data ~= nil then
+				local count = lotusRootBoxInfo.data.count or lotusRootBoxInfo.stack or 0
+				dmg = 0
+
+				if count <= 1 then
+					_G.aipBufferRemove(self.inst, "aip_food_lotus_root_box")
+				else
+					lotusRootBoxInfo.data.count = count - 1
+					lotusRootBoxInfo.stack = count - 1
+				end
+			end
+		end
+
 		-- Owner 被攻击（被攻击时，是乘法叠加伤害减免）
 		if self.inst ~= nil and self.inst.components.aipc_pet_owner ~= nil then
 			-- 幸运则免疫 查理 攻击
