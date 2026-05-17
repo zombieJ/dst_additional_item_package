@@ -450,7 +450,7 @@ local function leafFn()
 	inst.AnimState:SetBuild(BUILD)
 	inst.AnimState:PlayAnimation("leaf")
 
-	MakeInventoryFloatable(inst, "small", 0.15, 0.85)
+	MakeInventoryFloatable(inst, "med", 0.12, { 1.35, 0.95, 1.35 })
 
 	inst.entity:SetPristine()
 
@@ -511,6 +511,12 @@ local function rootFn()
 	inst.components.edible.healthvalue = 0
 	inst.components.edible.sanityvalue = 0
 	inst.components.edible.foodtype = FOODTYPE.VEGGIE
+
+	-- 莲藕比普通作物更耐放，但仍会随时间腐坏。
+	inst:AddComponent("perishable")
+	inst.components.perishable:SetPerishTime(TUNING.PERISH_SLOW)
+	inst.components.perishable:StartPerishing()
+	inst.components.perishable.onperishreplacement = "spoiled_food"
 
 	inst:AddComponent("stackable")
 	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM

@@ -72,8 +72,9 @@ AddComponentPostInit("combat", function(self)
 				if count <= 1 then
 					_G.aipBufferRemove(self.inst, "aip_food_lotus_root_box")
 				else
-					lotusRootBoxInfo.data.count = count - 1
-					lotusRootBoxInfo.stack = count - 1
+					local nextCount = count - 1
+					lotusRootBoxInfo.data.count = nextCount
+					_G.aipBufferSetStack(self.inst, "aip_food_lotus_root_box", nextCount)
 				end
 			end
 		end

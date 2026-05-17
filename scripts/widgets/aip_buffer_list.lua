@@ -26,7 +26,8 @@ function BufferList:Refresh(bufferInfos)
 
     local keyStr = aipJoin(
         aipTableMap(keys, function(key)
-            return key .. ":" .. bufferInfos[key].endTime
+            local info = bufferInfos[key]
+            return key .. ":" .. info.endTime .. ":" .. (info.stack or 0)
         end),
         ","
     )
