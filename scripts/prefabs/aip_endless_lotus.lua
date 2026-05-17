@@ -588,7 +588,7 @@ local prefabs = {
 	Prefab(SEED_PREFAB, seedFn, assets, { "splash", PREFAB }),
 	Prefab(FLOWER_PREFAB, flowerFn, assets, { "spoiled_food" }),
 	Prefab(LEAF_PREFAB, leafFn, assets),
-	Prefab(ROOT_PREFAB, rootFn, assets),
+	Prefab(ROOT_PREFAB, rootFn, assets, { "spoiled_food" }),
 	Prefab(RIPPLE_PREFAB, rippleFn, rippleAssets),
 	MakePlacer(PLACER, BUILD, BUILD, LOTUS_BUD_ANIMS[lotusConfig.DEFAULT_SKIN]),
 }
