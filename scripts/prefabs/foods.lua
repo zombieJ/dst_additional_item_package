@@ -827,7 +827,7 @@ local food_recipes = {
 		test = function(cooker, names, tags)
 			return getCount(names, "aip_endless_lotus_root") >= 1 and
 				tags.meat and tags.meat >= 1 and
-				not tags.egg and not tags.starch and not tags.inedible
+				not tags.inedible
 		end,
 		priority = 99,
 		weight = 1,
@@ -890,7 +890,7 @@ local food_recipes = {
 				tags.starch and tags.starch >= 1 and
 				not tags.inedible
 		end,
-		priority = 99,
+		priority = 100,
 		weight = 1,
 		foodtype = FOODTYPE.MEAT,
 		health = HP * 15,
