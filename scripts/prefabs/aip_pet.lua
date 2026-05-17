@@ -151,6 +151,7 @@ local function createPet(name, info)
 		inst.components.aipc_info_client:SetByteArray("aip_info_color", {})
 
         inst:AddTag("_named")
+        inst:AddTag("NOBLOCK")
         -- inst:AddTag("_writeable")
 
         if info.tags ~= nil then

@@ -499,6 +499,22 @@ rec("aip_pet_trigger", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.TOOLS },
 		Ingredient("flint", 1),
 	})
 
+-- 温馨小窝
+rec("aip_cozy_nest", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.STRUCTURES, CRAFTING_FILTERS.DECOR },
+{
+	Ingredient("beefalowool", 2),
+	Ingredient("silk", 2),
+	Ingredient("petals", 4),
+}, "aip_cozy_nest_placer")
+
+-- 座钟
+rec("aip_grandfather_clock", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.STRUCTURES, CRAFTING_FILTERS.DECOR },
+{
+	Ingredient("boards", 4),
+	Ingredient("goldnugget", 2),
+	Ingredient("aip_particles_bottle_charged", 1, "images/inventoryimages/aip_particles_bottle_charged.xml"),
+}, "aip_grandfather_clock_placer")
+
 -- 宠物盒子
 rec("aip_pet_box", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.TOOLS },
 {
@@ -512,6 +528,27 @@ rec("aip_pet_fudge", TECH.SCIENCE_ONE, { CRAFTING_FILTERS.TOOLS },
 	Ingredient("aip_veggie_wheat", 1, "images/inventoryimages/aip_veggie_wheat.xml"),
 	Ingredient("monstermeat_dried", 1),
 })
+
+------------------------------------ 生活质量 ------------------------------------
+-- 灯笼
+rec("aip_lantern", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.LIGHT, CRAFTING_FILTERS.DECOR },
+{
+	Ingredient("papyrus", 2),
+	Ingredient("silk", 2),
+	Ingredient("lightbulb", 1),
+})
+
+-- 灯笼架
+rec("aip_lantern_stand", TECH.SCIENCE_TWO, {
+	CRAFTING_FILTERS.LIGHT,
+	CRAFTING_FILTERS.CONTAINERS,
+	CRAFTING_FILTERS.STRUCTURES,
+	CRAFTING_FILTERS.DECOR,
+}, {
+	Ingredient("phlegm", 1),
+	Ingredient("boards", 2),
+	Ingredient("rope", 2),
+}, "aip_lantern_stand_placer")
 
 ------------------------------------ 5 种测试 ------------------------------------
 -- 火炬

@@ -531,6 +531,29 @@ params.aip_showcase = {
 
 params.aip_showcase_ice = params.aip_showcase
 params.aip_showcase_vest = params.aip_showcase
+params.aip_cozy_nest = params.aip_showcase
+
+----------------- 灯笼架 -----------------
+params.aip_lantern_stand = {
+	widget = {
+		slotpos = {
+			Vector3(-(64 + 12), 0, 0),
+			Vector3(0, 0, 0),
+			Vector3(64 + 12, 0, 0),
+		},
+		animbank = "ui_chest_3x1",
+		animbuild = "ui_chest_3x1",
+		pos = Vector3(0, 160, 0),
+		side_align_tip = 100,
+	},
+	acceptsstacks = false,
+	type = "chest",
+	openlimit = 1,
+}
+
+function params.aip_lantern_stand.itemtestfn(container, item, slot)
+	return item:HasTag("aip_lantern")
+end
 
 ------------------ 饭盒 ------------------
 params.aip_oldone_rice = {

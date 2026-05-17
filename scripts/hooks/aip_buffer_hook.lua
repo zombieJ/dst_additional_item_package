@@ -58,6 +58,9 @@ function _G.aipBufferRemove(inst, name)
 		-- 找到 Buffer 对象
 		local buffer = _G.Ents[inst._aipBufferGUID]
 		buffer._buffers[name].endTime = _G.GetTime() - 1
+		if buffer._aipSyncNames ~= nil then
+			buffer._aipSyncNames(buffer)
+		end
 	end
 end
 
@@ -82,6 +85,16 @@ function _G.aipBufferInfo(inst, name)
 
 	if buffer ~= nil and buffer._buffers[name] ~= nil then
 		return buffer._buffers[name]
+	end
+end
+
+-- 【服务端】更新 Buffer 层数并立刻同步到客户端显示。
+function _G.aipBufferSetStack(inst, name, stack)
+	local buffer = getBuffInst(inst)
+
+	if buffer ~= nil and buffer._buffers[name] ~= nil and buffer._aipSyncNames ~= nil then
+		buffer._buffers[name].stack = stack or 0
+		buffer._aipSyncNames(buffer)
 	end
 end
 

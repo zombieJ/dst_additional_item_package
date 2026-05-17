@@ -68,6 +68,7 @@ PrefabFiles = {
 	-- Food
 	"aip_wheat",
 	"aip_sunflower",
+	"aip_endless_lotus",
 	"aip_veggies",
 	"foods",
 	"aip_nectar_maker",
@@ -215,6 +216,8 @@ PrefabFiles = {
 	"aip_blowdart",
 	"aip_forever",
 	"aip_glory_hand",
+	"aip_lantern",
+	"aip_lantern_stand",
 	"aip_stone_mask",
 	"aip_dream_stone",
 	"aip_hearthstone",
@@ -225,6 +228,8 @@ PrefabFiles = {
 	"aip_pet_catcher",
 	"aip_pet",
 	"aip_pet_trigger",
+	"aip_cozy_nest",
+	"aip_grandfather_clock",
 	"aip_pet_box",
 	"aip_grave_cloak",
 	"aip_fishman_mucus",
@@ -259,6 +264,7 @@ PrefabFiles = {
 	"aip_ocean_jellyfish",
 	"aip_blink_flower",
 	"aip_ocean_vortex",
+	"aip_ocean_tear",
 	"aip_turn_mushroom",
 	"aip_graveyard_wisp",
 	"aip_stone_gourd",
@@ -353,6 +359,7 @@ modimport("scripts/flyWrapper.lua")
 modimport("scripts/sgHooker.lua")
 modimport("scripts/hooks/aip_hover_hook.lua")
 modimport("scripts/hooks/aip_buffer_hook.lua")
+modimport("scripts/hooks/aip_skin_hook.lua")
 modimport("scripts/hooks/aip_pet_hook.lua")
 
 modimport("scripts/hooks/aip_combat_hook.lua")

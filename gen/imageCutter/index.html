@@ -71,14 +71,32 @@
 
         .canvas-container {
             position: relative;
-            display: inline-block;
-            margin-bottom: 20px;
+            display: block;
+            width: fit-content;
+            margin: 0 auto 10px;
             overflow: visible;
+            vertical-align: top;
+        }
+
+        .canvas-viewport {
+            width: 100%;
+            max-height: 70vh;
+            overflow: auto;
+            text-align: left;
+            padding: 10px;
+            margin: 10px 0 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #f7f7f7;
         }
 
         #imageCanvas {
+            display: block;
             border: 1px solid #ddd;
-            max-width: 100%;
+            max-width: none;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-drag: none;
             background-image: 
                 linear-gradient(45deg, #ccc 25%, transparent 25%),
                 linear-gradient(-45deg, #ccc 25%, transparent 25%),
@@ -254,13 +272,47 @@
         }
 
         .eraser-controls input[type="range"] {
-            width: 100px;
+            width: 320px;
         }
 
         .eraser-controls .brush-size {
             color: #666;
             font-size: 14px;
             min-width: 30px;
+        }
+
+        .zoom-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .zoom-controls label,
+        .zoom-controls .zoom-value,
+        .zoom-controls .zoom-hint {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .zoom-controls input[type="range"] {
+            width: 180px;
+        }
+
+        .zoom-controls button {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .zoom-controls .zoom-value {
+            min-width: 42px;
+            text-align: right;
+        }
+
+        .zoom-controls .zoom-hint {
+            color: #888;
         }
 
         .eraser-cursor {
@@ -330,16 +382,28 @@
                 <span class="brush-size" id="brushSizeDisplay">20px</span>
             </div>
 
-            <div class="canvas-container">
-                <canvas id="imageCanvas"></canvas>
-                <div class="crop-box" id="cropBox">
-                    <div class="resize-handle nw"></div>
-                    <div class="resize-handle ne"></div>
-                    <div class="resize-handle sw"></div>
-                    <div class="resize-handle se"></div>
+            <div class="zoom-controls" id="zoomControls">
+                <label>画布缩放:</label>
+                <button class="btn-secondary" id="zoomOut">-</button>
+                <input type="range" id="canvasZoom" min="25" max="400" step="5" value="100">
+                <span class="zoom-value" id="zoomDisplay">100%</span>
+                <button class="btn-secondary" id="zoomIn">+</button>
+                <button class="btn-secondary" id="zoomReset">适应</button>
+                <span class="zoom-hint">Ctrl/Alt + 滚轮</span>
+            </div>
+
+            <div class="canvas-viewport" id="canvasViewport">
+                <div class="canvas-container">
+                    <canvas id="imageCanvas"></canvas>
+                    <div class="crop-box" id="cropBox">
+                        <div class="resize-handle nw"></div>
+                        <div class="resize-handle ne"></div>
+                        <div class="resize-handle sw"></div>
+                        <div class="resize-handle se"></div>
+                    </div>
+                    <div class="eraser-cursor" id="eraserCursor"></div>
+                    <div class="bucket-cursor" id="bucketCursor"></div>
                 </div>
-                <div class="eraser-cursor" id="eraserCursor"></div>
-                <div class="bucket-cursor" id="bucketCursor"></div>
             </div>
 
             <div class="info" id="imageInfo"></div>
@@ -355,6 +419,7 @@
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
         const editor = document.getElementById('editor');
+        const canvasViewport = document.getElementById('canvasViewport');
         const imageCanvas = document.getElementById('imageCanvas');
         const ctx = imageCanvas.getContext('2d');
         const cropBox = document.getElementById('cropBox');
@@ -370,6 +435,11 @@
         const brushSizeDisplay = document.getElementById('brushSizeDisplay');
         const eraserCursor = document.getElementById('eraserCursor');
         const bucketCursor = document.getElementById('bucketCursor');
+        const zoomOut = document.getElementById('zoomOut');
+        const zoomIn = document.getElementById('zoomIn');
+        const zoomReset = document.getElementById('zoomReset');
+        const canvasZoom = document.getElementById('canvasZoom');
+        const zoomDisplay = document.getElementById('zoomDisplay');
 
         let originalImage = null;
         let isCropping = false;
@@ -391,6 +461,17 @@
         let transparentErasedPixels = new Set();
         let historyStack = [];
         let historyIndex = -1;
+        let baseDisplayWidth = 0;
+        let baseDisplayHeight = 0;
+        let canvasZoomPercent = 100;
+        let activeEraserPointerId = null;
+
+        const minZoomPercent = 25;
+        const maxZoomPercent = 400;
+        const zoomStep = 25;
+        const supportsPointerEvents = window.PointerEvent !== undefined;
+
+        imageCanvas.draggable = false;
 
         dropZone.addEventListener('click', () => fileInput.click());
         dropZone.addEventListener('dragover', (e) => {
@@ -434,23 +515,24 @@
         function displayImage() {
             const maxWidth = 800;
             const maxHeight = 600;
-            let width = originalImage.width;
-            let height = originalImage.height;
+            const displayScale = Math.min(
+                maxWidth / originalImage.width,
+                maxHeight / originalImage.height,
+                1
+            );
+            const displayWidth = Math.round(originalImage.width * displayScale);
+            const displayHeight = Math.round(originalImage.height * displayScale);
 
-            if (width > maxWidth) {
-                height = (maxWidth / width) * height;
-                width = maxWidth;
-            }
-            if (height > maxHeight) {
-                width = (maxHeight / height) * width;
-                height = maxHeight;
-            }
+            baseDisplayWidth = displayWidth;
+            baseDisplayHeight = displayHeight;
+            canvasZoomPercent = 100;
+            imageCanvas.width = originalImage.width;
+            imageCanvas.height = originalImage.height;
+            applyCanvasZoom();
+            ctx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
+            ctx.drawImage(originalImage, 0, 0);
 
-            imageCanvas.width = width;
-            imageCanvas.height = height;
-            ctx.drawImage(originalImage, 0, 0, width, height);
-
-            imageInfo.textContent = `原始尺寸: ${originalImage.width} x ${originalImage.height} | 显示尺寸: ${Math.round(width)} x ${Math.round(height)}`;
+            updateImageInfo();
             
             transparentErasedPixels.clear();
             
@@ -460,6 +542,73 @@
             }
             
             saveToHistory();
+        }
+
+        function updateImageInfo() {
+            const displayWidth = Math.round(baseDisplayWidth * canvasZoomPercent / 100);
+            const displayHeight = Math.round(baseDisplayHeight * canvasZoomPercent / 100);
+            imageInfo.textContent = `原始尺寸: ${imageCanvas.width} x ${imageCanvas.height} | 显示尺寸: ${displayWidth} x ${displayHeight} | 缩放: ${canvasZoomPercent}%`;
+        }
+
+        function applyCanvasZoom() {
+            const displayWidth = Math.max(1, Math.round(baseDisplayWidth * canvasZoomPercent / 100));
+            const displayHeight = Math.max(1, Math.round(baseDisplayHeight * canvasZoomPercent / 100));
+
+            imageCanvas.style.width = displayWidth + 'px';
+            imageCanvas.style.height = displayHeight + 'px';
+            canvasZoom.value = String(canvasZoomPercent);
+            zoomDisplay.textContent = canvasZoomPercent + '%';
+            updateImageInfo();
+
+            if (isCropping) {
+                updateCropBox();
+            }
+        }
+
+        function setCanvasZoom(nextZoomPercent) {
+            if (!originalImage) return;
+
+            canvasZoomPercent = Math.min(
+                maxZoomPercent,
+                Math.max(minZoomPercent, Math.round(nextZoomPercent))
+            );
+            applyCanvasZoom();
+        }
+
+        function getCanvasDisplayMetrics() {
+            const rect = imageCanvas.getBoundingClientRect();
+            const displayToCanvasX = rect.width > 0 ? imageCanvas.width / rect.width : 1;
+            const displayToCanvasY = rect.height > 0 ? imageCanvas.height / rect.height : 1;
+            const canvasToDisplayX = imageCanvas.width > 0 ? rect.width / imageCanvas.width : 1;
+            const canvasToDisplayY = imageCanvas.height > 0 ? rect.height / imageCanvas.height : 1;
+
+            return {
+                rect,
+                displayToCanvasX,
+                displayToCanvasY,
+                canvasToDisplayX,
+                canvasToDisplayY
+            };
+        }
+
+        function getCanvasPoint(e) {
+            const metrics = getCanvasDisplayMetrics();
+            return {
+                x: (e.clientX - metrics.rect.left) * metrics.displayToCanvasX,
+                y: (e.clientY - metrics.rect.top) * metrics.displayToCanvasY
+            };
+        }
+
+        function getCanvasBrushRadius(metrics = getCanvasDisplayMetrics()) {
+            const averageScale = (metrics.displayToCanvasX + metrics.displayToCanvasY) / 2;
+            return Math.max(0.5, eraserBrushSize * averageScale / 2);
+        }
+
+        function enableHighQualityScaling(context) {
+            context.imageSmoothingEnabled = true;
+            if ('imageSmoothingQuality' in context) {
+                context.imageSmoothingQuality = 'high';
+            }
         }
 
         function saveToHistory() {
@@ -583,6 +732,46 @@
             updateEraserCursor();
         });
 
+        function zoomCanvasBy(deltaPercent, anchorEvent = null) {
+            const oldZoomPercent = canvasZoomPercent;
+            const viewportRect = canvasViewport.getBoundingClientRect();
+            const anchorX = anchorEvent ? anchorEvent.clientX - viewportRect.left : canvasViewport.clientWidth / 2;
+            const anchorY = anchorEvent ? anchorEvent.clientY - viewportRect.top : canvasViewport.clientHeight / 2;
+            const scrollX = canvasViewport.scrollLeft + anchorX;
+            const scrollY = canvasViewport.scrollTop + anchorY;
+
+            setCanvasZoom(canvasZoomPercent + deltaPercent);
+
+            const zoomRatio = canvasZoomPercent / oldZoomPercent;
+            canvasViewport.scrollLeft = scrollX * zoomRatio - anchorX;
+            canvasViewport.scrollTop = scrollY * zoomRatio - anchorY;
+        }
+
+        canvasZoom.addEventListener('input', (e) => {
+            setCanvasZoom(parseInt(e.target.value, 10));
+        });
+
+        zoomOut.addEventListener('click', () => {
+            zoomCanvasBy(-zoomStep);
+        });
+
+        zoomIn.addEventListener('click', () => {
+            zoomCanvasBy(zoomStep);
+        });
+
+        zoomReset.addEventListener('click', () => {
+            setCanvasZoom(100);
+            canvasViewport.scrollLeft = 0;
+            canvasViewport.scrollTop = 0;
+        });
+
+        canvasViewport.addEventListener('wheel', (e) => {
+            if (!e.ctrlKey && !e.altKey) return;
+
+            e.preventDefault();
+            zoomCanvasBy(e.deltaY < 0 ? zoomStep : -zoomStep, e);
+        }, { passive: false });
+
         document.getElementById('edgeFade').addEventListener('click', () => {
             if (!isCropping && !isErasing && !isBucket) {
                 saveToHistory();
@@ -598,11 +787,94 @@
             eraserCursor.style.height = eraserBrushSize + 'px';
         }
 
+        function isEraserToolActive() {
+            return isErasing || isTransparentErasing;
+        }
+
+        function updateEraserCursorPosition(e, metrics = getCanvasDisplayMetrics()) {
+            const displayX = e.clientX - metrics.rect.left;
+            const displayY = e.clientY - metrics.rect.top;
+
+            eraserCursor.style.display = 'block';
+            eraserCursor.style.left = (displayX - eraserBrushSize / 2) + 'px';
+            eraserCursor.style.top = (displayY - eraserBrushSize / 2) + 'px';
+        }
+
+        function applyEraserStroke(x, y, radius) {
+            if (isErasing) {
+                erase(x, y, radius);
+            } else if (isTransparentErasing) {
+                transparentErase(x, y, radius);
+                if (lastEraserX !== null && lastEraserY !== null) {
+                    const distance = Math.sqrt(Math.pow(x - lastEraserX, 2) + Math.pow(y - lastEraserY, 2));
+                    const steps = Math.ceil(distance / Math.max(1, radius / 2));
+
+                    for (let i = 1; i <= steps; i++) {
+                        const t = i / steps;
+                        const interpX = lastEraserX + (x - lastEraserX) * t;
+                        const interpY = lastEraserY + (y - lastEraserY) * t;
+                        transparentErase(interpX, interpY, radius);
+                    }
+                }
+                lastEraserX = x;
+                lastEraserY = y;
+            }
+        }
+
+        function beginEraserStroke(e) {
+            if (!isEraserToolActive()) return;
+
+            e.preventDefault();
+            saveToHistory();
+            isErasingActive = true;
+
+            const point = getCanvasPoint(e);
+            const radius = getCanvasBrushRadius();
+            lastEraserX = point.x;
+            lastEraserY = point.y;
+            applyEraserStroke(point.x, point.y, radius);
+        }
+
+        function moveEraserStroke(e, shouldErase) {
+            if (!isEraserToolActive()) return;
+
+            e.preventDefault();
+            const metrics = getCanvasDisplayMetrics();
+            const point = getCanvasPoint(e);
+            const radius = getCanvasBrushRadius(metrics);
+
+            updateEraserCursorPosition(e, metrics);
+
+            if (shouldErase) {
+                applyEraserStroke(point.x, point.y, radius);
+            }
+        }
+
+        function endEraserStroke(e) {
+            if (e !== null && e !== undefined &&
+                activeEraserPointerId !== null &&
+                e.pointerId !== activeEraserPointerId) {
+                return;
+            }
+
+            if (activeEraserPointerId !== null && imageCanvas.releasePointerCapture !== undefined) {
+                try {
+                    imageCanvas.releasePointerCapture(activeEraserPointerId);
+                } catch (err) {
+                    // 指针可能已被浏览器释放，忽略即可。
+                }
+            }
+
+            activeEraserPointerId = null;
+            isErasingActive = false;
+            lastEraserX = null;
+            lastEraserY = null;
+        }
+
         function initCropBox() {
-            const rect = imageCanvas.getBoundingClientRect();
-            const size = Math.min(rect.width, rect.height) * 0.5;
-            cropX = (rect.width - size) / 2;
-            cropY = (rect.height - size) / 2;
+            const size = Math.min(imageCanvas.width, imageCanvas.height) * 0.5;
+            cropX = (imageCanvas.width - size) / 2;
+            cropY = (imageCanvas.height - size) / 2;
             cropWidth = size;
             cropHeight = size;
             aspectRatio = cropWidth / cropHeight;
@@ -611,19 +883,16 @@
         }
 
         function updateSizeInputs() {
-            const scaleX = originalImage.width / imageCanvas.width;
-            const scaleY = originalImage.height / imageCanvas.height;
-            const realWidth = Math.round(cropWidth * scaleX);
-            const realHeight = Math.round(cropHeight * scaleY);
-            widthInput.value = realWidth;
-            heightInput.value = realHeight;
+            widthInput.value = Math.round(cropWidth);
+            heightInput.value = Math.round(cropHeight);
         }
 
         function updateCropBox() {
-            cropBox.style.left = cropX + 'px';
-            cropBox.style.top = cropY + 'px';
-            cropBox.style.width = cropWidth + 'px';
-            cropBox.style.height = cropHeight + 'px';
+            const metrics = getCanvasDisplayMetrics();
+            cropBox.style.left = (cropX * metrics.canvasToDisplayX) + 'px';
+            cropBox.style.top = (cropY * metrics.canvasToDisplayY) + 'px';
+            cropBox.style.width = (cropWidth * metrics.canvasToDisplayX) + 'px';
+            cropBox.style.height = (cropHeight * metrics.canvasToDisplayY) + 'px';
         }
 
         cropBox.addEventListener('mousedown', (e) => {
@@ -642,8 +911,9 @@
         document.addEventListener('mousemove', (e) => {
             if (!isCropping) return;
 
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
+            const metrics = getCanvasDisplayMetrics();
+            const dx = (e.clientX - startX) * metrics.displayToCanvasX;
+            const dy = (e.clientY - startY) * metrics.displayToCanvasY;
 
             if (isDragging) {
                 cropX += dx;
@@ -657,37 +927,33 @@
             startY = e.clientY;
         });
 
-        imageCanvas.addEventListener('mousemove', (e) => {
-            if (!isErasing && !isTransparentErasing) return;
+        imageCanvas.addEventListener('pointerdown', (e) => {
+            if (!supportsPointerEvents || !isEraserToolActive() || e.button !== 0 || e.isPrimary === false) return;
 
-            const rect = imageCanvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            activeEraserPointerId = e.pointerId;
+            imageCanvas.setPointerCapture(e.pointerId);
+            beginEraserStroke(e);
+        }, { passive: false });
 
-            eraserCursor.style.display = 'block';
-            eraserCursor.style.left = (x - eraserBrushSize / 2) + 'px';
-            eraserCursor.style.top = (y - eraserBrushSize / 2) + 'px';
+        imageCanvas.addEventListener('pointermove', (e) => {
+            if (!supportsPointerEvents || !isEraserToolActive() || e.isPrimary === false) return;
 
-            if (isErasingActive) {
-                if (isErasing) {
-                    erase(x, y);
-                } else if (isTransparentErasing) {
-                    transparentErase(x, y);
-                    if (lastEraserX !== null && lastEraserY !== null) {
-                        const distance = Math.sqrt(Math.pow(x - lastEraserX, 2) + Math.pow(y - lastEraserY, 2));
-                        const steps = Math.ceil(distance / (eraserBrushSize / 4));
-                        
-                        for (let i = 1; i <= steps; i++) {
-                            const t = i / steps;
-                            const interpX = lastEraserX + (x - lastEraserX) * t;
-                            const interpY = lastEraserY + (y - lastEraserY) * t;
-                            transparentErase(interpX, interpY);
-                        }
-                    }
-                    lastEraserX = x;
-                    lastEraserY = y;
-                }
+            moveEraserStroke(e, isErasingActive && e.pointerId === activeEraserPointerId);
+        }, { passive: false });
+
+        imageCanvas.addEventListener('pointerup', endEraserStroke);
+        imageCanvas.addEventListener('pointercancel', endEraserStroke);
+
+        imageCanvas.addEventListener('dragstart', (e) => {
+            if (isEraserToolActive()) {
+                e.preventDefault();
             }
+        });
+
+        imageCanvas.addEventListener('mousemove', (e) => {
+            if (supportsPointerEvents || !isEraserToolActive()) return;
+
+            moveEraserStroke(e, isErasingActive);
         });
 
         imageCanvas.addEventListener('mousemove', (e) => {
@@ -703,7 +969,7 @@
         });
 
         imageCanvas.addEventListener('mouseleave', () => {
-            if (isErasing || isTransparentErasing) {
+            if (isEraserToolActive() && activeEraserPointerId === null) {
                 eraserCursor.style.display = 'none';
             }
             if (isBucket) {
@@ -712,27 +978,17 @@
         });
 
         imageCanvas.addEventListener('mousedown', (e) => {
-            if (!isErasing && !isTransparentErasing) return;
-            saveToHistory();
-            isErasingActive = true;
-            const rect = imageCanvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            lastEraserX = x;
-            lastEraserY = y;
-            if (isErasing) {
-                erase(x, y);
-            } else if (isTransparentErasing) {
-                transparentErase(x, y);
-            }
+            if (supportsPointerEvents || !isEraserToolActive()) return;
+
+            beginEraserStroke(e);
         });
 
         imageCanvas.addEventListener('click', (e) => {
             if (!isBucket) return;
             saveToHistory();
-            const rect = imageCanvas.getBoundingClientRect();
-            const x = Math.floor(e.clientX - rect.left);
-            const y = Math.floor(e.clientY - rect.top);
+            const point = getCanvasPoint(e);
+            const x = Math.floor(point.x);
+            const y = Math.floor(point.y);
             floodFill(x, y);
         });
 
@@ -740,13 +996,13 @@
             isDragging = false;
             isResizing = false;
             currentHandle = null;
-            isErasingActive = false;
-            lastEraserX = null;
-            lastEraserY = null;
+
+            if (!supportsPointerEvents) {
+                endEraserStroke();
+            }
         });
 
-        function erase(x, y) {
-            const radius = eraserBrushSize / 2;
+        function erase(x, y, radius) {
             ctx.save();
             ctx.globalCompositeOperation = 'destination-out';
             ctx.beginPath();
@@ -772,8 +1028,7 @@
             lastEraserY = y;
         }
 
-        function transparentErase(x, y) {
-            const radius = eraserBrushSize / 2;
+        function transparentErase(x, y, radius) {
             const startX = Math.max(0, Math.floor(x - radius));
             const startY = Math.max(0, Math.floor(y - radius));
             const endX = Math.min(imageCanvas.width, Math.ceil(x + radius));
@@ -801,7 +1056,8 @@
                         const b = data[index + 2];
                         const a = data[index + 3];
 
-                        if (a === 0) {
+                        // 已有透明度的像素保持原样，避免被颜色重新推导 alpha。
+                        if (a < 255) {
                             continue;
                         }
 
@@ -956,31 +1212,29 @@
                 return;
             }
 
-            const scaleX = originalImage.width / imageCanvas.width;
-            const scaleY = originalImage.height / imageCanvas.height;
+            const sourceX = cropX;
+            const sourceY = cropY;
+            const sourceWidth = cropWidth;
+            const sourceHeight = cropHeight;
 
-            const sourceX = cropX * scaleX;
-            const sourceY = cropY * scaleY;
-            const sourceWidth = cropWidth * scaleX;
-            const sourceHeight = cropHeight * scaleY;
-
-            previewCanvas.width = sourceWidth;
-            previewCanvas.height = sourceHeight;
+            previewCanvas.width = Math.max(1, Math.round(sourceWidth));
+            previewCanvas.height = Math.max(1, Math.round(sourceHeight));
 
             previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+            enableHighQualityScaling(previewCtx);
 
-            const intersectX = Math.max(0, cropX);
-            const intersectY = Math.max(0, cropY);
-            const intersectRight = Math.min(cropX + cropWidth, imageCanvas.width);
-            const intersectBottom = Math.min(cropY + cropHeight, imageCanvas.height);
+            const intersectX = Math.max(0, sourceX);
+            const intersectY = Math.max(0, sourceY);
+            const intersectRight = Math.min(sourceX + sourceWidth, imageCanvas.width);
+            const intersectBottom = Math.min(sourceY + sourceHeight, imageCanvas.height);
             const intersectWidth = Math.max(0, intersectRight - intersectX);
             const intersectHeight = Math.max(0, intersectBottom - intersectY);
 
             if (intersectWidth > 0 && intersectHeight > 0) {
-                const destX = (intersectX - cropX) * scaleX;
-                const destY = (intersectY - cropY) * scaleY;
-                const destWidth = intersectWidth * scaleX;
-                const destHeight = intersectHeight * scaleY;
+                const destX = intersectX - sourceX;
+                const destY = intersectY - sourceY;
+                const destWidth = intersectWidth;
+                const destHeight = intersectHeight;
 
                 previewCtx.drawImage(
                     imageCanvas,
@@ -997,13 +1251,10 @@
             let sourceX = 0, sourceY = 0, sourceWidth = imageCanvas.width, sourceHeight = imageCanvas.height;
 
             if (isCropping) {
-                const scaleX = originalImage.width / imageCanvas.width;
-                const scaleY = originalImage.height / imageCanvas.height;
-
-                sourceX = cropX * scaleX;
-                sourceY = cropY * scaleY;
-                sourceWidth = cropWidth * scaleX;
-                sourceHeight = cropHeight * scaleY;
+                sourceX = cropX;
+                sourceY = cropY;
+                sourceWidth = cropWidth;
+                sourceHeight = cropHeight;
 
                 exportWidth = Math.round(sourceWidth);
                 exportHeight = Math.round(sourceHeight);
@@ -1019,30 +1270,28 @@
                 return;
             }
 
-            const targetWidth = parseInt(widthInput) || exportWidth;
-            const targetHeight = parseInt(heightInput) || exportHeight;
+            const targetWidth = Math.max(1, parseInt(widthInput) || exportWidth);
+            const targetHeight = Math.max(1, parseInt(heightInput) || exportHeight);
 
             const exportCanvas = document.createElement('canvas');
             exportCanvas.width = targetWidth;
             exportCanvas.height = targetHeight;
             const exportCtx = exportCanvas.getContext('2d');
+            enableHighQualityScaling(exportCtx);
 
             if (isCropping) {
-                const scaleX = originalImage.width / imageCanvas.width;
-                const scaleY = originalImage.height / imageCanvas.height;
-
-                const intersectX = Math.max(0, cropX);
-                const intersectY = Math.max(0, cropY);
-                const intersectRight = Math.min(cropX + cropWidth, imageCanvas.width);
-                const intersectBottom = Math.min(cropY + cropHeight, imageCanvas.height);
+                const intersectX = Math.max(0, sourceX);
+                const intersectY = Math.max(0, sourceY);
+                const intersectRight = Math.min(sourceX + sourceWidth, imageCanvas.width);
+                const intersectBottom = Math.min(sourceY + sourceHeight, imageCanvas.height);
                 const intersectWidth = Math.max(0, intersectRight - intersectX);
                 const intersectHeight = Math.max(0, intersectBottom - intersectY);
 
                 if (intersectWidth > 0 && intersectHeight > 0) {
-                    const destX = (intersectX - cropX) / cropWidth * targetWidth;
-                    const destY = (intersectY - cropY) / cropHeight * targetHeight;
-                    const destWidth = intersectWidth / cropWidth * targetWidth;
-                    const destHeight = intersectHeight / cropHeight * targetHeight;
+                    const destX = (intersectX - sourceX) / sourceWidth * targetWidth;
+                    const destY = (intersectY - sourceY) / sourceHeight * targetHeight;
+                    const destWidth = intersectWidth / sourceWidth * targetWidth;
+                    const destHeight = intersectHeight / sourceHeight * targetHeight;
 
                     exportCtx.drawImage(
                         imageCanvas,
@@ -1152,10 +1401,8 @@
         }
 
         document.getElementById('applySize').addEventListener('click', () => {
-            const scaleX = originalImage.width / imageCanvas.width;
-            const scaleY = originalImage.height / imageCanvas.height;
-            const targetWidth = parseInt(widthInput.value) / scaleX;
-            const targetHeight = parseInt(heightInput.value) / scaleY;
+            const targetWidth = parseInt(widthInput.value);
+            const targetHeight = parseInt(heightInput.value);
 
             if (targetWidth > 0 && targetHeight > 0) {
                 cropWidth = targetWidth;
@@ -1167,10 +1414,8 @@
 
         widthInput.addEventListener('input', () => {
             if (widthInput.value && heightInput.value) {
-                const scaleX = originalImage.width / imageCanvas.width;
-                const scaleY = originalImage.height / imageCanvas.height;
-                const targetWidth = parseInt(widthInput.value) / scaleX;
-                const targetHeight = parseInt(heightInput.value) / scaleY;
+                const targetWidth = parseInt(widthInput.value);
+                const targetHeight = parseInt(heightInput.value);
 
                 if (targetWidth > 0 && targetHeight > 0) {
                     cropWidth = targetWidth;
@@ -1183,10 +1428,8 @@
 
         heightInput.addEventListener('input', () => {
             if (widthInput.value && heightInput.value) {
-                const scaleX = originalImage.width / imageCanvas.width;
-                const scaleY = originalImage.height / imageCanvas.height;
-                const targetWidth = parseInt(widthInput.value) / scaleX;
-                const targetHeight = parseInt(heightInput.value) / scaleY;
+                const targetWidth = parseInt(widthInput.value);
+                const targetHeight = parseInt(heightInput.value);
 
                 if (targetWidth > 0 && targetHeight > 0) {
                     cropWidth = targetWidth;
