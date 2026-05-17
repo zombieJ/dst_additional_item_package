@@ -3,6 +3,7 @@ local _G = GLOBAL
 local skinUtil = _G.require("utils/aip_skin_util")
 
 local SKIN_CONFIGS = {
+	_G.require("configurations/skin/aip_endless_lotus"),
 	_G.require("configurations/skin/aip_cozy_nest"),
 	_G.require("configurations/skin/aip_grandfather_clock"),
 	_G.require("configurations/skin/aip_lantern"),

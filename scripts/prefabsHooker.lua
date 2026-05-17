@@ -205,6 +205,16 @@ AddPrefabPostInit("rabbit", function(inst)
 end)
 
 
+------------------------------------------ 青蛙 ------------------------------------------
+local FROG_LOTUS_SEED_DROP_CHANCE = 0.05
+
+AddPrefabPostInit("frog", function(inst)
+	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
+		-- 青蛙死亡掉落表里小概率加入无尽之莲子。
+		inst.components.lootdropper:AddChanceLoot("aip_endless_lotus_seed", dev_mode and 1 or FROG_LOTUS_SEED_DROP_CHANCE)
+	end
+end)
+
 ------------------------------------------ 金石 ------------------------------------------
 local function onRock2Worked(inst, data)
 	if
@@ -557,12 +567,16 @@ AddPrefabPostInit("reskin_tool", function(inst)
 						target.components.aipc_quality:DoDelta(1)
 						return
 
-					-- AIP build skin cycle
+					-- AIP 构建皮肤切换
 					elseif aipSkinTarget ~= nil then
-						local nextSkin = aipSkinConfig.GetNextBuildSkin(aipSkinTarget.skinname)
-
 						_G.aipSpawnPrefab(aipSkinTarget, "explode_reskin")
-						aipSkinTarget:SetAipSkin(nextSkin)
+						if aipSkinTarget.RandomAipSkin ~= nil then
+							-- 部分装饰只需要随机外观，不走固定皮肤轮换顺序。
+							aipSkinTarget:RandomAipSkin()
+						else
+							local nextSkin = aipSkinConfig.GetNextBuildSkin(aipSkinTarget.skinname)
+							aipSkinTarget:SetAipSkin(nextSkin)
+						end
 						if aipSkinTarget.SoundEmitter ~= nil then
 							aipSkinTarget.SoundEmitter:PlaySound("dontstarve/common/together/skin_change")
 						end
@@ -1039,6 +1053,58 @@ for name, data in pairs(VEGGIES) do
 	local fullname = "aip_veggie_"..name
 	table.insert(cookbookAtlas, fullname)
 	env.AddIngredientValues({fullname}, data.tags or {}, data.cancook or false, data.candry or false)
+end
+
+-- 让无尽之莲花朵与莲藕作为蔬菜进入料理锅，荷叶只作为命名配方材料。
+local LOTUS_FLOWER_PREFAB = "aip_endless_lotus_flower"
+local LOTUS_LEAF_PREFAB = "aip_endless_lotus_leaf"
+local LOTUS_ROOT_PREFAB = "aip_endless_lotus_root"
+env.AddIngredientValues({ LOTUS_FLOWER_PREFAB }, { veggie = .5 })
+env.AddIngredientValues({ LOTUS_LEAF_PREFAB }, { inedible = 1 })
+env.AddIngredientValues({ LOTUS_ROOT_PREFAB }, { veggie = .5 })
+env.RegisterInventoryItemAtlas(
+	"images/inventoryimages/"..LOTUS_FLOWER_PREFAB..".xml",
+	LOTUS_FLOWER_PREFAB..".tex"
+)
+env.RegisterInventoryItemAtlas(
+	"images/inventoryimages/"..LOTUS_LEAF_PREFAB..".xml",
+	LOTUS_LEAF_PREFAB..".tex"
+)
+env.RegisterInventoryItemAtlas(
+	"images/inventoryimages/"..LOTUS_ROOT_PREFAB..".xml",
+	LOTUS_ROOT_PREFAB..".tex"
+)
+
+-- 让花沙拉把无尽之莲花朵视作仙人掌花材。
+local function PatchFlowerSaladRecipe(cooker)
+	local cooking = _G.require("cooking")
+	local recipes = cooking.recipes ~= nil and cooking.recipes[cooker] or nil
+	local recipe = recipes ~= nil and recipes.flowersalad or nil
+
+	if recipe == nil or recipe.aip_lotus_patched then
+		return
+	end
+
+	local oldTest = recipe.test
+	recipe.test = function(cooker, names, tags)
+		if names[LOTUS_FLOWER_PREFAB] ~= nil then
+			local cactusFlower = names.cactus_flower
+			names.cactus_flower = (cactusFlower or 0) + names[LOTUS_FLOWER_PREFAB]
+
+			local result = oldTest(cooker, names, tags)
+			names.cactus_flower = cactusFlower
+
+			return result
+		end
+
+		return oldTest(cooker, names, tags)
+	end
+
+	recipe.aip_lotus_patched = true
+end
+
+for _, cooker in ipairs({ "cookpot", "portablecookpot", "archive_cookpot" }) do
+	PatchFlowerSaladRecipe(cooker)
 end
 
 -- 粘衣赋值
