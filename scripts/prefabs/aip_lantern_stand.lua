@@ -184,21 +184,30 @@ local function ensureDisplayMirror(record)
 end
 
 -- 同步镜像灯笼的皮肤。
-local function syncDisplayMirrorSkin(mirror, item)
+local function syncDisplayMirrorSkin(mirror, item, forceAnimationSync)
 	if item ~= nil and mirror.SetLanternSkin ~= nil then
-		mirror:SetLanternSkin(item._aipCurrentSkin or item.skinname)
+		local skin = item._aipCurrentSkin or item.skinname
+
+		-- 皮肤没有变化时不要重播灯笼动画，燃料刷新只负责亮灭状态。
+		if forceAnimationSync or
+			not mirror._aipLanternStandSkinInited or
+			mirror._aipLanternStandSkin ~= skin then
+			mirror._aipLanternStandSkinInited = true
+			mirror._aipLanternStandSkin = skin
+			mirror:SetLanternSkin(skin)
+		end
 	end
 end
 
 -- 同步镜像灯笼的显隐、层级和挂点。
-local function syncDisplayMirror(inst, record, slot, lit, showTassle)
+local function syncDisplayMirror(inst, record, slot, lit, showTassle, forceAnimationSync)
 	local mirror = ensureDisplayMirror(record)
 
 	if mirror == nil then
 		return
 	end
 
-	syncDisplayMirrorSkin(mirror, record.item)
+	syncDisplayMirrorSkin(mirror, record.item, forceAnimationSync)
 	mirror.Transform:SetPosition(inst.Transform:GetWorldPosition())
 	mirror.Transform:SetScale(DISPLAY_SCALE, DISPLAY_SCALE, DISPLAY_SCALE)
 	mirror.AnimState:SetFinalOffset(getDisplayFinalOffset(slot))
@@ -228,6 +237,8 @@ local function syncDisplayMirror(inst, record, slot, lit, showTassle)
 
 	mirror._aipLanternStand = inst
 	mirror._aipLanternStandDisplaySlot = slot
+	record.lit = lit == true
+	record.showTassle = showTassle == true
 end
 
 -- 查找真实灯笼当前占用的展示槽。
@@ -250,7 +261,14 @@ local function onDisplayLanternFuelChanged(item)
 	local stand = item._aipLanternStand
 
 	if stand ~= nil and stand:IsValid() and queueRefreshLanternDisplays ~= nil then
-		queueRefreshLanternDisplays(stand)
+		local slot = item._aipLanternStandDisplaySlot
+		local record = slot ~= nil and getDisplayRecord(stand, slot) or nil
+		local lit = isStandTurnedOn(stand) and isLanternLit(item)
+
+		-- 耐久百分比会周期性变化，只有亮灭真的变化时才需要刷新展示。
+		if record == nil or record.lit ~= lit then
+			queueRefreshLanternDisplays(stand)
+		end
 	end
 end
 
@@ -293,7 +311,7 @@ local function unbindDisplayItem(inst, item, leaving)
 end
 
 -- 把容器灯笼绑定到指定挂点的镜像展示。
-local function bindDisplayItem(inst, item, slot, showTassle, standOn)
+local function bindDisplayItem(inst, item, slot, showTassle, standOn, forceAnimationSync)
 	if item == nil or not item:IsValid() then
 		unbindDisplaySlot(inst, slot, false)
 		return false
@@ -320,7 +338,7 @@ local function bindDisplayItem(inst, item, slot, showTassle, standOn)
 	local displayTassle = showTassle == true
 
 	-- 真实灯笼继续留在容器里消耗耐久；场景中只显示额外镜像，避免开关储物时闪烁。
-	syncDisplayMirror(inst, record, slot, lit, displayTassle)
+	syncDisplayMirror(inst, record, slot, lit, displayTassle, forceAnimationSync)
 
 	item._aipLanternStand = inst
 	item._aipLanternStandDisplaySlot = slot
@@ -347,7 +365,7 @@ local function releaseDisplayItems(inst, leaving)
 end
 
 -- 重新排列灯笼展示并同步光照。
-local function refreshLanternDisplays(inst, standOn)
+local function refreshLanternDisplays(inst, standOn, forceAnimationSync)
 	if inst.components.container == nil then
 		return
 	end
@@ -372,7 +390,8 @@ local function refreshLanternDisplays(inst, standOn)
 			item,
 			displaySlot,
 			displaySlot == #displayItems,
-			standOn
+			standOn,
+			forceAnimationSync
 		)
 
 		if bound and lit then
@@ -400,12 +419,19 @@ local function onTurnOff(inst)
 end
 
 -- 延后一帧合并刷新灯笼展示。
-queueRefreshLanternDisplays = function(inst)
+queueRefreshLanternDisplays = function(inst, forceAnimationSync)
+	if forceAnimationSync then
+		inst._aipLanternStandForceAnimationSync = true
+	end
+
 	if inst._aipLanternStandRefreshTask == nil then
 		-- itemget/itemlose 常常连着触发，延后一帧统一刷新挂灯和光照。
 		inst._aipLanternStandRefreshTask = inst:DoTaskInTime(0, function(inst)
+			local shouldSyncAnimation = inst._aipLanternStandForceAnimationSync
+
 			inst._aipLanternStandRefreshTask = nil
-			refreshLanternDisplays(inst)
+			inst._aipLanternStandForceAnimationSync = nil
+			refreshLanternDisplays(inst, nil, shouldSyncAnimation)
 		end)
 	end
 end
@@ -461,7 +487,7 @@ end
 
 -- 获得灯笼后排队刷新展示。
 local function onitemget(inst)
-	queueRefreshLanternDisplays(inst)
+	queueRefreshLanternDisplays(inst, true)
 end
 
 -- 失去灯笼后清理旧绑定并刷新。
@@ -470,7 +496,7 @@ local function onitemlose(inst, data)
 		unbindDisplayItem(inst, data.prev_item, true)
 	end
 
-	queueRefreshLanternDisplays(inst)
+	queueRefreshLanternDisplays(inst, true)
 end
 
 -- 移除实体前释放展示灯笼。
