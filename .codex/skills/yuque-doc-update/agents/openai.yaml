@@ -1,0 +1,7 @@
+interface:
+  display_name: "Yuque Doc Update"
+  short_description: "Plan and draft Yuque documentation updates for this DST mod."
+  default_prompt: "Use $yuque-doc-update to plan or draft the Yuque documentation update for recent mod changes."
+
+policy:
+  allow_implicit_invocation: true
