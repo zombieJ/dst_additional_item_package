@@ -1,5 +1,84 @@
+local _G = GLOBAL
+
 -- 每高一级品质，正面效果增加 25%，负面效果减少 25%。
 local QUALITY_EFFECT_STEP = 0.25
+local DEFAULT_QUALITY = 1
+
+-- 读取物品品质，没有品质的食材视作普通品质。
+local function getQuality(inst)
+	return inst ~= nil and inst.components ~= nil and
+		inst.components.aipc_quality ~= nil and inst.components.aipc_quality:GetVal() or DEFAULT_QUALITY
+end
+
+-- 锅制食物使用整数品质，按所有食材的平均品质四舍五入。
+local function getAverageQuality(slots)
+	local total = 0
+	local count = 0
+
+	for _, item in pairs(slots) do
+		total = total + getQuality(item)
+		count = count + 1
+	end
+
+	return count > 0 and math.floor(total / count + 0.5) or nil
+end
+
+-- 给料理成品补上品质展示与品质组件。
+local function setupQuality(inst)
+	if inst.components.aipc_info_client == nil then
+		inst:AddComponent("aipc_info_client")
+	end
+
+	if inst.components.aipc_quality == nil then
+		inst:AddComponent("aipc_quality")
+	end
+end
+
+-- 有品质的料理只和同品质合堆，避免食用时品质被混掉。
+local function patchQualityStackable(inst)
+	if inst._aip_quality_stackable_patched then
+		return
+	end
+	inst._aip_quality_stackable_patched = true
+
+	local oldCanStackWithFn = inst.stackable_CanStackWithFn
+	inst.stackable_CanStackWithFn = function(this, other)
+		if oldCanStackWithFn ~= nil and not oldCanStackWithFn(this, other) then
+			return false
+		end
+
+		return getQuality(this) == getQuality(other)
+	end
+
+	if inst.components.stackable ~= nil then
+		local oldMergeType = inst.components.stackable.aipMergeType
+
+		inst.components.stackable.aipMergeType = function(this, other, source_pos)
+			if oldMergeType ~= nil then
+				if type(oldMergeType) == "function" then
+					if not oldMergeType(this, other, source_pos) then
+						return false
+					end
+				elseif type(oldMergeType) == "string" then
+					local otherMergeType = other.components.stackable ~= nil and other.components.stackable.aipMergeType or nil
+					if otherMergeType ~= oldMergeType then
+						return false
+					end
+				end
+			end
+
+			return getQuality(this) == getQuality(other)
+		end
+	end
+end
+
+-- 料理锅成品需要能承载食材平均品质。
+AddPrefabPostInitAny(function(inst)
+	if inst:HasTag("preparedfood") then
+		setupQuality(inst)
+		patchQualityStackable(inst)
+	end
+end)
 
 -- 有品质才加成；正数变强，负数变弱，普通品质不变。
 local function applyQualityBonus(value, edible)
@@ -62,5 +141,85 @@ AddComponentPostInit("cookable", function(self)
 		end
 
 		return product
+	end
+end)
+
+AddComponentPostInit("stewer", function(self)
+	local oldStartCooking = self.StartCooking
+	local oldStopCooking = self.StopCooking
+	local oldOnSave = self.OnSave
+	local oldOnLoad = self.OnLoad
+	local oldHarvest = self.Harvest
+
+	-- 开始烹饪前记录食材平均品质，避免锅具销毁内容后丢失。
+	function self:StartCooking(doer, ...)
+		local quality = nil
+		if self.targettime == nil and self.inst.components.container ~= nil then
+			quality = getAverageQuality(self.inst.components.container.slots)
+		end
+
+		oldStartCooking(self, doer, ...)
+
+		if quality ~= nil and self.product ~= nil and self.targettime ~= nil then
+			self.aip_product_quality = quality
+		end
+	end
+
+	function self:OnSave(...)
+		local data = oldOnSave(self, ...)
+		if data ~= nil and self.aip_product_quality ~= nil then
+			data.aip_product_quality = self.aip_product_quality
+		end
+		return data
+	end
+
+	function self:OnLoad(data, ...)
+		oldOnLoad(self, data, ...)
+		self.aip_product_quality = data ~= nil and data.aip_product_quality or nil
+	end
+
+	-- 在成品生成瞬间写入品质，后续食用效果沿用 edible 的品质倍率。
+	local function withQualitySpawn(fn, ...)
+		local product = self.product
+		local quality = self.aip_product_quality
+
+		if product == nil or quality == nil then
+			return fn(self, ...)
+		end
+
+		local oldSpawnPrefab = _G.SpawnPrefab
+		_G.SpawnPrefab = function(name, ...)
+			local inst = oldSpawnPrefab(name, ...)
+
+			if name == product and inst ~= nil and inst:HasTag("preparedfood") then
+				setupQuality(inst)
+				inst.components.aipc_quality:SetVal(quality)
+			end
+
+			return inst
+		end
+
+		local ok, result = pcall(fn, self, ...)
+		_G.SpawnPrefab = oldSpawnPrefab
+
+		if not ok then
+			error(result)
+		end
+
+		return result
+	end
+
+	function self:StopCooking(reason, ...)
+		local result = withQualitySpawn(oldStopCooking, reason, ...)
+		self.aip_product_quality = nil
+		return result
+	end
+
+	function self:Harvest(harvester, ...)
+		local result = withQualitySpawn(oldHarvest, harvester, ...)
+		if self.product == nil then
+			self.aip_product_quality = nil
+		end
+		return result
 	end
 end)

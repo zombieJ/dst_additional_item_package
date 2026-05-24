@@ -28,15 +28,15 @@ local LANG_MAP = {
 		ROOT_DESC = "Crisp and hollow-hearted.",
 	},
 	chinese = {
-		LOTUS_NAME = "无尽之莲",
+		LOTUS_NAME = "无限之莲",
 		LOTUS_DESC = "它在浪间静静绽放。",
-		SEED_NAME = "无尽之莲子",
+		SEED_NAME = "无限之莲子",
 		SEED_DESC = "它想落在一片安静的海面上。",
-		FLOWER_NAME = "无尽之莲花朵",
+		FLOWER_NAME = "无限之莲花朵",
 		FLOWER_DESC = "柔嫩得可以入口。",
-		LEAF_NAME = "无尽之莲荷叶",
+		LEAF_NAME = "无限之莲荷叶",
 		LEAF_DESC = "一片安静的青绿。",
-		ROOT_NAME = "无尽之莲藕",
+		ROOT_NAME = "无限之莲藕",
 		ROOT_DESC = "埋在水下的清脆根茎。",
 	},
 }
@@ -384,7 +384,7 @@ local function lotusFn()
 	return inst
 end
 
--- 创建可食用且可入锅的无尽之莲花朵。
+-- 创建可食用且可入锅的无限之莲花朵。
 local function flowerFn()
 	local inst = CreateEntity()
 
@@ -436,7 +436,7 @@ local function flowerFn()
 	return inst
 end
 
--- 创建暂时只用于掉落和收纳的无尽之莲荷叶。
+-- 创建暂时只用于掉落和收纳的无限之莲荷叶。
 local function leafFn()
 	local inst = CreateEntity()
 
@@ -478,7 +478,7 @@ local function leafFn()
 	return inst
 end
 
--- 创建可食用的无尽之莲藕。
+-- 创建可食用的无限之莲藕。
 local function rootFn()
 	local inst = CreateEntity()
 
