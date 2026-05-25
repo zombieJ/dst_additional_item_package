@@ -3,6 +3,7 @@ local _G = GLOBAL
 -- 每高一级品质，正面效果增加 25%，负面效果减少 25%。
 local QUALITY_EFFECT_STEP = 0.25
 local DEFAULT_QUALITY = 1
+local POST_INIT_QUALITY_FOODS = {}
 
 -- 读取物品品质，没有品质的食材视作普通品质。
 local function getQuality(inst)
@@ -35,11 +36,40 @@ local function setupQuality(inst)
 end
 
 -- 有品质的料理只和同品质合堆，避免食用时品质被混掉。
-local function patchQualityStackable(inst)
-	if inst._aip_quality_stackable_patched then
+local function patchQualityStackableComponent(inst)
+	local stackable = inst.components.stackable
+
+	if stackable == nil or stackable._aip_quality_stackable_patched then
 		return
 	end
-	inst._aip_quality_stackable_patched = true
+	stackable._aip_quality_stackable_patched = true
+
+	local oldMergeType = stackable.aipMergeType
+	stackable.aipMergeType = function(this, other, source_pos)
+		if oldMergeType ~= nil then
+			if type(oldMergeType) == "function" then
+				if not oldMergeType(this, other, source_pos) then
+					return false
+				end
+			elseif type(oldMergeType) == "string" then
+				local otherMergeType = other.components.stackable ~= nil and other.components.stackable.aipMergeType or nil
+				if otherMergeType ~= oldMergeType then
+					return false
+				end
+			end
+		end
+
+		return getQuality(this) == getQuality(other)
+	end
+end
+
+-- 有品质的料理只和同品质合堆，避免食用时品质被混掉。
+local function patchQualityStackable(inst)
+	if inst._aip_quality_stackable_fn_patched then
+		patchQualityStackableComponent(inst)
+		return
+	end
+	inst._aip_quality_stackable_fn_patched = true
 
 	local oldCanStackWithFn = inst.stackable_CanStackWithFn
 	inst.stackable_CanStackWithFn = function(this, other)
@@ -50,35 +80,41 @@ local function patchQualityStackable(inst)
 		return getQuality(this) == getQuality(other)
 	end
 
-	if inst.components.stackable ~= nil then
-		local oldMergeType = inst.components.stackable.aipMergeType
-
-		inst.components.stackable.aipMergeType = function(this, other, source_pos)
-			if oldMergeType ~= nil then
-				if type(oldMergeType) == "function" then
-					if not oldMergeType(this, other, source_pos) then
-						return false
-					end
-				elseif type(oldMergeType) == "string" then
-					local otherMergeType = other.components.stackable ~= nil and other.components.stackable.aipMergeType or nil
-					if otherMergeType ~= oldMergeType then
-						return false
-					end
-				end
-			end
-
-			return getQuality(this) == getQuality(other)
-		end
-	end
+	patchQualityStackableComponent(inst)
 end
 
 -- 料理锅成品需要能承载食材平均品质。
-AddPrefabPostInitAny(function(inst)
+local function setupPreparedFoodQuality(inst)
 	if inst:HasTag("preparedfood") then
 		setupQuality(inst)
 		patchQualityStackable(inst)
 	end
-end)
+end
+
+-- 精确注册原版料理 prefab，避免每个 prefab 生成时都跑全局 Any hook。
+local function addPreparedFoodPostInit(name)
+	if name ~= nil and not POST_INIT_QUALITY_FOODS[name] then
+		POST_INIT_QUALITY_FOODS[name] = true
+		AddPrefabPostInit(name, setupPreparedFoodQuality)
+	end
+end
+
+local function addPreparedFoodPostInits(moduleName)
+	local ok, foods = pcall(_G.require, moduleName)
+	if not ok or foods == nil then
+		return
+	end
+
+	for name, data in pairs(foods) do
+		addPreparedFoodPostInit(data.name or name)
+	end
+end
+
+addPreparedFoodPostInits("preparedfoods")
+addPreparedFoodPostInits("preparedfoods_warly")
+addPreparedFoodPostInits("spicedfoods")
+
+_G.aipRegisterQualityPreparedFood = addPreparedFoodPostInit
 
 -- 有品质才加成；正数变强，负数变弱，普通品质不变。
 local function applyQualityBonus(value, edible)
@@ -105,6 +141,9 @@ AddComponentPostInit("edible", function(self)
 	local oldGetHunger = self.GetHunger
 	local oldGetSanity = self.GetSanity
 
+	-- 服务端添加 edible 时再次兜底，兼容其它已带 preparedfood 标签的料理。
+	setupPreparedFoodQuality(self.inst)
+
 	function self:GetHealth(eater, ...)
 		-- 生命先处理铁胃，再处理品质倍率。
 		local health = oldGetHealth(self, eater, ...)
@@ -125,6 +164,12 @@ AddComponentPostInit("edible", function(self)
 
 	function self:GetSanity(eater, ...)
 		return applyQualityBonus(oldGetSanity(self, eater, ...), self)
+	end
+end)
+
+AddComponentPostInit("stackable", function(self)
+	if self.inst:HasTag("preparedfood") and self.inst.components.aipc_quality ~= nil then
+		patchQualityStackable(self.inst)
 	end
 end)
 
@@ -158,11 +203,13 @@ AddComponentPostInit("stewer", function(self)
 			quality = getAverageQuality(self.inst.components.container.slots)
 		end
 
-		oldStartCooking(self, doer, ...)
+		local result = oldStartCooking(self, doer, ...)
 
 		if quality ~= nil and self.product ~= nil and self.targettime ~= nil then
 			self.aip_product_quality = quality
 		end
+
+		return result
 	end
 
 	function self:OnSave(...)

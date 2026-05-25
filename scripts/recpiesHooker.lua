@@ -5,6 +5,11 @@ local TECH_INGREDIENT = _G.TECH_INGREDIENT
 
 function GLOBAL.AddModPrefabCookerRecipe(cooker, recipe)
 	env.AddCookerRecipe(cooker, recipe)
+
+	-- 料理配方注册时同步注册品质初始化，避免使用全局 prefab post-init。
+	if GLOBAL.aipRegisterQualityPreparedFood ~= nil and recipe ~= nil then
+		GLOBAL.aipRegisterQualityPreparedFood(recipe.name)
+	end
 end
 
 local dev_mode = _G.aipGetModConfig("dev_mode") == "enabled"
