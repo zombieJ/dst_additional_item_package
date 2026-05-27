@@ -23,6 +23,15 @@ local function getAverageQuality(slots)
 	return count > 0 and math.floor(total / count + 0.5) or nil
 end
 
+-- 调味站继承原料理品质，不让普通香料拉低成品品质。
+local function getPreparedFoodQuality(slots)
+	for _, item in pairs(slots) do
+		if item ~= nil and item:HasTag("preparedfood") then
+			return getQuality(item)
+		end
+	end
+end
+
 -- 给料理成品补上品质展示与品质组件。
 local function setupQuality(inst)
 	if inst.components.aipc_info_client == nil then
@@ -155,7 +164,8 @@ AddComponentPostInit("stewer", function(self)
 	function self:StartCooking(doer, ...)
 		local quality = nil
 		if self.targettime == nil and self.inst.components.container ~= nil then
-			quality = getAverageQuality(self.inst.components.container.slots)
+			local slots = self.inst.components.container.slots
+			quality = self.inst:HasTag("spicer") and getPreparedFoodQuality(slots) or getAverageQuality(slots)
 		end
 
 		local result = oldStartCooking(self, doer, ...)
