@@ -210,7 +210,7 @@ local FROG_LOTUS_SEED_DROP_CHANCE = 0.05
 
 AddPrefabPostInit("frog", function(inst)
 	if _G.TheWorld.ismastersim and inst.components.lootdropper ~= nil then
-		-- 青蛙死亡掉落表里小概率加入无尽之莲子。
+		-- 青蛙死亡掉落表里小概率加入无限之莲子。
 		inst.components.lootdropper:AddChanceLoot("aip_endless_lotus_seed", dev_mode and 1 or FROG_LOTUS_SEED_DROP_CHANCE)
 	end
 end)
@@ -1055,7 +1055,7 @@ for name, data in pairs(VEGGIES) do
 	env.AddIngredientValues({fullname}, data.tags or {}, data.cancook or false, data.candry or false)
 end
 
--- 让无尽之莲花朵与莲藕作为蔬菜进入料理锅，荷叶只作为命名配方材料。
+-- 让无限之莲花朵与莲藕作为蔬菜进入料理锅，荷叶只作为命名配方材料。
 local LOTUS_FLOWER_PREFAB = "aip_endless_lotus_flower"
 local LOTUS_LEAF_PREFAB = "aip_endless_lotus_leaf"
 local LOTUS_ROOT_PREFAB = "aip_endless_lotus_root"
@@ -1075,7 +1075,7 @@ env.RegisterInventoryItemAtlas(
 	LOTUS_ROOT_PREFAB..".tex"
 )
 
--- 让花沙拉把无尽之莲花朵视作仙人掌花材。
+-- 让花沙拉把无限之莲花朵视作仙人掌花材。
 local function PatchFlowerSaladRecipe(cooker)
 	local cooking = _G.require("cooking")
 	local recipes = cooking.recipes ~= nil and cooking.recipes[cooker] or nil
