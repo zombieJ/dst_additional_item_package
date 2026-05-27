@@ -211,11 +211,11 @@ AddComponentPostInit("stewer", function(self)
 			return inst
 		end
 
-		local ok, result = pcall(fn, self, ...)
+		local ok, result = _G.pcall(fn, self, ...)
 		_G.SpawnPrefab = oldSpawnPrefab
 
 		if not ok then
-			error(result)
+			_G.error(result)
 		end
 
 		return result
