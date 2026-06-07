@@ -3,11 +3,8 @@ local _G = GLOBAL
 -- 每高一级品质，正面效果增加 25%，负面效果减少 25%。
 local QUALITY_EFFECT_STEP = 0.25
 local DEFAULT_QUALITY = 1
+local RATATOUILLE_PREFAB = "ratatouille"
 local SURPRISE_STEW_PREFAB = "aip_food_surprise_stew"
-local SURPRISE_STEW_INGREDIENTS = {
-	ratatouille = true,
-	aip_food_surprise_stew = true,
-}
 
 -- 读取物品品质，没有品质的食材视作普通品质。
 local function getQuality(inst)
@@ -37,17 +34,24 @@ local function getPreparedFoodQuality(slots)
 	end
 end
 
--- 惊奇炖菜会继承锅内相关料理的最高品质，并在出锅时提升一级。
+-- 惊奇炖菜只有自身重新入锅才升品，蔬菜杂烩首做固定普通品质。
 local function getSurpriseStewQuality(slots)
 	local quality = nil
+	local hasRatatouille = false
 
 	for _, item in pairs(slots) do
-		if item ~= nil and SURPRISE_STEW_INGREDIENTS[item.prefab] then
+		if item ~= nil and item.prefab == SURPRISE_STEW_PREFAB then
 			quality = math.max(quality or DEFAULT_QUALITY, getQuality(item))
+		elseif item ~= nil and item.prefab == RATATOUILLE_PREFAB then
+			hasRatatouille = true
 		end
 	end
 
-	return quality ~= nil and quality + 1 or nil
+	if quality ~= nil then
+		return quality + 1
+	end
+
+	return hasRatatouille and DEFAULT_QUALITY or nil
 end
 
 -- 给料理成品补上品质展示与品质组件。
