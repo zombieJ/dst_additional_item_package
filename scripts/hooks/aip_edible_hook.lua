@@ -3,6 +3,8 @@ local _G = GLOBAL
 -- 每高一级品质，正面效果增加 25%，负面效果减少 25%。
 local QUALITY_EFFECT_STEP = 0.25
 local DEFAULT_QUALITY = 1
+local RATATOUILLE_PREFAB = "ratatouille"
+local SURPRISE_STEW_PREFAB = "aip_food_surprise_stew"
 
 -- 读取物品品质，没有品质的食材视作普通品质。
 local function getQuality(inst)
@@ -30,6 +32,26 @@ local function getPreparedFoodQuality(slots)
 			return getQuality(item)
 		end
 	end
+end
+
+-- 惊奇炖菜只有自身重新入锅才升品，蔬菜杂烩首做固定普通品质。
+local function getSurpriseStewQuality(slots)
+	local quality = nil
+	local hasRatatouille = false
+
+	for _, item in pairs(slots) do
+		if item ~= nil and item.prefab == SURPRISE_STEW_PREFAB then
+			quality = math.max(quality or DEFAULT_QUALITY, getQuality(item))
+		elseif item ~= nil and item.prefab == RATATOUILLE_PREFAB then
+			hasRatatouille = true
+		end
+	end
+
+	if quality ~= nil then
+		return quality + 1
+	end
+
+	return hasRatatouille and DEFAULT_QUALITY or nil
 end
 
 -- 给料理成品补上品质展示与品质组件。
@@ -163,12 +185,20 @@ AddComponentPostInit("stewer", function(self)
 	-- 开始烹饪前记录食材平均品质，避免锅具销毁内容后丢失。
 	function self:StartCooking(doer, ...)
 		local quality = nil
+		local surpriseStewQuality = nil
+
 		if self.targettime == nil and self.inst.components.container ~= nil then
 			local slots = self.inst.components.container.slots
 			quality = self.inst:HasTag("spicer") and getPreparedFoodQuality(slots) or getAverageQuality(slots)
+			surpriseStewQuality = getSurpriseStewQuality(slots)
 		end
 
 		local result = oldStartCooking(self, doer, ...)
+
+		-- 惊奇炖菜每次重新入锅时优先使用自身的升品规则。
+		if self.product == SURPRISE_STEW_PREFAB and surpriseStewQuality ~= nil then
+			quality = surpriseStewQuality
+		end
 
 		if quality ~= nil and self.product ~= nil and self.targettime ~= nil then
 			self.aip_product_quality = quality

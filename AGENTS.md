@@ -44,7 +44,9 @@
 - `exported`、`images` 等资源目录里的文件处理完成后，默认不要移动到 `exported_done`、`images_done` 或类似 `xxx_done` 目录中；除非用户明确要求移动。
 - `exported_done` 是人工确认后的归档目录；新增或更新素材时，只把源导出文件放在 `exported`，不要主动写入或提交 `exported_done`。
 - `gen/imageCutter/imageCutter.js` 可用于预处理 `_素材` 图片、透明背景、批量裁剪并导出到 `_素材/out`；不要使用这个脚本处理 `exported` 里的图片。
+- 物品栏缩略图生成完成后，把 PNG 源图放在 `images/inventoryimages` 目录下，交给游戏启动时自动编译成可用的游戏文件。
 - 不要主动运行 DST 编译工具生成 `anim/*.zip`、`*.tex`、`*.xml` 等编译产物；用户启动游戏时会自动编译。
+- 除非用户明确要求，不要擅自将缩略图或其他图片放入 `images_done`。
 - 如果误跑了编译工具，提交前清理本次新增的编译产物，只保留源码、`exported` 资源和必要的 PNG 源图，没有误跑则不用管。
 
 ## SCML 跟随贴图规则
