@@ -495,10 +495,7 @@ AipPostComp("health", function(self)
 		local data = { amount = amount, afflicter = afflicter, cause = cause }
 		self.inst:PushEvent("aip_healthdelta", data)
 
-		if data.amount == 0 then
-			return
-		end
-
+		-- 0 变化也要走原版 DoDelta，用于触发生命同步与第三方血条刷新。
 		return originDoDelta(
 			self, data.amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb, ...
 		)
