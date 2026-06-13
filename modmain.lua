@@ -118,6 +118,7 @@ PrefabFiles = {
 	"aip_woodener",
 	"aip_glass_chest",
 	"aip_protected_mark",
+	"aip_crayon_wall",
 
 	-- 诡影迷踪
 	"aip_dou_totem",

@@ -152,6 +152,11 @@ rec("aip_igloo", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.STRUCTURES },
 	{Ingredient("ice", 21), Ingredient("carrot", 1), Ingredient("twigs", 2)},
 	"aip_igloo_placer")
 
+-- 蜡笔墙
+rec("aip_crayon_wall_item", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.STRUCTURES },
+	{ Ingredient("waxpaper", 1), Ingredient("charcoal", 2), Ingredient("rope", 1) },
+	{ placer = "aip_crayon_wall_item_placer", numtogive = 8 })
+
 -- 诙谐面具
 recDress("aip_joker_face", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.CLOTHING },
 	{Ingredient("livinglog", 3), Ingredient("spidereggsack", 1), Ingredient("razor", 1)})
