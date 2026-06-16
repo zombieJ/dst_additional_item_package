@@ -2,6 +2,9 @@ local _G = GLOBAL
 
 _G.STRINGS.AIP = {}
 
+-- 注册蜡笔墙修理材料，让原版 REPAIR 动作可以识别同类墙物品。
+_G.MATERIALS.AIP_CRAYON_WALL = "aip_crayon_wall"
+
 -- 资源
 Assets = {
 	Asset("ATLAS", "images/inventoryimages/popcorngun.xml"),
