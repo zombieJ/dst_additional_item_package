@@ -154,7 +154,7 @@ rec("aip_igloo", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.STRUCTURES },
 
 -- 蜡笔墙
 rec("aip_crayon_wall_item", TECH.SCIENCE_TWO, { CRAFTING_FILTERS.STRUCTURES },
-	{ Ingredient("waxpaper", 1), Ingredient("charcoal", 2), Ingredient("rope", 1) },
+	{ Ingredient("petals", 4), Ingredient("charcoal", 2), Ingredient("glommerfuel", 1) },
 	{ placer = "aip_crayon_wall_item_placer", numtogive = 8 })
 
 -- 诙谐面具
