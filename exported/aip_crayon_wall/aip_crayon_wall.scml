@@ -19,10 +19,10 @@
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="6.204102" y="-0.4" scale_x="1.625" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="6.204102" y="-0.4" scale_x="1.625" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
@@ -49,22 +49,22 @@
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="0" x="0.3" y="-0.399983" scale_x="1.019" scale_y="0.965592" angle="0" />
+					<object folder="0" file="0" x="6.31628" y="-0.399983" scale_x="1.655875" scale_y="0.965592" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="0" x="0.3" y="0.325008" scale_x="0.981796" scale_y="0.997986" angle="0" />
+					<object folder="0" file="0" x="6.096624" y="0.325008" scale_x="1.595419" scale_y="0.997986" angle="0" />
 				</key>
 				<key id="2" time="67" spin="1">
-					<object folder="0" file="0" x="0.3" y="1.04998" scale_x="0.944596" scale_y="1.03038" angle="0" />
+					<object folder="0" file="0" x="5.876991" y="1.04998" scale_x="1.534968" scale_y="1.03038" angle="0" />
 				</key>
 				<key id="3" time="100" spin="1">
-					<object folder="0" file="0" x="0.3" y="0.324992" scale_x="0.972298" scale_y="1.01519" angle="0" />
+					<object folder="0" file="0" x="6.040547" y="0.324992" scale_x="1.579984" scale_y="1.01519" angle="0" />
 				</key>
 				<key id="4" time="134" spin="1">
-					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="6.204102" y="-0.4" scale_x="1.625" scale_y="1" angle="0" />
 				</key>
 				<key id="5" time="167" spin="1">
-					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="6.204102" y="-0.4" scale_x="1.625" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
@@ -79,10 +79,10 @@
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="3.488624" y="-0.4" scale_x="1.514286" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="3.488624" y="-0.4" scale_x="1.514286" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
@@ -109,22 +109,22 @@
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="1" x="0.3" y="-0.399983" scale_x="1.019" scale_y="0.965592" angle="0" />
+					<object folder="0" file="1" x="3.549208" y="-0.399983" scale_x="1.543057" scale_y="0.965592" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="1" x="0.3" y="0.325008" scale_x="0.981796" scale_y="0.997986" angle="0" />
+					<object folder="0" file="1" x="3.430578" y="0.325008" scale_x="1.48672" scale_y="0.997986" angle="0" />
 				</key>
 				<key id="2" time="67" spin="1">
-					<object folder="0" file="1" x="0.3" y="1.04998" scale_x="0.944596" scale_y="1.03038" angle="0" />
+					<object folder="0" file="1" x="3.311961" y="1.04998" scale_x="1.430388" scale_y="1.03038" angle="0" />
 				</key>
 				<key id="3" time="100" spin="1">
-					<object folder="0" file="1" x="0.3" y="0.324992" scale_x="0.972298" scale_y="1.01519" angle="0" />
+					<object folder="0" file="1" x="3.400293" y="0.324992" scale_x="1.472337" scale_y="1.01519" angle="0" />
 				</key>
 				<key id="4" time="134" spin="1">
-					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="3.488624" y="-0.4" scale_x="1.514286" scale_y="1" angle="0" />
 				</key>
 				<key id="5" time="167" spin="1">
-					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="3.488624" y="-0.4" scale_x="1.514286" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
@@ -139,10 +139,10 @@
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="3.45594" y="-0.4" scale_x="1.455959" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="3.45594" y="-0.4" scale_x="1.455959" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
@@ -169,22 +169,22 @@
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.399983" scale_x="1.019" scale_y="0.965592" angle="0" />
+					<object folder="0" file="2" x="3.515903" y="-0.399983" scale_x="1.483622" scale_y="0.965592" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="2" x="0.3" y="0.325008" scale_x="0.981796" scale_y="0.997986" angle="0" />
+					<object folder="0" file="2" x="3.398489" y="0.325008" scale_x="1.429455" scale_y="0.997986" angle="0" />
 				</key>
 				<key id="2" time="67" spin="1">
-					<object folder="0" file="2" x="0.3" y="1.04998" scale_x="0.944596" scale_y="1.03038" angle="0" />
+					<object folder="0" file="2" x="3.281088" y="1.04998" scale_x="1.375293" scale_y="1.03038" angle="0" />
 				</key>
 				<key id="3" time="100" spin="1">
-					<object folder="0" file="2" x="0.3" y="0.324992" scale_x="0.972298" scale_y="1.01519" angle="0" />
+					<object folder="0" file="2" x="3.368514" y="0.324992" scale_x="1.415626" scale_y="1.01519" angle="0" />
 				</key>
 				<key id="4" time="134" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="3.45594" y="-0.4" scale_x="1.455959" scale_y="1" angle="0" />
 				</key>
 				<key id="5" time="167" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="3.45594" y="-0.4" scale_x="1.455959" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
@@ -199,10 +199,10 @@
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="6.256363" scale_x="1" scale_y="1.072727" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="6.256363" scale_x="1" scale_y="1.072727" angle="0" />
 				</key>
 			</timeline>
 		</animation>
@@ -229,22 +229,22 @@
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="3" x="0.3" y="-0.399983" scale_x="1.019" scale_y="0.965592" angle="0" />
+					<object folder="0" file="3" x="0.3" y="6.027348" scale_x="1.019" scale_y="1.035817" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="3" x="0.3" y="0.325008" scale_x="0.981796" scale_y="0.997986" angle="0" />
+					<object folder="0" file="3" x="0.3" y="6.967965" scale_x="0.981796" scale_y="1.070567" angle="0" />
 				</key>
 				<key id="2" time="67" spin="1">
-					<object folder="0" file="3" x="0.3" y="1.04998" scale_x="0.944596" scale_y="1.03038" angle="0" />
+					<object folder="0" file="3" x="0.3" y="7.908563" scale_x="0.944596" scale_y="1.105316" angle="0" />
 				</key>
 				<key id="3" time="100" spin="1">
-					<object folder="0" file="3" x="0.3" y="0.324992" scale_x="0.972298" scale_y="1.01519" angle="0" />
+					<object folder="0" file="3" x="0.3" y="7.082465" scale_x="0.972298" scale_y="1.089022" angle="0" />
 				</key>
 				<key id="4" time="134" spin="1">
-					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="6.256363" scale_x="1" scale_y="1.072727" angle="0" />
 				</key>
 				<key id="5" time="167" spin="1">
-					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="6.256363" scale_x="1" scale_y="1.072727" angle="0" />
 				</key>
 			</timeline>
 		</animation>
@@ -259,10 +259,10 @@
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="4" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
+					<object folder="0" file="4" x="0.3" y="2.295205" scale_x="1" scale_y="1.027397" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="4" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
+					<object folder="0" file="4" x="0.3" y="2.295205" scale_x="1" scale_y="1.027397" angle="0" />
 				</key>
 			</timeline>
 		</animation>
@@ -277,10 +277,10 @@
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="0.55" scale_y="0.55" angle="0" />
+					<object folder="0" file="2" x="2.035767" y="-0.4" scale_x="0.800777" scale_y="0.55" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="0.55" scale_y="0.55" angle="0" />
+					<object folder="0" file="2" x="2.035767" y="-0.4" scale_x="0.800777" scale_y="0.55" angle="0" />
 				</key>
 			</timeline>
 		</animation>
