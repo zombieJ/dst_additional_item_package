@@ -232,8 +232,8 @@ local function ItemFn()
 	inst.components.repairer.repairmaterial = REPAIR_MATERIAL
 	inst.components.repairer.healthrepairvalue = MAX_HEALTH / 6
 
+	-- 掉落物可以被点燃，但不会作为火源向周围传播。
 	MakeSmallBurnable(inst, TUNING.MED_BURNTIME)
-	MakeSmallPropagator(inst)
 
 	inst:AddComponent("fuel")
 	inst.components.fuel.fuelvalue = TUNING.SMALL_FUEL
@@ -304,8 +304,8 @@ local function WallFn()
 	inst.components.health.nofadeout = true
 	inst.components.health.canheal = false
 
+	-- 蜡笔墙可以被点燃，但不会作为火源向周围传播。
 	MakeMediumBurnable(inst)
-	MakeLargePropagator(inst)
 	inst.components.burnable.flammability = .5
 	inst.components.burnable.nocharring = true
 
