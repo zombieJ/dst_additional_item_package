@@ -256,6 +256,9 @@ local function WallFn()
 	inst.entity:AddSoundEmitter()
 	inst.entity:AddNetwork()
 
+	-- 参考原版墙体，根据视角切换到对应方向动画。
+	inst.Transform:SetEightFaced()
+
 	inst:SetDeploySmartRadius(0.5)
 
 	MakeObstaclePhysics(inst, .5)
@@ -324,4 +327,4 @@ end
 
 return Prefab(BUILD, WallFn, assets, prefabs),
 	Prefab(ITEM, ItemFn, assets, { BUILD, ITEM.."_placer" }),
-	MakePlacer(ITEM.."_placer", BUILD, BUILD, "half", false, false, true)
+	MakePlacer(ITEM.."_placer", BUILD, BUILD, "half", false, false, true, nil, nil, "eight")
