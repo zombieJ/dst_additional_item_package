@@ -2,6 +2,13 @@ require "prefabutil"
 
 local language = aipGetModConfig("language")
 
+local skinUtil = require("utils/aip_skin_util")
+local wallSkinConfig = require("configurations/skin/aip_crayon_wall")
+
+local BUILD = "aip_crayon_wall"
+local ITEM = "aip_crayon_wall_item"
+local BLUE_BUILD = "aip_crayon_wall_blue"
+
 local LANG_MAP = {
 	english = {
 		NAME = "Crayon Wall",
@@ -19,18 +26,22 @@ STRINGS.NAMES.AIP_CRAYON_WALL = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_CRAYON_WALL = LANG.DESC
 STRINGS.NAMES.AIP_CRAYON_WALL_ITEM = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_CRAYON_WALL_ITEM = LANG.DESC
+skinUtil.RegisterBuildSkinConfig(wallSkinConfig, language, LANG.DESC)
 
 local assets = {
 	Asset("ANIM", "anim/aip_crayon_wall.zip"),
+	Asset("ANIM", "anim/aip_crayon_wall_blue.zip"),
 	Asset("ATLAS", "images/inventoryimages/aip_crayon_wall_item.xml"),
 }
+
+for _, asset in ipairs(wallSkinConfig.GetInventoryAtlasAssets(false)) do
+	table.insert(assets, asset)
+end
 
 local prefabs = {
 	"collapse_small",
 }
 
-local BUILD = "aip_crayon_wall"
-local ITEM = "aip_crayon_wall_item"
 local MAX_HEALTH = TUNING.WOODWALL_HEALTH
 local MAX_LOOTS = 2
 local REPAIR_MATERIAL = "aip_crayon_wall"
@@ -44,6 +55,10 @@ local WALL_ANIMS = {
 	{ threshold = 1, anim = "full" },
 }
 
+local SKIN_BUILDS = {
+	blue = BLUE_BUILD,
+}
+
 -- 根据墙体血量选择展示阶段。
 local function ResolveAnim(percent)
 	for _, data in ipairs(WALL_ANIMS) do
@@ -53,6 +68,85 @@ local function ResolveAnim(percent)
 	end
 
 	return "full"
+end
+
+-- 取得皮肤对应的动画 build。
+local function GetSkinBuild(skin)
+	skin = wallSkinConfig.GetSkin(skin)
+
+	return SKIN_BUILDS[skin] or BUILD
+end
+
+-- 取得皮肤对应的物品栏贴图名。
+local function GetSkinInventoryImage(skin)
+	return wallSkinConfig.GetSkinPrefab(skin) or ITEM
+end
+
+-- 规范化部署时继承的皮肤名，默认皮肤不需要额外传递。
+local function NormalizeDeploySkin(skin)
+	skin = wallSkinConfig.GetSkin(skin)
+
+	return skin ~= wallSkinConfig.DEFAULT_SKIN and skin or nil
+end
+
+-- 读取部署时应继承的皮肤名，优先使用原版制作系统写入的 skinname。
+local function GetDeploySkin(inst)
+	return NormalizeDeploySkin(inst.skinname)
+		or NormalizeDeploySkin(inst.linked_skinname)
+		or NormalizeDeploySkin(inst._aipDeploySkin)
+		or NormalizeDeploySkin(inst._aipCurrentSkin)
+		or (inst._aipCrayonWallSkin ~= nil and NormalizeDeploySkin(inst._aipCrayonWallSkin:value()) or nil)
+end
+
+-- 按当前皮肤刷新动画 build 和物品栏贴图。
+local function PlaySkin(inst, skin)
+	inst._aipDeploySkin = wallSkinConfig.GetSkin(skin)
+	inst.AnimState:SetBuild(GetSkinBuild(skin))
+
+	if inst._aipCrayonWallAnim ~= nil then
+		inst.AnimState:PlayAnimation(inst._aipCrayonWallAnim)
+	end
+
+	if inst.components ~= nil and inst.components.inventoryitem ~= nil then
+		local image = GetSkinInventoryImage(skin)
+		inst.components.inventoryitem.atlasname = "images/inventoryimages/"..image..".xml"
+		inst.components.inventoryitem:ChangeImageName(image)
+	end
+end
+
+local skinner = skinUtil.CreatePrefabSkinner(wallSkinConfig, {
+	net_field = "_aipCrayonWallSkin",
+	current_field = "_aipCurrentSkin",
+	dirty_event = "aip_crayon_wall_skindirty",
+	play_fn = PlaySkin,
+})
+
+-- 播放墙体当前血量阶段的静态动画。
+local function PlayWallAnim(inst, anim)
+	inst._aipCrayonWallAnim = anim
+	inst.AnimState:PlayAnimation(anim)
+end
+
+-- 播放墙体受击动画并回到当前血量阶段。
+local function PlayWallHitAnim(inst, anim)
+	inst._aipCrayonWallAnim = anim
+	inst.AnimState:PlayAnimation(anim.."_hit")
+	inst.AnimState:PushAnimation(anim, false)
+end
+
+-- 放置预览读取手上物品的皮肤，避免蓝色墙预览仍显示默认墙。
+local function OnPlacerBuilderSet(inst)
+	local placer = inst.components.placer
+	local invobject = placer ~= nil and placer.invobject or nil
+
+	if invobject ~= nil then
+		inst.AnimState:SetBuild(GetSkinBuild(GetDeploySkin(invobject)))
+	end
+end
+
+-- 初始化放置预览的皮肤同步回调。
+local function PlacerPostInit(inst)
+	inst.components.placer.onbuilderset = OnPlacerBuilderSet
 end
 
 -- 同步路径墙状态，避免玩家和生物穿过实体。
@@ -125,9 +219,14 @@ end
 
 -- 部署墙物品时在网格中心生成墙体。
 local function OnDeployWall(inst, pt)
+	local skin = GetDeploySkin(inst)
 	local wall = SpawnPrefab(BUILD)
 
 	if wall ~= nil then
+		if wall.SetAipSkin ~= nil then
+			wall:SetAipSkin(skin)
+		end
+
 		local x = math.floor(pt.x) + .5
 		local z = math.floor(pt.z) + .5
 		wall.Physics:SetCollides(false)
@@ -145,8 +244,7 @@ local function OnHit(inst)
 
 	if not inst.components.health:IsDead() then
 		local anim = ResolveAnim(inst.components.health:GetPercent())
-		inst.AnimState:PlayAnimation(anim.."_hit")
-		inst.AnimState:PushAnimation(anim, false)
+		PlayWallHitAnim(inst, anim)
 	end
 end
 
@@ -159,18 +257,17 @@ local function OnHealthChange(inst, old_percent, new_percent)
 			MakeObstacle(inst)
 		end
 
-		inst.AnimState:PlayAnimation(anim.."_hit")
-		inst.AnimState:PushAnimation(anim, false)
+		PlayWallHitAnim(inst, anim)
 	else
 		if old_percent > 0 then
 			ClearObstacle(inst)
 		end
 
-		inst.AnimState:PlayAnimation(anim)
+		PlayWallAnim(inst, anim)
 	end
 end
 
--- 锤掉时按剩余血量返还少量材料。
+-- 锤掉时按剩余血量返回少量材料。
 local function OnHammered(inst)
 	local loot_count = math.max(1, math.floor(MAX_LOOTS * inst.components.health:GetPercent()))
 
@@ -191,7 +288,10 @@ local function KeepTarget()
 end
 
 -- 读档时修正死亡墙的碰撞状态。
-local function OnLoad(inst)
+local function OnLoad(inst, data)
+	skinner.OnLoad(inst, data)
+	PlayWallAnim(inst, ResolveAnim(inst.components.health:GetPercent()))
+
 	if inst.components.health:IsDead() then
 		ClearObstacle(inst)
 	end
@@ -211,7 +311,8 @@ local function ItemFn()
 
 	inst.AnimState:SetBank(BUILD)
 	inst.AnimState:SetBuild(BUILD)
-	inst.AnimState:PlayAnimation("item")
+	inst._aipCrayonWallAnim = "item"
+	skinner.SetupNetwork(inst)
 
 	MakeInventoryFloatable(inst)
 
@@ -220,6 +321,8 @@ local function ItemFn()
 	if not TheWorld.ismastersim then
 		return inst
 	end
+
+	skinner.SetupMaster(inst)
 
 	inst:AddComponent("stackable")
 	inst.components.stackable.maxsize = TUNING.STACK_SIZE_MEDITEM
@@ -241,6 +344,9 @@ local function ItemFn()
 	inst:AddComponent("deployable")
 	inst.components.deployable.ondeploy = OnDeployWall
 	inst.components.deployable:SetDeployMode(DEPLOYMODE.WALL)
+
+	inst.OnSave = skinner.OnSave
+	inst.OnLoad = skinner.OnLoad
 
 	MakeHauntableLaunch(inst)
 
@@ -271,7 +377,8 @@ local function WallFn()
 
 	inst.AnimState:SetBank(BUILD)
 	inst.AnimState:SetBuild(BUILD)
-	inst.AnimState:PlayAnimation("half")
+	inst._aipCrayonWallAnim = "half"
+	skinner.SetupNetwork(inst)
 
 	inst._pfpos = nil
 	inst._ispathfinding = net_bool(inst.GUID, "_ispathfinding", "onispathfindingdirty")
@@ -284,6 +391,8 @@ local function WallFn()
 	if not TheWorld.ismastersim then
 		return inst
 	end
+
+	skinner.SetupMaster(inst)
 
 	inst.scrapbook_specialinfo = "WALLS"
 	inst.scrapbook_anim = "half"
@@ -321,10 +430,19 @@ local function WallFn()
 	MakeHauntableWork(inst)
 
 	inst.OnLoad = OnLoad
+	inst.OnSave = skinner.OnSave
 
 	return inst
 end
 
-return Prefab(BUILD, WallFn, assets, prefabs),
+local prefabList = {
+	Prefab(BUILD, WallFn, assets, prefabs),
 	Prefab(ITEM, ItemFn, assets, { BUILD, ITEM.."_placer" }),
-	MakePlacer(ITEM.."_placer", BUILD, BUILD, "half", false, false, true, nil, nil, "eight")
+	MakePlacer(ITEM.."_placer", BUILD, BUILD, "half", false, false, true, nil, nil, "eight", PlacerPostInit),
+}
+
+for _, skinPrefab in ipairs(skinner.CreatePrefabSkins()) do
+	table.insert(prefabList, skinPrefab)
+end
+
+return unpack(prefabList)
