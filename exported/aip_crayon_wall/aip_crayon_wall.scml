@@ -793,10 +793,10 @@
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="0.623123" scale_y="0.442352" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="0.623123" scale_y="0.442352" angle="0" />
 				</key>
 			</timeline>
 		</animation>

@@ -98,6 +98,15 @@ local function GetDeploySkin(inst)
 		or (inst._aipCrayonWallSkin ~= nil and NormalizeDeploySkin(inst._aipCrayonWallSkin:value()) or nil)
 end
 
+-- 拆分蜡笔墙堆叠时继承源堆的皮肤。
+local function OnDeStackWallItem(item, source)
+	local skin = source ~= nil and GetDeploySkin(source) or nil
+
+	if skin ~= nil and item ~= nil and item.SetAipSkin ~= nil then
+		item:SetAipSkin(skin)
+	end
+end
+
 -- 按当前皮肤刷新动画 build 和物品栏贴图。
 local function PlaySkin(inst, skin)
 	inst._aipDeploySkin = wallSkinConfig.GetSkin(skin)
@@ -326,6 +335,7 @@ local function ItemFn()
 
 	inst:AddComponent("stackable")
 	inst.components.stackable.maxsize = TUNING.STACK_SIZE_MEDITEM
+	inst.components.stackable:SetOnDeStack(OnDeStackWallItem)
 
 	inst:AddComponent("inspectable")
 	inst:AddComponent("inventoryitem")
