@@ -65,49 +65,10 @@ local function setupQuality(inst)
 	end
 end
 
--- 有品质的料理只和同品质合堆，避免食用时品质被混掉。
-local function patchQualityStackable(inst)
-	if inst._aip_quality_stackable_patched then
-		return
-	end
-	inst._aip_quality_stackable_patched = true
-
-	local oldCanStackWithFn = inst.stackable_CanStackWithFn
-	inst.stackable_CanStackWithFn = function(this, other)
-		if oldCanStackWithFn ~= nil and not oldCanStackWithFn(this, other) then
-			return false
-		end
-
-		return getQuality(this) == getQuality(other)
-	end
-
-	if inst.components.stackable ~= nil then
-		local oldMergeType = inst.components.stackable.aipMergeType
-
-		inst.components.stackable.aipMergeType = function(this, other, source_pos)
-			if oldMergeType ~= nil then
-				if type(oldMergeType) == "function" then
-					if not oldMergeType(this, other, source_pos) then
-						return false
-					end
-				elseif type(oldMergeType) == "string" then
-					local otherMergeType = other.components.stackable ~= nil and other.components.stackable.aipMergeType or nil
-					if otherMergeType ~= oldMergeType then
-						return false
-					end
-				end
-			end
-
-			return getQuality(this) == getQuality(other)
-		end
-	end
-end
-
 -- 料理锅成品需要能承载食材平均品质。
 AddPrefabPostInitAny(function(inst)
 	if inst:HasTag("preparedfood") then
 		setupQuality(inst)
-		patchQualityStackable(inst)
 	end
 end)
 
