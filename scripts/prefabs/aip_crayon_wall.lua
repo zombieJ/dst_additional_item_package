@@ -8,6 +8,7 @@ local wallSkinConfig = require("configurations/skin/aip_crayon_wall")
 local BUILD = "aip_crayon_wall"
 local ITEM = "aip_crayon_wall_item"
 local BLUE_BUILD = "aip_crayon_wall_blue"
+local GREEN_BUILD = "aip_crayon_wall_green"
 
 local LANG_MAP = {
 	english = {
@@ -31,6 +32,7 @@ skinUtil.RegisterBuildSkinConfig(wallSkinConfig, language, LANG.DESC)
 local assets = {
 	Asset("ANIM", "anim/aip_crayon_wall.zip"),
 	Asset("ANIM", "anim/aip_crayon_wall_blue.zip"),
+	Asset("ANIM", "anim/aip_crayon_wall_green.zip"),
 	Asset("ATLAS", "images/inventoryimages/aip_crayon_wall_item.xml"),
 }
 
@@ -57,6 +59,7 @@ local WALL_ANIMS = {
 
 local SKIN_BUILDS = {
 	blue = BLUE_BUILD,
+	green = GREEN_BUILD,
 }
 
 -- 根据墙体血量选择展示阶段。

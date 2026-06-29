@@ -18,5 +18,13 @@ return skinUtil.CreateConfig({
 				chinese = "蓝色蜡笔柱",
 			},
 		},
+		{
+			id = "green",
+			prefab = "aip_crayon_wall_green",
+			name = {
+				english = "Green Crayon Pillar",
+				chinese = "绿色蜡笔柱",
+			},
+		},
 	},
 })
