@@ -458,7 +458,6 @@
         let lastEraserY = null;
         let isDarkBg = true;
         let isEdgeFade = false;
-        let transparentErasedPixels = new Set();
         let historyStack = [];
         let historyIndex = -1;
         let baseDisplayWidth = 0;
@@ -533,8 +532,6 @@
             ctx.drawImage(originalImage, 0, 0);
 
             updateImageInfo();
-            
-            transparentErasedPixels.clear();
             
             if (isDarkBg) {
                 imageCanvas.classList.add('dark-bg');
@@ -613,11 +610,9 @@
 
         function saveToHistory() {
             const imageData = ctx.getImageData(0, 0, imageCanvas.width, imageCanvas.height);
-            const erasedPixelsCopy = new Set(transparentErasedPixels);
             historyStack = historyStack.slice(0, historyIndex + 1);
             historyStack.push({
-                imageData: imageData,
-                erasedPixels: erasedPixelsCopy
+                imageData: imageData
             });
             historyIndex = historyStack.length - 1;
         }
@@ -627,7 +622,6 @@
                 historyIndex--;
                 const state = historyStack[historyIndex];
                 ctx.putImageData(state.imageData, 0, 0);
-                transparentErasedPixels = new Set(state.erasedPixels);
             }
         }
 
@@ -664,7 +658,6 @@
                 imageCanvas.style.cursor = 'none';
                 bucketCursor.style.display = 'none';
                 eraserCursor.classList.remove('transparent');
-                transparentErasedPixels.clear();
             } else {
                 isErasing = false;
                 eraserControls.style.display = 'none';
@@ -1028,6 +1021,16 @@
             lastEraserY = y;
         }
 
+        function getWhitePaperAlpha(r, g, b, a) {
+            const alphaRatio = a / 255;
+            const paperR = r * alphaRatio + 255 * (1 - alphaRatio);
+            const paperG = g * alphaRatio + 255 * (1 - alphaRatio);
+            const paperB = b * alphaRatio + 255 * (1 - alphaRatio);
+            const brightness = (paperR + paperG + paperB) / 3;
+
+            return Math.max(0, Math.min(255, Math.floor(255 - brightness)));
+        }
+
         function transparentErase(x, y, radius) {
             const startX = Math.max(0, Math.floor(x - radius));
             const startY = Math.max(0, Math.floor(y - radius));
@@ -1044,31 +1047,23 @@
                     const dist = Math.sqrt(Math.pow(worldX - x, 2) + Math.pow(worldY - y, 2));
 
                     if (dist <= radius) {
-                        const pixelKey = `${worldX},${worldY}`;
-                        
-                        if (transparentErasedPixels.has(pixelKey)) {
-                            continue;
-                        }
-
                         const index = (py * (endX - startX) + px) * 4;
                         const r = data[index];
                         const g = data[index + 1];
                         const b = data[index + 2];
                         const a = data[index + 3];
 
-                        // 已有透明度的像素保持原样，避免被颜色重新推导 alpha。
-                        if (a < 255) {
+                        if (a === 0) {
                             continue;
                         }
 
-                        const alpha = Math.floor(255 - (r + g + b) / 3);
+                        // 按像素叠在白纸上的等价亮度推导透明度，擦掉亮色残边。
+                        const alpha = getWhitePaperAlpha(r, g, b, a);
 
                         data[index] = 0;
                         data[index + 1] = 0;
                         data[index + 2] = 0;
                         data[index + 3] = alpha;
-                        
-                        transparentErasedPixels.add(pixelKey);
                     }
                 }
             }
@@ -1323,7 +1318,6 @@
             eraserCursor.style.display = 'none';
             eraserCursor.classList.remove('transparent');
             bucketCursor.style.display = 'none';
-            transparentErasedPixels.clear();
             historyStack = [];
             historyIndex = -1;
             displayImage();
