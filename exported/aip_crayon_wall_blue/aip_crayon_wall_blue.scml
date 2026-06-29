@@ -1,802 +1,802 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
 	<folder id="0" name="wall_segment">
-		<file id="0" name="wall_segment/wall_segment-0.png" width="301" height="574" pivot_x="0.521205" pivot_y="0.122344" />
-		<file id="1" name="wall_segment/wall_segment-3.png" width="293" height="502" pivot_x="0.532463" pivot_y="0.136105" />
-		<file id="2" name="wall_segment/wall_segment-4.png" width="293" height="425" pivot_x="0.513262" pivot_y="0.182647" />
-		<file id="3" name="wall_segment/wall_segment-5.png" width="275" height="271" pivot_x="0.52433" pivot_y="0.252859" />
-		<file id="4" name="wall_segment/wall_segment-6.png" width="272" height="169" pivot_x="0.490684" pivot_y="0.451923" />
+		<file id="0" name="wall_segment/wall_segment-0.png" width="301" height="574" pivot_x="0.478795" pivot_y="0.122344" />
+		<file id="1" name="wall_segment/wall_segment-3.png" width="293" height="502" pivot_x="0.467537" pivot_y="0.136105" />
+		<file id="2" name="wall_segment/wall_segment-4.png" width="293" height="425" pivot_x="0.486738" pivot_y="0.182647" />
+		<file id="3" name="wall_segment/wall_segment-5.png" width="275" height="271" pivot_x="0.47567" pivot_y="0.252859" />
+		<file id="4" name="wall_segment/wall_segment-6.png" width="272" height="169" pivot_x="0.509316" pivot_y="0.451923" />
 	</folder>
 	<entity id="0" name="aip_crayon_wall">
 		<animation id="0" name="full" length="34">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="1" name="full_hit" length="167">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 				<key id="2" time="67">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
 				</key>
 				<key id="3" time="100">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
 				</key>
 				<key id="4" time="134">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
 				</key>
 				<key id="5" time="167">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="0" x="0.3" y="-0.399983" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="-0.399983" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="0" x="0.3" y="0.325008" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="0.325008" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="2" time="67" spin="1">
-					<object folder="0" file="0" x="0.3" y="1.04998" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="1.04998" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="3" time="100" spin="1">
-					<object folder="0" file="0" x="0.3" y="0.324992" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="0.324992" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="4" time="134" spin="1">
-					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="5" time="167" spin="1">
-					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="2" name="threequarter" length="34">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="3" name="threequarter_hit" length="167">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 				<key id="2" time="67">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
 				</key>
 				<key id="3" time="100">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
 				</key>
 				<key id="4" time="134">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
 				</key>
 				<key id="5" time="167">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="1" x="0.3" y="-0.399983" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="-0.399983" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="1" x="0.3" y="0.325008" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="0.325008" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="2" time="67" spin="1">
-					<object folder="0" file="1" x="0.3" y="1.04998" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="1.04998" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="3" time="100" spin="1">
-					<object folder="0" file="1" x="0.3" y="0.324992" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="0.324992" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="4" time="134" spin="1">
-					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="5" time="167" spin="1">
-					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="4" name="half" length="34">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="5" name="half_hit" length="167">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 				<key id="2" time="67">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
 				</key>
 				<key id="3" time="100">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
 				</key>
 				<key id="4" time="134">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
 				</key>
 				<key id="5" time="167">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.399983" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="-0.399983" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="2" x="0.3" y="0.325008" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="0.325008" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="2" time="67" spin="1">
-					<object folder="0" file="2" x="0.3" y="1.04998" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="1.04998" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="3" time="100" spin="1">
-					<object folder="0" file="2" x="0.3" y="0.324992" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="0.324992" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="4" time="134" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="5" time="167" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="6" name="onequarter" length="34">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="7" name="onequarter_hit" length="167">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 				<key id="2" time="67">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
 				</key>
 				<key id="3" time="100">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
 				</key>
 				<key id="4" time="134">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
 				</key>
 				<key id="5" time="167">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="3" x="0.3" y="-0.399983" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="-0.399983" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="3" x="0.3" y="0.325008" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="0.325008" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="2" time="67" spin="1">
-					<object folder="0" file="3" x="0.3" y="1.04998" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="1.04998" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="3" time="100" spin="1">
-					<object folder="0" file="3" x="0.3" y="0.324992" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="0.324992" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="4" time="134" spin="1">
-					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="5" time="167" spin="1">
-					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="8" name="broken" length="34">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.490684" abs_pivot_y="0.451923" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.509316" abs_pivot_y="0.451923" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.490684" abs_pivot_y="0.451923" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.509316" abs_pivot_y="0.451923" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="4" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="4" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="4" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="4" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="9" name="full_45s" length="34">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="10" name="full_90s" length="34">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="11" name="full_hit_45s" length="167">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 				<key id="2" time="67">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
 				</key>
 				<key id="3" time="100">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
 				</key>
 				<key id="4" time="134">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
 				</key>
 				<key id="5" time="167">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="0" x="0.3" y="-0.399983" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="-0.399983" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="0" x="0.3" y="0.325008" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="0.325008" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="2" time="67" spin="1">
-					<object folder="0" file="0" x="0.3" y="1.04998" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="1.04998" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="3" time="100" spin="1">
-					<object folder="0" file="0" x="0.3" y="0.324992" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="0.324992" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="4" time="134" spin="1">
-					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="5" time="167" spin="1">
-					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="12" name="full_hit_90s" length="167">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 				<key id="2" time="67">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
 				</key>
 				<key id="3" time="100">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
 				</key>
 				<key id="4" time="134">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
 				</key>
 				<key id="5" time="167">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.521205" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.478795" abs_pivot_y="0.122344" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="0" x="0.3" y="-0.399983" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="-0.399983" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="0" x="0.3" y="0.325008" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="0.325008" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="2" time="67" spin="1">
-					<object folder="0" file="0" x="0.3" y="1.04998" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="1.04998" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="3" time="100" spin="1">
-					<object folder="0" file="0" x="0.3" y="0.324992" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="0.324992" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="4" time="134" spin="1">
-					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="5" time="167" spin="1">
-					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="0" x="0.3" y="-0.4" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="13" name="threequarter_45s" length="34">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="14" name="threequarter_90s" length="34">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="15" name="threequarter_hit_45s" length="167">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 				<key id="2" time="67">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
 				</key>
 				<key id="3" time="100">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
 				</key>
 				<key id="4" time="134">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
 				</key>
 				<key id="5" time="167">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="1" x="0.3" y="-0.399983" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="-0.399983" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="1" x="0.3" y="0.325008" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="0.325008" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="2" time="67" spin="1">
-					<object folder="0" file="1" x="0.3" y="1.04998" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="1.04998" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="3" time="100" spin="1">
-					<object folder="0" file="1" x="0.3" y="0.324992" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="0.324992" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="4" time="134" spin="1">
-					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="5" time="167" spin="1">
-					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="16" name="threequarter_hit_90s" length="167">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 				<key id="2" time="67">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
 				</key>
 				<key id="3" time="100">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
 				</key>
 				<key id="4" time="134">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
 				</key>
 				<key id="5" time="167">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.532463" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.467537" abs_pivot_y="0.136105" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="1" x="0.3" y="-0.399983" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="-0.399983" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="1" x="0.3" y="0.325008" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="0.325008" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="2" time="67" spin="1">
-					<object folder="0" file="1" x="0.3" y="1.04998" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="1.04998" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="3" time="100" spin="1">
-					<object folder="0" file="1" x="0.3" y="0.324992" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="0.324992" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="4" time="134" spin="1">
-					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="5" time="167" spin="1">
-					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="1" x="0.3" y="-0.4" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="17" name="half_45s" length="34">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="18" name="half_90s" length="34">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="19" name="half_hit_45s" length="167">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 				<key id="2" time="67">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
 				</key>
 				<key id="3" time="100">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
 				</key>
 				<key id="4" time="134">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
 				</key>
 				<key id="5" time="167">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.399983" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="-0.399983" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="2" x="0.3" y="0.325008" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="0.325008" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="2" time="67" spin="1">
-					<object folder="0" file="2" x="0.3" y="1.04998" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="1.04998" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="3" time="100" spin="1">
-					<object folder="0" file="2" x="0.3" y="0.324992" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="0.324992" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="4" time="134" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="5" time="167" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="20" name="half_hit_90s" length="167">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 				<key id="2" time="67">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
 				</key>
 				<key id="3" time="100">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
 				</key>
 				<key id="4" time="134">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
 				</key>
 				<key id="5" time="167">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.399983" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="-0.399983" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="2" x="0.3" y="0.325008" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="0.325008" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="2" time="67" spin="1">
-					<object folder="0" file="2" x="0.3" y="1.04998" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="1.04998" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="3" time="100" spin="1">
-					<object folder="0" file="2" x="0.3" y="0.324992" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="0.324992" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="4" time="134" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="5" time="167" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="21" name="onequarter_45s" length="34">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="22" name="onequarter_90s" length="34">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="23" name="onequarter_hit_45s" length="167">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 				<key id="2" time="67">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
 				</key>
 				<key id="3" time="100">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
 				</key>
 				<key id="4" time="134">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
 				</key>
 				<key id="5" time="167">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="3" x="0.3" y="-0.399983" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="-0.399983" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="3" x="0.3" y="0.325008" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="0.325008" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="2" time="67" spin="1">
-					<object folder="0" file="3" x="0.3" y="1.04998" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="1.04998" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="3" time="100" spin="1">
-					<object folder="0" file="3" x="0.3" y="0.324992" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="0.324992" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="4" time="134" spin="1">
-					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="5" time="167" spin="1">
-					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="24" name="onequarter_hit_90s" length="167">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 				<key id="2" time="67">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="2" z_index="1" />
 				</key>
 				<key id="3" time="100">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="3" z_index="1" />
 				</key>
 				<key id="4" time="134">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="4" z_index="1" />
 				</key>
 				<key id="5" time="167">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.52433" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.47567" abs_pivot_y="0.252859" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="5" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="3" x="0.3" y="-0.399983" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="-0.399983" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="3" x="0.3" y="0.325008" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="0.325008" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="2" time="67" spin="1">
-					<object folder="0" file="3" x="0.3" y="1.04998" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="1.04998" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="3" time="100" spin="1">
-					<object folder="0" file="3" x="0.3" y="0.324992" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="0.324992" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="4" time="134" spin="1">
-					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="5" time="167" spin="1">
-					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="3" x="0.3" y="-0.4" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="25" name="broken_45s" length="34">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.490684" abs_pivot_y="0.451923" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.509316" abs_pivot_y="0.451923" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.490684" abs_pivot_y="0.451923" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.509316" abs_pivot_y="0.451923" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="4" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="4" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="4" x="0.3" y="-0.4" scale_x="-1" scale_y="1" angle="0" />
+					<object folder="0" file="4" x="0.3" y="-0.4" scale_x="1" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="26" name="broken_90s" length="34">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.490684" abs_pivot_y="0.451923" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.509316" abs_pivot_y="0.451923" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.490684" abs_pivot_y="0.451923" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.509316" abs_pivot_y="0.451923" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="4" x="0.3" y="-0.4" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="4" x="0.3" y="-0.4" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="4" x="0.3" y="-0.4" scale_x="-0.74" scale_y="1" angle="0" />
+					<object folder="0" file="4" x="0.3" y="-0.4" scale_x="0.74" scale_y="1" angle="0" />
 				</key>
 			</timeline>
 		</animation>
 		<animation id="27" name="item" length="34">
 			<mainline>
 				<key id="0" time="0">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="1" />
 				</key>
 				<key id="1" time="34">
-					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.513262" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
+					<object_ref id="0" name="wall_segment" abs_x="0" abs_y="0" abs_pivot_x="0.486738" abs_pivot_y="0.182647" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="1" z_index="1" />
 				</key>
 			</mainline>
 			<timeline id="0" name="wall_segment">
 				<key id="0" time="0" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="-0.623123" scale_y="0.442352" angle="0" />
+					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="0.623123" scale_y="0.442352" angle="0" />
 				</key>
 				<key id="1" time="34" spin="1">
-					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="-0.623123" scale_y="0.442352" angle="0" />
+					<object folder="0" file="2" x="0.3" y="-0.4" scale_x="0.623123" scale_y="0.442352" angle="0" />
 				</key>
 			</timeline>
 		</animation>
