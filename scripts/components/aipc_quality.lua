@@ -250,11 +250,17 @@ end
 function Quality:OnLoad(data)
 	if data ~= nil then
 		self.quality = clampQuality(data.quality)
-		self.qualities = readCounts(data.qualities)
+		local qualities = readCounts(data.qualities)
 
-		if getCountsTotal(self.qualities) <= 0 then
-			self.qualities = { [self.quality] = getStackSize(self.inst) }
+		if getCountsTotal(qualities) > 0 then
+			-- stackable 可能尚未完成 OnLoad，先保留存档里的品质分布，等待 stacksizechange 再对齐。
+			self.qualities = qualities
+			self.quality = getTopQuality(self.qualities)
+			self:syncToClient()
+			return
 		end
+
+		self.qualities = { [self.quality] = getStackSize(self.inst) }
 	end
 
 	self:SyncStackSize()
