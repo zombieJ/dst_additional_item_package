@@ -1,4 +1,5 @@
 local _G = GLOBAL
+local tonumber = _G.tonumber
 local DEFAULT_QUALITY = 1
 
 local function getStackSize(item)
