@@ -1,30 +1,6 @@
 local _G = GLOBAL
 local PLANT_DEFS = _G.require("prefabs/farm_plant_defs").PLANT_DEFS
 
-local function getQuality(inst)
-    return inst ~= nil and inst.components ~= nil and
-        inst.components.aipc_quality ~= nil and inst.components.aipc_quality:GetVal() or 1
-end
-
--- 有品质的物品只和同品质合堆，避免吃的时候品质被混掉。
-local function patchQualityStackable(inst)
-    local oldCanStackWithFn = inst.stackable_CanStackWithFn
-
-    inst.stackable_CanStackWithFn = function(this, other)
-        if oldCanStackWithFn ~= nil and not oldCanStackWithFn(this, other) then
-            return false
-        end
-
-        return getQuality(this) == getQuality(other)
-    end
-
-    if inst.components.stackable then
-        inst.components.stackable.aipMergeType = function(this, other)
-            return getQuality(this) == getQuality(other)
-        end
-    end
-end
-
 for plant_name, plant_data in pairs(PLANT_DEFS) do
     if not plant_data.is_randomseed then
         local seed_prefab = plant_data.seed
@@ -38,7 +14,6 @@ for plant_name, plant_data in pairs(PLANT_DEFS) do
             AddPrefabPostInit(prefab, function(inst)
                 inst:AddComponent("aipc_info_client")
                 inst:AddComponent("aipc_quality")
-                patchQualityStackable(inst)
 
                 if not _G.TheWorld.ismastersim then
                     return
@@ -64,7 +39,7 @@ for plant_name, plant_data in pairs(PLANT_DEFS) do
             end)
         end)
 
-        -- 种子合并要添加品质检查
+        -- 掉落种子时继承来源品质
         AddPrefabPostInit(seed_prefab, function(inst)
             inst:ListenForEvent("on_loot_dropped", function(inst, data)
                 local dropper = data.dropper
