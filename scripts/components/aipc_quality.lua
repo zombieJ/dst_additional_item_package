@@ -1,5 +1,3 @@
-local _G = GLOBAL
-local tonumber = _G.tonumber
 local petConfig = require("configurations/aip_pet")
 local QUALITY_LANG = petConfig.QUALITY_LANG
 local QUALITY_COLORS = petConfig.QUALITY_COLORS
