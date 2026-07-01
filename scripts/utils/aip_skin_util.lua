@@ -62,6 +62,7 @@ function SkinUtil.CreateConfig(options)
 		SKIN_TYPE = options.skin_type or "item",
 		SKIN_RARITY = options.rarity or "Complimentary",
 		RELEASE_GROUP = options.release_group or 0,
+		ALIASES = options.aliases or {},
 	}
 
 	function config.GetSkin(skin)
@@ -161,6 +162,9 @@ function SkinUtil.RegisterBuildSkinConfig(config, language, description)
 	config.RegisterInventoryAtlases()
 	config.RegisterStrings(language, description)
 	configsByPrefab[config.PREFAB] = config
+	for _, alias in ipairs(config.ALIASES or {}) do
+		configsByPrefab[alias] = config
+	end
 	return config
 end
 
@@ -217,12 +221,16 @@ function SkinUtil.CreatePrefabSkinner(config, options)
 	function skinner.Apply(inst, skin, ...)
 		skin = config.GetSkin(skin)
 		inst[currentField] = skin
+		inst._aipDeploySkin = skin
 		playFn(inst, skin, ...)
 	end
 
 	function skinner.ApplySkinName(inst, skin)
 		skin = config.GetSkin(skin)
-		inst.skinname = config.GetSkinPrefab(skin)
+		local skinPrefab = config.GetSkinPrefab(skin)
+
+		inst.skinname = skinPrefab
+		inst.linked_skinname = skinPrefab
 		inst.skin_id = nil
 		inst.alt_skin_ids = nil
 		inst.skin_build_name = nil
@@ -231,6 +239,7 @@ function SkinUtil.CreatePrefabSkinner(config, options)
 	function skinner.Set(inst, skin)
 		skin = config.GetSkin(skin)
 		inst[currentField] = skin
+		inst._aipDeploySkin = skin
 
 		if TheWorld.ismastersim then
 			skinner.ApplySkinName(inst, skin)
@@ -290,7 +299,9 @@ function SkinUtil.CreatePrefabSkinner(config, options)
 
 	function skinner.SetupMaster(inst)
 		if inst[netField] ~= nil then
-			inst[netField]:set(config.DEFAULT_SKIN)
+			-- 主机端保留 prefab skin 或读档流程已经写入的皮肤。
+			local skin = inst.skinname or inst.linked_skinname or inst._aipDeploySkin or inst[currentField] or config.DEFAULT_SKIN
+			inst[netField]:set(config.GetSkin(skin))
 		end
 	end
 

@@ -76,6 +76,9 @@ local SAN = TUNING.SANITY_SUPERTINY  -- 1 sanity
 local PER = TUNING.PERISH_ONE_DAY    -- 1 day
 local CO = 1 / 20                    -- 1 second
 
+-- 允许蔬菜杂烩和惊奇炖菜继续作为烹饪锅食材。
+AddIngredientValues({ "ratatouille", "aip_food_surprise_stew" }, { preparedfood = 1 })
+
 -- 方法
 local function getCount(entity, name)
 	return entity[name] or 0
@@ -978,6 +981,21 @@ local food_recipes = {
 				end
 			end
 		end,
+	},
+
+	-- 惊奇炖菜，使用蔬菜杂烩或自身再次烹饪。
+	aip_food_surprise_stew = {
+		test = function(cooker, names, tags)
+			return names.ratatouille or names.aip_food_surprise_stew
+		end,
+		priority = 120,
+		weight = 1,
+		foodtype = FOODTYPE.VEGGIE,
+		health = HP * 12,
+		hunger = HU * 50,
+		sanity = SAN * 5,
+		perishtime = PER * 20,
+		cooktime = CO * 20,
 	},
 }
 

@@ -144,6 +144,10 @@ local LANG_MAP = {
 			NAME = "Hoover Stew",
 			DESC = "Unwilling to recall the time",
 		},
+		AIP_FOOD_SURPRISE_STEW = {
+			NAME = "Surprise Stew",
+			DESC = "A stew that keeps finding new flavor.",
+		},
 	},
 	spanish = {
 		EGG_PANCAKE = {
@@ -601,6 +605,10 @@ local LANG_MAP = {
 		AIP_HOOVER_STEW = {
 			NAME = "胡佛炖菜",
 			DESC = "不愿回忆的时光",
+		},
+		AIP_FOOD_SURPRISE_STEW = {
+			NAME = "惊奇炖菜",
+			DESC = "越炖越有惊喜。",
 		},
 	},
 }

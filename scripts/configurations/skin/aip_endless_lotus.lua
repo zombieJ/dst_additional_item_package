@@ -11,7 +11,7 @@ return skinUtil.CreateConfig({
 			id = "style_1",
 			name = {
 				english = "Endless Lotus",
-				chinese = "无尽之莲",
+				chinese = "无限之莲",
 			},
 		},
 		{
@@ -19,7 +19,7 @@ return skinUtil.CreateConfig({
 			prefab = PREFAB.."_2",
 			name = {
 				english = "Endless Lotus II",
-				chinese = "无尽之莲·二式",
+				chinese = "无限之莲·二式",
 			},
 		},
 		{
@@ -27,7 +27,7 @@ return skinUtil.CreateConfig({
 			prefab = PREFAB.."_3",
 			name = {
 				english = "Endless Lotus III",
-				chinese = "无尽之莲·三式",
+				chinese = "无限之莲·三式",
 			},
 		},
 	},

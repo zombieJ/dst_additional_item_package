@@ -8,6 +8,7 @@ local SKIN_CONFIGS = {
 	_G.require("configurations/skin/aip_grandfather_clock"),
 	_G.require("configurations/skin/aip_lantern"),
 	_G.require("configurations/skin/aip_lantern_stand"),
+	_G.require("configurations/skin/aip_crayon_wall"),
 }
 
 for _, config in ipairs(SKIN_CONFIGS) do
@@ -17,6 +18,9 @@ end
 local SKIN_CONFIG_BY_PREFAB = {}
 for _, config in ipairs(SKIN_CONFIGS) do
 	SKIN_CONFIG_BY_PREFAB[config.PREFAB] = config
+	for _, alias in ipairs(config.ALIASES or {}) do
+		SKIN_CONFIG_BY_PREFAB[alias] = config
+	end
 end
 
 -- 判断指定皮肤是否属于本模组登记的建造皮肤。
@@ -48,12 +52,35 @@ local function getCurrentBuildSkin(builder)
 	return builderComponent ~= nil and builderComponent._aipCurrentBuildSkin or nil
 end
 
+-- 读取菜单制作时缓存的模组皮肤，处理原版校验异步清掉 skin 的情况。
+local function getPendingBuildSkin(builder, recipe)
+	local builderComponent = builder.components ~= nil and builder.components.builder or nil
+
+	return builderComponent ~= nil and
+		builderComponent._aipPendingBuildSkins ~= nil and
+		recipe ~= nil and
+		builderComponent._aipPendingBuildSkins[recipe.name] or nil
+end
+
+-- 成品生成后清理已消费的菜单皮肤缓存。
+local function clearPendingBuildSkin(builder, recipe)
+	local builderComponent = builder.components ~= nil and builder.components.builder or nil
+
+	if builderComponent ~= nil and builderComponent._aipPendingBuildSkins ~= nil and recipe ~= nil then
+		builderComponent._aipPendingBuildSkins[recipe.name] = nil
+	end
+end
+
 -- 建造完成后把配方里选择的皮肤应用到成品。
 local function onBuildProduct(builder, data)
 	local skin = data ~= nil and data.skin or nil
+	local recipe = data ~= nil and data.recipe or nil
 
 	if skin == nil then
 		skin = getCurrentBuildSkin(builder)
+	end
+	if skin == nil then
+		skin = getPendingBuildSkin(builder, recipe)
 	end
 
 	if skin ~= nil then
@@ -64,6 +91,8 @@ local function onBuildProduct(builder, data)
 	else
 		skinUtil.ApplyBuiltSkin(data)
 	end
+
+	clearPendingBuildSkin(builder, recipe)
 end
 
 -- 劫持 builder 制作流程，为 builditem 补上原版校验丢掉的模组皮肤。

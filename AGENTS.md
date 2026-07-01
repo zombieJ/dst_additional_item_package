@@ -44,7 +44,9 @@
 - `exported`、`images` 等资源目录里的文件处理完成后，默认不要移动到 `exported_done`、`images_done` 或类似 `xxx_done` 目录中；除非用户明确要求移动。
 - `exported_done` 是人工确认后的归档目录；新增或更新素材时，只把源导出文件放在 `exported`，不要主动写入或提交 `exported_done`。
 - `gen/imageCutter/imageCutter.js` 可用于预处理 `_素材` 图片、透明背景、批量裁剪并导出到 `_素材/out`；不要使用这个脚本处理 `exported` 里的图片。
+- 物品栏缩略图生成完成后，把 PNG 源图放在 `images/inventoryimages` 目录下，交给游戏启动时自动编译成可用的游戏文件。
 - 不要主动运行 DST 编译工具生成 `anim/*.zip`、`*.tex`、`*.xml` 等编译产物；用户启动游戏时会自动编译。
+- 除非用户明确要求，不要擅自将缩略图或其他图片放入 `images_done`。
 - 如果误跑了编译工具，提交前清理本次新增的编译产物，只保留源码、`exported` 资源和必要的 PNG 源图，没有误跑则不用管。
 
 ## SCML 跟随贴图规则
@@ -53,3 +55,9 @@
 - 跟随锚点通常用 10x10 透明 PNG，只提供位置、角度、缩放、层级，不承担可见贴图。
 - 所有需要支持跟随的动画都要在 mainline 和 timeline 里引用该锚点；当前动画缺少此 symbol 时，Follower 没有可靠挂载位置。
 - Follower 跟随当前帧 symbol 的变换；锚点的 `x/y/angle/scale/pivot` 会影响子实体，锚点做动画时子实体也会随之移动。
+
+## SCML 鼠标命中区域
+
+- 不要用负数 `scale_x` 修正建筑、物品或皮肤贴图的左右方向；DST 的鼠标悬停、点击和清洁扫把换皮命中区域可能仍按未镜像的动画包围盒计算，导致部分可见贴图无法响应鼠标。
+- 需要水平修正贴图方向时，优先翻转源 PNG 分片，保持 SCML timeline 里的 `scale_x` 为正数；同时把对应 `file pivot_x` 和 `object_ref abs_pivot_x` 改成 `1 - 原 pivot_x`，让实体锚点和视觉位置保持一致。
+- 只在图片高度、上下裁切或视觉锚点实际变化时重算 `pivot_y`；单纯左右翻转不要顺手改 `pivot_y`。
