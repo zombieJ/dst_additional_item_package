@@ -21,6 +21,9 @@ local LANG_MAP = {
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
+local WHEAT_PRODUCT = "aip_veggie_wheat"
+local WHEAT_GRASS = "cutgrass"
+local WHEAT_PICK_LOOT = { WHEAT_PRODUCT, WHEAT_GRASS }
 
 -- 文字描述
 STRINGS.NAMES.AIP_WHEAT = LANG.NAME
@@ -37,7 +40,8 @@ local assets =
 
 local prefabs =
 {
-	"aip_veggie_wheat",
+	WHEAT_PRODUCT,
+	WHEAT_GRASS,
 }
 
 ----------------------------- Function -----------------------------
@@ -53,13 +57,6 @@ local function onpickedfn(inst, picker)
     inst.AnimState:PlayAnimation("picking")
 
     inst.AnimState:PushAnimation("picked", false)
-
-    -- 再给一份干草
-    if picker ~= nil and picker.components.inventory ~= nil then
-        local loot = SpawnPrefab("cutgrass")
-        picker:PushEvent("picksomething", { object = inst, loot = loot })
-        picker.components.inventory:GiveItem(loot, nil, inst:GetPosition())
-    end
 end
 
 -- 初始化置空
@@ -71,11 +68,11 @@ end
 local function dig_up(inst, worker)
     if inst.components.pickable ~= nil and inst.components.lootdropper ~= nil then
         if inst.components.pickable:CanBePicked() then
-            inst.components.lootdropper:SpawnLootPrefab(inst.components.pickable.product)
+            inst.components.lootdropper:SpawnLootPrefab(WHEAT_PRODUCT)
         end
 
         -- 掉落干草
-        inst.components.lootdropper:SpawnLootPrefab("cutgrass")
+        inst.components.lootdropper:SpawnLootPrefab(WHEAT_GRASS)
     end
     inst:Remove()
 end
@@ -116,10 +113,12 @@ local function wheatFn()
     inst:AddComponent("pickable")
     inst.components.pickable.picksound = "dontstarve/wilson/pickup_reeds"
 
-    inst.components.pickable:SetUp("aip_veggie_wheat", dev_mode and 1 or TUNING.GRASS_REGROW_TIME)
+    inst.components.pickable:SetUp(WHEAT_PRODUCT, dev_mode and 1 or TUNING.GRASS_REGROW_TIME)
     inst.components.pickable.onregenfn = onregenfn
     inst.components.pickable.onpickedfn = onpickedfn
     inst.components.pickable.makeemptyfn = makeemptyfn
+    -- 交给 lootdropper 统一生成收获物，让镰刀批量收割也能拿到干草。
+    inst.components.pickable.use_lootdropper_for_product = true
 
     -- 永不贫瘠
     -- inst.components.pickable.makebarrenfn = makebarrenfn
@@ -128,6 +127,7 @@ local function wheatFn()
     -- inst.components.pickable.ontransplantfn = ontransplantfn
 
     inst:AddComponent("lootdropper")
+    inst.components.lootdropper:SetLoot(WHEAT_PICK_LOOT)
     inst:AddComponent("inspectable")
 
     inst:AddComponent("workable")
