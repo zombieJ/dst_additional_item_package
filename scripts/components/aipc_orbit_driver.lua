@@ -67,13 +67,13 @@ local Driver = Class(function(self, player)
 	self.inst:ListenForEvent("aipc_flyer_flying_dirty", onFlyDirty)
 
 	-- 死亡、被攻击、落水 都退出开车状态
-	local function stopDrving()
+	local function stopDriving()
 		self:AbortDrive()
 	end
 
-	self.inst:ListenForEvent("death", stopDrving)
-	self.inst:ListenForEvent("attacked", stopDrving)
-	self.inst:ListenForEvent("onsink", stopDrving)
+	self.inst:ListenForEvent("death", stopDriving)
+	self.inst:ListenForEvent("attacked", stopDriving)
+	self.inst:ListenForEvent("onsink", stopDriving)
 end)
 
 -- 是否可以开车状态
@@ -225,6 +225,10 @@ function Driver:StopDrive()
 end
 
 function Driver:AbortDrive()
+	if not self:isDriving() then
+		return
+	end
+
 	self:StopDrive()
 	self.inst:RemoveTag("aip_orbit_driver")
 	MakeCharacterPhysics(self.inst, 75, .5)
