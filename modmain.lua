@@ -152,6 +152,11 @@ PrefabFiles = {
 	"aip_glass_minecar",
 	"aip_shadow_transfer",
 
+	-- 猪村委托
+	"aip_pig_village_quest_marker",
+	"aip_train_ticket_fragment",
+	"aip_train_ticket",
+
 	-- 古神低语
 	"aip_oldone_plant",
 	"aip_oldone_plant_broken",
