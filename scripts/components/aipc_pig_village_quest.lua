@@ -43,7 +43,7 @@ function PigVillageQuest:GetItemName()
 	return STRINGS.NAMES[string.upper(self.taskPrefab)] or self.taskPrefab
 end
 
--- 判断猪窝是否保存了一个有效任务。
+-- 判断猪窝当前是否记录了一个有效任务。
 function PigVillageQuest:IsActive()
 	return self.taskPrefab ~= nil and self.requiredCount > 0 and
 		self.deliveredCount < self.requiredCount
@@ -74,29 +74,66 @@ function PigVillageQuest:GetHouseDescription()
 	)
 end
 
--- 把指定数量的奖励或退还物品交给玩家。
-local function GiveItemToPlayer(player, prefab, count, source)
+-- 创建指定数量的可包装物品。
+local function CreateItemStack(source, prefab, count)
 	if prefab == nil or count == nil or count <= 0 then
-		return
+		return nil
 	end
 
 	local item = aipSpawnPrefab(source, prefab)
 	if item == nil then
-		return
+		return nil
 	end
 
 	if item.components.stackable ~= nil and count > 1 then
 		item.components.stackable:SetStackSize(count)
 	end
+	return item
+end
 
+-- 把现有物品交给玩家，背包放不下时抛到来源位置。
+local function GiveItemToPlayer(player, item, source)
+	if item == nil or not item:IsValid() then
+		return
+	end
+
+	local shouldMergeFragments = item.prefab == "aip_train_ticket_fragment"
 	local sourcePos = source ~= nil and source:GetPosition() or nil
 	if player ~= nil and player:IsValid() and player.components.inventory ~= nil then
 		player.components.inventory:GiveItem(item, nil, sourcePos)
-		if prefab == "aip_train_ticket_fragment" and aipMergeTrainTicketFragments ~= nil then
+		if shouldMergeFragments and aipMergeTrainTicketFragments ~= nil then
 			aipMergeTrainTicketFragments(player)
 		end
 	else
 		aipFlingItem(item, sourcePos)
+	end
+end
+
+-- 把任务奖励和超量物资装入一次性的冬季盛宴礼物。
+local function GiveRewardGift(player, source, contents)
+	local items = {}
+	for _, content in ipairs(contents) do
+		local item = CreateItemStack(source, content.prefab, content.count)
+		if item ~= nil then
+			table.insert(items, item)
+		end
+	end
+
+	local gift = aipSpawnPrefab(source, "gift")
+	if gift ~= nil and gift.components.unwrappable ~= nil and #items > 0 then
+		gift.components.unwrappable:WrapItems(items, player)
+		for _, item in ipairs(items) do
+			item:Remove()
+		end
+		aipFlingItem(gift)
+		return
+	end
+
+	if gift ~= nil then
+		gift:Remove()
+	end
+	for _, item in ipairs(items) do
+		GiveItemToPlayer(player, item, source)
 	end
 end
 
@@ -290,8 +327,8 @@ function PigVillageQuest:ClearQuest()
 	self.isCompleting = false
 end
 
--- 完成任务并发放随机奖励与固定体验券碎片。
-function PigVillageQuest:CompleteQuest(pig, giver)
+-- 完成任务并把奖励、碎片和超量物资封入礼物。
+function PigVillageQuest:CompleteQuest(pig, giver, extraCount)
 	if self.isCompleting or self.taskPrefab == nil or self.requiredCount <= 0 then
 		return
 	end
@@ -306,10 +343,22 @@ function PigVillageQuest:CompleteQuest(pig, giver)
 	end
 
 	self:ClearQuest()
+	local giftContents = {
+		{
+			prefab = "aip_train_ticket_fragment",
+			count = 1,
+		},
+	}
 	if reward ~= nil then
-		GiveItemToPlayer(giver, reward.prefab, reward.count, pig or self.inst)
+		table.insert(giftContents, 1, reward)
 	end
-	GiveItemToPlayer(giver, "aip_train_ticket_fragment", 1, pig or self.inst)
+	if extraCount ~= nil and extraCount > 0 then
+		table.insert(giftContents, {
+			prefab = taskPrefab,
+			count = extraCount,
+		})
+	end
+	GiveRewardGift(giver, pig or self.inst, giftContents)
 
 	self.inst:PushEvent("aip_pig_village_quest_completed", {
 		player = giver,
@@ -330,12 +379,8 @@ function PigVillageQuest:AcceptDelivery(pig, giver, count)
 	local extraCount = math.max(0, (count or 1) - acceptedCount)
 
 	self.deliveredCount = self.deliveredCount + acceptedCount
-	if extraCount > 0 then
-		GiveItemToPlayer(giver, self.taskPrefab, extraCount, pig or self.inst)
-	end
-
 	if self.deliveredCount >= self.requiredCount then
-		self:CompleteQuest(pig, giver)
+		self:CompleteQuest(pig, giver, extraCount)
 	elseif pig ~= nil and pig:IsValid() and pig.components.talker ~= nil then
 		pig.components.talker:Say(string.format(
 			questConfig.LANG.RECEIVED,
@@ -343,32 +388,6 @@ function PigVillageQuest:AcceptDelivery(pig, giver, count)
 			self:GetRemainingCount()
 		))
 	end
-end
-
--- 保存猪窝里的任务记忆。
-function PigVillageQuest:OnSave()
-	if not self:IsActive() then
-		return nil
-	end
-
-	return {
-		taskPrefab = self.taskPrefab,
-		requiredCount = self.requiredCount,
-		deliveredCount = self.deliveredCount,
-	}
-end
-
--- 恢复猪窝任务并重新绑定当前居民。
-function PigVillageQuest:OnLoad(data)
-	if data == nil or data.taskPrefab == nil or data.requiredCount == nil then
-		return
-	end
-
-	self.taskPrefab = data.taskPrefab
-	self.requiredCount = data.requiredCount
-	self.deliveredCount = math.min(data.deliveredCount or 0, self.requiredCount - 1)
-	self.isCompleting = false
-	self:StartRuntime()
 end
 
 -- 移除组件时恢复猪人并清理非持久化标记。

@@ -120,20 +120,6 @@ function QuestManager:FillTasks()
 	end
 end
 
--- 保存当天是否已经执行过补位，防止读档后同日立刻刷新。
-function QuestManager:OnSave()
-	return {
-		lastRefreshDay = self.lastRefreshDay,
-	}
-end
-
--- 恢复上一次补位的世界天数。
-function QuestManager:OnLoad(data)
-	if data ~= nil then
-		self.lastRefreshDay = data.lastRefreshDay
-	end
-end
-
 -- 清理世界事件和延迟任务。
 function QuestManager:OnRemoveFromEntity()
 	self.inst:RemoveEventCallback("ms_cyclecomplete", self._onCycleComplete, TheWorld)
