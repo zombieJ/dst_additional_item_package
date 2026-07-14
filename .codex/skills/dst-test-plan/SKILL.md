@@ -108,6 +108,15 @@ rg -n "ms_setphase|ms_nextcycle|ms_setmoonphase|ms_setseason|LongUpdate|DoTaskIn
 
 保持计划简洁、实用。
 
+### 可复制格式（最高优先级）
+
+- 最终回复中的测试计划和仓库根目录 `test.md` 全文禁止使用反引号字符。
+- 最终回复中的测试计划和 `test.md` 禁止使用 Markdown 无序列表，任何一行都不能以短横线加空格开头。
+- 每条 DST 控制台命令必须独占一行，只保留命令本身；行首不得添加短横线、序号、引用符号或“命令：”等前缀。
+- 多条控制台命令之间保留一个空行，确保玩家可以直接双击或拖选单条命令复制。
+- prefab、配置名、文件名和数值在说明文字中直接写普通文本，不使用行内代码格式。
+- 标题、目标、设置、步骤和预期结果可以使用标题与数字编号，但不要为了排版重新引入无序列表。
+
 ## 文档截图模式
 
 当用户为语雀/wiki 文档请求“截图测试代码”“截图需要的测试计划”或“配套截图指令”时，把任务理解为生成最小截图准备指令，而不是完整回归测试，也不是修改 Lua 代码。
@@ -128,21 +137,24 @@ rg -n "ms_setphase|ms_nextcycle|ms_setmoonphase|ms_setseason|LongUpdate|DoTaskIn
 
 优先输出类似格式：
 
-```markdown
 ## 1. 种子品质增益
+
 目标：确认品质会改变可食用物品的恢复数值。
 
 设置：
-- `c_give("carrot_seeds", 5)`
-- `c_give("reskin_tool")`
+
+c_give("carrot_seeds", 5)
+
+c_give("reskin_tool")
 
 步骤：
+
 1. 使用调试物品提高种子品质。
 2. 吃掉一颗种子。
 
 预期：
-- 饥饿/生命/理智变化符合新的品质倍率。
-```
+
+饥饿、生命、理智变化符合新的品质倍率。
 
 ## 规划启发
 
@@ -156,6 +168,7 @@ rg -n "ms_setphase|ms_nextcycle|ms_setmoonphase|ms_setseason|LongUpdate|DoTaskIn
 
 使用这个 skill 回答时：
 
+- 先应用“可复制格式”规则；即使本文件其他示例使用了 Markdown 代码格式或无序列表，最终测试计划也不得照搬这些符号。
 - 在最终回复前，将测试计划完整写入仓库根目录 `test.md`，覆盖旧内容；`test.md` 是本地测试产物，应保持在 `.gitignore` 中。
 - 先用一段话概述从 diff 得出的测试范围。
 - 然后列出手动测试用例。
