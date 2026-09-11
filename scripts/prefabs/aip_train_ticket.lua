@@ -52,6 +52,8 @@ local function fn()
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/aip_train_ticket.xml"
 
 	inst:AddComponent("stackable")
+	-- 让客户端提供交给猪王的交易动作，接收逻辑由列车组件处理。
+	inst:AddComponent("tradable")
 
     MakeHauntableLaunch(inst)
 

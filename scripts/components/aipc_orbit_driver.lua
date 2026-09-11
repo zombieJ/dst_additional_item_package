@@ -4,10 +4,10 @@ local language = aipGetModConfig("language")
 -- 文字描述
 local LANG_MAP = {
 	english = {
-		EXIT = "Arrow key to move. X to exit. V to switch view.",
+		EXIT = "Arrow keys move. Move the mouse to adjust the third-person view. X exits; V changes view.",
 	},
 	chinese = {
-		EXIT = "方向键控制，X 键退出，V 键切换视角",
+		EXIT = "方向键控制，第三视角可移动鼠标调整方向和俯仰，X 键退出，V 键切换视角",
 	},
 }
 
@@ -33,7 +33,11 @@ local function findClosestPoint(inst)
 	return linkList[1]
 end
 
-local function findPoints(current, excluded)
+local function findPoints(current, excluded, routeProvider)
+	-- 临时线路可直接提供下一端点，其余矿车继续通过附近连接自动寻路。
+	if routeProvider ~= nil then
+		return routeProvider(current, excluded) or {}
+	end
 	local linkList = aipFindNearEnts(current, { "aip_glass_orbit_link" }, 25)
 
 	local includedLinks = aipFilterTable(linkList, function(link)
@@ -61,6 +65,7 @@ local Driver = Class(function(self, player)
 	self.speed = 15
 	self.speedMulti = 0.25	-- 速度修正，如上下坡会加减速度
 	self.ySpeed = 20
+	self.routeProvider = nil
 
 	self.lastRotate = nil	-- 上一次的角度，如果大反转，说明已经超出去了
 
@@ -75,6 +80,11 @@ local Driver = Class(function(self, player)
 	self.inst:ListenForEvent("attacked", stopDrving)
 	self.inst:ListenForEvent("onsink", stopDrving)
 end)
+
+-- 设置可选的线路端点提供器，供临时单线复用原矿车运动逻辑。
+function Driver:SetRouteProvider(provider)
+	self.routeProvider = provider
+end
 
 -- 是否可以开车状态
 function Driver:IsInvalidDriver()
@@ -159,7 +169,7 @@ function Driver:DriveFromPoint(angle)
 	self.lastRotate = nil
 
 	-- 找到附近所有的连接器，对应的端点
-	local orbitPointList = findPoints(self.orbitPoint)
+	local orbitPointList = findPoints(self.orbitPoint, nil, self.routeProvider)
 
 	-- 找到角度最匹配的连接点
 	local targetPoint = nil
@@ -351,7 +361,7 @@ function Driver:OnUpdate(dt)
 		-- 矿车位移到玩家位置
 		self.minecar.Physics:Teleport(targetPos.x, targetPos.y, targetPos.z)
 
-		local points = findPoints(self.nextOrbitPoint, self.orbitPoint)
+		local points = findPoints(self.nextOrbitPoint, self.orbitPoint, self.routeProvider)
 		local lastRotate = self.lastRotate
 		self.orbitPoint = self.nextOrbitPoint
 		self.nextOrbitPoint = nil

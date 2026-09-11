@@ -12,7 +12,7 @@ local LANG_MAP = {
 }
 
 local LANG = LANG_MAP[language] or LANG_MAP.english
-local questConfig = require("configurations/aip_pig_village_quest")
+local ticket = require("aip_pig_village_ticket")
 
 STRINGS.NAMES.AIP_TRAIN_TICKET_FRAGMENT = LANG.NAME
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.AIP_TRAIN_TICKET_FRAGMENT = LANG.DESC
@@ -22,49 +22,14 @@ local assets = {
 	Asset("ATLAS", "images/inventoryimages/aip_train_ticket_fragment.xml"),
 }
 
--- 合并玩家物品栏内所有满足三张一组的体验券碎片。
-local function DoMergeFragments(owner)
-	if owner == nil or not owner:IsValid() or owner.components.inventory == nil then
-		return
-	end
-
-	local _, fragmentCount = owner.components.inventory:Has("aip_train_ticket_fragment", 1)
-	local ticketCount = math.floor(fragmentCount / questConfig.TICKET_FRAGMENT_COUNT)
-	if ticketCount <= 0 then
-		return
-	end
-
-	owner.components.inventory:ConsumeByName(
-		"aip_train_ticket_fragment",
-		ticketCount * questConfig.TICKET_FRAGMENT_COUNT
-	)
-	for _ = 1, ticketCount do
-		local ticket = aipSpawnPrefab(owner, "aip_train_ticket")
-		if ticket ~= nil then
-			owner.components.inventory:GiveItem(ticket, nil, owner:GetPosition())
-		end
-	end
-
-	if owner.components.talker ~= nil then
-		owner.components.talker:Say(questConfig.LANG.TICKET_MERGED)
-	end
-end
-
--- 安排玩家级合并检查，避免多个碎片回调在同一帧重复消费。
+-- 保留公共合成入口，供任务奖励和其他发放路径统一触发。
 function aipMergeTrainTicketFragments(owner)
-	if owner == nil or not owner:HasTag("player") or owner._aipTrainTicketMergeTask ~= nil then
-		return
-	end
-
-	owner._aipTrainTicketMergeTask = owner:DoTaskInTime(0, function(player)
-		player._aipTrainTicketMergeTask = nil
-		DoMergeFragments(player)
-	end)
+	return ticket.ScheduleMerge(owner)
 end
 
 -- 物品进入玩家物品栏后检查是否能够合并。
 local function OnPutInInventory(inst, owner)
-	aipMergeTrainTicketFragments(owner)
+	ticket.ScheduleMerge(owner)
 end
 
 -- 创建可以堆叠并自动参与合成的体验券碎片。
