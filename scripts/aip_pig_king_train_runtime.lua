@@ -10,6 +10,7 @@ local RETRYABLE_PLAN_ERRORS = {
 	no_safe_path = true,
 	rough_route_too_long = true,
 	track_budget_exceeded = true,
+	insufficient_ground_ratio = true,
 }
 
 -- 开发模式统一使用 AIP 日志输出运行生命周期信息。
@@ -46,9 +47,10 @@ local function RetainRouteSpots(routeMap, excludedSpotIds)
 	return retained
 end
 
--- 为规划重试选择要换掉的景点，寻路失败优先换故障点，超预算优先换最远点。
+-- 为规划重试选择要换掉的景点，寻路或地面占比失败优先换故障点，其余换最远点。
 local function FindRetrySpot(routeMap, routeError, excludedSpotIds)
-	if routeError ~= nil and (routeError.code == "no_viewpoint" or routeError.code == "no_safe_path")
+	if routeError ~= nil and (routeError.code == "no_viewpoint" or routeError.code == "no_safe_path"
+		or routeError.code == "insufficient_ground_ratio")
 		and routeError.spot ~= nil then
 		for _, stop in ipairs(routeMap.stops) do
 			if stop.id == routeError.spot and not excludedSpotIds[stop.id] then return stop end
@@ -97,11 +99,14 @@ local function CanStart(doer)
 		and (rider == nil or not rider:IsRiding()) and (flyer == nil or not flyer:IsFlying())
 end
 
-local PigKingTrain = Class(function(self, inst)
+local PigKingTrain = Class(function(self, inst, testDependencies)
 	self.inst = inst
 	self.routeMap = nil
 	self.lastRouteError = nil
 	self.runs = {}
+	-- 开发隔离场景可替换选点与规划入口，正式运行始终使用真实模块。
+	self.routeGenerator = testDependencies ~= nil and testDependencies.route or trainRoute
+	self.trackPlanner = testDependencies ~= nil and testDependencies.track or track
 
 	-- 只截获正式体验券，其他物品继续走猪王原有的判定和收礼行为。
 	local trader = inst.components.trader
@@ -279,12 +284,16 @@ function PigKingTrain:BuildInitialTrack(run)
 			"plannedPoints=" .. #run.plan.points, "entities=" .. #run.entities)
 		if not run.doer:IsValid() or run.doer._despawning then error("passenger_unavailable") end
 		run.car = track.SpawnCar(run)
+		run.light = track.SpawnRideLight(run, run.doer)
 		local passenger = run.doer.components.aipc_pig_king_train_passenger
 		if passenger == nil or not passenger:Begin(run) then error("boarding_failed") end
 		run.boarded = true
 		Say(run.doer, config.LANG.START)
 		Debug("boarded", "run=" .. run.id, "player=" .. PlayerLabel(run.doer),
-			"carGuid=" .. tostring(run.car.GUID), "station=" .. FormatPoint(run.plan.station))
+			"carGuid=" .. tostring(run.car.GUID), "lightGuid=" .. tostring(run.light.GUID),
+			string.format("light=%.1f/%.2f/%.2f", run.light.Light:GetRadius(),
+				run.light.Light:GetFalloff(), run.light.Light:GetIntensity()),
+			"station=" .. FormatPoint(run.plan.station))
 		return true
 	end)
 	if not ok then
@@ -313,7 +322,7 @@ function PigKingTrain:StartTrain(doer, paid)
 			"excluded=" .. ExcludedText(excludedSpotIds),
 			"retained=" .. ExcludedText(preferredSpotIds),
 			"fill=" .. (preferNearest and "nearest" or "random"))
-		local routeOK, candidateRoute, routeError = pcall(trainRoute.Create, self.inst, {
+		local routeOK, candidateRoute, routeError = pcall(self.routeGenerator.Create, self.inst, {
 			excludedSpotIds = excludedSpotIds,
 			preferredSpotIds = preferredSpotIds,
 			preferNearest = preferNearest,
@@ -328,7 +337,7 @@ function PigKingTrain:StartTrain(doer, paid)
 				"code=" .. tostring(lastError.code), "reason=route-unavailable")
 			break
 		end
-		local planOK, candidatePlan, planError = pcall(track.Plan, candidateRoute, {
+		local planOK, candidatePlan, planError = pcall(self.trackPlanner.Plan, candidateRoute, {
 			reference = doer:GetPosition(),
 		})
 		if not planOK then
@@ -339,7 +348,11 @@ function PigKingTrain:StartTrain(doer, paid)
 			lastError = nil
 			Debug("plan-selected", "attempt=" .. tostring(attempt),
 				string.format("roughDistance=%.1f", routeMap.totalDistance),
-				string.format("plannedDistance=%.1f", plan.totalDistance))
+				string.format("plannedDistance=%.1f", plan.totalDistance),
+				string.format("ground=%.1f,elevated=%.1f,ratio=%.1f%%",
+					plan.groundDistance or 0, plan.elevatedDistance or 0,
+					(plan.groundDistance or 0) / math.max(0.01,
+						(plan.groundDistance or 0) + (plan.elevatedDistance or 0)) * 100))
 			break
 		end
 		lastError = planError or { code = "track_plan_failed" }
@@ -356,6 +369,7 @@ function PigKingTrain:StartTrain(doer, paid)
 		preferredSpotIds = RetainRouteSpots(candidateRoute, excludedSpotIds)
 		preferNearest = lastError.code == "rough_route_too_long"
 			or lastError.code == "track_budget_exceeded"
+			or lastError.code == "insufficient_ground_ratio"
 		Debug("plan-retry", "next=" .. tostring(attempt + 1),
 			"excluded=" .. ExcludedText(excludedSpotIds),
 			"retained=" .. ExcludedText(preferredSpotIds),

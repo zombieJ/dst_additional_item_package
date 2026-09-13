@@ -1,4 +1,6 @@
 local config = require("configurations/aip_pig_king_train")
+local fade = require("aip_pig_king_train_fade")
+local devMode = aipGetModConfig("dev_mode") == "enabled"
 local assets = {
 	Asset("ANIM", "anim/aip_glass_orbit.zip"),
 	Asset("ANIM", "anim/aip_glass_orbit_point.zip"),
@@ -16,12 +18,14 @@ end
 
 -- 让观光连接中的月光轨道从起点到终点依次透明渐入。
 local function StartTrackFade(linker)
+	if not fade.AppliesToPrefab(linker.inst.prefab) then return end
 	local count = #linker.orbits
 	if count == 0 then return end
 	local elapsed = 0
 	for _, orbit in ipairs(linker.orbits) do
 		if orbit:IsValid() then orbit.AnimState:SetMultColour(1, 1, 1, 0) end
 	end
+	if devMode then fade.ObserveTelemetry(TheWorld, linker.orbits, true, false) end
 	linker._aip_train_fade_task = linker.inst:DoPeriodicTask(FRAMES, function()
 		elapsed = elapsed + FRAMES
 		local complete = true
@@ -32,6 +36,7 @@ local function StartTrackFade(linker)
 			if orbit:IsValid() then orbit.AnimState:SetMultColour(1, 1, 1, alpha) end
 			if alpha < 1 then complete = false end
 		end
+		if devMode then fade.ObserveTelemetry(TheWorld, linker.orbits, false, complete) end
 		if complete then StopTrackFade(linker) end
 	end)
 end
@@ -98,6 +103,28 @@ local function CarFn()
 	return inst
 end
 
+-- 创建跟随观光乘客的大范围冷色灯，实体本身不可见且不参与永久存档。
+local function LightFn()
+	local inst = CreateEntity()
+	inst.entity:AddTransform()
+	inst.entity:AddLight()
+	inst.entity:AddNetwork()
+	inst:AddTag("FX")
+	inst:AddTag("NOCLICK")
+	inst:AddTag("aip_train_temporary")
+	inst:AddTag("aip_train_ride_light")
+	inst.Light:SetRadius(config.RIDE_LIGHT_RADIUS)
+	inst.Light:SetFalloff(config.RIDE_LIGHT_FALLOFF)
+	inst.Light:SetIntensity(config.RIDE_LIGHT_INTENSITY)
+	inst.Light:SetColour(config.RIDE_LIGHT_COLOUR[1], config.RIDE_LIGHT_COLOUR[2],
+		config.RIDE_LIGHT_COLOUR[3])
+	inst.Light:Enable(true)
+	inst.persists = false
+	inst.entity:SetPristine()
+	return inst
+end
+
 return Prefab("aip_pig_king_train_point", PointFn, assets),
 	Prefab("aip_pig_king_train_link", LinkFn, nil, prefabs),
-	Prefab("aip_pig_king_train_car", CarFn, assets)
+	Prefab("aip_pig_king_train_car", CarFn, assets),
+	Prefab("aip_pig_king_train_light", LightFn)

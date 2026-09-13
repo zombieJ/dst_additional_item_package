@@ -10,6 +10,8 @@ local STATION_RADIUS = 12
 local STATION_RAMP_DISTANCE = config.ELEVATION_RAMP_DISTANCE
 local STATION_RAMP_DIRECTIONS = 24
 local SCENIC_ARC_DIRECTIONS = 24
+local GROUND_TRANSITION_DIRECTIONS = config.GROUND_TRANSITION_DIRECTIONS
+local GROUND_TRANSITION_MAX_DISTANCE = config.GROUND_TRANSITION_MAX_DISTANCE
 local SCENIC_ARC_SWEEP = config.SCENIC_ARC_FRACTION * 2 * math.pi
 local GROUND_TRACK_HEIGHT = 0
 local devMode = aipGetModConfig("dev_mode") == "enabled"
@@ -95,19 +97,28 @@ local function Key(x, z)
 	return x .. ":" .. z
 end
 
--- 将障碍范围放进空间索引，并区分仅阻挡地面总站或同时阻挡高架轨道。
-local function AddBlocker(context, x, z, radius, blocksElevated)
-	local blocker = { x = x, z = z, radius = radius, blocksElevated = blocksElevated == true }
-	context.blockerCount = (context.blockerCount or 0) + 1
-	if blocker.blocksElevated then
-		context.elevatedBlockerCount = (context.elevatedBlockerCount or 0) + 1
-	end
+-- 将单个障碍范围写入指定空间索引。
+local function IndexBlocker(cells, blocker)
+	local x, z, radius = blocker.x, blocker.z, blocker.radius
 	for cx = math.floor((x - radius) / CELL), math.floor((x + radius) / CELL) do
 		for cz = math.floor((z - radius) / CELL), math.floor((z + radius) / CELL) do
 			local key = Key(cx, cz)
-			context.cells[key] = context.cells[key] or {}
-			table.insert(context.cells[key], blocker)
+			cells[key] = cells[key] or {}
+			table.insert(cells[key], blocker)
 		end
+	end
+end
+
+-- 将障碍范围分类放进空间索引，并记录来源供实机规划诊断。
+local function AddBlocker(context, x, z, radius, blocksElevated, kind)
+	local blocker = { x = x, z = z, radius = radius, blocksElevated = blocksElevated == true,
+		kind = kind or "unknown" }
+	context.blockerCount = (context.blockerCount or 0) + 1
+	context.blockerKinds[blocker.kind] = (context.blockerKinds[blocker.kind] or 0) + 1
+	IndexBlocker(context.cells, blocker)
+	if blocker.blocksElevated then
+		context.elevatedBlockerCount = (context.elevatedBlockerCount or 0) + 1
+		IndexBlocker(context.hardCells, blocker)
 	end
 end
 
@@ -117,9 +128,12 @@ function Track.CreateContext(options)
 	local context = {
 		map = options.map or TheWorld.Map,
 		cells = {},
+		hardCells = {},
 		allowOcean = options.allowOcean,
 		blockerCount = 0,
 		elevatedBlockerCount = 0,
+		blockerKinds = {},
+		ignoredGroundClutterCount = 0,
 		scannedEntities = 0,
 	}
 	if context.allowOcean == nil then
@@ -130,46 +144,65 @@ function Track.CreateContext(options)
 		if ent:IsValid() and ent.Transform ~= nil and not ent:IsInLimbo()
 			and not ent:HasTag("aip_train_temporary") and not ent:HasTag("player") then
 			local radius = DANGER_RADII[ent.prefab]
-			local blocksElevated = radius ~= nil
+			local blockerKind = radius ~= nil and "danger" or nil
+			local burnable = ent.components.burnable
+			if ent:HasTag("fire") or ent:HasTag("hostile") or ent:HasTag("monster")
+				or ent:HasTag("epic")
+				or burnable ~= nil and (burnable:IsBurning() or burnable:IsSmoldering()) then
+				radius = math.max(radius or 0, 10)
+				blockerKind = blockerKind or "hazard"
+			end
+			if radius == nil and (ent:HasTag("character") or ent:HasTag("largecreature")) then
+				radius = math.max(ent:GetPhysicsRadius(0), 0.5) + 1
+				blockerKind = "character"
+			end
 			if radius == nil then
 				local physical = ent:GetPhysicsRadius(0)
 				if physical > 0 or ent:HasTag("structure") or ent:HasTag("CHOP_workable") then
 					radius = math.max(physical, ent:HasTag("CHOP_workable") and 3 or 1) + 2
+					blockerKind = "ground-clutter"
+					context.ignoredGroundClutterCount = context.ignoredGroundClutterCount + 1
 				end
-			end
-			local burnable = ent.components.burnable
-			if ent:HasTag("fire") or ent:HasTag("hostile") or ent:HasTag("monster")
-				or burnable ~= nil and (burnable:IsBurning() or burnable:IsSmoldering()) then
-				radius = math.max(radius or 0, 10)
-				blocksElevated = true
 			end
 			if radius ~= nil then
 				local x, _, z = ent.Transform:GetWorldPosition()
-				AddBlocker(context, x, z, radius + SAMPLE / 2, blocksElevated)
+				AddBlocker(context, x, z, radius + SAMPLE / 2,
+					blockerKind ~= "ground-clutter", blockerKind)
 			end
 		end
 	end
 	Debug("context", "entities=" .. context.scannedEntities,
-		"blockers=" .. context.blockerCount,
-		"elevatedBlockers=" .. context.elevatedBlockerCount,
+		"indexedBlockers=" .. context.blockerCount,
+		"hardBlockers=" .. context.elevatedBlockerCount,
+		"danger=" .. tostring(context.blockerKinds.danger or 0),
+		"hazard=" .. tostring(context.blockerKinds.hazard or 0),
+		"characters=" .. tostring(context.blockerKinds.character or 0),
+		"ignoredGroundClutter=" .. context.ignoredGroundClutterCount,
 		"allowOcean=" .. tostring(context.allowOcean))
 	return context
 end
 
--- 检查陆地、海面、地图边界及静态障碍；地面轨道必须在陆地并避开全部障碍。
-local function IsClear(context, point, ground)
+-- 检查陆地、海面、地图边界及硬障碍；总站落脚时可额外避开普通地面物件。
+local function CheckClear(context, point, ground, includeGroundClutter)
 	local land = context.map:IsPassableAtPoint(point.x, 0, point.z, false, true)
-	if not land and (ground or not context.allowOcean
-		or not context.map:IsOceanTileAtPoint(point.x, 0, point.z)) then
-		return false
+	if not land then
+		local ocean = context.map:IsOceanTileAtPoint(point.x, 0, point.z)
+		if ground then return false, ocean and "ocean" or "void" end
+		if not context.allowOcean or not ocean then return false, "void" end
 	end
-	for _, block in ipairs(context.cells[Key(math.floor(point.x / CELL), math.floor(point.z / CELL))] or {}) do
-		if (ground or block.blocksElevated)
-			and (point.x - block.x)^2 + (point.z - block.z)^2 < block.radius^2 then
-			return false
+	local cells = ground and includeGroundClutter and context.cells or context.hardCells
+	for _, block in ipairs(cells[Key(math.floor(point.x / CELL), math.floor(point.z / CELL))] or {}) do
+		if (point.x - block.x)^2 + (point.z - block.z)^2 < block.radius^2 then
+			return false, block.blocksElevated
+				and (ground and "ground-blocker" or "elevated-blocker") or "ground-clutter"
 		end
 	end
-	return true
+	return true, "clear"
+end
+
+-- 保留布尔入口，供站点和寻路热路径直接判断。
+local function IsClear(context, point, ground, includeGroundClutter)
+	return CheckClear(context, point, ground, includeGroundClutter)
 end
 
 -- 等距采样整段轨道，避免两个安全端点之间仍穿过障碍或虚空。
@@ -177,11 +210,13 @@ local function ClearSegment(context, a, b, ground)
 	local count = math.max(1, math.ceil(Distance(a, b) / SAMPLE))
 	for i = 0, count do
 		local t = i / count
-		if not IsClear(context, Point(a.x + (b.x - a.x) * t, 0, a.z + (b.z - a.z) * t), ground) then
-			return false
+		local clear, reason = CheckClear(context,
+			Point(a.x + (b.x - a.x) * t, 0, a.z + (b.z - a.z) * t), ground)
+		if not clear then
+			return false, reason
 		end
 	end
-	return true
+	return true, "clear"
 end
 
 -- 从有限个外围候选中选择靠近参考点且不压住地标的观景位置。
@@ -193,7 +228,8 @@ local function FindOuterPoint(context, center, radius, height, reference, ground
 			local r = radius + ring * 2
 			local point = Point(center.x + math.cos(angle) * r, height, center.z + math.sin(angle) * r)
 			local distance = Distance(point, reference)
-			if IsClear(context, point, ground) and (bestDistance == nil or distance < bestDistance) then
+			if IsClear(context, point, ground, true)
+				and (bestDistance == nil or distance < bestDistance) then
 				best, bestDistance = point, distance
 			end
 		end
@@ -201,16 +237,29 @@ local function FindOuterPoint(context, center, radius, height, reference, ground
 	return best
 end
 
+-- 累计观景圆弧候选的有限失败原因，避免输出每个采样点造成日志洪水。
+local function CountArcReject(stats, reason)
+	stats[reason or "unknown"] = (stats[reason or "unknown"] or 0) + 1
+end
+
 -- 从指定角度生成约四分之三圈的等高观景圆弧，并按地面或高架规则校验安全性。
-local function BuildScenicArc(context, center, radius, height, startAngle, direction, ground)
+local function BuildScenicArc(context, center, radius, height, startAngle, direction, ground, stats)
 	local points = {}
 	for index = 0, config.SCENIC_ARC_SEGMENTS do
 		local angle = startAngle + direction * SCENIC_ARC_SWEEP * index / config.SCENIC_ARC_SEGMENTS
 		local point = Point(center.x + math.cos(angle) * radius, height,
 			center.z + math.sin(angle) * radius)
-		if not IsClear(context, point, ground)
-			or index > 0 and not ClearSegment(context, points[#points], point, ground) then
+		local clear, reason = CheckClear(context, point, ground)
+		if not clear then
+			CountArcReject(stats, reason)
 			return nil
+		end
+		if index > 0 then
+			clear, reason = ClearSegment(context, points[#points], point, ground)
+			if not clear then
+				CountArcReject(stats, reason)
+				return nil
+			end
 		end
 		table.insert(points, point)
 	end
@@ -219,13 +268,16 @@ end
 
 -- 在最小安全半径上选择兼顾进站与下一站方向的地面或高架观景圆弧。
 local function FindScenicArc(context, center, radius, height, reference, nextReference, ground)
+	local stats = { candidates = 0 }
 	for ring = 0, math.floor(VIEWPOINT_SEARCH_EXTRA / 2) do
 		local arcRadius = radius + ring * 2
 		local best, bestScore
 		for index = 0, SCENIC_ARC_DIRECTIONS - 1 do
 			local startAngle = index * 2 * math.pi / SCENIC_ARC_DIRECTIONS
 			for _, direction in ipairs({ 1, -1 }) do
-				local points = BuildScenicArc(context, center, arcRadius, height, startAngle, direction, ground)
+				stats.candidates = stats.candidates + 1
+				local points = BuildScenicArc(context, center, arcRadius, height,
+					startAngle, direction, ground, stats)
 				if points ~= nil then
 					local score = Distance(reference, points[1])
 						+ Distance(points[#points], nextReference or reference)
@@ -238,7 +290,34 @@ local function FindScenicArc(context, center, radius, height, reference, nextRef
 				end
 			end
 		end
-		if best ~= nil then return best end
+		if best ~= nil then return best, stats end
+	end
+	return nil, stats
+end
+
+-- 将圆弧搜索的失败计数压缩为稳定单行，供一次体验券定位地形或障碍原因。
+local function FormatArcRejects(stats)
+	stats = stats or {}
+	return string.format("candidates=%d,ocean=%d,groundBlocker=%d,elevatedBlocker=%d,void=%d,unknown=%d",
+		stats.candidates or 0, stats.ocean or 0, stats["ground-blocker"] or 0,
+		stats["elevated-blocker"] or 0, stats.void or 0, stats.unknown or 0)
+end
+
+-- 在高架圆弧端点附近寻找安全陆地落脚点，把长距离接驳尽量留在地面。
+local function FindGroundTransition(context, elevatedPoint, reference)
+	local best, bestScore
+	for distance = STATION_RAMP_DISTANCE, GROUND_TRANSITION_MAX_DISTANCE,
+		config.GROUND_TRANSITION_STEP do
+		for index = 0, GROUND_TRANSITION_DIRECTIONS - 1 do
+			local angle = index * 2 * math.pi / GROUND_TRANSITION_DIRECTIONS
+			local point = Point(elevatedPoint.x + math.cos(angle) * distance, 0,
+				elevatedPoint.z + math.sin(angle) * distance)
+			if IsClear(context, point, true) and ClearSegment(context, elevatedPoint, point, false) then
+				local score = distance + HorizontalDistance(point, reference or elevatedPoint) * 0.05
+				if bestScore == nil or score < bestScore then best, bestScore = point, score end
+			end
+		end
+		if best ~= nil then return best, distance end
 	end
 end
 
@@ -368,7 +447,12 @@ end
 -- 根据路径模式生成短坡道：地面路线尽快落地，高架路线只在必要区间保持高度。
 local function TrackHeightAt(fromHeight, toHeight, cruiseHeight, distance, totalDistance)
 	if totalDistance <= 0.01 then return toHeight end
-	local rampDistance = math.max(0.01, config.ELEVATION_RAMP_DISTANCE)
+	local configuredRamp = math.max(0.01, config.ELEVATION_RAMP_DISTANCE)
+	local fromAtCruise = math.abs(fromHeight - cruiseHeight) <= 0.01
+	local toAtCruise = math.abs(toHeight - cruiseHeight) <= 0.01
+	local rampDistance = math.min(configuredRamp,
+		fromAtCruise ~= toAtCruise and totalDistance or totalDistance / 2)
+	rampDistance = math.max(0.01, rampDistance)
 	local fromProgress = math.min(1, distance / rampDistance)
 	local toProgress = math.min(1, (totalDistance - distance) / rampDistance)
 	local fromLimit = fromHeight + (cruiseHeight - fromHeight) * fromProgress
@@ -383,18 +467,52 @@ end
 local function MeasureHeightProfile(plan)
 	local groundDistance, elevatedDistance, transitions = 0, 0, 0
 	local previousElevated = nil
+	plan.rampDistance = 0
+	plan.modeDistances = {}
+	plan.oceanElevatedDistance = 0
 	for index = 2, #plan.points do
 		local previous, point = plan.points[index - 1], plan.points[index]
 		local length = Distance(previous, point)
 		local elevated = not IsGroundHeight(previous.y) or not IsGroundHeight(point.y)
+		local profile = plan.segmentProfiles ~= nil and plan.segmentProfiles[index - 1] or nil
 		if elevated then elevatedDistance = elevatedDistance + length
 		else groundDistance = groundDistance + length end
+		if profile ~= nil then
+			profile.distance = length
+			profile.elevated = elevated
+			local mode = profile.mode or "unknown"
+			plan.modeDistances[mode] = (plan.modeDistances[mode] or 0) + length
+			if profile.ramp then plan.rampDistance = plan.rampDistance + length end
+			if elevated then
+				plan.oceanElevatedDistance = plan.oceanElevatedDistance + (profile.oceanDistance or 0)
+			end
+		end
 		if previousElevated ~= nil and elevated ~= previousElevated then transitions = transitions + 1 end
 		previousElevated = elevated
 	end
 	plan.groundDistance = groundDistance
 	plan.elevatedDistance = elevatedDistance
 	plan.heightTransitions = transitions
+end
+
+-- 地面占比不足时优先替换最远的高架景点，没有高架圆弧则退回最远景点。
+local function FindGroundRatioRetrySpot(routeMap, arcs)
+	local origin = routeMap.start.point
+	local retrySpot, farthestDistanceSq = nil, nil
+	local function Consider(spot)
+		local dx, dz = spot.point.x - origin.x, spot.point.z - origin.z
+		local distanceSq = dx * dx + dz * dz
+		if farthestDistanceSq == nil or distanceSq > farthestDistanceSq then
+			retrySpot, farthestDistanceSq = spot, distanceSq
+		end
+	end
+	for _, arc in ipairs(arcs) do
+		if arc.elevated then Consider(arc.stop) end
+	end
+	if retrySpot == nil then
+		for _, stop in ipairs(routeMap.stops) do Consider(stop) end
+	end
+	return retrySpot
 end
 
 -- 输出结构化失败信息，供体验券返还与开发日志使用。
@@ -432,8 +550,18 @@ function Track.Plan(routeMap, options)
 	-- 先登记全部景点核心，确保任何观景圆弧都不会穿过尚未处理的景点。
 	for _, stop in ipairs(routeMap.stops) do
 		local profile = PROFILES[stop.id] or { radius = 12, height = config.HEIGHT }
-		AddBlocker(context, stop.point.x, stop.point.z, profile.radius - 2, true)
+		AddBlocker(context, stop.point.x, stop.point.z, profile.radius - 2, true,
+			"landmark-core")
 	end
+	local blockerDiagnostics = { policy = "ghost-physics-aligned",
+		scannedEntities = context.scannedEntities, indexedBlockers = context.blockerCount,
+		hardBlockers = context.elevatedBlockerCount,
+		elevatedBlockers = context.elevatedBlockerCount,
+		dangerBlockers = context.blockerKinds.danger or 0,
+		hazardBlockers = context.blockerKinds.hazard or 0,
+		characterBlockers = context.blockerKinds.character or 0,
+		landmarkCores = context.blockerKinds["landmark-core"] or 0,
+		ignoredGroundClutter = context.ignoredGroundClutterCount }
 	local views = { { point = departure } }
 	local routeNodes = { { point = departure } }
 	local arcs = {}
@@ -441,21 +569,26 @@ function Track.Plan(routeMap, options)
 		local profile = PROFILES[stop.id] or { radius = 12, height = config.HEIGHT }
 		local nextReference = routeMap.stops[stopIndex + 1] ~= nil
 			and routeMap.stops[stopIndex + 1].point or departure
-		local elevated = profile.dangerous == true
-		local arcHeight = elevated and profile.height or GROUND_TRACK_HEIGHT
-		local heightMode = elevated and "danger-elevated" or "ground"
-		local arc = FindScenicArc(context, stop.point, profile.radius, arcHeight,
-			routeNodes[#routeNodes].point, nextReference, not elevated)
-		-- 普通景点只有在地面圆弧被海岸或实体完全堵住时才退到高架。
-		if arc == nil and not elevated then
+		-- dangerous 只扩大景点安全半径；所有景点都先尝试安全地面圆弧。
+		local elevated = false
+		local arcHeight = GROUND_TRACK_HEIGHT
+		local heightMode = "ground"
+		local heightReason = "safe-ground-arc"
+		local arc, groundStats = FindScenicArc(context, stop.point, profile.radius, arcHeight,
+			routeNodes[#routeNodes].point, nextReference, true)
+		local elevatedStats = nil
+		if arc == nil then
 			elevated = true
 			arcHeight = profile.height
 			heightMode = "elevated-fallback"
-			arc = FindScenicArc(context, stop.point, profile.radius, arcHeight,
+			heightReason = "ground-arc-unavailable"
+			arc, elevatedStats = FindScenicArc(context, stop.point, profile.radius, arcHeight,
 				routeNodes[#routeNodes].point, nextReference, false)
 		end
 		if arc == nil then return Failure("no_viewpoint", stop,
-			"arc-unavailable,anchor=" .. FormatPoint(stop.point) .. ",radius=" .. tostring(profile.radius)) end
+			"arc-unavailable,anchor=" .. FormatPoint(stop.point) .. ",radius=" .. tostring(profile.radius)
+			.. ",groundSearch=" .. FormatArcRejects(groundStats)
+			.. ",elevatedSearch=" .. FormatArcRejects(elevatedStats)) end
 		local view = { point = arc.points[1], stop = stop,
 			dangerous = profile.dangerous == true, canPark = false }
 		table.insert(views, view)
@@ -463,12 +596,31 @@ function Track.Plan(routeMap, options)
 		local arcPlan = { stop = stop, center = stop.point, entry = arc.points[1],
 			exit = arc.points[#arc.points], radius = arc.radius, direction = arc.direction,
 			segmentCount = arc.segmentCount, sweepDegrees = arc.sweepDegrees, points = arc.points,
-			elevated = elevated, heightMode = heightMode, height = arcHeight }
+			elevated = elevated, heightMode = heightMode, heightReason = heightReason,
+			height = arcHeight, groundSearch = groundStats, elevatedSearch = elevatedStats }
 		table.insert(arcs, arcPlan)
+		-- 高架圆弧前后各自寻找最近安全陆地，避免海上端点把相邻整条长接驳线抬高。
+		if elevated then
+			local entryGround, entryDistance = FindGroundTransition(context, arcPlan.entry,
+				routeNodes[#routeNodes].point)
+			if entryGround ~= nil then
+				arcPlan.entryGround, arcPlan.entryGroundDistance = entryGround, entryDistance
+				table.insert(routeNodes, { point = entryGround, ground = true,
+					transition = "elevated-entry" })
+			end
+		end
 		for pointIndex, point in ipairs(arc.points) do
 			table.insert(routeNodes, { point = point, arcId = arcId,
 				stop = pointIndex == 1 and stop or nil,
 				dangerous = profile.dangerous == true, canPark = false, ground = not elevated })
+		end
+		if elevated then
+			local exitGround, exitDistance = FindGroundTransition(context, arcPlan.exit, nextReference)
+			if exitGround ~= nil then
+				arcPlan.exitGround, arcPlan.exitGroundDistance = exitGround, exitDistance
+				table.insert(routeNodes, { point = exitGround, ground = true,
+					transition = "elevated-exit" })
+			end
 		end
 		Debug("scenic-arc", "stop=" .. stop.id, "priority=" .. stop.priority,
 			"anchor=" .. FormatPoint(stop.point), "entry=" .. FormatPoint(arcPlan.entry),
@@ -476,14 +628,24 @@ function Track.Plan(routeMap, options)
 			string.format("sweep=%.0f", arc.sweepDegrees), "segments=" .. arc.segmentCount,
 			"direction=" .. (arc.direction > 0 and "positive" or "negative"),
 			"dangerous=" .. tostring(profile.dangerous == true),
-			"heightMode=" .. heightMode, string.format("height=%.1f", arcHeight))
+			"heightMode=" .. heightMode, "heightReason=" .. heightReason,
+			string.format("height=%.1f", arcHeight),
+			"groundSearch=" .. FormatArcRejects(groundStats),
+			"elevatedSearch=" .. FormatArcRejects(elevatedStats),
+			"landings=" .. FormatPoint(arcPlan.entryGround) .. "->" .. FormatPoint(arcPlan.exitGround),
+			string.format("landingSearch=%.1f/%.1f", arcPlan.entryGroundDistance or -1,
+				arcPlan.exitGroundDistance or -1))
 	end
 	table.insert(views, { point = departure })
 	table.insert(routeNodes, { point = departure })
 	local rampDistance = Distance(station, departure)
 	local plan = { station = station, points = { station, departure }, stops = {}, totalDistance = rampDistance * 2,
 		oceanDistance = 0, visualCount = 2 * math.max(0, math.ceil(rampDistance / config.ORBIT_SPACING) - 1),
-		scenicSegments = {}, arcs = arcs }
+		scenicSegments = {}, arcs = arcs, legProfiles = {}, blockerDiagnostics = blockerDiagnostics,
+		segmentProfiles = {
+			[1] = { mode = departureMode, legIndex = 0, scenic = false,
+				ramp = math.abs(station.y - departure.y) > 0.01, oceanDistance = 0 },
+		} }
 	for legIndex = 1, #routeNodes - 1 do
 		local from, to = routeNodes[legIndex], routeNodes[legIndex + 1]
 		local scenicLeg = from.arcId ~= nil and from.arcId == to.arcId
@@ -496,8 +658,15 @@ function Track.Plan(routeMap, options)
 			path = FindPath(context, from.point, to.point, ground)
 			pathMode = ground and "ground-scenic" or "elevated-scenic"
 		else
-			path = FindPath(context, from.point, to.point, true)
 			pathMode = "ground"
+			local fromGround, fromReason = CheckClear(context, from.point, true)
+			local toGround, toReason = CheckClear(context, to.point, true)
+			if fromGround and toGround then
+				path = FindPath(context, from.point, to.point, true)
+			else
+				Debug("path-skip-ground", "index=" .. legIndex,
+					"from=" .. tostring(fromReason), "to=" .. tostring(toReason))
+			end
 			if path == nil then
 				path = FindPath(context, from.point, to.point, false)
 				pathMode = "elevated-fallback"
@@ -516,6 +685,9 @@ function Track.Plan(routeMap, options)
 			string.format("horizontal=%.1f cruiseY=%.1f segmentLimit=%.1f",
 				pathDistance, cruiseHeight, segmentLimit))
 		local traveled = 0
+		local legStartDistance = plan.totalDistance
+		local legStartOcean = plan.oceanDistance
+		local legStartSegment = #plan.points
 		for i = 2, #path do
 			local pathStart, pathEnd = path[i - 1], path[i]
 			local horizontal = HorizontalDistance(pathStart, pathEnd)
@@ -531,6 +703,8 @@ function Track.Plan(routeMap, options)
 				local previous = plan.points[#plan.points]
 				local length = Distance(previous, point)
 				if length > 0.01 then
+					local segmentIndex = #plan.points
+					local segmentOcean = 0
 					plan.totalDistance = plan.totalDistance + length
 					plan.visualCount = plan.visualCount + math.max(0, math.ceil(length / config.ORBIT_SPACING) - 1)
 					if scenicLeg then plan.scenicSegments[#plan.points] = true end
@@ -540,8 +714,12 @@ function Track.Plan(routeMap, options)
 						if context.map:IsOceanTileAtPoint(previous.x + (point.x - previous.x) * fraction, 0,
 							previous.z + (point.z - previous.z) * fraction) then
 							plan.oceanDistance = plan.oceanDistance + length / samples
+							segmentOcean = segmentOcean + length / samples
 						end
 					end
+					plan.segmentProfiles[segmentIndex] = { mode = pathMode, legIndex = legIndex,
+						scenic = scenicLeg, ramp = math.abs(previous.y - point.y) > 0.01,
+						oceanDistance = segmentOcean }
 					table.insert(plan.points, point)
 				end
 				if plan.totalDistance > config.MAX_DISTANCE or plan.oceanDistance > config.MAX_OCEAN_DISTANCE
@@ -554,12 +732,46 @@ function Track.Plan(routeMap, options)
 			end
 			traveled = traveled + horizontal
 		end
+		local legEnd = plan.points[#plan.points]
+		if HorizontalDistance(legEnd, to.point) > 0.01 or math.abs(legEnd.y - to.point.y) > 0.01 then
+			return Failure("no_safe_path", to.stop, string.format(
+				"leg-end-mismatch,index=%d,actual=%s,expected=%s", legIndex,
+				FormatPoint(legEnd), FormatPoint(to.point)))
+		end
+		local legGround, legElevated, legRamp = 0, 0, 0
+		for segmentIndex = legStartSegment, #plan.points - 1 do
+			local first, last = plan.points[segmentIndex], plan.points[segmentIndex + 1]
+			local length = Distance(first, last)
+			if IsGroundHeight(first.y) and IsGroundHeight(last.y) then legGround = legGround + length
+			else legElevated = legElevated + length end
+			if math.abs(first.y - last.y) > 0.01 then legRamp = legRamp + length end
+		end
+		local legProfile = { index = legIndex, mode = pathMode, scenic = scenicLeg,
+			distance = plan.totalDistance - legStartDistance,
+			groundDistance = legGround, elevatedDistance = legElevated, rampDistance = legRamp,
+			oceanDistance = plan.oceanDistance - legStartOcean }
+		table.insert(plan.legProfiles, legProfile)
+		Debug("leg-ready", "index=" .. legIndex, "mode=" .. pathMode,
+			string.format("distance=%.1f ground=%.1f elevated=%.1f ramp=%.1f ocean=%.1f",
+				legProfile.distance, legGround, legElevated, legRamp, legProfile.oceanDistance),
+			"fromTransition=" .. tostring(from.transition), "toTransition=" .. tostring(to.transition))
 		if to.stop ~= nil then
 			plan.stops[#plan.points] = { spot = to.stop, dangerous = to.dangerous, canPark = to.canPark }
 		end
 	end
+	plan.segmentProfiles[#plan.points] = { mode = departureMode, legIndex = #routeNodes,
+		scenic = false, ramp = math.abs(plan.points[#plan.points].y - station.y) > 0.01, oceanDistance = 0 }
 	table.insert(plan.points, station)
 	MeasureHeightProfile(plan)
+	local measuredDistance = plan.groundDistance + plan.elevatedDistance
+	local groundRatio = measuredDistance > 0 and plan.groundDistance / measuredDistance or 0
+	if groundRatio < config.MIN_GROUND_RATIO then
+		local retrySpot = FindGroundRatioRetrySpot(routeMap, arcs)
+		return Failure("insufficient_ground_ratio", retrySpot, string.format(
+			"ground=%.1f,elevated=%.1f,ratio=%.1f%%/%.1f%%",
+			plan.groundDistance, plan.elevatedDistance, groundRatio * 100,
+			config.MIN_GROUND_RATIO * 100))
+	end
 	-- 旧驾驶器按水平距离计算坡度进度，任何纯垂直相邻端点都必须在创建实体前拒绝。
 	for index = 2, #plan.points do
 		local previous, point = plan.points[index - 1], plan.points[index]
@@ -575,11 +787,24 @@ function Track.Plan(routeMap, options)
 	plan.views = views
 	Debug("plan-ready", string.format("distance=%.1f/%d", plan.totalDistance, config.MAX_DISTANCE),
 		string.format("ocean=%.1f/%d", plan.oceanDistance, config.MAX_OCEAN_DISTANCE),
-		string.format("ground=%.1f elevated=%.1f transitions=%d",
-			plan.groundDistance, plan.elevatedDistance, plan.heightTransitions),
+		string.format("ground=%.1f elevated=%.1f ramp=%.1f transitions=%d",
+			plan.groundDistance, plan.elevatedDistance, plan.rampDistance, plan.heightTransitions),
+		string.format("modes=ground:%.1f,groundScenic:%.1f,elevatedFallback:%.1f,elevatedScenic:%.1f,oceanElevated:%.1f",
+			plan.modeDistances.ground or 0, plan.modeDistances["ground-scenic"] or 0,
+			plan.modeDistances["elevated-fallback"] or 0, plan.modeDistances["elevated-scenic"] or 0,
+			plan.oceanElevatedDistance or 0),
+		string.format("landingSearch=%.1f->%.1f/step%.1f/directions%d",
+			STATION_RAMP_DISTANCE, GROUND_TRANSITION_MAX_DISTANCE,
+			config.GROUND_TRANSITION_STEP, GROUND_TRANSITION_DIRECTIONS),
 		"points=" .. #plan.points .. "/" .. config.MAX_POINTS,
 		"visuals=" .. plan.visualCount .. "/" .. config.MAX_VISUALS,
-		"blockers=" .. context.blockerCount)
+		string.format("blockers=policy:%s,indexed:%d,hard:%d,elevated:%d,danger:%d,hazard:%d,characters:%d,landmark:%d,ignoredClutter:%d",
+			blockerDiagnostics.policy, blockerDiagnostics.indexedBlockers,
+			blockerDiagnostics.hardBlockers,
+			blockerDiagnostics.elevatedBlockers, blockerDiagnostics.dangerBlockers,
+			blockerDiagnostics.hazardBlockers, blockerDiagnostics.characterBlockers,
+			blockerDiagnostics.landmarkCores,
+			blockerDiagnostics.ignoredGroundClutter))
 	return plan
 end
 
@@ -673,6 +898,14 @@ function Track.SpawnCar(run)
 	local car = SpawnOwned(run, "aip_pig_king_train_car", run.plan.station)
 	car:Hide()
 	return car
+end
+
+-- 创建并绑定观光随身灯，使用运行实体表保证所有退出路径都会一并清理。
+function Track.SpawnRideLight(run, owner)
+	local light = SpawnOwned(run, "aip_pig_king_train_light", run.plan.station)
+	light.entity:SetParent(owner.entity)
+	light.Transform:SetPosition(0, 0, 0)
+	return light
 end
 
 -- 只移除运行记录中的自有实体，永久轨道与其他乘客的线路均不受影响。

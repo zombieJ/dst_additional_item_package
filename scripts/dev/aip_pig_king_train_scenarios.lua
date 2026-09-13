@@ -327,4 +327,161 @@ function Scenarios.TrainTicketFragmentMerge()
 	assert(ok, err)
 end
 
+-- 生成两种真实券 prefab，核对图标、动画、堆叠、交易与入包合成入口。
+function Scenarios.TrainTicketPrefabs()
+	local created = {}
+	local ok, err = pcall(function()
+		local ticket = assert(SpawnPrefab("aip_train_ticket"), "正式体验券 prefab 不存在")
+		local fragment = assert(SpawnPrefab("aip_train_ticket_fragment"), "体验券碎片 prefab 不存在")
+		table.insert(created, ticket)
+		table.insert(created, fragment)
+		assert(ticket:IsValid() and ticket.components.stackable ~= nil
+			and ticket.components.tradable ~= nil, "正式体验券不能堆叠或交给猪王")
+		assert(ticket.components.inventoryitem ~= nil
+			and ticket.components.inventoryitem.imagename == "aip_train_ticket"
+			and ticket.components.inventoryitem.atlasname == "images/inventoryimages/aip_train_ticket.xml",
+			"正式体验券物品栏图标配置错误")
+		assert(ticket.AnimState:IsCurrentAnimation("idle"), "正式体验券没有播放 idle 动画")
+		assert(fragment:IsValid() and fragment.components.stackable ~= nil
+			and fragment.components.inventoryitem ~= nil, "体验券碎片不能堆叠或放入物品栏")
+		assert(fragment.components.inventoryitem.imagename == "aip_train_ticket_fragment"
+			and fragment.components.inventoryitem.atlasname
+				== "images/inventoryimages/aip_train_ticket_fragment.xml",
+			"体验券碎片物品栏图标配置错误")
+		assert(type(fragment.components.inventoryitem.onputininventoryfn) == "function",
+			"体验券碎片缺少入包合成入口")
+		assert(fragment.AnimState:IsCurrentAnimation("idle"), "体验券碎片没有播放 idle 动画")
+	end)
+	for _, item in ipairs(created) do if item:IsValid() then item:Remove() end end
+	assert(ok, err)
+end
+
+-- 使用真实 trader 组件验证正式券被消耗并按付费流程启动，同时保留原版交易边界与返券语义。
+function Scenarios.PaidTicketTrade()
+	local king = CreateEntity()
+	king.entity:AddTransform()
+	king.persists = false
+	king:AddComponent("trader")
+	local trader = king.components.trader
+	local accepted, started, paid = 0, 0, nil
+	trader:SetAcceptTest(function(_, item) return item.prefab == "meat" end)
+	trader:SetOnAccept(function() accepted = accepted + 1 end)
+	local manager = Runtime(king)
+	manager.StartTrain = function(_, _, wasPaid)
+		started, paid = started + 1, wasPaid
+		return true
+	end
+	-- 创建会走原版 Trader:AcceptGift 删除链路、但不进入真实物品栏的隔离物品。
+	local function MakeTradeItem(prefab)
+		local item = { prefab = prefab, removedFromOwner = 0, removed = 0, components = {} }
+		item.components.inventoryitem = {
+			RemoveFromOwner = function() item.removedFromOwner = item.removedFromOwner + 1 end,
+		}
+		item.components.stackable = { stacksize = 1 }
+		function item:Remove() self.removed = self.removed + 1 end
+		return item
+	end
+	local ok, err = pcall(function()
+		local giver = { GetPosition = function() return Vector3(0, 0, 0) end }
+		local ticket = MakeTradeItem("aip_train_ticket")
+		assert(trader:AcceptGift(giver, ticket, 1), "正式体验券没有被猪王接受")
+		assert(ticket.removedFromOwner == 1 and ticket.removed == 1,
+			"正式体验券交易后没有恰好扣除一次")
+		assert(started == 1 and paid == true, "正式体验券没有按付费流程启动列车")
+		local meat = MakeTradeItem("meat")
+		assert(trader:AcceptGift(giver, meat, 1) and accepted == 1 and started == 1,
+			"普通猪王交易没有保留原逻辑")
+		local twigs = MakeTradeItem("twigs")
+		assert(not trader:AcceptGift(giver, twigs, 1) and twigs.removed == 0,
+			"列车包装错误扩大了猪王收礼范围")
+
+		local oldSpawn = SpawnPrefab
+		local refunds = 0
+		local refundOK, refundError = pcall(function()
+			SpawnPrefab = function(prefab)
+				assert(prefab == "aip_train_ticket", "失败返还了错误物品")
+				local item = { Transform = { SetPosition = function() end } }
+				function item:Remove() end
+				return item
+			end
+			local actor = {
+				components = {
+					inventory = { GiveItem = function() refunds = refunds + 1 end },
+					talker = { Say = function() end },
+				},
+				IsValid = function() return true end,
+			}
+			manager:Fail(actor, { code = "test_paid_failure" }, true)
+			assert(refunds == 1, "付费启动失败没有恰好返还一张正式券")
+			manager:Fail(actor, { code = "test_free_failure" }, false)
+			assert(refunds == 1, "免费测试失败时凭空返还了正式券")
+		end)
+		SpawnPrefab = oldSpawn
+		assert(refundOK, refundError)
+	end)
+	if king:IsValid() then king:Remove() end
+	assert(ok, err)
+end
+
+-- 强制第一轮地面占比失败，确认运行时只做有限重试、替换故障景点并最终清理测试运行。
+function Scenarios.RoutePlanningRetry(doer)
+	local king = CreateEntity()
+	king.entity:AddTransform()
+	king.persists = false
+	local routeCalls, planCalls, secondOptions = 0, 0, nil
+	local priorities = { "P0", "P1", "P2" }
+	local stops = {}
+	for index = 1, 6 do
+		local id = index == 1 and "bad_spot" or "kept_spot_" .. tostring(index)
+		table.insert(stops, { id = id, name = id, prefab = id,
+			priority = priorities[math.floor((index - 1) / 2) + 1], point = Vector3(index * 10, 0, 0) })
+	end
+	local routeMap = {
+		start = { point = Vector3(0, 0, 0) }, stops = stops, legs = {}, totalDistance = 60,
+		spotCount = 6, optimizePasses = 0,
+		selectionStats = {
+			P0 = { attempts = 2, attemptLimit = 12, selectedCount = 2 },
+			P1 = { attempts = 2, attemptLimit = 12, selectedCount = 2 },
+			P2 = { attempts = 2, attemptLimit = 12, selectedCount = 2 },
+		},
+	}
+	local routeStub = { Create = function(_, options)
+		routeCalls = routeCalls + 1
+		if routeCalls == 2 then secondOptions = options end
+		return routeMap
+	end }
+	local plan = {
+		station = Vector3(0, 0, 0), points = { Vector3(0, 0, 0), Vector3(1, 0, 0) },
+		stops = {}, views = {}, arcs = {}, scenicSegments = {}, totalDistance = 1,
+		oceanDistance = 0, groundDistance = 1, elevatedDistance = 0,
+		heightTransitions = 0, visualCount = 1,
+	}
+	local trackStub = { Plan = function()
+		planCalls = planCalls + 1
+		if planCalls == 1 then
+			return nil, { code = "insufficient_ground_ratio", spot = "bad_spot",
+				detail = "forced retry" }
+		end
+		return plan
+	end }
+	local manager = Runtime(king, { route = routeStub, track = trackStub })
+	local ok, err = pcall(function()
+		local started, result = manager:StartTrain(doer, false)
+		assert(started and result == routeMap and routeCalls == 2 and planCalls == 2,
+			"可重试的规划错误没有在有限轮次内恢复")
+		assert(secondOptions ~= nil and secondOptions.excludedSpotIds.bad_spot == true,
+			"第二轮没有排除故障景点")
+		for _, stop in ipairs(stops) do
+			if stop.id ~= "bad_spot" then
+				assert(secondOptions.preferredSpotIds[stop.id] == true, "第二轮没有保留有效景点")
+			end
+		end
+		manager:EndRun(doer._aip_train_run, "complete")
+		assert(doer._aip_train_run == nil, "规划重试隔离运行没有清理")
+	end)
+	if doer._aip_train_run ~= nil then manager:EndRun(doer._aip_train_run, "test_cleanup") end
+	if king:IsValid() then king:Remove() end
+	assert(ok, err)
+end
+
 return Scenarios

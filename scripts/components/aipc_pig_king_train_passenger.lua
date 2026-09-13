@@ -2,6 +2,7 @@ local config = require("configurations/aip_pig_king_train")
 local vitals = require("aip_pig_king_train_vitals")
 local devMode = aipGetModConfig("dev_mode") == "enabled"
 local LOG_PREFIX = "[PigKingTrain][Passenger]"
+local VERTICAL_ERROR_BUCKETS = { 0.05, 0.10, 0.15, 0.25 }
 
 -- 开发模式记录原矿车运动状态和高度误差，避免逐帧日志淹没控制台。
 local function Debug(...)
@@ -22,6 +23,62 @@ end
 -- 拒绝 NaN 与无穷值，防止非法运动向量把乘客永久卡在轨道上。
 local function IsFinite(value)
 	return type(value) == "number" and value == value and math.abs(value) < math.huge
+end
+
+-- 捕获误差峰值所在轨道、坡度和运动向量，结束时可一次性复盘而不逐帧刷屏。
+local function CaptureVerticalSnapshot(inst, run, driver, expectedY, signedError, verticalStep)
+	local x, actualY, z = inst.Transform:GetWorldPosition()
+	local motorX, motorY, motorZ = inst.Physics:GetMotorVel()
+	local velocityX, velocityY, velocityZ = inst.Physics:GetVelocity()
+	local control = driver.lastVerticalControl or {}
+	local profile = run.plan.segmentProfiles ~= nil and run.plan.segmentProfiles[run.pointIndex] or nil
+	return { tick = TheSim:GetTick(), point = run.pointIndex, x = x, y = actualY, z = z,
+		trackY = run.position.y, expectedY = expectedY, error = signedError, step = verticalStep,
+		motorX = motorX, motorY = motorY, motorZ = motorZ,
+		velocityX = velocityX, velocityY = velocityY, velocityZ = velocityZ,
+		sourceY = control.sourceY or run.position.y, targetY = control.targetY or run.position.y,
+		progress = control.progress or 0, slope = control.slope or 0,
+		feedForward = control.feedForward or 0,
+		gravityCompensation = control.gravityCompensation or 0,
+		mode = profile ~= nil and profile.mode or "unknown",
+		ramp = profile ~= nil and profile.ramp == true or math.abs(control.slope or 0) > 0.001 }
+end
+
+-- 将垂直诊断快照压缩为单行 AIP 日志。
+local function FormatVerticalSnapshot(snapshot)
+	if snapshot == nil then return "snapshot=nil" end
+	return string.format(
+		"tick=%s point=%s mode=%s ramp=%s pos=(%.2f,%.3f,%.2f) trackY=%.3f rideY=%.3f error=%+.4f step=%+.4f endpoints=%.3f->%.3f progress=%.3f slope=%+.4f motor=(%.2f,%.3f,%.2f) velocity=(%.2f,%.3f,%.2f) feed=%+.3f gravity=%+.3f",
+		tostring(snapshot.tick), tostring(snapshot.point), tostring(snapshot.mode), tostring(snapshot.ramp),
+		snapshot.x, snapshot.y, snapshot.z, snapshot.trackY, snapshot.expectedY,
+		snapshot.error, snapshot.step, snapshot.sourceY, snapshot.targetY, snapshot.progress,
+		snapshot.slope, snapshot.motorX, snapshot.motorY, snapshot.motorZ,
+		snapshot.velocityX, snapshot.velocityY, snapshot.velocityZ,
+		snapshot.feedForward, snapshot.gravityCompensation)
+end
+
+-- 按地面、平高架、上坡和下坡汇总误差，便于一次实机运行比较控制参数效果。
+local function UpdateVerticalRegime(diagnostics, driver, trackY, signedError)
+	local slope = driver.lastVerticalControl ~= nil and driver.lastVerticalControl.slope or 0
+	local name = slope > 0.001 and "up-ramp" or slope < -0.001 and "down-ramp"
+		or trackY > config.GROUND_HEIGHT and "elevated-flat" or "ground-flat"
+	local regime = diagnostics.regimes[name]
+	regime.samples = regime.samples + 1
+	regime.errorSum = regime.errorSum + signedError
+	regime.absoluteErrorSum = regime.absoluteErrorSum + math.abs(signedError)
+	regime.maxAbsoluteError = math.max(regime.maxAbsoluteError, math.abs(signedError))
+end
+
+-- 将四类纵向工况压缩为样本数、平均偏差、平均绝对偏差和峰值。
+local function FormatVerticalRegimes(diagnostics)
+	local values = {}
+	for _, name in ipairs({ "ground-flat", "elevated-flat", "up-ramp", "down-ramp" }) do
+		local regime = diagnostics.regimes[name]
+		local divisor = math.max(1, regime.samples)
+		table.insert(values, string.format("%s:%d/%+.4f/%.4f/%.4f", name, regime.samples,
+			regime.errorSum / divisor, regime.absoluteErrorSum / divisor, regime.maxAbsoluteError))
+	end
+	return table.concat(values, ",")
 end
 
 -- 只对本地乘客切换镜头；实体物理由原矿车驱动器维持，不在客户端反复开关。
@@ -113,12 +170,17 @@ function Passenger:UpdateTrackPosition(run, driver)
 	if source ~= nil and source:IsValid() then
 		local sourcePos = source:GetPosition()
 		trackY = sourcePos.y
+		local rideY = RideHeight(sourcePos.y)
 		if target ~= nil and target:IsValid() then
 			local targetPos = target:GetPosition()
 			local totalDistance = aipDist(sourcePos, targetPos)
 			local ratio = totalDistance > 0 and math.min(1, aipDist(position, sourcePos) / totalDistance) or 1
 			trackY = sourcePos.y + (targetPos.y - sourcePos.y) * ratio
+			rideY = RideHeight(sourcePos.y)
+				+ (RideHeight(targetPos.y) - RideHeight(sourcePos.y)) * ratio
 		end
+		run.position = { x = x, y = trackY, z = z }
+		return rideY
 	end
 	run.position = { x = x, y = trackY, z = z }
 	return RideHeight(trackY)
@@ -164,17 +226,47 @@ function Passenger:UpdateDiagnostics(run, driver, dt)
 	local expectedY = self:UpdateTrackPosition(run, driver)
 	local diagnostics = run.rideDiagnostics
 	local signedError = actualY - expectedY
+	local absoluteError = math.abs(signedError)
 	local verticalStep = diagnostics.lastActualY ~= nil and actualY - diagnostics.lastActualY or 0
 	local direction = math.abs(verticalStep) >= 0.002 and (verticalStep > 0 and 1 or -1) or 0
 	if direction ~= 0 and diagnostics.lastDirection ~= nil and direction ~= diagnostics.lastDirection then
 		diagnostics.directionChanges = diagnostics.directionChanges + 1
+		local control = driver.lastVerticalControl or {}
+		if math.abs(control.slope or 0) > 0.001 then
+			diagnostics.rampDirectionChanges = diagnostics.rampDirectionChanges + 1
+		else
+			diagnostics.flatDirectionChanges = diagnostics.flatDirectionChanges + 1
+		end
 	end
 	if direction ~= 0 then diagnostics.lastDirection = direction end
 	diagnostics.lastActualY = actualY
 	diagnostics.elapsed = diagnostics.elapsed + dt
 	diagnostics.samples = diagnostics.samples + 1
-	diagnostics.maxVerticalError = math.max(diagnostics.maxVerticalError, math.abs(signedError))
-	diagnostics.maxVerticalStep = math.max(diagnostics.maxVerticalStep, math.abs(verticalStep))
+	diagnostics.maxPositiveError = math.max(diagnostics.maxPositiveError, signedError)
+	diagnostics.minNegativeError = math.min(diagnostics.minNegativeError, signedError)
+	UpdateVerticalRegime(diagnostics, driver, run.position.y, signedError)
+	local bucketIndex = #VERTICAL_ERROR_BUCKETS + 1
+	for index, threshold in ipairs(VERTICAL_ERROR_BUCKETS) do
+		if absoluteError <= threshold then bucketIndex = index break end
+	end
+	diagnostics.errorBuckets[bucketIndex] = diagnostics.errorBuckets[bucketIndex] + 1
+	if absoluteError > diagnostics.maxVerticalError then
+		diagnostics.maxVerticalError = absoluteError
+		diagnostics.maxVerticalErrorSnapshot = CaptureVerticalSnapshot(
+			self.inst, run, driver, expectedY, signedError, verticalStep)
+		local logStep = math.max(0.001, config.RIDE_VERTICAL_PEAK_LOG_STEP or 0.025)
+		local peakLevel = math.floor(absoluteError / logStep)
+		if absoluteError >= VERTICAL_ERROR_BUCKETS[1] and peakLevel > diagnostics.lastPeakLogLevel then
+			diagnostics.lastPeakLogLevel = peakLevel
+			Debug("ride-vertical-peak", "run=" .. tostring(run.id),
+				FormatVerticalSnapshot(diagnostics.maxVerticalErrorSnapshot))
+		end
+	end
+	if math.abs(verticalStep) > diagnostics.maxVerticalStep then
+		diagnostics.maxVerticalStep = math.abs(verticalStep)
+		diagnostics.maxVerticalStepSnapshot = CaptureVerticalSnapshot(
+			self.inst, run, driver, expectedY, signedError, verticalStep)
+	end
 	if diagnostics.elapsed >= config.RIDE_DIAGNOSTIC_INTERVAL then
 		local motorX, motorY, motorZ = self.inst.Physics:GetMotorVel()
 		local velocityX, velocityY, velocityZ = self.inst.Physics:GetVelocity()
@@ -189,7 +281,9 @@ function Passenger:UpdateDiagnostics(run, driver, dt)
 				motorX, motorY, motorZ, velocityX, velocityY, velocityZ),
 			"physicsActive=" .. tostring(PhysicsActive(self.inst)), "state=" .. tostring(state),
 			"platform=" .. tostring(platform ~= nil and (platform.prefab or platform.GUID) or "nil"),
-			"directionChanges=" .. tostring(diagnostics.directionChanges))
+			string.format("directionChanges=%d(flat=%d,ramp=%d) overLimit=%d",
+				diagnostics.directionChanges, diagnostics.flatDirectionChanges,
+				diagnostics.rampDirectionChanges, diagnostics.errorBuckets[5]))
 		diagnostics.elapsed = 0
 	end
 end
@@ -215,13 +309,28 @@ function Passenger:Begin(run)
 	self.run = run
 	run.pointIndex = 1
 	run.driverSpeed = driver.speed
+	run.driverGroundHeight = driver.groundHeight
+	run.driverRideClearance = driver.rideClearance
+	run.driverGravityCompensation = driver.verticalGravityCompensation
+	run.driverVerticalFeedForward = driver.useVerticalFeedForward
+	driver.groundHeight = config.GROUND_HEIGHT
+	driver.rideClearance = config.RIDE_CLEARANCE
+	driver.verticalGravityCompensation = config.RIDE_VERTICAL_GRAVITY_COMPENSATION
+	driver.useVerticalFeedForward = true
 	run.position = { x = run.plan.station.x, y = run.plan.station.y, z = run.plan.station.z }
 	run.pointLookup = {}
 	for index, point in pairs(run.points) do run.pointLookup[point] = index end
 	run.hadNoTarget = self.inst:HasTag("notarget")
 	local drownable = self.inst.components.drownable
 	run.drownableEnabled = drownable ~= nil and drownable.enabled
-	if not driver:UseMineCar(run.car, run.points[1]) then self.run = nil return false end
+	if not driver:UseMineCar(run.car, run.points[1]) then
+		driver.groundHeight = run.driverGroundHeight
+		driver.rideClearance = run.driverRideClearance
+		driver.verticalGravityCompensation = run.driverGravityCompensation
+		driver.useVerticalFeedForward = run.driverVerticalFeedForward
+		self.run = nil
+		return false
+	end
 	driver.speed = config.SPEED
 	run.vitalsLock = vitals.Lock(self.inst)
 	if drownable ~= nil then drownable.enabled = false end
@@ -242,9 +351,19 @@ function Passenger:Begin(run)
 	if driver.nextOrbitPoint ~= second then self:Finish("track_lost") return false end
 	self:RestoreDrivingState()
 	run.rideDiagnostics = { elapsed = 0, samples = 0, maxVerticalError = 0, maxVerticalStep = 0,
-		directionChanges = 0, stallElapsed = 0 }
+		maxPositiveError = 0, minNegativeError = 0, directionChanges = 0,
+		flatDirectionChanges = 0, rampDirectionChanges = 0, stallElapsed = 0,
+		errorBuckets = { 0, 0, 0, 0, 0 }, lastPeakLogLevel = -1,
+		regimes = {
+			["ground-flat"] = { samples = 0, errorSum = 0, absoluteErrorSum = 0, maxAbsoluteError = 0 },
+			["elevated-flat"] = { samples = 0, errorSum = 0, absoluteErrorSum = 0, maxAbsoluteError = 0 },
+			["up-ramp"] = { samples = 0, errorSum = 0, absoluteErrorSum = 0, maxAbsoluteError = 0 },
+			["down-ramp"] = { samples = 0, errorSum = 0, absoluteErrorSum = 0, maxAbsoluteError = 0 },
+		} }
 	Debug("ride-begin", "run=" .. tostring(run.id), "physicsActive=" .. tostring(PhysicsActive(self.inst)),
-		"movement=original-motor", string.format("trackY=%.3f rideY=%.3f", run.position.y, RideHeight(run.position.y)))
+		"movement=original-motor", string.format("trackY=%.3f rideY=%.3f", run.position.y, RideHeight(run.position.y)),
+		string.format("verticalGain=%.1f feedForward=true gravityCompensation=%.2f clearance=%.2f",
+			driver.ySpeed, driver.verticalGravityCompensation, driver.rideClearance))
 	self.active:set(true)
 	if not TheNet:IsDedicated() then OnTourDirty(self.inst) end
 	self.inst:StartUpdatingComponent(self)
@@ -306,8 +425,20 @@ function Passenger:Finish(reason)
 	if diagnostics ~= nil then
 		Debug("ride-finish", "run=" .. tostring(run.id), "reason=" .. tostring(reason),
 			"samples=" .. tostring(diagnostics.samples),
-			string.format("maxVerticalError=%.4f maxVerticalStep=%.4f directionChanges=%d",
-				diagnostics.maxVerticalError, diagnostics.maxVerticalStep, diagnostics.directionChanges))
+			string.format("maxVerticalError=%.4f signedRange=%+.4f/%+.4f maxVerticalStep=%.4f directionChanges=%d(flat=%d,ramp=%d)",
+				diagnostics.maxVerticalError, diagnostics.minNegativeError, diagnostics.maxPositiveError,
+				diagnostics.maxVerticalStep, diagnostics.directionChanges,
+				diagnostics.flatDirectionChanges, diagnostics.rampDirectionChanges))
+		Debug("ride-vertical-buckets", "run=" .. tostring(run.id),
+			string.format("absError<=0.05:%d,<=0.10:%d,<=0.15:%d,<=0.25:%d,>0.25:%d",
+				diagnostics.errorBuckets[1], diagnostics.errorBuckets[2], diagnostics.errorBuckets[3],
+				diagnostics.errorBuckets[4], diagnostics.errorBuckets[5]))
+		Debug("ride-vertical-regimes", "run=" .. tostring(run.id),
+			"format=samples/meanSigned/meanAbs/maxAbs", FormatVerticalRegimes(diagnostics))
+		Debug("ride-vertical-max-error", "run=" .. tostring(run.id),
+			FormatVerticalSnapshot(diagnostics.maxVerticalErrorSnapshot))
+		Debug("ride-vertical-max-step", "run=" .. tostring(run.id),
+			FormatVerticalSnapshot(diagnostics.maxVerticalStepSnapshot))
 	end
 	vitals.Release(run.vitalsLock)
 	self.inst:StopUpdatingComponent(self)
@@ -315,6 +446,10 @@ function Passenger:Finish(reason)
 	local valid = self.inst:IsValid()
 	if driver ~= nil then
 		driver.speed = run.driverSpeed or driver.speed
+		driver.groundHeight = run.driverGroundHeight or driver.groundHeight
+		driver.rideClearance = run.driverRideClearance or driver.rideClearance
+		driver.verticalGravityCompensation = run.driverGravityCompensation or 0
+		driver.useVerticalFeedForward = run.driverVerticalFeedForward == true
 		if valid and self.inst.Physics ~= nil then driver:StopDrive()
 		else self.inst:StopUpdatingComponent(driver) end
 		driver:SetRouteProvider(nil)

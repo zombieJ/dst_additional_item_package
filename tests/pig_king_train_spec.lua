@@ -75,6 +75,12 @@ function MakeGhostPhysics(inst) inst.physicsMode, inst.physicsActive = "ghost", 
 -- 临时观光车只需保留可传送的物理接口。
 function MakeInventoryPhysics(inst) inst.physicsMode, inst.physicsActive = "inventory", true end
 
+-- 物品漂浮配置不影响离线行为，只记录 prefab 构造调用成功。
+function MakeInventoryFloatable(inst) inst.inventoryFloatable = true end
+
+-- 闹鬼弹射不影响离线行为，只记录 prefab 构造调用成功。
+function MakeHauntableLaunch(inst) inst.hauntableLaunch = true end
+
 -- 序列化连接端点，保持原连接组件的数据协议。
 function aipCommonStr(_, separator, ...) return table.concat({...}, separator) end
 
@@ -111,8 +117,42 @@ local function NewEntity(prefab, x, z, tags)
 		GetMotorSpeed = function() return math.abs(inst.motorX or 0) end,
 		GetVelocity = function() return inst.motorX or 0, inst.motorY or 0, inst.motorZ or 0 end,
 	}
-	inst.AnimState = setmetatable({}, { __index = function() return function() end end })
-	inst.entity = setmetatable({}, { __index = function() return function() end end })
+	local animState = { multColour = { 1, 1, 1, 1 } }
+	-- 记录动画 bank。
+	function animState:SetBank(bank) self.bank = bank end
+	-- 记录动画 build。
+	function animState:SetBuild(build) self.build = build end
+	-- 记录当前播放动画。
+	function animState:PlayAnimation(animation) self.animation = animation end
+	-- 判断 prefab 是否播放目标动画。
+	function animState:IsCurrentAnimation(animation) return self.animation == animation end
+	-- 记录实际乘色与透明度。
+	function animState:SetMultColour(r, g, b, a) self.multColour = { r, g, b, a } end
+	-- 返回当前乘色与透明度。
+	function animState:GetMultColour() return self.multColour[1], self.multColour[2], self.multColour[3], self.multColour[4] end
+	inst.AnimState = setmetatable(animState, { __index = function() return function() end end })
+	local engineEntity = { owner = inst }
+	-- 为随身灯提供可回读的 Light 组件替身。
+	function engineEntity:AddLight()
+		local light = { radius = 0, falloff = 0, intensity = 0, colour = { 1, 1, 1 }, enabled = false }
+		function light:SetRadius(value) self.radius = value end
+		function light:GetRadius() return self.radius end
+		function light:SetFalloff(value) self.falloff = value end
+		function light:GetFalloff() return self.falloff end
+		function light:SetIntensity(value) self.intensity = value end
+		function light:GetIntensity() return self.intensity end
+		function light:SetColour(r, g, b) self.colour = { r, g, b } end
+		function light:GetColour() return self.colour[1], self.colour[2], self.colour[3] end
+		function light:Enable(value) self.enabled = value end
+		function light:IsEnabled() return self.enabled end
+		inst.Light = light
+	end
+	-- 按 DST 语义保存引擎实体父级，回读时返回 EntityScript。
+	function engineEntity:SetParent(parentEntity)
+		self.parent = parentEntity ~= nil and parentEntity.owner or nil
+	end
+	function engineEntity:GetParent() return self.parent end
+	inst.entity = setmetatable(engineEntity, { __index = function() return function() end end })
 	inst.sg = { currentstate = { name = "idle" }, tags = {},
 		GoToState = function(self, state) self.currentstate.name = state self.tags = {} end,
 		AddStateTag = function(self, tag) self.tags[tag] = true end }
@@ -192,9 +232,53 @@ function Entity:Remove()
 	self.valid = false
 end
 
--- 直接加载真实组件实现。
+-- 提供真实 Trader:AcceptGift 所需的最小行为，验证物品扣除和事件顺序。
+local function MakeTrader(inst)
+	local trader = { inst = inst, enabled = true, deleteitemonaccept = true, acceptnontradable = false }
+	-- 安装收礼过滤函数。
+	function trader:SetAcceptTest(fn) self.test = fn end
+	-- 安装收礼成功回调。
+	function trader:SetOnAccept(fn) self.onaccept = fn end
+	-- 安装拒绝物品回调。
+	function trader:SetOnRefuse(fn) self.onrefuse = fn end
+	-- 判断替身是否具备接收物品的基础条件。
+	function trader:AbleToAccept(item) return self.enabled and item ~= nil end
+	-- 按真实过滤函数判断是否需要物品。
+	function trader:WantsToAccept(item, giver, count)
+		return self.enabled and (self.test == nil or self.test(self.inst, item, giver, count))
+	end
+	-- 复刻真实扣物、成功回调与 trade 事件顺序。
+	function trader:AcceptGift(giver, item, count)
+		if not self:AbleToAccept(item, giver, count) then return false end
+		if not self:WantsToAccept(item, giver, count) then
+			if self.onrefuse ~= nil then self.onrefuse(self.inst, giver, item) end
+			return false
+		end
+		item.components.inventoryitem:RemoveFromOwner(true)
+		if self.deleteitemonaccept then item:Remove() end
+		if self.onaccept ~= nil then self.onaccept(self.inst, giver, item, count or 1) end
+		self.inst:PushEvent("trade", { giver = giver, item = item })
+		return true
+	end
+	return trader
+end
+
+-- 加载真实行为组件，并为物品与 Trader 提供等价的轻量离线替身。
 function Entity:AddComponent(name)
-	self.components[name] = require("components/" .. name)(self)
+	if name == "inspectable" or name == "tradable" then
+		self.components[name] = { inst = self }
+	elseif name == "inventoryitem" then
+		self.components[name] = { inst = self,
+			SetOnPutInInventoryFn = function(component, fn) component.onputininventoryfn = fn end,
+			RemoveFromOwner = function(component) component.removedFromOwner = true end }
+	elseif name == "stackable" then
+		self.components[name] = { inst = self, stacksize = 1,
+			SetStackSize = function(component, size) component.stacksize = size end }
+	elseif name == "trader" then
+		self.components[name] = MakeTrader(self)
+	else
+		self.components[name] = require("components/" .. name)(self)
+	end
 end
 
 -- 注册真实临时轨道 prefab，测试其持久化标记及连接初始化。
@@ -245,17 +329,116 @@ local landMap = {
 }
 TheWorld = NewEntity("world")
 TheWorld.ismastersim, TheWorld.Map = true, landMap
+TheWorld.state = { phase = "day", isday = true, isdusk = false, isnight = false }
+local clockState = { phase = "day", remainingtimeinphase = 37,
+	totaltimeinphase = 100, cycles = 12, segs = { day = 10, dusk = 4, night = 2 } }
+
+-- 更新延迟复制后的世界阶段状态。
+local function ApplyWorldPhase(phase)
+	TheWorld.state.phase = phase
+	TheWorld.state.isday = phase == "day"
+	TheWorld.state.isdusk = phase == "dusk"
+	TheWorld.state.isnight = phase == "night"
+end
+
+-- 提供可保存、切换和恢复的世界时钟，并把 world state 模拟成下一帧才同步。
+TheWorld.components.clock = {
+	OnSave = function()
+		return { phase = clockState.phase, remainingtimeinphase = clockState.remainingtimeinphase,
+			totaltimeinphase = clockState.totaltimeinphase, cycles = clockState.cycles,
+			segs = { day = clockState.segs.day, dusk = clockState.segs.dusk, night = clockState.segs.night } }
+	end,
+	OnLoad = function(_, data)
+		clockState.phase = data.phase or "day"
+		clockState.remainingtimeinphase = data.remainingtimeinphase or 37
+		clockState.totaltimeinphase = data.totaltimeinphase or 100
+		clockState.cycles = data.cycles or 12
+		clockState.segs = data.segs or { day = 10, dusk = 4, night = 2 }
+		ApplyWorldPhase(clockState.phase)
+	end,
+	LongUpdate = function() end,
+}
+TheWorld.net = { components = { clock = TheWorld.components.clock } }
+TheWorld:ListenForEvent("ms_setclocksegs", function(_, segs)
+	clockState.segs = { day = segs.day, dusk = segs.dusk, night = segs.night }
+end)
+TheWorld:ListenForEvent("ms_setphase", function(_, phase)
+	clockState.phase = phase
+	if TheWorld.DoStaticTaskInTime ~= nil then
+		TheWorld:DoStaticTaskInTime(0, function() ApplyWorldPhase(phase) end)
+	else
+		ApplyWorldPhase(phase)
+	end
+end)
 Ents = {}
 require("prefabs/aip_pig_king_train_orbit")
+require("prefabs/aip_train_ticket")
+require("prefabs/aip_train_ticket_fragment")
 local route = require("aip_pig_king_train_route")
 local track = require("aip_pig_king_train_track")
 local config = require("configurations/aip_pig_king_train")
 local Driver = require("components/aipc_orbit_driver")
 local Passenger = require("components/aipc_pig_king_train_passenger")
 local Runtime = require("aip_pig_king_train_runtime")
+local fade = require("aip_pig_king_train_fade")
+local indicator = require("aip_pig_village_indicator")
+
+Test("train fade telemetry is limited to temporary links and observes real alpha stages", function()
+	assert(fade.AppliesToPrefab("aip_pig_king_train_link"))
+	assert(not fade.AppliesToPrefab("aip_glass_orbit_link"))
+	local telemetry = fade.ResetTelemetry(TheWorld)
+	local first, second = NewEntity("orbit"), NewEntity("orbit")
+	first.AnimState:SetMultColour(1, 1, 1, 0)
+	second.AnimState:SetMultColour(1, 1, 1, 0)
+	fade.ObserveTelemetry(TheWorld, { first, second }, true, false)
+	first.AnimState:SetMultColour(1, 1, 1, 0.4)
+	fade.ObserveTelemetry(TheWorld, { first, second }, false, false)
+	first.AnimState:SetMultColour(1, 1, 1, 1)
+	second.AnimState:SetMultColour(1, 1, 1, 1)
+	fade.ObserveTelemetry(TheWorld, { first, second }, false, true)
+	assert(telemetry.startCount == 1 and telemetry.completedCount == 1)
+	assert(telemetry.sawTransparent and telemetry.sawPartial and telemetry.sawStaggered
+		and telemetry.finalAlphaOne)
+end)
+
+Test("pig village quest marker resolves to an existing vanilla question icon", function()
+	local data = indicator.Resolve({ prefab = "aip_pig_village_quest_marker" }, nil)
+	assert(data.image == "poi_question.tex" and data.atlas == "images/avatars.xml")
+	local explicit = { image = "custom.tex", atlas = "custom.xml" }
+	assert(indicator.Resolve({ prefab = "aip_pig_village_quest_marker" }, explicit) == explicit)
+	assert(indicator.Resolve({ prefab = "pigking" }, nil) == nil)
+end)
+
+Test("pig village HUD hook injects the question icon without changing explicit target data", function()
+	local oldDedicated = TheNet.IsDedicated
+	local callback, received = nil, nil
+	TheNet.IsDedicated = function() return false end
+	local ok, err = pcall(function()
+		local environment = {
+			GLOBAL = _G,
+			AddClassPostConstruct = function(path, fn)
+				assert(path == "screens/playerhud")
+				callback = fn
+			end,
+		}
+		local chunk = assert(loadfile("scripts/hooks/aip_pig_village_quest_hook.lua", "t", environment))
+		chunk()
+		assert(callback ~= nil)
+		local hud = { AddTargetIndicator = function(_, target, data) received = { target, data } end }
+		callback(hud)
+		hud:AddTargetIndicator({ prefab = "aip_pig_village_quest_marker" })
+		assert(hud._aipPigVillageIndicatorHook and received[2].image == "poi_question.tex")
+		local explicit = { image = "custom.tex" }
+		hud:AddTargetIndicator({ prefab = "aip_pig_village_quest_marker" }, explicit)
+		assert(received[2] == explicit)
+	end)
+	TheNet.IsDedicated = oldDedicated
+	assert(ok, err)
+end)
 
 -- 构造六处互不重叠的地标，固定随机抽取顺序便于验证降级和不足配额。
 local function WorldFixture()
+	TheWorld.components.clock:OnLoad({ phase = "day" })
 	local king = NewEntity("pigking", 0, 0)
 	local spots = {
 		NewEntity("moonbase", 100, 0), NewEntity("dragonfly_spawner", 200, 100),
@@ -411,9 +594,16 @@ Test("safe viewpoints and closed ground-first track with limited elevation", fun
 		assert(math.abs(math.deg(measuredSweep) - 270) < 0.01)
 	end
 	assert(stops == 6 and plan.visualCount <= config.MAX_VISUALS)
-	assert(groundArcs > 0 and elevatedArcs > 0, "fixture did not exercise both height modes")
-	assert(plan.groundDistance > plan.elevatedDistance and plan.heightTransitions > 0,
-		"land route was not primarily kept on the ground")
+	assert(groundArcs == 6 and elevatedArcs == 0,
+		"safe land landmarks should not be raised only because they are dangerous")
+	assert(plan.groundDistance > plan.elevatedDistance and plan.heightTransitions == 0,
+		"fully passable land route was not kept on the ground")
+	assert(plan.rampDistance == 0 and (plan.modeDistances.ground or 0) > 0
+		and (plan.modeDistances["ground-scenic"] or 0) > 0,
+		"height mode distance telemetry is incomplete")
+	local modeDistance = 0
+	for _, distance in pairs(plan.modeDistances) do modeDistance = modeDistance + distance end
+	assert(math.abs(modeDistance - plan.totalDistance) < 0.01)
 	for index = 2, #plan.points do
 		assert(aipDist(plan.points[index - 1], plan.points[index]) <= config.MAX_SEGMENT + 0.01,
 			"track endpoint spacing exceeded the configured limit")
@@ -423,6 +613,12 @@ Test("safe viewpoints and closed ground-first track with limited elevation", fun
 		end
 	end
 	assert(plan.totalDistance > result.totalDistance * 0.5)
+	local oldMinimumGroundRatio = config.MIN_GROUND_RATIO
+	config.MIN_GROUND_RATIO = 1.01
+	local missing, ratioError = track.Plan(result)
+	config.MIN_GROUND_RATIO = oldMinimumGroundRatio
+	assert(missing == nil and ratioError.code == "insufficient_ground_ratio"
+		and ratioError.spot ~= nil, "low-ground route did not request a bounded landmark retry")
 end)
 
 Test("track streams in a bounded window instead of prebuilding the full route", function()
@@ -432,7 +628,9 @@ Test("track streams in a bounded window instead of prebuilding the full route", 
 	assert(runtime:StartTrain(player, true))
 	local run = player._aip_train_run
 	FlushBuild()
-	assert(run.boarded and #run.plan.points > config.TRACK_LOOKAHEAD + 1)
+	assert(run.boarded and #run.plan.points > config.TRACK_LOOKAHEAD + 1,
+		run.error ~= nil and (tostring(run.error.code) .. ": " .. tostring(run.error.detail))
+		or "streaming ride did not board")
 	assert(CountValid(run.points) == config.TRACK_LOOKAHEAD + 1)
 	assert(CountValid(run.links) == config.TRACK_LOOKAHEAD)
 	assert(run.points[#run.plan.points] == nil, "full route was created before departure")
@@ -497,6 +695,8 @@ Test("dangerous obstacles cause detours without entity changes", function()
 	table.insert(Ents, obstacle)
 	local detour = assert(track.Plan(result))
 	assert(obstacle.valid and detour.totalDistance >= initial.totalDistance)
+	assert(detour.blockerDiagnostics.hazardBlockers >= 1,
+		"hostile obstacle was not retained as a hard blocker")
 	for i = 2, #detour.points do
 		local first, last = detour.points[i-1], detour.points[i]
 		for sample = 0, 20 do
@@ -507,10 +707,17 @@ Test("dangerous obstacles cause detours without entity changes", function()
 	end
 end)
 
-Test("ordinary ground clutter is avoided without forcing the full route elevated", function()
+Test("ordinary ground clutter follows the tour ghost collision policy", function()
 	local king = WorldFixture()
 	local result = assert(route.Create(king, { randomFn = function() return 1 end }))
 	local initial = assert(track.Plan(result))
+	local stationTree = NewEntity("evergreen", initial.station.x, initial.station.z,
+		{ CHOP_workable = true })
+	stationTree.radius = 2
+	local safeStation = assert(track.FindStation(
+		track.CreateContext({ entities = { stationTree } }), result.start.point, initial.station))
+	assert(aipDist(safeStation, stationTree:GetPosition()) >= 6,
+		"strict return station overlapped ignored route clutter")
 	local a, b
 	for index = 2, #initial.points do
 		local first, last = initial.points[index - 1], initial.points[index]
@@ -518,20 +725,36 @@ Test("ordinary ground clutter is avoided without forcing the full route elevated
 			and aipDist(first, last) > 4 then a, b = first, last break end
 	end
 	assert(a ~= nil, "fixture has no usable ground segment")
-	local tree = NewEntity("evergreen", (a.x+b.x)/2, (a.z+b.z)/2, { CHOP_workable = true })
+	local x, z = (a.x+b.x)/2, (a.z+b.z)/2
+	local tree = NewEntity("evergreen", x, z, { CHOP_workable = true })
 	tree.radius = 2
+	local house = NewEntity("pighouse", x, z, { structure = true })
+	house.radius = 2
+	local item = NewEntity("boulder", x, z)
+	item.radius = 2
+	local pig = NewEntity("pigman", x, z, { character = true })
+	pig.radius = 0.5
+	local context = track.CreateContext({ entities = { tree, house, item, pig } })
+	assert(context.blockerCount == 4 and context.elevatedBlockerCount == 1
+		and context.blockerKinds.character == 1
+		and context.ignoredGroundClutterCount == 3,
+		"ordinary obstacles did not follow MakeGhostPhysics collision policy")
 	table.insert(Ents, tree)
-	local detour = assert(track.Plan(result))
-	assert(tree.valid and detour.groundDistance > detour.elevatedDistance)
-	for index = 2, #detour.points do
-		local first, last = detour.points[index - 1], detour.points[index]
-		if first.y <= config.GROUND_HEIGHT and last.y <= config.GROUND_HEIGHT then
-			for sample = 0, 20 do
-				local t = sample / 20
-				local x, z = first.x + (last.x-first.x)*t, first.z + (last.z-first.z)*t
-				assert((x-tree.x)^2+(z-tree.z)^2 >= 3^2)
-			end
-		end
+	table.insert(Ents, house)
+	table.insert(Ents, item)
+	local repeated = assert(track.Plan(result))
+	assert(tree.valid and house.valid and item.valid
+		and repeated.groundDistance > repeated.elevatedDistance)
+	assert(repeated.blockerDiagnostics.ignoredGroundClutter >= 3
+		and repeated.blockerDiagnostics.policy == "ghost-physics-aligned")
+	assert(#repeated.points == #initial.points,
+		"ignored ground clutter changed the deterministic route")
+	for index, point in ipairs(repeated.points) do
+		local expected = initial.points[index]
+		assert(math.abs(point.x - expected.x) < 0.01
+			and math.abs(point.y - expected.y) < 0.01
+			and math.abs(point.z - expected.z) < 0.01,
+			"ignored ground clutter changed a route point")
 	end
 end)
 
@@ -544,6 +767,24 @@ Test("ocean enabled with independent distance and visual budgets", function()
 	}
 	local plan = assert(track.Plan(result, { map = map }))
 	assert(plan.oceanDistance > 0 and plan.elevatedDistance > 0)
+	local elevatedArcs = 0
+	for _, arc in ipairs(plan.arcs) do
+		assert(arc.heightReason ~= nil and arc.groundSearch ~= nil)
+		if arc.elevated then
+			elevatedArcs = elevatedArcs + 1
+			assert(arc.heightMode == "elevated-fallback"
+				and arc.heightReason == "ground-arc-unavailable")
+		end
+	end
+	assert(elevatedArcs > 0 and (plan.modeDistances["elevated-scenic"] or 0) > 0)
+	for pointIndex, stop in pairs(plan.stops) do
+		for _, arc in ipairs(plan.arcs) do
+			if arc.stop == stop.spot then
+				assert(math.abs(plan.points[pointIndex].y - arc.entry.y) < 0.01,
+					"short elevation path did not reach the scenic endpoint height")
+			end
+		end
+	end
 	assert(track.Plan(result, { map = map, allowOcean = false }) == nil)
 	local old = config.MAX_OCEAN_DISTANCE
 	config.MAX_OCEAN_DISTANCE = 1
@@ -574,6 +815,36 @@ Test("trade wrappers preserve ordinary pig king trades", function()
 	assert(accepted == 1)
 end)
 
+Test("tour vertical controller adds slope feed-forward without teleporting the player", function()
+	WorldFixture()
+	local player = PlayerFixture()
+	local driver = player.components.aipc_orbit_driver
+	local source, target = NewEntity("source", 0, 0), NewEntity("target", 32, 0)
+	source.y, target.y = 0, 6
+	local car = SpawnPrefab("aip_pig_king_train_car")
+	assert(driver:UseMineCar(car, source))
+	driver.groundHeight = config.GROUND_HEIGHT
+	driver.rideClearance = config.RIDE_CLEARANCE
+	driver.verticalGravityCompensation = config.RIDE_VERTICAL_GRAVITY_COMPENSATION
+	driver.useVerticalFeedForward = true
+	driver:SetRouteProvider(function(current)
+		return current == source and { target } or {}
+	end)
+	driver:DriveFromPoint(0)
+	player.x, player.y = 16, (target.y + config.RIDE_CLEARANCE) / 2
+	local beforeX, beforeY, beforeZ = player.x, player.y, player.z
+	driver:OnUpdate(1 / 30)
+	local control = assert(driver.lastVerticalControl)
+	assert(player.x == beforeX and player.y == beforeY and player.z == beforeZ,
+		"driver update directly rewrote player coordinates")
+	assert(control.slope > 0 and control.feedForward > 0
+		and math.abs(control.rideY - beforeY) < 0.001
+		and control.gravityCompensation == config.RIDE_VERTICAL_GRAVITY_COMPENSATION
+		and player.motorY == control.motorY,
+		"slope feed-forward was not applied to the original motor vector")
+	driver:StopDrive()
+end)
+
 Test("automatic round trip, safe save position and state restoration", function()
 	local king = WorldFixture()
 	local runtime, player = Runtime(king), PlayerFixture()
@@ -585,9 +856,16 @@ Test("automatic round trip, safe save position and state restoration", function(
 		run.error ~= nil and (tostring(run.error.code) .. ": " .. tostring(run.error.detail)) or "boarding did not finish")
 	local driver = player.components.aipc_orbit_driver
 	assert(driver.routeProvider ~= nil and driver.nextOrbitPoint == run.points[2])
+	assert(driver.useVerticalFeedForward and driver.verticalGravityCompensation
+		== config.RIDE_VERTICAL_GRAVITY_COMPENSATION)
 	assert(CountValid(run.links) == config.TRACK_LOOKAHEAD
 		and CountValid(run.points) == config.TRACK_LOOKAHEAD + 1)
 	for _, entity in ipairs(run.entities) do assert(entity.persists == false) end
+	local rideLight = assert(run.light)
+	assert(rideLight:IsValid() and rideLight.entity:GetParent() == player and rideLight.Light:IsEnabled())
+	assert(rideLight.Light:GetRadius() == config.RIDE_LIGHT_RADIUS
+		and rideLight.Light:GetFalloff() == config.RIDE_LIGHT_FALLOFF
+		and rideLight.Light:GetIntensity() == config.RIDE_LIGHT_INTENSITY)
 	local passenger = player.components.aipc_pig_king_train_passenger
 	StepRide(player, 1 / 30)
 	local record, references = player:GetSaveRecord()
@@ -604,9 +882,17 @@ Test("automatic round trip, safe save position and state restoration", function(
 		end
 	end
 	assert(run.ended and #run.entities == 0 and player.refunds == nil)
+	assert(not rideLight:IsValid(), "ride light survived a completed trip")
 	assert(sawScenicSpeed and sawCruiseAfterArc)
 	assert(player.y == 0 and player.components.drownable.enabled == true)
 	assert(not player:HasTag("notarget") and not driver:isDriving() and driver.routeProvider == nil)
+	assert(not driver.useVerticalFeedForward and driver.verticalGravityCompensation == 0)
+	local diagnostics = assert(run.rideDiagnostics)
+	assert(diagnostics.samples > 0 and #diagnostics.errorBuckets == 5
+		and diagnostics.flatDirectionChanges + diagnostics.rampDirectionChanges
+		== diagnostics.directionChanges)
+	assert(diagnostics.regimes["ground-flat"].samples > 0,
+		"vertical regime diagnostics missed the ground ride")
 end)
 
 Test("invalid motor velocity aborts instead of trapping the passenger", function()
@@ -615,10 +901,11 @@ Test("invalid motor velocity aborts instead of trapping the passenger", function
 	assert(runtime:StartTrain(player, true))
 	local run = player._aip_train_run
 	FlushBuild()
+	local rideLight = assert(run.light)
 	player.motorY = math.huge
 	player.components.aipc_pig_king_train_passenger:OnUpdate(1 / 30)
 	assert(run.ended and run.endReason == "invalid_motion" and run.error.code == "invalid_motion")
-	assert(#run.entities == 0 and player.y == 0)
+	assert(#run.entities == 0 and player.y == 0 and not rideLight:IsValid())
 end)
 
 Test("stalled physics aborts within the bounded watchdog timeout", function()
@@ -967,17 +1254,25 @@ local devScenarios = require("dev/aip_pig_king_train_scenarios")
 Test("pig village quests fill daily without same-day replacement", devScenarios.PigVillageDailyFill)
 Test("pig village delivery restores pig behavior and wraps rewards", devScenarios.PigVillageDelivery)
 Test("train ticket fragments merge once per frame in groups of three", devScenarios.TrainTicketFragmentMerge)
+Test("ticket prefabs expose icons, animations, stacking and merge hooks", devScenarios.TrainTicketPrefabs)
+Test("paid ticket trade consumes once, preserves vanilla trades and refunds correctly", devScenarios.PaidTicketTrade)
+Test("runtime retries one failed landmark while retaining valid selections", function()
+	WorldFixture()
+	devScenarios.RoutePlanningRetry(PlayerFixture())
+end)
 
 -- 推进静态与模拟时间；模拟暂停后仍执行报告任务，以验证不会漏掉后续报告批次。
-local function ExerciseDevRunner(hasKing)
+local function ExerciseDevRunner(hasKing, forceGroundFailure)
 	WorldFixture()
 	local king = Ents[1]
 	king.components.aipc_pig_king_train = Runtime(king)
 	if not hasKing then Ents = {} end
 	local player = PlayerFixture()
-	local staticTasks, now, paused, outputs = {}, 0, false, {}
-	local oldStatic, oldPaused, oldPrint, oldSetPause, oldPauser, oldCameraProber = TheWorld.DoStaticTaskInTime,
-		TheNet.IsServerPaused, print, SetServerPaused, devTests.pauser, devTests.cameraProber
+	local staticTasks, now, paused, outputs, stepEvents = {}, 0, false, {}, {}
+	local oldGroundRatio = config.TEST_MIN_GROUND_RATIO
+	if forceGroundFailure then config.TEST_MIN_GROUND_RATIO = 1.1 end
+	local oldStatic, oldPaused, oldPrint, oldSetPause, oldPauser, oldClientProber = TheWorld.DoStaticTaskInTime,
+		TheNet.IsServerPaused, print, SetServerPaused, devTests.pauser, devTests.clientProber
 	TheWorld.DoStaticTaskInTime = function(_, delay, fn)
 		local task = { due = now + delay, fn = fn, Cancel = function(self) self.cancelled = true end }
 		table.insert(staticTasks, task)
@@ -990,16 +1285,25 @@ local function ExerciseDevRunner(hasKing)
 		SetServerPaused(true)
 		return true
 	end
-	devTests.cameraProber = function(doer, sessionGeneration)
-		assert(devTests.CameraProbeResult(doer, sessionGeneration, true,
-			"yawLeft=75.0,yawRight=-75.0,trackLerp=true,offsetInstant=true,pitch=18.0/30.0/42.0,nearCenter=-1.5"))
+	devTests.clientProber = function(doer, sessionGeneration, phase)
+		if phase == "driving" or phase == "ended" then
+			assert(TheWorld.state.isnight == true, "client probe was not requested during night")
+		end
+		assert(devTests.ClientProbeResult(doer, sessionGeneration, phase, true,
+			phase == "initial" and "night=false,camera=true,hint=false,marker=poi_question;light=false"
+			or phase == "driving" and "night=true,driving=true,hint=true,fade=1/1,transparent=true,partial=true,staggered=true,alphaOne=true;light=true,enabled=true,radius=10.00,falloff=0.45,intensity=0.80"
+			or "night=true,driving=false,hint=false;light=false"))
 		return true
 	end
-	print = function(chunk) table.insert(outputs, chunk) end
+	print = function(chunk)
+		table.insert(outputs, chunk)
+		if chunk:find("[PigKingTrain][TestStep]", 1, true) then
+			table.insert(stepEvents, { at = now, text = chunk })
+		end
+	end
 	TheWorld._aipTrainLastTestReport = nil
 	local ok, err = pcall(function()
 		assert(devTests.Start(player))
-		assert(devTests.Start(player), "repeated ticket use did not restart the active test")
 		local restartedAfterReport = false
 		for _ = 1, 1600 do
 			now = now + 0.5
@@ -1023,35 +1327,103 @@ local function ExerciseDevRunner(hasKing)
 		end
 		local report = assert(TheWorld._aipTrainLastTestReport, "report missing")
 		assert(restartedAfterReport, "report-generation restart path was not exercised")
-		assert(paused and report.success == hasKing, string.format(
+		local expectedSuccess = hasKing and not forceGroundFailure
+		assert(paused and report.success == expectedSuccess, string.format(
 			"%s; paused=%s success=%s expected=%s", tostring(report.detail),
-			tostring(paused), tostring(report.success), tostring(hasKing)))
+			tostring(paused), tostring(report.success), tostring(expectedSuccess)))
 		assert(player._aip_train_run == nil)
+		local joined = table.concat(report.lines, "\n")
+		assert(joined:find("活动测试会话自动重启与旧任务取消", 1, true),
+			"single coupon run did not verify its internal restart")
+		if hasKing then
+			assert(TheWorld.state.phase == "day" and TheWorld.state.isday == true,
+				"test night did not restore the saved clock phase")
+			local restoredClock = TheWorld.components.clock:OnSave()
+			assert(restoredClock.segs.day == 10 and restoredClock.segs.dusk == 4
+				and restoredClock.segs.night == 2, "test night did not restore the saved clock segments")
+			assert(report.passed + report.failed + report.skipped == 24,
+				"unexpected game-suite check count")
+			assert(joined:find("真实夜间环境准备与时钟恢复点", 1, true),
+				"night setup check missing")
+			assert(joined:find("night=true", 1, true) and joined:find("light=true", 1, true)
+				and joined:find("light=false", 1, true), "night light probe details missing")
+			assert(joined:find("高度模式里程", 1, true)
+				and joined:find("判障策略：ghost-physics-aligned", 1, true)
+				and joined:find("垂直误差分桶", 1, true)
+				and joined:find("垂直工况", 1, true)
+				and joined:find("景点高度：", 1, true),
+				"route or vertical diagnostic report lines missing")
+			for _, phase in ipairs({ "phase=initial", "phase=driving", "phase=ended" }) do
+				assert(joined:find(phase, 1, true), "missing client probe " .. phase)
+			end
+		end
+		if forceGroundFailure then
+			assert(joined:find("[FAIL] 路线多数贴地且仅少量抬升", 1, true),
+				"forced assertion failure was not recorded")
+			assert(joined:find("[PASS] 圆弧减速与巡航恢复", 1, true),
+				"suite stopped after a recoverable assertion failure")
+		end
+		assert(not joined:find("#LUA ERROR", 1, true) and not joined:find("stack traceback", 1, true),
+			"caught test failure leaked an engine error marker into the report")
 		assert(#outputs > 1, "report was not batched")
 		for _, chunk in ipairs(outputs) do
 			local _, count = chunk:gsub("\n", "")
 			assert(count < 3, "too many report lines in one batch")
 		end
 		assert(outputs[#outputs]:find("回到 Codex", 1, true), "last batch was lost while paused")
+		local lastCompleteByGeneration = {}
+		local starts, heavyWaits = 0, 0
+		for _, event in ipairs(stepEvents) do
+			local eventGeneration = assert(event.text:match("generation=(%d+)"))
+			if event.text:find("state=start", 1, true) then
+				starts = starts + 1
+				local previous = lastCompleteByGeneration[eventGeneration]
+				if previous ~= nil then
+					assert(event.at - previous >= 0.5,
+						"adjacent game test steps executed without yielding frames")
+				end
+			elseif event.text:find("state=complete", 1, true) then
+				lastCompleteByGeneration[eventGeneration] = event.at
+				if event.text:find("nextWait=2.00", 1, true) then heavyWaits = heavyWaits + 1 end
+			end
+		end
+		if hasKing then
+			assert(starts >= 22, "not all paced test steps were observed")
+			assert(heavyWaits >= 2, "heavy route steps did not receive a separate cooldown")
+		end
 	end)
 	TheWorld.DoStaticTaskInTime, TheNet.IsServerPaused, print, SetServerPaused, devTests.pauser,
-		devTests.cameraProber = oldStatic, oldPaused, oldPrint, oldSetPause, oldPauser, oldCameraProber
+		devTests.clientProber = oldStatic, oldPaused, oldPrint, oldSetPause, oldPauser, oldClientProber
+	config.TEST_MIN_GROUND_RATIO = oldGroundRatio
 	assert(ok, err)
 end
 
 Test("dev coupon suite succeeds, pauses and emits all report batches", function() ExerciseDevRunner(true) end)
 Test("dev coupon failure also pauses and emits all report batches", function() ExerciseDevRunner(false) end)
+Test("dev coupon continues after a recoverable assertion failure", function() ExerciseDevRunner(true, true) end)
 aipGetModConfig = originalConfig
 
-Test("client camera probe works in the restricted mod environment", function()
-	local oldAipRPC, oldCamera, oldConfig = aipRPC, TheCamera, aipGetModConfig
-	local oldReporter, oldPauser, oldCameraProber = devTests.reporter, devTests.pauser, devTests.cameraProber
-	local clientHandlers, result = {}, nil
+Test("three-phase client probe and native pause work in the restricted mod environment", function()
+	local oldAipRPC, oldCamera, oldConfig, oldPlayer, oldEnts, oldWorldState, oldSetServerPaused =
+		aipRPC, TheCamera, aipGetModConfig, ThePlayer, Ents, TheWorld.state, SetServerPaused
+	local oldIsServerPaused, oldIsServerAdmin = TheNet.IsServerPaused, TheNet.GetIsServerAdmin
+	local oldReporter, oldPauser, oldClientProber = devTests.reporter, devTests.pauser, devTests.clientProber
+	local clientHandlers, results, hintVisible, nativePaused = {}, {}, false, false
 	TheCamera = { SetFlyView = function() end }
+	ThePlayer = NewEntity("wilson")
+	ThePlayer.HUD = {
+			_aipPigVillageIndicatorHook = true,
+			controls = { aipOrbitDriverHint = { IsVisible = function() return hintVisible end } },
+	}
+	ThePlayer.components.aipc_orbit_driver_client = { isDriving = net_bool() }
+	Ents = {}
 	aipGetModConfig = function(name) return name == "dev_mode" and "enabled" or oldConfig(name) end
-	aipRPC = function(name, sessionGeneration, success, detail)
-		result = { name, sessionGeneration, success, detail }
+	aipRPC = function(name, sessionGeneration, phase, success, detail)
+		table.insert(results, { name, sessionGeneration, phase, success, detail })
 	end
+	SetServerPaused = function(value) nativePaused = value end
+	TheNet.IsServerPaused = function() return nativePaused end
+	TheNet.GetIsServerAdmin = function() return true end
 	local ok, err = pcall(function()
 		local modEnvironment = {
 			GLOBAL = _G,
@@ -1073,13 +1445,37 @@ Test("client camera probe works in the restricted mod environment", function()
 		}
 		local chunk = assert(loadfile("scripts/dev/aip_pig_king_train_hook.lua", "t", modEnvironment))
 		chunk()
-		assert(clientHandlers.aipPigTrainTestCameraProbe ~= nil)
-		clientHandlers.aipPigTrainTestCameraProbe(7)
-		assert(result ~= nil and result[1] == "aipPigTrainTestCameraProbeResult")
-		assert(result[2] == 7 and result[3] == "true", tostring(result[4]))
+		assert(clientHandlers.aipPigTrainTestClientProbe ~= nil)
+		assert(clientHandlers.aipPigTrainTestPause ~= nil)
+		clientHandlers.aipPigTrainTestClientProbe(7, "initial")
+		local telemetry = fade.GetTelemetry(TheWorld)
+		local rideLight = SpawnPrefab("aip_pig_king_train_light")
+		rideLight.entity:SetParent(ThePlayer.entity)
+		table.insert(Ents, rideLight)
+		TheWorld.state = { phase = "night", isday = false, isdusk = false, isnight = true }
+		ThePlayer.components.aipc_orbit_driver_client.isDriving:set(true)
+		hintVisible = true
+		telemetry.startCount, telemetry.completedCount = 1, 1
+		telemetry.sawTransparent, telemetry.sawPartial = true, true
+		telemetry.sawStaggered, telemetry.finalAlphaOne = true, true
+		clientHandlers.aipPigTrainTestClientProbe(7, "driving")
+		ThePlayer.components.aipc_orbit_driver_client.isDriving:set(false)
+		hintVisible = false
+		rideLight:Remove()
+		clientHandlers.aipPigTrainTestClientProbe(7, "ended")
+		assert(#results == 3)
+		for index, phase in ipairs({ "initial", "driving", "ended" }) do
+			local result = results[index]
+			assert(result[1] == "aipPigTrainTestClientProbeResult" and result[2] == 7)
+			assert(result[3] == phase and result[4] == "true", tostring(result[5]))
+		end
+		clientHandlers.aipPigTrainTestPause()
+		assert(nativePaused, "client pause handler did not use the native server pause API")
 	end)
-	aipRPC, TheCamera, aipGetModConfig = oldAipRPC, oldCamera, oldConfig
-	devTests.reporter, devTests.pauser, devTests.cameraProber = oldReporter, oldPauser, oldCameraProber
+	aipRPC, TheCamera, aipGetModConfig, ThePlayer, Ents, TheWorld.state, SetServerPaused =
+		oldAipRPC, oldCamera, oldConfig, oldPlayer, oldEnts, oldWorldState, oldSetServerPaused
+	TheNet.IsServerPaused, TheNet.GetIsServerAdmin = oldIsServerPaused, oldIsServerAdmin
+	devTests.reporter, devTests.pauser, devTests.clientProber = oldReporter, oldPauser, oldClientProber
 	assert(ok, err)
 end)
 

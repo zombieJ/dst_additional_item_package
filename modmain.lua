@@ -403,6 +403,7 @@ end)
 ------------------------------------- 玩家钩子 -------------------------------------
 modimport("scripts/hooks/aip_drive_hook")
 modimport("scripts/hooks/aip_pig_king_train_hook")
+modimport("scripts/hooks/aip_pig_village_quest_hook")
 modimport("scripts/hooks/aip_drift_hook") -- 打水漂
 modimport("scripts/hooks/aip_transfer_hook")
 modimport("scripts/hooks/aip_oldone_hook")
