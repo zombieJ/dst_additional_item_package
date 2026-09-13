@@ -174,21 +174,65 @@ AddModRPCHandler(modname, "aipPigTrainTestClientProbeResult",
 		tests.ClientProbeResult(player, sessionGeneration, phase, success, detail)
 	end)
 
-local TEST_PAUSE_RETRY_DELAY = 0.1
-local TEST_PAUSE_ATTEMPTS = 3
+local TEST_PAUSE_RETRY_DELAY = 0.15
+local TEST_PAUSE_ATTEMPTS = 20
+local activePauseConfirmation = nil
 
--- 使用原版服务器暂停接口并有限确认，避免请求丢失后只留下静止画面。
-local function RequestConfirmedPause(attempt)
-	_G.SetServerPaused(true)
-	if _G.TheNet:IsServerPaused(true) then
-		_G.aipPrint("[PigKingTrain][TestPause]", "state=confirmed",
-			"attempt=" .. tostring(attempt), "native=true")
-	elseif attempt >= TEST_PAUSE_ATTEMPTS then
-		_G.aipPrint("[PigKingTrain][TestPause]", "state=failed",
-			"attempts=" .. tostring(attempt), "native=false")
+-- 取消上一轮暂停回执监听和超时任务，避免重复测试遗留客户端状态。
+local function ClearPauseConfirmation(state)
+	if state == nil then return end
+	if state.task ~= nil then
+		state.task:Cancel()
+		state.task = nil
+	end
+	if state.callback ~= nil and state.world ~= nil and state.world:IsValid() then
+		state.world:RemoveEventCallback("serverpauseddirty", state.callback)
+		state.callback = nil
+	end
+	if activePauseConfirmation == state then activePauseConfirmation = nil end
+end
+
+-- 有限等待原生暂停事件；网络查询只作为诊断，不再作为成功判据。
+local function WaitForPauseReceipt(state, attempt)
+	if activePauseConfirmation ~= state then return end
+	state.netPaused = _G.TheNet:IsServerPaused(true)
+	if attempt >= TEST_PAUSE_ATTEMPTS then
+		ClearPauseConfirmation(state)
+		_G.aipPrint("[PigKingTrain][TestPause]", "state=failed", "via=serverpauseddirty",
+			"attempts=" .. tostring(attempt), "native=false", "net=" .. tostring(state.netPaused))
 	else
-		_G.TheWorld:DoStaticTaskInTime(TEST_PAUSE_RETRY_DELAY, function()
-			RequestConfirmedPause(attempt + 1)
+		state.task = state.world:DoStaticTaskInTime(TEST_PAUSE_RETRY_DELAY, function()
+			WaitForPauseReceipt(state, attempt + 1)
+		end)
+	end
+end
+
+-- 只请求一次暂停，以 serverpauseddirty 的 pause=true 作为原生服务端回执。
+local function RequestConfirmedPause()
+	ClearPauseConfirmation(activePauseConfirmation)
+	local world = _G.TheWorld
+	local state = { world = world, netPaused = false }
+	activePauseConfirmation = state
+	state.callback = function(_, data)
+		if activePauseConfirmation ~= state or data == nil or data.pause ~= true then return end
+		state.netPaused = _G.TheNet:IsServerPaused(true)
+		ClearPauseConfirmation(state)
+		_G.aipPrint("[PigKingTrain][TestPause]", "state=confirmed", "via=serverpauseddirty",
+			"native=true", "net=" .. tostring(state.netPaused), "pause=" .. tostring(data.pause),
+			"autopause=" .. tostring(data.autopause), "gameautopause=" .. tostring(data.gameautopause),
+			"source=" .. tostring(data.source))
+	end
+	world:ListenForEvent("serverpauseddirty", state.callback)
+	_G.aipPrint("[PigKingTrain][TestPause]", "state=requested",
+		"via=serverpauseddirty", "native=pending")
+	local ok, err = PCall(_G.SetServerPaused, true)
+	if not ok then
+		ClearPauseConfirmation(state)
+		_G.aipPrint("[PigKingTrain][TestPause]", "state=failed", "via=SetServerPaused",
+			"native=false", "error=" .. tostring(err):gsub("[\r\n]+", " "):sub(1, 180))
+	elseif activePauseConfirmation == state then
+		state.task = world:DoStaticTaskInTime(TEST_PAUSE_RETRY_DELAY, function()
+			WaitForPauseReceipt(state, 1)
 		end)
 	end
 end
@@ -196,7 +240,7 @@ end
 -- 报告全部送达后由客户端墙钟更新阶段请求暂停，避免在服务端 Update 中途切换暂停状态。
 AddClientModRPCHandler(modname, "aipPigTrainTestPause", function()
 	if _G.TheNet:GetIsServerAdmin() then
-		RequestConfirmedPause(1)
+		RequestConfirmedPause()
 	else
 		_G.aipPrint("[PigKingTrain][TestReport]", "[FAIL] 测试发起者不是管理员，无法自动暂停服务器。")
 	end

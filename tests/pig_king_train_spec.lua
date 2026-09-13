@@ -761,6 +761,9 @@ end)
 Test("ocean enabled with independent distance and visual budgets", function()
 	local king = WorldFixture()
 	local result = assert(route.Create(king))
+	-- 本用例只验证海洋与视觉预算，地面比例门槛由独立用例覆盖。
+	local oldGroundRatio = config.MIN_GROUND_RATIO
+	config.MIN_GROUND_RATIO = 0
 	local map = {
 		IsPassableAtPoint = function(_, x) return x < 40 end,
 		IsOceanTileAtPoint = function(_, x) return x >= 40 end,
@@ -795,6 +798,7 @@ Test("ocean enabled with independent distance and visual budgets", function()
 	config.MAX_VISUALS = 1
 	assert(track.Plan(result) == nil)
 	config.MAX_VISUALS = old
+	config.MIN_GROUND_RATIO = oldGroundRatio
 end)
 
 Test("trade wrappers preserve ordinary pig king trades", function()
@@ -1100,11 +1104,13 @@ Test("return station is rechecked after the world changes", function()
 	assert(runtime:StartTrain(player, true))
 	FlushBuild()
 	local run = player._aip_train_run
-	local fire = NewEntity("fire", 0, 0, { fire = true })
-	fire.radius = 18
+	-- 在本次真实总站上新增危险物，结束时必须重新选点而不是落回旧站。
+	local station = run.plan.station
+	local fire = NewEntity("fire", station.x, station.z, { fire = true })
 	table.insert(Ents, fire)
 	player.components.aipc_pig_king_train_passenger:Finish("interrupted")
-	assert(player.x^2 + player.z^2 > 20^2 and player.y == 0)
+	local fireDx, fireDz = player.x - fire.x, player.z - fire.z
+	assert(fireDx^2 + fireDz^2 > 10^2 and player.y == 0)
 end)
 
 Test("duplicate camera notifications preserve the original view", function()
@@ -1212,8 +1218,10 @@ Test("vitals decrease, recover and keep a floor until exit", function()
 end)
 
 Test("development test modules are disabled outside dev mode", function()
-	assert(next(require("dev/aip_pig_king_train_tests")) == nil)
-	assert(next(require("dev/aip_pig_king_train_scenarios")) == nil)
+	local disabledTests = require("dev/aip_pig_king_train_tests")
+	local disabledScenarios = require("dev/aip_pig_king_train_scenarios")
+	assert(next(disabledTests) == nil)
+	assert(next(disabledScenarios) == nil)
 	package.loaded["dev/aip_pig_king_train_tests"] = nil
 	package.loaded["dev/aip_pig_king_train_scenarios"] = nil
 end)
@@ -1407,8 +1415,11 @@ Test("three-phase client probe and native pause work in the restricted mod envir
 	local oldAipRPC, oldCamera, oldConfig, oldPlayer, oldEnts, oldWorldState, oldSetServerPaused =
 		aipRPC, TheCamera, aipGetModConfig, ThePlayer, Ents, TheWorld.state, SetServerPaused
 	local oldIsServerPaused, oldIsServerAdmin = TheNet.IsServerPaused, TheNet.GetIsServerAdmin
+	local oldStaticTask = TheWorld.DoStaticTaskInTime
+	local oldAipPrint = aipPrint
 	local oldReporter, oldPauser, oldClientProber = devTests.reporter, devTests.pauser, devTests.clientProber
-	local clientHandlers, results, hintVisible, nativePaused = {}, {}, false, false
+	local clientHandlers, results, outputs, hintVisible = {}, {}, {}, false
+	local pauseTasks, pauseRequests, pausePolls = {}, 0, 0
 	TheCamera = { SetFlyView = function() end }
 	ThePlayer = NewEntity("wilson")
 	ThePlayer.HUD = {
@@ -1421,9 +1432,25 @@ Test("three-phase client probe and native pause work in the restricted mod envir
 	aipRPC = function(name, sessionGeneration, phase, success, detail)
 		table.insert(results, { name, sessionGeneration, phase, success, detail })
 	end
-	SetServerPaused = function(value) nativePaused = value end
-	TheNet.IsServerPaused = function() return nativePaused end
+	SetServerPaused = function(value)
+		assert(value == true)
+		pauseRequests = pauseRequests + 1
+	end
+	TheNet.IsServerPaused = function()
+		pausePolls = pausePolls + 1
+		return false
+	end
 	TheNet.GetIsServerAdmin = function() return true end
+	aipPrint = function(...)
+		local values = {...}
+		for index, value in ipairs(values) do values[index] = tostring(value) end
+		table.insert(outputs, table.concat(values, " "))
+	end
+	TheWorld.DoStaticTaskInTime = function(_, _, fn)
+		local task = { fn = fn, Cancel = function(self) self.cancelled = true end }
+		table.insert(pauseTasks, task)
+		return task
+	end
 	local ok, err = pcall(function()
 		local modEnvironment = {
 			GLOBAL = _G,
@@ -1470,11 +1497,62 @@ Test("three-phase client probe and native pause work in the restricted mod envir
 			assert(result[3] == phase and result[4] == "true", tostring(result[5]))
 		end
 		clientHandlers.aipPigTrainTestPause()
-		assert(nativePaused, "client pause handler did not use the native server pause API")
+		assert(pauseRequests == 1, "client pause handler did not send exactly one native pause request")
+		assert(#(TheWorld.listeners.serverpauseddirty or {}) == 1,
+			"client pause handler did not install the native pause receipt listener")
+		TheWorld:PushEvent("serverpauseddirty",
+			{ pause = false, autopause = true, gameautopause = false, source = "autopause" })
+		assert(#(TheWorld.listeners.serverpauseddirty or {}) == 1,
+			"autopause was incorrectly accepted as a manual pause receipt")
+		local firstPoll = table.remove(pauseTasks, 1)
+		assert(firstPoll ~= nil and not firstPoll.cancelled, "pause receipt timeout was not scheduled")
+		firstPoll.fn()
+		assert(pauseRequests == 1, "pause receipt polling resent the native pause request")
+		TheWorld:PushEvent("serverpauseddirty",
+			{ pause = true, autopause = false, gameautopause = false, source = "admin" })
+		assert(#(TheWorld.listeners.serverpauseddirty or {}) == 0,
+			"confirmed pause receipt listener was not removed")
+		assert(#pauseTasks == 1 and pauseTasks[1].cancelled,
+			"confirmed pause did not cancel the pending timeout task")
+		assert(pausePolls >= 2, "network pause state was not retained as auxiliary diagnostics")
+		assert(pauseRequests == 1, "native pause request was sent more than once")
+		local requested, confirmed = false, false
+		for _, output in ipairs(outputs) do
+			requested = requested or output:find(
+				"state=requested via=serverpauseddirty native=pending", 1, true) ~= nil
+			confirmed = confirmed or output:find(
+				"state=confirmed via=serverpauseddirty native=true net=false pause=true", 1, true) ~= nil
+				and output:find("autopause=false gameautopause=false source=admin", 1, true) ~= nil
+		end
+		assert(requested and confirmed,
+			"native serverpauseddirty pause request and receipt diagnostics were incomplete")
+		pauseTasks = {}
+		local requestsBeforeTimeout = pauseRequests
+		clientHandlers.aipPigTrainTestPause()
+		local timeoutPolls = 0
+		while #pauseTasks > 0 and timeoutPolls < 25 do
+			local task = table.remove(pauseTasks, 1)
+			if not task.cancelled then
+				timeoutPolls = timeoutPolls + 1
+				task.fn()
+			end
+		end
+		assert(timeoutPolls == 20 and pauseRequests == requestsBeforeTimeout + 1,
+			"pause receipt timeout did not remain bounded to one native request")
+		assert(#pauseTasks == 0 and #(TheWorld.listeners.serverpauseddirty or {}) == 0,
+			"pause receipt timeout left a task or event listener behind")
+		local timeoutLogged = false
+		for _, output in ipairs(outputs) do
+			timeoutLogged = timeoutLogged or output:find(
+				"state=failed via=serverpauseddirty attempts=20 native=false net=false", 1, true) ~= nil
+		end
+		assert(timeoutLogged, "pause receipt timeout diagnostics were incomplete")
 	end)
 	aipRPC, TheCamera, aipGetModConfig, ThePlayer, Ents, TheWorld.state, SetServerPaused =
 		oldAipRPC, oldCamera, oldConfig, oldPlayer, oldEnts, oldWorldState, oldSetServerPaused
 	TheNet.IsServerPaused, TheNet.GetIsServerAdmin = oldIsServerPaused, oldIsServerAdmin
+	TheWorld.DoStaticTaskInTime = oldStaticTask
+	aipPrint = oldAipPrint
 	devTests.reporter, devTests.pauser, devTests.clientProber = oldReporter, oldPauser, oldClientProber
 	assert(ok, err)
 end)
