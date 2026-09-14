@@ -32,6 +32,15 @@ local function OnPutInInventory(inst, owner)
 	ticket.ScheduleMerge(owner)
 end
 
+-- 后续碎片并入已有堆叠时不会再次触发入包回调，需要在堆叠增长后补做合成检查。
+local function OnStackSizeChange(inst, data)
+	if data == nil or (data.stacksize or 0) <= (data.oldstacksize or 0) then
+		return
+	end
+	local owner = inst.components.inventoryitem:GetGrandOwner()
+	ticket.ScheduleMerge(owner)
+end
+
 -- 创建可以堆叠并自动参与合成的体验券碎片。
 local function fn()
 	local inst = CreateEntity()
@@ -62,6 +71,7 @@ local function fn()
 	inst.components.inventoryitem:SetOnPutInInventoryFn(OnPutInInventory)
 
 	inst:AddComponent("stackable")
+	inst:ListenForEvent("stacksizechange", OnStackSizeChange)
 	MakeHauntableLaunch(inst)
 
 	return inst

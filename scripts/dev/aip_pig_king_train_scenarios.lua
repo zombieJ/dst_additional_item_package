@@ -350,6 +350,21 @@ function Scenarios.TrainTicketPrefabs()
 			"体验券碎片物品栏图标配置错误")
 		assert(type(fragment.components.inventoryitem.onputininventoryfn) == "function",
 			"体验券碎片缺少入包合成入口")
+		local scheduled = 0
+		local owner = { components = { inventory = {} } }
+		function owner:HasTag(tag) return tag == "player" end
+		function owner:DoTaskInTime()
+			scheduled = scheduled + 1
+			return { Cancel = function() end }
+		end
+		fragment.components.inventoryitem.GetGrandOwner = function() return owner end
+		fragment:PushEvent("stacksizechange", { oldstacksize = 1, stacksize = 2 })
+		assert(scheduled == 1 and owner._aipTrainTicketMergeTask ~= nil,
+			"体验券碎片并入已有堆叠后没有重新安排合成")
+		fragment:PushEvent("stacksizechange", { oldstacksize = 2, stacksize = 1 })
+		assert(scheduled == 1, "消耗体验券碎片时不应重复安排合成")
+		owner._aipTrainTicketMergeTask:Cancel()
+		owner._aipTrainTicketMergeTask = nil
 		assert(fragment.AnimState:IsCurrentAnimation("idle"), "体验券碎片没有播放 idle 动画")
 	end)
 	for _, item in ipairs(created) do if item:IsValid() then item:Remove() end end

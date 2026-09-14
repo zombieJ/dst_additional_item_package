@@ -1,30 +1,65 @@
 if aipGetModConfig("dev_mode") ~= "enabled" then return {} end
 
 local scenarios = require("dev/aip_pig_king_train_scenarios")
+local e2e = require("dev/aip_pig_king_train_e2e")
 local config = require("configurations/aip_pig_king_train")
 local Tests = {}
 local active = nil
 local generation = 0
 local REPORT_BATCH = 3
 local REPORT_DELAY = 0.15
-local TOTAL_STEPS = 22
+local TOTAL_STEPS = 36
+local E2E_STEP_INDEX = {
+	setup = 11,
+	quest1_dialogue = 12,
+	quest1_grant = 13,
+	quest1_trade = 14,
+	quest1_reward = 15,
+	quest2_dialogue = 16,
+	quest2_grant = 17,
+	quest2_trade = 18,
+	quest2_reward = 19,
+	quest3_dialogue = 20,
+	quest3_grant = 21,
+	quest3_trade = 22,
+	quest3_reward = 23,
+	merge = 24,
+	king_trade = 25,
+}
 local PROBE_NAMES = {
 	initial = "客户端发车前镜头、提示与任务标记",
 	driving = "客户端乘车提示、轨道渐入与夜间随身灯",
 	ended = "客户端下车后提示、驾驶状态与随身灯清理",
 }
 
--- 保存当前时钟并临时改为全夜，保证任何世界时段配置都能进入真实夜晚。
-local function BeginNight(session)
+-- 第一次切换测试时段前保存完整时钟，后续白天与夜晚共用同一份恢复点。
+local function SaveClock(session)
+	if session.clockSnapshot ~= nil and session.clock ~= nil then return session.clock end
 	local clock = TheWorld.net ~= nil and TheWorld.net.components ~= nil
 		and TheWorld.net.components.clock or nil
 	assert(clock ~= nil and type(clock.OnSave) == "function" and type(clock.OnLoad) == "function",
 		"世界时钟组件不可用")
 	session.clock = clock
 	session.clockSnapshot = assert(clock:OnSave(), "无法保存当前世界时间")
+	return clock
+end
+
+-- 临时改为全白天，让真实猪屋居民保持清醒并可交互。
+local function BeginDay(session)
+	local clock = SaveClock(session)
+	TheWorld:PushEvent("ms_setclocksegs", { day = 16, dusk = 0, night = 0 })
+	TheWorld:PushEvent("ms_setphase", "day")
+	session.forcedPhase = "day"
+	local current = clock:OnSave()
+	assert(current ~= nil and current.phase == "day", "服务端时钟未接受白天阶段")
+end
+
+-- 临时改为全夜，保证任何世界时段配置都能进入真实夜晚。
+local function BeginNight(session)
+	local clock = SaveClock(session)
 	TheWorld:PushEvent("ms_setclocksegs", { day = 0, dusk = 0, night = 16 })
 	TheWorld:PushEvent("ms_setphase", "night")
-	session.forcedNight = true
+	session.forcedPhase = "night"
 	local current = clock:OnSave()
 	assert(current ~= nil and current.phase == "night", "服务端时钟未接受夜晚阶段")
 end
@@ -44,7 +79,7 @@ local function RestoreClock(session)
 	session.clockSnapshot = nil
 	session.clock:OnLoad(snapshot)
 	if session.clock.LongUpdate ~= nil then session.clock:LongUpdate(0) end
-	session.forcedNight = false
+	session.forcedPhase = nil
 	return true
 end
 
@@ -98,6 +133,12 @@ local function Cleanup(session, endReason)
 		if not ok then
 			cleanupError = Line(err)
 		end
+	end
+	local e2eCallOK, e2eCleaned, e2eError = pcall(e2e.Cleanup, session)
+	if not e2eCallOK and cleanupError == nil then
+		cleanupError = Line(e2eCleaned)
+	elseif e2eCleaned == false and cleanupError == nil then
+		cleanupError = Line(e2eError or "E2E 场景清理后仍有实体残留")
 	end
 	local restored, restoreError = pcall(RestoreClock, session)
 	if not restored and cleanupError == nil then cleanupError = Line(restoreError) end
@@ -167,6 +208,36 @@ end
 local function Check(session, name, fn)
 	local ok, err = pcall(fn)
 	return RecordCheck(session, name, ok, err)
+end
+
+-- 把 E2E 阶段 key 映射为稳定的步骤编号与玩家可读名称。
+local function E2EStepData(key)
+	return assert(E2E_STEP_INDEX[key], "未知 E2E 步骤：" .. tostring(key)),
+		assert(e2e.STEPS[key], "E2E 步骤缺少名称：" .. tostring(key))
+end
+
+-- 记录真实 E2E 阶段开始，动作细节由 E2E 模块的专用日志补充。
+local function BeginE2EStep(session, key)
+	local index, name = E2EStepData(key)
+	StepLog(session, index, name, "start")
+end
+
+-- 记录真实 E2E 阶段完成，同时保留本次实体、物品与动作诊断。
+local function PassE2EStep(session, key, detail)
+	local index, name = E2EStepData(key)
+	RecordCheck(session, name, true, detail)
+	table.insert(session.lines, "[INFO] E2E stage=" .. tostring(key) .. "；" .. Line(detail))
+	local nextDelay = key == "merge" and config.TEST_HEAVY_STEP_DELAY
+		or key == "king_trade" and 0.5 or 0.75
+	StepLog(session, index, name, "complete", "pass", nextDelay)
+end
+
+-- E2E 任一必需阶段失败后立即进入统一清理、报告和暂停路径。
+local function FailE2EStep(session, key, detail)
+	local index, name = E2EStepData(key)
+	RecordCheck(session, name, false, detail)
+	StepLog(session, index, name, "complete", "fail")
+	Finish(session, false, "真实 E2E 在 " .. name .. " 失败：" .. Line(detail))
 end
 
 -- 完成一个客户端阶段探针，并在阶段回调中继续后续收尾。
@@ -249,6 +320,24 @@ local function ProbeVitals(doer)
 	assert(ok, err)
 end
 
+-- 上车完成时立即记录初始轨道窗口，避免夜间同步期间行驶推进污染初始断言。
+local function CaptureInitialTrackWindow(session)
+	local run = session.run
+	local activePoints, activeLinks = 0, 0
+	for _, point in pairs(run.points) do if point:IsValid() then activePoints = activePoints + 1 end end
+	for _, link in pairs(run.links) do if link:IsValid() then activeLinks = activeLinks + 1 end end
+	session.initialTrackPoints = activePoints
+	session.initialTrackLinks = activeLinks
+	session.initialFullRouteVisible = run.points[#run.plan.points] ~= nil
+end
+
+-- 当前窗口中的轨道实体必须仍有效且属于本次临时运行。
+local function AssertActiveOwnedEntity(run, entity, label)
+	assert(entity ~= nil and entity:IsValid(), label .. "已失效")
+	assert(not entity.persists and entity._aip_train_run_id == run.id,
+		label .. "归属错误")
+end
+
 -- 检查当前运行确实由独立、非持久化的临时月光玻璃轨道组成。
 local function InspectRun(session)
 	local run = session.run
@@ -293,8 +382,17 @@ local function InspectRun(session)
 		and blockers.hardBlockers >= blockers.landmarkCores
 		and blockers.indexedBlockers >= blockers.hardBlockers,
 		"路线判障没有与观光幽灵物理保持一致")
-	for _, entity in ipairs(run.entities) do
-		assert(entity:IsValid() and not entity.persists and entity._aip_train_run_id == run.id, "临时实体归属错误")
+	for index, entity in ipairs(run.entities) do
+		assert(not entity.persists and entity._aip_train_run_id == run.id,
+			string.format("临时实体历史归属错误：index=%d,prefab=%s,valid=%s",
+				index, tostring(entity.prefab), tostring(entity:IsValid())))
+	end
+	local window = assert(run.trackWindow, "当前轨道窗口不存在")
+	for index = window.firstPoint, window.lastPoint do
+		AssertActiveOwnedEntity(run, run.points[index], "当前轨道端点 " .. tostring(index))
+	end
+	for index = window.firstSegment, window.lastSegment do
+		AssertActiveOwnedEntity(run, run.links[index], "当前轨道连接 " .. tostring(index))
 	end
 	assert(run.car.prefab == "aip_pig_king_train_car", "不是月光玻璃观光车")
 	local light = assert(run.light, "观光随身灯未创建")
@@ -307,12 +405,10 @@ local function InspectRun(session)
 	assert(math.abs(light.Light:GetIntensity() - config.RIDE_LIGHT_INTENSITY) < 0.001,
 		"观光随身灯亮度参数错误")
 	assert(session.doer.Physics:IsActive(), "观光期间原矿车物理未启用")
-	local activePoints, activeLinks = 0, 0
-	for _, point in pairs(run.points) do if point:IsValid() then activePoints = activePoints + 1 end end
-	for _, link in pairs(run.links) do if link:IsValid() then activeLinks = activeLinks + 1 end end
-	assert(activePoints == config.TRACK_LOOKAHEAD + 1 and activeLinks == config.TRACK_LOOKAHEAD,
+	assert(session.initialTrackPoints == config.TRACK_LOOKAHEAD + 1
+		and session.initialTrackLinks == config.TRACK_LOOKAHEAD,
 		"初始轨道没有按窗口展示")
-	assert(run.points[#run.plan.points] == nil, "发车前错误生成了完整路线")
+	assert(session.initialFullRouteVisible == false, "发车前错误生成了完整路线")
 	assert(run.plan.totalDistance <= config.MAX_DISTANCE and run.plan.visualCount <= config.MAX_VISUALS, "轨道超预算")
 	local record = session.doer:GetSaveRecord()
 	assert(record.y == nil and record.x == run.plan.station.x and record.z == run.plan.station.z, "存档未回退到陆地总站")
@@ -414,6 +510,9 @@ local function CheckCompletedRide(session, index)
 		{ "六站自动往返与安全清理", function()
 			assert(run.endReason == "complete", "运行中止：" .. tostring(run.endReason))
 			assert(#run.entities == 0 and #run.points == 0 and doer._aip_train_run == nil, "临时运行有残留")
+			for entity in pairs(session.e2e ~= nil and session.e2e.entities or {}) do
+				assert(not entity:IsValid(), "E2E 临时实体有残留：" .. tostring(entity.prefab))
+			end
 			assert(doer:GetPosition().y == 0, "未安全落地")
 			assert(doer.Physics:IsActive(), "结束后人物物理未恢复")
 		end },
@@ -449,7 +548,7 @@ local function CheckCompletedRide(session, index)
 		RequestClientProbe(session, "ended", function() FinishRideReport(session) end)
 		return
 	end
-	local stepIndex = 17 + index
+	local stepIndex = 31 + index
 	StepLog(session, stepIndex, case[1], "start")
 	local passed = Check(session, case[1], case[2])
 	StepLog(session, stepIndex, case[1], "complete", passed and "pass" or "fail",
@@ -483,7 +582,7 @@ local function RunBoardedCheck(session)
 	}
 	local case = cases[index]
 	if case == nil then return end
-	local stepIndex = 12 + index
+	local stepIndex = 26 + index
 	StepLog(session, stepIndex, case[1], "start")
 	local passed
 	if case[3] then
@@ -527,72 +626,135 @@ local function Observe(session)
 	Later(session, 0.5, function() Observe(session) end)
 end
 
--- 在独立重步骤中执行真实选点与规划，不和夜间切换堆在同一帧。
-local function StartRealRide(session, king)
-	StepLog(session, 12, "真实六站选点与路线规划", "start")
+local StartNightRide
+
+-- 白天把正式体验券真实交给猪王；确认上车后再进入夜间灯光场景。
+local function StartPaidRide(session, king, ticket)
 	session.manager = king.components.aipc_pig_king_train
-	local ok, result = session.manager:StartTrain(session.doer, false)
-	if not ok then
-		StepLog(session, 12, "真实六站选点与路线规划", "complete", "fail")
-		Finish(session, false, "无法开始观光：" .. tostring(result ~= nil and result.code)
-			.. "；" .. tostring(result ~= nil and result.detail))
-		return
+	local hooks = {
+		later = function(delay, fn) Later(session, delay, fn) end,
+		begin = function(key) BeginE2EStep(session, key) end,
+		pass = function(key, detail) PassE2EStep(session, key, detail) end,
+		fail = function(key, detail) FailE2EStep(session, key, detail) end,
+		rideReady = function(run)
+			session.run = run
+			if session.run == nil or session.run.paid ~= true then
+				FailE2EStep(session, "king_trade", "猪王交易没有创建付券运行记录")
+				return
+			end
+			CaptureInitialTrackWindow(session)
+			Later(session, 0.5, function() StartNightRide(session) end)
+		end,
+	}
+	if Tests.paidRideStarter ~= nil then
+		Tests.paidRideStarter(session, king, ticket, hooks)
+	else
+		e2e.GiveTicketToKing(session, king, ticket, hooks)
 	end
-	session.run = session.doer._aip_train_run
-	if session.run == nil then
-		StepLog(session, 12, "真实六站选点与路线规划", "complete", "fail")
-		Finish(session, false, "观光启动后缺少运行记录")
-		return
-	end
-	StepLog(session, 12, "真实六站选点与路线规划", "complete", "pass", 0.5)
-	Later(session, 0.5, function() Observe(session) end)
 end
 
--- 完成夜间准备检查后统一记录步骤结果，再留出重型规划冷却。
-local function CompleteNightSetup(session, king, name, passed, detail)
+-- 上车后完成夜间准备检查，再留出冷却让客户端灯光与时钟状态稳定。
+local function CompleteNightSetup(session, name, passed, detail)
 	RecordCheck(session, name, passed, detail)
 	if passed then
 		table.insert(session.lines, "[INFO] 夜间场景已准备；originalPhase="
 			.. tostring(session.clockSnapshot.phase) .. "；phase=night；sync=confirmed")
 	end
-	StepLog(session, 11, name, "complete", passed and "pass" or "fail",
+	StepLog(session, 26, name, "complete", passed and "pass" or "fail",
 		config.TEST_HEAVY_STEP_DELAY)
-	Later(session, config.TEST_HEAVY_STEP_DELAY, function() StartRealRide(session, king) end)
+	if passed then
+		Later(session, config.TEST_HEAVY_STEP_DELAY, function() Observe(session) end)
+	else
+		Finish(session, false, "无法准备真实夜间环境：" .. Line(detail))
+	end
 end
 
 -- 有界等待网络时钟脏数据更新到 TheWorld.state，避免在 ms_setphase 同帧误判。
-local function WaitForNight(session, king, name, attempt)
+local function WaitForNight(session, name, attempt)
 	local current = session.clock ~= nil and session.clock:OnSave() or nil
 	if current ~= nil and current.phase == "night"
 		and TheWorld.state ~= nil and TheWorld.state.isnight == true then
-		CompleteNightSetup(session, king, name, true, "night")
+		CompleteNightSetup(session, name, true, "night")
 	elseif attempt >= config.TEST_NIGHT_SYNC_ATTEMPTS then
-		CompleteNightSetup(session, king, name, false, string.format(
+		CompleteNightSetup(session, name, false, string.format(
 			"夜晚状态同步超时；clock=%s；world=%s；attempts=%d",
 			tostring(current ~= nil and current.phase or nil),
 			tostring(TheWorld.state ~= nil and TheWorld.state.phase or nil), attempt))
 	else
 		Later(session, config.TEST_NIGHT_SYNC_INTERVAL, function()
-			WaitForNight(session, king, name, attempt + 1)
+			WaitForNight(session, name, attempt + 1)
 		end)
 	end
 end
 
--- 完成隔离场景后先切换并等待真实夜晚，再发起真实观光。
+-- 白天真实交券并完成上车后切换夜晚，避免原版猪王睡眠禁用交易。
+StartNightRide = function(session)
+	local name = "真实夜间环境准备与时钟恢复点"
+	StepLog(session, 26, name, "start")
+	local prepared, prepareError = pcall(BeginNight, session)
+	if not prepared then
+		CompleteNightSetup(session, name, false, prepareError)
+	else
+		Later(session, config.TEST_NIGHT_SYNC_INTERVAL, function()
+			WaitForNight(session, name, 1)
+		end)
+	end
+end
+
+-- 白天同步完成后启动真实猪屋、猪人、交付、拆包和碎片合成链路。
+local function StartE2ERunner(session, king)
+	local hooks = {
+		later = function(delay, fn) Later(session, delay, fn) end,
+		begin = function(key) BeginE2EStep(session, key) end,
+		pass = function(key, detail) PassE2EStep(session, key, detail) end,
+		fail = function(key, detail) FailE2EStep(session, key, detail) end,
+		done = function(ticket, detail)
+			session.e2eTicket = ticket
+			table.insert(session.lines, "[INFO] E2E chain=complete；" .. Line(detail))
+			Later(session, config.TEST_HEAVY_STEP_DELAY, function()
+				StartPaidRide(session, king, ticket)
+			end)
+		end,
+	}
+	if Tests.e2eRunner ~= nil then
+		Tests.e2eRunner(session, king, hooks)
+	else
+		e2e.Start(session, king, hooks)
+	end
+end
+
+-- 有界等待白天网络状态，避免猪人在时钟复制完成前重新回屋。
+local function WaitForDay(session, king, attempt)
+	local current = session.clock ~= nil and session.clock:OnSave() or nil
+	if current ~= nil and current.phase == "day"
+		and TheWorld.state ~= nil and TheWorld.state.isday == true then
+		StartE2ERunner(session, king)
+	elseif attempt >= config.TEST_NIGHT_SYNC_ATTEMPTS then
+		FailE2EStep(session, "setup", string.format(
+			"白天状态同步超时；clock=%s；world=%s；attempts=%d",
+			tostring(current ~= nil and current.phase or nil),
+			tostring(TheWorld.state ~= nil and TheWorld.state.phase or nil), attempt))
+	else
+		Later(session, config.TEST_NIGHT_SYNC_INTERVAL, function()
+			WaitForDay(session, king, attempt + 1)
+		end)
+	end
+end
+
+-- 完成隔离场景后先准备白天，再运行只包含必需交互的真实 E2E。
 local function StartRide(session)
 	local king = FindKing(session.doer)
 	if king == nil then
 		Finish(session, false, "本分片找不到猪王")
 		return
 	end
-	local name = "真实夜间环境准备与时钟恢复点"
-	StepLog(session, 11, name, "start")
-	local prepared, prepareError = pcall(BeginNight, session)
+	BeginE2EStep(session, "setup")
+	local prepared, prepareError = pcall(BeginDay, session)
 	if not prepared then
-		CompleteNightSetup(session, king, name, false, prepareError)
+		FailE2EStep(session, "setup", prepareError)
 	else
 		Later(session, config.TEST_NIGHT_SYNC_INTERVAL, function()
-			WaitForNight(session, king, name, 1)
+			WaitForDay(session, king, 1)
 		end)
 	end
 end

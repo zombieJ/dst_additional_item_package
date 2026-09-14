@@ -1220,10 +1220,13 @@ end)
 Test("development test modules are disabled outside dev mode", function()
 	local disabledTests = require("dev/aip_pig_king_train_tests")
 	local disabledScenarios = require("dev/aip_pig_king_train_scenarios")
+	local disabledE2E = require("dev/aip_pig_king_train_e2e")
 	assert(next(disabledTests) == nil)
 	assert(next(disabledScenarios) == nil)
+	assert(next(disabledE2E) == nil)
 	package.loaded["dev/aip_pig_king_train_tests"] = nil
 	package.loaded["dev/aip_pig_king_train_scenarios"] = nil
+	package.loaded["dev/aip_pig_king_train_e2e"] = nil
 end)
 
 Test("half-finished boarding clears the original driver's car reference", function()
@@ -1258,15 +1261,81 @@ local originalConfig = aipGetModConfig
 aipGetModConfig = function(name) return name == "dev_mode" and "enabled" or originalConfig(name) end
 local devTests = require("dev/aip_pig_king_train_tests")
 local devScenarios = require("dev/aip_pig_king_train_scenarios")
+local devE2E = require("dev/aip_pig_king_train_e2e")
 
 Test("pig village quests fill daily without same-day replacement", devScenarios.PigVillageDailyFill)
 Test("pig village delivery restores pig behavior and wraps rewards", devScenarios.PigVillageDelivery)
 Test("train ticket fragments merge once per frame in groups of three", devScenarios.TrainTicketFragmentMerge)
-Test("ticket prefabs expose icons, animations, stacking and merge hooks", devScenarios.TrainTicketPrefabs)
+Test("ticket prefabs expose icons, stacking and stacked merge hooks", devScenarios.TrainTicketPrefabs)
 Test("paid ticket trade consumes once, preserves vanilla trades and refunds correctly", devScenarios.PaidTicketTrade)
 Test("runtime retries one failed landmark while retaining valid selections", function()
 	WorldFixture()
 	devScenarios.RoutePlanningRetry(PlayerFixture())
+end)
+
+Test("ticket E2E keeps only the required real player actions", function()
+	assert(table.concat(devE2E.ACTION_SEQUENCE, ">") ==
+		"LOOKAT>GIVE>UNWRAP>LOOKAT>GIVE>UNWRAP>LOOKAT>GIVE>UNWRAP>GIVE")
+	local counts = {}
+	for _, action in ipairs(devE2E.ACTION_SEQUENCE) do
+		assert(action == "LOOKAT" or action == "GIVE" or action == "UNWRAP",
+			"E2E contains an unnecessary player action: " .. tostring(action))
+		counts[action] = (counts[action] or 0) + 1
+	end
+	assert(counts.LOOKAT == 3 and counts.GIVE == 4 and counts.UNWRAP == 3,
+		"E2E required action counts changed")
+end)
+
+Test("ticket E2E searches bounded pig king interaction tiers", function()
+	WorldFixture()
+	local oldFinder = FindWalkableOffset
+	local calls = {}
+	FindWalkableOffset = function(position, startAngle, radius, attempts,
+		checkLOS, ignoreWalls, customCheck, allowWater, allowBoats)
+		table.insert(calls, { radius = radius, attempts = attempts,
+			checkLOS = checkLOS, ignoreWalls = ignoreWalls, allowWater = allowWater })
+		return #calls == 2 and Vector3(radius, 0, 0) or nil
+	end
+	local ok, point, tier, radius = pcall(devE2E.FindKingInteractionPoint,
+		NewEntity("pigking", 10, 20))
+	FindWalkableOffset = oldFinder
+	assert(ok, point)
+	assert(point ~= nil and point.x == 13.25 and point.z == 20
+		and tier == 2 and radius == 3.25, "E2E 没有使用第二级安全交互点")
+	assert(#calls == 2 and calls[1].radius == 2.75 and calls[2].radius == 3.25,
+		"E2E 猪王交互点没有按固定层级有限搜索")
+	for _, call in ipairs(calls) do
+		assert(call.attempts == 16 and call.checkLOS == false
+			and call.ignoreWalls == true and call.allowWater == false,
+			"E2E 猪王交互点搜索参数错误")
+	end
+end)
+
+Test("ticket E2E restart cleanup cancels actions, merge work and temporary entities", function()
+	local player = NewEntity("wilson", 40, 12, { player = true })
+	local stopped, cleared, mergeCancelled = false, false, false
+	local activeAction = {}
+	player.components.locomotor = { Stop = function() stopped = true end }
+	player.GetBufferedAction = function() return activeAction end
+	player.ClearBufferedAction = function() cleared = true activeAction = nil end
+	player._aipTrainTicketMergeTask = { Cancel = function() mergeCancelled = true end }
+	local house, pig, gift = NewEntity("pighouse"), NewEntity("pigman"), NewEntity("gift")
+	local session = { run = nil }
+	session.e2e = {
+		session = session,
+		doer = player,
+		pig = pig,
+		entities = { [house] = true, [pig] = true, [gift] = true },
+		stashed = {},
+		savedPosition = Vector3(3, 0, 7),
+		actionSerial = 4,
+		activeAction = activeAction,
+	}
+	local cleaned, detail = devE2E.Cleanup(session)
+	assert(cleaned and detail == nil and stopped and cleared and mergeCancelled)
+	assert(player._aipTrainTicketMergeTask == nil and player.x == 3 and player.z == 7)
+	assert(not house:IsValid() and not pig:IsValid() and not gift:IsValid())
+	assert(devE2E.Cleanup(session), "E2E cleanup was not idempotent")
 end)
 
 -- 推进静态与模拟时间；模拟暂停后仍执行报告任务，以验证不会漏掉后续报告批次。
@@ -1279,8 +1348,10 @@ local function ExerciseDevRunner(hasKing, forceGroundFailure)
 	local staticTasks, now, paused, outputs, stepEvents = {}, 0, false, {}, {}
 	local oldGroundRatio = config.TEST_MIN_GROUND_RATIO
 	if forceGroundFailure then config.TEST_MIN_GROUND_RATIO = 1.1 end
-	local oldStatic, oldPaused, oldPrint, oldSetPause, oldPauser, oldClientProber = TheWorld.DoStaticTaskInTime,
-		TheNet.IsServerPaused, print, SetServerPaused, devTests.pauser, devTests.clientProber
+	local oldStatic, oldPaused, oldPrint, oldSetPause, oldPauser, oldClientProber,
+		oldE2ERunner, oldPaidRideStarter = TheWorld.DoStaticTaskInTime,
+		TheNet.IsServerPaused, print, SetServerPaused, devTests.pauser, devTests.clientProber,
+		devTests.e2eRunner, devTests.paidRideStarter
 	TheWorld.DoStaticTaskInTime = function(_, delay, fn)
 		local task = { due = now + delay, fn = fn, Cancel = function(self) self.cancelled = true end }
 		table.insert(staticTasks, task)
@@ -1302,6 +1373,53 @@ local function ExerciseDevRunner(hasKing, forceGroundFailure)
 			or phase == "driving" and "night=true,driving=true,hint=true,fade=1/1,transparent=true,partial=true,staggered=true,alphaOne=true;light=true,enabled=true,radius=10.00,falloff=0.45,intensity=0.80"
 			or "night=true,driving=false,hint=false;light=false"))
 		return true
+	end
+	local e2eKeys = {
+		"setup",
+		"quest1_dialogue", "quest1_grant", "quest1_trade", "quest1_reward",
+		"quest2_dialogue", "quest2_grant", "quest2_trade", "quest2_reward",
+		"quest3_dialogue", "quest3_grant", "quest3_trade", "quest3_reward",
+		"merge",
+	}
+	devTests.e2eRunner = function(session, _, hooks)
+		local ticket = NewEntity("aip_train_ticket")
+		local index = 1
+		local function NextE2EStep()
+			local key = e2eKeys[index]
+			if key ~= "setup" then hooks.begin(key) end
+			hooks.pass(key, key == "merge"
+				and "fragments=3,tickets=1,actions=LOOKAT>GIVE>UNWRAP"
+				or "requiredAction=true,directInventory=true")
+			index = index + 1
+			if e2eKeys[index] ~= nil then
+				hooks.later(0.75, NextE2EStep)
+			else
+				hooks.done(ticket, "quests=3,fragments=3,tickets=1,actions=LOOKAT>GIVE>UNWRAP")
+			end
+		end
+		NextE2EStep()
+	end
+	devTests.paidRideStarter = function(session, targetKing, _, hooks)
+		hooks.begin("king_trade")
+		assert(TheWorld.state.isday == true,
+			"ticket must be given before the vanilla pig king sleeps and disables trading")
+		local manager = targetKing.components.aipc_pig_king_train
+		local started, routeError = manager:StartTrain(session.doer, true)
+		if not started then
+			hooks.fail("king_trade", tostring(routeError ~= nil and routeError.code))
+			return
+		end
+		FlushBuild()
+		local run = session.doer._aip_train_run
+		assert(run ~= nil and run.boarded == true,
+			"offline paid ride replacement did not complete real boarding")
+		hooks.pass("king_trade", "action=GIVE,paid=" .. tostring(run ~= nil and run.paid == true))
+		hooks.rideReady(run)
+		local retiredHistory = NewEntity("aip_pig_king_train_point")
+		retiredHistory.persists = false
+		retiredHistory._aip_train_run_id = run.id
+		retiredHistory:Remove()
+		table.insert(run.entities, retiredHistory)
 	end
 	print = function(chunk)
 		table.insert(outputs, chunk)
@@ -1337,8 +1455,9 @@ local function ExerciseDevRunner(hasKing, forceGroundFailure)
 		assert(restartedAfterReport, "report-generation restart path was not exercised")
 		local expectedSuccess = hasKing and not forceGroundFailure
 		assert(paused and report.success == expectedSuccess, string.format(
-			"%s; paused=%s success=%s expected=%s", tostring(report.detail),
-			tostring(paused), tostring(report.success), tostring(expectedSuccess)))
+			"%s; paused=%s success=%s expected=%s\n%s", tostring(report.detail),
+			tostring(paused), tostring(report.success), tostring(expectedSuccess),
+			table.concat(report.lines or {}, "\n")))
 		assert(player._aip_train_run == nil)
 		local joined = table.concat(report.lines, "\n")
 		assert(joined:find("活动测试会话自动重启与旧任务取消", 1, true),
@@ -1349,10 +1468,18 @@ local function ExerciseDevRunner(hasKing, forceGroundFailure)
 			local restoredClock = TheWorld.components.clock:OnSave()
 			assert(restoredClock.segs.day == 10 and restoredClock.segs.dusk == 4
 				and restoredClock.segs.night == 2, "test night did not restore the saved clock segments")
-			assert(report.passed + report.failed + report.skipped == 24,
+			assert(report.passed + report.failed + report.skipped == 39,
 				"unexpected game-suite check count")
+			assert(joined:find("E2E chain=complete", 1, true)
+				and joined:find("actions=LOOKAT>GIVE>UNWRAP", 1, true)
+				and joined:find("action=GIVE,paid=true", 1, true),
+				"required E2E chain details were missing")
 			assert(joined:find("真实夜间环境准备与时钟恢复点", 1, true),
 				"night setup check missing")
+			local tradeStep = joined:find("E2E stage=king_trade", 1, true)
+			local nightStep = joined:find("夜间场景已准备", 1, true)
+			assert(tradeStep ~= nil and nightStep ~= nil and tradeStep < nightStep,
+				"night setup ran before the real pig king trade and boarding")
 			assert(joined:find("night=true", 1, true) and joined:find("light=true", 1, true)
 				and joined:find("light=false", 1, true), "night light probe details missing")
 			assert(joined:find("高度模式里程", 1, true)
@@ -1396,12 +1523,14 @@ local function ExerciseDevRunner(hasKing, forceGroundFailure)
 			end
 		end
 		if hasKing then
-			assert(starts >= 22, "not all paced test steps were observed")
-			assert(heavyWaits >= 2, "heavy route steps did not receive a separate cooldown")
+			assert(starts >= 36, "not all paced test steps were observed")
+			assert(heavyWaits >= 3, "heavy route steps did not receive a separate cooldown")
 		end
 	end)
 	TheWorld.DoStaticTaskInTime, TheNet.IsServerPaused, print, SetServerPaused, devTests.pauser,
-		devTests.clientProber = oldStatic, oldPaused, oldPrint, oldSetPause, oldPauser, oldClientProber
+		devTests.clientProber, devTests.e2eRunner, devTests.paidRideStarter =
+		oldStatic, oldPaused, oldPrint, oldSetPause, oldPauser, oldClientProber,
+		oldE2ERunner, oldPaidRideStarter
 	config.TEST_MIN_GROUND_RATIO = oldGroundRatio
 	assert(ok, err)
 end
