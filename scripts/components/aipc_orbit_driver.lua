@@ -4,10 +4,10 @@ local language = aipGetModConfig("language")
 -- 文字描述
 local LANG_MAP = {
 	english = {
-		EXIT = "Arrow key to move. X to exit. V to switch view.",
+		EXIT = "Arrow keys move. Move the mouse to adjust the third-person view. X exits; V changes view.",
 	},
 	chinese = {
-		EXIT = "方向键控制，X 键退出，V 键切换视角",
+		EXIT = "方向键控制，第三视角可移动鼠标调整方向和俯仰，X 键退出，V 键切换视角",
 	},
 }
 
@@ -33,7 +33,11 @@ local function findClosestPoint(inst)
 	return linkList[1]
 end
 
-local function findPoints(current, excluded)
+local function findPoints(current, excluded, routeProvider)
+	-- 临时线路可直接提供下一端点，其余矿车继续通过附近连接自动寻路。
+	if routeProvider ~= nil then
+		return routeProvider(current, excluded) or {}
+	end
 	local linkList = aipFindNearEnts(current, { "aip_glass_orbit_link" }, 25)
 
 	local includedLinks = aipFilterTable(linkList, function(link)
@@ -52,6 +56,11 @@ local function findPoints(current, excluded)
 	return orbitPointList
 end
 
+-- 计算轨道端点对应的乘坐高度；端点间再做线性插值，避免坡道起点净空突跳。
+local function RideHeight(trackY, groundHeight, clearance)
+	return trackY <= groundHeight and trackY or trackY + clearance
+end
+
 ----------------------------------- 服务端 -----------------------------------
 local Driver = Class(function(self, player)
 	self.inst = player
@@ -61,6 +70,12 @@ local Driver = Class(function(self, player)
 	self.speed = 15
 	self.speedMulti = 0.25	-- 速度修正，如上下坡会加减速度
 	self.ySpeed = 20
+	self.groundHeight = 0.05
+	self.rideClearance = 0.1
+	self.verticalGravityCompensation = 0
+	self.useVerticalFeedForward = false
+	self.lastVerticalControl = nil
+	self.routeProvider = nil
 
 	self.lastRotate = nil	-- 上一次的角度，如果大反转，说明已经超出去了
 
@@ -75,6 +90,11 @@ local Driver = Class(function(self, player)
 	self.inst:ListenForEvent("attacked", stopDrving)
 	self.inst:ListenForEvent("onsink", stopDrving)
 end)
+
+-- 设置可选的线路端点提供器，供临时单线复用原矿车运动逻辑。
+function Driver:SetRouteProvider(provider)
+	self.routeProvider = provider
+end
 
 -- 是否可以开车状态
 function Driver:IsInvalidDriver()
@@ -159,7 +179,7 @@ function Driver:DriveFromPoint(angle)
 	self.lastRotate = nil
 
 	-- 找到附近所有的连接器，对应的端点
-	local orbitPointList = findPoints(self.orbitPoint)
+	local orbitPointList = findPoints(self.orbitPoint, nil, self.routeProvider)
 
 	-- 找到角度最匹配的连接点
 	local targetPoint = nil
@@ -267,6 +287,7 @@ function Driver:AbortDrive()
 	self.inst.components.aipc_orbit_driver_client.isDriving:set(false)
 end
 
+-- 每帧继续沿原矿车朝向设置运动向量，并对坡道纵向速度做连续补偿。
 function Driver:OnUpdate(dt)
 	-- 如果是飞行状态，我们就暂时停手
 	if
@@ -289,8 +310,14 @@ function Driver:OnUpdate(dt)
 		self.nextOrbitPoint == nil and
 		sourcePos.y > hackY
 	then
-		local targetY = sourcePos.y + hackOffsetY
-		self.inst.Physics:SetMotorVel(0, (targetY - pos.y) * self.ySpeed, 0)
+		local targetY = RideHeight(sourcePos.y, self.groundHeight or hackY,
+			self.rideClearance or hackOffsetY)
+		local gravityCompensation = self.verticalGravityCompensation or 0
+		local ySpeed = (targetY - pos.y) * self.ySpeed + gravityCompensation
+		self.lastVerticalControl = { sourceY = sourcePos.y, targetY = sourcePos.y,
+			trackY = sourcePos.y, rideY = targetY, progress = 1, slope = 0,
+			feedForward = 0, gravityCompensation = gravityCompensation, motorY = ySpeed }
+		self.inst.Physics:SetMotorVel(0, ySpeed, 0)
 		return
 	end
 
@@ -304,13 +331,18 @@ function Driver:OnUpdate(dt)
 	local targetPos = self.nextOrbitPoint:GetPosition()
 
 	local totalDist = aipDist(sourcePos, targetPos)
-	local currentDist = aipDist(pos, sourcePos)
-	local targetY = sourcePos.y + (targetPos.y - sourcePos.y) * currentDist / totalDist
-
-	-- 防止玩家被轨道挡起来，提升一下高度
-	if targetY > hackY then
-		targetY = targetY + hackOffsetY
+	if totalDist <= 0.001 then
+		self:StopDrive()
+		return
 	end
+	local currentDist = aipDist(pos, sourcePos)
+	local progress = math.min(1, currentDist / totalDist)
+	local sourceRideY = RideHeight(sourcePos.y, self.groundHeight or hackY,
+		self.rideClearance or hackOffsetY)
+	local targetRideY = RideHeight(targetPos.y, self.groundHeight or hackY,
+		self.rideClearance or hackOffsetY)
+	local trackY = sourcePos.y + (targetPos.y - sourcePos.y) * progress
+	local targetY = sourceRideY + (targetRideY - sourceRideY) * progress
 
 	-- 根据上下坡加减速度
 	local speedX  = self.speed
@@ -329,7 +361,14 @@ function Driver:OnUpdate(dt)
 	end
 
 	-- 向目标移动
-	local ySpeed = (targetY - pos.y) * self.ySpeed
+	local slope = (targetRideY - sourceRideY) / totalDist
+	local feedForward = self.useVerticalFeedForward and slope * speedX or 0
+	local gravityCompensation = targetY > (self.groundHeight or hackY)
+		and (self.verticalGravityCompensation or 0) or 0
+	local ySpeed = (targetY - pos.y) * self.ySpeed + feedForward + gravityCompensation
+	self.lastVerticalControl = { sourceY = sourcePos.y, targetY = targetPos.y,
+		trackY = trackY, rideY = targetY, progress = progress, slope = slope,
+		feedForward = feedForward, gravityCompensation = gravityCompensation, motorY = ySpeed }
 	self.inst:ForceFacePoint(targetPos.x, 0, targetPos.z)
 	self.inst.Physics:SetMotorVel(speedX, ySpeed, 0)
 
@@ -351,7 +390,7 @@ function Driver:OnUpdate(dt)
 		-- 矿车位移到玩家位置
 		self.minecar.Physics:Teleport(targetPos.x, targetPos.y, targetPos.z)
 
-		local points = findPoints(self.nextOrbitPoint, self.orbitPoint)
+		local points = findPoints(self.nextOrbitPoint, self.orbitPoint, self.routeProvider)
 		local lastRotate = self.lastRotate
 		self.orbitPoint = self.nextOrbitPoint
 		self.nextOrbitPoint = nil

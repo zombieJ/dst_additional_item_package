@@ -152,6 +152,12 @@ PrefabFiles = {
 	"aip_glass_minecar",
 	"aip_shadow_transfer",
 
+	-- 猪村委托
+	"aip_pig_village_quest_marker",
+	"aip_train_ticket_fragment",
+	"aip_train_ticket",
+	"aip_pig_king_train_orbit",
+
 	-- 古神低语
 	"aip_oldone_plant",
 	"aip_oldone_plant_broken",
@@ -375,6 +381,7 @@ modimport("scripts/hooks/aip_birdcage_hook.lua")
 ------------------------------------- 测试专用 -------------------------------------
 if dev_mode then
 	modimport("scripts/dev.lua")
+	modimport("scripts/dev/aip_pig_king_train_hook.lua")
 end
 
 --------------------------------------- 矿车 ---------------------------------------
@@ -395,6 +402,8 @@ end)
 
 ------------------------------------- 玩家钩子 -------------------------------------
 modimport("scripts/hooks/aip_drive_hook")
+modimport("scripts/hooks/aip_pig_king_train_hook")
+modimport("scripts/hooks/aip_pig_village_quest_hook")
 modimport("scripts/hooks/aip_drift_hook") -- 打水漂
 modimport("scripts/hooks/aip_transfer_hook")
 modimport("scripts/hooks/aip_oldone_hook")

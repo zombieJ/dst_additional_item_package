@@ -624,6 +624,14 @@ AddPrefabPostInit("squid", function(inst)
 end)
 
 ----------------------------------------- 猪人房 -----------------------------------------
+AddPrefabPostInit("pighouse", function(inst)
+	if not _G.TheWorld.ismastersim then
+		return inst
+	end
+
+	inst:AddComponent("aipc_pig_village_quest")
+end)
+
 local function onPigmanDead(inst)
 	local chance = dev_mode and 1 or 0.05
 
@@ -751,6 +759,7 @@ AddPrefabPostInit("pigking", function(inst)
 	end
 
 	inst:AddComponent("aipc_pig_king_train")
+	inst:AddComponent("aipc_pig_village_quest_manager")
 end)
 
 ------------------------------------------ 食物 ------------------------------------------

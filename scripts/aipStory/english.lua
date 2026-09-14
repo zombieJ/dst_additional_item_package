@@ -753,6 +753,7 @@ return {
                 name="aip_glass_minecar",
             },
             "Place the 'Glass Mine Cart' on the node created by the 'Track Measurer' and ride it. The arrow keys control the direction, X to exit the mine car, and V to switch the view.",
+            "I hear the Pig King is arranging a special train journey. Passengers will not need to lay its tracks themselves, but earning an invitation may require helping the pigs in his village first.",
 
             -- 劣质的飞行图腾
             {
@@ -886,6 +887,36 @@ return {
                 top=-30,
             },
             "In order not to be disturbed by the 'Enlightenment Sculpture', I sealed it with 'Connection Totem'. But just in case I still need it someday, I set up a trap. When the night of the full moon, this time The adventurous 'Beanball', 'Zi Qing' and 'Haunted Wizard Hat' can be summoned again by placing them near the 'Connection Totem'. Bye~",
+        },
+    },
+
+    -- 猪王邀约
+    {
+        name = "The Pig King's Invitation",
+        desc = {
+            {
+                type="anim",
+                build="Pig_King",
+                bank="Pig_King",
+                anim="idle",
+                scale=.22,
+                height=180,
+                top=30,
+            },
+            "The Pig King is the heart of this village. He spends his days lounging on a bed of hay, seemingly interested only in food and curious treasures, while the nearby pigs have made their homes around him. Bring him something he likes and he will always repay the favor in his own way—and lately, that reward may include a rather special journey.",
+
+            {
+                type="img",
+                name="aip_train_ticket_fragment",
+            },
+            "Pig King Village keeps up to three active requests each day. Inspect a marked pig or pig house to learn what they are collecting. Complete a request and the pig will give you a gift containing a random reward and one 'Train Ticket Fragment'. Any extra supplies you handed over will be returned inside the gift as well.",
+
+            {
+                type="img",
+                name="aip_train_ticket",
+            },
+            "Once three fragments enter your inventory, they automatically become a complete 'Pig King Train Ticket'. Give it to the Pig King while he is awake and he will arrange a six-stop sightseeing journey.",
+            "Temporary tracks gradually appear ahead of the train, which circles each landmark for a better view before returning safely to Pig King Village. Camera switching and dismounting work just like the 'Glass Mine Cart'; see the lunar track notes in 'Mysterious Shadows' for the controls. If the journey continues into the night, the train's light will illuminate the scenery along the way.",
         },
     },
 

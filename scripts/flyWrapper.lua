@@ -1,4 +1,5 @@
 local _G = GLOBAL
+local driverCamera = require("aip_driver_camera")
 
 ---------------------------------- 添加飞行器 ----------------------------------
 AddPlayerPostInit(function(inst)
@@ -142,6 +143,13 @@ AddClassPostConstruct("cameras/followcamera", function(inst)
 			return
 		end
 		self._aipFlyModes[mode] = flying
+		if mode == "driver" then
+			-- 每次进入第三视角都重置鼠标记录，退出后不把偏移带到普通镜头。
+			self._aipDriverHeadingOffset = flying and 0 or nil
+			self._aipDriverMouseTargetOffset = 0
+			self._aipDriverPitch = flying and (self.pitch or driverCamera.PITCH_CENTER) or nil
+			self._aipDriverMouseTargetPitch = flying and driverCamera.PITCH_CENTER or nil
+		end
 
 		-- 遍历列表，看看是不是需要飞行
 		local needFly = false
@@ -182,14 +190,42 @@ AddClassPostConstruct("cameras/followcamera", function(inst)
 
 	local OriginUpdate = inst.Update
 	function inst:Update(dt, ...)
+		local driverPitch = nil
 		-- 缓慢变更到目标距离
 		if self._aipFlying then
 			self.distance = self.distance * 0.75 + self.mindist * 0.25
 
 			local headingtarget = normalize(180 - _G.ThePlayer:GetRotation())
+			if self._aipFlyModes.driver == true then
+				local hud = _G.ThePlayer.HUD
+				local inputBlocked = hud ~= nil and (hud:IsConsoleScreenOpen() or hud:IsChatInputScreenOpen())
+				if not inputBlocked and _G.TheInput ~= nil and _G.TheSim ~= nil then
+					local mousePosition = _G.TheInput:GetScreenPosition()
+					local screenWidth, screenHeight = _G.TheSim:GetScreenSize()
+					self._aipDriverHeadingOffset = driverCamera.GetMouseTargetOffset(
+						mousePosition ~= nil and mousePosition.x or nil, screenWidth)
+					self._aipDriverMouseTargetOffset = self._aipDriverHeadingOffset
+					self._aipDriverPitch = driverCamera.GetMouseTargetPitch(
+						mousePosition ~= nil and mousePosition.y or nil, screenHeight)
+					self._aipDriverMouseTargetPitch = self._aipDriverPitch
+				else
+					self._aipDriverMouseTargetOffset = self._aipDriverHeadingOffset or 0
+					self._aipDriverMouseTargetPitch = self._aipDriverPitch or driverCamera.PITCH_CENTER
+				end
+				driverPitch = self._aipDriverPitch
+			end
 			self.headingtarget = headingtarget
 		end
 
+		-- 原版先平滑更新轨道角，再仅在最终画面瞬时叠加鼠标偏角。
+		if driverPitch ~= nil then
+			local minPitch, maxPitch = self.mindistpitch, self.maxdistpitch
+			self.mindistpitch, self.maxdistpitch = driverPitch, driverPitch
+			OriginUpdate(self, dt, _G.unpack(arg))
+			self.mindistpitch, self.maxdistpitch = minPitch, maxPitch
+			driverCamera.ApplyHeadingOffset(self, self._aipDriverHeadingOffset)
+			return
+		end
 		return OriginUpdate(self, dt, _G.unpack(arg))
 	end
 end)

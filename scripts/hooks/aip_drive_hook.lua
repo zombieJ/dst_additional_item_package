@@ -7,10 +7,12 @@ local LANG_MAP = {
 	english = {
 		DRIVE = "Drive",
 		REMOVE = "Remove",
+		HINT = "Move cursor: Adjust third-person view    V: Change view    X: Exit minecart",
 	},
 	chinese = {
 		DRIVE = "驾驶",
 		REMOVE = "移除",
+		HINT = "移动鼠标：调整第三视角　　V：切换视野　　X：下车",
 	},
 }
 local LANG = LANG_MAP[language] or LANG_MAP.english
@@ -178,6 +180,34 @@ _G.TheInput:AddKeyDownHandler(KEY_V, function()
 	-- 切换视野
 	_G.TheCamera:TriggerFlyView("driver")
 end)
+
+---------------------------------------------------------------------------------
+--                                   驾驶提示                                   --
+---------------------------------------------------------------------------------
+if not _G.TheNet:IsDedicated() then
+	local Text = _G.require("widgets/text")
+
+	-- 在物品栏上方显示普通矿车与观光列车共用的视野和下车提示。
+	AddClassPostConstruct("widgets/controls", function(controls)
+		if controls.owner == nil or controls.bottom_root == nil then return end
+		local hint = controls.bottom_root:AddChild(Text(_G.UIFONT, 28, LANG.HINT,
+			{ 1, 0.9, 0.65, 1 }))
+		hint:SetPosition(0, 150, 0)
+		hint:SetClickable(false)
+		hint:Hide()
+		controls.aipOrbitDriverHint = hint
+
+		-- 根据统一驾驶网络状态刷新显隐，后创建 HUD 时也能恢复正确状态。
+		local function RefreshDriverHint()
+			local driver = controls.owner.components.aipc_orbit_driver_client
+			if driver ~= nil and driver.isDriving:value() then hint:Show()
+			else hint:Hide() end
+		end
+		controls.inst:ListenForEvent("aipc_orbit_driving_dirty", RefreshDriverHint,
+			controls.owner)
+		controls.inst:DoTaskInTime(0, RefreshDriverHint)
+	end)
+end
 
 ---------------------------------------------------------------------------------
 --                                   司机组件                                   --
